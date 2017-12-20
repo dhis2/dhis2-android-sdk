@@ -10,8 +10,11 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 
-public class CategoryOptionComboLinkCategoryStoreImpl extends
-        BaseLinkStore<CategoryOptionComboLinkCategoryModel> {
+public class CategoryOptionComboLinkCategoryStoreImpl implements
+        CategoryOptionComboLinkCategoryStore {
+
+    private final DatabaseAdapter databaseAdapter;
+    private final SQLiteStatement insertStatement;
 
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryOptionComboLinkCategoryModel.TABLE + " (" +
@@ -21,36 +24,37 @@ public class CategoryOptionComboLinkCategoryStoreImpl extends
 
 
     public CategoryOptionComboLinkCategoryStoreImpl(DatabaseAdapter databaseAdapter) {
-        super(databaseAdapter,
-                databaseAdapter.compileStatement(INSERT_STATEMENT),
-                CategoryOptionComboLinkCategoryModel.TABLE);
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
-
     @Override
-    public void validate(@NonNull CategoryOptionComboLinkCategoryModel link) {
+    public long insert(@NonNull CategoryOptionComboLinkCategoryModel entity) {
+
+        validate(entity);
+
+        bind(insertStatement, entity);
+
+        return executeInsert();
+    }
+
+    private void validate(@NonNull CategoryOptionComboLinkCategoryModel link) {
         isNull(link.optionCombo());
         isNull(link.category());
     }
 
-    @Override
-    public void bind(SQLiteStatement sqLiteStatement,
+    private void bind(SQLiteStatement sqLiteStatement,
             @NonNull CategoryOptionComboLinkCategoryModel link) {
         sqLiteBind(sqLiteStatement, 1, link.optionCombo());
         sqLiteBind(sqLiteStatement, 2, link.category());
     }
 
-    @Override
-    public boolean delete(CategoryOptionComboLinkCategoryModel element) {
-        throw new UnsupportedOperationException(
-                "CategoryOptionLinkStoreImpl doesn't support delete");
-    }
+    private int executeInsert() {
+        int lastId = databaseAdapter.executeUpdateDelete(CategoryOptionComboLinkCategoryModel.TABLE,
+                insertStatement);
+        insertStatement.clearBindings();
 
-    @Override
-    public boolean update(CategoryOptionComboLinkCategoryModel oldElement,
-            CategoryOptionComboLinkCategoryModel newElement) {
-        throw new UnsupportedOperationException(
-                "CategoryOptionLinkStoreImpl doesn't support delete");
+        return lastId;
     }
 }
 

@@ -10,7 +10,12 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 
-public class CategoryOptionStoreImpl extends BaseStore<CategoryOption> {
+public class CategoryOptionStoreImpl implements CategoryOptionStore {
+
+    protected final DatabaseAdapter databaseAdapter;
+    protected final SQLiteStatement insertStatement;
+    protected final SQLiteStatement updateStatement;
+    protected final SQLiteStatement deleteStatement;
 
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryOptionModel.TABLE + " (" +
@@ -22,49 +27,100 @@ public class CategoryOptionStoreImpl extends BaseStore<CategoryOption> {
                     CategoryModel.Columns.LAST_UPDATED + ") " +
                     "VALUES(?, ?, ?, ?, ?, ?);";
 
+    private static final String EQUAL_QUESTION_MARK = "=?";
     private static final String DELETE_STATEMENT = "DELETE FROM " + CategoryOptionModel.TABLE +
-            " WHERE " + CategoryModel.Columns.UID + " =?;";
+            " WHERE " + CategoryModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ";";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + CategoryOptionModel.TABLE + " SET " +
-            CategoryModel.Columns.UID + " =?, " +
-            CategoryModel.Columns.CODE + " =?, " +
-            CategoryModel.Columns.NAME + " =?, " +
-            CategoryModel.Columns.DISPLAY_NAME + " =?, " +
-            CategoryModel.Columns.CREATED + " =?, " +
-            CategoryModel.Columns.LAST_UPDATED + " =? WHERE " +
-            CategoryModel.Columns.UID + " =?;";
+            CategoryModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryModel.Columns.CODE + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryModel.Columns.NAME + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryModel.Columns.DISPLAY_NAME + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryModel.Columns.CREATED + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryModel.Columns.LAST_UPDATED + " " + EQUAL_QUESTION_MARK + " WHERE " +
+            CategoryModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ";";
 
     public CategoryOptionStoreImpl(DatabaseAdapter databaseAdapter) {
-        super(databaseAdapter,
-                databaseAdapter.compileStatement(INSERT_STATEMENT),
-                databaseAdapter.compileStatement(UPDATE_STATEMENT),
-                databaseAdapter.compileStatement(DELETE_STATEMENT),
-                CategoryModel.TABLE);
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
+
     }
 
+    @Override
+    public long insert(@NonNull CategoryOption categoryOption) {
+
+        validate(categoryOption);
+
+        bind(insertStatement, categoryOption);
+
+        return executeInsert();
+    }
 
     @Override
-    public void validate(@NonNull CategoryOption category) {
+    public boolean delete(@NonNull CategoryOption categoryOption) {
+
+        validate(categoryOption);
+
+        bindForDelete(categoryOption);
+
+        return execute(deleteStatement);
+    }
+
+    @Override
+    public boolean update(@NonNull CategoryOption oldCategoryOption,
+            @NonNull CategoryOption newCategoryOption) {
+
+        validateForUpdate(oldCategoryOption, newCategoryOption);
+
+        bindUpdate(oldCategoryOption, newCategoryOption);
+
+        return execute(updateStatement);
+    }
+
+    private boolean wasExecuted(int numberOfRows) {
+        return numberOfRows >= 1;
+    }
+
+    private boolean execute(@NonNull SQLiteStatement statement) {
+        int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryModel.TABLE, statement);
+        statement.clearBindings();
+
+        return wasExecuted(rowsAffected);
+    }
+
+    private long executeInsert() {
+        long lastId = databaseAdapter.executeInsert(CategoryModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+
+        return lastId;
+    }
+
+    private void validateForUpdate(@NonNull CategoryOption oldCategoryOption,
+            @NonNull CategoryOption newCategoryOption) {
+        isNull(oldCategoryOption.uid());
+        isNull(newCategoryOption.uid());
+    }
+
+    private void validate(@NonNull CategoryOption category) {
         isNull(category.uid());
     }
 
-    @Override
-    public void bindForDelete(@NonNull CategoryOption option) {
-        final int UID_INDEX = 1;
+    private void bindForDelete(@NonNull CategoryOption option) {
+        final int whereUidIndex = 1;
 
-        sqLiteBind(deleteStatement, UID_INDEX, option.uid());
+        sqLiteBind(deleteStatement, whereUidIndex, option.uid());
     }
 
-    @Override
-    public void bindUpdate(@NonNull CategoryOption oldOption, @NonNull CategoryOption newOption) {
-        final int WHERE_UID_INDEX = 7;
+    private void bindUpdate(@NonNull CategoryOption oldOption, @NonNull CategoryOption newOption) {
+        final int whereUidIndex = 7;
         bind(updateStatement, newOption);
 
-        sqLiteBind(updateStatement, WHERE_UID_INDEX, oldOption.uid());
+        sqLiteBind(updateStatement, whereUidIndex, oldOption.uid());
     }
 
-    @Override
-    public void bind(SQLiteStatement sqLiteStatement, @NonNull CategoryOption option) {
+    private void bind(@NonNull SQLiteStatement sqLiteStatement, @NonNull CategoryOption option) {
         sqLiteBind(sqLiteStatement, 1, option.uid());
         sqLiteBind(sqLiteStatement, 2, option.code());
         sqLiteBind(sqLiteStatement, 3, option.name());
@@ -72,6 +128,5 @@ public class CategoryOptionStoreImpl extends BaseStore<CategoryOption> {
         sqLiteBind(sqLiteStatement, 5, option.created());
         sqLiteBind(sqLiteStatement, 6, option.lastUpdated());
     }
-
 }
 

@@ -18,8 +18,9 @@ import java.util.Date;
 @RunWith(AndroidJUnit4.class)
 public class CategoryOptionStoreShould extends AbsStoreTestCase {
 
-    private Store<CategoryOption> store;
+    private CategoryOptionStore store;
 
+    @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
@@ -27,10 +28,7 @@ public class CategoryOptionStoreShould extends AbsStoreTestCase {
 
     }
 
-    private void clearTablesData() {
-       databaseAdapter().delete(CategoryOptionModel.TABLE);
-    }
-
+    @Override
     @After
     public void tearDown() {
         clearTablesData();
@@ -77,5 +75,9 @@ public class CategoryOptionStoreShould extends AbsStoreTestCase {
                 .shortName("MCH Aides")
                 .displayName("MCH Aides")
                 .build();
+    }
+
+    private void clearTablesData() {
+        databaseAdapter().delete(CategoryOptionModel.TABLE);
     }
 }

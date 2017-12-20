@@ -12,20 +12,20 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class CategoryHandlerShould {
 
     @Mock
-    private Store<Category> mockCategoryStore;
+    private CategoryStore mockCategoryStore;
 
     @Mock
-    private Store<CategoryOption> mockCategoryOptionStore;
+    private CategoryOptionStore mockCategoryOptionStore;
 
     @Mock
-    private Store<CategoryOptionLinkModel> mockCategoryOptionLinkStore;
+    private CategoryOptionLinkStore mockCategoryOptionLinkStore;
 
-
-    private CategoryHandler categoryHandler;
+    private CategoryHandler mCategoryHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -35,16 +35,15 @@ public class CategoryHandlerShould {
         CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
                 mockCategoryOptionStore);
 
-        categoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler,
+        mCategoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler,
                 mockCategoryOptionLinkStore);
     }
-
 
     @Test
     public void handle_deleted_category() {
         Category deletedCategory = givenADeletedCategory();
 
-        categoryHandler.handle(deletedCategory);
+        mCategoryHandler.handle(deletedCategory);
         verify(mockCategoryStore).delete(deletedCategory);
     }
 
@@ -54,7 +53,7 @@ public class CategoryHandlerShould {
 
         when(mockCategoryStore.update(any(Category.class), any(Category.class))).thenReturn(false);
 
-        categoryHandler.handle(newCategory);
+        mCategoryHandler.handle(newCategory);
 
         verify(mockCategoryStore).update(newCategory, newCategory);
         verify(mockCategoryStore).insert(newCategory);
@@ -67,7 +66,7 @@ public class CategoryHandlerShould {
 
         when(mockCategoryStore.update(any(Category.class), any(Category.class))).thenReturn(true);
 
-        categoryHandler.handle(updatedCategory);
+        mCategoryHandler.handle(updatedCategory);
 
         verify(mockCategoryStore).update(updatedCategory, updatedCategory);
         verifyZeroInteractions(mockCategoryStore);
@@ -89,7 +88,6 @@ public class CategoryHandlerShould {
                 .dataDimensionType("DISAGGREGATION").build();
     }
 
-
     private Category givenACategory() {
         Date today = new Date();
 
@@ -100,7 +98,29 @@ public class CategoryHandlerShould {
                 .name("Births attended by")
                 .shortName("Births attended by")
                 .displayName("Births attended by")
-                .categoryOptions(new ArrayList<CategoryOption>())
+                .categoryOptions(givenAListOfCategoryOptions())
                 .dataDimensionType("DISAGGREGATION").build();
+    }
+
+    private List<CategoryOption> givenAListOfCategoryOptions() {
+        List<CategoryOption> list = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++)
+            list.add(givenAOption());
+
+        return list;
+    }
+
+    private CategoryOption givenAOption() {
+        Date today = new Date();
+
+        return CategoryOption.builder()
+                .uid("TNYQzTHdoxL")
+                .code("MCH_AIDES")
+                .created(today)
+                .name("MCH Aides")
+                .shortName("MCH Aides")
+                .displayName("MCH Aides")
+                .build();
     }
 }

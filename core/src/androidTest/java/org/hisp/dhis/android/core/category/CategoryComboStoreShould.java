@@ -19,8 +19,9 @@ import java.util.Date;
 @RunWith(AndroidJUnit4.class)
 public class CategoryComboStoreShould extends AbsStoreTestCase {
 
-    private Store<CategoryCombo> store;
+    private CategoryComboStore store;
 
+    @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
@@ -28,6 +29,7 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
 
     }
 
+    @Override
     @After
     public void tearDown() {
         clearTablesData();

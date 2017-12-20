@@ -74,7 +74,6 @@ public abstract class CategoryComboLinkModel extends BaseModel {
     @NonNull
     public static CategoryComboLinkModel create(Cursor cursor) {
         return AutoValue_CategoryComboLinkModel.createFromCursor(cursor);
-
     }
 
     @AutoValue.Builder

@@ -30,18 +30,17 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCallEndpoint;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
+import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboCallEndpoint;
+import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
-import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
-import org.hisp.dhis.android.core.category.Handler;
-import org.hisp.dhis.android.core.category.Store;
+import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.ResponseValidator;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
@@ -98,7 +97,8 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
+ "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
 public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
@@ -136,8 +136,8 @@ public class MetadataCall implements Call<Response> {
     private final CategoryComboQuery categoryComboQuery;
     private final CategoryService categoryService;
     private final CategoryComboService comboService;
-    private final Handler<Category> categoryHandler;
-    private final Handler<CategoryCombo> categoryComboHandler;
+    private final CategoryHandler categoryHandler;
+    private final CategoryComboHandler categoryComboHandler;
 
     private boolean isExecuted;
 
@@ -178,12 +178,10 @@ public class MetadataCall implements Call<Response> {
             @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
             @NonNull CategoryQuery categoryQuery,
             @NonNull CategoryService categoryService,
-            @NonNull Handler<Category> categoryHandler,
+            @NonNull CategoryHandler categoryHandler,
             @NonNull CategoryComboQuery categoryComboQuery,
             @NonNull CategoryComboService comboService,
-            @NonNull Handler<CategoryCombo> categoryComboHandler
-
-    ) {
+            @NonNull CategoryComboHandler categoryComboHandler) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -223,7 +221,6 @@ public class MetadataCall implements Call<Response> {
         this.categoryComboQuery = categoryComboQuery;
         this.comboService = comboService;
         this.categoryComboHandler = categoryComboHandler;
-
     }
 
     @Override
@@ -233,6 +230,7 @@ public class MetadataCall implements Call<Response> {
         }
     }
 
+    @SuppressWarnings("PMD.NPathComplexity")
     @Override
     public Response call() throws Exception {
         synchronized (this) {
@@ -250,7 +248,7 @@ public class MetadataCall implements Call<Response> {
                     databaseAdapter, systemInfoStore,
                     systemInfoService, resourceStore
             ).call();
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
             SystemInfo systemInfo = (SystemInfo) response.body();
@@ -266,7 +264,7 @@ public class MetadataCall implements Call<Response> {
                     serverDate,
                     userRoleProgramLinkStore
             ).call();
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
 
@@ -275,7 +273,7 @@ public class MetadataCall implements Call<Response> {
                     user, organisationUnitService, databaseAdapter, organisationUnitStore,
                     resourceStore, serverDate, userOrganisationUnitLinkStore,
                     organisationUnitProgramLinkStore).call();
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
 
@@ -291,7 +289,7 @@ public class MetadataCall implements Call<Response> {
                     programStageDataElementStore,
                     programStageSectionStore, programStageStore, relationshipStore
             ).call();
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
 
@@ -301,7 +299,7 @@ public class MetadataCall implements Call<Response> {
                     trackedEntityUids, databaseAdapter, trackedEntityStore,
                     resourceStore, trackedEntityService, serverDate
             ).call();
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
 
@@ -310,22 +308,20 @@ public class MetadataCall implements Call<Response> {
                     optionSetService, optionSetStore, databaseAdapter, resourceStore,
                     optionSetUids, serverDate, optionStore
             ).call();
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
-
             response = downloadCategories(serverDate);
 
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
 
             response = downloadCategoryCombos(serverDate);
 
-            if (isValid(response)) {
+            if (isNotValid(response)) {
                 return response;
             }
-
 
             transaction.setSuccessful();
             return response;
@@ -334,25 +330,8 @@ public class MetadataCall implements Call<Response> {
         }
     }
 
-    private boolean isValid(Response response) {
+    private boolean isNotValid(Response response) {
         return !response.isSuccessful();
-    }
-
-    private Response<Payload<Category>> downloadCategories(Date serverDate) throws Exception {
-        ResponseValidator<Category> validator = new ResponseValidator<>();
-        return new CategoryCallEndpoint(categoryQuery, categoryService, validator,
-                categoryHandler,
-                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
-    }
-
-    private Response<Payload<CategoryCombo>> downloadCategoryCombos(Date serverDate)
-            throws Exception {
-
-        ResponseValidator<CategoryCombo> comboValidator = new ResponseValidator<>();
-
-        return new CategoryComboCallEndpoint(categoryComboQuery, comboService,
-                comboValidator, categoryComboHandler,
-                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
     }
 
     /// Utilty methods:
@@ -473,5 +452,22 @@ public class MetadataCall implements Call<Response> {
                 }
             }
         }
+    }
+
+    private Response<Payload<Category>> downloadCategories(Date serverDate) throws Exception {
+        ResponseValidator<Category> validator = new ResponseValidator<>();
+        return new CategoryEndpointCall(categoryQuery, categoryService, validator,
+                categoryHandler,
+                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
+    }
+
+    private Response<Payload<CategoryCombo>> downloadCategoryCombos(Date serverDate)
+            throws Exception {
+
+        ResponseValidator<CategoryCombo> comboValidator = new ResponseValidator<>();
+
+        return new CategoryComboEndpointCall(categoryComboQuery, comboService,
+                comboValidator, categoryComboHandler,
+                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
     }
 }

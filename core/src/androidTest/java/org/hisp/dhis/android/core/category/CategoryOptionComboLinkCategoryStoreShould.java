@@ -16,8 +16,9 @@ import java.util.Date;
 @RunWith(AndroidJUnit4.class)
 public class CategoryOptionComboLinkCategoryStoreShould extends AbsStoreTestCase {
 
-    private Store<CategoryOptionComboLinkCategoryModel> store;
+    private CategoryOptionComboLinkCategoryStore store;
 
+    @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
@@ -25,10 +26,7 @@ public class CategoryOptionComboLinkCategoryStoreShould extends AbsStoreTestCase
 
     }
 
-    private void clearTablesData() {
-        databaseAdapter().delete(CategoryOptionLinkModel.TABLE);
-    }
-
+    @Override
     @After
     public void tearDown() {
         clearTablesData();
@@ -68,7 +66,7 @@ public class CategoryOptionComboLinkCategoryStoreShould extends AbsStoreTestCase
 
     private void insertNewOptionCombo() {
         CategoryOptionCombo newOptionCombo = givenAOptionCombo();
-        CategoryOptionComboStoreImpl optionStore = new CategoryOptionComboStoreImpl(databaseAdapter());
+        CategoryOptionComboStore optionStore = new CategoryOptionComboStoreImpl(databaseAdapter());
         optionStore.insert(newOptionCombo);
     }
 
@@ -96,4 +94,9 @@ public class CategoryOptionComboLinkCategoryStoreShould extends AbsStoreTestCase
                 .displayName("SECHN, Male")
                 .build();
     }
+
+    private void clearTablesData() {
+        databaseAdapter().delete(CategoryOptionLinkModel.TABLE);
+    }
+
 }

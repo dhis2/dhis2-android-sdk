@@ -39,6 +39,9 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+
+
 @AutoValue
 public abstract class CategoryModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "Category";
@@ -70,7 +73,6 @@ public abstract class CategoryModel extends BaseIdentifiableObjectModel {
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
         public abstract Builder dataDimensionType(@Nullable String dimensionType);
-
 
         public abstract CategoryModel build();
     }

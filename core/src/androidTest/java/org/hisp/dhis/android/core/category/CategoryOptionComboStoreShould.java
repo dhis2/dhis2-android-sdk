@@ -17,8 +17,9 @@ import java.util.Date;
 @RunWith(AndroidJUnit4.class)
 public class CategoryOptionComboStoreShould extends AbsStoreTestCase {
 
-    private Store<CategoryOptionCombo> store;
+    private CategoryOptionComboStore store;
 
+    @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();

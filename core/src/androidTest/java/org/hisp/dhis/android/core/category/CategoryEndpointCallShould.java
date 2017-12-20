@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
-import org.hisp.dhis.android.core.data.api.ResponseValidator;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -27,12 +26,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-public class CategoryCallEndpointShould extends AbsStoreTestCase {
+public class CategoryEndpointCallShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
 
     private CategoryService categoryService;
 
+    @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
@@ -43,10 +43,17 @@ public class CategoryCallEndpointShould extends AbsStoreTestCase {
 
     }
 
+    @Override
+    @After
+    public void tearDown() throws IOException {
+        dhis2MockServer.shutdown();
+        clearTablesData();
+    }
+
     @Test
     public void parse_category_successful() throws Exception {
 
-        CategoryCallEndpoint callEndpoint = provideCategoryCallEndpoint();
+        CategoryEndpointCall callEndpoint = provideCategoryCallEndpoint();
         dhis2MockServer.enqueueMockResponse("categories.json");
 
         Response<Payload<Category>> response = callEndpoint.call();
@@ -60,7 +67,7 @@ public class CategoryCallEndpointShould extends AbsStoreTestCase {
         return !response.body().items().isEmpty();
     }
 
-    private CategoryCallEndpoint provideCategoryCallEndpoint() {
+    private CategoryEndpointCall provideCategoryCallEndpoint() {
         CategoryQuery query = CategoryQuery.builder().paging(true).pageSize(
                 CategoryQuery.DEFAULT_PAGE_SIZE).page(1).build();
 
@@ -81,7 +88,7 @@ public class CategoryCallEndpointShould extends AbsStoreTestCase {
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Date serverDate = new Date();
 
-        return new CategoryCallEndpoint(query, categoryService, validator, handler, resourceHandler,
+        return new CategoryEndpointCall(query, categoryService, validator, handler, resourceHandler,
                 databaseAdapter(), serverDate);
 
     }
@@ -94,12 +101,6 @@ public class CategoryCallEndpointShould extends AbsStoreTestCase {
                 .addConverterFactory(FilterConverterFactory.create())
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        dhis2MockServer.shutdown();
-        clearTablesData();
     }
 
     private void clearTablesData() {

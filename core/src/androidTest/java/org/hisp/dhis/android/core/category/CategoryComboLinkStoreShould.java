@@ -13,17 +13,18 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
-public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
+public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
 
-    private CategoryOptionLinkStore store;
+    private CategoryComboLinkStore store;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        store = new CategoryOptionLinkStoreImpl(databaseAdapter());
+        store = new CategoryComboLinkStoreImpl(databaseAdapter());
 
     }
 
@@ -34,11 +35,11 @@ public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_category() throws Exception {
+    public void insert_category_combo() throws Exception {
 
         insertNewCategory();
 
-        insertNewOption();
+        insertANewCategoryCombo();
 
         long lastID = insertNewCategoryOptionLink();
 
@@ -46,15 +47,11 @@ public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
     }
 
-    private CategoryOptionLinkModel givenACategoryOptionLink() {
-        return CategoryOptionLinkModel.builder()
-                .option("TNYQzTHdoxL")
-                .category("KfdsGBcoiCa")
-                .build();
-    }
-
     private long insertNewCategoryOptionLink() {
-        CategoryOptionLinkModel link = givenACategoryOptionLink();
+        CategoryComboLinkModel link = CategoryComboLinkModel.builder()
+                .category("KfdsGBcoiCa")
+                .combo("m2jTvAj5kkm")
+                .build();
         return store.insert(link);
     }
 
@@ -64,10 +61,11 @@ public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
         categoryStore.insert(newCategory);
     }
 
-    private void insertNewOption() {
-        CategoryOption newOption = givenAOption();
-        CategoryOptionStoreImpl optionStore = new CategoryOptionStoreImpl(databaseAdapter());
-        optionStore.insert(newOption);
+    private void insertANewCategoryCombo() {
+        CategoryCombo combo = givenACategoryCombo();
+        CategoryComboStoreImpl comboStore = new CategoryComboStoreImpl(databaseAdapter());
+
+        comboStore.insert(combo);
     }
 
     private Category givenACategory() {
@@ -80,20 +78,25 @@ public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
                 .name("Births attended by")
                 .shortName("Births attended by")
                 .displayName("Births attended by")
-                .categoryOptions(new ArrayList<CategoryOption>())
                 .dataDimensionType("DISAGGREGATION").build();
     }
 
-    private CategoryOption givenAOption() {
+    private List<Category> givenAListOfCategories() {
+        List<Category> list = new ArrayList<>();
+        list.add(givenACategory());
+        return list;
+    }
+
+    private CategoryCombo givenACategoryCombo() {
         Date today = new Date();
 
-        return CategoryOption.builder()
-                .uid("TNYQzTHdoxL")
-                .code("MCH_AIDES")
+        return CategoryCombo.builder()
+                .uid("m2jTvAj5kkm")
+                .code("BIRTHS")
                 .created(today)
-                .name("MCH Aides")
-                .shortName("MCH Aides")
-                .displayName("MCH Aides")
+                .name("Births")
+                .displayName("Births")
+                .categories(givenAListOfCategories())
                 .build();
     }
 

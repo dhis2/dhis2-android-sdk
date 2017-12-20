@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.ResponseValidator;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -17,7 +16,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public class CategoryCallEndpoint implements Call<Response<Payload<Category>>> {
+public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
 
     private final CategoryQuery categoryQuery;
     private final CategoryService categoryService;
@@ -28,7 +27,7 @@ public class CategoryCallEndpoint implements Call<Response<Payload<Category>>> {
     private final Date serverDate;
     private boolean isExecuted;
 
-    public CategoryCallEndpoint(CategoryQuery categoryQuery,
+    public CategoryEndpointCall(CategoryQuery categoryQuery,
             CategoryService categoryService,
             ResponseValidator<Category> responseValidator,
             CategoryHandler handler,

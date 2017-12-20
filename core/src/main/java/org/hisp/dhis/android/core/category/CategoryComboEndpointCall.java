@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.ResponseValidator;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -17,7 +16,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public class CategoryComboCallEndpoint implements Call<Response<Payload<CategoryCombo>>> {
+public class CategoryComboEndpointCall implements Call<Response<Payload<CategoryCombo>>> {
 
     private final CategoryComboQuery query;
     private final CategoryComboService comboService;
@@ -28,7 +27,7 @@ public class CategoryComboCallEndpoint implements Call<Response<Payload<Category
     private final Date serverDate;
     private boolean isExecuted;
 
-    public CategoryComboCallEndpoint(CategoryComboQuery query,
+    public CategoryComboEndpointCall(CategoryComboQuery query,
             CategoryComboService comboService,
             ResponseValidator<CategoryCombo> responseValidator,
             CategoryComboHandler handler,
@@ -58,7 +57,8 @@ public class CategoryComboCallEndpoint implements Call<Response<Payload<Category
 
         Response<Payload<CategoryCombo>> response = comboService.getCategoryCombos(getFields(),
                 query.paging(),
-                query.page(), query.pageSize()).execute();
+                query.page(), query.pageSize())
+                .execute();
 
         if (responseValidator.isValid(response)) {
             List<CategoryCombo> combos = response.body().items();

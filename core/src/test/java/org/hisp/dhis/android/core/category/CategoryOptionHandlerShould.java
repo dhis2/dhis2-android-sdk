@@ -15,13 +15,12 @@ import java.util.Date;
 public class CategoryOptionHandlerShould {
 
     @Mock
-    private Store<CategoryOption> mockCategoryOptionStore;
+    private CategoryOptionStore mockCategoryOptionStore;
 
     private CategoryOptionHandler categoryOptionHandler;
 
     @Before
     public void setUp() throws Exception {
-
 
         MockitoAnnotations.initMocks(this);
         categoryOptionHandler = new CategoryOptionHandler(mockCategoryOptionStore);

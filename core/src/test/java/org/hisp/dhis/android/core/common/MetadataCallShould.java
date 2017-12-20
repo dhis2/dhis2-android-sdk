@@ -27,24 +27,38 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import static junit.framework.Assert.assertTrue;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryHandler;
-import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.category.CategoryOptionHandler;
-import org.hisp.dhis.android.core.category.CategoryOptionLinkModel;
-import org.hisp.dhis.android.core.category.CategoryOptionLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
-import org.hisp.dhis.android.core.category.Handler;
-import org.hisp.dhis.android.core.category.Store;
+import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetService;
@@ -86,6 +100,7 @@ import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserService;
 import org.hisp.dhis.android.core.user.UserStore;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -105,18 +120,8 @@ import javax.net.ssl.HttpsURLConnection;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import android.support.annotation.NonNull;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 @RunWith(JUnit4.class)
 public class MetadataCallShould {
@@ -146,6 +151,9 @@ public class MetadataCallShould {
 
     @Mock
     private SystemInfo systemInfo;
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private retrofit2.Call<Payload<Category>> categoryInfo;
 
     @Mock
     private SystemInfoService systemInfoService;
@@ -283,23 +291,16 @@ public class MetadataCallShould {
     @Mock
     private CategoryQuery categoryQuery;
 
-    @Mock
     private CategoryService categoryService;
 
     @Mock
-    private Store<Category> mockCategoryStore;
+    private CategoryHandler categoryHandler;
 
 
-    private Handler<Category> categoryHandler;
-
-    @Mock
-    CategoryComboService comboService;
+    private CategoryComboService comboService;
 
     @Mock
-    Handler<CategoryCombo> mockCategoryComboHandler;
-
-    @Mock
-    Store<CategoryOption> mockCategoryOptionStore;
+    private CategoryComboHandler mockCategoryComboHandler;
 
     // object to test
     private MetadataCall metadataCall;
@@ -307,18 +308,12 @@ public class MetadataCallShould {
 
     private Response errorResponse;
 
+    Dhis2MockServer  dhis2MockServer;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
-
-        Handler<CategoryOption> categoryOptionHandler = new CategoryOptionHandler(
-                mockCategoryOptionStore);
-        Store<CategoryOptionLinkModel> categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
-                databaseAdapter);
-
-        categoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler,
-                categoryOptionLinkStore);
 
         errorResponse = Response.error(
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
@@ -339,14 +334,14 @@ public class MetadataCallShould {
                 anyBoolean(), any(Fields.class), any(Filter.class))
         ).thenReturn(optionSetCall);
 
+
         when(systemInfo.serverDate()).thenReturn(serverDateTime);
         when(userCredentials.userRoles()).thenReturn(userRoles);
         when(organisationUnit.uid()).thenReturn("unit");
         when(organisationUnit.path()).thenReturn("path/to/org/unit");
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
-        when(organisationUnitPayload.items()).thenReturn(
-                Collections.singletonList(organisationUnit));
+        when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
         when(program.trackedEntity()).thenReturn(trackedEntity);
         when(programPayload.items()).thenReturn(Collections.singletonList(program));
         when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntity));
@@ -355,19 +350,37 @@ public class MetadataCallShould {
 
         when(resourceStore.getLastUpdated(any(ResourceModel.Type.class))).thenReturn("2017-01-01");
 
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(dhis2MockServer.getBaseEndpoint())
+                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
+                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
+                .build();
+
+
+
+        categoryService = retrofit.create(CategoryService.class);
+        comboService = retrofit.create(CategoryComboService.class);
+
+        dhis2MockServer.enqueueMockResponse("categories.json");
+        dhis2MockServer.enqueueMockResponse("categories_combo.json");
+
+
+
+
+
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService,
                 programService, organisationUnitService, trackedEntityService, optionSetService,
                 systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
-                organisationUnitStore,
+                userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
-                programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore,
+                programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
                 optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore, trackedEntityStore,
-                organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
+                organisationUnitProgramLinkStore,categoryQuery, categoryService, categoryHandler,
                 CategoryComboQuery.defaultQuery(), comboService,mockCategoryComboHandler);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
@@ -380,11 +393,19 @@ public class MetadataCallShould {
         when(optionSetCall.execute()).thenReturn(Response.success(optionSetPayload));
     }
 
+    @After
+    public void tearDown() throws IOException {
+        dhis2MockServer.shutdown();
+    }
+
     @Test
-    public void returns_option_set_payload_when_execute_metadata_call() throws Exception {
+    public void returns_category_combo_payload_when_execute_metadata_call() throws Exception {
         Response response = metadataCall.call();
         // assert that last successful response is returned
-        assertThat(response.body()).isEqualTo(optionSetPayload);
+
+        Payload<CategoryCombo> payload = (Payload<CategoryCombo>) response.body();
+
+        assertTrue(!payload.items().isEmpty());
     }
 
     @Test
@@ -414,8 +435,7 @@ public class MetadataCallShould {
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
         verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
         verify(transaction, times(expectedTransactions)).end();
-        verify(transaction, atMost(expectedTransactions
-                - 1)).setSuccessful();//ie last one is not marked as success...
+        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful();//ie last one is not marked as success...
     }
 
     @Test
@@ -430,8 +450,7 @@ public class MetadataCallShould {
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
         verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
         verify(transaction, times(expectedTransactions)).end();
-        verify(transaction, atMost(expectedTransactions
-                - 1)).setSuccessful(); //taking in account the sub-transactions
+        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful(); //taking in account the sub-transactions
     }
 
     @Test

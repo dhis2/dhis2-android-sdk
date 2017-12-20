@@ -1,6 +1,8 @@
 package org.hisp.dhis.android.core.category;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import android.support.test.runner.AndroidJUnit4;
 
@@ -17,8 +19,9 @@ import java.util.Date;
 @RunWith(AndroidJUnit4.class)
 public class CategoryStoreShould extends AbsStoreTestCase {
 
-    private Store<Category> store;
+    private CategoryStore store;
 
+    @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
@@ -26,10 +29,7 @@ public class CategoryStoreShould extends AbsStoreTestCase {
 
     }
 
-    private void clearTablesData() {
-        databaseAdapter().delete(CategoryModel.TABLE);
-    }
-
+    @Override
     @After
     public void tearDown() {
         clearTablesData();
@@ -99,6 +99,10 @@ public class CategoryStoreShould extends AbsStoreTestCase {
                 .displayName("Births attended by")
                 .categoryOptions(new ArrayList<CategoryOption>())
                 .dataDimensionType("DISAGGREGATION").build();
+    }
+
+    private void clearTablesData() {
+        databaseAdapter().delete(CategoryModel.TABLE);
     }
 
 }

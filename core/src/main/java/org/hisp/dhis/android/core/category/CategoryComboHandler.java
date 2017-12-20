@@ -1,43 +1,51 @@
 package org.hisp.dhis.android.core.category;
 
 
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
 import android.support.annotation.NonNull;
 
 import java.util.List;
 
-public class CategoryComboHandler extends Handler<CategoryCombo> {
+public class CategoryComboHandler {
 
     @NonNull
-    private final Store<CategoryOptionComboLinkCategoryModel> categoryComboOptionLinkCategoryStore;
+    private final CategoryOptionComboLinkCategoryStore categoryComboOptionLinkCategoryStore;
 
     @NonNull
-    private final Store<CategoryComboLinkModel> categoryComboLinkStore;
+    private final CategoryComboLinkStore categoryComboLinkStore;
 
     @NonNull
-    private final Handler<CategoryOptionCombo> optionComboHandler;
+    private final CategoryOptionComboHandler optionComboHandler;
 
+    @NonNull
+    private final CategoryComboStore store;
 
     public CategoryComboHandler(
-            @NonNull Store<CategoryCombo> store,
-            @NonNull Store<CategoryOptionComboLinkCategoryModel>
+            @NonNull CategoryComboStore store,
+            @NonNull CategoryOptionComboLinkCategoryStore
                     categoryComboOptionLinkCategoryStore,
-            @NonNull Store<CategoryComboLinkModel> categoryComboLinkStore,
-            @NonNull Handler<CategoryOptionCombo> optionComboHandler) {
-        super(store);
+            @NonNull CategoryComboLinkStore categoryComboLinkStore,
+            @NonNull CategoryOptionComboHandler optionComboHandler) {
+        this.store = store;
         this.categoryComboOptionLinkCategoryStore = categoryComboOptionLinkCategoryStore;
         this.categoryComboLinkStore = categoryComboLinkStore;
         this.optionComboHandler = optionComboHandler;
     }
 
-    @Override
     public void handle(CategoryCombo combo) {
-        super.handle(combo);
 
-    }
+        if (isDeleted(combo)) {
+            store.delete(combo);
+        } else {
 
-    @Override
-    public void afterInsert(CategoryCombo combo) {
-        handleRelations(combo);
+            boolean updated = store.update(combo, combo);
+
+            if (!updated) {
+                store.insert(combo);
+                handleRelations(combo);
+            }
+        }
     }
 
     private void handleRelations(@NonNull CategoryCombo combo) {

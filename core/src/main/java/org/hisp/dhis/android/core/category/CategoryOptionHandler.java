@@ -1,16 +1,30 @@
 package org.hisp.dhis.android.core.category;
 
 
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
 import android.support.annotation.NonNull;
 
-public class CategoryOptionHandler extends Handler<CategoryOption> {
+public class CategoryOptionHandler {
 
-    public CategoryOptionHandler(
-            @NonNull Store<CategoryOption> store) {
-        super(store);
+    @NonNull
+    private final CategoryOptionStore store;
+
+    public CategoryOptionHandler(@NonNull CategoryOptionStore store) {
+        this.store = store;
     }
 
-    @Override
-    public void afterInsert(CategoryOption entity) {
+    public void handle(@NonNull CategoryOption categoryOption) {
+
+        if (isDeleted(categoryOption)) {
+            store.delete(categoryOption);
+        } else {
+
+            boolean updated = store.update(categoryOption, categoryOption);
+
+            if (!updated) {
+                store.insert(categoryOption);
+            }
+        }
     }
 }

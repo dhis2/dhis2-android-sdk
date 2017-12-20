@@ -8,7 +8,6 @@ import com.google.common.truth.Truth;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.ResponseValidator;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -22,7 +21,7 @@ import java.util.Date;
 
 import retrofit2.Response;
 
-public class CategoryCallEndpointRealShould extends AbsStoreTestCase {
+public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
 
@@ -33,21 +32,21 @@ public class CategoryCallEndpointRealShould extends AbsStoreTestCase {
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-    @Test
+    //@Test
     public void parse_categories() throws Exception {
 
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        CategoryCallEndpoint categoryCallEndpoint = provideCategoryCallEndpoint();
-        Response<Payload<Category>> responseCategory = categoryCallEndpoint.call();
+        CategoryEndpointCall categoryEndpointCall = provideCategoryCallEndpoint();
+        Response<Payload<Category>> responseCategory = categoryEndpointCall.call();
 
         assertTrue(responseCategory.isSuccessful());
         assertTrue(hasCategories(responseCategory));
 
     }
 
-    private CategoryCallEndpoint provideCategoryCallEndpoint() {
+    private CategoryEndpointCall provideCategoryCallEndpoint() {
         CategoryQuery query = CategoryQuery.defaultQuery();
 
         CategoryService categoryService = d2.retrofit().create(CategoryService.class);
@@ -70,7 +69,7 @@ public class CategoryCallEndpointRealShould extends AbsStoreTestCase {
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Date serverDate = new Date();
 
-        return new CategoryCallEndpoint(query, categoryService, validator, handler, resourceHandler,
+        return new CategoryEndpointCall(query, categoryService, validator, handler, resourceHandler,
                 databaseAdapter(), serverDate);
 
     }

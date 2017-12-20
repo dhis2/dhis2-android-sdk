@@ -12,7 +12,6 @@ import com.google.common.truth.Truth;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.ResponseValidator;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -26,7 +25,7 @@ import java.util.Date;
 
 import retrofit2.Response;
 
-public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
+public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
 
@@ -37,7 +36,7 @@ public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-    @Test
+     @Test
     public void download_category_combos() throws Exception {
 
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
@@ -48,7 +47,7 @@ public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
         assertNotCombosInDB();
         assertNotCategoryCombosLinkInDB();
 
-        CategoryComboCallEndpoint comboCallEndpoint = provideComboCallEndpoint();
+        CategoryComboEndpointCall comboCallEndpoint = provideComboCallEndpoint();
         Response<Payload<CategoryCombo>> responseCategory = comboCallEndpoint.call();
 
         assertParseData(responseCategory);
@@ -68,13 +67,13 @@ public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
     }
 
     private void downloadCategories() throws Exception {
-        CategoryCallEndpoint categoryCallEndpoint = provideCategoryCallEndpoint();
-        categoryCallEndpoint.call();
+        CategoryEndpointCall categoryEndpointCall = provideCategoryCallEndpoint();
+        categoryEndpointCall.call();
 
     }
 
     @NonNull
-    private CategoryCallEndpoint provideCategoryCallEndpoint() {
+    private CategoryEndpointCall provideCategoryCallEndpoint() {
         CategoryQuery query = CategoryQuery.defaultQuery();
 
         CategoryService categoryService = d2.retrofit().create(CategoryService.class);
@@ -97,7 +96,7 @@ public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Date serverDate = new Date();
 
-        return new CategoryCallEndpoint(query, categoryService, validator, handler, resourceHandler,
+        return new CategoryEndpointCall(query, categoryService, validator, handler, resourceHandler,
                 databaseAdapter(), serverDate);
 
     }
@@ -128,8 +127,17 @@ public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
     }
 
     private Cursor selectAllCombosFromDB() {
+        final String[] PROJECTION = {
+                CategoryComboModel.Columns.ID, CategoryComboModel.Columns.UID, CategoryComboModel
+                .Columns.CODE, CategoryComboModel.Columns.NAME,
+                CategoryComboModel.Columns.DISPLAY_NAME, CategoryComboModel.Columns.CREATED,
+                CategoryComboModel.Columns.LAST_UPDATED,
+                CategoryComboModel.Columns.IS_DEFAULT
+
+        };
+
         String sqlQuery = SQLiteQueryBuilder.buildQueryString(false, CategoryComboModel.TABLE,
-                CategoryComboModel.PROJECTION, null,
+                PROJECTION, null,
                 null, null, null, null);
 
 
@@ -137,8 +145,12 @@ public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
     }
 
     private Cursor selectAllCategoryCombosLinksFromDB() {
+        final String[] PROJECTION = {
+                CategoryComboLinkModel.Columns.ID, CategoryComboLinkModel.Columns.CATEGORY,
+                CategoryComboLinkModel.Columns.COMBO
+        };
         String sqlQuery = SQLiteQueryBuilder.buildQueryString(false, CategoryComboLinkModel.TABLE,
-                CategoryComboLinkModel.PROJECTION, null,
+                PROJECTION, null,
                 null, null, null, null);
 
 
@@ -146,17 +158,28 @@ public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
     }
 
     private Cursor selectAllOptionCombosFromDB() {
+        final String[] PROJECTION = {
+                CategoryOptionComboModel.Columns.ID,
+                CategoryOptionComboModel.Columns.UID,
+                CategoryOptionComboModel.Columns.CODE,
+                CategoryOptionComboModel.Columns.NAME,
+                CategoryOptionComboModel.Columns.DISPLAY_NAME,
+                CategoryOptionComboModel.Columns.CREATED,
+                CategoryOptionComboModel.Columns.LAST_UPDATED,
+                CategoryOptionComboModel.Columns.CATEGORY_COMBO
+
+        };
+
         String sqlQuery = SQLiteQueryBuilder.buildQueryString(false, CategoryOptionComboModel.TABLE,
-                CategoryOptionComboModel.PROJECTION, null,
+                PROJECTION, null,
                 null, null, null, null);
 
 
         return databaseAdapter().query(sqlQuery);
     }
 
-
     @NonNull
-    private CategoryComboCallEndpoint provideComboCallEndpoint() {
+    private CategoryComboEndpointCall provideComboCallEndpoint() {
         CategoryComboQuery query = CategoryComboQuery.defaultQuery();
 
         CategoryComboService comboService = d2.retrofit().create(CategoryComboService.class);
@@ -184,7 +207,7 @@ public class CategoryComboCallEndpointRealShould extends AbsStoreTestCase {
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Date serverDate = new Date();
 
-        return new CategoryComboCallEndpoint(query, comboService, validator, handler,
+        return new CategoryComboEndpointCall(query, comboService, validator, handler,
                 resourceHandler,
                 databaseAdapter(), serverDate);
 

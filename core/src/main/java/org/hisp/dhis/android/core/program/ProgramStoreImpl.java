@@ -220,7 +220,7 @@ public class ProgramStoreImpl implements ProgramStore {
                 relationshipType, relationshipText, relatedProgram, trackedEntity, categoryCombo);
 
         // bind the where argument
-        sqLiteBind(updateStatement, 30, whereProgramUid);
+        sqLiteBind(updateStatement, 31, whereProgramUid);
 
         // execute and clear bindings
         int update = databaseAdapter.executeUpdateDelete(ProgramModel.TABLE, updateStatement);

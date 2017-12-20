@@ -959,13 +959,6 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_PROGRAM_RULE_TABLE);
         database.execSQL(CREATE_PROGRAM_INDICATOR_TABLE);
         database.execSQL(CREATE_PROGRAM_RULE_ACTION_TABLE);
-        database.execSQL(CREATE_CATEGORY_TABLE);
-        database.execSQL(CREATE_CATEGORY_OPTION_TABLE);
-        database.execSQL(CREATE_CATEGORY_OPTION_LINK_TABLE);
-        database.execSQL(CREATE_COMBO_TABLE);
-        database.execSQL(CREATE_CATEGORY_COMBO_LINK_TABLE);
-        database.execSQL(CREATE_OPTION_COMBO_TABLE);
-        database.execSQL(CREATE_OPTION_COMBO_LINK_CATEGORY_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE);
         database.execSQL(CREATE_EVENT_TABLE);
@@ -976,6 +969,13 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_USER_ROLE_TABLE);
         database.execSQL(CREATE_USER_ROLE_PROGRAM_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE);
+        database.execSQL(CREATE_CATEGORY_TABLE);
+        database.execSQL(CREATE_CATEGORY_OPTION_TABLE);
+        database.execSQL(CREATE_CATEGORY_OPTION_LINK_TABLE);
+        database.execSQL(CREATE_COMBO_TABLE);
+        database.execSQL(CREATE_CATEGORY_COMBO_LINK_TABLE);
+        database.execSQL(CREATE_OPTION_COMBO_TABLE);
+        database.execSQL(CREATE_OPTION_COMBO_LINK_CATEGORY_TABLE);
         return database;
     }
 

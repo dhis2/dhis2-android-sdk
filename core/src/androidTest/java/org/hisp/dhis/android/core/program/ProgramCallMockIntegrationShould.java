@@ -455,8 +455,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 "TRACKER",
                 null,
                 "Infant Weight (g)",
-                "x31y45jvIQL",
-                "p0KPaWEg3cf"
+                "p0KPaWEg3cf",
+                "x31y45jvIQL"
         ).isExhausted();
     }
 

@@ -231,7 +231,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                     event.eventDate(), event.status(), event.coordinates(),
                     event.completedDate(),
                     event.dueDate(), event.deleted(), downloadedValues.get(event.uid()),
-                    event.attributeCategoryOption(), event.attributeOptionCombo());
+                    event.attributeCategoryOptions(), event.attributeOptionCombo());
 
             if (downloadedEvents.get(event.enrollmentUid()) == null) {
                 downloadedEvents.put(event.enrollmentUid(), new ArrayList<Event>());

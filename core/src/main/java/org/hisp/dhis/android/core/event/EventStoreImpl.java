@@ -73,9 +73,9 @@ public class EventStoreImpl implements EventStore {
             Columns.EVENT_DATE + ", " +
             Columns.COMPLETE_DATE + ", " +
             Columns.DUE_DATE + ", " +
-            Columns.ATTRIBUTE_CATEGORY_OPTION + ", " +
-            Columns.ATTRIBUTE_OPTION_COMBO + ", " +
-            Columns.STATE + ") " +
+            Columns.STATE + ", " +
+            Columns.ATTRIBUTE_CATEGORY_OPTIONS + ", " +
+            Columns.ATTRIBUTE_OPTION_COMBO + ") " +
             "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + EventModel.TABLE + " SET " +
@@ -94,9 +94,9 @@ public class EventStoreImpl implements EventStore {
             Columns.EVENT_DATE + " =? , " +
             Columns.COMPLETE_DATE + " =? , " +
             Columns.DUE_DATE + " =? , " +
-            Columns.STATE + " =? " +
-            Columns.ATTRIBUTE_OPTION_COMBO + " =? " +
-            Columns.ATTRIBUTE_CATEGORY_OPTION + " =? " +
+            Columns.STATE + " =?, " +
+            Columns.ATTRIBUTE_OPTION_COMBO + " =?, " +
+            Columns.ATTRIBUTE_CATEGORY_OPTIONS + " =? " +
             " WHERE " +
             Columns.UID + " =?;";
 
@@ -125,8 +125,8 @@ public class EventStoreImpl implements EventStore {
             "  Event.eventDate, " +
             "  Event.completedDate, " +
             "  Event.dueDate, "  +
-            "  Event.attributeCategoryOption, "  +
-                    "  Event.attributeOptionCombo ";
+            "  Event.attributeCategoryOptions, "  +
+            "  Event.attributeOptionCombo ";
 
     private static final String QUERY_EVENTS_ATTACHED_TO_ENROLLMENTS = "SELECT " +
             FIELDS +
@@ -169,7 +169,7 @@ public class EventStoreImpl implements EventStore {
                        @NonNull String programStage, @NonNull String organisationUnit,
                        @Nullable Date eventDate, @Nullable Date completedDate,
                        @Nullable Date dueDate, @Nullable State state,
-                       @Nullable String attributeCategoryOption, @Nullable String attributeOptionCombo) {
+                       @Nullable String attributeCategoryOptions, @Nullable String attributeOptionCombo) {
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, enrollmentUid);
         sqLiteBind(insertStatement, 3, created);
@@ -186,7 +186,7 @@ public class EventStoreImpl implements EventStore {
         sqLiteBind(insertStatement, 14, completedDate);
         sqLiteBind(insertStatement, 15, dueDate);
         sqLiteBind(insertStatement, 16, state);
-        sqLiteBind(insertStatement, 17, attributeCategoryOption);
+        sqLiteBind(insertStatement, 17, attributeCategoryOptions);
         sqLiteBind(insertStatement, 18, attributeOptionCombo);
 
         long insert = databaseAdapter.executeInsert(EventModel.TABLE, insertStatement);
@@ -204,7 +204,7 @@ public class EventStoreImpl implements EventStore {
                       @NonNull String programStage, @NonNull String organisationUnit,
                       @NonNull Date eventDate, @Nullable Date completedDate,
                       @Nullable Date dueDate, @NonNull State state,
-                      @Nullable String attributeCategoryOption, @Nullable String attributeOptionCombo,
+                      @Nullable String attributeCategoryOptions, @Nullable String attributeOptionCombo,
                       @NonNull String whereEventUid) {
 
         sqLiteBind(updateStatement, 1, uid);
@@ -223,7 +223,7 @@ public class EventStoreImpl implements EventStore {
         sqLiteBind(updateStatement, 14, completedDate);
         sqLiteBind(updateStatement, 15, dueDate);
         sqLiteBind(updateStatement, 16, state);
-        sqLiteBind(insertStatement, 17, attributeCategoryOption);
+        sqLiteBind(insertStatement, 17, attributeCategoryOptions);
         sqLiteBind(insertStatement, 18, attributeOptionCombo);
 
         // bind the where clause
@@ -344,8 +344,8 @@ public class EventStoreImpl implements EventStore {
         Date eventDate = cursor.getString(12) == null ? null : parse(cursor.getString(12));
         Date completedDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
         Date dueDate = cursor.getString(14) == null ? null : parse(cursor.getString(14));
-        String categoryCombo = cursor.getString(17) == null ? null : cursor.getString(17);
-        String optionCombo = cursor.getString(18) == null ? null : cursor.getString(18);
+        String categoryCombo = cursor.getString(16) == null ? null : cursor.getString(16);
+        String optionCombo = cursor.getString(17) == null ? null : cursor.getString(17);
 
         Coordinates coordinates = null;
 

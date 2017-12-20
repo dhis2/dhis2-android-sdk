@@ -64,7 +64,7 @@ public abstract class EventModel extends BaseDataModel {
         public static final String EVENT_DATE = "eventDate";
         public static final String COMPLETE_DATE = "completedDate";
         public static final String DUE_DATE = "dueDate";
-        public static final String ATTRIBUTE_CATEGORY_OPTION = "attributeCategoryOption";
+        public static final String ATTRIBUTE_CATEGORY_OPTIONS = "attributeCategoryOptions";
         public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
     }
 
@@ -147,8 +147,8 @@ public abstract class EventModel extends BaseDataModel {
     public abstract Date dueDate();
 
     @Nullable
-    @ColumnName(Columns.ATTRIBUTE_CATEGORY_OPTION)
-    public abstract String attributeCategoryOption();
+    @ColumnName(Columns.ATTRIBUTE_CATEGORY_OPTIONS)
+    public abstract String attributeCategoryOptions();
 
     @Nullable
     @ColumnName(Columns.ATTRIBUTE_OPTION_COMBO)
@@ -186,10 +186,9 @@ public abstract class EventModel extends BaseDataModel {
 
         public abstract Builder dueDate(@Nullable Date dueDate);
 
-        public abstract Builder attributeCategoryOption(@Nullable String attributeCategoryOption);
+        public abstract Builder attributeCategoryOptions(@Nullable String attributeCategoryOptions);
 
         public abstract Builder attributeOptionCombo(@Nullable String attributeOptionCombo);
-
 
         public abstract EventModel build();
     }

@@ -55,7 +55,7 @@ public interface EventStore extends DeletableStore {
                 @Nullable Date completedDate,
                 @Nullable Date dueDate,
                 @NonNull State state,
-                @Nullable String attributeCategoryOption,
+                @Nullable String attributeCategoryOptions,
                 @NonNull String attributeOptionCombo
     );
 
@@ -75,7 +75,7 @@ public interface EventStore extends DeletableStore {
                @Nullable Date completedDate,
                @Nullable Date dueDate,
                @NonNull State state,
-               @Nullable String attributeCategoryOption,
+               @Nullable String attributeCategoryOptions,
                @NonNull String attributeOptionCombo,
                @NonNull String whereEventUid
     );

@@ -138,7 +138,7 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
                                     event.lastUpdated(), event.createdAtClient(), event.lastUpdatedAtClient(),
                                     event.program(), event.programStage(), event.organisationUnit(), event.eventDate(),
                                     event.status(), event.coordinates(),
-                                    event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent, event.attributeCategoryOption(), event.attributeOptionCombo()));
+                                    event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent, event.attributeCategoryOptions(), event.attributeOptionCombo()));
                         }
                     }
                     enrollmentsRecreated.add(

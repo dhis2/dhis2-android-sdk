@@ -85,7 +85,7 @@ public class EventStoreShould extends AbsStoreTestCase {
             Columns.COMPLETE_DATE, // completedDate
             Columns.DUE_DATE, // dueDate
             Columns.STATE,
-            Columns.ATTRIBUTE_CATEGORY_OPTION,
+            Columns.ATTRIBUTE_CATEGORY_OPTIONS,
             Columns.ATTRIBUTE_OPTION_COMBO
     };
     private static final String EVENT_UID = "test_uid";

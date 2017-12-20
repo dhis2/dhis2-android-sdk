@@ -62,7 +62,7 @@ public abstract class Event {
     private static final String DUE_DATE = "dueDate";
     private static final String DELETED = "deleted";
     private static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
-    private static final String ATTRIBUTE_CATEGORY_OPTION = "attributeCategoryOptions";
+    private static final String ATTRIBUTE_CATEGORY_OPTIONS = "attributeCategoryOptions";
     private static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
 
     public static final Field<Event, String> uid = Field.create(UID);
@@ -80,6 +80,8 @@ public abstract class Event {
     public static final Field<Event, String> completeDate = Field.create(COMPLETE_DATE);
     public static final Field<Event, Boolean> deleted = Field.create(DELETED);
     public static final Field<Event, String> dueDate = Field.create(DUE_DATE);
+    public static final Field<Event, String> attributeCategoryOptions = Field.create(ATTRIBUTE_CATEGORY_OPTIONS);
+    public static final Field<Event, String> attributeOptionCombo = Field.create(ATTRIBUTE_OPTION_COMBO);
 
     public static final NestedField<Event, TrackedEntityDataValue> trackedEntityDataValues
             = NestedField.create(TRACKED_ENTITY_DATA_VALUES);
@@ -148,12 +150,12 @@ public abstract class Event {
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
     @Nullable
-    @JsonProperty(ATTRIBUTE_OPTION_COMBO)
-    public abstract String attributeOptionCombo();
+    @JsonProperty(ATTRIBUTE_CATEGORY_OPTIONS)
+    public abstract String attributeCategoryOptions();
 
     @Nullable
-    @JsonProperty(ATTRIBUTE_CATEGORY_OPTION)
-    public abstract String attributeCategoryOption();
+    @JsonProperty(ATTRIBUTE_OPTION_COMBO)
+    public abstract String attributeOptionCombo();
 
     @JsonCreator
     public static Event create(
@@ -173,11 +175,11 @@ public abstract class Event {
             @JsonProperty(DUE_DATE) Date dueDate,
             @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(TRACKED_ENTITY_DATA_VALUES) List<TrackedEntityDataValue> dataValues,
-            @JsonProperty(ATTRIBUTE_OPTION_COMBO) String attributeOptionCombo,
-            @JsonProperty(ATTRIBUTE_CATEGORY_OPTION) String attributeCategoryOption) {
+            @JsonProperty(ATTRIBUTE_CATEGORY_OPTIONS) String attributeCategoryOptions,
+            @JsonProperty(ATTRIBUTE_OPTION_COMBO) String attributeOptionCombo) {
         return new AutoValue_Event(uid, enrollmentUid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 program, programStage, organisationUnit, eventDate, eventStatus, coordinates,
-                completedDate, dueDate, deleted, safeUnmodifiableList(dataValues), attributeOptionCombo, attributeCategoryOption);
+                completedDate, dueDate, deleted, safeUnmodifiableList(dataValues), attributeCategoryOptions, attributeOptionCombo);
     }
 
 }

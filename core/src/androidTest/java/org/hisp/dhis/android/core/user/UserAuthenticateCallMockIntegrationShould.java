@@ -226,9 +226,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 .build();
 
         UserService userService = retrofit.create(UserService.class);
-        SystemInfoService systemInfoService = retrofit.create(SystemInfoService.class);
-
-        SystemInfoStore systemInfoStore = new SystemInfoStoreImpl(databaseAdapter());
 
         UserStore userStore = new UserStoreImpl(databaseAdapter());
         UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());

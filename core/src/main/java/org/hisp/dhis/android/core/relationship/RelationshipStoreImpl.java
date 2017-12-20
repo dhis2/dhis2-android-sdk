@@ -28,17 +28,16 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.common.DeletableStore;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
-
-public class RelationshipStoreImpl implements RelationshipStore, DeletableStore {
+public class RelationshipStoreImpl implements RelationshipStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             RelationshipModel.TABLE + " (" +

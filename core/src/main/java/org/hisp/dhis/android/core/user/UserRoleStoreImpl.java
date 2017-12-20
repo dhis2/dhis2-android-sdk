@@ -27,23 +27,22 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.UserRoleModel.Columns;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
-
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
-public class UserRoleStoreImpl implements UserRoleStore, DeletableStore {
+public class UserRoleStoreImpl implements UserRoleStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserRoleModel.TABLE + "( " +
             Columns.UID + ", " +

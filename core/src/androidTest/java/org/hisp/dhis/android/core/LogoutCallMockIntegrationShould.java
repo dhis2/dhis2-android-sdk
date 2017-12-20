@@ -1,13 +1,9 @@
 package org.hisp.dhis.android.core;
 
-import static com.google.common.truth.Truth.assertThat;
-
-import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
-import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isTableEmpty;
-
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DatabaseAssert;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.EventEndPointCall;
@@ -52,10 +48,27 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         d2.logIn("user", "password").call();
     }
 
+    private void givenALoginWithSierraLeonaOUInDatabase() throws Exception {
+        dhis2MockServer.enqueueMockResponse("sierra_leona_login.json");
+
+        d2.logIn("user", "password").call();
+    }
+
     private void givenAMetadataInDatabase() throws Exception {
         dhis2MockServer.enqueueMockResponse("system_info.json");
         dhis2MockServer.enqueueMockResponse("user.json");
         dhis2MockServer.enqueueMockResponse("organisationUnits.json");
+        dhis2MockServer.enqueueMockResponse("programs.json");
+        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
+        dhis2MockServer.enqueueMockResponse("option_sets.json");
+
+        d2.syncMetaData().call();
+    }
+
+    private void givenAMetadataWithDescendantsInDatabase() throws Exception {
+        dhis2MockServer.enqueueMockResponse("system_info.json");
+        dhis2MockServer.enqueueMockResponse("sierra_leona_login.json");
+        dhis2MockServer.enqueueMockResponse("sierra_leona_organisationUnits.json");
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
         dhis2MockServer.enqueueMockResponse("option_sets.json");
@@ -78,11 +91,11 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
         givenAMetadataInDatabase();
 
-        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
         d2.wipeDB().call();
 
-        assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
     }
 
     @Test
@@ -93,12 +106,13 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
         givenAEventInDatabase();
 
-        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
         d2.wipeDB().call();
 
-        assertThat(isDatabaseEmpty(databaseAdapter())).isTrue();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
     }
+
     @Test
     public void delete_autenticate_user_table_only_when_log_out_after_sync_data() throws Exception {
         givenALoginInDatabase();
@@ -107,40 +121,81 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
         givenAEventInDatabase();
 
-        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
         d2.logout().call();
 
-        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
-        assertThat(isTableEmpty(databaseAdapter(), EventModel.TABLE)).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
-        assertThat(isTableEmpty(databaseAdapter(), AuthenticatedUserModel.TABLE)).isTrue();
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .isNotEmptyTable(EventModel.TABLE);
+
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .isEmptyTable(AuthenticatedUserModel.TABLE);
     }
 
     @Test
-    public void delete_autenticate_user_table_only_when_log_out_after_sync_metadata() throws Exception {
+    public void delete_autenticate_user_table_only_when_log_out_after_sync_metadata()
+            throws Exception {
 
         givenALoginInDatabase();
 
         givenAMetadataInDatabase();
 
-        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
         d2.logout().call();
 
-        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
-        assertThat(isTableEmpty(databaseAdapter(), EventModel.TABLE)).isTrue();
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .isEmptyTable(EventModel.TABLE);
 
-        assertThat(isTableEmpty(databaseAdapter(), AuthenticatedUserModel.TABLE)).isTrue();
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .isEmptyTable(AuthenticatedUserModel.TABLE);
 
-        assertThat(isTableEmpty(databaseAdapter(), UserModel.TABLE)).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .isNotEmptyTable(UserModel.TABLE);
 
-        assertThat(isTableEmpty(databaseAdapter(), OrganisationUnitModel.TABLE)).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .isNotEmptyTable(OrganisationUnitModel.TABLE);
 
-        assertThat(isTableEmpty(databaseAdapter(), ProgramModel.TABLE)).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .isNotEmptyTable(ProgramModel.TABLE);
 
-        assertThat(isTableEmpty(databaseAdapter(), ResourceModel.TABLE)).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .isNotEmptyTable(ResourceModel.TABLE);
+    }
 
+    @Test
+    public void have_organisation_units_descendants_after_login_logout_and_login()
+            throws Exception {
+        givenALoginWithSierraLeonaOUInDatabase();
+
+        givenAMetadataWithDescendantsInDatabase();
+
+        verifyExistsAsignedOrgUnitAndDescendants();
+
+        d2.logout().call();
+
+        givenALoginWithSierraLeonaOUInDatabase();
+
+        givenAMetadataWithDescendantsInDatabase();
+
+        verifyExistsAsignedOrgUnitAndDescendants();
+    }
+
+    private void verifyExistsAsignedOrgUnitAndDescendants() {
+        //Sierra leona
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .ifValueExist(OrganisationUnitModel.TABLE,
+                        OrganisationUnitModel.Columns.UID,
+                        "ImspTQPwCqd");
+
+        //Sierra leona descendant
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .ifValueExist(OrganisationUnitModel.TABLE,
+                        OrganisationUnitModel.Columns.CODE,
+                        "OU_260382");
     }
 }

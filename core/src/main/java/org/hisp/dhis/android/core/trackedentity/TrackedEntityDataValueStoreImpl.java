@@ -40,7 +40,6 @@ import android.text.TextUtils;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
-import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,8 +56,7 @@ import java.util.Map;
         "PMD.StdCyclomaticComplexity",
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
-public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueStore,
-        DeletableStore {
+public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueStore {
 
     private static final String SELECT_FIELDS =
             TrackedEntityDataValueModel.TABLE + "." + TrackedEntityDataValueModel.Columns.CREATED

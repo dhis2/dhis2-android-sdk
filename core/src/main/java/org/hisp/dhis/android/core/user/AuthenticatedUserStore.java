@@ -30,9 +30,11 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
+
 import java.util.List;
 
-public interface AuthenticatedUserStore {
+public interface AuthenticatedUserStore extends DeletableStore {
     long insert(@NonNull String userUid, @NonNull String credentials);
 
     @NonNull

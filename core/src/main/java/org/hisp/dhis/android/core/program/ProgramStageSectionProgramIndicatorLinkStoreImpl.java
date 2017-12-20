@@ -27,17 +27,15 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.common.DeletableStore;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
-
-public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements ProgramStageSectionProgramIndicatorLinkStore,
-        DeletableStore {
+public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements ProgramStageSectionProgramIndicatorLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             ProgramStageSectionProgramIndicatorLinkModel.TABLE + " (" +
             ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + ", " +

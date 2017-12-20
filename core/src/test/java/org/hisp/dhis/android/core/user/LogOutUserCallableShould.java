@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
+import static org.mockito.Mockito.verify;
+
+import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.junit.Before;
@@ -42,25 +45,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.mockito.Mockito.verify;
-
 @RunWith(JUnit4.class)
 public class LogOutUserCallableShould {
 
     @Mock
-    private UserStoreImpl userStore;
+    private UserStore userStore;
 
     @Mock
-    private UserCredentialsStoreImpl userCredentialsStore;
+    private UserCredentialsStore userCredentialsStore;
 
     @Mock
-    private UserOrganisationUnitLinkStoreImpl userOrganisationUnitLinkStore;
+    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
 
     @Mock
-    private AuthenticatedUserStoreImpl authenticatedUserStore;
+    private AuthenticatedUserStore authenticatedUserStore;
 
     @Mock
-    private OrganisationUnitStoreImpl organisationUnitStore;
+    private OrganisationUnitStore organisationUnitStore;
 
     private Callable<Void> logOutUserCallable;
 
@@ -69,13 +70,12 @@ public class LogOutUserCallableShould {
         MockitoAnnotations.initMocks(this);
 
         List<DeletableStore> deletableStoreList = new ArrayList<>();
-        deletableStoreList.add((DeletableStore) userStore);
-        deletableStoreList.add((DeletableStore) userCredentialsStore);
-        deletableStoreList.add((DeletableStore) userOrganisationUnitLinkStore);
-        deletableStoreList.add((DeletableStore) authenticatedUserStore);
-        deletableStoreList.add((DeletableStore) organisationUnitStore);
-        logOutUserCallable = new LogOutUserCallable(
-                deletableStoreList
+        deletableStoreList.add(userStore);
+        deletableStoreList.add(userCredentialsStore);
+        deletableStoreList.add(userOrganisationUnitLinkStore);
+        deletableStoreList.add(authenticatedUserStore);
+        deletableStoreList.add(organisationUnitStore);
+        logOutUserCallable = new LogOutUserCallable(deletableStoreList
         );
     }
 

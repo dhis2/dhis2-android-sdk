@@ -31,11 +31,12 @@ package org.hisp.dhis.android.core.dataelement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.Date;
 
-public interface DataElementStore {
+public interface DataElementStore extends DeletableStore {
 
     long insert(
             @NonNull String uid,

@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -36,20 +39,16 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
-import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals",
         "PMD.NPathComplexity"
 })
-public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore, DeletableStore {
+public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityInstanceModel.TABLE + " (" +
             Columns.UID + ", " +

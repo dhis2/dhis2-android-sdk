@@ -5,11 +5,11 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isTableEmpty;
 
-import com.google.common.truth.Truth;
-
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DatabaseAssert;
+import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.EventEndPointCall;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -17,16 +17,9 @@ import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserModel;
-import org.hisp.dhis.android.core.data.database.DatabaseAssert;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.event.EventEndPointCall;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
-
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
 
 public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     private D2 d2;

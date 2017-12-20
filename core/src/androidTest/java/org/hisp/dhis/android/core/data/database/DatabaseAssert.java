@@ -97,7 +97,7 @@ public final class DatabaseAssert {
             while (res.moveToNext()) {
                 String tableName = res.getString(value);
 
-                if (tableCount(tableName) == 0) {
+                if (tableCount(tableName) > 0) {
                     isEmpty = false;
                 }
             }

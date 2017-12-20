@@ -53,7 +53,7 @@ public class CategoryShould {
                         "\"name\":\"Births attended by\"," +
                         "\"shortName\":\"Births attended by\"," +
                         "\"dataDimensionType\":\"DISAGGREGATION\"," +
-                        "\"dataDimensionType\":\"CATEGORY\"," +
+                        "\"dimensionType\":\"CATEGORY\"," +
                         "\"displayName\":\"Births attended by\"," +
                         "\"publicAccess\":\"rw------\"," +
                         "\"displayShortName\":\"Births attended by\"," +

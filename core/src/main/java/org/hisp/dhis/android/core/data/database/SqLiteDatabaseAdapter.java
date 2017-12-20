@@ -84,7 +84,7 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
     }
 
     public SQLiteDatabase database() {
-        return mSQLiteDatabase;
+        return dbOpenHelper.getWritableDatabase();
     }
 
     private SQLiteDatabase readableDatabase() {

@@ -384,6 +384,9 @@ public class ProgramCallShould {
                 Program.trackedEntity.with(
                         TrackedEntity.uid
                 ),
+                Program.categoryCombo.with(
+                        CategoryCombo.uid
+                ),
 
                 Program.relationshipType.with(
                         RelationshipType.uid, RelationshipType.code, RelationshipType.name,

@@ -32,7 +32,6 @@ import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;

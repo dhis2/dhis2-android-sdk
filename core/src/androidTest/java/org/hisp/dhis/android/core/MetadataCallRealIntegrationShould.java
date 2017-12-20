@@ -59,7 +59,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 
-//        //second sync:
+        //second sync:
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 

@@ -120,6 +120,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     public void persist_data_element_in_database_when_insert() {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(OptionSetModel.TABLE, null, optionSet);
+
         ContentValues categoryCombo = CreateCategoryComboUtils.create(ID, CATEGORY_COMBO);
         database().insert(CategoryComboModel.TABLE, null, categoryCombo);
 
@@ -188,8 +189,10 @@ public class DataElementStoreShould extends AbsStoreTestCase {
         );
         ContentValues optionSet = CreateOptionSetUtils.create(2L, deferredOptionSetUid);
         database().insert(OptionSetModel.TABLE, null, optionSet);
+
         ContentValues categoryOption = CreateCategoryComboUtils.create(2L, deferredCategoryComboUid);
         database().insert(CategoryComboModel.TABLE, null, categoryOption);
+
         database().setTransactionSuccessful();
         database().endTransaction();
 

@@ -201,8 +201,7 @@ public class MetadataCallShould {
     private ProgramIndicatorStore programIndicatorStore;
 
     @Mock
-    private ProgramStageSectionProgramIndicatorLinkStore
-            programStageSectionProgramIndicatorLinkStore;
+    private ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
 
     @Mock
     private ProgramRuleActionStore programRuleActionStore;

@@ -171,7 +171,9 @@ public final class D2 {
     private final ProgramService programService;
     private final OrganisationUnitService organisationUnitService;
     private final TrackedEntityService trackedEntityService;
+    private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final OptionSetService optionSetService;
+    private final EventService eventService;
     private final CategoryService categoryService;
     private final CategoryComboService comboService;
 
@@ -208,11 +210,9 @@ public final class D2 {
     private final TrackedEntityStore trackedEntityStore;
 
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
-    private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
 
-    private final EventService eventService;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
@@ -525,6 +525,7 @@ public final class D2 {
                     .client(okHttpClient)
                     .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                     .addConverterFactory(FilterConverterFactory.create())
+                    .addConverterFactory(FieldsConverterFactory.create())
                     .validateEagerly(true)
                     .build();
 

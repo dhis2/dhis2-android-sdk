@@ -35,25 +35,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
-import org.hisp.dhis.android.core.category.CategoryComboLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
-import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
-import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
-import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryModel;
-import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryStoreImpl;
-import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
-import org.hisp.dhis.android.core.category.Handler;
-import org.hisp.dhis.android.core.category.Store;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -81,23 +68,17 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -239,6 +220,9 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, "nM3u9s5a52V");
         database().insert(CategoryComboModel.TABLE, null, categoryCombo);
+
+        ContentValues categoryCombo2 = CreateCategoryComboUtils.create(2L, "x31y45jvIQL");
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo2);
 
         // inserting tracked entity
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
@@ -472,7 +456,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 null,
                 "Infant Weight (g)",
                 "x31y45jvIQL",
-                "catcombouid"
+                "p0KPaWEg3cf"
         ).isExhausted();
     }
 

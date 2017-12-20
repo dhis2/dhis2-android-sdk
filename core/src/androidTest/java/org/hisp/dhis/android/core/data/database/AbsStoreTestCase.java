@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
-
 import static com.google.common.truth.Truth.assertThat;
 
 import android.database.sqlite.SQLiteDatabase;
@@ -47,9 +45,6 @@ public abstract class AbsStoreTestCase {
 
     @Before
     public void setUp() throws IOException {
-        if(dbName!=null) {
-            InstrumentationRegistry.getContext().deleteDatabase(dbName);
-        }
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , dbName);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
@@ -60,9 +55,6 @@ public abstract class AbsStoreTestCase {
     public void tearDown() throws IOException {
         assertThat(sqLiteDatabase).isNotNull();
         sqLiteDatabase.close();
-        if(dbName!=null) {
-            InstrumentationRegistry.getContext().deleteDatabase(dbName);
-        }
     }
 
     protected SQLiteDatabase database() {

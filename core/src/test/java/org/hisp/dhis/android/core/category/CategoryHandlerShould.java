@@ -17,15 +17,15 @@ import java.util.List;
 public class CategoryHandlerShould {
 
     @Mock
-    private Store<Category> mockCategoryStore;
+    private CategoryStore mockCategoryStore;
 
     @Mock
-    private Store<CategoryOption> mockCategoryOptionStore;
+    private CategoryOptionStore mockCategoryOptionStore;
 
     @Mock
-    private Store<CategoryOptionLinkModel> mockCategoryOptionLinkStore;
+    private CategoryOptionLinkStore mockCategoryOptionLinkStore;
 
-    private CategoryHandler categoryHandler;
+    private CategoryHandler mCategoryHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -35,7 +35,7 @@ public class CategoryHandlerShould {
         CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
                 mockCategoryOptionStore);
 
-        categoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler,
+        mCategoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler,
                 mockCategoryOptionLinkStore);
     }
 
@@ -43,7 +43,7 @@ public class CategoryHandlerShould {
     public void handle_deleted_category() {
         Category deletedCategory = givenADeletedCategory();
 
-        categoryHandler.handle(deletedCategory);
+        mCategoryHandler.handle(deletedCategory);
         verify(mockCategoryStore).delete(deletedCategory);
     }
 
@@ -53,7 +53,7 @@ public class CategoryHandlerShould {
 
         when(mockCategoryStore.update(any(Category.class), any(Category.class))).thenReturn(false);
 
-        categoryHandler.handle(newCategory);
+        mCategoryHandler.handle(newCategory);
 
         verify(mockCategoryStore).update(newCategory, newCategory);
         verify(mockCategoryStore).insert(newCategory);
@@ -66,7 +66,7 @@ public class CategoryHandlerShould {
 
         when(mockCategoryStore.update(any(Category.class), any(Category.class))).thenReturn(true);
 
-        categoryHandler.handle(updatedCategory);
+        mCategoryHandler.handle(updatedCategory);
 
         verify(mockCategoryStore).update(updatedCategory, updatedCategory);
         verifyZeroInteractions(mockCategoryStore);

@@ -32,6 +32,7 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
 
     private CategoryService categoryService;
 
+    @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
@@ -40,6 +41,13 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
         Retrofit retrofit = provideRetrofit();
         categoryService = retrofit.create(CategoryService.class);
 
+    }
+
+    @Override
+    @After
+    public void tearDown() throws IOException {
+        dhis2MockServer.shutdown();
+        clearTablesData();
     }
 
     @Test
@@ -65,16 +73,16 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
 
         ResponseValidator<Category> validator = new ResponseValidator<>();
 
-        Store<Category> store = new CategoryStoreImpl(databaseAdapter());
+        CategoryStore store = new CategoryStoreImpl(databaseAdapter());
 
-        Store<CategoryOption> categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
+        CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
 
         CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
                 categoryOptionStore);
-        Store<CategoryOptionLinkModel> categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
+        CategoryOptionLinkStore categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
                 databaseAdapter());
 
-        Handler<Category> handler = new CategoryHandler(store, categoryOptionHandler,
+        CategoryHandler handler = new CategoryHandler(store, categoryOptionHandler,
                 categoryOptionLinkStore);
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
@@ -93,12 +101,6 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
                 .addConverterFactory(FilterConverterFactory.create())
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        dhis2MockServer.shutdown();
-        clearTablesData();
     }
 
     private void clearTablesData() {

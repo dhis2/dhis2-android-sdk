@@ -18,8 +18,9 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
 
-    private Store<CategoryComboLinkModel> store;
+    private CategoryComboLinkStore store;
 
+    @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
@@ -27,6 +28,7 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
 
     }
 
+    @Override
     @After
     public void tearDown() {
         clearTablesData();

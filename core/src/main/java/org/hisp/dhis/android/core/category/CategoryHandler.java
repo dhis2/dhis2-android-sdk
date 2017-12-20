@@ -1,28 +1,40 @@
 package org.hisp.dhis.android.core.category;
 
 
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
 import android.support.annotation.NonNull;
 
 import java.util.List;
 
-public class CategoryHandler extends Handler<Category> {
+public class CategoryHandler {
 
-    private final Handler<CategoryOption> categoryOptionHandler;
-    private final Store<CategoryOptionLinkModel> categoryOptionLinkStore;
+    private final CategoryOptionHandler categoryOptionHandler;
+    private final CategoryOptionLinkStore categoryOptionLinkStore;
+    private final CategoryStore categoryStore;
 
     public CategoryHandler(
-            @NonNull Store<Category> store,
-            @NonNull Handler<CategoryOption> categoryOptionHandler,
-            @NonNull Store<CategoryOptionLinkModel> categoryOptionLinkStore) {
-        super(store);
+            @NonNull CategoryStore categoryStore,
+            @NonNull CategoryOptionHandler categoryOptionHandler,
+            @NonNull CategoryOptionLinkStore categoryOptionLinkStore) {
+        this.categoryStore = categoryStore;
         this.categoryOptionHandler = categoryOptionHandler;
         this.categoryOptionLinkStore = categoryOptionLinkStore;
     }
 
+    public void handle(Category category) {
 
-    @Override
-    public void afterInsert(Category category) {
-        handleCategoryOption(category);
+        if (isDeleted(category)) {
+            categoryStore.delete(category);
+        } else {
+
+            boolean updated = categoryStore.update(category, category);
+
+            if (!updated) {
+                categoryStore.insert(category);
+                handleCategoryOption(category);
+            }
+        }
     }
 
     private void handleCategoryOption(@NonNull Category category) {
@@ -47,5 +59,4 @@ public class CategoryHandler extends Handler<Category> {
                 .option(option.uid())
                 .build();
     }
-
 }

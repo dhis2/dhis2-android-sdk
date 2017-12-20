@@ -21,7 +21,7 @@ public class CategoryComboEndpointCall implements Call<Response<Payload<Category
     private final CategoryComboQuery query;
     private final CategoryComboService comboService;
     private final ResponseValidator<CategoryCombo> responseValidator;
-    private final Handler<CategoryCombo> handler;
+    private final CategoryComboHandler handler;
     private final ResourceHandler resourceHandler;
     private final DatabaseAdapter databaseAdapter;
     private final Date serverDate;
@@ -30,7 +30,7 @@ public class CategoryComboEndpointCall implements Call<Response<Payload<Category
     public CategoryComboEndpointCall(CategoryComboQuery query,
             CategoryComboService comboService,
             ResponseValidator<CategoryCombo> responseValidator,
-            Handler<CategoryCombo> handler,
+            CategoryComboHandler handler,
             ResourceHandler resourceHandler,
             DatabaseAdapter databaseAdapter, Date serverDate) {
         this.query = query;

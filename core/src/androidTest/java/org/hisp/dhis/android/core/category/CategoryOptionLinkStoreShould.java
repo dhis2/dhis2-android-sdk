@@ -17,8 +17,9 @@ import java.util.Date;
 @RunWith(AndroidJUnit4.class)
 public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
-    private Store<CategoryOptionLinkModel> store;
+    private CategoryOptionLinkStore store;
 
+    @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
@@ -26,6 +27,7 @@ public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
     }
 
+    @Override
     @After
     public void tearDown() {
         clearTablesData();

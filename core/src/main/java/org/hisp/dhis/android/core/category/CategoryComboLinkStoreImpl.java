@@ -9,7 +9,9 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class CategoryComboLinkStoreImpl extends BaseLinkStore<CategoryComboLinkModel> {
+public class CategoryComboLinkStoreImpl implements CategoryComboLinkStore {
+    private final DatabaseAdapter databaseAdapter;
+    private final SQLiteStatement insertStatement;
 
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryComboLinkModel.TABLE + " (" +
@@ -18,33 +20,37 @@ public class CategoryComboLinkStoreImpl extends BaseLinkStore<CategoryComboLinkM
                     "VALUES(?, ?);";
 
     public CategoryComboLinkStoreImpl(DatabaseAdapter databaseAdapter) {
-        super(databaseAdapter,
-                databaseAdapter.compileStatement(INSERT_STATEMENT),
-                CategoryComboLinkModel.TABLE);
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+
     }
 
     @Override
-    public void validate(@NonNull CategoryComboLinkModel link) {
+    public long insert(CategoryComboLinkModel entity) {
+
+        validate(entity);
+
+        bind(insertStatement, entity);
+
+        return executeInsert();
+    }
+
+    private void validate(@NonNull CategoryComboLinkModel link) {
         isNull(link.category());
         isNull(link.combo());
     }
 
-    @Override
-    public void bind(SQLiteStatement sqLiteStatement, @NonNull CategoryComboLinkModel link) {
+    private void bind(SQLiteStatement sqLiteStatement, @NonNull CategoryComboLinkModel link) {
         sqLiteBind(sqLiteStatement, 1, link.category());
         sqLiteBind(sqLiteStatement, 2, link.combo());
     }
 
-    @Override
-    public boolean delete(CategoryComboLinkModel element) {
-        throw new UnsupportedOperationException(
-                "CategoryOptionLinkStoreImpl doesn't support delete");
-    }
+    private int executeInsert() {
+        int lastId = databaseAdapter.executeUpdateDelete(CategoryComboLinkModel.TABLE,
+                insertStatement);
+        insertStatement.clearBindings();
 
-    @Override
-    public boolean update(CategoryComboLinkModel oldElement, CategoryComboLinkModel newElement) {
-        throw new UnsupportedOperationException(
-                "CategoryOptionLinkStoreImpl doesn't support delete");
+        return lastId;
     }
 }
 

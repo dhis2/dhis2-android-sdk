@@ -14,13 +14,14 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Date;
 
 import retrofit2.Response;
 
-public class CategoryEndpointCallRealShould extends AbsStoreTestCase {
+public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
 
@@ -31,7 +32,7 @@ public class CategoryEndpointCallRealShould extends AbsStoreTestCase {
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-   // @Test
+    //@Test
     public void parse_categories() throws Exception {
 
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
@@ -52,17 +53,17 @@ public class CategoryEndpointCallRealShould extends AbsStoreTestCase {
 
         ResponseValidator<Category> validator = new ResponseValidator<>();
 
-        Store<Category> store = new CategoryStoreImpl(databaseAdapter());
+        CategoryStore store = new CategoryStoreImpl(databaseAdapter());
 
-        Store<CategoryOption> categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
+        CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
 
         CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
                 categoryOptionStore);
 
-        Store<CategoryOptionLinkModel> categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
+        CategoryOptionLinkStore categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
                 databaseAdapter());
 
-        Handler<Category> handler = new CategoryHandler(store, categoryOptionHandler,
+        CategoryHandler handler = new CategoryHandler(store, categoryOptionHandler,
                 categoryOptionLinkStore);
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);

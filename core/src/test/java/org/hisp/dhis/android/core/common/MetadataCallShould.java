@@ -29,16 +29,28 @@ package org.hisp.dhis.android.core.common;
 
 import static junit.framework.Assert.assertTrue;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
-import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryHandler;
+import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
-import org.hisp.dhis.android.core.category.Handler;
-import org.hisp.dhis.android.core.category.Store;
+import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -105,27 +117,11 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import okhttp3.Dispatcher;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.RecordedRequest;
-import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(JUnit4.class)
 public class MetadataCallShould {
@@ -297,20 +293,13 @@ public class MetadataCallShould {
     private CategoryService categoryService;
 
     @Mock
-    private Store<Category> mockCategoryStore;
-
-    @Mock
-    private Handler<Category> categoryHandler;
+    private CategoryHandler categoryHandler;
 
 
     private CategoryComboService comboService;
 
     @Mock
-    private Handler<CategoryCombo> mockCategoryComboHandler;
-
-    @Mock
-    private Store<CategoryOption> mockCategoryOptionStore;
-
+    private CategoryComboHandler mockCategoryComboHandler;
 
     // object to test
     private MetadataCall metadataCall;

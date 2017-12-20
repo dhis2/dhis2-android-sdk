@@ -21,7 +21,7 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
     private final CategoryQuery categoryQuery;
     private final CategoryService categoryService;
     private final ResponseValidator<Category> responseValidator;
-    private final Handler<Category> handler;
+    private final CategoryHandler handler;
     private final ResourceHandler resourceHandler;
     private final DatabaseAdapter databaseAdapter;
     private final Date serverDate;
@@ -30,7 +30,7 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
     public CategoryEndpointCall(CategoryQuery categoryQuery,
             CategoryService categoryService,
             ResponseValidator<Category> responseValidator,
-            Handler<Category> handler,
+            CategoryHandler handler,
             ResourceHandler resourceHandler,
             DatabaseAdapter databaseAdapter, Date serverDate) {
         this.categoryQuery = categoryQuery;

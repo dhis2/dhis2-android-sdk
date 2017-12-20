@@ -30,14 +30,15 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
+import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
-import org.hisp.dhis.android.core.category.Handler;
 import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -96,8 +97,8 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields","PMD.CyclomaticComplexity",
-"PMD.ModifiedCyclomaticComplexity","PMD.StdCyclomaticComplexity"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
+ "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
 public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
@@ -135,8 +136,8 @@ public class MetadataCall implements Call<Response> {
     private final CategoryComboQuery categoryComboQuery;
     private final CategoryService categoryService;
     private final CategoryComboService comboService;
-    private final Handler<Category> categoryHandler;
-    private final Handler<CategoryCombo> categoryComboHandler;
+    private final CategoryHandler categoryHandler;
+    private final CategoryComboHandler categoryComboHandler;
 
     private boolean isExecuted;
 
@@ -177,10 +178,10 @@ public class MetadataCall implements Call<Response> {
             @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
             @NonNull CategoryQuery categoryQuery,
             @NonNull CategoryService categoryService,
-            @NonNull Handler<Category> categoryHandler,
+            @NonNull CategoryHandler categoryHandler,
             @NonNull CategoryComboQuery categoryComboQuery,
             @NonNull CategoryComboService comboService,
-            @NonNull Handler<CategoryCombo> categoryComboHandler) {
+            @NonNull CategoryComboHandler categoryComboHandler) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;

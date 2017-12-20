@@ -18,13 +18,14 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Date;
 
 import retrofit2.Response;
 
-public class CategoryComboEndpointCallRealShould extends AbsStoreTestCase {
+public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
 
@@ -35,7 +36,7 @@ public class CategoryComboEndpointCallRealShould extends AbsStoreTestCase {
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-    // @Test
+     @Test
     public void download_category_combos() throws Exception {
 
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
@@ -79,17 +80,17 @@ public class CategoryComboEndpointCallRealShould extends AbsStoreTestCase {
 
         ResponseValidator<Category> validator = new ResponseValidator<>();
 
-        Store<Category> store = new CategoryStoreImpl(databaseAdapter());
+        CategoryStore store = new CategoryStoreImpl(databaseAdapter());
 
-        Store<CategoryOption> categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
+        CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
 
         CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
                 categoryOptionStore);
 
-        Store<CategoryOptionLinkModel> categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
+        CategoryOptionLinkStore categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
                 databaseAdapter());
 
-        Handler<Category> handler = new CategoryHandler(store, categoryOptionHandler,
+        CategoryHandler handler = new CategoryHandler(store, categoryOptionHandler,
                 categoryOptionLinkStore);
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
@@ -182,23 +183,23 @@ public class CategoryComboEndpointCallRealShould extends AbsStoreTestCase {
         CategoryComboQuery query = CategoryComboQuery.defaultQuery();
 
         CategoryComboService comboService = d2.retrofit().create(CategoryComboService.class);
-        Store<CategoryComboLinkModel> categoryComboLinkStore = new CategoryComboLinkStoreImpl(
+        CategoryComboLinkStore categoryComboLinkStore = new CategoryComboLinkStoreImpl(
                 databaseAdapter());
 
-        Store<CategoryOptionCombo> optionComboStore = new CategoryOptionComboStoreImpl(
+        CategoryOptionComboStore optionComboStore = new CategoryOptionComboStoreImpl(
                 databaseAdapter());
-        Handler<CategoryOptionCombo> optionComboHandler = new CategoryOptionComboHandler(
+        CategoryOptionComboHandler optionComboHandler = new CategoryOptionComboHandler(
                 optionComboStore);
 
         ResponseValidator<CategoryCombo> validator = new ResponseValidator<>();
 
-        Store<CategoryCombo> store = new CategoryComboStoreImpl(databaseAdapter());
+        CategoryComboStore store = new CategoryComboStoreImpl(databaseAdapter());
 
-        Store<CategoryOptionComboLinkCategoryModel>
+        CategoryOptionComboLinkCategoryStore
                 categoryComboOptionLinkCategoryStore = new CategoryOptionComboLinkCategoryStoreImpl(
                 databaseAdapter());
 
-        Handler<CategoryCombo> handler = new CategoryComboHandler(store,
+        CategoryComboHandler handler = new CategoryComboHandler(store,
                 categoryComboOptionLinkCategoryStore, categoryComboLinkStore,
                 optionComboHandler);
 

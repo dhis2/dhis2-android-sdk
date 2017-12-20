@@ -39,30 +39,27 @@ import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
+import org.hisp.dhis.android.core.category.CategoryComboLinkStore;
 import org.hisp.dhis.android.core.category.CategoryComboLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
+import org.hisp.dhis.android.core.category.CategoryComboStore;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryHandler;
-import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
-import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryModel;
+import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionHandler;
-import org.hisp.dhis.android.core.category.CategoryOptionLinkModel;
+import org.hisp.dhis.android.core.category.CategoryOptionLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
+import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
-import org.hisp.dhis.android.core.category.Handler;
-import org.hisp.dhis.android.core.category.Store;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
@@ -222,8 +219,8 @@ public final class D2 {
     private final EventHandler eventHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
-    private final Handler<Category> categoryHandler;
-    private final Handler<CategoryCombo> categoryComboHandler;
+    private final CategoryHandler categoryHandler;
+    private final CategoryComboHandler categoryComboHandler;
 
 
     @VisibleForTesting
@@ -309,11 +306,11 @@ public final class D2 {
         this.organisationUnitProgramLinkStore =
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
 
-        Store<Category> categoryStore = new CategoryStoreImpl(databaseAdapter);
-        Store<CategoryOptionLinkModel> categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
+        CategoryStore categoryStore = new CategoryStoreImpl(databaseAdapter);
+        CategoryOptionLinkStore categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
                 databaseAdapter());
 
-        Store<CategoryOptionComboLinkCategoryModel> categoryComboOptionLinkCategoryStore
+        CategoryOptionComboLinkCategoryStore categoryComboOptionLinkCategoryStore
                 = new CategoryOptionComboLinkCategoryStoreImpl(databaseAdapter);
 
         //handlers
@@ -322,7 +319,7 @@ public final class D2 {
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
 
-        Handler<CategoryOption> categoryOptionHandler = new CategoryOptionHandler(
+        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
                 new CategoryOptionStoreImpl(databaseAdapter));
 
         this.eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
@@ -341,15 +338,15 @@ public final class D2 {
         categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler,
                 categoryOptionLinkStore);
 
-        Store<CategoryCombo> comboStore = new CategoryComboStoreImpl(databaseAdapter());
+        CategoryComboStore comboStore = new CategoryComboStoreImpl(databaseAdapter());
 
-        Store<CategoryComboLinkModel> categoryComboLinkStore = new CategoryComboLinkStoreImpl(
+        CategoryComboLinkStore categoryComboLinkStore = new CategoryComboLinkStoreImpl(
                 databaseAdapter());
 
-        Store<CategoryOptionCombo> optionComboStore = new CategoryOptionComboStoreImpl(
+        CategoryOptionComboStore optionComboStore = new CategoryOptionComboStoreImpl(
                 databaseAdapter());
 
-        Handler<CategoryOptionCombo> optionComboHandler = new CategoryOptionComboHandler(
+        CategoryOptionComboHandler optionComboHandler = new CategoryOptionComboHandler(
                 optionComboStore);
 
         categoryComboHandler = new CategoryComboHandler(comboStore,

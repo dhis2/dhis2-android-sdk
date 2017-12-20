@@ -17,16 +17,16 @@ import java.util.List;
 public class CategoryComboHandlerShould {
 
     @Mock
-    private Store<CategoryOptionComboLinkCategoryModel> mockComboOptionLinkStore;
+    private CategoryOptionComboLinkCategoryStore mockComboOptionLinkStore;
 
     @Mock
-    private Store<CategoryComboLinkModel> mockComboLinkStore;
+    private CategoryComboLinkStoreImpl mockComboLinkStore;
 
     @Mock
-    private Handler<CategoryOptionCombo> mockOptionComboHandler;
+    private CategoryOptionComboHandler mockOptionComboHandler;
 
     @Mock
-    private Store<CategoryCombo> mockComboStore;
+    private CategoryComboStore mockComboStore;
 
     private CategoryComboHandler categoryComboHandler;
 

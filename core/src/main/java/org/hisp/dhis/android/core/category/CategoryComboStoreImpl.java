@@ -10,7 +10,12 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 
-public class CategoryComboStoreImpl extends BaseStore<CategoryCombo> {
+public class CategoryComboStoreImpl implements CategoryComboStore {
+
+    protected final DatabaseAdapter databaseAdapter;
+    protected final SQLiteStatement insertStatement;
+    protected final SQLiteStatement updateStatement;
+    protected final SQLiteStatement deleteStatement;
 
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryComboModel.TABLE + " (" +
@@ -38,36 +43,81 @@ public class CategoryComboStoreImpl extends BaseStore<CategoryCombo> {
             CategoryComboModel.Columns.UID + " =?;";
 
     public CategoryComboStoreImpl(DatabaseAdapter databaseAdapter) {
-        super(databaseAdapter,
-                databaseAdapter.compileStatement(INSERT_STATEMENT),
-                databaseAdapter.compileStatement(UPDATE_STATEMENT),
-                databaseAdapter.compileStatement(DELETE_STATEMENT),
-                CategoryComboModel.TABLE);
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
+    @Override
+    public long insert(@NonNull CategoryCombo combo) {
+
+        validate(combo);
+
+        bind(insertStatement, combo);
+
+        return executeInsert();
+    }
 
     @Override
-    public void validate(@NonNull CategoryCombo category) {
+    public boolean delete(@NonNull CategoryCombo combo) {
+
+        validate(combo);
+
+        bindForDelete(combo);
+
+        return execute(deleteStatement);
+    }
+
+    @Override
+    public boolean update(@NonNull CategoryCombo oldCombo,
+            @NonNull CategoryCombo newCombo) {
+
+        validateForUpdate(oldCombo, newCombo);
+
+        bindUpdate(oldCombo, newCombo);
+
+        return execute(updateStatement);
+    }
+
+    private boolean execute(SQLiteStatement statement) {
+        int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, statement);
+        statement.clearBindings();
+
+        return wasExecuted(rowsAffected);
+    }
+
+    private long executeInsert() {
+        long lastId = databaseAdapter.executeInsert(CategoryComboModel.TABLE, insertStatement);
+        insertStatement.clearBindings();
+
+        return lastId;
+    }
+
+    private void validateForUpdate(@NonNull CategoryCombo oldCombo,
+            @NonNull CategoryCombo newCombo) {
+        isNull(oldCombo.uid());
+        isNull(newCombo.uid());
+    }
+
+    private void validate(@NonNull CategoryCombo category) {
         isNull(category.uid());
     }
 
-    @Override
-    public void bindForDelete(@NonNull CategoryCombo combo) {
+    private void bindForDelete(@NonNull CategoryCombo combo) {
         final int uidIndex = 1;
 
         sqLiteBind(deleteStatement, uidIndex, combo.uid());
     }
 
-    @Override
-    public void bindUpdate(@NonNull CategoryCombo oldCombo, @NonNull CategoryCombo newCombo) {
+    private void bindUpdate(@NonNull CategoryCombo oldCombo, @NonNull CategoryCombo newCombo) {
         final int whereUidIndex = 7;
         bind(updateStatement, newCombo);
 
         sqLiteBind(updateStatement, whereUidIndex, oldCombo.uid());
     }
 
-    @Override
-    public void bind(SQLiteStatement sqLiteStatement, @NonNull CategoryCombo combo) {
+    private void bind(SQLiteStatement sqLiteStatement, @NonNull CategoryCombo combo) {
         sqLiteBind(sqLiteStatement, 1, combo.uid());
         sqLiteBind(sqLiteStatement, 2, combo.code());
         sqLiteBind(sqLiteStatement, 3, combo.name());
@@ -76,7 +126,6 @@ public class CategoryComboStoreImpl extends BaseStore<CategoryCombo> {
         sqLiteBind(sqLiteStatement, 6, combo.lastUpdated());
         sqLiteBind(sqLiteStatement, 7, fromBooleanToInt(combo));
     }
-
 
     @SuppressWarnings("ConstantConditions")
     private int fromBooleanToInt(@NonNull CategoryCombo combo) {
@@ -88,6 +137,10 @@ public class CategoryComboStoreImpl extends BaseStore<CategoryCombo> {
         }
 
         return combo.isDefault() ? 1 : 0;
+    }
+
+    private boolean wasExecuted(int numberOfRows) {
+        return numberOfRows >= 1;
     }
 
 }

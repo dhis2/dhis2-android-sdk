@@ -15,7 +15,7 @@ import java.util.Date;
 public class CategoryOptionHandlerShould {
 
     @Mock
-    private Store<CategoryOption> mockCategoryOptionStore;
+    private CategoryOptionStore mockCategoryOptionStore;
 
     private CategoryOptionHandler categoryOptionHandler;
 

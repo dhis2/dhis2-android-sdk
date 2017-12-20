@@ -52,5 +52,10 @@ public class CategoryComboLinkStoreImpl implements CategoryComboLinkStore {
 
         return lastId;
     }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(CategoryComboLinkModel.TABLE);
+    }
 }
 

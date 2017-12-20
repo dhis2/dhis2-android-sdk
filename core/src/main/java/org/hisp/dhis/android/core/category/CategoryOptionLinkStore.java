@@ -3,7 +3,9 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.annotation.NonNull;
 
-public interface CategoryOptionLinkStore {
+import org.hisp.dhis.android.core.common.DeletableStore;
+
+public interface CategoryOptionLinkStore extends DeletableStore {
 
     long insert(@NonNull CategoryOptionLinkModel element);
 }

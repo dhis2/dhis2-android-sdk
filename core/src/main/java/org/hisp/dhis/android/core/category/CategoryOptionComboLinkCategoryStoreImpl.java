@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
 
 
 public class CategoryOptionComboLinkCategoryStoreImpl implements
@@ -55,6 +56,11 @@ public class CategoryOptionComboLinkCategoryStoreImpl implements
         insertStatement.clearBindings();
 
         return lastId;
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(CategoryOptionComboLinkCategoryModel.TABLE);
     }
 }
 

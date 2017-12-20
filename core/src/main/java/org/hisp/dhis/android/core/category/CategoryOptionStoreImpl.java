@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
 
 
 public class CategoryOptionStoreImpl implements CategoryOptionStore {
@@ -127,6 +128,11 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
         sqLiteBind(sqLiteStatement, 4, option.displayName());
         sqLiteBind(sqLiteStatement, 5, option.created());
         sqLiteBind(sqLiteStatement, 6, option.lastUpdated());
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(CategoryOptionModel.TABLE);
     }
 }
 

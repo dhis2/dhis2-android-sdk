@@ -143,5 +143,10 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         return numberOfRows >= 1;
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(CategoryComboModel.TABLE);
+    }
+
 }
 

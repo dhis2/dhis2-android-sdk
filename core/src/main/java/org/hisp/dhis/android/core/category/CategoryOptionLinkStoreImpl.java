@@ -53,5 +53,10 @@ public class CategoryOptionLinkStoreImpl implements CategoryOptionLinkStore {
 
         return lastId;
     }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(CategoryOptionLinkModel.TABLE);
+    }
 }
 

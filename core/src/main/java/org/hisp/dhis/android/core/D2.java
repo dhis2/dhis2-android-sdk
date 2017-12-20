@@ -55,6 +55,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
@@ -218,6 +219,14 @@ public final class D2 {
 
     private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
+    private final CategoryOptionStore categoryOptionStore;
+    private final CategoryStore categoryStore;
+    private final CategoryComboStore categoryComboStore;
+    private final CategoryOptionComboStore categoryOptionComboStore;
+    private final CategoryComboLinkStore categoryComboLinkStore;
+    private final CategoryOptionLinkStore categoryOptionLinkStore;
+    private final CategoryOptionComboLinkCategoryStore categoryComboOptionLinkCategoryStore;
+
     //Handlers
     private final EventHandler eventHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
@@ -309,12 +318,17 @@ public final class D2 {
         this.organisationUnitProgramLinkStore =
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
 
-        CategoryStore categoryStore = new CategoryStoreImpl(databaseAdapter);
-        CategoryOptionLinkStore categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
+        this.categoryStore = new CategoryStoreImpl(databaseAdapter);
+        this.categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
+        this.categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
                 databaseAdapter());
-
-        CategoryOptionComboLinkCategoryStore categoryComboOptionLinkCategoryStore
+        this.categoryComboOptionLinkCategoryStore
                 = new CategoryOptionComboLinkCategoryStoreImpl(databaseAdapter);
+        this.categoryComboStore = new CategoryComboStoreImpl(databaseAdapter());
+        this.categoryComboLinkStore = new CategoryComboLinkStoreImpl(
+                databaseAdapter());
+        this.categoryOptionComboStore = new CategoryOptionComboStoreImpl(
+                databaseAdapter());
 
         //handlers
         resourceHandler = new ResourceHandler(resourceStore);
@@ -323,7 +337,7 @@ public final class D2 {
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
 
         CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                new CategoryOptionStoreImpl(databaseAdapter));
+                categoryOptionStore);
 
         this.eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
 
@@ -341,21 +355,12 @@ public final class D2 {
         categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler,
                 categoryOptionLinkStore);
 
-        CategoryComboStore comboStore = new CategoryComboStoreImpl(databaseAdapter());
-
-        CategoryComboLinkStore categoryComboLinkStore = new CategoryComboLinkStoreImpl(
-                databaseAdapter());
-
-        CategoryOptionComboStore optionComboStore = new CategoryOptionComboStoreImpl(
-                databaseAdapter());
-
         CategoryOptionComboHandler optionComboHandler = new CategoryOptionComboHandler(
-                optionComboStore);
+                categoryOptionComboStore);
 
-        categoryComboHandler = new CategoryComboHandler(comboStore,
+        categoryComboHandler = new CategoryComboHandler(categoryComboStore,
                 categoryComboOptionLinkCategoryStore,
                 categoryComboLinkStore, optionComboHandler);
-
     }
 
     @NonNull
@@ -425,6 +430,12 @@ public final class D2 {
         deletableStoreList.add((DeletableStore) trackedEntityAttributeValueStore);
         deletableStoreList.add((DeletableStore) organisationUnitProgramLinkStore);
         deletableStoreList.add((DeletableStore) eventStore);
+        deletableStoreList.add((DeletableStore) categoryStore);
+        deletableStoreList.add((DeletableStore) categoryOptionStore);
+        deletableStoreList.add((DeletableStore) categoryOptionLinkStore);
+        deletableStoreList.add((DeletableStore) categoryComboOptionLinkCategoryStore);
+        deletableStoreList.add((DeletableStore) categoryComboStore);
+        deletableStoreList.add((DeletableStore) categoryComboLinkStore);
         return new LogOutUserCallable(
                 deletableStoreList
         );

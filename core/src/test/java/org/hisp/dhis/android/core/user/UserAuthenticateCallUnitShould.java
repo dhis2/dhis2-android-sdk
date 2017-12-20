@@ -28,6 +28,19 @@
 
 package org.hisp.dhis.android.core.user;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import static okhttp3.Credentials.basic;
+
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -36,7 +49,7 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,18 +72,6 @@ import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
-
-import static okhttp3.Credentials.basic;
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 @RunWith(JUnit4.class)
@@ -95,7 +96,7 @@ public class UserAuthenticateCallUnitShould {
     private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
 
     @Mock
-    private ResourceStore resourceStore;
+    private ResourceHandler resourceHandler;
 
     @Mock
     private OrganisationUnitStore organisationUnitStore;
@@ -139,7 +140,8 @@ public class UserAuthenticateCallUnitShould {
         MockitoAnnotations.initMocks(this);
 
         userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userStore,
-                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore, authenticatedUserStore,
+                userCredentialsStore, userOrganisationUnitLinkStore, resourceHandler,
+                authenticatedUserStore,
                 organisationUnitStore, "test_user_name", "test_user_password");
 
         when(userCredentials.uid()).thenReturn("test_user_credentials_uid");
@@ -157,9 +159,11 @@ public class UserAuthenticateCallUnitShould {
         when(organisationUnit.created()).thenReturn(created);
         when(organisationUnit.lastUpdated()).thenReturn(lastUpdated);
         when(organisationUnit.shortName()).thenReturn("test_organisation_unit_short_name");
-        when(organisationUnit.displayShortName()).thenReturn("test_organisation_unit_display_short_name");
+        when(organisationUnit.displayShortName()).thenReturn(
+                "test_organisation_unit_display_short_name");
         when(organisationUnit.description()).thenReturn("test_organisation_unit_description");
-        when(organisationUnit.displayDescription()).thenReturn("test_organisation_unit_display_description");
+        when(organisationUnit.displayDescription()).thenReturn(
+                "test_organisation_unit_display_description");
         when(organisationUnit.path()).thenReturn("test_organisation_unit_path");
         when(organisationUnit.openingDate()).thenReturn(created);
         when(organisationUnit.closedDate()).thenReturn(lastUpdated);
@@ -221,7 +225,8 @@ public class UserAuthenticateCallUnitShould {
         assertThat(filterCaptor.getValue().fields())
                 .contains(User.uid, User.code, User.name, User.displayName, User.created,
                         User.lastUpdated, User.birthday, User.education, User.gender, User.jobTitle,
-                        User.surname, User.firstName, User.introduction, User.employer, User.interests,
+                        User.surname, User.firstName, User.introduction, User.employer,
+                        User.interests,
                         User.languages, User.email, User.phoneNumber, User.nationality,
                         User.userCredentials.with(
                                 UserCredentials.uid,
@@ -286,8 +291,9 @@ public class UserAuthenticateCallUnitShould {
     @Test
     @SuppressWarnings("unchecked")
     public void not_invoke_stores_on_exception_on_request_fail() throws Exception {
-        when(userCall.execute()).thenReturn(Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
-                ResponseBody.create(MediaType.parse("application/json"), "{}")));
+        when(userCall.execute()).thenReturn(
+                Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
+                        ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
         Response<User> userResponse = userAuthenticateCall.call();
 

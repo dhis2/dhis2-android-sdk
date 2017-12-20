@@ -319,7 +319,7 @@ public final class D2 {
         }
 
         return new UserAuthenticateCall(userService, databaseAdapter, userStore,
-                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore,
+                userCredentialsStore, userOrganisationUnitLinkStore, resourceHandler,
                 authenticatedUserStore, organisationUnitStore, username, password
         );
     }

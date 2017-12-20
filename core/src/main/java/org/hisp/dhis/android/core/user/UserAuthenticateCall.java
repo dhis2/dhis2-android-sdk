@@ -28,6 +28,10 @@
 
 package org.hisp.dhis.android.core.user;
 
+import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
+
+import static okhttp3.Credentials.basic;
+
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
@@ -38,7 +42,13 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
@@ -46,9 +56,6 @@ import java.util.Date;
 import java.util.List;
 
 import retrofit2.Response;
-
-import static okhttp3.Credentials.basic;
-import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 
 // ToDo: ask about API changes
 // ToDo: performance tests? Try to feed in a user instance with thousands organisation units
@@ -61,7 +68,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     private final UserStore userStore;
     private final UserCredentialsStore userCredentialsStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
-    private final ResourceStore resourceStore;
+    private final ResourceHandler resourceHandler;
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitStore organisationUnitStore;
 
@@ -77,7 +84,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             @NonNull UserStore userStore,
             @NonNull UserCredentialsStore userCredentialsStore,
             @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-            @NonNull ResourceStore resourceStore,
+            @NonNull ResourceHandler resourceHandler,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
             @NonNull OrganisationUnitStore organisationUnitStore,
             @NonNull String username,
@@ -88,7 +95,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.resourceStore = resourceStore;
+        this.resourceHandler = resourceHandler;
         this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitStore = organisationUnitStore;
 
@@ -163,7 +170,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         ).build()).execute();
     }
 
-    private Long saveUser(Response<User> response) {
+    private Long saveUser(Response<User> response) throws Exception {
         Transaction transaction = databaseAdapter.beginNewTransaction();
 
         Long userId;
@@ -175,8 +182,9 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             userId = getUserIdStored(databaseAdapter, user.uid());
 
             Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
+            //getServerDate();
 
-            if(userId!=null){
+            if (userId != null) {
                 // update user model and dependencies tables
                 updateUser(user, serverDateTime);
                 return userId;
@@ -203,26 +211,26 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                 user.introduction(), user.employer(), user.interests(), user.languages(),
                 user.email(), user.phoneNumber(), user.nationality()
         );
-        resourceStore.insert(User.class.getSimpleName(), serverDateTime);
+        resourceHandler.handleResource(ResourceModel.Type.USER, serverDateTime);
 
 
         // insert user credentials
         UserCredentials userCredentials = user.userCredentials();
         userCredentialsStore.insert(
                 userCredentials.uid(), userCredentials.code(), userCredentials.name(),
-                userCredentials.displayName(), userCredentials.created(), userCredentials.lastUpdated(),
+                userCredentials.displayName(), userCredentials.created(),
+                userCredentials.lastUpdated(),
                 userCredentials.username(), user.uid()
         );
 
-        resourceStore.insert(
-                UserCredentials.class.getSimpleName(), serverDateTime
-        );
+        resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, serverDateTime);
 
         // insert user as authenticated entity
         authenticatedUserStore.insert(user.uid(), base64(username, password));
 
+        resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, serverDateTime);
+
         if (user.organisationUnits() != null) {
-            String organisationUnitSimpleName = OrganisationUnit.class.getSimpleName();
             int size = user.organisationUnits().size();
             for (int i = 0; i < size; i++) {
                 OrganisationUnit organisationUnit = user.organisationUnits().get(i);
@@ -245,13 +253,13 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                         organisationUnit.level()
                 );
 
-                resourceStore.insert(
-                        organisationUnitSimpleName, serverDateTime
-                );
+                resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT,
+                        serverDateTime);
 
                 // insert link between user and organisation unit
                 userOrganisationUnitLinkStore.insert(
-                        user.uid(), organisationUnit.uid(), OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name()
+                        user.uid(), organisationUnit.uid(),
+                        OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name()
                 );
             }
         }
@@ -266,23 +274,23 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                 user.introduction(), user.employer(), user.interests(), user.languages(),
                 user.email(), user.phoneNumber(), user.nationality(), user.uid()
         );
-        resourceStore.insert(User.class.getSimpleName(), serverDateTime);
+        resourceHandler.handleResource(ResourceModel.Type.USER, serverDateTime);
         // insert user credentials
         UserCredentials userCredentials = user.userCredentials();
         userCredentialsStore.update(
                 userCredentials.uid(), userCredentials.code(), userCredentials.name(),
-                userCredentials.displayName(), userCredentials.created(), userCredentials.lastUpdated(),
+                userCredentials.displayName(), userCredentials.created(),
+                userCredentials.lastUpdated(),
                 userCredentials.username(), user.uid(), user.uid()
         );
 
-        resourceStore.insert(
-                UserCredentials.class.getSimpleName(), serverDateTime
-        );
+        resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, serverDateTime);
     }
 
     private Long getUserIdStored(DatabaseAdapter databaseAdapter, String uid) {
-        Cursor cursor = databaseAdapter.query("Select _id as id from "+UserModel.TABLE+ " where uid ='"+uid+"'");
-        if(cursor!=null && cursor.getCount()==1){
+        Cursor cursor = databaseAdapter.query(
+                "Select _id as id from " + UserModel.TABLE + " where uid ='" + uid + "'");
+        if (cursor != null && cursor.getCount() == 1) {
             return (long) cursor.getColumnIndex("id");
         }
         return null;

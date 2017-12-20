@@ -42,6 +42,79 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.shutdown();
     }
 
+    @Test
+    public void have_empty_database_when_wipe_db_after_sync_meta_data() throws Exception {
+        givenALoginInDatabase();
+
+        givenAMetadataInDatabase();
+
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
+
+        d2.wipeDB().call();
+
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
+    }
+
+    @Test
+    public void have_empty_database_when_wipe_db_after_sync_data() throws Exception {
+        givenALoginInDatabase();
+
+        givenAMetadataInDatabase();
+
+        givenAEventInDatabase();
+
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
+
+        d2.wipeDB().call();
+
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
+    }
+
+    @Test
+    public void delete_authenticate_user_table_only_when_log_out_after_sync_metadata()
+            throws Exception {
+
+        givenALoginInDatabase();
+
+        givenAMetadataInDatabase();
+
+        givenAEventInDatabase();
+
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
+
+        d2.logout().call();
+
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
+
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .isNotEmpty()
+                .isEmptyTable(AuthenticatedUserModel.TABLE)
+                .isNotEmptyTable(EventModel.TABLE)
+                .isNotEmptyTable(UserModel.TABLE)
+                .isNotEmptyTable(OrganisationUnitModel.TABLE)
+                .isNotEmptyTable(ProgramModel.TABLE)
+                .isNotEmptyTable(ResourceModel.TABLE);
+    }
+
+    @Test
+    public void have_organisation_units_descendants_after_login_logout_and_login()
+            throws Exception {
+        givenALoginWithSierraLeonaOUInDatabase();
+
+        givenAMetadataWithDescendantsInDatabase();
+
+        verifyExistsAsignedOrgUnitAndDescendants();
+
+        d2.logout().call();
+
+        givenALoginWithSierraLeonaOUInDatabase();
+
+        givenAMetadataWithDescendantsInDatabase();
+
+        verifyExistsAsignedOrgUnitAndDescendants();
+    }
+
+
     private void givenALoginInDatabase() throws Exception {
         dhis2MockServer.enqueueMockResponse("login.json");
 
@@ -83,106 +156,6 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("events_1.json");
 
         eventCall.call();
-    }
-
-    @Test
-    public void have_empty_database_when_wipe_db_after_sync_meta_data() throws Exception {
-        givenALoginInDatabase();
-
-        givenAMetadataInDatabase();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
-
-        d2.wipeDB().call();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
-    }
-
-    @Test
-    public void have_empty_database_when_wipe_db_after_sync_data() throws Exception {
-        givenALoginInDatabase();
-
-        givenAMetadataInDatabase();
-
-        givenAEventInDatabase();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
-
-        d2.wipeDB().call();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
-    }
-
-    @Test
-    public void delete_autenticate_user_table_only_when_log_out_after_sync_data() throws Exception {
-        givenALoginInDatabase();
-
-        givenAMetadataInDatabase();
-
-        givenAEventInDatabase();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
-
-        d2.logout().call();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter())
-                .isNotEmptyTable(EventModel.TABLE);
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter())
-                .isEmptyTable(AuthenticatedUserModel.TABLE);
-    }
-
-    @Test
-    public void delete_autenticate_user_table_only_when_log_out_after_sync_metadata()
-            throws Exception {
-
-        givenALoginInDatabase();
-
-        givenAMetadataInDatabase();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
-
-        d2.logout().call();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter())
-                .isEmptyTable(EventModel.TABLE);
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter())
-                .isEmptyTable(AuthenticatedUserModel.TABLE);
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter())
-                .isNotEmptyTable(UserModel.TABLE);
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter())
-                .isNotEmptyTable(OrganisationUnitModel.TABLE);
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter())
-                .isNotEmptyTable(ProgramModel.TABLE);
-
-        DatabaseAssert.assertThatDatabase(databaseAdapter())
-                .isNotEmptyTable(ResourceModel.TABLE);
-    }
-
-    @Test
-    public void have_organisation_units_descendants_after_login_logout_and_login()
-            throws Exception {
-        givenALoginWithSierraLeonaOUInDatabase();
-
-        givenAMetadataWithDescendantsInDatabase();
-
-        verifyExistsAsignedOrgUnitAndDescendants();
-
-        d2.logout().call();
-
-        givenALoginWithSierraLeonaOUInDatabase();
-
-        givenAMetadataWithDescendantsInDatabase();
-
-        verifyExistsAsignedOrgUnitAndDescendants();
     }
 
     private void verifyExistsAsignedOrgUnitAndDescendants() {

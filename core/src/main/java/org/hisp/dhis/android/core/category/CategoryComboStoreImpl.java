@@ -117,26 +117,26 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         sqLiteBind(updateStatement, whereUidIndex, oldCombo.uid());
     }
 
-    private void bind(SQLiteStatement sqLiteStatement, @NonNull CategoryCombo combo) {
-        sqLiteBind(sqLiteStatement, 1, combo.uid());
-        sqLiteBind(sqLiteStatement, 2, combo.code());
-        sqLiteBind(sqLiteStatement, 3, combo.name());
-        sqLiteBind(sqLiteStatement, 4, combo.displayName());
-        sqLiteBind(sqLiteStatement, 5, combo.created());
-        sqLiteBind(sqLiteStatement, 6, combo.lastUpdated());
-        sqLiteBind(sqLiteStatement, 7, fromBooleanToInt(combo));
+    private void bind(SQLiteStatement sqLiteStatement, @NonNull CategoryCombo categoryCombo) {
+        sqLiteBind(sqLiteStatement, 1, categoryCombo.uid());
+        sqLiteBind(sqLiteStatement, 2, categoryCombo.code());
+        sqLiteBind(sqLiteStatement, 3, categoryCombo.name());
+        sqLiteBind(sqLiteStatement, 4, categoryCombo.displayName());
+        sqLiteBind(sqLiteStatement, 5, categoryCombo.created());
+        sqLiteBind(sqLiteStatement, 6, categoryCombo.lastUpdated());
+        sqLiteBind(sqLiteStatement, 7, fromBooleanToInt(categoryCombo));
     }
 
     @SuppressWarnings("ConstantConditions")
-    private int fromBooleanToInt(@NonNull CategoryCombo combo) {
-        if (combo == null) {
+    private int fromBooleanToInt(@NonNull CategoryCombo categoryCombo) {
+        if (categoryCombo == null) {
             return 0;
         }
-        if (combo.isDefault() == null) {
+        if (categoryCombo.isDefault() == null) {
             return 0;
         }
 
-        return combo.isDefault() ? 1 : 0;
+        return categoryCombo.isDefault() ? 1 : 0;
     }
 
     private boolean wasExecuted(int numberOfRows) {

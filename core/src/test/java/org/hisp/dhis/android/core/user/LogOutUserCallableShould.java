@@ -28,10 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
 import static org.mockito.Mockito.verify;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

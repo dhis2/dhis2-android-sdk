@@ -24,7 +24,9 @@ final class RuleFunctionAddDays extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
-        if (arguments.size() != 2) {
+        if (arguments == null) {
+            throw new IllegalArgumentException("One argument is expected");
+        } else if (arguments.size() != 2) {
             throw new IllegalArgumentException("Two arguments were expected, " +
                     arguments.size() + " were supplied");
         }
@@ -39,7 +41,7 @@ final class RuleFunctionAddDays extends RuleFunction {
      * @return date fixed.
      */
     @SuppressWarnings("PMD.UnnecessaryWrapperObjectCreation")
-    private static String addDays(String date, String days) {
+    private String addDays(String date, String days) {
         SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN, Locale.US);
 
         try {
@@ -48,7 +50,7 @@ final class RuleFunctionAddDays extends RuleFunction {
             dateCalendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
             return format.format(dateCalendar.getTime());
         } catch (ParseException parseException) {
-            throw new RuntimeException(parseException);
+            throw new IllegalArgumentException(parseException.getMessage(), parseException);
         }
     }
 }

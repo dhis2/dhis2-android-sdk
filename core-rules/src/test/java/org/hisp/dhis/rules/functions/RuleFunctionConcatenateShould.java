@@ -1,15 +1,18 @@
 package org.hisp.dhis.rules.functions;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static java.util.Arrays.asList;
 
 import org.hisp.dhis.rules.RuleVariableValue;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public class RuleFunctionConcatenateShould {
 
@@ -17,40 +20,19 @@ public class RuleFunctionConcatenateShould {
     public ExpectedException thrown = ExpectedException.none();
 
 
-    @Test
-    public void return_correct_values() {
-        RuleFunction ruleFunction = RuleFunctionConcatenate.create();
-
-        String result = ruleFunction.evaluate(Arrays.asList("w","o", "r", "d"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(result).isEqualTo("word");
-    }
+    private Map<String, RuleVariableValue> variableValues = new HashMap<>();
 
     @Test
-    public void throw_illegal_argument_exception_if_only_one_parameter() {
-        thrown.expect(IllegalArgumentException.class);
-        RuleFunction ruleFunction = RuleFunctionConcatenate.create();
+    public void return_concatenated_strings() {
+        RuleFunction concatenateFunction = RuleFunctionConcatenate.create();
 
-        ruleFunction.evaluate(Arrays.asList("w"),
-                new HashMap<String, RuleVariableValue>());
-    }
-
-    @Test
-    public void throw_null_pointer_exception_if_first_parameter_is_null() {
-        thrown.expect(NullPointerException.class);
-        RuleFunction ruleFunction = RuleFunctionConcatenate.create();
-
-        ruleFunction.evaluate(null,
-                new HashMap<String, RuleVariableValue>());
-    }
-
-    @Test
-    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
-        thrown.expect(IllegalArgumentException.class);
-        RuleFunction ruleFunction = RuleFunctionConcatenate.create();
-
-        ruleFunction.evaluate(new ArrayList<String>(),
-                new HashMap<String, RuleVariableValue>());
+        assertThat(concatenateFunction.evaluate(null, variableValues), is(""));
+        assertThat(concatenateFunction.evaluate(asList("hello"), variableValues), is("hello"));
+        assertThat(concatenateFunction.evaluate(asList("hello", null), variableValues),
+                is("hello"));
+        assertThat(concatenateFunction.evaluate(Arrays.<String>asList(null, null), variableValues),
+                is(""));
+        assertThat(concatenateFunction.evaluate(asList("hello", " ", "there", "!"), variableValues),
+                is("hello there!"));
     }
 }

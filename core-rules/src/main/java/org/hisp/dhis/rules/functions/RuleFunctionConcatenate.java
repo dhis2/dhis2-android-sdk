@@ -20,15 +20,14 @@ final class RuleFunctionConcatenate extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
-        if (arguments.size() < 2) {
-            throw new IllegalArgumentException("Al most two arguments was expected, " +
-                    arguments.size() + " were supplied");
-        }
-
         String finalValue = "";
 
-        for (String value : arguments) {
-            finalValue += value;
+        if (arguments != null) {
+            for (String value : arguments) {
+                if (value != null) {
+                    finalValue += value;
+                }
+            }
         }
 
         return finalValue;

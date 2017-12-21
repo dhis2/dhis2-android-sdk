@@ -21,7 +21,10 @@ abstract class RuleFunctionDaysBetween extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             @Nonnull Map<String, RuleVariableValue> valueMap) {
-        if (arguments.size() != 2) {
+
+        if (arguments == null) {
+            throw new IllegalArgumentException("One argument is expected");
+        } else if (arguments.size() != 2) {
             throw new IllegalArgumentException("Two arguments were expected, " +
                     arguments.size() + " were supplied");
         }
@@ -43,6 +46,10 @@ abstract class RuleFunctionDaysBetween extends RuleFunction {
      */
     @SuppressWarnings("PMD.UnnecessaryWrapperObjectCreation")
     static Integer daysBetween(String start, String end) {
+        if (isEmpty(start) || isEmpty(end)) {
+            return 0;
+        }
+
         SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN, Locale.US);
 
         try {
@@ -51,7 +58,11 @@ abstract class RuleFunctionDaysBetween extends RuleFunction {
 
             return Long.valueOf((endDate.getTime() - startDate.getTime()) / 86400000).intValue();
         } catch (ParseException parseException) {
-            throw new RuntimeException(parseException);
+            throw new IllegalArgumentException("parseException", parseException);
         }
+    }
+
+    private static boolean isEmpty(CharSequence charSequence) {
+        return charSequence == null || charSequence.length() == 0;
     }
 }

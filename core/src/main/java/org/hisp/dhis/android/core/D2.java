@@ -447,6 +447,12 @@ public final class D2 {
         deletableStoreList.add(trackedEntityAttributeValueStore);
         deletableStoreList.add(organisationUnitProgramLinkStore);
         deletableStoreList.add(eventStore);
+        deletableStoreList.add(categoryStore);
+        deletableStoreList.add(categoryOptionStore);
+        deletableStoreList.add(categoryOptionLinkStore);
+        deletableStoreList.add(categoryComboOptionLinkCategoryStore);
+        deletableStoreList.add(categoryComboStore);
+        deletableStoreList.add(categoryComboLinkStore);
         return new LogOutUserCallable(
                 deletableStoreList
         );

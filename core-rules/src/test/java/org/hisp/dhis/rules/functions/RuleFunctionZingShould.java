@@ -44,7 +44,7 @@ public class RuleFunctionZingShould {
     }
 
     @Test
-    public void return_zero_for_non_number() {
+    public void return_zero_for_non_number_argument() {
         RuleFunction zing = RuleFunctionZing.create();
 
         assertThat(zing.evaluate(asList("non_number"), variableValues), is("0.0"));

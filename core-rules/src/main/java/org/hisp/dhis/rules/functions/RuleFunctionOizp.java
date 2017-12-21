@@ -8,6 +8,9 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * Evaluates the argument of type number to one if the value is zero or positive, otherwise to zero.
+ */
 final class RuleFunctionOizp extends RuleFunction {
     static final String D2_OIZP = "d2:oizp";
 
@@ -20,12 +23,15 @@ final class RuleFunctionOizp extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
-        if (arguments.size() != 1) {
+
+        if (arguments == null) {
+            throw new IllegalArgumentException("One argument is expected");
+        } else if (arguments.size() != 1) {
             throw new IllegalArgumentException("One argument was expected, " +
                     arguments.size() + " were supplied");
         }
 
-        return String.valueOf((toDouble(arguments.get(0), 0.0) >= 0d)?1d:0d);
+        return String.valueOf((toDouble(arguments.get(0), -1) >= 0d) ? 1d : 0d);
     }
 
     private static double toDouble(@Nullable final String str, final double defaultValue) {

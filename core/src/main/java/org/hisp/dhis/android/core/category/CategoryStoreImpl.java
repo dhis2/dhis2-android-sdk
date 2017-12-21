@@ -130,5 +130,10 @@ public class CategoryStoreImpl implements CategoryStore {
         sqLiteBind(sqLiteStatement, 7, category.dataDimensionType());
 
     }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(CategoryModel.TABLE);
+    }
 }
 

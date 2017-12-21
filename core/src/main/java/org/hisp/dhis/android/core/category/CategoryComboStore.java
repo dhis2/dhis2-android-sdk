@@ -3,7 +3,9 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.annotation.NonNull;
 
-public interface CategoryComboStore {
+import org.hisp.dhis.android.core.common.DeletableStore;
+
+public interface CategoryComboStore extends DeletableStore {
     long insert(@NonNull CategoryCombo categoryCombo);
 
     boolean delete(@NonNull CategoryCombo categoryCombo);

@@ -142,6 +142,10 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
         isNull(newEntity.uid());
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(CategoryOptionComboModel.TABLE);
+    }
 
 }
 

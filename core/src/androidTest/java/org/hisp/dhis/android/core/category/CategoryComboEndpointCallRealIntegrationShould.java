@@ -36,7 +36,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-     @Test
+    @Test
     public void download_category_combos() throws Exception {
 
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
@@ -47,8 +47,8 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertNotCombosInDB();
         assertNotCategoryCombosLinkInDB();
 
-        CategoryComboEndpointCall comboCallEndpoint = provideComboCallEndpoint();
-        Response<Payload<CategoryCombo>> responseCategory = comboCallEndpoint.call();
+        CategoryComboEndpointCall categoryComboCallEndpoint = provideCategoryComboCallEndpoint();
+        Response<Payload<CategoryCombo>> responseCategory = categoryComboCallEndpoint.call();
 
         assertParseData(responseCategory);
 
@@ -179,7 +179,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     @NonNull
-    private CategoryComboEndpointCall provideComboCallEndpoint() {
+    private CategoryComboEndpointCall provideCategoryComboCallEndpoint() {
         CategoryComboQuery query = CategoryComboQuery.defaultQuery();
 
         CategoryComboService comboService = d2.retrofit().create(CategoryComboService.class);

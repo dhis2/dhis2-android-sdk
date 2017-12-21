@@ -28,41 +28,53 @@
 
 package org.hisp.dhis.android.core.user;
 
+import static com.google.common.truth.Truth.assertThat;
+
+import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
+import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
+
+import static okhttp3.internal.Util.UTC;
+
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 // ToDo: implement integration tests for user authentication task
 // ToDo: more tests to verify correct store behaviour
@@ -155,7 +167,14 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         mockWebServer.start();
 
         MockResponse mockResponse = new MockResponse();
-        mockResponse.setHeader(HeaderUtils.DATE, Calendar.getInstance().getTime());
+
+        DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+        rfc1123.setLenient(false);
+        rfc1123.setTimeZone(UTC);
+        String dateHeaderValue = rfc1123.format(Calendar.getInstance().getTime());
+
+        mockResponse.setHeader(HeaderUtils.DATE, dateHeaderValue);
+
         mockResponse.setBody("{\n" +
                 "\n" +
                 "    \"created\": \"2015-03-31T13:31:09.324\",\n" +
@@ -213,19 +232,30 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
         UserStore userStore = new UserStoreImpl(databaseAdapter());
         UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
-        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
-        AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(databaseAdapter());
-        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
+        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(
+                databaseAdapter());
+        AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(
+                databaseAdapter());
+        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore =
+                new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+        UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(
+                userCredentialsStore);
+
+        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
+                organisationUnitStore, new UserOrganisationUnitLinkStoreImpl(databaseAdapter()),
+                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter()));
 
         authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userStore,
-                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore, authenticatedUserStore,
-                organisationUnitStore, "test_user", "test_password");
+                userCredentialsHandler, resourceHandler,
+                authenticatedUserStore,
+                organisationUnitHandler, "test_user", "test_password");
     }
 
     @Test
     public void persist_user_in_data_base_when_call() throws Exception {
-        authenticateUserCall.call();
+        Response response = authenticateUserCall.call();
 
         // verify that user is persisted in database with corresponding data
         Cursor userCursor = database().query(UserModel.TABLE,
@@ -319,26 +349,34 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 )
                 .isExhausted();
 
-        String dateString = mockWebServer.takeRequest().getHeader(HeaderUtils.DATE);
+        String dateString = BaseIdentifiableObject.DATE_FORMAT.format(
+                response.headers().getDate(HeaderUtils.DATE));
 
         assertThatCursor(resource)
                 .hasRow(
                         1L,
-                        User.class.getSimpleName(),
+                        ResourceModel.Type.USER,
                         dateString
                 );
 
         assertThatCursor(resource)
                 .hasRow(
                         2L,
-                        UserCredentials.class.getSimpleName(),
+                        ResourceModel.Type.USER_CREDENTIALS,
                         dateString
                 );
 
         assertThatCursor(resource)
                 .hasRow(
                         3L,
-                        OrganisationUnit.class.getSimpleName(),
+                        ResourceModel.Type.AUTHENTICATED_USER,
+                        dateString
+                );
+
+        assertThatCursor(resource)
+                .hasRow(
+                        4L,
+                        ResourceModel.Type.ORGANISATION_UNIT,
                         dateString
                 ).isExhausted();
 

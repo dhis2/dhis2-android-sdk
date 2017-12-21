@@ -2,14 +2,11 @@ package org.hisp.dhis.android.core;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
@@ -68,5 +65,29 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         //This way I can make sure that additive (updates) work as well.
         //The changes could be to one of the programs, adding stuff to it.
         // adding a new program..etc.
+    }
+
+    //@Test
+    public void response_successful_on_login_wipe_db_and_login() throws Exception {
+        retrofit2.Response response = null;
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+
+        d2.wipeDB().call();
+
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+    }
+
+    //@Test
+    public void response_successful_on_login_logout_and_login() throws Exception {
+        retrofit2.Response response = null;
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+
+        d2.logout().call();
+
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
     }
 }

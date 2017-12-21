@@ -402,7 +402,7 @@ public class MetadataCallShould {
         Response response = metadataCall.call();
         // assert that last successful response is returned
 
-        Payload<CategoryCombo> payload = (Payload<CategoryCombo>) response.body();
+        Payload<String> payload = (Payload<String>) response.body();
 
         assertTrue(!payload.items().isEmpty());
     }
@@ -455,7 +455,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_program_call_fail() throws Exception {
-        final int expectedTransactions = 4;
+        final int expectedTransactions = 6;
         when(programCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
@@ -470,7 +470,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_tracked_entity_call_fail() throws Exception {
-        final int expectedTransactions = 6;
+        final int expectedTransactions = 8;
         when(trackedEntityCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
@@ -485,7 +485,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_option_set_fail() throws Exception {
-        final int expectedTransactions = 6;
+        final int expectedTransactions = 8;
         when(optionSetCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();

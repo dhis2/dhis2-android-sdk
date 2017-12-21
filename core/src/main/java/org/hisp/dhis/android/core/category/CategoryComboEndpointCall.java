@@ -19,7 +19,7 @@ import retrofit2.Response;
 public class CategoryComboEndpointCall implements Call<Response<Payload<CategoryCombo>>> {
 
     private final CategoryComboQuery query;
-    private final CategoryComboService comboService;
+    private final CategoryComboService categoryComboService;
     private final ResponseValidator<CategoryCombo> responseValidator;
     private final CategoryComboHandler handler;
     private final ResourceHandler resourceHandler;
@@ -28,13 +28,13 @@ public class CategoryComboEndpointCall implements Call<Response<Payload<Category
     private boolean isExecuted;
 
     public CategoryComboEndpointCall(CategoryComboQuery query,
-            CategoryComboService comboService,
+            CategoryComboService categoryComboService,
             ResponseValidator<CategoryCombo> responseValidator,
             CategoryComboHandler handler,
             ResourceHandler resourceHandler,
             DatabaseAdapter databaseAdapter, Date serverDate) {
         this.query = query;
-        this.comboService = comboService;
+        this.categoryComboService = categoryComboService;
         this.responseValidator = responseValidator;
         this.handler = handler;
         this.resourceHandler = resourceHandler;
@@ -55,26 +55,26 @@ public class CategoryComboEndpointCall implements Call<Response<Payload<Category
 
         validateIsNotTryingToExcuteAgain();
 
-        Response<Payload<CategoryCombo>> response = comboService.getCategoryCombos(getFields(),
+        Response<Payload<CategoryCombo>> response = categoryComboService.getCategoryCombos(getFields(),
                 query.paging(),
                 query.page(), query.pageSize())
                 .execute();
 
         if (responseValidator.isValid(response)) {
-            List<CategoryCombo> combos = response.body().items();
+            List<CategoryCombo> categoryCombos = response.body().items();
 
-            handle(combos);
+            handle(categoryCombos);
         }
 
         return response;
     }
 
-    private void handle(List<CategoryCombo> combos) {
+    private void handle(List<CategoryCombo> categoryCombos) {
         Transaction transaction = databaseAdapter.beginNewTransaction();
 
         try {
-            for (CategoryCombo combo : combos) {
-                handler.handle(combo);
+            for (CategoryCombo categoryCombo : categoryCombos) {
+                handler.handle(categoryCombo);
             }
             resourceHandler.handleResource(ResourceModel.Type.CATEGORY_COMBO, serverDate);
             transaction.setSuccessful();

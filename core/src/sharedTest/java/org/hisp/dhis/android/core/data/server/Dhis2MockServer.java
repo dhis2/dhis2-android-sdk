@@ -28,9 +28,20 @@
 
 package org.hisp.dhis.android.core.data.server;
 
+import static okhttp3.internal.Util.UTC;
+
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.data.file.IFileReader;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -68,13 +79,32 @@ public class Dhis2MockServer {
     }
 
     public void enqueueMockResponse(String fileName) throws IOException {
+        MockResponse response = createMockResponse(fileName);
+        server.enqueue(response);
+    }
+
+    @NonNull
+    private MockResponse createMockResponse(String fileName) throws IOException {
         String body = fileReader.getStringFromFile(fileName);
         MockResponse response = new MockResponse();
         response.setResponseCode(OK_CODE);
         response.setBody(body);
-        server.enqueue(response);
+        return response;
     }
 
+    public void enqueueMockResponse(String fileName, Date dateHeader)
+            throws IOException {
+        MockResponse response = createMockResponse(fileName);
+
+        DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+        rfc1123.setLenient(false);
+        rfc1123.setTimeZone(UTC);
+        String dateHeaderValue = rfc1123.format(dateHeader);
+
+        response.setHeader(HeaderUtils.DATE, dateHeaderValue);
+
+        server.enqueue(response);
+    }
 
     public String getBaseEndpoint() {
         return server.url("/").toString();

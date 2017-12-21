@@ -30,6 +30,9 @@ import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.z
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.zpvc;
 import static org.junit.Assert.assertThat;
 
+import static java.util.Arrays.asList;
+
+import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.utils.api.ValueType;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
@@ -280,6 +283,8 @@ public class ExpressionFunctionsTest {
         assertThat(modulus(0, 2), is(equalTo(0)));
         assertThat(modulus(11, 3), is(equalTo(2)));
         assertThat(modulus(-11, 3), is(equalTo(-2)));
+        assertThat(modulus(11.5, 3.2), is(equalTo(2)));
+        assertThat(modulus(-11.5, 3.2), is(equalTo(-2)));
     }
 
     @Test

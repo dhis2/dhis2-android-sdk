@@ -1,5 +1,11 @@
 package org.hisp.dhis.android.core.event;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryOption;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,8 +17,13 @@ public class EventQuery {
     private final String orgUnit;
     private final String program;
     private final String trackedEntityInstance;
-
     private final int pageLimit;
+
+    @Nullable
+    private final CategoryOption categoryOption;
+
+    @Nullable
+    private final CategoryCombo categoryCombo;
 
     public EventQuery(boolean paging, int page, int pageSize,
             String orgUnit, String program, String trackedEntityInstance, Set<String> uIds,
@@ -25,6 +36,25 @@ public class EventQuery {
         this.trackedEntityInstance = trackedEntityInstance;
         this.uIds = uIds;
         this.pageLimit = pageLimit;
+        this.categoryCombo = null;
+        this.categoryOption = null;
+    }
+
+    public EventQuery(boolean paging, int page, int pageSize,
+            String orgUnit, String program, String trackedEntityInstance, Set<String> uIds,
+            int pageLimit,
+            @Nullable CategoryCombo categoryCombo,
+            @Nullable CategoryOption categoryOption) {
+        this.paging = paging;
+        this.page = page;
+        this.pageSize = pageSize;
+        this.orgUnit = orgUnit;
+        this.program = program;
+        this.trackedEntityInstance = trackedEntityInstance;
+        this.uIds = uIds;
+        this.pageLimit = pageLimit;
+        this.categoryCombo = categoryCombo;
+        this.categoryOption = categoryOption;
     }
 
     public Set<String> getUIds() {
@@ -69,6 +99,12 @@ public class EventQuery {
         int pageLimit;
 
         private Set<String> uIds = new HashSet<>();
+
+        @Nullable
+        private CategoryOption categoryOption;
+
+        @Nullable
+        private CategoryCombo categoryCombo;
 
         private Builder() {
         }
@@ -117,6 +153,22 @@ public class EventQuery {
             return this;
         }
 
+        public Builder withCategoryCombo(@NonNull CategoryCombo categoryCombo) {
+
+            // attributeCc CategoryCombo
+
+            //attributeCos CategoryOption
+
+
+            this.categoryCombo = categoryCombo;
+            return this;
+        }
+
+        public Builder withCategoryOption(@NonNull CategoryOption categoryOption) {
+            this.categoryOption = categoryOption;
+            return this;
+        }
+
         public EventQuery build() {
             if (pageLimit > pageSize) {
                 throw new IllegalArgumentException(
@@ -124,7 +176,8 @@ public class EventQuery {
             }
 
             return new EventQuery(paging, page, pageSize,
-                    orgUnit, program, trackedEntityInstance, uIds, pageLimit);
+                    orgUnit, program, trackedEntityInstance, uIds, pageLimit,
+                    categoryCombo,categoryOption);
         }
     }
 }

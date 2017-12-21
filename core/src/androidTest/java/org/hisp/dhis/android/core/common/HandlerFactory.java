@@ -1,5 +1,13 @@
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.category.CategoryHandler;
+import org.hisp.dhis.android.core.category.CategoryOptionHandler;
+import org.hisp.dhis.android.core.category.CategoryOptionLinkStore;
+import org.hisp.dhis.android.core.category.CategoryOptionLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionStore;
+import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryStore;
+import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
@@ -10,7 +18,6 @@ import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
@@ -103,5 +110,27 @@ public class HandlerFactory {
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         return resourceHandler;
+    }
+
+    public static CategoryOptionHandler createCategoryOptionHandler(
+            DatabaseAdapter databaseAdapter) {
+        CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter);
+
+        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
+                categoryOptionStore);
+
+        return categoryOptionHandler;
+    }
+
+    public static CategoryHandler createCategoryHandler(DatabaseAdapter databaseAdapter) {
+        CategoryStore categoryStore = new CategoryStoreImpl(databaseAdapter);
+        CategoryOptionHandler categoryOptionHandler = createCategoryOptionHandler(databaseAdapter);
+        CategoryOptionLinkStore categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
+                databaseAdapter);
+
+        CategoryHandler categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler,
+                categoryOptionLinkStore);
+
+        return categoryHandler;
     }
 }

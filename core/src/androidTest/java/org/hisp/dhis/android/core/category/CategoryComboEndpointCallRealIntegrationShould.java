@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.CategoryCallFactory;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -18,7 +19,6 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Date;
@@ -36,7 +36,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-    @Test
+    //@Test
     public void download_category_combos() throws Exception {
 
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
@@ -67,38 +67,9 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void downloadCategories() throws Exception {
-        CategoryEndpointCall categoryEndpointCall = provideCategoryCallEndpoint();
-        categoryEndpointCall.call();
-
-    }
-
-    @NonNull
-    private CategoryEndpointCall provideCategoryCallEndpoint() {
-        CategoryQuery query = CategoryQuery.defaultQuery();
-
-        CategoryService categoryService = d2.retrofit().create(CategoryService.class);
-
-        ResponseValidator<Category> validator = new ResponseValidator<>();
-
-        CategoryStore store = new CategoryStoreImpl(databaseAdapter());
-
-        CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
-
-        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                categoryOptionStore);
-
-        CategoryOptionLinkStore categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
+        CategoryEndpointCall categoryEndpointCall = CategoryCallFactory.create(d2.retrofit(),
                 databaseAdapter());
-
-        CategoryHandler handler = new CategoryHandler(store, categoryOptionHandler,
-                categoryOptionLinkStore);
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-        Date serverDate = new Date();
-
-        return new CategoryEndpointCall(query, categoryService, validator, handler, resourceHandler,
-                databaseAdapter(), serverDate);
-
+        categoryEndpointCall.call();
     }
 
     private void assertNotCombosInDB() {

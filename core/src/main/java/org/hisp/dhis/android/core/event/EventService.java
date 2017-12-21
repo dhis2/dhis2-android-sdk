@@ -27,4 +27,15 @@ public interface EventService {
             @Query("filter") @Where Filter<Event, String> uids,
             @Query("paging") Boolean paging, @Query("page") int page,
             @Query("pageSize") int pageSize);
+
+    @GET("events")
+    Call<Payload<Event>> getEvents(@Query("orgUnit") String orgUnit,
+            @Query("program") String program,
+            @Query("trackedEntityInstance") String trackedEntityInstance,
+            @Query("fields") @Which Fields<Event> fields,
+            @Query("filter") @Where Filter<Event, String> lastUpdated,
+            @Query("filter") @Where Filter<Event, String> uids,
+            @Query("paging") Boolean paging, @Query("page") int page,
+            @Query("pageSize") int pageSize, @Query("attributeCc") String categoryCombo,
+            @Query("attributeCos") String categoryOption);
 }

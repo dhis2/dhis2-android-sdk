@@ -4,36 +4,16 @@ import static com.google.common.truth.Truth.assertThat;
 
 import static junit.framework.Assert.assertTrue;
 
-import android.content.ContentValues;
-import android.support.annotation.Nullable;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboModel;
-import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
-import org.hisp.dhis.android.core.category.CategoryOptionModel;
-import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
-import org.hisp.dhis.android.core.category.CreateCategoryOptionUtils;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
-import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.SqliteCheckerUtility;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.imports.WebResponse;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.hisp.dhis.android.core.program.ProgramRule;
-import org.hisp.dhis.android.core.program.ProgramRuleVariable;
-import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.program.ProgramType;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
@@ -46,8 +26,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
 import retrofit2.Response;
 
 @RunWith(AndroidJUnit4.class)
@@ -68,6 +46,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     private String dataElementUid;
     private String attributeCategoryOption;
     private String attributeOptionCombo;
+    private String categoryComboUID;
     private String user = "admin";
     private String password = "district";
 
@@ -86,6 +65,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         dataElementUid = "b6dOUjAarHD";
         attributeCategoryOption = "C6nZpLKjEJr";
         attributeOptionCombo = "nvLjum6Xbv5";
+        categoryComboUID = "nM3u9s5a52V";
         codeGenerator = new CodeGeneratorImpl();
 
         eventUid = codeGenerator.generate();
@@ -117,9 +97,6 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
-        SqliteCheckerUtility.ifValueExist("CategoryOption", "uid", attributeCategoryOption, databaseAdapter());
-        SqliteCheckerUtility.ifValueExist("CategoryOptionCombo", "uid", attributeOptionCombo, databaseAdapter());
-
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid, dataElementUid, attributeCategoryOption, attributeOptionCombo);
 
@@ -134,54 +111,71 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     @Test
     public void pull_event_with_correct_category_combo_after_be_pushed() throws Exception {
         retrofit2.Response response = null;
-        response = d2.logIn(user, password).call();
-        assertThat(response.isSuccessful()).isTrue();
 
-        response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
-
+        dowloadMetadata();
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid, dataElementUid, attributeCategoryOption, attributeOptionCombo);
 
-        Call<Response<WebResponse>> call = d2.syncSingleEvents();
-        response = call.call();
+        pushDummyEvent();
+
+        Event pushedEvent = getEventFromDB();
+
+        d2.wipeDB().call();
+
+        dowloadMetadata();
+
+        downloadEventsBy(categoryComboUID,attributeCategoryOption);
+
+        assertThatEventPushedIsDownloaded(pushedEvent);
+    }
+
+    private void assertThatEventPushedIsDownloaded(Event pushedEvent) {
+        eventStore = new EventStoreImpl(databaseAdapter());
+
+        List<Event> downloadedEvents = eventStore.querySingleEvents();
+
+        assertTrue(verifyPushedEventIsInPullList(pushedEvent, downloadedEvents));
+    }
+
+    private void downloadEventsBy(String categoryComboUID,String categoryOptionUID) throws Exception {
+        Response response;EventEndPointCall eventEndPointCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), orgUnitUid, 0,categoryComboUID,categoryOptionUID);
+
+        response = eventEndPointCall.call();
+
         assertThat(response.isSuccessful()).isTrue();
+    }
 
+    private Event getEventFromDB() {
         EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
-
-        List<Event> storedEvents = eventStore.queryAll();
-
         Event event = null;
+        List<Event> storedEvents = eventStore.queryAll();
         for(Event storedEvent : storedEvents) {
             if(storedEvent.uid().equals(eventUid)) {
                 event = storedEvent;
             }
         }
+        return event;
+    }
 
-        d2.wipeDB().call();
+    private void pushDummyEvent() throws Exception {
+        Response response;Call<Response<WebResponse>> call = d2.syncSingleEvents();
+        response = call.call();
+        assertThat(response.isSuccessful()).isTrue();
+    }
 
+    private void dowloadMetadata() throws Exception {
+        Response response;
         response = d2.logIn(user, password).call();
         assertThat(response.isSuccessful()).isTrue();
 
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
-
-        //EventEndPointCall eventEndPointCall = EventCallFactory.create(
-        //        d2.retrofit(), databaseAdapter(), orgUnitUid, attributeCategoryOption, attributeOptionCombo, 0);
-
-        //response = eventEndPointCall.call();
-        //assertThat(response.isSuccessful()).isTrue();
-
-        eventStore = new EventStoreImpl(databaseAdapter());
-
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
-
-        assertTrue(verifyPushedEventIsInPullList(event, downloadedEvents));
     }
 
     private boolean verifyPushedEventIsInPullList(Event event, List<Event> eventList) {
         for(Event pullEvent : eventList){
-            if(event.uid().equals(pullEvent.uid) && event.attributeOptionCombo().equals(pullEvent.attributeOptionCombo()) && event.attributeCategoryOptions().equals(pullEvent.attributeCategoryOptions())){
+            if(event.uid().equals(pullEvent.uid()) && event.attributeOptionCombo().equals(pullEvent.attributeOptionCombo()) && event.attributeCategoryOptions().equals(pullEvent.attributeCategoryOptions())){
                 return true;
             }
         }

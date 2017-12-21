@@ -89,6 +89,16 @@ public class EventQuery {
         return pageLimit;
     }
 
+    @Nullable
+    public CategoryOption getCategoryOption() {
+        return categoryOption;
+    }
+
+    @Nullable
+    public CategoryCombo getCategoryCombo() {
+        return categoryCombo;
+    }
+
     public static class Builder {
         private int page = 1;
         private int pageSize = 50;
@@ -153,19 +163,9 @@ public class EventQuery {
             return this;
         }
 
-        public Builder withCategoryCombo(@NonNull CategoryCombo categoryCombo) {
-
-            // attributeCc CategoryCombo
-
-            //attributeCos CategoryOption
-
-
-            this.categoryCombo = categoryCombo;
-            return this;
-        }
-
-        public Builder withCategoryOption(@NonNull CategoryOption categoryOption) {
+        public Builder withCategoryComboAndCategoryOption(@NonNull CategoryCombo categoryCombo, CategoryOption categoryOption) {
             this.categoryOption = categoryOption;
+            this.categoryCombo = categoryCombo;
             return this;
         }
 

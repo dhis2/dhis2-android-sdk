@@ -3,6 +3,8 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -66,11 +68,29 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
 
         String lastSyncedEvents = resourceHandler.getLastUpdated(ResourceModel.Type.EVENT);
 
-        Response<Payload<Event>> eventsByLastUpdated = eventService.getEvents(
-                eventQuery.getOrgUnit(), eventQuery.getProgram(),
-                eventQuery.getTrackedEntityInstance(), getSingleFields(),
-                Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
-                Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize()).execute();
+        Response<Payload<Event>> eventsByLastUpdated;
+
+        if (eventQuery.getCategoryCombo() != null &&
+                eventQuery.getCategoryOption() != null) {
+
+            CategoryCombo categoryCombo =  eventQuery.getCategoryCombo();
+            CategoryOption categoryOption =  eventQuery.getCategoryOption();
+
+            eventsByLastUpdated = eventService.getEvents(
+                    eventQuery.getOrgUnit(), eventQuery.getProgram(),
+                    eventQuery.getTrackedEntityInstance(), getSingleFields(),
+                    Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
+                    Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize(),
+                    categoryCombo.uid(),categoryOption.uid()).execute();
+
+        } else {
+            eventsByLastUpdated = eventService.getEvents(
+                    eventQuery.getOrgUnit(), eventQuery.getProgram(),
+                    eventQuery.getTrackedEntityInstance(), getSingleFields(),
+                    Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
+                    Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize()).execute();
+
+        }
 
         if (eventsByLastUpdated.isSuccessful() && eventsByLastUpdated.body().items() != null) {
             Transaction transaction = databaseAdapter.beginNewTransaction();

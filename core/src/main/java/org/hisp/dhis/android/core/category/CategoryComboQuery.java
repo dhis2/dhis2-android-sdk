@@ -13,9 +13,9 @@ public abstract class CategoryComboQuery extends BaseQuery {
 
     public static CategoryComboQuery defaultQuery() {
         return CategoryComboQuery
-                .builder().paging(true).pageSize(
+                .builder().paging(false).pageSize(
                         CategoryComboQuery.DEFAULT_PAGE_SIZE)
-                .page(1).build();
+                .page(0).build();
     }
 
     @AutoValue.Builder

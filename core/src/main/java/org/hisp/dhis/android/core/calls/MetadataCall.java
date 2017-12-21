@@ -276,6 +276,16 @@ public class MetadataCall implements Call<Response> {
             if (isNotValid(response)) {
                 return response;
             }
+            response = downloadCategories(serverDate);
+
+            if (isNotValid(response)) {
+                return response;
+            }
+            response = downloadCategoryCombos(serverDate);
+
+            if (isNotValid(response)) {
+                return response;
+            }
 
             Set<String> programUids = getAssignedProgramUids(user);
             response = new ProgramCall(
@@ -308,17 +318,6 @@ public class MetadataCall implements Call<Response> {
                     optionSetService, optionSetStore, databaseAdapter, resourceStore,
                     optionSetUids, serverDate, optionStore
             ).call();
-            if (isNotValid(response)) {
-                return response;
-            }
-            response = downloadCategories(serverDate);
-
-            if (isNotValid(response)) {
-                return response;
-            }
-
-            response = downloadCategoryCombos(serverDate);
-
             if (isNotValid(response)) {
                 return response;
             }

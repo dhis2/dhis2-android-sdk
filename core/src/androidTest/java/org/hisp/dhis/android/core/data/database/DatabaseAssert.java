@@ -75,6 +75,18 @@ public final class DatabaseAssert {
         return this;
     }
 
+    public DatabaseAssert isEmptyTable(String tableName) {
+        assertThat(tableCount(tableName) == 0, is(true));
+
+        return this;
+    }
+
+    public DatabaseAssert isNotEmptyTable(String tableName) {
+        assertThat(tableCount(tableName) == 0, is(false));
+
+        return this;
+    }
+
     private void verifyEmptyDatabase(boolean expectedEmpty) {
         boolean isEmpty = true;
 
@@ -84,13 +96,28 @@ public final class DatabaseAssert {
         if (value != -1) {
             while (res.moveToNext()) {
                 String tableName = res.getString(value);
-                Cursor resTable = databaseAdapter.query(
-                        "SELECT * from " + tableName, null);
-                if (resTable.getCount() > 0) {
+
+                if (tableCount(tableName) > 0) {
                     isEmpty = false;
                 }
             }
         }
         assertThat(isEmpty, is(expectedEmpty));
+    }
+
+    private int tableCount(String tableName) {
+        Cursor cursor = null;
+        int count = 0;
+
+        try {
+            cursor = databaseAdapter.query("SELECT * from " + tableName, null);
+            count = cursor.getCount();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return count;
     }
 }

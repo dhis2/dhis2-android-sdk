@@ -83,6 +83,7 @@ import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
@@ -138,6 +139,7 @@ import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
 import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
+import org.hisp.dhis.android.core.user.UserCredentialsHandler;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
@@ -228,11 +230,13 @@ public final class D2 {
     private final CategoryOptionComboLinkCategoryStore categoryComboOptionLinkCategoryStore;
 
     //Handlers
+    private final UserCredentialsHandler userCredentialsHandler;
     private final EventHandler eventHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
+    private final OrganisationUnitHandler organisationUnitHandler;
 
 
     @VisibleForTesting
@@ -331,7 +335,11 @@ public final class D2 {
                 databaseAdapter());
 
         //handlers
+        userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
         resourceHandler = new ResourceHandler(resourceStore);
+
+        organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
+                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
 
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
@@ -383,8 +391,8 @@ public final class D2 {
         }
 
         return new UserAuthenticateCall(userService, databaseAdapter, userStore,
-                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore,
-                authenticatedUserStore, organisationUnitStore, username, password
+                userCredentialsHandler, resourceHandler,
+                authenticatedUserStore, organisationUnitHandler, username, password
         );
     }
 
@@ -397,45 +405,48 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<Void> logOut() {
+    public Callable<Void> logout() {
         List<DeletableStore> deletableStoreList = new ArrayList<>();
-        deletableStoreList.add((DeletableStore) userStore);
-        deletableStoreList.add((DeletableStore) userCredentialsStore);
-        deletableStoreList.add((DeletableStore) userOrganisationUnitLinkStore);
-        deletableStoreList.add((DeletableStore) authenticatedUserStore);
-        deletableStoreList.add((DeletableStore) organisationUnitStore);
-        deletableStoreList.add((DeletableStore) resourceStore);
-        deletableStoreList.add((DeletableStore) systemInfoStore);
-        deletableStoreList.add((DeletableStore) userRoleStore);
-        deletableStoreList.add((DeletableStore) userRoleProgramLinkStore);
-        deletableStoreList.add((DeletableStore) programStore);
-        deletableStoreList.add((DeletableStore) trackedEntityAttributeStore);
-        deletableStoreList.add((DeletableStore) programTrackedEntityAttributeStore);
-        deletableStoreList.add((DeletableStore) programRuleVariableStore);
-        deletableStoreList.add((DeletableStore) programIndicatorStore);
-        deletableStoreList.add((DeletableStore) programStageSectionProgramIndicatorLinkStore);
-        deletableStoreList.add((DeletableStore) programRuleActionStore);
-        deletableStoreList.add((DeletableStore) programRuleStore);
-        deletableStoreList.add((DeletableStore) optionStore);
-        deletableStoreList.add((DeletableStore) optionSetStore);
-        deletableStoreList.add((DeletableStore) dataElementStore);
-        deletableStoreList.add((DeletableStore) programStageDataElementStore);
-        deletableStoreList.add((DeletableStore) programStageSectionStore);
-        deletableStoreList.add((DeletableStore) programStageStore);
-        deletableStoreList.add((DeletableStore) relationshipStore);
-        deletableStoreList.add((DeletableStore) trackedEntityStore);
-        deletableStoreList.add((DeletableStore) trackedEntityInstanceStore);
-        deletableStoreList.add((DeletableStore) enrollmentStore);
-        deletableStoreList.add((DeletableStore) trackedEntityDataValueStore);
-        deletableStoreList.add((DeletableStore) trackedEntityAttributeValueStore);
-        deletableStoreList.add((DeletableStore) organisationUnitProgramLinkStore);
-        deletableStoreList.add((DeletableStore) eventStore);
-        deletableStoreList.add((DeletableStore) categoryStore);
-        deletableStoreList.add((DeletableStore) categoryOptionStore);
-        deletableStoreList.add((DeletableStore) categoryOptionLinkStore);
-        deletableStoreList.add((DeletableStore) categoryComboOptionLinkCategoryStore);
-        deletableStoreList.add((DeletableStore) categoryComboStore);
-        deletableStoreList.add((DeletableStore) categoryComboLinkStore);
+        deletableStoreList.add(authenticatedUserStore);
+        return new LogOutUserCallable(
+                deletableStoreList
+        );
+    }
+
+    @NonNull
+    public Callable<Void> wipeDB() {
+        List<DeletableStore> deletableStoreList = new ArrayList<>();
+        deletableStoreList.add(userStore);
+        deletableStoreList.add(userCredentialsStore);
+        deletableStoreList.add(userOrganisationUnitLinkStore);
+        deletableStoreList.add(authenticatedUserStore);
+        deletableStoreList.add(organisationUnitStore);
+        deletableStoreList.add(resourceStore);
+        deletableStoreList.add(systemInfoStore);
+        deletableStoreList.add(userRoleStore);
+        deletableStoreList.add(userRoleProgramLinkStore);
+        deletableStoreList.add(programStore);
+        deletableStoreList.add(trackedEntityAttributeStore);
+        deletableStoreList.add(programTrackedEntityAttributeStore);
+        deletableStoreList.add(programRuleVariableStore);
+        deletableStoreList.add(programIndicatorStore);
+        deletableStoreList.add(programStageSectionProgramIndicatorLinkStore);
+        deletableStoreList.add(programRuleActionStore);
+        deletableStoreList.add(programRuleStore);
+        deletableStoreList.add(optionStore);
+        deletableStoreList.add(optionSetStore);
+        deletableStoreList.add(dataElementStore);
+        deletableStoreList.add(programStageDataElementStore);
+        deletableStoreList.add(programStageSectionStore);
+        deletableStoreList.add(programStageStore);
+        deletableStoreList.add(relationshipStore);
+        deletableStoreList.add(trackedEntityStore);
+        deletableStoreList.add(trackedEntityInstanceStore);
+        deletableStoreList.add(enrollmentStore);
+        deletableStoreList.add(trackedEntityDataValueStore);
+        deletableStoreList.add(trackedEntityAttributeValueStore);
+        deletableStoreList.add(organisationUnitProgramLinkStore);
+        deletableStoreList.add(eventStore);
         return new LogOutUserCallable(
                 deletableStoreList
         );

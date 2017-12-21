@@ -22,6 +22,7 @@ import org.junit.Before;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Response;
 
@@ -73,8 +74,9 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void assertNotCombosInDB() {
-        Cursor combos = selectAllCombosFromDB();
-        assertTrue(combos.getCount() == 0);
+        CategoryComboStore categoryComboStore = new CategoryComboStoreImpl(databaseAdapter());
+        List<CategoryCombo> categoryCombos = categoryComboStore.queryAll();
+        assertTrue(categoryCombos.isEmpty());
     }
 
     private void assertNotCategoryCombosLinkInDB() {
@@ -83,8 +85,9 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void assertThereAreCombosInDB() {
-        Cursor combos = selectAllCombosFromDB();
-        assertTrue(combos.getCount() > 0);
+        CategoryComboStore categoryComboStore = new CategoryComboStoreImpl(databaseAdapter());
+        List<CategoryCombo> categoryCombos = categoryComboStore.queryAll();
+        assertTrue(categoryCombos.size() > 0);
     }
 
     private void assertThereAreCategoryCombosLinkInDB() {
@@ -95,24 +98,6 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     private void assertThereAreCategoryOptionCombosInDB() {
         Cursor combos = selectAllOptionCombosFromDB();
         assertTrue(combos.getCount() > 0);
-    }
-
-    private Cursor selectAllCombosFromDB() {
-        final String[] PROJECTION = {
-                CategoryComboModel.Columns.ID, CategoryComboModel.Columns.UID, CategoryComboModel
-                .Columns.CODE, CategoryComboModel.Columns.NAME,
-                CategoryComboModel.Columns.DISPLAY_NAME, CategoryComboModel.Columns.CREATED,
-                CategoryComboModel.Columns.LAST_UPDATED,
-                CategoryComboModel.Columns.IS_DEFAULT
-
-        };
-
-        String sqlQuery = SQLiteQueryBuilder.buildQueryString(false, CategoryComboModel.TABLE,
-                PROJECTION, null,
-                null, null, null, null);
-
-
-        return databaseAdapter().query(sqlQuery);
     }
 
     private Cursor selectAllCategoryCombosLinksFromDB() {

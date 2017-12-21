@@ -1,6 +1,9 @@
 package org.hisp.dhis.rules.functions;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static java.util.Arrays.asList;
 
 import org.hisp.dhis.rules.RuleVariableValue;
 import org.junit.Rule;
@@ -10,67 +13,53 @@ import org.junit.rules.ExpectedException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public class RuleFunctionModulusShould {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    private Map<String, RuleVariableValue> variableValues = new HashMap<>();
 
     @Test
-    public void return_correct_modulus() {
-        RuleFunction ruleFunction = RuleFunctionModulus.create();
+    public void return_argument_rounded_down_to_nearest_whole_number() {
+        RuleFunction modulusFunction = RuleFunctionModulus.create();
 
-        String result = ruleFunction.evaluate(Arrays.asList("11", "3"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(result).isEqualTo("2");
-
-        result = ruleFunction.evaluate(Arrays.asList("-11", "3"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(result).isEqualTo("-2");
-
-        result = ruleFunction.evaluate(Arrays.asList("0", "2"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(result).isEqualTo("0");
+        assertThat(modulusFunction.evaluate(asList("0", "2"), variableValues), is("0"));
+        assertThat(modulusFunction.evaluate(asList("11", "3"), variableValues), is("2"));
+        assertThat(modulusFunction.evaluate(asList("-11", "3"), variableValues), is("-2"));
+        assertThat(modulusFunction.evaluate(asList("11.5", "3.2"), variableValues), is("2"));
+        assertThat(modulusFunction.evaluate(asList("-11.5", "3.2"), variableValues), is("-2"));
     }
 
     @Test
-    public void throw_Arithmetic_exception_if_zero_dividend() {
+    public void throw_arithmetic_exception_if_zero_dividend() {
         thrown.expect(ArithmeticException.class);
-        RuleFunction ruleFunction = RuleFunctionModulus.create();
-
-        String result = ruleFunction.evaluate(Arrays.asList("0", "0"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(result).isEqualTo("0");
+        RuleFunctionModulus.create().evaluate(asList("2", "0"), variableValues);
     }
 
     @Test
-    public void throw_null_pointer_exception_if_first_parameter_is_null() {
-        thrown.expect(NullPointerException.class);
-        RuleFunction ruleFunction = RuleFunctionModulus.create();
-
-        ruleFunction.evaluate(null,
-                new HashMap<String, RuleVariableValue>());
-    }
-
-    @Test
-    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void throw_illegal_argument_exception_when_argument_count_is_greater_than_expected() {
         thrown.expect(IllegalArgumentException.class);
-        RuleFunction ruleFunction = RuleFunctionModulus.create();
-
-        ruleFunction.evaluate(new ArrayList<String>(),
-                new HashMap<String, RuleVariableValue>());
+        RuleFunctionModulus.create().evaluate(asList("5.9", "6.8", "3.4"), variableValues);
     }
 
     @Test
-    public void throw_number_format_exception_if_not_numeric_arguments() {
-        thrown.expect(NumberFormatException.class);
-        RuleFunction ruleFunction = RuleFunctionModulus.create();
-
-        String result = ruleFunction.evaluate(Arrays.asList("word", "word"),
-                new HashMap<String, RuleVariableValue>());
+    public void throw_illegal_argument_exception_when_arguments_count_is_lower_than_expected() {
+        thrown.expect(IllegalArgumentException.class);
+        RuleFunctionModulus.create().evaluate(new ArrayList<String>(), variableValues);
     }
+
+    @Test
+    public void throw_illegal_argument_exception_when_arguments_is_null() {
+        thrown.expect(IllegalArgumentException.class);
+        RuleFunctionModulus.create().evaluate(Arrays.<String>asList(null, null), variableValues);
+    }
+
+    @Test
+    public void throw_illegal_argument_exception_when_arguments_is_not_number() {
+        thrown.expect(IllegalArgumentException.class);
+        RuleFunctionModulus.create().evaluate(asList("bad number", "bad number"), variableValues);
+    }
+
 }

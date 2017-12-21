@@ -28,7 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
+import static org.mockito.Mockito.verify;
+
+import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,9 +41,9 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
-
-import static org.mockito.Mockito.verify;
 
 @RunWith(JUnit4.class)
 public class LogOutUserCallableShould {
@@ -64,9 +69,13 @@ public class LogOutUserCallableShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        logOutUserCallable = new LogOutUserCallable(
-                userStore, userCredentialsStore, userOrganisationUnitLinkStore,
-                authenticatedUserStore, organisationUnitStore
+        List<DeletableStore> deletableStoreList = new ArrayList<>();
+        deletableStoreList.add(userStore);
+        deletableStoreList.add(userCredentialsStore);
+        deletableStoreList.add(userOrganisationUnitLinkStore);
+        deletableStoreList.add(authenticatedUserStore);
+        deletableStoreList.add(organisationUnitStore);
+        logOutUserCallable = new LogOutUserCallable(deletableStoreList
         );
     }
 

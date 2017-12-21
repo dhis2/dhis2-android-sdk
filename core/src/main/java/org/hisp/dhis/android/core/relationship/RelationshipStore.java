@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.relationship;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-public interface RelationshipStore {
+import org.hisp.dhis.android.core.common.DeletableStore;
+
+public interface RelationshipStore extends DeletableStore {
 
     long insert(
             @Nullable String trackedEntityInstanceA,

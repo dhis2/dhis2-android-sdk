@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.event;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -43,9 +46,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals",
@@ -105,7 +105,7 @@ public class EventStoreImpl implements EventStore {
             EventModel.TABLE + " WHERE " +
             Columns.UID + " =?;";
 
-    private static final String QUERY_EVENTS_ATTACHED_TO_ENROLLMENTS = "SELECT " +
+    private static final String FIELDS =
             "  Event.uid, " +
             "  Event.created, " +
             "  Event.lastUpdated, " +
@@ -120,30 +120,22 @@ public class EventStoreImpl implements EventStore {
             "  Event.enrollment, " +
             "  Event.eventDate, " +
             "  Event.completedDate, " +
-            "  Event.dueDate " +
-            "FROM (Event INNER JOIN Enrollment ON Event.enrollment = Enrollment.uid " +
+                    "  Event.dueDate ";
+
+    private static final String QUERY_EVENTS_ATTACHED_TO_ENROLLMENTS = "SELECT " +
+            FIELDS +
+            " FROM (Event INNER JOIN Enrollment ON Event.enrollment = Enrollment.uid " +
             "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
             "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
             "      OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' OR Event.state = 'TO_POST' " +
             "OR Event.state = 'TO_UPDATE';";
 
     private static final String QUERY_SINGLE_EVENTS = "SELECT " +
-            "  Event.uid, " +
-            "  Event.created, " +
-            "  Event.lastUpdated, " +
-            "  Event.createdAtClient, " +
-            "  Event.lastUpdatedAtClient, " +
-            "  Event.status, " +
-            "  Event.latitude, " +
-            "  Event.longitude, " +
-            "  Event.program, " +
-            "  Event.programStage, " +
-            "  Event.organisationUnit, " +
-            "  Event.eventDate, " +
-            "  Event.completedDate, " +
-            "  Event.dueDate " +
-            "  FROM Event " +
-            "WHERE Event.enrollment ISNULL";
+            FIELDS +
+            "FROM Event WHERE Event.enrollment ISNULL";
+
+    private static final String QUERY_ALL_EVENTS = "SELECT " +
+            FIELDS + " FROM Event ";
 
     private static final String QUERY_SINGLE_EVENTS_TO_POST =
             QUERY_SINGLE_EVENTS + "  AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE')";
@@ -261,32 +253,13 @@ public class EventStoreImpl implements EventStore {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
-                    String uid = cursor.getString(0);
-                    Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
-                    Date lastUpdated = cursor.getString(2) == null ? null : parse(cursor.getString(2));
-                    String createdAtClient = cursor.getString(3) == null ? null : cursor.getString(3);
-                    String lastUpdatedAtClient = cursor.getString(4) == null ? null : cursor.getString(4);
-                    EventStatus eventStatus =
-                            cursor.getString(5) == null ? null : EventStatus.valueOf(cursor.getString(5));
-                    String latitude = cursor.getString(6) == null ? null : cursor.getString(6);
-                    String longitude = cursor.getString(7) == null ? null : cursor.getString(7);
-                    String program = cursor.getString(8) == null ? null : cursor.getString(8);
-                    String programStage = cursor.getString(9) == null ? null : cursor.getString(9);
-                    String organisationUnit = cursor.getString(10) == null ? null : cursor.getString(10);
-                    String enrollment = cursor.getString(11) == null ? null : cursor.getString(11);
-                    Date eventDate = cursor.getString(12) == null ? null : parse(cursor.getString(12));
-                    Date completedDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
-                    Date dueDate = cursor.getString(14) == null ? null : parse(cursor.getString(14));
+                    Event event = mapEventFromCursor(cursor);
 
-                    if (events.get(enrollment) == null) {
-                        events.put(enrollment, new ArrayList<Event>());
+                    if (events.get(event.enrollmentUid()) == null) {
+                        events.put(event.enrollmentUid(), new ArrayList<Event>());
                     }
 
-                    events.get(enrollment).add(Event.create(
-                            uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                            program, programStage, organisationUnit, eventDate, eventStatus,
-                            Coordinates.create(latitude, longitude), completedDate,
-                            dueDate, false, null));
+                    events.get(event.enrollmentUid()).add(event);
 
                 }
                 while (cursor.moveToNext());
@@ -312,6 +285,13 @@ public class EventStoreImpl implements EventStore {
         return mapEventsFromCursor(cursor);
     }
 
+    @Override
+    public List<Event> queryAll() {
+        Cursor cursor = databaseAdapter.query(QUERY_ALL_EVENTS);
+
+        return mapEventsFromCursor(cursor);
+    }
+
     private List<Event> mapEventsFromCursor(Cursor cursor) {
         List<Event> events = new ArrayList<>(cursor.getCount());
 
@@ -320,28 +300,9 @@ public class EventStoreImpl implements EventStore {
                 cursor.moveToFirst();
 
                 do {
-                    String uid = cursor.getString(0);
-                    Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
-                    Date lastUpdated = cursor.getString(2) == null ? null : parse(cursor.getString(2));
-                    String createdAtClient = cursor.getString(3) == null ? null : cursor.getString(3);
-                    String lastUpdatedAtClient = cursor.getString(4) == null ? null : cursor.getString(4);
-                    EventStatus eventStatus =
-                            cursor.getString(5) == null ? null : EventStatus.valueOf(cursor.getString(5));
-                    String latitude = cursor.getString(6) == null ? null : cursor.getString(6);
-                    String longitude = cursor.getString(7) == null ? null : cursor.getString(7);
-                    String program = cursor.getString(8) == null ? null : cursor.getString(8);
-                    String programStage = cursor.getString(9) == null ? null : cursor.getString(9);
-                    String organisationUnit = cursor.getString(10) == null ? null : cursor.getString(10);
-                    Date eventDate = cursor.getString(11) == null ? null : parse(cursor.getString(11));
-                    Date completedDate = cursor.getString(12) == null ? null : parse(cursor.getString(12));
-                    Date dueDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
+                    Event event = mapEventFromCursor(cursor);
 
-                    events.add(Event.create(
-                            uid, null, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                            program, programStage, organisationUnit, eventDate, eventStatus,
-                            Coordinates.create(latitude, longitude), completedDate,
-                            dueDate, false, null));
-
+                    events.add(event);
                 }
                 while (cursor.moveToNext());
             }
@@ -352,4 +313,43 @@ public class EventStoreImpl implements EventStore {
         return events;
     }
 
+    private Event mapEventFromCursor(Cursor cursor) {
+        Event event;
+
+        String uid = cursor.getString(0);
+        Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
+        Date lastUpdated = cursor.getString(2) == null ? null : parse(cursor.getString(2));
+        String createdAtClient = cursor.getString(3) == null ? null : cursor.getString(3);
+        String lastUpdatedAtClient = cursor.getString(4) == null ? null : cursor.getString(4);
+        EventStatus eventStatus =
+                cursor.getString(5) == null ? null : EventStatus.valueOf(cursor.getString(5));
+        String latitude = cursor.getString(6) == null ? null : cursor.getString(6);
+        String longitude = cursor.getString(7) == null ? null : cursor.getString(7);
+        String program = cursor.getString(8) == null ? null : cursor.getString(8);
+        String programStage = cursor.getString(9) == null ? null : cursor.getString(9);
+        String organisationUnit = cursor.getString(10) == null ? null : cursor.getString(10);
+        String enrollment = cursor.getString(11) == null ? null : cursor.getString(11);
+        Date eventDate = cursor.getString(12) == null ? null : parse(cursor.getString(12));
+        Date completedDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
+        Date dueDate = cursor.getString(14) == null ? null : parse(cursor.getString(14));
+
+        Coordinates coordinates = null;
+
+        if (latitude != null && longitude != null) {
+            coordinates = Coordinates.create(latitude, longitude);
+        }
+
+        event = Event.create(
+                uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
+                program, programStage, organisationUnit, eventDate, eventStatus,
+                coordinates, completedDate,
+                dueDate, false, null);
+
+        return event;
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(EventModel.TABLE);
+    }
 }

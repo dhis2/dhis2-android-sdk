@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,13 +40,10 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
-
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
-public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeStore {
+public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeStore{
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityAttributeModel.TABLE + " (" +
             TrackedEntityAttributeModel.Columns.UID + ", " +
@@ -207,5 +207,10 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
         sqLiteBind(sqLiteStatement, 21, orgUnitScope);
         sqLiteBind(sqLiteStatement, 22, unique);
         sqLiteBind(sqLiteStatement, 23, inherit);
+    }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(TrackedEntityAttributeModel.TABLE);
     }
 }

@@ -12,6 +12,12 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Produces the number of full months between the first and second argument.
+ * If the second argument date is before the first argument the return value
+ * will be the negative number of months between the two dates.
+ * The static date format is 'yyyy-MM-dd'.
+ */
 final class RuleFunctionMonthsBetween extends RuleFunction {
     static final String D2_MONTHS_BETWEEN = "d2:monthsBetween";
 
@@ -42,7 +48,7 @@ final class RuleFunctionMonthsBetween extends RuleFunction {
      * @return number of days between dates.
      */
     @SuppressWarnings("PMD.UnnecessaryWrapperObjectCreation")
-    private static Integer monthsBetween(String start, String end) {
+    static Integer monthsBetween(String start, String end) {
         if (isEmpty(start) || isEmpty(end)) {
             return 0;
         }

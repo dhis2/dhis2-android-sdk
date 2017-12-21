@@ -61,7 +61,7 @@ public class RuleFunctionMonthsBetweenShould {
     }
 
     @Test
-    public void evaluate_correct_number_of_days() {
+    public void return_difference_of_months_of_two_dates() {
         RuleFunction monthsBetween = RuleFunctionMonthsBetween.create();
 
         assertThat(monthsBetween.evaluate(asList("2010-10-15", "2010-10-22"), variableValues),

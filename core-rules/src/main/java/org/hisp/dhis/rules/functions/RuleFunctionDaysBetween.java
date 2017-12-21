@@ -13,6 +13,12 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Produces the number of days between the first and second argument.
+ * If the second argument date is before the first argument the return value
+ * will be the negative number of days between the two dates.
+ * The static date format is 'yyyy-MM-dd'.
+ */
 @AutoValue
 abstract class RuleFunctionDaysBetween extends RuleFunction {
     static final String D2_DAYS_BETWEEN = "d2:daysBetween";

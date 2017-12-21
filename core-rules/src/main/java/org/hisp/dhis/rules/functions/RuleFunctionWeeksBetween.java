@@ -9,6 +9,12 @@ import javax.annotation.Nonnull;
 
 import static org.hisp.dhis.rules.functions.RuleFunctionDaysBetween.daysBetween;
 
+/**
+ * Produces the number of full weeks between the first and second argument.
+ * If the second argument date is before the first argument the return value
+ * will be the negative number of weeks between the two dates.
+ * The static date format is 'yyyy-MM-dd'.
+ */
 final class RuleFunctionWeeksBetween extends RuleFunction {
     static final String D2_WEEKS_BETWEEN = "d2:weeksBetween";
 

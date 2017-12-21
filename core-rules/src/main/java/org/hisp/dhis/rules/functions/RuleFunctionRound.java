@@ -7,6 +7,9 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Rounds the input argument to the nearest whole number.
+ */
 final class RuleFunctionRound extends RuleFunction {
     static final String D2_ROUND = "d2:round";
 
@@ -19,20 +22,17 @@ final class RuleFunctionRound extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
-        if (arguments.size() != 1) {
-            throw new IllegalArgumentException("Three arguments were expected, " +
-                    arguments.size() + " were supplied");
+
+        if (arguments == null) {
+            throw new IllegalArgumentException("One argument was expected");
+        } else if (arguments.size() != 1) {
+            throw new IllegalArgumentException("One argument was expected, " +
+                    arguments.size() + " was supplied");
         }
 
         return round(Double.parseDouble(arguments.get(0)));
     }
 
-    /**
-     * Round a number.
-     *
-     * @param value item
-     * @return the number as string.
-     */
     private static String round(Double value) {
         return String.valueOf(Math.round(value));
     }

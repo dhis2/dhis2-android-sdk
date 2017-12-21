@@ -52,7 +52,7 @@ public class EventHandler {
                     event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.status(), latitude, longitude, event.program(), event.programStage(),
                     event.organisationUnit(), event.eventDate(), event.completedDate(),
-                    event.dueDate(), State.SYNCED,event.attributeCategoryOptions(), event.attributeOptionCombo(), event.uid());
+                    event.dueDate(), State.SYNCED, event.attributeCategoryOptions(), event.attributeOptionCombo(), event.uid());
 
             if (updatedRow <= 0) {
                 eventStore.insert(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),

@@ -223,8 +223,8 @@ public class EventStoreImpl implements EventStore {
         sqLiteBind(updateStatement, 14, completedDate);
         sqLiteBind(updateStatement, 15, dueDate);
         sqLiteBind(updateStatement, 16, state);
-        sqLiteBind(insertStatement, 17, attributeCategoryOptions);
-        sqLiteBind(insertStatement, 18, attributeOptionCombo);
+        sqLiteBind(updateStatement, 17, attributeCategoryOptions);
+        sqLiteBind(updateStatement, 18, attributeOptionCombo);
 
         // bind the where clause
         sqLiteBind(updateStatement, 19, whereEventUid);

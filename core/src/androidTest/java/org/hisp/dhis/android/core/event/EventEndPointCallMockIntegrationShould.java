@@ -99,6 +99,7 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
 
         eventEndPointCall.call();
 
+        List<Event> downloadedEvents = getDownloadedEvents();
         eventEndPointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 

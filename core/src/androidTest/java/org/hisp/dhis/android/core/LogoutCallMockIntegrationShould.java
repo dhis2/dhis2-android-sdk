@@ -3,6 +3,12 @@ package org.hisp.dhis.android.core;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
+import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CategoryModel;
+import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryModel;
+import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
+import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -158,6 +164,12 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
                 .isNotEmptyTable(UserCredentialsModel.TABLE)
                 .isNotEmptyTable(OrganisationUnitModel.TABLE)
                 .isNotEmptyTable(ProgramModel.TABLE)
+                .isNotEmptyTable(CategoryModel.TABLE)
+                .isNotEmptyTable(CategoryOptionModel.TABLE)
+                .isNotEmptyTable(CategoryComboModel.TABLE)
+                .isNotEmptyTable(CategoryComboLinkModel.TABLE)
+                .isNotEmptyTable(CategoryOptionComboModel.TABLE)
+                .isNotEmptyTable(CategoryOptionComboLinkCategoryModel.TABLE)
                 .isNotEmptyTable(ResourceModel.TABLE);
     }
 

@@ -12,6 +12,9 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Produces a date based on the first argument date, adding the second argument number of days.
+ */
 final class RuleFunctionAddDays extends RuleFunction {
     static final String D2_ADD_DAYS = "d2:addDays";
 
@@ -33,13 +36,7 @@ final class RuleFunctionAddDays extends RuleFunction {
 
         return String.valueOf(addDays(arguments.get(0), arguments.get(1)));
     }
-    /**
-     * Function which will return the date fixed.
-     *
-     * @param date the date.
-     * @param days the number of days to add.
-     * @return date fixed.
-     */
+
     @SuppressWarnings("PMD.UnnecessaryWrapperObjectCreation")
     private String addDays(String date, String days) {
         SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN, Locale.US);

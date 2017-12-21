@@ -8,6 +8,10 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * Produces a string concatenated string from the input parameters.
+ * Supports any number of parameters
+ */
 final class RuleFunctionConcatenate extends RuleFunction {
     static final String D2_CONCATENATE = "d2:concatenate";
 

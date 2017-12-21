@@ -112,6 +112,7 @@ public class TrackedEntityInstanceEndPointCall implements
                         Enrollment.trackedEntityInstance,
                         Enrollment.deleted,
                         Enrollment.events.with(
+                                Event.attributeCategoryOptions, Event.attributeOptionCombo,
                                 Event.uid, Event.created, Event.lastUpdated, Event.completeDate,
                                 Event.coordinates,
                                 Event.dueDate, Event.enrollment, Event.eventDate, Event.eventStatus,

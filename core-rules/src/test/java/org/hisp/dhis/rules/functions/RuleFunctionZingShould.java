@@ -1,6 +1,10 @@
 package org.hisp.dhis.rules.functions;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
+import static java.util.Arrays.asList;
 
 import org.hisp.dhis.rules.RuleVariableValue;
 import org.junit.Rule;
@@ -10,81 +14,61 @@ import org.junit.rules.ExpectedException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public class RuleFunctionZingShould {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    private Map<String, RuleVariableValue> variableValues = new HashMap<>();
 
     @Test
-    public void return_zero_after_negative_number() {
+    public void return_same_value_for_non_negative_argument() {
         RuleFunction zing = RuleFunctionZing.create();
 
-        String zingNumber = zing.evaluate(Arrays.asList("-0.1"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(zingNumber).isEqualTo("0.0");
-        zingNumber = zing.evaluate(Arrays.asList("-1"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(zingNumber).isEqualTo("0.0");
-        zingNumber = zing.evaluate(Arrays.asList("-10"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(zingNumber).isEqualTo("0.0");
+        assertThat(zing.evaluate(asList("0"), variableValues), is("0.0"));
+        assertThat(zing.evaluate(asList("1"), variableValues), is("1.0"));
+        assertThat(zing.evaluate(asList("5"), variableValues), is("5.0"));
+        assertThat(zing.evaluate(asList("0.1"), variableValues), is("0.1"));
+        assertThat(zing.evaluate(asList("1.1"), variableValues), is("1.1"));
     }
 
     @Test
-    public void return_number_after_positive_number() {
+    public void return_zero_for_negative_argument() {
         RuleFunction zing = RuleFunctionZing.create();
 
-        String zingNumber = zing.evaluate(Arrays.asList("0"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(zingNumber).isEqualTo("0.0");
-        zingNumber = zing.evaluate(Arrays.asList("1"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(zingNumber).isEqualTo("1.0");
-        zingNumber = zing.evaluate(Arrays.asList("5"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(zingNumber).isEqualTo("5.0");
+        assertThat(zing.evaluate(asList("-0.1"), variableValues), is("0.0"));
+        assertThat(zing.evaluate(asList("-1"), variableValues), is("0.0"));
+        assertThat(zing.evaluate(asList("-10"), variableValues), is("0.0"));
+        assertThat(zing.evaluate(asList("-1.1"), variableValues), is("0.0"));
     }
 
     @Test
-    public void return_number_after_positive_number_with_decimals() {
+    public void return_zero_for_non_number() {
         RuleFunction zing = RuleFunctionZing.create();
 
-        String zingNumber = zing.evaluate(Arrays.asList("0.1"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(zingNumber).isEqualTo("0.0");
-        zingNumber = zing.evaluate(Arrays.asList("1.1"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(zingNumber).isEqualTo("1.0");
-        zingNumber = zing.evaluate(Arrays.asList("-1.1"),
-                new HashMap<String, RuleVariableValue>());
-
-        assertThat(zingNumber).isEqualTo("0.0");
+        assertThat(zing.evaluate(asList("non_number"), variableValues), is("0.0"));
     }
 
     @Test
-    public void throw_null_pointer_exception_if_first_parameter_is_null() {
-        thrown.expect(NullPointerException.class);
-        RuleFunction zing = RuleFunctionZing.create();
-
-        zing.evaluate(null,
+    public void throw_illegal_argument_exception_when_argument_count_is_greater_than_expected() {
+        thrown.expect(IllegalArgumentException.class);
+        RuleFunctionCeil.create().evaluate(Arrays.asList("5.9", "6.8"),
                 new HashMap<String, RuleVariableValue>());
     }
 
     @Test
-    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void throw_illegal_argument_exception_when_arguments_count_is_lower_than_expected() {
+        thrown.expect(IllegalArgumentException.class);
+        RuleFunctionCeil.create().evaluate(new ArrayList<String>(),
+                new HashMap<String, RuleVariableValue>());
+    }
+
+    @Test
+    public void throw_illegal_argument_exception_when_arguments_is_null() {
         thrown.expect(IllegalArgumentException.class);
         RuleFunction zing = RuleFunctionZing.create();
 
-        zing.evaluate(new ArrayList<String>(),
-                new HashMap<String, RuleVariableValue>());
+        zing.evaluate(null, variableValues);
     }
 }

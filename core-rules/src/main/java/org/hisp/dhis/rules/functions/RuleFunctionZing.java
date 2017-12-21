@@ -8,6 +8,11 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * Evaluates the argument of type number to zero if the value is negative,
+ * otherwise to the value itself.
+ */
+
 final class RuleFunctionZing extends RuleFunction {
     static final String D2_ZING = "d2:zing";
 
@@ -20,12 +25,16 @@ final class RuleFunctionZing extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
-        if (arguments.size() != 1) {
+
+        if (arguments == null) {
+            throw new IllegalArgumentException("One argument is expected");
+        } else if (arguments.size() != 1) {
             throw new IllegalArgumentException("One argument was expected, " +
                     arguments.size() + " were supplied");
         }
-        Long longResult = (long) Math.max(0d, toDouble(arguments.get(0), 0.0));
-        return String.valueOf(toDouble(longResult.toString(), 0.0));
+
+        double result = Math.max(0d, toDouble(arguments.get(0), 0.0));
+        return String.valueOf(result);
     }
 
     private static double toDouble(@Nullable final String str, final double defaultValue) {

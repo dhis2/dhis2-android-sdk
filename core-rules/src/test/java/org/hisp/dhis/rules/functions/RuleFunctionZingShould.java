@@ -53,22 +53,18 @@ public class RuleFunctionZingShould {
     @Test
     public void throw_illegal_argument_exception_when_argument_count_is_greater_than_expected() {
         thrown.expect(IllegalArgumentException.class);
-        RuleFunctionCeil.create().evaluate(Arrays.asList("5.9", "6.8"),
-                new HashMap<String, RuleVariableValue>());
+        RuleFunctionZing.create().evaluate(Arrays.asList("5.9", "6.8"), variableValues);
     }
 
     @Test
     public void throw_illegal_argument_exception_when_arguments_count_is_lower_than_expected() {
         thrown.expect(IllegalArgumentException.class);
-        RuleFunctionCeil.create().evaluate(new ArrayList<String>(),
-                new HashMap<String, RuleVariableValue>());
+        RuleFunctionZing.create().evaluate(new ArrayList<String>(), variableValues);
     }
 
     @Test
     public void throw_illegal_argument_exception_when_arguments_is_null() {
         thrown.expect(IllegalArgumentException.class);
-        RuleFunction zing = RuleFunctionZing.create();
-
-        zing.evaluate(null, variableValues);
+        RuleFunctionZing.create().evaluate(null, variableValues);
     }
 }

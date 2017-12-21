@@ -93,21 +93,19 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
 
         EventEndPointCall eventEndPointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
-        ;
 
-        dhis2MockServer.enqueueMockResponse("events_1.json");
+        dhis2MockServer.enqueueMockResponse("event_1_with_all_data_values.json");
 
         eventEndPointCall.call();
 
-        List<Event> downloadedEvents = getDownloadedEvents();
         eventEndPointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
-        dhis2MockServer.enqueueMockResponse("events_1_with_removed_data_values.json");
+        dhis2MockServer.enqueueMockResponse("event_1_with_only_one_data_values.json");
 
         eventEndPointCall.call();
 
-        verifyDownloadedEvents("events_1_with_removed_data_values.json");
+        verifyDownloadedEvents("event_1_with_only_one_data_values.json");
     }
 
     private void givenAMetadataInDatabase() throws Exception {
@@ -119,6 +117,7 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
         dhis2MockServer.enqueueMockResponse("option_sets.json");
+
         d2.syncMetaData().call();
     }
 
@@ -130,6 +129,7 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
         assertThat(downloadedEvents.size(), is(expectedEventsResponse.items().size()));
         assertThat(downloadedEvents, is(expectedEventsResponse.items()));
     }
+
 
     private List<Event> getDownloadedEvents() {
         List<Event> downloadedEvents = new ArrayList<>();

@@ -95,8 +95,8 @@ public class EventStoreImpl implements EventStore {
             Columns.COMPLETE_DATE + " =? , " +
             Columns.DUE_DATE + " =? , " +
             Columns.STATE + " =?, " +
-            Columns.ATTRIBUTE_OPTION_COMBO + " =?, " +
-            Columns.ATTRIBUTE_CATEGORY_OPTIONS + " =? " +
+            Columns.ATTRIBUTE_CATEGORY_OPTIONS + " =?, " +
+            Columns.ATTRIBUTE_OPTION_COMBO + " =? " +
             " WHERE " +
             Columns.UID + " =?;";
 

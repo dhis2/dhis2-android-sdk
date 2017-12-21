@@ -58,7 +58,7 @@ abstract class RuleFunctionDaysBetween extends RuleFunction {
 
             return Long.valueOf((endDate.getTime() - startDate.getTime()) / 86400000).intValue();
         } catch (ParseException parseException) {
-            throw new IllegalArgumentException("parseException", parseException);
+            throw new IllegalArgumentException(parseException.getMessage(), parseException);
         }
     }
 

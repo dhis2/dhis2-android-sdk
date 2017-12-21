@@ -24,13 +24,16 @@ final class RuleFunctionMonthsBetween extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
-        if (arguments.size() != 2) {
+        if (arguments == null) {
+            throw new IllegalArgumentException("One argument is expected");
+        } else if (arguments.size() != 2) {
             throw new IllegalArgumentException("Two arguments were expected, " +
                     arguments.size() + " were supplied");
         }
 
         return String.valueOf(monthsBetween(arguments.get(0), arguments.get(1)));
     }
+
     /**
      * Function which will return the number of months between the two given dates.
      *
@@ -40,6 +43,10 @@ final class RuleFunctionMonthsBetween extends RuleFunction {
      */
     @SuppressWarnings("PMD.UnnecessaryWrapperObjectCreation")
     private static Integer monthsBetween(String start, String end) {
+        if (isEmpty(start) || isEmpty(end)) {
+            return 0;
+        }
+
         SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN, Locale.US);
 
         try {
@@ -51,9 +58,14 @@ final class RuleFunctionMonthsBetween extends RuleFunction {
             endDate.setTime(format.parse(end));
 
             int diffYear = endDate.get(Calendar.YEAR) - startDate.get(Calendar.YEAR);
-            return Long.valueOf((diffYear * 12 + endDate.get(Calendar.MONTH) - startDate.get(Calendar.MONTH))).intValue();
+            return Long.valueOf((diffYear * 12 + endDate.get(Calendar.MONTH) - startDate.get(
+                    Calendar.MONTH))).intValue();
         } catch (ParseException parseException) {
-            throw new RuntimeException(parseException);
+            throw new IllegalArgumentException(parseException.getMessage(), parseException);
         }
+    }
+
+    private static boolean isEmpty(CharSequence charSequence) {
+        return charSequence == null || charSequence.length() == 0;
     }
 }

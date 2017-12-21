@@ -27,9 +27,6 @@ public class RuleFunctionShould {
         assertThat(RuleFunction.create("d2:concatenate"))
                 .isInstanceOf(RuleFunctionConcatenate.class);
 
-        assertThat(RuleFunction.create("d2:condition"))
-                .isInstanceOf(RuleFunctionCondition.class);
-
         assertThat(RuleFunction.create("d2:countIfValue"))
                 .isInstanceOf(RuleFunctionCountIfValue.class);
 

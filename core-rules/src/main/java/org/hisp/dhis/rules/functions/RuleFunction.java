@@ -36,8 +36,6 @@ public abstract class RuleFunction {
                 return RuleFunctionAddDays.create();
             case RuleFunctionConcatenate.D2_CONCATENATE:
                 return RuleFunctionConcatenate.create();
-            case RuleFunctionCondition.D2_CONDITION:
-                return RuleFunctionCondition.create();
             case RuleFunctionCount.D2_COUNT:
                 return RuleFunctionCount.create();
             case RuleFunctionCountIfZeroPos.D2_COUNT_IF_ZERO_POS:

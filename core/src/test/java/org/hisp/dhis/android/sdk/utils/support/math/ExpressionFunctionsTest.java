@@ -488,6 +488,7 @@ public class ExpressionFunctionsTest {
         assertThat(round(0.4999), is(equalTo(0L)));
         assertThat(round(0.5001), is(equalTo(1L)));
         assertThat(round(-9.3), is(equalTo(-9L)));
+        assertThat(round(-9.8), is(equalTo(-10L)));
     }
 
     @Test

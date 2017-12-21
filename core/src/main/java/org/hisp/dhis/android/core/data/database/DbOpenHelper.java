@@ -355,7 +355,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             " FOREIGN KEY (" + ProgramModel.Columns.CATEGORY_COMBO + ")" +
             " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"
             +
-            " ON DELETE CASCADE" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_TABLE =

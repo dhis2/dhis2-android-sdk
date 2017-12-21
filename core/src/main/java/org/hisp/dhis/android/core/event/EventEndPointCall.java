@@ -99,6 +99,7 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
 
     private Fields<Event> getSingleFields() {
         return Fields.<Event>builder().fields(
+                Event.attributeCategoryOptions, Event.attributeOptionCombo,
                 Event.uid, Event.created, Event.lastUpdated,
                 Event.eventStatus, Event.coordinates, Event.program, Event.programStage,
                 Event.organisationUnit, Event.eventDate, Event.completeDate,

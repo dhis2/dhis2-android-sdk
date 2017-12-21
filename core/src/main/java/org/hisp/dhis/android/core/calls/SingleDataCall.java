@@ -99,7 +99,7 @@ public class SingleDataCall implements Call<Response> {
 
             response = eventCall(serverDate);
 
-            if (!response.isSuccessful()) {
+            if (response == null || !response.isSuccessful()) {
                 return response;
             }
 

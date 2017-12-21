@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.event;
 
+import static junit.framework.Assert.assertTrue;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -11,6 +13,7 @@ import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -48,6 +51,36 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
         verifyDownloadedEvents(50);
     }
 
+
+    @Test
+    public void download_event_with_category_combo_option() throws Exception {
+        retrofit2.Response response = null;
+        response = d2.logIn(RealServerMother.user, RealServerMother.password).call();
+        Truth.assertThat(response.isSuccessful()).isTrue();
+
+
+        response = d2.syncMetaData().call();
+        Truth.assertThat(response.isSuccessful()).isTrue();
+
+        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+
+        eventEndPointCall.call();
+
+        assertTrue(verifyAtLeastOneEventWithCategoryOption());
+    }
+
+    private boolean verifyAtLeastOneEventWithCategoryOption() {
+        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
+
+        List<Event> downloadedEvents = eventStore.querySingleEvents();
+        for(Event event : downloadedEvents){
+            if(event.attributeCategoryOptions()!=null && event.attributeOptionCombo()!=null){
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void verifyDownloadedEvents(int numEvents) {
         EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());

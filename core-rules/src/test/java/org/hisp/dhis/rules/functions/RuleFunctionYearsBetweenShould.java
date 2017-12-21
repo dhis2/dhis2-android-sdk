@@ -72,6 +72,15 @@ public class RuleFunctionYearsBetweenShould {
                 is("1"));
         assertThat(yearsBetween.evaluate(asList("2010-01-01", "2016-06-30"), variableValues),
                 is("6"));
+
+        assertThat(yearsBetween.evaluate(asList("2010-10-22", "2010-10-15"), variableValues),
+                is("0"));
+        assertThat(yearsBetween.evaluate(asList("2011-10-31", "2010-09-30"), variableValues),
+                is("-1"));
+        assertThat(yearsBetween.evaluate(asList("2016-06-30", "2015-01-01"), variableValues),
+                is("-1"));
+        assertThat(yearsBetween.evaluate(asList("2016-06-30", "2010-01-01"), variableValues),
+                is("-6"));
     }
 
 

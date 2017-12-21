@@ -69,6 +69,13 @@ public class RuleFunctionDaysBetweenShould {
                 is(("15")));
         assertThat(daysBetween.evaluate(asList("2010-12-31", "2011-01-01"), variableValues),
                 is(("1")));
+
+        assertThat(daysBetween.evaluate(asList("2010-10-20", "2010-10-15"), variableValues),
+                is(("-5")));
+        assertThat(daysBetween.evaluate(asList("2010-10-15", "2010-09-30"), variableValues),
+                is(("-15")));
+        assertThat(daysBetween.evaluate(asList("2011-01-01", "2010-12-31"), variableValues),
+                is(("-1")));
     }
 
     @Test

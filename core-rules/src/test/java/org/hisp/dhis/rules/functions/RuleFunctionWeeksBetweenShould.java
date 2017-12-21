@@ -75,6 +75,15 @@ public class RuleFunctionWeeksBetweenShould {
                 is("4"));
         assertThat(weeksBetween.evaluate(asList("2010-12-31", "2011-01-01"), variableValues),
                 is("0"));
+
+        assertThat(weeksBetween.evaluate(asList("2010-10-22", "2010-10-15"), variableValues),
+                is("-1"));
+        assertThat(weeksBetween.evaluate(asList("2010-10-15", "2010-09-30"), variableValues),
+                is("-2"));
+        assertThat(weeksBetween.evaluate(asList("2016-01-31", "2016-01-01"), variableValues),
+                is("-4"));
+        assertThat(weeksBetween.evaluate(asList("2011-01-01", "2010-12-31"), variableValues),
+                is("0"));
     }
 
 

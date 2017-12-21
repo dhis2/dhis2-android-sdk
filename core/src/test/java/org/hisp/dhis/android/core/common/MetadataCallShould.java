@@ -42,15 +42,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryHandler;
-import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
-import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -363,7 +360,7 @@ public class MetadataCallShould {
         comboService = retrofit.create(CategoryComboService.class);
 
         dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("categories_combo.json");
+        dhis2MockServer.enqueueMockResponse("category_combos.json");
 
 
 

@@ -71,7 +71,7 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("user.json");
         dhis2MockServer.enqueueMockResponse("organisationUnits.json");
         dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("categories_combo.json");
+        dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
         dhis2MockServer.enqueueMockResponse("option_sets.json");
@@ -85,7 +85,7 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("admin/user.json");
         dhis2MockServer.enqueueMockResponse("admin/organisation_units.json");
         dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("categories_combo.json");
+        dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
         dhis2MockServer.enqueueMockResponse("option_sets.json");

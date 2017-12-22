@@ -157,8 +157,7 @@ public class DataBaseMigrationShould {
         assertThat(ifValueExist("TestTable", "testColumn","1", databaseAdapter), is(true));
     }
 
-    //TODO  review downgrade tests, possible race condition, and foreign keys.
-    //@Test
+    @Test
     public void not_have_category_table_after_downgrade_with_database_version_2() throws IOException {
         initCoreDataBase(dbName, 2, realMigrationDir, databaseSqlVersion2);
         initCoreDataBase(dbName, 1, realMigrationDir, "");
@@ -171,8 +170,7 @@ public class DataBaseMigrationShould {
         assertThat(ifTableExist(CategoryOptionLinkModel.TABLE, databaseAdapter), is(false));
     }
 
-    //TODO  review downgrade tests, possible race condition, and foreign keys.
-    //@Test
+    @Test
     public void not_have_category_table_after_downgrade_with_real_sql_database() throws IOException {
         initCoreDataBase(dbName, 2, realMigrationDir, "");
         initCoreDataBase(dbName, 1, realMigrationDir, "");
@@ -185,8 +183,7 @@ public class DataBaseMigrationShould {
         assertThat(ifTableExist(CategoryOptionLinkModel.TABLE, databaseAdapter), is(false));
     }
 
-    //TODO  review downgrade tests, possible race condition, and foreign keys.
-    //@Test
+    @Test
     public synchronized void have_dropped_table_when_down_migration_drop_table() {
         initCoreDataBase(dbName, 1, exampleMigrationsDir, databaseSqlVersion1);
         initCoreDataBase(dbName, 3, exampleMigrationsDir, databaseSqlVersion1);

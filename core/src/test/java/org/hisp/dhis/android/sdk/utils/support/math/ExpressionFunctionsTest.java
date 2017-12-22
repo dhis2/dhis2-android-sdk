@@ -540,7 +540,8 @@ public class ExpressionFunctionsTest {
         assertThat(validatePattern("abc123", "xyz"), is(equalTo(false)));
         assertThat(validatePattern("abc123", "^bc"), is(equalTo(false)));
         assertThat(validatePattern("abc123", "abc12345"), is(equalTo(false)));
-        assertThat(validatePattern(123, "567"), is(equalTo(false)));
+        assertThat(validatePattern("1999/99/9", "\\[9]{4}/\\d{2}/\\d"), is(equalTo(false)));
+        assertThat(validatePattern("9999/99/", "[0-9]{4}/[0-9]{2}/[0-9]"), is(equalTo(false)));
     }
 
     @Test
@@ -551,6 +552,8 @@ public class ExpressionFunctionsTest {
         assertThat(validatePattern(123, "12"), is(equalTo(false)));
         assertThat(validatePattern(123, "123"), is(equalTo(true)));
         assertThat(validatePattern("27123456789", "27\\d{2}\\d{3}\\d{4}"), is(equalTo(true)));
+        assertThat(validatePattern("9999/99/9", "\\d{4}/\\d{2}/\\d"), is(equalTo(true)));
+        assertThat(validatePattern("9999/99/9", "[0-9]{4}/[0-9]{2}/[0-9]"), is(equalTo(true)));
     }
 
     @Test

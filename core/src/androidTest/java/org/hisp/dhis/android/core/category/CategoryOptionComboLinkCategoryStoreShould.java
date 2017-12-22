@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +16,10 @@ import java.util.Date;
 public class CategoryOptionComboLinkCategoryStoreShould extends AbsStoreTestCase {
 
     private CategoryOptionComboLinkCategoryStore store;
+    private CategoryOption newCategoryOption;
+    private CategoryOptionCombo newCategoryOptionCombo;
+    private CategoryOptionComboLinkCategoryModel newCategoryOptionComboLinkCategory;
+    private long lastInsertedID;
 
     @Override
     @Before
@@ -26,54 +29,23 @@ public class CategoryOptionComboLinkCategoryStoreShould extends AbsStoreTestCase
 
     }
 
-    @Override
-    @After
-    public void tearDown() {
-        clearTablesData();
-    }
-
     @Test
-    public void insert_category() throws Exception {
+    public void insert_a_category_option_combo_link_category() throws Exception {
+        givenACategoryOption();
+        givenACategoryOptionCombo();
+        givenACategoryOptionComboLinkCategory();
 
-        insertNewCategoryOption();
+        whenInsertNewCategoryOption();
+        whenInsertNewCategoryOptionCombo();
+        whenInsertNewCategoryOptionComboLinkCategory();
 
-        insertNewOptionCombo();
-
-        long lastID = insertNewOptionComboLink();
-
-        assertEquals(lastID, 1);
-
+        thenAssertLastInsertedIDIsOne();
     }
 
-    private CategoryOptionComboLinkCategoryModel givenAOptionComboLink() {
-
-        return CategoryOptionComboLinkCategoryModel.builder()
-                .optionCombo("NZAKyj67WW2")
-                .category("TXGfLxZlInA")
-                .build();
-    }
-
-    private long insertNewOptionComboLink() {
-        CategoryOptionComboLinkCategoryModel link = givenAOptionComboLink();
-        return store.insert(link);
-    }
-
-    private void insertNewCategoryOption() {
-        CategoryOption newCategoryOption = givenACategoryOption();
-        CategoryOptionStoreImpl store = new CategoryOptionStoreImpl(databaseAdapter());
-        store.insert(newCategoryOption);
-    }
-
-    private void insertNewOptionCombo() {
-        CategoryOptionCombo newOptionCombo = givenAOptionCombo();
-        CategoryOptionComboStore optionStore = new CategoryOptionComboStoreImpl(databaseAdapter());
-        optionStore.insert(newOptionCombo);
-    }
-
-    private CategoryOption givenACategoryOption() {
+    private void givenACategoryOption() {
         Date today = new Date();
 
-        return CategoryOption.builder()
+        newCategoryOption = CategoryOption.builder()
                 .uid("TXGfLxZlInA")
                 .code("SECHN")
                 .created(today)
@@ -83,10 +55,10 @@ public class CategoryOptionComboLinkCategoryStoreShould extends AbsStoreTestCase
                 .build();
     }
 
-    private CategoryOptionCombo givenAOptionCombo() {
+    private void givenACategoryOptionCombo() {
         Date today = new Date();
 
-        return CategoryOptionCombo.builder()
+        newCategoryOptionCombo = CategoryOptionCombo.builder()
                 .uid("NZAKyj67WW2")
                 .created(today)
                 .name("SECHN, Male")
@@ -95,8 +67,28 @@ public class CategoryOptionComboLinkCategoryStoreShould extends AbsStoreTestCase
                 .build();
     }
 
-    private void clearTablesData() {
-        databaseAdapter().delete(CategoryOptionLinkModel.TABLE);
+    private void givenACategoryOptionComboLinkCategory() {
+        newCategoryOptionComboLinkCategory = CategoryOptionComboLinkCategoryModel.builder()
+                .optionCombo("NZAKyj67WW2")
+                .category("TXGfLxZlInA")
+                .build();
     }
 
+    private void whenInsertNewCategoryOption() {
+        CategoryOptionStoreImpl store = new CategoryOptionStoreImpl(databaseAdapter());
+        store.insert(newCategoryOption);
+    }
+
+    private void whenInsertNewCategoryOptionComboLinkCategory() {
+        lastInsertedID = store.insert(newCategoryOptionComboLinkCategory);
+    }
+
+    private void whenInsertNewCategoryOptionCombo() {
+        CategoryOptionComboStore optionStore = new CategoryOptionComboStoreImpl(databaseAdapter());
+        optionStore.insert(newCategoryOptionCombo);
+    }
+
+    private void thenAssertLastInsertedIDIsOne() {
+        assertEquals(lastInsertedID, 1);
+    }
 }

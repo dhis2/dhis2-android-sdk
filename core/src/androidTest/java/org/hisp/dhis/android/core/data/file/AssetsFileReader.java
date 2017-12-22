@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public final class AssetsFileReader implements IFileReader {
 /*    public static String getStringFromFile(Class clazz, String filePath) throws IOException {
@@ -25,7 +26,7 @@ public final class AssetsFileReader implements IFileReader {
         Context testContext = InstrumentationRegistry.getInstrumentation().getContext();
         InputStream inputStream = testContext.getAssets().open(filename);
 
-        InputStreamReader isr = new InputStreamReader(inputStream);
+        InputStreamReader isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
         BufferedReader bufferedReader = new BufferedReader(isr);
         StringBuilder sb = new StringBuilder();
         String line;

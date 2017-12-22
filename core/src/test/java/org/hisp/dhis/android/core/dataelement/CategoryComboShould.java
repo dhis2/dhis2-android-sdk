@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataelement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Test;
 

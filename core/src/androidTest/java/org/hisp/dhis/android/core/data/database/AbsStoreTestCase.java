@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
-
 import static com.google.common.truth.Truth.assertThat;
 
 import android.database.sqlite.SQLiteDatabase;
@@ -43,7 +41,7 @@ import java.io.IOException;
 public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
-    private String dbName = null;
+    private String dbName = "test_nacho.db";
 
     @Before
     public void setUp() throws IOException {

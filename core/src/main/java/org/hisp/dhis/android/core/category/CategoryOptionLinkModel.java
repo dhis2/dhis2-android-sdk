@@ -26,51 +26,59 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.category;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
 
-import java.util.Collections;
-import java.util.List;
 
-// TODO: Write Category- Store, StoreImp, Model and their tests (Datacapture)
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Category.Builder.class)
-public abstract class Category extends BaseNameableObject {
-    private static final String JSON_PROPERTY_CATEGORY_OPTIONS = "categoryOptions";
+public abstract class CategoryOptionLinkModel extends BaseModel {
+    public static final String TABLE = "CategoryCategoryOptionLink";
+
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String CATEGORY = "category";
+        public static final String CATEGORY_OPTION = "categoryOption";
+
+    }
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CATEGORY_OPTIONS)
-    public abstract List<CategoryOption> categoryOptions();
+    @ColumnName(Columns.CATEGORY)
+    public abstract String category();
 
+    @Nullable
+    @ColumnName(Columns.CATEGORY_OPTION)
+    public abstract String option();
+
+    @NonNull
+    public abstract ContentValues toContentValues();
+
+    @NonNull
     public static Builder builder() {
-        return new AutoValue_Category.Builder();
+        return new $$AutoValue_CategoryOptionLinkModel.Builder();
+    }
+
+    @NonNull
+    public static CategoryOptionLinkModel create(Cursor cursor) {
+        return AutoValue_CategoryOptionLinkModel.createFromCursor(cursor);
+
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
 
-        @JsonProperty(JSON_PROPERTY_CATEGORY_OPTIONS)
-        public abstract Builder categoryOptions(@Nullable List<CategoryOption> categoryOptions);
+        public abstract Builder category(@Nullable String category);
 
-        // used only to support unmodifiable collections
-        abstract List<CategoryOption> categoryOptions();
+        public abstract Builder option(@Nullable String option);
 
-        // used only to support unmodifiable collections
-        abstract Category autoBuild();
-
-        public Category build() {
-            if (categoryOptions() != null) {
-                categoryOptions(Collections.unmodifiableList(categoryOptions()));
-            }
-
-            return autoBuild();
-        }
+        public abstract CategoryOptionLinkModel build();
     }
 }

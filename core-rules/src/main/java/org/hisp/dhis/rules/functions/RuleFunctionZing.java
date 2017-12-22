@@ -9,20 +9,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Rounds the input argument down to the nearest whole number.
+ * Evaluates the argument of type number to zero if the value is negative,
+ * otherwise to the value itself.
  */
-final class RuleFunctionFloor extends RuleFunction {
-    static final String D2_FLOOR = "d2:floor";
+
+final class RuleFunctionZing extends RuleFunction {
+    static final String D2_ZING = "d2:zing";
 
     @Nonnull
-    static RuleFunctionFloor create() {
-        return new RuleFunctionFloor();
+    static RuleFunctionZing create() {
+        return new RuleFunctionZing();
     }
 
     @Nonnull
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
+
         if (arguments == null) {
             throw new IllegalArgumentException("One argument is expected");
         } else if (arguments.size() != 1) {
@@ -30,7 +33,8 @@ final class RuleFunctionFloor extends RuleFunction {
                     arguments.size() + " were supplied");
         }
 
-        return String.valueOf(new Double(Math.floor(toDouble(arguments.get(0), 0.0))).intValue());
+        double result = Math.max(0d, toDouble(arguments.get(0), 0.0));
+        return String.valueOf(result);
     }
 
     private static double toDouble(@Nullable final String str, final double defaultValue) {

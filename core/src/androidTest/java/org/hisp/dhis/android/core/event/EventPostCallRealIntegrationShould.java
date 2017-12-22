@@ -122,6 +122,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.wipeDB().call();
 
+        dowloadMetadata();
 
         downloadEventsBy(categoryComboUID,attributeCategoryOption);
 

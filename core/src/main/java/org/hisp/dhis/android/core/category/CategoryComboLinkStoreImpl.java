@@ -23,8 +23,9 @@ public class CategoryComboLinkStoreImpl implements CategoryComboLinkStore {
                     CategoryComboLinkModel.Columns.COMBO + ") " +
                     "VALUES(?, ?);";
 
-    private static final String FIELDS = CategoryComboLinkModel.TABLE +"."+ CategoryComboLinkModel.Columns.CATEGORY + "," +
-            CategoryComboLinkModel.TABLE +"."+ CategoryComboLinkModel.Columns.COMBO;
+    private static final String FIELDS =
+            CategoryComboLinkModel.TABLE + "." + CategoryComboLinkModel.Columns.CATEGORY + "," +
+                    CategoryComboLinkModel.TABLE + "." + CategoryComboLinkModel.Columns.COMBO;
 
     private static final String QUERY_ALL_CATEGORY_COMBO_LINKS = "SELECT " +
             FIELDS + " FROM " + CategoryComboLinkModel.TABLE;
@@ -92,7 +93,7 @@ public class CategoryComboLinkStoreImpl implements CategoryComboLinkStore {
     }
 
     private CategoryComboLink mapCategoryComboLinkFromCursor(Cursor cursor) {
-        CategoryComboLink categoryComboLink ;
+        CategoryComboLink categoryComboLink;
 
         String category = cursor.getString(0);
         String combo = cursor.getString(1);

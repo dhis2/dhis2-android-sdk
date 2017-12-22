@@ -194,13 +194,13 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         String uid = cursor.getString(0);
         String code = cursor.getString(1);
         String name = cursor.getString(2);
-        String displayName = cursor.getString(3) ;
+        String displayName = cursor.getString(3);
         Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
         Date lastUpdated = cursor.getString(5) == null ? null : parse(cursor.getString(5));
         Boolean isDefault = cursor.getInt(6) > 0;
 
         categoryCombo = CategoryCombo.create(
-                uid, code, name, displayName, created, lastUpdated, isDefault,null, null);
+                uid, code, name, displayName, created, lastUpdated, isDefault, null, null);
 
         return categoryCombo;
     }

@@ -17,6 +17,7 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Date;
@@ -35,7 +36,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-    //@Test
+    @Test
     public void download_categories_combos_and_relatives() throws Exception {
 
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
@@ -46,8 +47,8 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertNotCombosInDB();
         assertThereAreNotCategoryCombosLinkInDB();
 
-        CategoryComboEndpointCall categoryComboCallEndpoint = provideCategoryComboCallEndpoint();
-        Response<Payload<CategoryCombo>> responseCategory = categoryComboCallEndpoint.call();
+        CategoryComboEndpointCall categoryComboEndpointCall = provideCategoryComboEndpointCall();
+        Response<Payload<CategoryCombo>> responseCategory = categoryComboEndpointCall.call();
 
         assertResponseIsCorrect(responseCategory);
 
@@ -109,7 +110,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     @NonNull
-    private CategoryComboEndpointCall provideCategoryComboCallEndpoint() {
+    private CategoryComboEndpointCall provideCategoryComboEndpointCall() {
         CategoryComboQuery query = CategoryComboQuery.defaultQuery();
 
         CategoryComboService comboService = d2.retrofit().create(CategoryComboService.class);

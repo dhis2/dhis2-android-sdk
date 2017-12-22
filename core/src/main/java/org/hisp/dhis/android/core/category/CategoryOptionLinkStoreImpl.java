@@ -18,7 +18,7 @@ public class CategoryOptionLinkStoreImpl implements CategoryOptionLinkStore {
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryOptionLinkModel.TABLE + " (" +
                     CategoryOptionLinkModel.Columns.CATEGORY + ", " +
-                    CategoryOptionLinkModel.Columns.OPTION + ") " +
+                    CategoryOptionLinkModel.Columns.CATEGORY_OPTION + ") " +
                     "VALUES(?, ?);";
 
 

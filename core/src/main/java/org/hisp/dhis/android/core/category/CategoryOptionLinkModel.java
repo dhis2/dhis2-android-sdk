@@ -42,11 +42,11 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 @AutoValue
 public abstract class CategoryOptionLinkModel extends BaseModel {
-    public static final String TABLE = "CategoryOptionLink";
+    public static final String TABLE = "CategoryCategoryOptionLink";
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String CATEGORY = "category";
-        public static final String OPTION = "option";
+        public static final String CATEGORY_OPTION = "categoryOption";
 
     }
 
@@ -55,7 +55,7 @@ public abstract class CategoryOptionLinkModel extends BaseModel {
     public abstract String category();
 
     @Nullable
-    @ColumnName(Columns.OPTION)
+    @ColumnName(Columns.CATEGORY_OPTION)
     public abstract String option();
 
     @NonNull

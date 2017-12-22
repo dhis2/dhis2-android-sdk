@@ -15,7 +15,7 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
 
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryOptionComboCategoryLinkModel.TABLE + " (" +
-                    CategoryOptionComboCategoryLinkModel.Columns.OPTION_COMBO + ", " +
+                    CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + ", " +
                     CategoryOptionComboCategoryLinkModel.Columns.CATEGORY + ") " +
                     "VALUES(?, ?);";
     private final DatabaseAdapter databaseAdapter;

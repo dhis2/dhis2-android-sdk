@@ -44,13 +44,13 @@ public abstract class CategoryOptionComboCategoryLinkModel extends BaseModel {
     public static final String TABLE = "CategoryOptionComboCategoryLink";
 
     public static class Columns extends BaseModel.Columns {
-        public static final String OPTION_COMBO = "optionCombo";
+        public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
         public static final String CATEGORY = "category";
 
     }
 
     @NonNull
-    @ColumnName(Columns.OPTION_COMBO)
+    @ColumnName(Columns.CATEGORY_OPTION_COMBO)
     public abstract String optionCombo();
 
     @NonNull

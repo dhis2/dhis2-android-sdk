@@ -19,7 +19,9 @@ final class RuleFunctionRight extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
-        if (arguments.size() != 2) {
+        if (arguments == null) {
+            throw new IllegalArgumentException("One argument is expected");
+        } else if (arguments.size() != 2) {
             throw new IllegalArgumentException("Two arguments were expected, " +
                     arguments.size() + " were supplied");
         }

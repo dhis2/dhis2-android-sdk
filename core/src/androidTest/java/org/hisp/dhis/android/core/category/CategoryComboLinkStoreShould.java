@@ -18,6 +18,9 @@ import java.util.List;
 public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
 
     private CategoryComboLinkStore store;
+    private Category newCategory;
+    private CategoryCombo newCategoryCombo;
+    private long lastID;
 
     @Override
     @Before
@@ -28,42 +31,23 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_category_combo() throws Exception {
+    public void insert_a_category_combo_link_in_the_DB() throws Exception {
+        givenACategory();
+        givenACategoryCombo();
 
-        insertNewCategory();
+        whenInsertNewCategory();
+        whenInsertNewCategoryCombo();
+        whenInsertNewCategoryComboLink();
 
-        insertANewCategoryCombo();
-
-        long lastID = insertNewCategoryOptionLink();
-
-        assertEquals(lastID, 1);
-
+        thenAssertLastIDIsOne();
     }
 
-    private long insertNewCategoryOptionLink() {
-        CategoryComboLinkModel link = CategoryComboLinkModel.builder()
-                .category("KfdsGBcoiCa")
-                .combo("m2jTvAj5kkm")
-                .build();
-        return store.insert(link);
+    private void givenACategory() {
+        newCategory = generateCategory();
     }
 
-    private void insertNewCategory() {
-        Category newCategory = givenACategory();
-        CategoryStoreImpl categoryStore = new CategoryStoreImpl(databaseAdapter());
-        categoryStore.insert(newCategory);
-    }
-
-    private void insertANewCategoryCombo() {
-        CategoryCombo combo = givenACategoryCombo();
-        CategoryComboStoreImpl comboStore = new CategoryComboStoreImpl(databaseAdapter());
-
-        comboStore.insert(combo);
-    }
-
-    private Category givenACategory() {
+    private Category generateCategory(){
         Date today = new Date();
-
         return Category.builder()
                 .uid("KfdsGBcoiCa")
                 .code("BIRTHS_ATTENDED")
@@ -74,22 +58,44 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
                 .dataDimensionType("DISAGGREGATION").build();
     }
 
-    private List<Category> givenAListOfCategories() {
-        List<Category> list = new ArrayList<>();
-        list.add(givenACategory());
-        return list;
-    }
-
-    private CategoryCombo givenACategoryCombo() {
+    private void givenACategoryCombo() {
         Date today = new Date();
 
-        return CategoryCombo.builder()
+        newCategoryCombo = CategoryCombo.builder()
                 .uid("m2jTvAj5kkm")
                 .code("BIRTHS")
                 .created(today)
                 .name("Births")
                 .displayName("Births")
-                .categories(givenAListOfCategories())
+                .categories(generateAListOfCategories())
                 .build();
+    }
+
+    private void whenInsertNewCategory() {
+        CategoryStoreImpl categoryStore = new CategoryStoreImpl(databaseAdapter());
+        categoryStore.insert(newCategory);
+    }
+
+    private void whenInsertNewCategoryCombo() {
+        CategoryComboStoreImpl comboStore = new CategoryComboStoreImpl(databaseAdapter());
+        comboStore.insert(newCategoryCombo);
+    }
+
+    private void whenInsertNewCategoryComboLink() {
+        CategoryComboLinkModel link = CategoryComboLinkModel.builder()
+                .category("KfdsGBcoiCa")
+                .combo("m2jTvAj5kkm")
+                .build();
+        lastID = store.insert(link);
+    }
+
+    private List<Category> generateAListOfCategories() {
+        List<Category> list = new ArrayList<>();
+        list.add(generateCategory());
+        return list;
+    }
+
+    private void thenAssertLastIDIsOne() {
+        assertEquals(lastID, 1);
     }
 }

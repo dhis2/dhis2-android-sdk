@@ -11,5 +11,9 @@ up:
   - CREATE TABLE CategoryComboLink (_id INTEGER PRIMARY KEY AUTOINCREMENT,category TEXT NOT NULL,combo TEXT NOT NULL,  FOREIGN KEY (category)  REFERENCES Category (uid)  ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (combo)  REFERENCES CategoryCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,UNIQUE (category, combo));
   - CREATE TABLE CategoryCombo (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,code TEXT,name TEXT,displayName TEXT,created TEXT,lastUpdated TEXT, isDefault INTEGER);
   - CREATE TABLE Category (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,code TEXT,name TEXT,displayName TEXT,created TEXT,lastUpdated TEXT,dataDimensionType TEXT);
-seeds:
 down:
+  - DROP TABLE IF EXISTS CategoryCombo;
+  - DROP TABLE IF EXISTS CategoryComboLink;
+  - DROP TABLE IF EXISTS CategoryOptionCombo;
+  - DROP TABLE IF EXISTS CategoryOptionComboLinkCategory;
+  - DROP TABLE IF EXISTS CategoryOptionLink;

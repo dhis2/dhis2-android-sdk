@@ -8,20 +8,18 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
 
 
 public class CategoryOptionComboLinkCategoryStoreImpl implements
         CategoryOptionComboLinkCategoryStore {
-
-    private final DatabaseAdapter databaseAdapter;
-    private final SQLiteStatement insertStatement;
 
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryOptionComboLinkCategoryModel.TABLE + " (" +
                     CategoryOptionComboLinkCategoryModel.Columns.OPTION_COMBO + ", " +
                     CategoryOptionComboLinkCategoryModel.Columns.CATEGORY + ") " +
                     "VALUES(?, ?);";
+    private final DatabaseAdapter databaseAdapter;
+    private final SQLiteStatement insertStatement;
 
 
     public CategoryOptionComboLinkCategoryStoreImpl(DatabaseAdapter databaseAdapter) {

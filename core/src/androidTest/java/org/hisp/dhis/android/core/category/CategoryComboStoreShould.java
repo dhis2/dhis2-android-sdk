@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +19,9 @@ import java.util.Date;
 public class CategoryComboStoreShould extends AbsStoreTestCase {
 
     private CategoryComboStore store;
+    private CategoryCombo newCategoryCombo;
+    private long lastInsertedId;
+    private boolean wasDeleted;
 
     @Override
     @Before
@@ -29,44 +31,34 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
 
     }
 
-    @Override
-    @After
-    public void tearDown() {
-        clearTablesData();
+    @Test
+    public void insert_a_category() throws Exception {
+        givenACategoryCombo();
+
+        whenInsertNewCategoryCombo();
+
+        thenAssertLastInsertedIdIsOne();
     }
 
     @Test
-    public void insert_category() throws Exception {
+    public void insert_and_delete_a_category() throws Exception {
+        givenACategoryCombo();
 
-        long lastID = insertNewCombo();
+        whenInsertNewCategoryCombo();
+        whenDeleteCategoryComboInserted();
 
-        assertEquals(lastID, 1);
+        thenAssertStoreReturnsDeleted();
 
+        whenDeleteCategoryComboInserted();
+
+        thenAssertStoreReturnsNotDeleted();
     }
 
-    @Test
-    public void delete_category() throws Exception {
-
-        insertNewCombo();
-
-        CategoryCombo combo = givenACombo();
-
-        boolean wasDeleted = store.delete(combo);
-
-        assertTrue(wasDeleted);
-
-        wasDeleted = store.delete(combo);
-
-        assertFalse(wasDeleted);
+    private void givenACategoryCombo() {
+        newCategoryCombo = generateCategoryCombo();
     }
 
-    private long insertNewCombo() {
-        CategoryCombo newCombo = givenACombo();
-
-        return store.insert(newCombo);
-    }
-
-    private CategoryCombo givenACombo() {
+    private CategoryCombo generateCategoryCombo(){
         Date today = new Date();
 
         return CategoryCombo.builder()
@@ -80,8 +72,23 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
                 .build();
     }
 
-    private void clearTablesData() {
-        databaseAdapter().delete(CategoryOptionModel.TABLE);
+    private void whenInsertNewCategoryCombo() {
+        lastInsertedId = store.insert(newCategoryCombo);
     }
 
+    private void whenDeleteCategoryComboInserted() {
+        wasDeleted = store.delete(newCategoryCombo);
+    }
+
+    private void thenAssertLastInsertedIdIsOne() {
+        assertEquals(lastInsertedId, 1);
+    }
+
+    private void thenAssertStoreReturnsDeleted() {
+        assertTrue(wasDeleted);
+    }
+
+    private void thenAssertStoreReturnsNotDeleted() {
+        assertFalse(wasDeleted);
+    }
 }

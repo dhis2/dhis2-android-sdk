@@ -3,6 +3,12 @@ package org.hisp.dhis.android.core;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
+import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CategoryModel;
+import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryModel;
+import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
+import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -48,62 +54,6 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         super.tearDown();
 
         dhis2MockServer.shutdown();
-    }
-
-    private void givenALoginInDatabase() throws Exception {
-        dhis2MockServer.enqueueMockResponse("login.json", new Date());
-
-        Response<User> response = d2.logIn("user", "password").call();
-
-        assertThat(response.isSuccessful(), is(true));
-    }
-
-    private void givenALoginWithSierraLeonaOUInDatabase() throws Exception {
-        dhis2MockServer.enqueueMockResponse("admin/login.json", new Date());
-
-        Response<User> response = d2.logIn("user", "password").call();
-
-        assertThat(response.isSuccessful(), is(true));
-    }
-
-    private void givenAMetadataInDatabase() throws Exception {
-        dhis2MockServer.enqueueMockResponse("system_info.json");
-        dhis2MockServer.enqueueMockResponse("user.json");
-        dhis2MockServer.enqueueMockResponse("organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("categories_combo.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
-        Response response = d2.syncMetaData().call();
-
-        assertThat(response.isSuccessful(), is(true));
-    }
-
-    private void givenAMetadataWithDescendantsInDatabase() throws Exception {
-        dhis2MockServer.enqueueMockResponse("system_info.json");
-        dhis2MockServer.enqueueMockResponse("admin/user.json");
-        dhis2MockServer.enqueueMockResponse("admin/organisation_units.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("categories_combo.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
-
-        Response response = d2.syncMetaData().call();
-
-        assertThat(response.isSuccessful(), is(true));
-    }
-
-    private void givenAEventInDatabase() throws Exception {
-        EventEndPointCall eventCall = EventCallFactory.create(
-                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
-
-        dhis2MockServer.enqueueMockResponse("events_1.json");
-
-        Response response = eventCall.call();
-
-        assertThat(response.isSuccessful(), is(true));
     }
 
     @Test
@@ -158,6 +108,12 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
                 .isNotEmptyTable(UserCredentialsModel.TABLE)
                 .isNotEmptyTable(OrganisationUnitModel.TABLE)
                 .isNotEmptyTable(ProgramModel.TABLE)
+                .isNotEmptyTable(CategoryModel.TABLE)
+                .isNotEmptyTable(CategoryOptionModel.TABLE)
+                .isNotEmptyTable(CategoryComboModel.TABLE)
+                .isNotEmptyTable(CategoryComboLinkModel.TABLE)
+                .isNotEmptyTable(CategoryOptionComboModel.TABLE)
+                .isNotEmptyTable(CategoryOptionComboLinkCategoryModel.TABLE)
                 .isNotEmptyTable(ResourceModel.TABLE);
     }
 
@@ -179,21 +135,8 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         verifyExistsAsignedOrgUnitAndDescendants();
     }
 
-    private void verifyExistsAsignedOrgUnitAndDescendants() {
-        //Sierra leona
-        DatabaseAssert.assertThatDatabase(databaseAdapter())
-                .ifValueExist(OrganisationUnitModel.TABLE,
-                        OrganisationUnitModel.Columns.UID,
-                        "ImspTQPwCqd");
-
-        //Sierra leona descendant
-        DatabaseAssert.assertThatDatabase(databaseAdapter())
-                .ifValueExist(OrganisationUnitModel.TABLE,
-                        OrganisationUnitModel.Columns.CODE,
-                        "OU_278371");
-    }
     @Test
-    public void realize_login_and_sync_metadata_successfully_after_logout()
+    public void complete_login_and_sync_metadata_successfully_after_logout()
             throws Exception {
         givenALoginInDatabase();
 
@@ -220,5 +163,75 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
                 .isNotEmptyTable(OrganisationUnitModel.TABLE)
                 .isNotEmptyTable(ProgramModel.TABLE)
                 .isNotEmptyTable(ResourceModel.TABLE);
+    }
+
+    private void givenALoginInDatabase() throws Exception {
+        dhis2MockServer.enqueueMockResponse("login.json", new Date());
+
+        Response<User> response = d2.logIn("user", "password").call();
+
+        assertThat(response.isSuccessful(), is(true));
+    }
+
+    private void givenALoginWithSierraLeonaOUInDatabase() throws Exception {
+        dhis2MockServer.enqueueMockResponse("admin/login.json", new Date());
+
+        Response<User> response = d2.logIn("user", "password").call();
+
+        assertThat(response.isSuccessful(), is(true));
+    }
+
+    private void givenAMetadataInDatabase() throws Exception {
+        dhis2MockServer.enqueueMockResponse("system_info.json");
+        dhis2MockServer.enqueueMockResponse("user.json");
+        dhis2MockServer.enqueueMockResponse("organisationUnits.json");
+        dhis2MockServer.enqueueMockResponse("categories.json");
+        dhis2MockServer.enqueueMockResponse("category_combos.json");
+        dhis2MockServer.enqueueMockResponse("programs.json");
+        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
+        dhis2MockServer.enqueueMockResponse("option_sets.json");
+        Response response = d2.syncMetaData().call();
+
+        assertThat(response.isSuccessful(), is(true));
+    }
+
+    private void givenAMetadataWithDescendantsInDatabase() throws Exception {
+        dhis2MockServer.enqueueMockResponse("system_info.json");
+        dhis2MockServer.enqueueMockResponse("admin/user.json");
+        dhis2MockServer.enqueueMockResponse("admin/organisation_units.json");
+        dhis2MockServer.enqueueMockResponse("categories.json");
+        dhis2MockServer.enqueueMockResponse("category_combos.json");
+        dhis2MockServer.enqueueMockResponse("programs.json");
+        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
+        dhis2MockServer.enqueueMockResponse("option_sets.json");
+
+        Response response = d2.syncMetaData().call();
+
+        assertThat(response.isSuccessful(), is(true));
+    }
+
+    private void givenAEventInDatabase() throws Exception {
+        EventEndPointCall eventCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+
+        dhis2MockServer.enqueueMockResponse("events_1.json");
+
+        Response response = eventCall.call();
+
+        assertThat(response.isSuccessful(), is(true));
+    }
+
+    private void verifyExistsAsignedOrgUnitAndDescendants() {
+        //Sierra leona
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .ifValueExist(OrganisationUnitModel.TABLE,
+                        OrganisationUnitModel.Columns.UID,
+                        "ImspTQPwCqd");
+
+        //Sierra leona descendant
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .ifValueExist(OrganisationUnitModel.TABLE,
+                        OrganisationUnitModel.Columns.CODE,
+                        "OU_278371");
     }
 }

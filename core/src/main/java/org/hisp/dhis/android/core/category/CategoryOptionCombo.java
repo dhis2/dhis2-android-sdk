@@ -28,9 +28,12 @@
 
 package org.hisp.dhis.android.core.category;
 
+import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
@@ -39,6 +42,7 @@ import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
+import java.util.Date;
 import java.util.List;
 
 @AutoValue
@@ -71,6 +75,21 @@ public abstract class CategoryOptionCombo extends BaseNameableObject {
 
     public static Builder builder() {
         return new AutoValue_CategoryOptionCombo.Builder();
+    }
+
+    @JsonCreator
+    public static CategoryOptionCombo create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(CATEGORY_COMBO) CategoryCombo categoryCombo,
+            @JsonProperty(CATEGORY_OPTIONS) List<CategoryOption> categoryOptions) {
+        return builder().uid(uid).code(code).name(name).displayName(displayName).created(
+                created).lastUpdated(lastUpdated).categoryCombo(categoryCombo).categoryOptions(
+                safeUnmodifiableList(categoryOptions)).build();
     }
 
     @AutoValue.Builder

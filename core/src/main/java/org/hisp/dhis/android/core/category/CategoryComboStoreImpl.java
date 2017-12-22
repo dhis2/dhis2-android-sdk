@@ -1,13 +1,19 @@
 package org.hisp.dhis.android.core.category;
 
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 public class CategoryComboStoreImpl implements CategoryComboStore {
@@ -42,6 +48,17 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
             CategoryComboModel.Columns.IS_DEFAULT + " =? WHERE " +
             CategoryComboModel.Columns.UID + " =?;";
 
+    private static final String FIELDS = CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.UID + "," +
+            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.CODE + "," +
+            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.NAME + "," +
+            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.DISPLAY_NAME + "," +
+            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.CREATED + "," +
+            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.LAST_UPDATED + "," +
+            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.IS_DEFAULT;
+
+    private static final String QUERY_ALL_CATEGORY_COMBOS = "SELECT " +
+            FIELDS + " FROM " + CategoryComboModel.TABLE;
+
     public CategoryComboStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
@@ -50,11 +67,11 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
     }
 
     @Override
-    public long insert(@NonNull CategoryCombo combo) {
+    public long insert(@NonNull CategoryCombo categoryCombo) {
 
-        validate(combo);
+        validate(categoryCombo);
 
-        bind(insertStatement, combo);
+        bind(insertStatement, categoryCombo);
 
         return executeInsert();
     }
@@ -141,6 +158,51 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
 
     private boolean wasExecuted(int numberOfRows) {
         return numberOfRows >= 1;
+    }
+
+    @Override
+    public List<CategoryCombo> queryAll() {
+        Cursor cursor = databaseAdapter.query(QUERY_ALL_CATEGORY_COMBOS);
+
+        return mapCategoryCombosFromCursor(cursor);
+    }
+
+    private List<CategoryCombo> mapCategoryCombosFromCursor(Cursor cursor) {
+        List<CategoryCombo> categoryCombos = new ArrayList<>(cursor.getCount());
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+
+                do {
+                    CategoryCombo categoryCombo = mapCategoryComboFromCursor(cursor);
+
+                    categoryCombos.add(categoryCombo);
+                }
+                while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return categoryCombos;
+    }
+
+    private CategoryCombo mapCategoryComboFromCursor(Cursor cursor) {
+        CategoryCombo categoryCombo;
+
+        String uid = cursor.getString(0);
+        String code = cursor.getString(1);
+        String name = cursor.getString(2);
+        String displayName = cursor.getString(3);
+        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
+        Date lastUpdated = cursor.getString(5) == null ? null : parse(cursor.getString(5));
+        Boolean isDefault = cursor.getInt(6) > 0;
+
+        categoryCombo = CategoryCombo.create(
+                uid, code, name, displayName, created, lastUpdated, isDefault, null, null);
+
+        return categoryCombo;
     }
 
     @Override

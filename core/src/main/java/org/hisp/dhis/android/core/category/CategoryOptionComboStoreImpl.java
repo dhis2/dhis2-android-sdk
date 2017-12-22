@@ -1,13 +1,19 @@
 package org.hisp.dhis.android.core.category;
 
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
@@ -43,6 +49,22 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
                     CategoryOptionComboModel.Columns.CATEGORY_COMBO + EQUAL_QUESTION_MARK
                     + " WHERE " +
                     CategoryOptionComboModel.Columns.UID + EQUAL_QUESTION_MARK + ";";
+
+    private static final String FIELDS =
+            CategoryOptionComboModel.TABLE + "." + CategoryOptionComboModel.Columns.UID + "," +
+                    CategoryOptionComboModel.TABLE + "." + CategoryOptionComboModel.Columns.CODE
+                    + "," +
+                    CategoryOptionComboModel.TABLE + "." + CategoryOptionComboModel.Columns.NAME
+                    + "," +
+                    CategoryOptionComboModel.TABLE + "."
+                    + CategoryOptionComboModel.Columns.DISPLAY_NAME + "," +
+                    CategoryOptionComboModel.TABLE + "." + CategoryOptionComboModel.Columns.CREATED
+                    + "," +
+                    CategoryOptionComboModel.TABLE + "."
+                    + CategoryOptionComboModel.Columns.LAST_UPDATED;
+
+    private static final String QUERY_ALL_CATEGORY_OPTION_COMBOS = "SELECT " +
+            FIELDS + " FROM " + CategoryOptionComboModel.TABLE;
 
     public CategoryOptionComboStoreImpl(DatabaseAdapter databaseAdapter) {
 
@@ -140,6 +162,50 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
             @NonNull CategoryOptionCombo newEntity) {
         isNull(oldEntity.uid());
         isNull(newEntity.uid());
+    }
+
+    @Override
+    public List<CategoryOptionCombo> queryAll() {
+        Cursor cursor = databaseAdapter.query(QUERY_ALL_CATEGORY_OPTION_COMBOS);
+
+        return mapCategoryOptionCombosFromCursor(cursor);
+    }
+
+    private List<CategoryOptionCombo> mapCategoryOptionCombosFromCursor(Cursor cursor) {
+        List<CategoryOptionCombo> categoryOptionCombos = new ArrayList<>(cursor.getCount());
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+
+                do {
+                    CategoryOptionCombo categoryOptionCombo = mapCategoryOptionComboFromCursor(cursor);
+
+                    categoryOptionCombos.add(categoryOptionCombo);
+                }
+                while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return categoryOptionCombos;
+    }
+
+    private CategoryOptionCombo mapCategoryOptionComboFromCursor(Cursor cursor) {
+        CategoryOptionCombo categoryOptionCombo;
+
+        String uid = cursor.getString(0);
+        String code = cursor.getString(1);
+        String name = cursor.getString(2);
+        String displayName = cursor.getString(3);
+        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
+        Date lastUpdated = cursor.getString(5) == null ? null : parse(cursor.getString(5));
+
+        categoryOptionCombo = CategoryOptionCombo.create(
+                uid, code, name, displayName, created, lastUpdated, null, null);
+
+        return categoryOptionCombo;
     }
 
     @Override

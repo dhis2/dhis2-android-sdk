@@ -32,6 +32,7 @@ import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
@@ -40,13 +41,14 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
+import java.util.Date;
 import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryCombo.Builder.class)
 public abstract class CategoryCombo extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_IS_DEFAULT = "isDefault";
-    private static final String JSON_PROPERTY_CATEGORIES = "categories";
+    private static final String IS_DEFAULT = "isDefault";
+    private static final String CATEGORIES = "categories";
     private static final String CATEGORY_OPTION_COMBOS = "categoryOptionCombos";
 
     public static final Field<CategoryCombo, String> uid = Field.create(UID);
@@ -57,19 +59,19 @@ public abstract class CategoryCombo extends BaseIdentifiableObject {
     public static final Field<CategoryCombo, String> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<CategoryCombo, Boolean> deleted = Field.create(DELETED);
     public static final Field<CategoryCombo, Boolean> isDefault = Field.create(
-            JSON_PROPERTY_IS_DEFAULT);
+            IS_DEFAULT);
     public static final Field<CategoryCombo, List<Category>> categories = Field.create(
-            JSON_PROPERTY_CATEGORIES);
+            CATEGORIES);
 
     public static final NestedField<CategoryCombo, CategoryOptionCombo> categoryOptionCombos =
             NestedField.create(CATEGORY_OPTION_COMBOS);
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_IS_DEFAULT)
+    @JsonProperty(IS_DEFAULT)
     public abstract Boolean isDefault();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CATEGORIES)
+    @JsonProperty(CATEGORIES)
     public abstract List<Category> categories();
 
     @Nullable
@@ -80,13 +82,30 @@ public abstract class CategoryCombo extends BaseIdentifiableObject {
         return new AutoValue_CategoryCombo.Builder();
     }
 
+    @JsonCreator
+    public static CategoryCombo create(
+            @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
+            @JsonProperty(NAME) String name,
+            @JsonProperty(DISPLAY_NAME) String displayName,
+            @JsonProperty(CREATED) Date created,
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(IS_DEFAULT) Boolean isDefault,
+            @JsonProperty(CATEGORIES) List<Category> categories,
+            @JsonProperty(CATEGORY_OPTION_COMBOS) List<CategoryOptionCombo> categoryOptionCombos) {
+        return builder().uid(uid).code(code).name(name).displayName(displayName).created(
+                created).lastUpdated(lastUpdated).isDefault(isDefault).categories(
+                safeUnmodifiableList(categories)).categoryOptionCombos(
+                safeUnmodifiableList(categoryOptionCombos)).build();
+    }
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-        @JsonProperty(JSON_PROPERTY_IS_DEFAULT)
+        @JsonProperty(IS_DEFAULT)
         public abstract Builder isDefault(@Nullable Boolean isDefault);
 
-        @JsonProperty(JSON_PROPERTY_CATEGORIES)
+        @JsonProperty(CATEGORIES)
         public abstract Builder categories(@Nullable List<Category> categories);
 
         @JsonProperty(CATEGORY_OPTION_COMBOS)

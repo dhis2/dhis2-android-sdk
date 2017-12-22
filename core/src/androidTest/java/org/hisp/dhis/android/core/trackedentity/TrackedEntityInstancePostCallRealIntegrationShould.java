@@ -2,18 +2,21 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static junit.framework.Assert.assertTrue;
+
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
-import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
+import org.hisp.dhis.android.core.common.TrackedEntityInstanceCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
@@ -26,9 +29,9 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
 import retrofit2.Response;
 
 @RunWith(AndroidJUnit4.class)
@@ -97,7 +100,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         enrollment1Uid = codeGenerator.generate();
         trackedEntityInstance1Uid = codeGenerator.generate();
     }
-    //tei1 Z6EeonL9PSk   teo IGVwdKhuGQj
+
     private void createDummyDataToPost(String orgUnitUid, String programUid, String programStageUid,
             String trackedEntityUid, String eventUid, String enrollmentUid,
             String trackedEntityInstanceUid, String trackedEntityAttributeUid,
@@ -134,12 +137,9 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
    * */
     @Test
     public void response_true_when_data_sync() throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn("android", "Android123").call();
-        assertThat(response.isSuccessful()).isTrue();
 
-        response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        Response response = null;
+        downloadMetadata();
 
 
         createDummyDataToPost(
@@ -159,5 +159,118 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         response = call.call();
 
         assertThat(response.isSuccessful()).isTrue();
+    }
+
+
+    /*
+    * If you want run this test you need config the correct uids in the server side.
+    * At this moment is necessary add into the "child programme" program the category combo : Implementing Partner
+    * */
+    @Test
+    public void pull_event_after_push_tracked_entity_instance_with_that_event() throws Exception {
+        downloadMetadata();
+
+
+        createDummyDataToPost(
+                orgUnitUid, programUid, programStageUid, trackedEntityUid,
+                eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid,
+                dataElementUid
+        );
+
+
+        postTrackedEntityInstances();
+
+        TrackedEntityInstance pushedTrackedEntityInstance = getTrackedEntityInstanceFromDB(trackedEntityInstanceUid);
+        Enrollment pushedEnrollment = getEnrollmentsByTrackedEntityInstanceFromDb(trackedEntityInstanceUid);
+        Event pushedEvent = getEventsFromDb(eventUid);
+
+        d2.wipeDB().call();
+
+        downloadMetadata();
+
+
+        TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
+                TrackedEntityInstanceCallFactory.create(
+                        d2.retrofit(), databaseAdapter(), trackedEntityInstanceUid);
+
+        trackedEntityInstanceEndPointCall.call();
+
+        TrackedEntityInstance downloadedTrackedEntityInstance = getTrackedEntityInstanceFromDB(trackedEntityInstanceUid);
+        Enrollment downloadedEnrollment = getEnrollmentsByTrackedEntityInstanceFromDb(trackedEntityInstanceUid);
+        Event downloadedEvent = getEventsFromDb(eventUid);
+
+        assertPushAndDownloadTrackedEntityInstances(pushedTrackedEntityInstance, pushedEnrollment,
+                pushedEvent, downloadedTrackedEntityInstance, downloadedEnrollment,
+                downloadedEvent);
+    }
+
+    private void assertPushAndDownloadTrackedEntityInstances(
+            TrackedEntityInstance pushedTrackedEntityInstance, Enrollment pushedEnrollment,
+            Event pushedEvent, TrackedEntityInstance downloadedTrackedEntityInstance,
+            Enrollment downloadedEnrollment, Event downloadedEvent) {
+        assertThat(pushedTrackedEntityInstance.uid().equals(downloadedTrackedEntityInstance.uid())).isTrue();
+        assertThat(pushedTrackedEntityInstance.uid().equals(downloadedTrackedEntityInstance.uid())).isTrue();
+        assertThat(pushedEnrollment.uid().equals(downloadedEnrollment.uid())).isTrue();
+        assertThat(pushedEvent.uid().equals(downloadedEvent.uid())).isTrue();
+        assertThat(pushedEvent.uid().equals(downloadedEvent.uid())).isTrue();
+        verifyEventCategoryAttributes(pushedEvent, downloadedEvent);
+    }
+
+    private TrackedEntityInstance getTrackedEntityInstanceFromDB(String trackedEntityInstanceUid) {
+        TrackedEntityInstanceStore trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
+        TrackedEntityInstance trackedEntityInstance = null;
+        Map<String, TrackedEntityInstance> storedTrackedEntityInstances = trackedEntityInstanceStore.queryAll();
+        TrackedEntityInstance storedTrackedEntityInstance = storedTrackedEntityInstances.get(trackedEntityInstanceUid);
+        if(storedTrackedEntityInstance.uid().equals(trackedEntityInstanceUid)) {
+            trackedEntityInstance = storedTrackedEntityInstance;
+        }
+        return trackedEntityInstance;
+    }
+
+    private Enrollment getEnrollmentsByTrackedEntityInstanceFromDb(String trackedEntityInstanceUid) {
+        EnrollmentStoreImpl enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
+        Enrollment enrollment = null;
+        Map<String, List<Enrollment>> storedEnrollmentsByTrackedEntityInstance = enrollmentStore.queryAll();
+        for(Enrollment storedEnrollment : storedEnrollmentsByTrackedEntityInstance.get(trackedEntityInstanceUid)) {
+            if(storedEnrollment.uid().equals(enrollmentUid)) {
+                enrollment = storedEnrollment;
+            }
+        }
+        return enrollment;
+    }
+
+    private Event getEventsFromDb(String eventUid) {
+        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
+        Event event = null;
+        List<Event> storedEvents = eventStore.queryAll();
+        for(Event storedEvent : storedEvents) {
+            if(storedEvent.uid().equals(eventUid)) {
+                event = storedEvent;
+            }
+        }
+        return event;
+    }
+
+    private void postTrackedEntityInstances() throws Exception {
+        Response response;Call<Response<WebResponse>> call = d2.syncTrackedEntityInstances();
+        response = call.call();
+
+        assertThat(response.isSuccessful()).isTrue();
+    }
+
+    private void downloadMetadata() throws Exception {
+        Response response;
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+
+        response = d2.syncMetaData().call();
+        assertThat(response.isSuccessful()).isTrue();
+    }
+
+    private boolean verifyEventCategoryAttributes(Event event, Event downloadedEvent) {
+            if(event.uid().equals(downloadedEvent.uid()) && event.attributeOptionCombo().equals(downloadedEvent.attributeOptionCombo()) && event.attributeCategoryOptions().equals(downloadedEvent.attributeCategoryOptions())){
+                return true;
+            }
+        return false;
     }
 }

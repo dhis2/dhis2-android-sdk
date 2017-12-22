@@ -122,7 +122,6 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.wipeDB().call();
 
-        dowloadMetadata();
 
         downloadEventsBy(categoryComboUID,attributeCategoryOption);
 
@@ -138,8 +137,10 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private void downloadEventsBy(String categoryComboUID,String categoryOptionUID) throws Exception {
-        Response response;EventEndPointCall eventEndPointCall = EventCallFactory.create(
-                d2.retrofit(), databaseAdapter(), orgUnitUid, 0,categoryComboUID,categoryOptionUID);
+        Response response;
+
+        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), orgUnitUid, 0,categoryComboUID, categoryOptionUID);
 
         response = eventEndPointCall.call();
 

@@ -74,11 +74,11 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
     private void createDummyDataToPost(String orgUnitUid, String programUid,
                                        String programStageUid, String eventUid,
-                                       String dataElementUid, String attributeCategoryOption, String attributeOptionCombo) {
+                                       String dataElementUid, String attributeCategoryOption, String attributeOptionCombo, String trackedEntityInstance) {
         eventStore.insert(
                 eventUid, null, new Date(), new Date(), null, null,
                 EventStatus.ACTIVE, "13.21", "12.21", programUid, programStageUid, orgUnitUid,
-                new Date(), new Date(), new Date(), State.TO_POST, attributeCategoryOption, attributeOptionCombo
+                new Date(), new Date(), new Date(), State.TO_POST, attributeCategoryOption, attributeOptionCombo, trackedEntityInstance
         );
 
         trackedEntityDataValueStore.insert(
@@ -98,7 +98,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 
-        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid, dataElementUid, attributeCategoryOption, attributeOptionCombo);
+        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid, dataElementUid, attributeCategoryOption, attributeOptionCombo, null);
 
         Call<Response<WebResponse>> call = d2.syncSingleEvents();
         response = call.call();
@@ -114,7 +114,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
         dowloadMetadata();
 
-        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid, dataElementUid, attributeCategoryOption, attributeOptionCombo);
+        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid, dataElementUid, attributeCategoryOption, attributeOptionCombo, null);
 
         pushDummyEvent();
 

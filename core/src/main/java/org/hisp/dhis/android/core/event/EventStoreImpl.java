@@ -75,8 +75,9 @@ public class EventStoreImpl implements EventStore {
             Columns.DUE_DATE + ", " +
             Columns.STATE + ", " +
             Columns.ATTRIBUTE_CATEGORY_OPTIONS + ", " +
-            Columns.ATTRIBUTE_OPTION_COMBO + ") " +
-            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            Columns.ATTRIBUTE_OPTION_COMBO + ", " +
+            Columns.TRACKED_ENTITY_INSTANCE + ") " +
+            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + EventModel.TABLE + " SET " +
             Columns.UID + " =? , " +
@@ -96,7 +97,8 @@ public class EventStoreImpl implements EventStore {
             Columns.DUE_DATE + " =? , " +
             Columns.STATE + " =?, " +
             Columns.ATTRIBUTE_CATEGORY_OPTIONS + " =?, " +
-            Columns.ATTRIBUTE_OPTION_COMBO + " =? " +
+            Columns.ATTRIBUTE_OPTION_COMBO + " =?, " +
+            Columns.TRACKED_ENTITY_INSTANCE + " =? " +
             " WHERE " +
             Columns.UID + " =?;";
 
@@ -126,7 +128,8 @@ public class EventStoreImpl implements EventStore {
             "  Event.completedDate, " +
             "  Event.dueDate, "  +
             "  Event.attributeCategoryOptions, "  +
-            "  Event.attributeOptionCombo ";
+            "  Event.attributeOptionCombo, "  +
+            "  Event.trackedEntityInstance ";
 
     private static final String QUERY_EVENTS_ATTACHED_TO_ENROLLMENTS = "SELECT " +
             FIELDS +
@@ -169,7 +172,8 @@ public class EventStoreImpl implements EventStore {
                        @NonNull String programStage, @NonNull String organisationUnit,
                        @Nullable Date eventDate, @Nullable Date completedDate,
                        @Nullable Date dueDate, @Nullable State state,
-                       @Nullable String attributeCategoryOptions, @Nullable String attributeOptionCombo) {
+                       @Nullable String attributeCategoryOptions, @Nullable String attributeOptionCombo,
+                       @Nullable String trackedEntityInstance) {
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, enrollmentUid);
         sqLiteBind(insertStatement, 3, created);
@@ -188,6 +192,7 @@ public class EventStoreImpl implements EventStore {
         sqLiteBind(insertStatement, 16, state);
         sqLiteBind(insertStatement, 17, attributeCategoryOptions);
         sqLiteBind(insertStatement, 18, attributeOptionCombo);
+        sqLiteBind(insertStatement, 19, trackedEntityInstance);
 
         long insert = databaseAdapter.executeInsert(EventModel.TABLE, insertStatement);
 
@@ -205,7 +210,7 @@ public class EventStoreImpl implements EventStore {
                       @NonNull Date eventDate, @Nullable Date completedDate,
                       @Nullable Date dueDate, @NonNull State state,
                       @Nullable String attributeCategoryOptions, @Nullable String attributeOptionCombo,
-                      @NonNull String whereEventUid) {
+                      @Nullable String trackedEntityInstance, @NonNull String whereEventUid) {
 
         sqLiteBind(updateStatement, 1, uid);
         sqLiteBind(updateStatement, 2, enrollmentUid);
@@ -225,9 +230,10 @@ public class EventStoreImpl implements EventStore {
         sqLiteBind(updateStatement, 16, state);
         sqLiteBind(updateStatement, 17, attributeCategoryOptions);
         sqLiteBind(updateStatement, 18, attributeOptionCombo);
+        sqLiteBind(updateStatement, 19, trackedEntityInstance);
 
         // bind the where clause
-        sqLiteBind(updateStatement, 19, whereEventUid);
+        sqLiteBind(updateStatement, 20, whereEventUid);
 
         int rowId = databaseAdapter.executeUpdateDelete(EventModel.TABLE, updateStatement);
         updateStatement.clearBindings();
@@ -346,6 +352,7 @@ public class EventStoreImpl implements EventStore {
         Date dueDate = cursor.getString(14) == null ? null : parse(cursor.getString(14));
         String categoryCombo = cursor.getString(15) == null ? null : cursor.getString(15);
         String optionCombo = cursor.getString(16) == null ? null : cursor.getString(16);
+        String trackedEntityInstance = cursor.getString(17) == null ? null : cursor.getString(17);
 
         Coordinates coordinates = null;
 
@@ -357,7 +364,7 @@ public class EventStoreImpl implements EventStore {
                 uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 program, programStage, organisationUnit, eventDate, eventStatus,
                 coordinates, completedDate,
-                dueDate, false, null, categoryCombo, optionCombo);
+                dueDate, false, null, categoryCombo, optionCombo, trackedEntityInstance);
 
         return event;
     }

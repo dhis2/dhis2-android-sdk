@@ -64,6 +64,7 @@ public abstract class Event {
     private static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
     private static final String ATTRIBUTE_CATEGORY_OPTIONS = "attributeCategoryOptions";
     private static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
 
     public static final Field<Event, String> uid = Field.create(UID);
     public static final Field<Event, String> enrollment = Field.create(ENROLLMENT_UID);
@@ -82,6 +83,7 @@ public abstract class Event {
     public static final Field<Event, String> dueDate = Field.create(DUE_DATE);
     public static final Field<Event, String> attributeCategoryOptions = Field.create(ATTRIBUTE_CATEGORY_OPTIONS);
     public static final Field<Event, String> attributeOptionCombo = Field.create(ATTRIBUTE_OPTION_COMBO);
+    public static final Field<Event, String> trackedEntityInstance = Field.create(TRACKED_ENTITY_INSTANCE);
 
     public static final NestedField<Event, TrackedEntityDataValue> trackedEntityDataValues
             = NestedField.create(TRACKED_ENTITY_DATA_VALUES);
@@ -157,6 +159,11 @@ public abstract class Event {
     @JsonProperty(ATTRIBUTE_OPTION_COMBO)
     public abstract String attributeOptionCombo();
 
+    @Nullable
+    @JsonProperty(TRACKED_ENTITY_INSTANCE)
+    public abstract String trackedEntityInstance();
+
+
     @JsonCreator
     public static Event create(
             @JsonProperty(UID) String uid,
@@ -176,10 +183,11 @@ public abstract class Event {
             @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(TRACKED_ENTITY_DATA_VALUES) List<TrackedEntityDataValue> dataValues,
             @JsonProperty(ATTRIBUTE_CATEGORY_OPTIONS) String attributeCategoryOptions,
-            @JsonProperty(ATTRIBUTE_OPTION_COMBO) String attributeOptionCombo) {
+            @JsonProperty(ATTRIBUTE_OPTION_COMBO) String attributeOptionCombo,
+            @JsonProperty(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance) {
         return new AutoValue_Event(uid, enrollmentUid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 program, programStage, organisationUnit, eventDate, eventStatus, coordinates,
-                completedDate, dueDate, deleted, safeUnmodifiableList(dataValues), attributeCategoryOptions, attributeOptionCombo);
+                completedDate, dueDate, deleted, safeUnmodifiableList(dataValues), attributeCategoryOptions, attributeOptionCombo, trackedEntityInstance);
     }
 
 }

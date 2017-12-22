@@ -87,8 +87,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         programStageDataElementUid = "LBNxoXdMnkv";
         trackedEntityAttributeUid = "w75KJ2mc4zz";
 
-        categoryOptionUid = "g3bcPGD5Q5i";
-        categoryComboOptionUid = "w5hsiyYZfuR";
+        categoryOptionUid = "CW81uF03hvV";
+        categoryComboOptionUid = "l5QR5hJ4u44";
         eventUid = codeGenerator.generate();
         enrollmentUid = codeGenerator.generate();
         trackedEntityInstanceUid = codeGenerator.generate();
@@ -97,7 +97,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         enrollment1Uid = codeGenerator.generate();
         trackedEntityInstance1Uid = codeGenerator.generate();
     }
-
+    //tei1 Z6EeonL9PSk   teo IGVwdKhuGQj
     private void createDummyDataToPost(String orgUnitUid, String programUid, String programStageUid,
             String trackedEntityUid, String eventUid, String enrollmentUid,
             String trackedEntityInstanceUid, String trackedEntityAttributeUid,
@@ -115,15 +115,15 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         eventStore.insert(
                 eventUid, enrollmentUid, new Date(), new Date(), null, null,
                 EventStatus.ACTIVE, "13.21", "12.21", programUid, programStageUid, orgUnitUid,
-                new Date(), new Date(), new Date(), State.TO_POST, categoryOptionUid, categoryComboOptionUid
+                new Date(), new Date(), new Date(), State.TO_POST, categoryOptionUid, categoryComboOptionUid, trackedEntityInstanceUid
         );
 
         trackedEntityDataValueStore.insert(
-                eventUid, new Date(), new Date(), dataElementUid, "user_name", "value", Boolean.FALSE
+                eventUid, new Date(), new Date(), dataElementUid, "user_name", "12", Boolean.FALSE
         );
 
         trackedEntityAttributeValueStore.insert(
-                "some_value", new Date(), new Date(), trackedEntityAttributeUid,
+                "new2", new Date(), new Date(), trackedEntityAttributeUid,
                 trackedEntityInstanceUid
         );
     }
@@ -132,10 +132,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
    * If you want run this test you need config the correct uids in the server side.
    * At this moment is necessary add into the "child programme" program the category combo : Implementing Partner
    * */
-
-    //This test is uncommented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     @Test
     public void response_true_when_data_sync() throws Exception {
         retrofit2.Response response = null;

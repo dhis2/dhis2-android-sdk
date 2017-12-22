@@ -769,6 +769,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             EventModel.Columns.STATE + " TEXT," +
             EventModel.Columns.ATTRIBUTE_CATEGORY_OPTIONS + " TEXT," +
             EventModel.Columns.ATTRIBUTE_OPTION_COMBO + " TEXT," +
+            EventModel.Columns.TRACKED_ENTITY_INSTANCE + " TEXT," +
             " FOREIGN KEY (" + EventModel.Columns.PROGRAM + ")" +
             " REFERENCES " + ProgramModel.TABLE +
             " (" + ProgramModel.Columns.UID + ")" +
@@ -785,10 +786,11 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             " REFERENCES " + OrganisationUnitModel.TABLE +
             " (" + OrganisationUnitModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-
+            " FOREIGN KEY (" + EventModel.Columns.TRACKED_ENTITY_INSTANCE + ")" +
+            " REFERENCES " + TrackedEntityInstanceModel.TABLE + " (" + TrackedEntityInstanceModel.Columns.UID + ")" +
+            " ON DELETE CASCADE," +
             " FOREIGN KEY (" + EventModel.Columns.ATTRIBUTE_CATEGORY_OPTIONS + ")" +
-            " REFERENCES " + CategoryOptionModel.TABLE + " (" + CategoryOptionModel.Columns.UID + ")"
-            +
+            " REFERENCES " + CategoryOptionModel.TABLE + " (" + CategoryOptionModel.Columns.UID + ")"+
             " ON DELETE CASCADE," +
             " FOREIGN KEY (" + EventModel.Columns.ATTRIBUTE_OPTION_COMBO + ")" +
             " REFERENCES " + CategoryOptionComboModel.TABLE + " (" + CategoryOptionComboModel.Columns.UID + ")"

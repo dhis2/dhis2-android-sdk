@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
 
+import java.util.List;
+
 public interface CategoryOptionStore extends DeletableStore {
 
     long insert(@NonNull CategoryOption categoryOption);
@@ -13,4 +15,6 @@ public interface CategoryOptionStore extends DeletableStore {
 
     boolean update(@NonNull CategoryOption oldCategoryOption,
             @NonNull CategoryOption newCategoryOption);
+
+    List<CategoryOption> queryAll();
 }

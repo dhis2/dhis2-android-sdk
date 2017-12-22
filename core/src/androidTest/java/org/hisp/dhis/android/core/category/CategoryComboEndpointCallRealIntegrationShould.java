@@ -3,8 +3,6 @@ package org.hisp.dhis.android.core.category;
 
 import static junit.framework.Assert.assertTrue;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.support.annotation.NonNull;
 
 import com.google.common.truth.Truth;
@@ -38,7 +36,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     //@Test
-    public void download_category_combos() throws Exception {
+    public void download_categories_combos_and_relatives() throws Exception {
 
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
@@ -46,25 +44,26 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         downloadCategories();
 
         assertNotCombosInDB();
-        assertNotCategoryCombosLinkInDB();
+        assertThereAreNotCategoryCombosLinkInDB();
 
         CategoryComboEndpointCall categoryComboCallEndpoint = provideCategoryComboCallEndpoint();
         Response<Payload<CategoryCombo>> responseCategory = categoryComboCallEndpoint.call();
 
-        assertParseData(responseCategory);
+        assertResponseIsCorrect(responseCategory);
 
-        assertRelations();
+        assertDataIsProperlyParsedAndInsertedInTheDB();
     }
 
-    private void assertParseData(Response<Payload<CategoryCombo>> responseCategory) {
+    private void assertResponseIsCorrect(Response<Payload<CategoryCombo>> responseCategory) {
         assertTrue(responseCategory.isSuccessful());
         assertTrue(hasCombos(responseCategory));
     }
 
-    private void assertRelations() {
+    private void assertDataIsProperlyParsedAndInsertedInTheDB() {
         assertThereAreCombosInDB();
         assertThereAreCategoryCombosLinkInDB();
         assertThereAreCategoryOptionCombosInDB();
+        assertThereAreCategorysInDB();
     }
 
     private void downloadCategories() throws Exception {
@@ -79,9 +78,10 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertTrue(categoryCombos.isEmpty());
     }
 
-    private void assertNotCategoryCombosLinkInDB() {
-        Cursor combos = selectAllCategoryCombosLinksFromDB();
-        assertTrue(combos.getCount() == 0);
+    private void assertThereAreNotCategoryCombosLinkInDB() {
+        CategoryComboLinkStore categoryComboLinkStore = new CategoryComboLinkStoreImpl(databaseAdapter());
+        List<CategoryComboLink> categoryComboLinks = categoryComboLinkStore.queryAll();
+        assertTrue(categoryComboLinks.isEmpty());
     }
 
     private void assertThereAreCombosInDB() {
@@ -91,47 +91,21 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void assertThereAreCategoryCombosLinkInDB() {
-        Cursor combos = selectAllCategoryCombosLinksFromDB();
-        assertTrue(combos.getCount() > 0);
+        CategoryComboLinkStore categoryComboLinkStore = new CategoryComboLinkStoreImpl(databaseAdapter());
+        List<CategoryComboLink> categoryComboLinks = categoryComboLinkStore.queryAll();
+        assertTrue(categoryComboLinks.size() > 0);
     }
 
     private void assertThereAreCategoryOptionCombosInDB() {
-        Cursor combos = selectAllOptionCombosFromDB();
-        assertTrue(combos.getCount() > 0);
+        CategoryOptionComboStore categoryOptionComboStore = new CategoryOptionComboStoreImpl(databaseAdapter());
+        List<CategoryOptionCombo> categoryOptionCombos = categoryOptionComboStore.queryAll();
+        assertTrue(categoryOptionCombos.size() > 0);
     }
 
-    private Cursor selectAllCategoryCombosLinksFromDB() {
-        final String[] PROJECTION = {
-                CategoryComboLinkModel.Columns.ID, CategoryComboLinkModel.Columns.CATEGORY,
-                CategoryComboLinkModel.Columns.COMBO
-        };
-        String sqlQuery = SQLiteQueryBuilder.buildQueryString(false, CategoryComboLinkModel.TABLE,
-                PROJECTION, null,
-                null, null, null, null);
-
-
-        return databaseAdapter().query(sqlQuery);
-    }
-
-    private Cursor selectAllOptionCombosFromDB() {
-        final String[] PROJECTION = {
-                CategoryOptionComboModel.Columns.ID,
-                CategoryOptionComboModel.Columns.UID,
-                CategoryOptionComboModel.Columns.CODE,
-                CategoryOptionComboModel.Columns.NAME,
-                CategoryOptionComboModel.Columns.DISPLAY_NAME,
-                CategoryOptionComboModel.Columns.CREATED,
-                CategoryOptionComboModel.Columns.LAST_UPDATED,
-                CategoryOptionComboModel.Columns.CATEGORY_COMBO
-
-        };
-
-        String sqlQuery = SQLiteQueryBuilder.buildQueryString(false, CategoryOptionComboModel.TABLE,
-                PROJECTION, null,
-                null, null, null, null);
-
-
-        return databaseAdapter().query(sqlQuery);
+    private void assertThereAreCategorysInDB() {
+        CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
+        List<CategoryOption> categoryOptions = categoryOptionStore.queryAll();
+        assertTrue(categoryOptions.size() > 0);
     }
 
     @NonNull

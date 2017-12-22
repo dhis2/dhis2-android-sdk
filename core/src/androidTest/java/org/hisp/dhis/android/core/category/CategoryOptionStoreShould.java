@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +18,9 @@ import java.util.Date;
 public class CategoryOptionStoreShould extends AbsStoreTestCase {
 
     private CategoryOptionStore store;
+    private CategoryOption newCategoryOption;
+    private long lastInsertedID;
+    private boolean wasDeleted;
 
     @Override
     @Before
@@ -28,46 +30,33 @@ public class CategoryOptionStoreShould extends AbsStoreTestCase {
 
     }
 
-    @Override
-    @After
-    public void tearDown() {
-        clearTablesData();
+    @Test
+    public void insert_a_category_option() throws Exception {
+        givenACategoryOption();
+
+        whenInsertNewcategoryOption();
+
+        thenAssertLastInsertedIDIsOne();
     }
 
     @Test
-    public void insert_category() throws Exception {
+    public void insert_and_delete_a_category_option() throws Exception {
+        givenACategoryOption();
 
-        long lastID = insertNewOption();
+        whenInsertNewcategoryOption();
+        whenDeleteCategoryOptionInserted();
 
-        assertEquals(lastID, 1);
+        thenAssertStoreReturnsDeleted();
 
+        whenDeleteCategoryOptionInserted();
+
+        thenAssertStoreReturnsNotDeleted();
     }
 
-    @Test
-    public void delete_category() throws Exception {
-        insertNewOption();
-
-        CategoryOption option = givenAOption();
-
-        boolean wasDeleted = store.delete(option);
-
-        assertTrue(wasDeleted);
-
-        wasDeleted = store.delete(option);
-
-        assertFalse(wasDeleted);
-    }
-
-    private long insertNewOption() {
-        CategoryOption newOption = givenAOption();
-
-        return store.insert(newOption);
-    }
-
-    private CategoryOption givenAOption() {
+    private void givenACategoryOption() {
         Date today = new Date();
 
-        return CategoryOption.builder()
+        newCategoryOption = CategoryOption.builder()
                 .uid("TNYQzTHdoxL")
                 .code("MCH_AIDES")
                 .created(today)
@@ -77,7 +66,23 @@ public class CategoryOptionStoreShould extends AbsStoreTestCase {
                 .build();
     }
 
-    private void clearTablesData() {
-        databaseAdapter().delete(CategoryOptionModel.TABLE);
+    private void whenInsertNewcategoryOption() {
+        lastInsertedID = store.insert(newCategoryOption);
+    }
+
+    private void whenDeleteCategoryOptionInserted() {
+        wasDeleted = store.delete(newCategoryOption);
+    }
+
+    private void thenAssertLastInsertedIDIsOne(){
+        assertEquals(lastInsertedID, 1);
+    }
+
+    private void thenAssertStoreReturnsDeleted(){
+        assertTrue(wasDeleted);
+    }
+
+    private void thenAssertStoreReturnsNotDeleted(){
+        assertFalse(wasDeleted);
     }
 }

@@ -31,7 +31,7 @@ public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_category() throws Exception {
+    public void insert_a_category_option_link() throws Exception {
         givenACategory();
         givenACategoryOption();
         givenACategoryOptionLinkModel();

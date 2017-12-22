@@ -20,7 +20,9 @@ final class RuleFunctionSubString extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
-        if (arguments.size() != 3) {
+        if (arguments == null) {
+            throw new IllegalArgumentException("Three arguments is expected");
+        } else if (arguments.size() != 3) {
             throw new IllegalArgumentException("three argument were expected, " +
                     arguments.size() + " were supplied");
         }
@@ -28,14 +30,6 @@ final class RuleFunctionSubString extends RuleFunction {
         return String.valueOf(substring(arguments.get(0), Integer.parseInt(arguments.get(1)), Integer.parseInt(arguments.get(2))));
     }
 
-    /**
-     * Return a substring from a start index up to an end index (not included).
-     *
-     * @param inputString input value.
-     * @param startIndex start index.
-     * @param endIndex end index (not included)
-     * @return the substring.
-     */
     private static String substring(String inputString, int startIndex, int endIndex) {
         if (inputString == null)
             return "";

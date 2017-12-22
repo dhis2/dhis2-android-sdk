@@ -25,7 +25,7 @@ final class RuleFunctionSplit extends RuleFunction {
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
         if (arguments == null) {
-            throw new IllegalArgumentException("One argument is expected");
+            throw new IllegalArgumentException("Three arguments is expected");
         } else if (arguments.size() != 3) {
             throw new IllegalArgumentException("Three arguments were expected, " +
                     arguments.size() + " were supplied");

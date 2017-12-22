@@ -9,6 +9,9 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Split the text by delimiter, and keep the nth element(0 is the first).
+ */
 final class RuleFunctionSplit extends RuleFunction {
     static final String D2_SPLIT = "d2:split";
 
@@ -21,7 +24,9 @@ final class RuleFunctionSplit extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
-        if (arguments.size() != 3) {
+        if (arguments == null) {
+            throw new IllegalArgumentException("One argument is expected");
+        } else if (arguments.size() != 3) {
             throw new IllegalArgumentException("Three arguments were expected, " +
                     arguments.size() + " were supplied");
         }
@@ -29,14 +34,6 @@ final class RuleFunctionSplit extends RuleFunction {
         return (split(arguments.get(0), arguments.get(1), Integer.parseInt(arguments.get(2))));
     }
 
-    /**
-     * Split a string given a separator and get the nth item.
-     *
-     * @param inputString input value.
-     * @param splitString separator value.
-     * @param fieldIndex item index to get from the split.
-     * @return the field after split.
-     */
     private static String split(String inputString, String splitString, int fieldIndex) {
         if (inputString == null || splitString == null)
             return "";

@@ -37,7 +37,7 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
 
         whenInsertNewCategoryCombo();
 
-        thenAssertLastInsertedIdIsOne();
+        thenAssertLastInsertedIDIsOne();
     }
 
     @Test
@@ -80,7 +80,7 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
         wasDeleted = store.delete(newCategoryCombo);
     }
 
-    private void thenAssertLastInsertedIdIsOne() {
+    private void thenAssertLastInsertedIDIsOne() {
         assertEquals(lastInsertedId, 1);
     }
 

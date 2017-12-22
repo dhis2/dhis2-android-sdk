@@ -7,6 +7,9 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Evaluates to true of the argument source field contains a value, false if no value is entered.
+ */
 final class RuleFunctionHasValue extends RuleFunction {
     static final String D2_HAS_VALUE = "d2:hasValue";
 

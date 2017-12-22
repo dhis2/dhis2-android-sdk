@@ -23,7 +23,10 @@ import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.junit.After;
@@ -115,12 +118,7 @@ public class DataBaseMigrationShould {
     public void have_category_table_after_first_migration() throws IOException {
         initCoreDataBase(dbName, 1, realMigrationDir, databaseSqlVersion1);
         initCoreDataBase(dbName, 2, realMigrationDir, "");
-        assertThat(ifTableExist(CategoryModel.TABLE, databaseAdapter), is(true));
-        assertThat(ifTableExist(CategoryComboModel.TABLE, databaseAdapter), is(true));
-        assertThat(ifTableExist(CategoryOptionComboModel.TABLE, databaseAdapter), is(true));
-        assertThat(ifTableExist(CategoryOptionModel.TABLE, databaseAdapter), is(true));
-        assertThat(ifTableExist(CategoryComboLinkModel.TABLE, databaseAdapter), is(true));
-        assertThat(ifTableExist(CategoryOptionLinkModel.TABLE, databaseAdapter), is(true));
+        assertVersion2MigrationChanges(databaseAdapter);
     }
 
     @Test
@@ -160,8 +158,7 @@ public class DataBaseMigrationShould {
     @Test
     public void have_categoryCombo_columns_after_create_version_2() throws IOException {
         buildD2(initCoreDataBase(dbName, 2, realMigrationDir, databaseSqlVersion2));
-        assertThat(isFieldExist(DataElementModel.TABLE, DataElementModel.Columns.CATEGORY_COMBO, databaseAdapter), is(true));
-        assertThat(isFieldExist(ProgramModel.TABLE, ProgramModel.Columns.CATEGORY_COMBO, databaseAdapter), is(true));
+        assertVersion2MigrationChanges(d2.databaseAdapter());
     }
     @Test
     public void have_categoryCombo_columns_after_create_last_version() throws IOException {
@@ -193,5 +190,19 @@ public class DataBaseMigrationShould {
         initCoreDataBase(dbName, 1, exampleMigrationsDir, "");
         assertThat(isFieldExist(UserModel.TABLE, "testColumn", databaseAdapter), is(true));
         assertThat(ifTableExist("TestTable", databaseAdapter), is(false));
+    }
+
+    private void assertVersion2MigrationChanges(DatabaseAdapter databaseAdapter) {
+        assertThat(ifTableExist(CategoryModel.TABLE, databaseAdapter), is(true));
+        assertThat(ifTableExist(CategoryComboModel.TABLE, databaseAdapter), is(true));
+        assertThat(ifTableExist(CategoryOptionComboModel.TABLE, databaseAdapter), is(true));
+        assertThat(ifTableExist(CategoryOptionModel.TABLE, databaseAdapter), is(true));
+        assertThat(ifTableExist(CategoryComboLinkModel.TABLE, databaseAdapter), is(true));
+        assertThat(ifTableExist(CategoryOptionLinkModel.TABLE, databaseAdapter), is(true));
+        assertThat(isFieldExist(ProgramModel.TABLE, ProgramModel.Columns.CATEGORY_COMBO, databaseAdapter), is(true));
+        assertThat(isFieldExist(DataElementModel.TABLE, DataElementModel.Columns.CATEGORY_COMBO, databaseAdapter), is(true));
+        assertThat(isFieldExist(EventModel.TABLE, EventModel.Columns.ATTRIBUTE_CATEGORY_OPTIONS, databaseAdapter), is(true));
+        assertThat(isFieldExist(EventModel.TABLE, EventModel.Columns.ATTRIBUTE_OPTION_COMBO, databaseAdapter), is(true));
+        assertThat(isFieldExist(EventModel.TABLE, EventModel.Columns.TRACKED_ENTITY_INSTANCE, databaseAdapter), is(true));
     }
 }

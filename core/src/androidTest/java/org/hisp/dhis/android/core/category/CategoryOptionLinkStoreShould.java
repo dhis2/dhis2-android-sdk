@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +17,10 @@ import java.util.Date;
 public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
     private CategoryOptionLinkStore store;
+    private Category newCategory;
+    private CategoryOption newCategoryOption;
+    private CategoryOptionLinkModel newCategoryOptionLinkModel;
+    private long lastInsertedID;
 
     @Override
     @Before
@@ -27,53 +30,23 @@ public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
     }
 
-    @Override
-    @After
-    public void tearDown() {
-        clearTablesData();
-    }
-
     @Test
     public void insert_category() throws Exception {
+        givenACategory();
+        givenACategoryOption();
+        givenACategoryOptionLinkModel();
 
-        insertNewCategory();
+        whenInsertNewCategory();
+        whenInsertNewOption();
+        whenInsertNewCategoryOptionLink();
 
-        insertNewOption();
-
-        long lastID = insertNewCategoryOptionLink();
-
-        assertEquals(lastID, 1);
-
+        thenAssertLastInsertedIDIsOne();
     }
 
-    private CategoryOptionLinkModel givenACategoryOptionLink() {
-        return CategoryOptionLinkModel.builder()
-                .option("TNYQzTHdoxL")
-                .category("KfdsGBcoiCa")
-                .build();
-    }
-
-    private long insertNewCategoryOptionLink() {
-        CategoryOptionLinkModel link = givenACategoryOptionLink();
-        return store.insert(link);
-    }
-
-    private void insertNewCategory() {
-        Category newCategory = givenACategory();
-        CategoryStoreImpl categoryStore = new CategoryStoreImpl(databaseAdapter());
-        categoryStore.insert(newCategory);
-    }
-
-    private void insertNewOption() {
-        CategoryOption newOption = givenAOption();
-        CategoryOptionStoreImpl optionStore = new CategoryOptionStoreImpl(databaseAdapter());
-        optionStore.insert(newOption);
-    }
-
-    private Category givenACategory() {
+    private void givenACategory() {
         Date today = new Date();
 
-        return Category.builder()
+        newCategory = Category.builder()
                 .uid("KfdsGBcoiCa")
                 .code("BIRTHS_ATTENDED")
                 .created(today)
@@ -84,10 +57,10 @@ public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
                 .dataDimensionType("DISAGGREGATION").build();
     }
 
-    private CategoryOption givenAOption() {
+    private void givenACategoryOption() {
         Date today = new Date();
 
-        return CategoryOption.builder()
+        newCategoryOption = CategoryOption.builder()
                 .uid("TNYQzTHdoxL")
                 .code("MCH_AIDES")
                 .created(today)
@@ -97,8 +70,28 @@ public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
                 .build();
     }
 
-    private void clearTablesData() {
-        databaseAdapter().delete(CategoryOptionLinkModel.TABLE);
+    private void givenACategoryOptionLinkModel() {
+        newCategoryOptionLinkModel = CategoryOptionLinkModel.builder()
+                .option("TNYQzTHdoxL")
+                .category("KfdsGBcoiCa")
+                .build();
     }
 
+    private void whenInsertNewCategoryOptionLink() {
+        lastInsertedID = store.insert(newCategoryOptionLinkModel);
+    }
+
+    private void whenInsertNewCategory() {
+        CategoryStoreImpl categoryStore = new CategoryStoreImpl(databaseAdapter());
+        categoryStore.insert(newCategory);
+    }
+
+    private void whenInsertNewOption() {
+        CategoryOptionStoreImpl optionStore = new CategoryOptionStoreImpl(databaseAdapter());
+        optionStore.insert(newCategoryOption);
+    }
+
+    private void thenAssertLastInsertedIDIsOne(){
+        assertEquals(lastInsertedID, 1);
+    }
 }

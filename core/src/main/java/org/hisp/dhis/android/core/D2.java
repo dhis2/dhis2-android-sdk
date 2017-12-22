@@ -224,7 +224,6 @@ public final class D2 {
     private final CategoryOptionStore categoryOptionStore;
     private final CategoryStore categoryStore;
     private final CategoryComboStore categoryComboStore;
-    private final CategoryOptionComboStore categoryOptionComboStore;
     private final CategoryComboLinkStore categoryComboLinkStore;
     private final CategoryOptionLinkStore categoryOptionLinkStore;
     private final CategoryOptionComboLinkCategoryStore categoryComboOptionLinkCategoryStore;
@@ -331,7 +330,7 @@ public final class D2 {
         this.categoryComboStore = new CategoryComboStoreImpl(databaseAdapter());
         this.categoryComboLinkStore = new CategoryComboLinkStoreImpl(
                 databaseAdapter());
-        this.categoryOptionComboStore = new CategoryOptionComboStoreImpl(
+        CategoryOptionComboStore categoryOptionComboStore = new CategoryOptionComboStoreImpl(
                 databaseAdapter());
 
         //handlers

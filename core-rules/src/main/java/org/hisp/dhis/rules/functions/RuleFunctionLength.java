@@ -19,11 +19,20 @@ final class RuleFunctionLength extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
-        if (arguments.size() != 1) {
+
+        int length = 0;
+
+        if (arguments == null) {
+            throw new IllegalArgumentException("One argument is expected");
+        } else if (arguments.size() != 1) {
             throw new IllegalArgumentException("One argument was expected, " +
                     arguments.size() + " were supplied");
         }
 
-        return String.valueOf(arguments.get(0).length());
+        if (arguments.get(0) != null) {
+            length = arguments.get(0).length();
+        }
+
+        return String.valueOf(length);
     }
 }

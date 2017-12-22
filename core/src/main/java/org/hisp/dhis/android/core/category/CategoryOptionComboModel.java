@@ -43,18 +43,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 public abstract class CategoryOptionComboModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "CategoryOptionCombo";
 
-    public static final String[] PROJECTION = {
-            CategoryOptionComboModel.Columns.ID,
-            CategoryOptionComboModel.Columns.UID,
-            CategoryOptionComboModel.Columns.CODE,
-            CategoryOptionComboModel.Columns.NAME,
-            CategoryOptionComboModel.Columns.DISPLAY_NAME,
-            CategoryOptionComboModel.Columns.CREATED,
-            CategoryOptionComboModel.Columns.LAST_UPDATED,
-            CategoryOptionComboModel.Columns.CATEGORY_COMBO
-
-    };
-
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String CATEGORY_COMBO = "categoryCombo";
 

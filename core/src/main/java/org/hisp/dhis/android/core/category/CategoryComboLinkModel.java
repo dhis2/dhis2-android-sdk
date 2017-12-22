@@ -50,11 +50,6 @@ public abstract class CategoryComboLinkModel extends BaseModel {
 
     }
 
-    public static final String[] PROJECTION = {
-            Columns.ID, Columns.CATEGORY,
-            Columns.COMBO
-    };
-
     @Nullable
     @ColumnName(Columns.CATEGORY)
     public abstract String category();

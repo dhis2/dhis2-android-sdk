@@ -14,13 +14,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 public abstract class CategoryComboModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "CategoryCombo";
 
-    public static final String[] PROJECTION = {
-            Columns.ID, Columns.UID, Columns.CODE, Columns.NAME,
-            Columns.DISPLAY_NAME, Columns.CREATED, Columns.LAST_UPDATED,
-            Columns.IS_DEFAULT
-
-    };
-
     @Nullable
     @ColumnName(Columns.IS_DEFAULT)
     public abstract Boolean isDefault();

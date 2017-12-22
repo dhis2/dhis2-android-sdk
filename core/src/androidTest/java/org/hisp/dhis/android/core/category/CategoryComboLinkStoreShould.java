@@ -20,7 +20,7 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
     private CategoryComboLinkStore store;
     private Category newCategory;
     private CategoryCombo newCategoryCombo;
-    private long lastID;
+    private long lastInsertedID;
 
     @Override
     @Before
@@ -31,7 +31,7 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_a_category_combo_link_in_the_DB() throws Exception {
+    public void insert_a_category_combo_link() throws Exception {
         givenACategory();
         givenACategoryCombo();
 
@@ -39,7 +39,7 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
         whenInsertNewCategoryCombo();
         whenInsertNewCategoryComboLink();
 
-        thenAssertLastIDIsOne();
+        thenAssertLastInsertedIDIsOne();
     }
 
     private void givenACategory() {
@@ -86,7 +86,7 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
                 .category("KfdsGBcoiCa")
                 .combo("m2jTvAj5kkm")
                 .build();
-        lastID = store.insert(link);
+        lastInsertedID = store.insert(link);
     }
 
     private List<Category> generateAListOfCategories() {
@@ -95,7 +95,7 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
         return list;
     }
 
-    private void thenAssertLastIDIsOne() {
-        assertEquals(lastID, 1);
+    private void thenAssertLastInsertedIDIsOne() {
+        assertEquals(lastInsertedID, 1);
     }
 }

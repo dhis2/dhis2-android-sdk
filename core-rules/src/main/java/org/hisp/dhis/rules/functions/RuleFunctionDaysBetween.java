@@ -8,10 +8,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Produces the number of days between the first and second argument.
+ * If the second argument date is before the first argument the return value
+ * will be the negative number of days between the two dates.
+ * The static date format is 'yyyy-MM-dd'.
+ */
 @AutoValue
 abstract class RuleFunctionDaysBetween extends RuleFunction {
     static final String D2_DAYS_BETWEEN = "d2:daysBetween";
@@ -20,7 +27,10 @@ abstract class RuleFunctionDaysBetween extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             @Nonnull Map<String, RuleVariableValue> valueMap) {
-        if (arguments.size() != 2) {
+
+        if (arguments == null) {
+            throw new IllegalArgumentException("One argument is expected");
+        } else if (arguments.size() != 2) {
             throw new IllegalArgumentException("Two arguments were expected, " +
                     arguments.size() + " were supplied");
         }
@@ -29,7 +39,7 @@ abstract class RuleFunctionDaysBetween extends RuleFunction {
     }
 
     @Nonnull
-    public static RuleFunctionDaysBetween create() {
+    static RuleFunctionDaysBetween create() {
         return new AutoValue_RuleFunctionDaysBetween();
     }
 
@@ -42,8 +52,11 @@ abstract class RuleFunctionDaysBetween extends RuleFunction {
      */
     @SuppressWarnings("PMD.UnnecessaryWrapperObjectCreation")
     static Integer daysBetween(String start, String end) {
-        SimpleDateFormat format = new SimpleDateFormat();
-        format.applyPattern(DATE_PATTERN);
+        if (isEmpty(start) || isEmpty(end)) {
+            return 0;
+        }
+
+        SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN, Locale.US);
 
         try {
             Date startDate = format.parse(start);
@@ -51,7 +64,11 @@ abstract class RuleFunctionDaysBetween extends RuleFunction {
 
             return Long.valueOf((endDate.getTime() - startDate.getTime()) / 86400000).intValue();
         } catch (ParseException parseException) {
-            throw new RuntimeException(parseException);
+            throw new IllegalArgumentException(parseException.getMessage(), parseException);
         }
+    }
+
+    private static boolean isEmpty(CharSequence charSequence) {
+        return charSequence == null || charSequence.length() == 0;
     }
 }

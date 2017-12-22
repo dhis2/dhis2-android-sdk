@@ -32,16 +32,16 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_a_category() throws Exception {
+    public void insert_a_category_combo() throws Exception {
         givenACategoryCombo();
 
         whenInsertNewCategoryCombo();
 
-        thenAssertLastInsertedIdIsOne();
+        thenAssertLastInsertedIDIsOne();
     }
 
     @Test
-    public void insert_and_delete_a_category() throws Exception {
+    public void insert_and_delete_a_category_combo() throws Exception {
         givenACategoryCombo();
 
         whenInsertNewCategoryCombo();
@@ -80,7 +80,7 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
         wasDeleted = store.delete(newCategoryCombo);
     }
 
-    private void thenAssertLastInsertedIdIsOne() {
+    private void thenAssertLastInsertedIDIsOne() {
         assertEquals(lastInsertedId, 1);
     }
 

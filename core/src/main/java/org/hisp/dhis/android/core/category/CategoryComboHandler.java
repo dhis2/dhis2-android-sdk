@@ -10,7 +10,7 @@ import java.util.List;
 public class CategoryComboHandler {
 
     @NonNull
-    private final CategoryOptionComboLinkCategoryStore categoryComboOptionLinkCategoryStore;
+    private final CategoryOptionComboCategoryLinkStore categoryComboOptionLinkCategoryStore;
 
     @NonNull
     private final CategoryComboLinkStore categoryComboLinkStore;
@@ -23,12 +23,12 @@ public class CategoryComboHandler {
 
     public CategoryComboHandler(
             @NonNull CategoryComboStore store,
-            @NonNull CategoryOptionComboLinkCategoryStore
-                    categoryComboOptionLinkCategoryStore,
+            @NonNull CategoryOptionComboCategoryLinkStore
+                    categoryComboOptionCategoryLinkStore,
             @NonNull CategoryComboLinkStore categoryComboLinkStore,
             @NonNull CategoryOptionComboHandler optionComboHandler) {
         this.store = store;
-        this.categoryComboOptionLinkCategoryStore = categoryComboOptionLinkCategoryStore;
+        this.categoryComboOptionLinkCategoryStore = categoryComboOptionCategoryLinkStore;
         this.categoryComboLinkStore = categoryComboLinkStore;
         this.optionComboHandler = optionComboHandler;
     }
@@ -75,7 +75,7 @@ public class CategoryComboHandler {
         if (categoryOptions != null) {
             for (CategoryOption categoryOption : categoryOptions) {
 
-                CategoryOptionComboLinkCategoryModel link = newCategoryOptionLinkCategory(
+                CategoryOptionComboCategoryLinkModel link = newCategoryOptionLinkCategory(
                         optionCombo,
                         categoryOption);
 
@@ -85,10 +85,10 @@ public class CategoryComboHandler {
     }
 
     @NonNull
-    private CategoryOptionComboLinkCategoryModel newCategoryOptionLinkCategory(
+    private CategoryOptionComboCategoryLinkModel newCategoryOptionLinkCategory(
             @NonNull CategoryOptionCombo optionCombo,
             @NonNull CategoryOption categoryOption) {
-        return CategoryOptionComboLinkCategoryModel.
+        return CategoryOptionComboCategoryLinkModel.
                 builder()
                 .category(categoryOption.uid())
                 .optionCombo(optionCombo.uid())

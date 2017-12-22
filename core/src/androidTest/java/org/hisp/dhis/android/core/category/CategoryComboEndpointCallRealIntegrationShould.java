@@ -3,24 +3,19 @@ package org.hisp.dhis.android.core.category;
 
 import static junit.framework.Assert.assertTrue;
 
-import android.support.annotation.NonNull;
-
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.CategoryCallFactory;
+import org.hisp.dhis.android.core.common.CategoryComboCallFactory;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Response;
@@ -47,7 +42,8 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertNotCombosInDB();
         assertThereAreNotCategoryCombosLinkInDB();
 
-        CategoryComboEndpointCall categoryComboEndpointCall = provideCategoryComboEndpointCall();
+        CategoryComboEndpointCall categoryComboEndpointCall = CategoryComboCallFactory.create(
+                d2.retrofit(), databaseAdapter());
         Response<Payload<CategoryCombo>> responseCategory = categoryComboEndpointCall.call();
 
         assertResponseIsCorrect(responseCategory);
@@ -107,41 +103,6 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
         List<CategoryOption> categoryOptions = categoryOptionStore.queryAll();
         assertTrue(categoryOptions.size() > 0);
-    }
-
-    @NonNull
-    private CategoryComboEndpointCall provideCategoryComboEndpointCall() {
-        CategoryComboQuery query = CategoryComboQuery.defaultQuery();
-
-        CategoryComboService comboService = d2.retrofit().create(CategoryComboService.class);
-        CategoryComboLinkStore categoryComboLinkStore = new CategoryComboLinkStoreImpl(
-                databaseAdapter());
-
-        CategoryOptionComboStore optionComboStore = new CategoryOptionComboStoreImpl(
-                databaseAdapter());
-        CategoryOptionComboHandler optionComboHandler = new CategoryOptionComboHandler(
-                optionComboStore);
-
-        ResponseValidator<CategoryCombo> validator = new ResponseValidator<>();
-
-        CategoryComboStore store = new CategoryComboStoreImpl(databaseAdapter());
-
-        CategoryOptionComboLinkCategoryStore
-                categoryComboOptionLinkCategoryStore = new CategoryOptionComboLinkCategoryStoreImpl(
-                databaseAdapter());
-
-        CategoryComboHandler handler = new CategoryComboHandler(store,
-                categoryComboOptionLinkCategoryStore, categoryComboLinkStore,
-                optionComboHandler);
-
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-        Date serverDate = new Date();
-
-        return new CategoryComboEndpointCall(query, comboService, validator, handler,
-                resourceHandler,
-                databaseAdapter(), serverDate);
-
     }
 
     private boolean hasCombos(Response<Payload<CategoryCombo>> response) {

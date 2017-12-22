@@ -40,17 +40,17 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 
 @AutoValue
-public abstract class CategoryOptionComboLinkCategoryModel extends BaseModel {
-    public static final String TABLE = "CategoryOptionComboLinkCategory";
+public abstract class CategoryOptionComboCategoryLinkModel extends BaseModel {
+    public static final String TABLE = "CategoryOptionComboCategoryLink";
 
     public static class Columns extends BaseModel.Columns {
-        public static final String OPTION_COMBO = "optionCombo";
+        public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
         public static final String CATEGORY = "category";
 
     }
 
     @NonNull
-    @ColumnName(Columns.OPTION_COMBO)
+    @ColumnName(Columns.CATEGORY_OPTION_COMBO)
     public abstract String optionCombo();
 
     @NonNull
@@ -62,12 +62,12 @@ public abstract class CategoryOptionComboLinkCategoryModel extends BaseModel {
 
     @NonNull
     public static Builder builder() {
-        return new $$AutoValue_CategoryOptionComboLinkCategoryModel.Builder();
+        return new $$AutoValue_CategoryOptionComboCategoryLinkModel.Builder();
     }
 
     @NonNull
-    public static CategoryOptionComboLinkCategoryModel create(Cursor cursor) {
-        return AutoValue_CategoryOptionComboLinkCategoryModel.createFromCursor(cursor);
+    public static CategoryOptionComboCategoryLinkModel create(Cursor cursor) {
+        return AutoValue_CategoryOptionComboCategoryLinkModel.createFromCursor(cursor);
 
     }
 
@@ -78,6 +78,6 @@ public abstract class CategoryOptionComboLinkCategoryModel extends BaseModel {
 
         public abstract Builder category(@Nullable String category);
 
-        public abstract CategoryOptionComboLinkCategoryModel build();
+        public abstract CategoryOptionComboCategoryLinkModel build();
     }
 }

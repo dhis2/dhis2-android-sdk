@@ -6,7 +6,7 @@ import static org.hamcrest.core.Is.is;
 import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CategoryModel;
-import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryModel;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -113,7 +113,7 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
                 .isNotEmptyTable(CategoryComboModel.TABLE)
                 .isNotEmptyTable(CategoryComboLinkModel.TABLE)
                 .isNotEmptyTable(CategoryOptionComboModel.TABLE)
-                .isNotEmptyTable(CategoryOptionComboLinkCategoryModel.TABLE)
+                .isNotEmptyTable(CategoryOptionComboCategoryLinkModel.TABLE)
                 .isNotEmptyTable(ResourceModel.TABLE);
     }
 

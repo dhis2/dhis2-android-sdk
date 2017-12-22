@@ -2,6 +2,7 @@ package org.hisp.dhis.rules;
 
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.rules.models.RuleEvent;
 import org.hisp.dhis.rules.models.RuleValueType;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class RuleVariableValue {
-
     @Nullable
     public abstract String value();
 

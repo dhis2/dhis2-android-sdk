@@ -20,6 +20,7 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
     private CategoryComboLinkStore store;
     private Category newCategory;
     private CategoryCombo newCategoryCombo;
+    private CategoryComboLinkModel newCategoryComboLinkModel;
     private long lastInsertedID;
 
     @Override
@@ -34,6 +35,7 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
     public void insert_a_category_combo_link() throws Exception {
         givenACategory();
         givenACategoryCombo();
+        givenACategoryComboLinkModel();
 
         whenInsertNewCategory();
         whenInsertNewCategoryCombo();
@@ -71,6 +73,13 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
                 .build();
     }
 
+    private void givenACategoryComboLinkModel(){
+        newCategoryComboLinkModel = CategoryComboLinkModel.builder()
+                .category("KfdsGBcoiCa")
+                .combo("m2jTvAj5kkm")
+                .build();
+    }
+
     private void whenInsertNewCategory() {
         CategoryStoreImpl categoryStore = new CategoryStoreImpl(databaseAdapter());
         categoryStore.insert(newCategory);
@@ -82,11 +91,7 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void whenInsertNewCategoryComboLink() {
-        CategoryComboLinkModel link = CategoryComboLinkModel.builder()
-                .category("KfdsGBcoiCa")
-                .combo("m2jTvAj5kkm")
-                .build();
-        lastInsertedID = store.insert(link);
+        lastInsertedID = store.insert(newCategoryComboLinkModel);
     }
 
     private List<Category> generateAListOfCategories() {

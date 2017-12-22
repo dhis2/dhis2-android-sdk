@@ -17,7 +17,7 @@ import java.util.List;
 public class CategoryComboHandlerShould {
 
     @Mock
-    private CategoryOptionComboLinkCategoryStore mockComboOptionLinkStore;
+    private CategoryOptionComboCategoryLinkStore mockComboOptionLinkStore;
 
     @Mock
     private CategoryComboLinkStoreImpl mockComboLinkStore;

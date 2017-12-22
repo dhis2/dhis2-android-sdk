@@ -2,8 +2,6 @@ package org.hisp.dhis.android.core.category;
 
 import static junit.framework.Assert.assertTrue;
 
-import android.support.annotation.NonNull;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.Payload;
@@ -38,7 +36,13 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
         super.setUp();
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        Retrofit retrofit = provideRetrofit();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(dhis2MockServer.getBaseEndpoint())
+                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
+                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
+                .build();
+
         categoryService = retrofit.create(CategoryService.class);
 
     }
@@ -47,13 +51,12 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
     @After
     public void tearDown() throws IOException {
         dhis2MockServer.shutdown();
-        clearTablesData();
     }
 
     @Test
     public void parse_category_successful() throws Exception {
 
-        CategoryEndpointCall callEndpoint = provideCategoryCallEndpoint();
+        CategoryEndpointCall callEndpoint = provideCategoryEndpointCall();
         dhis2MockServer.enqueueMockResponse("categories.json");
 
         Response<Payload<Category>> response = callEndpoint.call();
@@ -67,7 +70,7 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
         return !response.body().items().isEmpty();
     }
 
-    private CategoryEndpointCall provideCategoryCallEndpoint() {
+    private CategoryEndpointCall provideCategoryEndpointCall() {
         CategoryQuery query = CategoryQuery.builder().paging(true).pageSize(
                 CategoryQuery.DEFAULT_PAGE_SIZE).page(1).build();
 
@@ -92,19 +95,4 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
                 databaseAdapter(), serverDate);
 
     }
-
-    @NonNull
-    private Retrofit provideRetrofit() {
-        return new Retrofit.Builder()
-                .baseUrl(dhis2MockServer.getBaseEndpoint())
-                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
-                .addConverterFactory(FilterConverterFactory.create())
-                .addConverterFactory(FieldsConverterFactory.create())
-                .build();
-    }
-
-    private void clearTablesData() {
-        databaseAdapter().delete(CategoryModel.TABLE);
-    }
-
 }

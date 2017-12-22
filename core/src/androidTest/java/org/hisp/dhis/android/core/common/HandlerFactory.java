@@ -1,6 +1,16 @@
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
+import org.hisp.dhis.android.core.category.CategoryComboLinkStore;
+import org.hisp.dhis.android.core.category.CategoryComboLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryComboStore;
+import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryHandler;
+import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStore;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
+import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionLinkStoreImpl;
@@ -132,5 +142,27 @@ public class HandlerFactory {
                 categoryOptionLinkStore);
 
         return categoryHandler;
+    }
+
+    public static CategoryComboHandler createCategoryComboHandler(DatabaseAdapter databaseAdapter) {
+        CategoryComboLinkStore categoryComboLinkStore = new CategoryComboLinkStoreImpl(
+                databaseAdapter);
+
+        CategoryOptionComboStore optionComboStore = new CategoryOptionComboStoreImpl(
+                databaseAdapter);
+        CategoryOptionComboHandler optionComboHandler = new CategoryOptionComboHandler(
+                optionComboStore);
+
+        CategoryComboStore store = new CategoryComboStoreImpl(databaseAdapter);
+
+        CategoryOptionComboCategoryLinkStore
+                categoryComboOptionLinkCategoryStore = new CategoryOptionComboCategoryLinkStoreImpl(
+                databaseAdapter);
+
+        CategoryComboHandler categoryComboHandler = new CategoryComboHandler(store,
+                categoryComboOptionLinkCategoryStore, categoryComboLinkStore,
+                optionComboHandler);
+
+        return categoryComboHandler;
     }
 }

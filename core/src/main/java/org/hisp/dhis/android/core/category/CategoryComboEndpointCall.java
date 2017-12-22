@@ -53,7 +53,7 @@ public class CategoryComboEndpointCall implements Call<Response<Payload<Category
     @Override
     public Response<Payload<CategoryCombo>> call() throws Exception {
 
-        validateIsNotTryingToExcuteAgain();
+        validateIsNotTryingToExecuteAgain();
 
         Response<Payload<CategoryCombo>> response = categoryComboService.getCategoryCombos(getFields(),
                 query.paging(),
@@ -83,7 +83,7 @@ public class CategoryComboEndpointCall implements Call<Response<Payload<Category
         }
     }
 
-    private void validateIsNotTryingToExcuteAgain() {
+    private void validateIsNotTryingToExecuteAgain() {
         synchronized (this) {
             if (isExecuted) {
                 throw new IllegalStateException("Already executed");

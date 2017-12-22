@@ -248,7 +248,7 @@ public class MetadataCall implements Call<Response> {
                     databaseAdapter, systemInfoStore,
                     systemInfoService, resourceStore
             ).call();
-            if (isNotValid(response)) {
+            if (!response.isSuccessful()) {
                 return response;
             }
             SystemInfo systemInfo = (SystemInfo) response.body();
@@ -264,7 +264,7 @@ public class MetadataCall implements Call<Response> {
                     serverDate,
                     userRoleProgramLinkStore
             ).call();
-            if (isNotValid(response)) {
+            if (!response.isSuccessful()) {
                 return response;
             }
 
@@ -273,17 +273,17 @@ public class MetadataCall implements Call<Response> {
                     user, organisationUnitService, databaseAdapter, organisationUnitStore,
                     resourceStore, serverDate, userOrganisationUnitLinkStore,
                     organisationUnitProgramLinkStore).call();
-            if (isNotValid(response)) {
+            if (!response.isSuccessful()) {
                 return response;
             }
             response = downloadCategories(serverDate);
 
-            if (isNotValid(response)) {
+            if (!response.isSuccessful()) {
                 return response;
             }
             response = downloadCategoryCombos(serverDate);
 
-            if (isNotValid(response)) {
+            if (!response.isSuccessful()) {
                 return response;
             }
 
@@ -299,7 +299,7 @@ public class MetadataCall implements Call<Response> {
                     programStageDataElementStore,
                     programStageSectionStore, programStageStore, relationshipStore
             ).call();
-            if (isNotValid(response)) {
+            if (!response.isSuccessful()) {
                 return response;
             }
 
@@ -309,7 +309,7 @@ public class MetadataCall implements Call<Response> {
                     trackedEntityUids, databaseAdapter, trackedEntityStore,
                     resourceStore, trackedEntityService, serverDate
             ).call();
-            if (isNotValid(response)) {
+            if (!response.isSuccessful()) {
                 return response;
             }
 
@@ -318,7 +318,7 @@ public class MetadataCall implements Call<Response> {
                     optionSetService, optionSetStore, databaseAdapter, resourceStore,
                     optionSetUids, serverDate, optionStore
             ).call();
-            if (isNotValid(response)) {
+            if (!response.isSuccessful()) {
                 return response;
             }
 
@@ -327,10 +327,6 @@ public class MetadataCall implements Call<Response> {
         } finally {
             transaction.end();
         }
-    }
-
-    private boolean isNotValid(Response response) {
-        return !response.isSuccessful();
     }
 
     /// Utilty methods:

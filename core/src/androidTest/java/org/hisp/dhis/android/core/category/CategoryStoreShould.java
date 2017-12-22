@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +19,11 @@ import java.util.Date;
 public class CategoryStoreShould extends AbsStoreTestCase {
 
     private CategoryStore store;
+    private Category newCategory;
+    private Category newCategoryModified;
+    private long lastInsertedID;
+    private boolean wasDeleted;
+    private boolean wasUpdated;
 
     @Override
     @Before
@@ -29,68 +33,48 @@ public class CategoryStoreShould extends AbsStoreTestCase {
 
     }
 
-    @Override
-    @After
-    public void tearDown() {
-        clearTablesData();
+    @Test
+    public void insert_a_category() throws Exception {
+        givenACategory();
+
+        whenInsertNewCategory();
+
+        thenAssertLastInsertedIDIsOne();
     }
 
     @Test
-    public void insert_category() throws Exception {
+    public void insert_and_delete_a_category() throws Exception {
+        givenACategory();
 
-        long lastID = insertNewCategory();
+        whenInsertNewCategory();
+        whenDeleteCategoryInserted();
 
-        assertEquals(lastID, 1);
+        thenAssertStoreReturnsDeleted();
 
+        whenDeleteCategoryInserted();
+
+        thenAssertStoreReturnsNotDeleted();
     }
 
     @Test
-    public void delete_category() throws Exception {
-        insertNewCategory();
+    public void insert_update_and_delete_a_category() throws Exception {
+        givenACategory();
+        givenThatCategoryButModified();
 
-        Category category = givenACategory();
+        whenInsertNewCategory();
+        whenUpdateCategory();
 
-        boolean wasDeleted = store.delete(category);
+        thenAssertStoreReturnsUpdated();
 
-        assertTrue(wasDeleted);
+        whenDeleteCategoryInserted();
 
-        wasDeleted = store.delete(category);
-
-        assertFalse(wasDeleted);
+        thenAssertStoreReturnsDeleted();
     }
 
-    @Test
-    public void update_category() throws Exception {
-        Category oldCategory = givenACategory();
-
-        insertNewCategory();
-
-        Category newCategory = Category.builder().uid("2")
-                .code("BIRTHS_ATTENDED")
-                .categoryOptions(new ArrayList<CategoryOption>())
-                .build();
-
-        boolean wasUpdated = store.update(oldCategory, newCategory);
-
-        assertTrue(wasUpdated);
-
-        boolean wasDeleted = store.delete(newCategory);
-
-        assertTrue(wasDeleted);
-
-
-    }
-
-    private long insertNewCategory() {
-        Category newCategory = givenACategory();
-
-        return store.insert(newCategory);
-    }
-
-    private Category givenACategory() {
+    private void givenACategory() {
         Date today = new Date();
 
-        return Category.builder()
+        newCategory = Category.builder()
                 .uid("KfdsGBcoiCa")
                 .code("BIRTHS_ATTENDED")
                 .created(today)
@@ -101,8 +85,39 @@ public class CategoryStoreShould extends AbsStoreTestCase {
                 .dataDimensionType("DISAGGREGATION").build();
     }
 
-    private void clearTablesData() {
-        databaseAdapter().delete(CategoryModel.TABLE);
+    private void givenThatCategoryButModified(){
+        newCategoryModified = Category.builder()
+                .uid("KfdsGBcoiCa")
+                .code("BIRTHS_ATTENDED_MODIFIED")
+                .categoryOptions(new ArrayList<CategoryOption>())
+                .build();
     }
 
+    private void whenInsertNewCategory() {
+        lastInsertedID = store.insert(newCategory);
+    }
+
+    private void whenDeleteCategoryInserted() {
+        wasDeleted = store.delete(newCategory);
+    }
+
+    private void whenUpdateCategory() {
+        wasUpdated = store.update(newCategory, newCategoryModified);
+    }
+
+    private void thenAssertLastInsertedIDIsOne() {
+        assertEquals(lastInsertedID, 1);
+    }
+
+    private void thenAssertStoreReturnsDeleted() {
+        assertTrue(wasDeleted);
+    }
+
+    private void thenAssertStoreReturnsNotDeleted() {
+        assertFalse(wasDeleted);
+    }
+
+    private void thenAssertStoreReturnsUpdated() {
+        assertTrue(wasUpdated);
+    }
 }

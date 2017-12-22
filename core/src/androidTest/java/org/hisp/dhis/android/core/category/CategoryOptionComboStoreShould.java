@@ -1,7 +1,8 @@
 package org.hisp.dhis.android.core.category;
 
+import static junit.framework.Assert.assertFalse;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import android.support.test.runner.AndroidJUnit4;
@@ -18,6 +19,9 @@ import java.util.Date;
 public class CategoryOptionComboStoreShould extends AbsStoreTestCase {
 
     private CategoryOptionComboStore store;
+    private CategoryOptionCombo newCategoryOptionCombo;
+    private long lastInsertedID;
+    private boolean wasDeleted;
 
     @Override
     @Before
@@ -28,40 +32,33 @@ public class CategoryOptionComboStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void insert_category() throws Exception {
+    public void insert_a_category_option_combo() throws Exception {
+        givenACategoryOptionCombo();
 
-        long lastID = insertNewOptionCombo();
+        whenInsertNewCategoryOptionCombo();
 
-        assertEquals(lastID, 1);
-
+        thenAssertLastInsertedIDIsOne();
     }
 
     @Test
-    public void delete_category() throws Exception {
-        insertNewOptionCombo();
+    public void insert_and_delete_a_category_option_combo() throws Exception {
+        givenACategoryOptionCombo();
 
-        CategoryOptionCombo optionCombo = givenAOptionCombo();
+        whenInsertNewCategoryOptionCombo();
+        whenDeleteCategoryOptionComboInserted();
 
-        boolean wasDeleted = store.delete(optionCombo);
+        thenAssertStoreReturnsDeleted();
 
-        assertTrue(wasDeleted);
+        whenDeleteCategoryOptionComboInserted();
 
-        wasDeleted = store.delete(optionCombo);
-
-        assertFalse(wasDeleted);
+        thenAssertStoreReturnsNotDeleted();
     }
 
-    private long insertNewOptionCombo() {
-        CategoryOptionCombo newOptionCombo = givenAOptionCombo();
-
-        return store.insert(newOptionCombo);
-    }
-
-    private CategoryOptionCombo givenAOptionCombo() {
+    private void givenACategoryOptionCombo() {
         Date today = new Date();
 
         //noinspection ConstantConditions
-        return CategoryOptionCombo.builder()
+        newCategoryOptionCombo = CategoryOptionCombo.builder()
                 .uid("NZAKyj67WW2")
                 .code(null)
                 .created(today)
@@ -70,5 +67,25 @@ public class CategoryOptionComboStoreShould extends AbsStoreTestCase {
                 .displayName("SECHN, Male")
                 .categoryCombo(null)
                 .build();
+    }
+
+    private void whenInsertNewCategoryOptionCombo() {
+        lastInsertedID = store.insert(newCategoryOptionCombo);
+    }
+
+    private void whenDeleteCategoryOptionComboInserted(){
+        wasDeleted = store.delete(newCategoryOptionCombo);
+    }
+
+    private void thenAssertLastInsertedIDIsOne(){
+        assertEquals(lastInsertedID, 1);
+    }
+
+    private void thenAssertStoreReturnsDeleted() {
+        assertTrue(wasDeleted);
+    }
+
+    private void thenAssertStoreReturnsNotDeleted() {
+        assertFalse(wasDeleted);
     }
 }

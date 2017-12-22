@@ -187,7 +187,8 @@ public abstract class Event {
             @JsonProperty(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance) {
         return new AutoValue_Event(uid, enrollmentUid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 program, programStage, organisationUnit, eventDate, eventStatus, coordinates,
-                completedDate, dueDate, deleted, safeUnmodifiableList(dataValues), attributeCategoryOptions, attributeOptionCombo, trackedEntityInstance);
+                completedDate, dueDate, deleted, safeUnmodifiableList(dataValues), attributeCategoryOptions,
+                attributeOptionCombo, trackedEntityInstance);
     }
 
 }

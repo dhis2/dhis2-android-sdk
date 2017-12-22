@@ -163,7 +163,8 @@ public class EventQuery {
             return this;
         }
 
-        public Builder withCategoryComboAndCategoryOption(@NonNull CategoryCombo categoryCombo, CategoryOption categoryOption) {
+        public Builder withCategoryComboAndCategoryOption(@NonNull CategoryCombo categoryCombo,
+                CategoryOption categoryOption) {
             this.categoryOption = categoryOption;
             this.categoryCombo = categoryCombo;
             return this;
@@ -177,7 +178,7 @@ public class EventQuery {
 
             return new EventQuery(paging, page, pageSize,
                     orgUnit, program, trackedEntityInstance, uIds, pageLimit,
-                    categoryCombo,categoryOption);
+                    categoryCombo, categoryOption);
         }
     }
 }

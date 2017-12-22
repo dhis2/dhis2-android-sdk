@@ -70,9 +70,15 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
 
         Response<Payload<Event>> eventsByLastUpdated;
 
-        if (eventQuery.getCategoryCombo() != null &&
-                eventQuery.getCategoryOption() != null) {
+        if (eventQuery.getCategoryCombo() == null ||
+                eventQuery.getCategoryOption() == null) {
 
+            eventsByLastUpdated = eventService.getEvents(
+                    eventQuery.getOrgUnit(), eventQuery.getProgram(),
+                    eventQuery.getTrackedEntityInstance(), getSingleFields(),
+                    Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
+                    Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize()).execute();
+        } else {
             CategoryCombo categoryCombo =  eventQuery.getCategoryCombo();
             CategoryOption categoryOption =  eventQuery.getCategoryOption();
 
@@ -81,15 +87,7 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
                     eventQuery.getTrackedEntityInstance(), getSingleFields(),
                     Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
                     Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize(),
-                    categoryCombo.uid(),categoryOption.uid()).execute();
-
-        } else {
-            eventsByLastUpdated = eventService.getEvents(
-                    eventQuery.getOrgUnit(), eventQuery.getProgram(),
-                    eventQuery.getTrackedEntityInstance(), getSingleFields(),
-                    Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
-                    Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize()).execute();
-
+                    categoryCombo.uid(), categoryOption.uid()).execute();
         }
 
         if (eventsByLastUpdated.isSuccessful() && eventsByLastUpdated.body().items() != null) {

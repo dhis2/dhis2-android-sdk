@@ -3,7 +3,6 @@ package org.hisp.dhis.android.core.data.database;
 import android.content.Context;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
@@ -38,7 +37,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
 
     private String migrationTestDir = "migrations";
     final private Context context;
-    private int version = 1;
+    private final int version;
     //current database version to support seed up to requested database version
     private boolean isOnTestMode;
     private static BriteDatabase briteDatabase;
@@ -153,6 +152,8 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
      * @see SQLBriteOpenHelper
      * @see BriteDatabase
      */
+
+    @SuppressWarnings("PMD")
     public synchronized static BriteDatabase get(Context context, String name, int version) {
         if (briteDatabase == null) {
             SQLBriteOpenHelper sqlBriteOpenHelper = new SQLBriteOpenHelper(context, name, null, version);
@@ -172,10 +173,13 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
      * @see SQLBriteOpenHelper
      * @see BriteDatabase
      */
+
+    @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
     public synchronized static BriteDatabase get(Context context, String name,
             SQLiteDatabase.CursorFactory factory, int version, String migrationDir) {
         if (briteDatabase == null) {
-            CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, factory, version, migrationDir);
+            CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, factory,
+                    version, migrationDir);
             SqlBrite sqlBrite = new SqlBrite.Builder().build();
             briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.io());
         }
@@ -192,11 +196,14 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
      * @see SQLBriteOpenHelper
      * @see BriteDatabase
      */
+
+    @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
     public synchronized static BriteDatabase get(Context context, String name,
             SQLiteDatabase.CursorFactory factory, int version, String migrationDir,
             DatabaseErrorHandler errorHandler) {
         if (briteDatabase == null) {
-            CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, factory, version, migrationDir, errorHandler);
+            CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, factory,
+                    version, migrationDir, errorHandler);
             SqlBrite sqlBrite = new SqlBrite.Builder().build();
             briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.io());
         }
@@ -212,9 +219,13 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
      * @see SQLBriteOpenHelper
      * @see BriteDatabase
      */
-    public synchronized static BriteDatabase get(Context context, String name, int version, boolean testing, String migrationTestDir) {
+
+    @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
+    public synchronized static BriteDatabase get(Context context, String name, int version, boolean testing,
+            String migrationTestDir) {
         //always return new instance on test mode
-        CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, version, testing, migrationTestDir);
+        CustomSQLBriteOpenHelper sqlBriteOpenHelper = new CustomSQLBriteOpenHelper(context, name, version,
+                testing, migrationTestDir);
         SqlBrite sqlBrite = new SqlBrite.Builder().build();
         briteDatabase = sqlBrite.wrapDatabaseHelper(sqlBriteOpenHelper, Schedulers.trampoline());
         return briteDatabase;

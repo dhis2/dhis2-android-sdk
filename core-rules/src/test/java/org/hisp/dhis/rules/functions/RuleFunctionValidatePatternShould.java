@@ -74,7 +74,7 @@ public class RuleFunctionValidatePatternShould {
     @Test
     public void throw_illegal_argument_exception_when_argument_count_is_greater_than_expected() {
         thrown.expect(IllegalArgumentException.class);
-        RuleFunctionDaysBetween.create().evaluate(
+        RuleFunctionValidatePattern.create().evaluate(
                 Arrays.asList("\\d{4}/\\d{2}/\\d", "9999/99/9", "2016-01-01"),
                 variableValues);
     }
@@ -82,13 +82,13 @@ public class RuleFunctionValidatePatternShould {
     @Test
     public void throw_illegal_argument_exception_when_arguments_count_is_lower_than_expected() {
         thrown.expect(IllegalArgumentException.class);
-        RuleFunctionDaysBetween.create().evaluate(Arrays.asList("\\d{4}/\\d{2}/\\d"),
+        RuleFunctionValidatePattern.create().evaluate(Arrays.asList("\\d{4}/\\d{2}/\\d"),
                 variableValues);
     }
 
     @Test
     public void throw_illegal_argument_exception_when_arguments_is_null() {
         thrown.expect(IllegalArgumentException.class);
-        RuleFunctionDaysBetween.create().evaluate(null, variableValues);
+        RuleFunctionValidatePattern.create().evaluate(null, variableValues);
     }
 }

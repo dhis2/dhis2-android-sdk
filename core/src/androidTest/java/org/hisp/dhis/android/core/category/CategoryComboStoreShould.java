@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,12 +26,6 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
         super.setUp();
         store = new CategoryComboStoreImpl(databaseAdapter());
 
-    }
-
-    @Override
-    @After
-    public void tearDown() {
-        clearTablesData();
     }
 
     @Test
@@ -79,9 +72,4 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
                 .categories(new ArrayList<Category>())
                 .build();
     }
-
-    private void clearTablesData() {
-        databaseAdapter().delete(CategoryOptionModel.TABLE);
-    }
-
 }

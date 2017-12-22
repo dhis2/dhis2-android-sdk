@@ -1,9 +1,12 @@
 package org.hisp.dhis.rules.functions;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static java.util.Arrays.asList;
 
 import org.hisp.dhis.rules.RuleVariableValue;
-import org.hisp.dhis.rules.models.RuleValueType;
+import org.hisp.dhis.rules.RuleVariableValueBuilder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -18,62 +21,169 @@ public class RuleFunctionCountIfValueShould {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    private Map<String, RuleVariableValue> variableValues = new HashMap<>();
 
     @Test
-    public void return_zero_if_variable_not_exist() {
-        RuleFunction ruleFunction = RuleFunctionCountIfValue.create();
+    public void return_zero_for_non_existing_variable() {
+        RuleFunction countIfValueFunction = RuleFunctionCountIfValue.create();
 
-        HashMap<String, RuleVariableValue> ruleVariableValueHashMap = new HashMap<>();
-        String result = ruleFunction.evaluate(Arrays.asList(""), ruleVariableValueHashMap);
+        variableValues = givenAEmptyVariableValues();
 
-        assertThat(result).isEqualTo("0");
+        assertThat(countIfValueFunction.evaluate(
+                asList("non existing variable", "value"), variableValues), is("0"));
     }
 
     @Test
-    public void return_value_if_variable_exist() {
-        RuleFunction ruleFunction = RuleFunctionCountIfValue.create();
+    public void return_zero_for_for_empty_value_to_compare() {
+        RuleFunction countIfValueFunction = RuleFunctionCountIfValue.create();
 
+        variableValues = givenAEmptyVariableValues();
 
-        RuleVariableValue variableValue = RuleVariableValue.create(
-                "test_variable_one", RuleValueType.TEXT, Arrays.asList("test_variable_one", "test_variable_one", "test_variable_one" ));
-        RuleVariableValue variableValueTwo = RuleVariableValue.create(
-                "test_variable_two", RuleValueType.TEXT, Arrays.asList("test_variable_two", "-2", "test_variable_two" ));
-        RuleVariableValue variableValueThree = RuleVariableValue.create(
-                "test_variable_three", RuleValueType.TEXT, Arrays.asList("-1", "2", "test_variable_three" ));
-        RuleVariableValue variableValueFour = RuleVariableValue.create(
-                "test_variable_three", RuleValueType.TEXT, Arrays.asList("test_variable_three", null, "test_variable_two" ));
-        Map<String, RuleVariableValue> valueMap = new HashMap<>();
-        valueMap.put("test_variable_one", variableValue);
-        valueMap.put("test_variable_two", variableValueTwo);
-        valueMap.put("test_variable_three", variableValueThree);
-        valueMap.put("test_variable_four", variableValueFour);
+        assertThat(countIfValueFunction.evaluate(
+                asList("var1", null), variableValues), is("0"));
 
-
-        String result = ruleFunction.evaluate(Arrays.asList("test_variable_one"),valueMap);
-        assertThat(result).isEqualTo("3");
-        result = ruleFunction.evaluate(Arrays.asList("test_variable_two"),valueMap);
-        assertThat(result).isEqualTo("2");
-        result = ruleFunction.evaluate(Arrays.asList("test_variable_three"),valueMap);
-        assertThat(result).isEqualTo("1");
-        result = ruleFunction.evaluate(Arrays.asList("test_variable_four"),valueMap);
-        assertThat(result).isEqualTo("1");
+        assertThat(countIfValueFunction.evaluate(
+                asList("var1", ""), variableValues), is("0"));
     }
 
     @Test
-    public void throw_null_pointer_exception_if_first_parameter_is_null() {
-        thrown.expect(NullPointerException.class);
-        RuleFunction ruleFunction = RuleFunctionCountIfValue.create();
+    public void return_zero_for_variable_without_values() {
+        RuleFunction countIfValueFunction = RuleFunctionCountIfValue.create();
 
-        ruleFunction.evaluate(null,
-                new HashMap<String, RuleVariableValue>());
+        String variableName = "non_value_var";
+
+        variableValues = givenAVariableValuesAndOneWithoutValue(variableName);
+
+        assertThat(countIfValueFunction.evaluate(
+                asList(variableName, "valueToCompare"), variableValues), is("0"));
     }
 
     @Test
-    public void throw_illegal_argument_exception_if_first_parameter_is_empty_list() {
+    public void return_size_of_matched_values_for_variable_with_value_and_candidates() {
+        RuleFunction countIfValueFunction = RuleFunctionCountIfValue.create();
+
+        String variableName = "with_value_var";
+        String value = "valueA";
+
+        variableValues = givenAVariableValuesAndOneWithTwoExpectedCountCandidates(
+                variableName, value);
+
+        assertThat(countIfValueFunction.evaluate(
+                asList(variableName, value), variableValues), is("2"));
+    }
+
+    @Test
+    public void return_zero_for_variable_with_no_matched_value_and_candidates() {
+        RuleFunction countIfValueFunction = RuleFunctionCountIfValue.create();
+
+        String variableName = "with_value_var";
+        String value = "valueA";
+
+        variableValues = givenAVariableValuesAndOneWithTwoExpectedCountCandidates(
+                variableName, value);
+
+        assertThat(countIfValueFunction.evaluate(
+                asList(variableName, "NoMatchedValue"), variableValues), is("0"));
+    }
+
+    @Test
+    public void return_one_matched_value_for_variable_with_value_and_without_candidates() {
+        RuleFunction countIfValueFunction = RuleFunctionCountIfValue.create();
+
+        String variableName = "with_value_var";
+        String value = "valueA";
+
+        variableValues = givenAVariableValuesAndOneWithUndefinedCandidates(
+                variableName, value);
+
+        assertThat(countIfValueFunction.evaluate(
+                asList(variableName, value), variableValues), is("1"));
+    }
+
+    @Test
+    public void return_zero_for_no_matched_variable_with_value_and_without_candidates() {
+        RuleFunction countIfValueFunction = RuleFunctionCountIfValue.create();
+
+        String variableName = "with_value_var";
+        String value = "valueA";
+
+        variableValues = givenAVariableValuesAndOneWithUndefinedCandidates(
+                variableName, value);
+
+        assertThat(countIfValueFunction.evaluate(
+                asList(variableName, "NoMatchedValue"), variableValues), is("0"));
+    }
+
+    @Test
+    public void throw_illegal_argument_exception_when_variable_map_is_null() {
         thrown.expect(IllegalArgumentException.class);
-        RuleFunction ruleFunction = RuleFunctionCountIfValue.create();
+        RuleFunctionCountIfValue.create().evaluate(asList("variable_name", "Value_to_compare"),
+                null);
+    }
 
-        ruleFunction.evaluate(new ArrayList<String>(),
-                new HashMap<String, RuleVariableValue>());
+    @Test
+    public void throw_illegal_argument_exception_when_argument_count_is_greater_than_expected() {
+        thrown.expect(IllegalArgumentException.class);
+        RuleFunctionCountIfValue.create().evaluate(asList("variable_name", "ded", "5"),
+                variableValues);
+    }
+
+    @Test
+    public void throw_illegal_argument_exception_when_arguments_count_is_lower_than_expected() {
+        thrown.expect(IllegalArgumentException.class);
+        RuleFunctionCountIfValue.create().evaluate(asList("variable_name"), variableValues);
+    }
+
+    @Test
+    public void throw_illegal_argument_exception_when_arguments_is_empty() {
+        thrown.expect(IllegalArgumentException.class);
+        RuleFunctionCountIfValue.create().evaluate(new ArrayList<String>(), variableValues);
+    }
+
+    @Test
+    public void throw_illegal_argument_exception_when_arguments_is_null() {
+        thrown.expect(IllegalArgumentException.class);
+        RuleFunctionCountIfValue.create().evaluate(null, variableValues);
+    }
+
+    private Map<String, RuleVariableValue> givenAEmptyVariableValues() {
+        return new HashMap<>();
+    }
+
+    private Map<String, RuleVariableValue> givenAVariableValuesAndOneWithoutValue(
+            String variableNameWithoutValue) {
+        variableValues.put(variableNameWithoutValue, null);
+
+        variableValues.put("test_variable_two",
+                RuleVariableValueBuilder.create()
+                        .withValue("Value two")
+                        .build());
+
+        return variableValues;
+    }
+
+    private Map<String, RuleVariableValue> givenAVariableValuesAndOneWithTwoExpectedCountCandidates(
+            String variableNameWithValueAndCandidates, String valueToCompare) {
+        variableValues.put("test_variable_one", null);
+
+        variableValues.put(variableNameWithValueAndCandidates,
+                RuleVariableValueBuilder.create()
+                        .withValue(valueToCompare)
+                        .withCandidates(Arrays.asList("one", valueToCompare, valueToCompare))
+                        .build());
+
+        return variableValues;
+    }
+
+    private Map<String, RuleVariableValue> givenAVariableValuesAndOneWithUndefinedCandidates(
+            String variableNameWithValueAndNonCandidates, String valueToCompare) {
+        variableValues.put("test_variable_one", null);
+
+        variableValues.put(variableNameWithValueAndNonCandidates,
+                RuleVariableValueBuilder.create()
+                        .withValue(valueToCompare)
+                        .build());
+
+        return variableValues;
     }
 }

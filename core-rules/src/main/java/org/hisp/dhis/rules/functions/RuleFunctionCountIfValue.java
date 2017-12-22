@@ -1,6 +1,5 @@
 package org.hisp.dhis.rules.functions;
 
-
 import org.hisp.dhis.rules.RuleVariableValue;
 
 import java.util.List;
@@ -8,6 +7,11 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Counts the number of matching values that is entered for the source field in the first argument.
+ * Only occurrences that matches the second argument is counted.
+ * The source field parameter is the name of one of the defined source fields in the program
+ */
 final class RuleFunctionCountIfValue extends RuleFunction {
     static final String D2_COUNT_IF_VALUE = "d2:countIfValue";
 
@@ -20,38 +24,40 @@ final class RuleFunctionCountIfValue extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
-        if (arguments.size() != 1) {
-            throw new IllegalArgumentException("One argument was expected, " +
+        if (valueMap == null) {
+            throw new IllegalArgumentException("valueMap is expected");
+        }
+
+        if (arguments == null) {
+            throw new IllegalArgumentException("Two arguments is expected");
+        } else if (arguments.size() != 2) {
+            throw new IllegalArgumentException("Two arguments was expected, " +
                     arguments.size() + " were supplied");
         }
 
-        return String.valueOf(countIfValue(arguments.get(0), valueMap));
+        return String.valueOf(countIfValue(arguments.get(0), arguments.get(1), valueMap));
     }
 
-    /**
-     * Function which will return count value for given variableName
-     *
-     * @param variableName variable name.
-     * @param valueMap list of variables.
-     * @return return the count of values
-     */
-    private static Integer countIfValue(String variableName, Map<String, RuleVariableValue> valueMap) {
-        RuleVariableValue ruleVariableValue =valueMap.get(variableName);
+    private static Integer countIfValue(String variableName, String valueToCompare,
+            Map<String, RuleVariableValue> valueMap) {
+
+        RuleVariableValue ruleVariableValue = valueMap.get(variableName);
         Integer count = 0;
-        if(ruleVariableValue != null) {
-            if(ruleVariableValue.value()!=null) {
-                String valueToCompare = ruleVariableValue.value().replaceFirst("'","");
-                if(valueToCompare.lastIndexOf("'")==valueToCompare.length()-1){
-                    valueToCompare=valueToCompare.substring(0,valueToCompare.length()-1);
-                }
-                if(ruleVariableValue.candidates() != null) {
-                    for(String candidateValue : ruleVariableValue.candidates()){
+
+        if (ruleVariableValue != null && valueToCompare != null && !valueToCompare.isEmpty()) {
+            if (ruleVariableValue.value() != null) {
+                if (ruleVariableValue.candidates() != null
+                        && ruleVariableValue.candidates().size() > 0) {
+
+                    for (String candidateValue : ruleVariableValue.candidates()) {
                         if (candidateValue != null && candidateValue.equals(valueToCompare)) {
                             count++;
                         }
                     }
                 } else {
-                    if(valueToCompare.equals(ruleVariableValue.value())) {
+                    String value = ruleVariableValue.value().replace("'", "");
+
+                    if (valueToCompare.equals(value)) {
                         return 1;
                     }
                 }

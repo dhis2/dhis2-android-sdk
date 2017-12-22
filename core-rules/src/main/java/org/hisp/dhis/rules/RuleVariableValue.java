@@ -15,8 +15,6 @@ import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class RuleVariableValue {
-    Object target;
-
     @Nullable
     public abstract String value();
 
@@ -61,13 +59,5 @@ public abstract class RuleVariableValue {
 
         return new AutoValue_RuleVariableValue(processedValue, ruleValueType,
                 Collections.unmodifiableList(candidates));
-    }
-
-    public void setTarget(RuleEvent ruleEvent) {
-        target = ruleEvent;
-    }
-
-    public Object getTarget() {
-        return target;
     }
 }

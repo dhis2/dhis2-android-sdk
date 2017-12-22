@@ -42,9 +42,6 @@ public class RuleFunctionShould {
         assertThat(RuleFunction.create("d2:hasValue"))
                 .isInstanceOf(RuleFunctionHasValue.class);
 
-        assertThat(RuleFunction.create("d2:lastEventDate"))
-                .isInstanceOf(RuleFunctionLastEventDate.class);
-
         assertThat(RuleFunction.create("d2:left"))
                 .isInstanceOf(RuleFunctionLeft.class);
 

@@ -993,7 +993,6 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     public DbOpenHelper(Context context, String databaseName, int testVersion) {
         super(context, databaseName, testVersion);
-        VERSION = testVersion;
     }
 
     @Override

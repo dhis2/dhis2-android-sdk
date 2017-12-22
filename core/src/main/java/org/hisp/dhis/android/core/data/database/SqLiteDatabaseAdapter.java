@@ -36,13 +36,12 @@ import android.support.annotation.NonNull;
 public class SqLiteDatabaseAdapter implements DatabaseAdapter {
 
     private final DbOpenHelper dbOpenHelper;
-    public final SQLiteDatabase mSQLiteDatabase;
 
     public SqLiteDatabaseAdapter(@NonNull DbOpenHelper dbOpenHelper) {
         if (dbOpenHelper == null) {
             throw new IllegalArgumentException("dbOpenHelper == null");
         }
-        mSQLiteDatabase = dbOpenHelper.getWritableDatabase();
+        dbOpenHelper.getWritableDatabase();
         this.dbOpenHelper = dbOpenHelper;
     }
 

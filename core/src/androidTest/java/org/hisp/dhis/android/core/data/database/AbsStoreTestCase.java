@@ -41,7 +41,7 @@ import java.io.IOException;
 public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
-    private String dbName = null;
+    private String dbName = "test_nacho.db";
 
     @Before
     public void setUp() throws IOException {

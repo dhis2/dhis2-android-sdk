@@ -38,7 +38,7 @@ import android.support.annotation.VisibleForTesting;
 import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CategoryModel;
-import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryModel;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
 import org.hisp.dhis.android.core.category.CategoryOptionLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
@@ -173,17 +173,17 @@ public class DbOpenHelper extends SQLiteOpenHelper {
                     " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED );";
 
     private static final String CREATE_OPTION_COMBO_LINK_CATEGORY_TABLE = "CREATE TABLE " +
-            CategoryOptionComboLinkCategoryModel.TABLE + " (" +
-            CategoryOptionComboLinkCategoryModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            CategoryOptionComboCategoryLinkModel.TABLE + " (" +
+            CategoryOptionComboCategoryLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             +
-            CategoryOptionComboLinkCategoryModel.Columns.OPTION_COMBO + " TEXT NOT NULL," +
-            CategoryOptionComboLinkCategoryModel.Columns.CATEGORY + " TEXT NOT NULL, " +
-            " FOREIGN KEY (" + CategoryOptionComboLinkCategoryModel.Columns.OPTION_COMBO + ") " +
+            CategoryOptionComboCategoryLinkModel.Columns.OPTION_COMBO + " TEXT NOT NULL," +
+            CategoryOptionComboCategoryLinkModel.Columns.CATEGORY + " TEXT NOT NULL, " +
+            " FOREIGN KEY (" + CategoryOptionComboCategoryLinkModel.Columns.OPTION_COMBO + ") " +
             " REFERENCES " + CategoryOptionComboModel.TABLE + " ("
             + CategoryOptionComboModel.Columns.UID + ") " +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            "UNIQUE (" + CategoryOptionComboLinkCategoryModel.Columns.OPTION_COMBO + ", " +
-            CategoryOptionComboLinkCategoryModel.Columns.CATEGORY + ")" +
+            "UNIQUE (" + CategoryOptionComboCategoryLinkModel.Columns.OPTION_COMBO + ", " +
+            CategoryOptionComboCategoryLinkModel.Columns.CATEGORY + ")" +
             ");";
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + UserModel.TABLE + " (" +

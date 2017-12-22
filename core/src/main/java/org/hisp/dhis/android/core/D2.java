@@ -48,8 +48,8 @@ import org.hisp.dhis.android.core.category.CategoryComboStore;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
-import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryStore;
-import org.hisp.dhis.android.core.category.CategoryOptionComboLinkCategoryStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStore;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionHandler;
@@ -226,7 +226,7 @@ public final class D2 {
     private final CategoryComboStore categoryComboStore;
     private final CategoryComboLinkStore categoryComboLinkStore;
     private final CategoryOptionLinkStore categoryOptionLinkStore;
-    private final CategoryOptionComboLinkCategoryStore categoryComboOptionLinkCategoryStore;
+    private final CategoryOptionComboCategoryLinkStore categoryComboOptionCategoryLinkStore;
 
     //Handlers
     private final UserCredentialsHandler userCredentialsHandler;
@@ -325,8 +325,8 @@ public final class D2 {
         this.categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
         this.categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
                 databaseAdapter());
-        this.categoryComboOptionLinkCategoryStore
-                = new CategoryOptionComboLinkCategoryStoreImpl(databaseAdapter);
+        this.categoryComboOptionCategoryLinkStore
+                = new CategoryOptionComboCategoryLinkStoreImpl(databaseAdapter);
         this.categoryComboStore = new CategoryComboStoreImpl(databaseAdapter());
         this.categoryComboLinkStore = new CategoryComboLinkStoreImpl(
                 databaseAdapter());
@@ -366,7 +366,7 @@ public final class D2 {
                 categoryOptionComboStore);
 
         categoryComboHandler = new CategoryComboHandler(categoryComboStore,
-                categoryComboOptionLinkCategoryStore,
+                categoryComboOptionCategoryLinkStore,
                 categoryComboLinkStore, optionComboHandler);
     }
 
@@ -449,7 +449,7 @@ public final class D2 {
         deletableStoreList.add(categoryStore);
         deletableStoreList.add(categoryOptionStore);
         deletableStoreList.add(categoryOptionLinkStore);
-        deletableStoreList.add(categoryComboOptionLinkCategoryStore);
+        deletableStoreList.add(categoryComboOptionCategoryLinkStore);
         deletableStoreList.add(categoryComboStore);
         deletableStoreList.add(categoryComboLinkStore);
         return new LogOutUserCallable(

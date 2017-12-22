@@ -13,19 +13,19 @@ import java.io.IOException;
 import java.util.Date;
 
 @RunWith(AndroidJUnit4.class)
-public class CategoryOptionComboLinkCategoryStoreShould extends AbsStoreTestCase {
+public class CategoryOptionComboCategoryLinkStoreShould extends AbsStoreTestCase {
 
-    private CategoryOptionComboLinkCategoryStore store;
+    private CategoryOptionComboCategoryLinkStore store;
     private CategoryOption newCategoryOption;
     private CategoryOptionCombo newCategoryOptionCombo;
-    private CategoryOptionComboLinkCategoryModel newCategoryOptionComboLinkCategory;
+    private CategoryOptionComboCategoryLinkModel newCategoryOptionComboCategoryLink;
     private long lastInsertedID;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        store = new CategoryOptionComboLinkCategoryStoreImpl(databaseAdapter());
+        store = new CategoryOptionComboCategoryLinkStoreImpl(databaseAdapter());
 
     }
 
@@ -33,11 +33,11 @@ public class CategoryOptionComboLinkCategoryStoreShould extends AbsStoreTestCase
     public void insert_a_category_option_combo_link_category() throws Exception {
         givenACategoryOption();
         givenACategoryOptionCombo();
-        givenACategoryOptionComboLinkCategory();
+        givenACategoryOptionComboCategoryLink();
 
         whenInsertNewCategoryOption();
         whenInsertNewCategoryOptionCombo();
-        whenInsertNewCategoryOptionComboLinkCategory();
+        whenInsertNewCategoryOptionComboCategoryLink();
 
         thenAssertLastInsertedIDIsOne();
     }
@@ -67,8 +67,8 @@ public class CategoryOptionComboLinkCategoryStoreShould extends AbsStoreTestCase
                 .build();
     }
 
-    private void givenACategoryOptionComboLinkCategory() {
-        newCategoryOptionComboLinkCategory = CategoryOptionComboLinkCategoryModel.builder()
+    private void givenACategoryOptionComboCategoryLink() {
+        newCategoryOptionComboCategoryLink = CategoryOptionComboCategoryLinkModel.builder()
                 .optionCombo("NZAKyj67WW2")
                 .category("TXGfLxZlInA")
                 .build();
@@ -79,8 +79,8 @@ public class CategoryOptionComboLinkCategoryStoreShould extends AbsStoreTestCase
         store.insert(newCategoryOption);
     }
 
-    private void whenInsertNewCategoryOptionComboLinkCategory() {
-        lastInsertedID = store.insert(newCategoryOptionComboLinkCategory);
+    private void whenInsertNewCategoryOptionComboCategoryLink() {
+        lastInsertedID = store.insert(newCategoryOptionComboCategoryLink);
     }
 
     private void whenInsertNewCategoryOptionCombo() {

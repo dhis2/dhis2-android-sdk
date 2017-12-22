@@ -10,25 +10,25 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 
-public class CategoryOptionComboLinkCategoryStoreImpl implements
-        CategoryOptionComboLinkCategoryStore {
+public class CategoryOptionComboCategoryLinkStoreImpl implements
+        CategoryOptionComboCategoryLinkStore {
 
     private static final String INSERT_STATEMENT =
-            "INSERT INTO " + CategoryOptionComboLinkCategoryModel.TABLE + " (" +
-                    CategoryOptionComboLinkCategoryModel.Columns.OPTION_COMBO + ", " +
-                    CategoryOptionComboLinkCategoryModel.Columns.CATEGORY + ") " +
+            "INSERT INTO " + CategoryOptionComboCategoryLinkModel.TABLE + " (" +
+                    CategoryOptionComboCategoryLinkModel.Columns.OPTION_COMBO + ", " +
+                    CategoryOptionComboCategoryLinkModel.Columns.CATEGORY + ") " +
                     "VALUES(?, ?);";
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
 
 
-    public CategoryOptionComboLinkCategoryStoreImpl(DatabaseAdapter databaseAdapter) {
+    public CategoryOptionComboCategoryLinkStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
-    public long insert(@NonNull CategoryOptionComboLinkCategoryModel entity) {
+    public long insert(@NonNull CategoryOptionComboCategoryLinkModel entity) {
 
         validate(entity);
 
@@ -37,19 +37,19 @@ public class CategoryOptionComboLinkCategoryStoreImpl implements
         return executeInsert();
     }
 
-    private void validate(@NonNull CategoryOptionComboLinkCategoryModel link) {
+    private void validate(@NonNull CategoryOptionComboCategoryLinkModel link) {
         isNull(link.optionCombo());
         isNull(link.category());
     }
 
     private void bind(SQLiteStatement sqLiteStatement,
-            @NonNull CategoryOptionComboLinkCategoryModel link) {
+            @NonNull CategoryOptionComboCategoryLinkModel link) {
         sqLiteBind(sqLiteStatement, 1, link.optionCombo());
         sqLiteBind(sqLiteStatement, 2, link.category());
     }
 
     private int executeInsert() {
-        int lastId = databaseAdapter.executeUpdateDelete(CategoryOptionComboLinkCategoryModel.TABLE,
+        int lastId = databaseAdapter.executeUpdateDelete(CategoryOptionComboCategoryLinkModel.TABLE,
                 insertStatement);
         insertStatement.clearBindings();
 
@@ -58,7 +58,7 @@ public class CategoryOptionComboLinkCategoryStoreImpl implements
 
     @Override
     public int delete() {
-        return databaseAdapter.delete(CategoryOptionComboLinkCategoryModel.TABLE);
+        return databaseAdapter.delete(CategoryOptionComboCategoryLinkModel.TABLE);
     }
 }
 

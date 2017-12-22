@@ -5,6 +5,6 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
 
-public interface CategoryOptionComboLinkCategoryStore extends DeletableStore {
-    long insert(@NonNull CategoryOptionComboLinkCategoryModel element);
+public interface CategoryOptionComboCategoryLinkStore extends DeletableStore {
+    long insert(@NonNull CategoryOptionComboCategoryLinkModel element);
 }

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,12 +25,6 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
         super.setUp();
         store = new CategoryComboLinkStoreImpl(databaseAdapter());
 
-    }
-
-    @Override
-    @After
-    public void tearDown() {
-        clearTablesData();
     }
 
     @Test
@@ -99,9 +92,4 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
                 .categories(givenAListOfCategories())
                 .build();
     }
-
-    private void clearTablesData() {
-        databaseAdapter().delete(CategoryOptionLinkModel.TABLE);
-    }
-
 }

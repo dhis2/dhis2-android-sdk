@@ -117,7 +117,6 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
         dhis2MockServer.enqueueMockResponse("option_sets.json");
-
         d2.syncMetaData().call();
     }
 
@@ -129,7 +128,6 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
         assertThat(downloadedEvents.size(), is(expectedEventsResponse.items().size()));
         assertThat(downloadedEvents, is(expectedEventsResponse.items()));
     }
-
 
     private List<Event> getDownloadedEvents() {
         List<Event> downloadedEvents = new ArrayList<>();

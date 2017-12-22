@@ -72,24 +72,12 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
     }
 
-    private void createDummyDataToPost(String orgUnitUid, String programUid,
-                                       String programStageUid, String eventUid,
-                                       String dataElementUid, String attributeCategoryOption, String attributeOptionCombo, String trackedEntityInstance) {
-        eventStore.insert(
-                eventUid, null, new Date(), new Date(), null, null,
-                EventStatus.ACTIVE, "13.21", "12.21", programUid, programStageUid, orgUnitUid,
-                new Date(), new Date(), new Date(), State.TO_POST, attributeCategoryOption, attributeOptionCombo, trackedEntityInstance
-        );
-
-        trackedEntityDataValueStore.insert(
-                eventUid, new Date(), new Date(), dataElementUid, "user_name", "12", Boolean.FALSE
-        );
-
+    @Test
+    public void stub() throws Exception {
 
     }
-
     // commented out since it is a flaky test that works against a real server.
-    @Test
+    //@Test
     public void successful_response_after_sync_events() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn(user, password).call();
@@ -108,7 +96,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     // commented out since it is a flaky test that works against a real server.
-    @Test
+    //@Test
     public void pull_event_with_correct_category_combo_after_be_pushed() throws Exception {
         retrofit2.Response response = null;
 
@@ -127,6 +115,20 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         downloadEventsBy(categoryComboUID,attributeCategoryOption);
 
         assertThatEventPushedIsDownloaded(pushedEvent);
+    }
+
+    private void createDummyDataToPost(String orgUnitUid, String programUid,
+            String programStageUid, String eventUid,
+            String dataElementUid, String attributeCategoryOption, String attributeOptionCombo, String trackedEntityInstance) {
+        eventStore.insert(
+                eventUid, null, new Date(), new Date(), null, null,
+                EventStatus.ACTIVE, "13.21", "12.21", programUid, programStageUid, orgUnitUid,
+                new Date(), new Date(), new Date(), State.TO_POST, attributeCategoryOption, attributeOptionCombo, trackedEntityInstance
+        );
+
+        trackedEntityDataValueStore.insert(
+                eventUid, new Date(), new Date(), dataElementUid, "user_name", "12", Boolean.FALSE
+        );
     }
 
     private void assertThatEventPushedIsDownloaded(Event pushedEvent) {
@@ -182,10 +184,5 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
             }
         }
         return false;
-    }
-
-    @Test
-    public void stub() throws Exception {
-
     }
 }

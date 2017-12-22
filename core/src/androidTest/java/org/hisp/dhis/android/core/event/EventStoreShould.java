@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.category.CreateCategoryOptionUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.SqliteCheckerUtility;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
@@ -70,7 +69,6 @@ import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-import static org.hisp.dhis.android.core.event.EventModel.Columns.ATTRIBUTE_CATEGORY_OPTIONS;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)

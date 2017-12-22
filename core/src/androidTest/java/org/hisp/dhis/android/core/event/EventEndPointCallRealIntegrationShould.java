@@ -52,7 +52,7 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
 
-    @Test
+    //@Test
     public void download_event_with_category_combo_option() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn(RealServerMother.user, RealServerMother.password).call();

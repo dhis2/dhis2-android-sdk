@@ -43,10 +43,6 @@ public class DbOpenHelperShould {
     public void have_tests_on_database_versions() {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , null);
-        DatabaseAdapter databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-        // ToDo: tests for schema migration (requires some research to be done)
-        // make sure that whenever database version is bumped,
-        // corresponding schema migration tests are implemented
         assertThat(dbOpenHelper.getWritableDatabase().getVersion()).isEqualTo(DbOpenHelper.VERSION);
     }
 }

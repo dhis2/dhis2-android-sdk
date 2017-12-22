@@ -36,7 +36,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-    @Test
+    //@Test
     public void download_categories_combos_and_relatives() throws Exception {
 
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();

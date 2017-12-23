@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 
-public class CategoryOptionLinkStoreImpl implements CategoryOptionLinkStore {
+public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOptionLinkStore {
 
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
@@ -22,7 +22,7 @@ public class CategoryOptionLinkStoreImpl implements CategoryOptionLinkStore {
                     "VALUES(?, ?);";
 
 
-    public CategoryOptionLinkStoreImpl(DatabaseAdapter databaseAdapter) {
+    public CategoryCategoryOptionLinkStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }

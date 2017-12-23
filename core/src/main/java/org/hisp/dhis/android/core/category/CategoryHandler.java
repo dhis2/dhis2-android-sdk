@@ -10,16 +10,16 @@ import java.util.List;
 public class CategoryHandler {
 
     private final CategoryOptionHandler categoryOptionHandler;
-    private final CategoryOptionLinkStore categoryOptionLinkStore;
+    private final CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore;
     private final CategoryStore categoryStore;
 
     public CategoryHandler(
             @NonNull CategoryStore categoryStore,
             @NonNull CategoryOptionHandler categoryOptionHandler,
-            @NonNull CategoryOptionLinkStore categoryOptionLinkStore) {
+            @NonNull CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore) {
         this.categoryStore = categoryStore;
         this.categoryOptionHandler = categoryOptionHandler;
-        this.categoryOptionLinkStore = categoryOptionLinkStore;
+        this.categoryCategoryOptionLinkStore = categoryCategoryOptionLinkStore;
     }
 
     public void handle(Category category) {
@@ -46,7 +46,7 @@ public class CategoryHandler {
 
                 CategoryCategoryOptionLinkModel link = newCategoryOption(category, option);
 
-                categoryOptionLinkStore.insert(link);
+                categoryCategoryOptionLinkStore.insert(link);
             }
         }
     }

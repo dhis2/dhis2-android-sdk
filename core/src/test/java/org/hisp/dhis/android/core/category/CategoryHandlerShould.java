@@ -23,7 +23,7 @@ public class CategoryHandlerShould {
     private CategoryOptionStore mockCategoryOptionStore;
 
     @Mock
-    private CategoryOptionLinkStore mockCategoryOptionLinkStore;
+    private CategoryCategoryOptionLinkStore mockCategoryCategoryOptionLinkStore;
 
     private CategoryHandler mCategoryHandler;
 
@@ -36,7 +36,7 @@ public class CategoryHandlerShould {
                 mockCategoryOptionStore);
 
         mCategoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler,
-                mockCategoryOptionLinkStore);
+                mockCategoryCategoryOptionLinkStore);
     }
 
     @Test

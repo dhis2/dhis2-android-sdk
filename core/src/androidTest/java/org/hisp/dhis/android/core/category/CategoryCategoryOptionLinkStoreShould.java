@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 @RunWith(AndroidJUnit4.class)
-public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
+public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
-    private CategoryOptionLinkStore store;
+    private CategoryCategoryOptionLinkStore store;
     private Category newCategory;
     private CategoryOption newCategoryOption;
     private CategoryCategoryOptionLinkModel newCategoryCategoryOptionLinkModel;
@@ -26,7 +26,7 @@ public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        store = new CategoryOptionLinkStoreImpl(databaseAdapter());
+        store = new CategoryCategoryOptionLinkStoreImpl(databaseAdapter());
 
     }
 

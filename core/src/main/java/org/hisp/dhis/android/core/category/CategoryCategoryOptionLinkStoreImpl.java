@@ -10,25 +10,25 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 
-public class CategoryOptionLinkStoreImpl implements CategoryOptionLinkStore {
+public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOptionLinkStore {
 
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
 
     private static final String INSERT_STATEMENT =
-            "INSERT INTO " + CategoryOptionLinkModel.TABLE + " (" +
-                    CategoryOptionLinkModel.Columns.CATEGORY + ", " +
-                    CategoryOptionLinkModel.Columns.CATEGORY_OPTION + ") " +
+            "INSERT INTO " + CategoryCategoryOptionLinkModel.TABLE + " (" +
+                    CategoryCategoryOptionLinkModel.Columns.CATEGORY + ", " +
+                    CategoryCategoryOptionLinkModel.Columns.CATEGORY_OPTION + ") " +
                     "VALUES(?, ?);";
 
 
-    public CategoryOptionLinkStoreImpl(DatabaseAdapter databaseAdapter) {
+    public CategoryCategoryOptionLinkStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
     @Override
-    public long insert(@NonNull CategoryOptionLinkModel entity) {
+    public long insert(@NonNull CategoryCategoryOptionLinkModel entity) {
 
         validate(entity);
 
@@ -37,12 +37,12 @@ public class CategoryOptionLinkStoreImpl implements CategoryOptionLinkStore {
         return executeInsert();
     }
 
-    private void validate(@NonNull CategoryOptionLinkModel link) {
+    private void validate(@NonNull CategoryCategoryOptionLinkModel link) {
         isNull(link.category());
         isNull(link.option());
     }
 
-    private void bind(@NonNull SQLiteStatement sqLiteStatement, @NonNull CategoryOptionLinkModel link) {
+    private void bind(@NonNull SQLiteStatement sqLiteStatement, @NonNull CategoryCategoryOptionLinkModel link) {
         sqLiteBind(sqLiteStatement, 1, link.category());
         sqLiteBind(sqLiteStatement, 2, link.option());
     }
@@ -56,7 +56,7 @@ public class CategoryOptionLinkStoreImpl implements CategoryOptionLinkStore {
 
     @Override
     public int delete() {
-        return databaseAdapter.delete(CategoryOptionLinkModel.TABLE);
+        return databaseAdapter.delete(CategoryCategoryOptionLinkModel.TABLE);
     }
 }
 

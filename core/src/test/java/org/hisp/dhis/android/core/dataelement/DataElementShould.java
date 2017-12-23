@@ -106,6 +106,7 @@ public class DataElementShould {
         assertThat(dataElement.valueType()).isEqualTo(ValueType.TEXT);
         assertThat(dataElement.zeroIsSignificant()).isEqualTo(false);
         assertThat(dataElement.optionSet().uid()).isEqualTo("fUS7fy2HbaI");
+        assertThat(dataElement.categoryCombo().uid()).isEqualTo("p0KPaWEg3cf");
         assertThat(dataElement.domainType()).isEqualTo("TRACKER");
     }
 }

@@ -84,7 +84,8 @@ public class EventPostCall implements Call<Response<WebResponse>> {
             eventRecreated.add(Event.create(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
                     event.createdAtClient(), event.lastUpdatedAtClient(), event.program(), event.programStage(),
                     event.organisationUnit(), event.eventDate(), event.status(), event.coordinates(),
-                    event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent));
+                    event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent,
+                    event.attributeCategoryOptions(), event.attributeOptionCombo(), event.trackedEntityInstance()));
         }
 
         return eventRecreated;

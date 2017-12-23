@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.common.TrackedEntityInstanceCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 
@@ -26,6 +27,7 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTest
     //This test is commented because technically it is flaky.
     //It depends on a live server to operate and the login is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
+
     //@Test
     public void download_tei_enrollments_and_events() throws Exception {
         retrofit2.Response response = null;

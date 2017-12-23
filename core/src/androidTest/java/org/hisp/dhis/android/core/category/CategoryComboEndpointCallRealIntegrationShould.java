@@ -13,7 +13,6 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,7 +30,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-    @Test
+    //@Test
     public void download_categories_combos_and_relatives() throws Exception {
 
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
@@ -76,9 +75,10 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void assertThereAreNotCategoryCombosLinkInDB() {
-        CategoryComboLinkStore categoryComboLinkStore = new CategoryComboLinkStoreImpl(databaseAdapter());
-        List<CategoryComboLink> categoryComboLinks = categoryComboLinkStore.queryAll();
-        assertTrue(categoryComboLinks.isEmpty());
+        CategoryCategoryComboLinkStore
+                categoryCategoryComboLinkStore = new CategoryCategoryComboLinkStoreImpl(databaseAdapter());
+        List<CategoryCategoryComboLink> categoryCategoryComboLinks = categoryCategoryComboLinkStore.queryAll();
+        assertTrue(categoryCategoryComboLinks.isEmpty());
     }
 
     private void assertThereAreCombosInDB() {
@@ -88,9 +88,10 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void assertThereAreCategoryCombosLinkInDB() {
-        CategoryComboLinkStore categoryComboLinkStore = new CategoryComboLinkStoreImpl(databaseAdapter());
-        List<CategoryComboLink> categoryComboLinks = categoryComboLinkStore.queryAll();
-        assertTrue(categoryComboLinks.size() > 0);
+        CategoryCategoryComboLinkStore
+                categoryCategoryComboLinkStore = new CategoryCategoryComboLinkStoreImpl(databaseAdapter());
+        List<CategoryCategoryComboLink> categoryCategoryComboLinks = categoryCategoryComboLinkStore.queryAll();
+        assertTrue(categoryCategoryComboLinks.size() > 0);
     }
 
     private void assertThereAreCategoryOptionCombosInDB() {

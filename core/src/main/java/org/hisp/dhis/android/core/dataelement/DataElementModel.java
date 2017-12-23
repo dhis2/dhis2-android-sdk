@@ -56,6 +56,7 @@ public abstract class DataElementModel extends BaseNameableObjectModel {
         public static final String DIMENSION = "dimension";
         public static final String DISPLAY_FORM_NAME = "displayFormName";
         public static final String OPTION_SET = "optionSet";
+        public static final String CATEGORY_COMBO = "categoryCombo";
     }
 
     public static DataElementModel create(Cursor cursor) {
@@ -103,6 +104,10 @@ public abstract class DataElementModel extends BaseNameableObjectModel {
     @ColumnName(Columns.OPTION_SET)
     public abstract String optionSet();
 
+    @Nullable
+    @ColumnName(Columns.CATEGORY_COMBO)
+    public abstract String categoryCombo();
+
     @NonNull
     public abstract ContentValues toContentValues();
 
@@ -125,6 +130,8 @@ public abstract class DataElementModel extends BaseNameableObjectModel {
         public abstract Builder displayFormName(String displayFormName);
 
         public abstract Builder optionSet(String optionSet);
+
+        public abstract Builder categoryCombo(@Nullable String categoryCombo);
 
         public abstract DataElementModel build();
 

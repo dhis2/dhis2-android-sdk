@@ -28,19 +28,22 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns
+        .ORGANISATION_UNIT_SCOPE;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
+import android.util.Log;
 
-import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkModel;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CategoryModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
-import org.hisp.dhis.android.core.category.CategoryOptionLinkModel;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.constant.ConstantModel;
@@ -77,22 +80,26 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserRoleModel;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel;
 
-import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns
-        .ORGANISATION_UNIT_SCOPE;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
 })
-public class DbOpenHelper extends SQLiteOpenHelper {
+public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
-    static final int VERSION = 1;
-
+    static int VERSION = 2;
+    public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
                     ConfigurationModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     ConfigurationModel.Columns.SERVER_URL + " TEXT NOT NULL UNIQUE" +
                     ");";
+
     private static final String CREATE_CATEGORY_TABLE =
             "CREATE TABLE " + CategoryModel.TABLE + " (" +
                     CategoryModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -115,19 +122,19 @@ public class DbOpenHelper extends SQLiteOpenHelper {
                     CategoryModel.Columns.LAST_UPDATED + " TEXT" + ");";
 
     private static final String CREATE_CATEGORY_CATEGORY_OPTION_LINK_TABLE = "CREATE TABLE " +
-            CategoryOptionLinkModel.TABLE + " (" +
-            CategoryOptionLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            CategoryOptionLinkModel.Columns.CATEGORY + " TEXT NOT NULL," +
-            CategoryOptionLinkModel.Columns.CATEGORY_OPTION + " TEXT NOT NULL, " +
-            " FOREIGN KEY (" + CategoryOptionLinkModel.Columns.CATEGORY + ") " +
+            CategoryCategoryOptionLinkModel.TABLE + " (" +
+            CategoryCategoryOptionLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            CategoryCategoryOptionLinkModel.Columns.CATEGORY + " TEXT NOT NULL," +
+            CategoryCategoryOptionLinkModel.Columns.CATEGORY_OPTION + " TEXT NOT NULL, " +
+            " FOREIGN KEY (" + CategoryCategoryOptionLinkModel.Columns.CATEGORY + ") " +
             " REFERENCES " + CategoryModel.TABLE + " (" + CategoryModel.Columns.UID + ") " +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " FOREIGN KEY (" + CategoryOptionLinkModel.Columns.CATEGORY_OPTION + ") " +
+            " FOREIGN KEY (" + CategoryCategoryOptionLinkModel.Columns.CATEGORY_OPTION + ") " +
             " REFERENCES " + CategoryOptionModel.TABLE + " (" + CategoryOptionModel.Columns.UID
             + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            "UNIQUE (" + CategoryOptionLinkModel.Columns.CATEGORY + ", " +
-            CategoryOptionLinkModel.Columns.CATEGORY_OPTION + ")" +
+            "UNIQUE (" + CategoryCategoryOptionLinkModel.Columns.CATEGORY + ", " +
+            CategoryCategoryOptionLinkModel.Columns.CATEGORY_OPTION + ")" +
             ");";
 
     private static final String CREATE_CATEGORY_COMBO_TABLE =
@@ -142,19 +149,19 @@ public class DbOpenHelper extends SQLiteOpenHelper {
                     CategoryComboModel.Columns.IS_DEFAULT + " INTEGER" + ");";
 
     private static final String CREATE_CATEGORY_CATEGORY_COMBO_LINK_TABLE = "CREATE TABLE " +
-            CategoryComboLinkModel.TABLE + " (" +
-            CategoryComboLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            CategoryComboLinkModel.Columns.CATEGORY + " TEXT NOT NULL," +
-            CategoryComboLinkModel.Columns.CATEGORY_COMBO + " TEXT NOT NULL, " +
-            " FOREIGN KEY (" + CategoryComboLinkModel.Columns.CATEGORY + ") " +
+            CategoryCategoryComboLinkModel.TABLE + " (" +
+            CategoryCategoryComboLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            CategoryCategoryComboLinkModel.Columns.CATEGORY + " TEXT NOT NULL," +
+            CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO + " TEXT NOT NULL, " +
+            " FOREIGN KEY (" + CategoryCategoryComboLinkModel.Columns.CATEGORY + ") " +
             " REFERENCES " + CategoryModel.TABLE + " (" + CategoryModel.Columns.UID + ") " +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " FOREIGN KEY (" + CategoryComboLinkModel.Columns.CATEGORY_COMBO + ") " +
+            " FOREIGN KEY (" + CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO + ") " +
             " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"
             +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            "UNIQUE (" + CategoryComboLinkModel.Columns.CATEGORY + ", " +
-            CategoryComboLinkModel.Columns.CATEGORY_COMBO + ")" +
+            "UNIQUE (" + CategoryCategoryComboLinkModel.Columns.CATEGORY + ", " +
+            CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO + ")" +
             ");";
 
     private static final String CREATE_CATEGORY_OPTION_COMBO_TABLE =
@@ -332,12 +339,17 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramModel.Columns.RELATIONSHIP_TEXT + " TEXT," +
             ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
             ProgramModel.Columns.TRACKED_ENTITY + " TEXT," +
+            ProgramModel.Columns.CATEGORY_COMBO + " TEXT," +
             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
             " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID
             + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
             " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY + ")" +
             " REFERENCES " + TrackedEntityModel.TABLE + " (" + TrackedEntityModel.Columns.UID + ")"
+            +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " FOREIGN KEY (" + ProgramModel.Columns.CATEGORY_COMBO + ")" +
+            " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"
             +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
@@ -380,6 +392,7 @@ public class DbOpenHelper extends SQLiteOpenHelper {
                     DataElementModel.Columns.DIMENSION + " TEXT," +
                     DataElementModel.Columns.DISPLAY_FORM_NAME + " TEXT," +
                     DataElementModel.Columns.OPTION_SET + " TEXT," +
+                    DataElementModel.Columns.CATEGORY_COMBO + " TEXT," +
                     " FOREIGN KEY ( " + DataElementModel.Columns.OPTION_SET + ")" +
                     " REFERENCES " + OptionSetModel.TABLE + " (" + OptionSetModel.Columns.UID + ")"
                     +
@@ -754,6 +767,9 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             EventModel.Columns.COMPLETE_DATE + " TEXT," +
             EventModel.Columns.DUE_DATE + " TEXT," +
             EventModel.Columns.STATE + " TEXT," +
+            EventModel.Columns.ATTRIBUTE_CATEGORY_OPTIONS + " TEXT," +
+            EventModel.Columns.ATTRIBUTE_OPTION_COMBO + " TEXT," +
+            EventModel.Columns.TRACKED_ENTITY_INSTANCE + " TEXT," +
             " FOREIGN KEY (" + EventModel.Columns.PROGRAM + ")" +
             " REFERENCES " + ProgramModel.TABLE +
             " (" + ProgramModel.Columns.UID + ")" +
@@ -769,7 +785,17 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " FOREIGN KEY (" + EventModel.Columns.ORGANISATION_UNIT + ")" +
             " REFERENCES " + OrganisationUnitModel.TABLE +
             " (" + OrganisationUnitModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+            " FOREIGN KEY (" + EventModel.Columns.TRACKED_ENTITY_INSTANCE + ")" +
+            " REFERENCES " + TrackedEntityInstanceModel.TABLE + " (" + TrackedEntityInstanceModel.Columns.UID + ")" +
+            " ON DELETE CASCADE," +
+            " FOREIGN KEY (" + EventModel.Columns.ATTRIBUTE_CATEGORY_OPTIONS + ")" +
+            " REFERENCES " + CategoryOptionModel.TABLE + " (" + CategoryOptionModel.Columns.UID + ")"+
+            " ON DELETE CASCADE," +
+            " FOREIGN KEY (" + EventModel.Columns.ATTRIBUTE_OPTION_COMBO + ")" +
+            " REFERENCES " + CategoryOptionComboModel.TABLE + " (" + CategoryOptionComboModel.Columns.UID + ")"
+            +
+            " ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_INSTANCE_TABLE = "CREATE TABLE " +
@@ -955,18 +981,34 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         return database;
     }
 
+    public DbOpenHelper(Context context, String databaseName, int version, String migrationTestDir,
+            String sqlDatabase) {
+        super(context, databaseName, version, true, migrationTestDir);
+        mockedSqlDatabase = sqlDatabase;
+    }
+
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
+        super(context, databaseName, VERSION);
+    }
+
+    public DbOpenHelper(Context context, String databaseName, int testVersion) {
+        super(context, databaseName, testVersion);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        create(db);
+        String emptySqlFile = "";
+        if (emptySqlFile.equals(mockedSqlDatabase)) {
+            create(db);
+        } else {
+            populateDBfromResource(db, mockedSqlDatabase);
+        }
+        super.onCreate(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // ToDo: logic for proper schema migration
+        super.onUpgrade(db, oldVersion, newVersion);
     }
 
     @Override
@@ -975,5 +1017,34 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 
         // enable foreign key support in database
         db.execSQL("PRAGMA foreign_keys = ON;");
+    }
+
+    private SQLiteDatabase populateDBfromResource(SQLiteDatabase database, String databaseSqlFile) {
+        String emptySqlFile = "";
+        if (emptySqlFile.equals(databaseSqlFile)) {
+            return database;
+        }
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream(databaseSqlFile);
+        InputStreamReader inputStreamReader = new InputStreamReader(in, Charset.forName("UTF-8"));
+        BufferedReader reader = new BufferedReader(inputStreamReader);
+        String line = null;
+        try {
+            line = reader.readLine();
+            while (line != null) {
+                database.execSQL(line);
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            Log.e(getClass().getName(), e.getMessage());
+        } finally {
+            try {
+                reader.close();
+                inputStreamReader.close();
+                in.close();
+            } catch (IOException e) {
+                Log.e(getClass().getName(), e.getMessage());
+            }
+        }
+        return database;
     }
 }

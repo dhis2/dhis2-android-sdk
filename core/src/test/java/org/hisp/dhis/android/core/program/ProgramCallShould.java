@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -267,7 +268,8 @@ public class ProgramCallShould {
                                         DataElement.valueType, DataElement.zeroIsSignificant,
                                         DataElement.optionSet.with(
                                                 OptionSet.uid, OptionSet.version
-                                        )
+                                        ),
+                                        DataElement.categoryCombo.with(CategoryCombo.uid)
 
                                 )
                         ),
@@ -382,6 +384,9 @@ public class ProgramCallShould {
                 Program.trackedEntity.with(
                         TrackedEntity.uid
                 ),
+                Program.categoryCombo.with(
+                        CategoryCombo.uid
+                ),
 
                 Program.relationshipType.with(
                         RelationshipType.uid, RelationshipType.code, RelationshipType.name,
@@ -410,13 +415,13 @@ public class ProgramCallShould {
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
                 anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                any(ProgramType.class), anyString(), anyString(), anyString(), anyString());
+                any(ProgramType.class), anyString(), anyString(), anyString(), anyString(), anyString());
 
         verify(programStore, never()).update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
                 anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                any(ProgramType.class), anyString(), anyString(), anyString(), anyString(), anyString());
+                any(ProgramType.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
 
         verify(programStore, never()).delete(anyString());
 
@@ -446,7 +451,7 @@ public class ProgramCallShould {
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
                 anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                any(ProgramType.class), anyString(), anyString(), anyString(), anyString());
+                any(ProgramType.class), anyString(), anyString(), anyString(), anyString(), anyString());
 
         verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
 
@@ -476,7 +481,7 @@ public class ProgramCallShould {
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
                 anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                any(ProgramType.class), anyString(), anyString(), anyString(), anyString());
+                any(ProgramType.class), anyString(), anyString(), anyString(), anyString(), anyString());
 
         // we need to verify that resource store is invoked with update since we update before we insert
         verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
@@ -512,7 +517,7 @@ public class ProgramCallShould {
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
                 anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                any(ProgramType.class), anyString(), anyString(), anyString(), anyString());
+                any(ProgramType.class), anyString(), anyString(), anyString(), anyString(), anyString());
     }
 
     @Test

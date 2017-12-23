@@ -63,6 +63,7 @@ public class DataElementModelShould {
     private static final String DIMENSION = "test_dimension";
     private static final String DISPLAY_FORM_NAME = "test_displayFormName";
     private static final String OPTION_SET = "test_optionSet";
+    private static final String CATEGORY_COMBO = "test_categoryCombo";
 
     private final Date date;
     private final String dateString;
@@ -93,7 +94,8 @@ public class DataElementModelShould {
                 Columns.DOMAIN_TYPE,
                 Columns.DIMENSION,
                 Columns.DISPLAY_FORM_NAME,
-                Columns.OPTION_SET
+                Columns.OPTION_SET,
+                Columns.CATEGORY_COMBO
         });
         cursor.addRow(new Object[]{
                 ID, UID, CODE, NAME, DISPLAY_NAME,
@@ -101,7 +103,7 @@ public class DataElementModelShould {
                 SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION,
                 VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_TYPE,
                 FORM_NAME, NUMBER_TYPE, DOMAIN_TYPE, DIMENSION,
-                DISPLAY_FORM_NAME, OPTION_SET
+                DISPLAY_FORM_NAME, OPTION_SET, CATEGORY_COMBO
         });
         cursor.moveToFirst();
 
@@ -128,6 +130,7 @@ public class DataElementModelShould {
         assertThat(model.dimension()).isEqualTo(DIMENSION);
         assertThat(model.displayFormName()).isEqualTo(DISPLAY_FORM_NAME);
         assertThat(model.optionSet()).isEqualTo(OPTION_SET);
+        assertThat(model.categoryCombo()).isEqualTo(CATEGORY_COMBO);
     }
 
     @Test
@@ -153,6 +156,7 @@ public class DataElementModelShould {
                 .dimension(DIMENSION)
                 .displayFormName(DISPLAY_FORM_NAME)
                 .optionSet(OPTION_SET)
+                .categoryCombo(CATEGORY_COMBO)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -175,5 +179,6 @@ public class DataElementModelShould {
         assertThat(contentValues.getAsString(Columns.DIMENSION)).isEqualTo(DIMENSION);
         assertThat(contentValues.getAsString(Columns.DISPLAY_FORM_NAME)).isEqualTo(DISPLAY_FORM_NAME);
         assertThat(contentValues.getAsString(Columns.OPTION_SET)).isEqualTo(OPTION_SET);
+        assertThat(contentValues.getAsString(Columns.CATEGORY_COMBO)).isEqualTo(CATEGORY_COMBO);
     }
 }

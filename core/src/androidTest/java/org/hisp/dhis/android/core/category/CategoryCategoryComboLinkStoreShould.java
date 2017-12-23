@@ -15,19 +15,19 @@ import java.util.Date;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
-public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
+public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
 
-    private CategoryComboLinkStore store;
+    private CategoryCategoryComboLinkStore store;
     private Category newCategory;
     private CategoryCombo newCategoryCombo;
-    private CategoryComboLinkModel newCategoryComboLinkModel;
+    private CategoryCategoryComboLinkModel newCategoryCategoryComboLinkModel;
     private long lastInsertedID;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        store = new CategoryComboLinkStoreImpl(databaseAdapter());
+        store = new CategoryCategoryComboLinkStoreImpl(databaseAdapter());
 
     }
 
@@ -74,7 +74,7 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void givenACategoryComboLinkModel(){
-        newCategoryComboLinkModel = CategoryComboLinkModel.builder()
+        newCategoryCategoryComboLinkModel = CategoryCategoryComboLinkModel.builder()
                 .category("KfdsGBcoiCa")
                 .combo("m2jTvAj5kkm")
                 .build();
@@ -91,7 +91,7 @@ public class CategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void whenInsertNewCategoryComboLink() {
-        lastInsertedID = store.insert(newCategoryComboLinkModel);
+        lastInsertedID = store.insert(newCategoryCategoryComboLinkModel);
     }
 
     private List<Category> generateAListOfCategories() {

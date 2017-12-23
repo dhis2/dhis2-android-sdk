@@ -29,55 +29,24 @@
 package org.hisp.dhis.android.core.category;
 
 import android.content.ContentValues;
-import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
-import com.google.auto.value.AutoValue;
+public class CreateCategoryComboUtils {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
+    public static final String TEST_CODE = "test_code";
+    public static final String TEST_NAME = "test_name";
+    public static final String TEST_DISPLAY_NAME = "test_display_name";
+    public static final String TEST_CREATED = "2001-02-07T16:04:40.387";
+    public static final String TEST_LAST_UPDATED = "2001-02-07T16:04:40.387";
 
-
-@AutoValue
-public abstract class CategoryComboLinkModel extends BaseModel {
-    public static final String TABLE = "CategoryCategoryComboLink";
-
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
-        public static final String CATEGORY = "category";
-        public static final String CATEGORY_COMBO = "categoryCombo";
-
-    }
-
-    @Nullable
-    @ColumnName(Columns.CATEGORY)
-    public abstract String category();
-
-    @Nullable
-    @ColumnName(Columns.CATEGORY_COMBO)
-    public abstract String combo();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
-
-    @NonNull
-    public static Builder builder() {
-        return new $$AutoValue_CategoryComboLinkModel.Builder();
-    }
-
-    @NonNull
-    public static CategoryComboLinkModel create(Cursor cursor) {
-        return AutoValue_CategoryComboLinkModel.createFromCursor(cursor);
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
-
-        public abstract Builder category(@Nullable String category);
-
-        public abstract Builder combo(@Nullable String combo);
-
-        public abstract CategoryComboLinkModel build();
+    public static ContentValues create(long id, String uid) {
+        ContentValues categoryCombo = new ContentValues();
+        categoryCombo.put(CategoryComboModel.Columns.ID, id);
+        categoryCombo.put(CategoryComboModel.Columns.UID, uid);
+        categoryCombo.put(CategoryComboModel.Columns.CODE, TEST_CODE);
+        categoryCombo.put(CategoryComboModel.Columns.NAME, TEST_NAME);
+        categoryCombo.put(CategoryComboModel.Columns.DISPLAY_NAME, TEST_DISPLAY_NAME);
+        categoryCombo.put(CategoryComboModel.Columns.CREATED, TEST_CREATED);
+        categoryCombo.put(CategoryComboModel.Columns.LAST_UPDATED, TEST_LAST_UPDATED);
+        return categoryCombo;
     }
 }

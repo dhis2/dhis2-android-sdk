@@ -13,7 +13,7 @@ public class CategoryComboHandler {
     private final CategoryOptionComboCategoryLinkStore categoryComboOptionLinkCategoryStore;
 
     @NonNull
-    private final CategoryComboLinkStore categoryComboLinkStore;
+    private final CategoryCategoryComboLinkStore categoryCategoryComboLinkStore;
 
     @NonNull
     private final CategoryOptionComboHandler optionComboHandler;
@@ -25,11 +25,11 @@ public class CategoryComboHandler {
             @NonNull CategoryComboStore store,
             @NonNull CategoryOptionComboCategoryLinkStore
                     categoryComboOptionCategoryLinkStore,
-            @NonNull CategoryComboLinkStore categoryComboLinkStore,
+            @NonNull CategoryCategoryComboLinkStore categoryCategoryComboLinkStore,
             @NonNull CategoryOptionComboHandler optionComboHandler) {
         this.store = store;
         this.categoryComboOptionLinkCategoryStore = categoryComboOptionCategoryLinkStore;
-        this.categoryComboLinkStore = categoryComboLinkStore;
+        this.categoryCategoryComboLinkStore = categoryCategoryComboLinkStore;
         this.optionComboHandler = optionComboHandler;
     }
 
@@ -101,17 +101,17 @@ public class CategoryComboHandler {
         if (categories != null) {
             for (Category category : categories) {
 
-                CategoryComboLinkModel link = newCategoryComboLink(combo, category);
+                CategoryCategoryComboLinkModel link = newCategoryComboLink(combo, category);
 
-                categoryComboLinkStore.insert(link);
+                categoryCategoryComboLinkStore.insert(link);
             }
         }
     }
 
-    private CategoryComboLinkModel newCategoryComboLink(@NonNull CategoryCombo combo,
+    private CategoryCategoryComboLinkModel newCategoryComboLink(@NonNull CategoryCombo combo,
             @NonNull Category category) {
 
-        return CategoryComboLinkModel.builder().category(
+        return CategoryCategoryComboLinkModel.builder().category(
                 category.uid())
                 .combo(combo.uid())
                 .build();

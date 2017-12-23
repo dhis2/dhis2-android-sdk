@@ -14,19 +14,19 @@ import java.util.ArrayList;
 import java.util.Date;
 
 @RunWith(AndroidJUnit4.class)
-public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
+public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
-    private CategoryOptionLinkStore store;
+    private CategoryCategoryOptionLinkStore store;
     private Category newCategory;
     private CategoryOption newCategoryOption;
-    private CategoryOptionLinkModel newCategoryOptionLinkModel;
+    private CategoryCategoryOptionLinkModel newCategoryCategoryOptionLinkModel;
     private long lastInsertedID;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        store = new CategoryOptionLinkStoreImpl(databaseAdapter());
+        store = new CategoryCategoryOptionLinkStoreImpl(databaseAdapter());
 
     }
 
@@ -71,14 +71,14 @@ public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void givenACategoryOptionLinkModel() {
-        newCategoryOptionLinkModel = CategoryOptionLinkModel.builder()
+        newCategoryCategoryOptionLinkModel = CategoryCategoryOptionLinkModel.builder()
                 .option("TNYQzTHdoxL")
                 .category("KfdsGBcoiCa")
                 .build();
     }
 
     private void whenInsertNewCategoryOptionLink() {
-        lastInsertedID = store.insert(newCategoryOptionLinkModel);
+        lastInsertedID = store.insert(newCategoryCategoryOptionLinkModel);
     }
 
     private void whenInsertNewCategory() {

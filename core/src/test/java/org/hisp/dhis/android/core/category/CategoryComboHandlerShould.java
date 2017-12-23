@@ -20,7 +20,7 @@ public class CategoryComboHandlerShould {
     private CategoryOptionComboCategoryLinkStore mockComboOptionLinkStore;
 
     @Mock
-    private CategoryComboLinkStoreImpl mockComboLinkStore;
+    private CategoryCategoryComboLinkStoreImpl mockComboLinkStore;
 
     @Mock
     private CategoryOptionComboHandler mockOptionComboHandler;

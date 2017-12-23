@@ -82,11 +82,12 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
 
         CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
                 categoryOptionStore);
-        CategoryOptionLinkStore categoryOptionLinkStore = new CategoryOptionLinkStoreImpl(
+        CategoryCategoryOptionLinkStore
+                categoryCategoryOptionLinkStore = new CategoryCategoryOptionLinkStoreImpl(
                 databaseAdapter());
 
         CategoryHandler handler = new CategoryHandler(store, categoryOptionHandler,
-                categoryOptionLinkStore);
+                categoryCategoryOptionLinkStore);
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Date serverDate = new Date();

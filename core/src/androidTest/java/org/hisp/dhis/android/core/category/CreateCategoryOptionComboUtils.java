@@ -29,56 +29,24 @@
 package org.hisp.dhis.android.core.category;
 
 import android.content.ContentValues;
-import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
-import com.google.auto.value.AutoValue;
+public class CreateCategoryOptionComboUtils {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
+    public static final String TEST_CODE = "test_code";
+    public static final String TEST_NAME = "test_name";
+    public static final String TEST_DISPLAY_NAME = "test_display_name";
+    public static final String TEST_CREATED = "2001-02-07T16:04:40.387";
+    public static final String TEST_LAST_UPDATED = "2001-02-07T16:04:40.387";
 
-
-@AutoValue
-public abstract class CategoryOptionLinkModel extends BaseModel {
-    public static final String TABLE = "CategoryCategoryOptionLink";
-
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
-        public static final String CATEGORY = "category";
-        public static final String CATEGORY_OPTION = "categoryOption";
-
-    }
-
-    @Nullable
-    @ColumnName(Columns.CATEGORY)
-    public abstract String category();
-
-    @Nullable
-    @ColumnName(Columns.CATEGORY_OPTION)
-    public abstract String option();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
-
-    @NonNull
-    public static Builder builder() {
-        return new $$AutoValue_CategoryOptionLinkModel.Builder();
-    }
-
-    @NonNull
-    public static CategoryOptionLinkModel create(Cursor cursor) {
-        return AutoValue_CategoryOptionLinkModel.createFromCursor(cursor);
-
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
-
-        public abstract Builder category(@Nullable String category);
-
-        public abstract Builder option(@Nullable String option);
-
-        public abstract CategoryOptionLinkModel build();
+    public static ContentValues create(long id, String uid) {
+        ContentValues categoryOptionCombo = new ContentValues();
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.ID, id);
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.UID, uid);
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.CODE, TEST_CODE);
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.NAME, TEST_NAME);
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.DISPLAY_NAME, TEST_DISPLAY_NAME);
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.CREATED, TEST_CREATED);
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.LAST_UPDATED, TEST_LAST_UPDATED);
+        return categoryOptionCombo;
     }
 }

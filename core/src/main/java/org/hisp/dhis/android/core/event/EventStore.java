@@ -54,7 +54,10 @@ public interface EventStore extends DeletableStore {
                 @NonNull Date eventDate,
                 @Nullable Date completedDate,
                 @Nullable Date dueDate,
-                @NonNull State state
+                @NonNull State state,
+                @Nullable String attributeCategoryOptions,
+                @NonNull String attributeOptionCombo,
+                @Nullable String trackedEntityInstance
     );
 
     int update(@NonNull String uid,
@@ -73,6 +76,9 @@ public interface EventStore extends DeletableStore {
                @Nullable Date completedDate,
                @Nullable Date dueDate,
                @NonNull State state,
+               @Nullable String attributeCategoryOptions,
+               @NonNull String attributeOptionCombo,
+               @Nullable String trackedEntityInstance,
                @NonNull String whereEventUid
     );
 

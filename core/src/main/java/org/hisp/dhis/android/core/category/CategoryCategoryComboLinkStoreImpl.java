@@ -65,23 +65,23 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
     }
 
     @Override
-    public List<CategoryComboLink> queryAll() {
+    public List<CategoryCategoryComboLink> queryAll() {
         Cursor cursor = databaseAdapter.query(QUERY_ALL_CATEGORY_COMBO_LINKS);
 
-        return mapCategoryComboLinksFromCursor(cursor);
+        return mapCategoryCategoryComboLinksFromCursor(cursor);
     }
 
-    private List<CategoryComboLink> mapCategoryComboLinksFromCursor(Cursor cursor) {
-        List<CategoryComboLink> categoryComboLinks = new ArrayList<>(cursor.getCount());
+    private List<CategoryCategoryComboLink> mapCategoryCategoryComboLinksFromCursor(Cursor cursor) {
+        List<CategoryCategoryComboLink> categoryCategoryComboLinks = new ArrayList<>(cursor.getCount());
 
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
 
                 do {
-                    CategoryComboLink categoryComboLink = mapCategoryComboLinkFromCursor(cursor);
+                    CategoryCategoryComboLink categoryCategoryComboLink = mapCategoryCategoryComboLinkFromCursor(cursor);
 
-                    categoryComboLinks.add(categoryComboLink);
+                    categoryCategoryComboLinks.add(categoryCategoryComboLink);
                 }
                 while (cursor.moveToNext());
             }
@@ -89,18 +89,18 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
         } finally {
             cursor.close();
         }
-        return categoryComboLinks;
+        return categoryCategoryComboLinks;
     }
 
-    private CategoryComboLink mapCategoryComboLinkFromCursor(Cursor cursor) {
-        CategoryComboLink categoryComboLink;
+    private CategoryCategoryComboLink mapCategoryCategoryComboLinkFromCursor(Cursor cursor) {
+        CategoryCategoryComboLink categoryCategoryComboLink;
 
         String category = cursor.getString(0);
         String combo = cursor.getString(1);
 
-        categoryComboLink = CategoryComboLink.create(category, combo);
+        categoryCategoryComboLink = CategoryCategoryComboLink.create(category, combo);
 
-        return categoryComboLink;
+        return categoryCategoryComboLink;
     }
 
     @Override

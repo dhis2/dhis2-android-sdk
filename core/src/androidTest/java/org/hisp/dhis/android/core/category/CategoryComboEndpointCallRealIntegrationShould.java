@@ -77,8 +77,8 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     private void assertThereAreNotCategoryCombosLinkInDB() {
         CategoryCategoryComboLinkStore
                 categoryCategoryComboLinkStore = new CategoryCategoryComboLinkStoreImpl(databaseAdapter());
-        List<CategoryComboLink> categoryComboLinks = categoryCategoryComboLinkStore.queryAll();
-        assertTrue(categoryComboLinks.isEmpty());
+        List<CategoryCategoryComboLink> categoryCategoryComboLinks = categoryCategoryComboLinkStore.queryAll();
+        assertTrue(categoryCategoryComboLinks.isEmpty());
     }
 
     private void assertThereAreCombosInDB() {
@@ -90,8 +90,8 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     private void assertThereAreCategoryCombosLinkInDB() {
         CategoryCategoryComboLinkStore
                 categoryCategoryComboLinkStore = new CategoryCategoryComboLinkStoreImpl(databaseAdapter());
-        List<CategoryComboLink> categoryComboLinks = categoryCategoryComboLinkStore.queryAll();
-        assertTrue(categoryComboLinks.size() > 0);
+        List<CategoryCategoryComboLink> categoryCategoryComboLinks = categoryCategoryComboLinkStore.queryAll();
+        assertTrue(categoryCategoryComboLinks.size() > 0);
     }
 
     private void assertThereAreCategoryOptionCombosInDB() {

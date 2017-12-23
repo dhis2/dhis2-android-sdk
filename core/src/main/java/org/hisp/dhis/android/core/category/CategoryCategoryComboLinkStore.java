@@ -10,5 +10,5 @@ import java.util.List;
 public interface CategoryCategoryComboLinkStore extends DeletableStore {
     long insert(@NonNull CategoryCategoryComboLinkModel element);
 
-    List<CategoryComboLink> queryAll();
+    List<CategoryCategoryComboLink> queryAll();
 }

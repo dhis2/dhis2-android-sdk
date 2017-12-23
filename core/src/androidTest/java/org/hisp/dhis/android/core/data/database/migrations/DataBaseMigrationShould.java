@@ -7,30 +7,26 @@ import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isFi
 import static org.junit.Assert.assertThat;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkModel;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CategoryModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
-import org.hisp.dhis.android.core.category.CategoryOptionLinkModel;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.event.EventModel;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -166,8 +162,8 @@ public class DataBaseMigrationShould {
         //assertThat(ifTableExist(CategoryOptionModel.TABLE, databaseAdapter), is(false));
         assertThat(ifTableExist(CategoryOptionComboModel.TABLE, databaseAdapter), is(false));
         assertThat(ifTableExist(CategoryComboModel.TABLE, databaseAdapter), is(false));
-        assertThat(ifTableExist(CategoryComboLinkModel.TABLE, databaseAdapter), is(false));
-        assertThat(ifTableExist(CategoryOptionLinkModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryCategoryComboLinkModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryCategoryOptionLinkModel.TABLE, databaseAdapter), is(false));
     }
 
     @Test
@@ -179,8 +175,8 @@ public class DataBaseMigrationShould {
         //assertThat(ifTableExist(CategoryOptionModel.TABLE, databaseAdapter), is(false));
         assertThat(ifTableExist(CategoryComboModel.TABLE, databaseAdapter), is(false));
         assertThat(ifTableExist(CategoryOptionComboModel.TABLE, databaseAdapter), is(false));
-        assertThat(ifTableExist(CategoryComboLinkModel.TABLE, databaseAdapter), is(false));
-        assertThat(ifTableExist(CategoryOptionLinkModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryCategoryComboLinkModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(CategoryCategoryOptionLinkModel.TABLE, databaseAdapter), is(false));
     }
 
     @Test
@@ -197,8 +193,8 @@ public class DataBaseMigrationShould {
         assertThat(ifTableExist(CategoryComboModel.TABLE, databaseAdapter), is(true));
         assertThat(ifTableExist(CategoryOptionComboModel.TABLE, databaseAdapter), is(true));
         assertThat(ifTableExist(CategoryOptionModel.TABLE, databaseAdapter), is(true));
-        assertThat(ifTableExist(CategoryComboLinkModel.TABLE, databaseAdapter), is(true));
-        assertThat(ifTableExist(CategoryOptionLinkModel.TABLE, databaseAdapter), is(true));
+        assertThat(ifTableExist(CategoryCategoryComboLinkModel.TABLE, databaseAdapter), is(true));
+        assertThat(ifTableExist(CategoryCategoryOptionLinkModel.TABLE, databaseAdapter), is(true));
         assertThat(isFieldExist(ProgramModel.TABLE, ProgramModel.Columns.CATEGORY_COMBO, databaseAdapter), is(true));
         assertThat(isFieldExist(DataElementModel.TABLE, DataElementModel.Columns.CATEGORY_COMBO, databaseAdapter), is(true));
         assertThat(isFieldExist(EventModel.TABLE, EventModel.Columns.ATTRIBUTE_CATEGORY_OPTIONS, databaseAdapter), is(true));

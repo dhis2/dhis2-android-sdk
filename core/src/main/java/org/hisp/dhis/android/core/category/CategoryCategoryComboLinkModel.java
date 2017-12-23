@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 
 @AutoValue
-public abstract class CategoryComboLinkModel extends BaseModel {
+public abstract class CategoryCategoryComboLinkModel extends BaseModel {
     public static final String TABLE = "CategoryCategoryComboLink";
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
@@ -63,12 +63,12 @@ public abstract class CategoryComboLinkModel extends BaseModel {
 
     @NonNull
     public static Builder builder() {
-        return new $$AutoValue_CategoryComboLinkModel.Builder();
+        return new $$AutoValue_CategoryCategoryComboLinkModel.Builder();
     }
 
     @NonNull
-    public static CategoryComboLinkModel create(Cursor cursor) {
-        return AutoValue_CategoryComboLinkModel.createFromCursor(cursor);
+    public static CategoryCategoryComboLinkModel create(Cursor cursor) {
+        return AutoValue_CategoryCategoryComboLinkModel.createFromCursor(cursor);
     }
 
     @AutoValue.Builder
@@ -78,6 +78,6 @@ public abstract class CategoryComboLinkModel extends BaseModel {
 
         public abstract Builder combo(@Nullable String combo);
 
-        public abstract CategoryComboLinkModel build();
+        public abstract CategoryCategoryComboLinkModel build();
     }
 }

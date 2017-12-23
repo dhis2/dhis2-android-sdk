@@ -13,7 +13,6 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -76,8 +75,9 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void assertThereAreNotCategoryCombosLinkInDB() {
-        CategoryComboLinkStore categoryComboLinkStore = new CategoryComboLinkStoreImpl(databaseAdapter());
-        List<CategoryComboLink> categoryComboLinks = categoryComboLinkStore.queryAll();
+        CategoryCategoryComboLinkStore
+                categoryCategoryComboLinkStore = new CategoryCategoryComboLinkStoreImpl(databaseAdapter());
+        List<CategoryComboLink> categoryComboLinks = categoryCategoryComboLinkStore.queryAll();
         assertTrue(categoryComboLinks.isEmpty());
     }
 
@@ -88,8 +88,9 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void assertThereAreCategoryCombosLinkInDB() {
-        CategoryComboLinkStore categoryComboLinkStore = new CategoryComboLinkStoreImpl(databaseAdapter());
-        List<CategoryComboLink> categoryComboLinks = categoryComboLinkStore.queryAll();
+        CategoryCategoryComboLinkStore
+                categoryCategoryComboLinkStore = new CategoryCategoryComboLinkStoreImpl(databaseAdapter());
+        List<CategoryComboLink> categoryComboLinks = categoryCategoryComboLinkStore.queryAll();
         assertTrue(categoryComboLinks.size() > 0);
     }
 

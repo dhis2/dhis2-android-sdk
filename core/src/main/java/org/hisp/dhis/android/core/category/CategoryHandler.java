@@ -44,17 +44,17 @@ public class CategoryHandler {
             for (CategoryOption option : categoryOptions) {
                 categoryOptionHandler.handle(option);
 
-                CategoryOptionLinkModel link = newCategoryOption(category, option);
+                CategoryCategoryOptionLinkModel link = newCategoryOption(category, option);
 
                 categoryOptionLinkStore.insert(link);
             }
         }
     }
 
-    private CategoryOptionLinkModel newCategoryOption(@NonNull Category category,
+    private CategoryCategoryOptionLinkModel newCategoryOption(@NonNull Category category,
             @NonNull CategoryOption option) {
 
-        return CategoryOptionLinkModel.builder().category(
+        return CategoryCategoryOptionLinkModel.builder().category(
                 category.uid())
                 .option(option.uid())
                 .build();

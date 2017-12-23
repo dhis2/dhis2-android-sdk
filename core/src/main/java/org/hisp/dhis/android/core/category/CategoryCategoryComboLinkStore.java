@@ -7,8 +7,8 @@ import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.List;
 
-public interface CategoryComboLinkStore extends DeletableStore {
-    long insert(@NonNull CategoryComboLinkModel element);
+public interface CategoryCategoryComboLinkStore extends DeletableStore {
+    long insert(@NonNull CategoryCategoryComboLinkModel element);
 
     List<CategoryComboLink> queryAll();
 }

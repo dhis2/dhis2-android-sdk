@@ -19,7 +19,7 @@ public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
     private CategoryOptionLinkStore store;
     private Category newCategory;
     private CategoryOption newCategoryOption;
-    private CategoryOptionLinkModel newCategoryOptionLinkModel;
+    private CategoryCategoryOptionLinkModel newCategoryCategoryOptionLinkModel;
     private long lastInsertedID;
 
     @Override
@@ -71,14 +71,14 @@ public class CategoryOptionLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void givenACategoryOptionLinkModel() {
-        newCategoryOptionLinkModel = CategoryOptionLinkModel.builder()
+        newCategoryCategoryOptionLinkModel = CategoryCategoryOptionLinkModel.builder()
                 .option("TNYQzTHdoxL")
                 .category("KfdsGBcoiCa")
                 .build();
     }
 
     private void whenInsertNewCategoryOptionLink() {
-        lastInsertedID = store.insert(newCategoryOptionLinkModel);
+        lastInsertedID = store.insert(newCategoryCategoryOptionLinkModel);
     }
 
     private void whenInsertNewCategory() {

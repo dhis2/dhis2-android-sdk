@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 
 @AutoValue
-public abstract class CategoryOptionLinkModel extends BaseModel {
+public abstract class CategoryCategoryOptionLinkModel extends BaseModel {
     public static final String TABLE = "CategoryCategoryOptionLink";
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
@@ -63,12 +63,12 @@ public abstract class CategoryOptionLinkModel extends BaseModel {
 
     @NonNull
     public static Builder builder() {
-        return new $$AutoValue_CategoryOptionLinkModel.Builder();
+        return new $$AutoValue_CategoryCategoryOptionLinkModel.Builder();
     }
 
     @NonNull
-    public static CategoryOptionLinkModel create(Cursor cursor) {
-        return AutoValue_CategoryOptionLinkModel.createFromCursor(cursor);
+    public static CategoryCategoryOptionLinkModel create(Cursor cursor) {
+        return AutoValue_CategoryCategoryOptionLinkModel.createFromCursor(cursor);
 
     }
 
@@ -79,6 +79,6 @@ public abstract class CategoryOptionLinkModel extends BaseModel {
 
         public abstract Builder option(@Nullable String option);
 
-        public abstract CategoryOptionLinkModel build();
+        public abstract CategoryCategoryOptionLinkModel build();
     }
 }

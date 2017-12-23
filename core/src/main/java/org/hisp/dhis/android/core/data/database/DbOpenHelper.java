@@ -38,12 +38,12 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
-import org.hisp.dhis.android.core.category.CategoryComboLinkModel;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkModel;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CategoryModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
-import org.hisp.dhis.android.core.category.CategoryOptionLinkModel;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.constant.ConstantModel;
@@ -122,19 +122,19 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     CategoryModel.Columns.LAST_UPDATED + " TEXT" + ");";
 
     private static final String CREATE_CATEGORY_CATEGORY_OPTION_LINK_TABLE = "CREATE TABLE " +
-            CategoryOptionLinkModel.TABLE + " (" +
-            CategoryOptionLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            CategoryOptionLinkModel.Columns.CATEGORY + " TEXT NOT NULL," +
-            CategoryOptionLinkModel.Columns.CATEGORY_OPTION + " TEXT NOT NULL, " +
-            " FOREIGN KEY (" + CategoryOptionLinkModel.Columns.CATEGORY + ") " +
+            CategoryCategoryOptionLinkModel.TABLE + " (" +
+            CategoryCategoryOptionLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            CategoryCategoryOptionLinkModel.Columns.CATEGORY + " TEXT NOT NULL," +
+            CategoryCategoryOptionLinkModel.Columns.CATEGORY_OPTION + " TEXT NOT NULL, " +
+            " FOREIGN KEY (" + CategoryCategoryOptionLinkModel.Columns.CATEGORY + ") " +
             " REFERENCES " + CategoryModel.TABLE + " (" + CategoryModel.Columns.UID + ") " +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " FOREIGN KEY (" + CategoryOptionLinkModel.Columns.CATEGORY_OPTION + ") " +
+            " FOREIGN KEY (" + CategoryCategoryOptionLinkModel.Columns.CATEGORY_OPTION + ") " +
             " REFERENCES " + CategoryOptionModel.TABLE + " (" + CategoryOptionModel.Columns.UID
             + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            "UNIQUE (" + CategoryOptionLinkModel.Columns.CATEGORY + ", " +
-            CategoryOptionLinkModel.Columns.CATEGORY_OPTION + ")" +
+            "UNIQUE (" + CategoryCategoryOptionLinkModel.Columns.CATEGORY + ", " +
+            CategoryCategoryOptionLinkModel.Columns.CATEGORY_OPTION + ")" +
             ");";
 
     private static final String CREATE_CATEGORY_COMBO_TABLE =
@@ -149,19 +149,19 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     CategoryComboModel.Columns.IS_DEFAULT + " INTEGER" + ");";
 
     private static final String CREATE_CATEGORY_CATEGORY_COMBO_LINK_TABLE = "CREATE TABLE " +
-            CategoryComboLinkModel.TABLE + " (" +
-            CategoryComboLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            CategoryComboLinkModel.Columns.CATEGORY + " TEXT NOT NULL," +
-            CategoryComboLinkModel.Columns.CATEGORY_COMBO + " TEXT NOT NULL, " +
-            " FOREIGN KEY (" + CategoryComboLinkModel.Columns.CATEGORY + ") " +
+            CategoryCategoryComboLinkModel.TABLE + " (" +
+            CategoryCategoryComboLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            CategoryCategoryComboLinkModel.Columns.CATEGORY + " TEXT NOT NULL," +
+            CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO + " TEXT NOT NULL, " +
+            " FOREIGN KEY (" + CategoryCategoryComboLinkModel.Columns.CATEGORY + ") " +
             " REFERENCES " + CategoryModel.TABLE + " (" + CategoryModel.Columns.UID + ") " +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " FOREIGN KEY (" + CategoryComboLinkModel.Columns.CATEGORY_COMBO + ") " +
+            " FOREIGN KEY (" + CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO + ") " +
             " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"
             +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            "UNIQUE (" + CategoryComboLinkModel.Columns.CATEGORY + ", " +
-            CategoryComboLinkModel.Columns.CATEGORY_COMBO + ")" +
+            "UNIQUE (" + CategoryCategoryComboLinkModel.Columns.CATEGORY + ", " +
+            CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO + ")" +
             ");";
 
     private static final String CREATE_CATEGORY_OPTION_COMBO_TABLE =

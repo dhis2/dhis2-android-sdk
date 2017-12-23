@@ -1,8 +1,8 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryComboLinkStore;
-import org.hisp.dhis.android.core.category.CategoryComboLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryComboStore;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryHandler;
@@ -145,7 +145,8 @@ public class HandlerFactory {
     }
 
     public static CategoryComboHandler createCategoryComboHandler(DatabaseAdapter databaseAdapter) {
-        CategoryComboLinkStore categoryComboLinkStore = new CategoryComboLinkStoreImpl(
+        CategoryCategoryComboLinkStore
+                categoryCategoryComboLinkStore = new CategoryCategoryComboLinkStoreImpl(
                 databaseAdapter);
 
         CategoryOptionComboStore optionComboStore = new CategoryOptionComboStoreImpl(
@@ -160,7 +161,7 @@ public class HandlerFactory {
                 databaseAdapter);
 
         CategoryComboHandler categoryComboHandler = new CategoryComboHandler(store,
-                categoryComboOptionLinkCategoryStore, categoryComboLinkStore,
+                categoryComboOptionLinkCategoryStore, categoryCategoryComboLinkStore,
                 optionComboHandler);
 
         return categoryComboHandler;

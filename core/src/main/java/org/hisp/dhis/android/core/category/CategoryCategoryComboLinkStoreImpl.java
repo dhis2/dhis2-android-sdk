@@ -79,7 +79,8 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
                 cursor.moveToFirst();
 
                 do {
-                    CategoryCategoryComboLink categoryCategoryComboLink = mapCategoryCategoryComboLinkFromCursor(cursor);
+                    CategoryCategoryComboLink categoryCategoryComboLink =
+                            mapCategoryCategoryComboLinkFromCursor(cursor);
 
                     categoryCategoryComboLinks.add(categoryCategoryComboLink);
                 }

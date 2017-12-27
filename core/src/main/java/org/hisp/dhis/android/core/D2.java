@@ -338,7 +338,7 @@ public final class D2 {
         resourceHandler = new ResourceHandler(resourceStore);
 
         organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
-                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
+                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, resourceHandler);
 
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);

@@ -180,7 +180,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     }
 
     @NonNull
-    private void handleUser(User user, Date serverDateTime) {
+    private void handleUser(User user, Date serverDate) {
 
         int updatedRow = userStore.update(
                 user.uid(), user.code(), user.name(), user.displayName(), user.created(),
@@ -200,23 +200,21 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             );
         }
 
-        resourceHandler.handleResource(ResourceModel.Type.USER, serverDateTime);
+        resourceHandler.handleResource(ResourceModel.Type.USER, serverDate);
 
         userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
 
-        resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, serverDateTime);
+        resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, serverDate);
 
         authenticatedUserStore.insert(user.uid(), base64(username, password));
 
-        resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, serverDateTime);
+        resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, serverDate);
 
         if (user.organisationUnits() != null) {
             organisationUnitHandler.handleOrganisationUnits(
                     user.organisationUnits(),
                     OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
-                    user.uid());
-
-            resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDateTime);
+                    user.uid(), serverDate);
         }
     }
 }

@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
@@ -228,10 +229,11 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore =
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, userOrganisationUnitStore, organisationUnitProgramLinkStore
-        );
+                organisationUnitStore, userOrganisationUnitStore, organisationUnitProgramLinkStore,
+                resourceHandler);
 
         userCall = new UserCall(userService, databaseAdapter(),
                 userStore, userCredentialsStore, userRoleStore, resourceStore, new Date(),

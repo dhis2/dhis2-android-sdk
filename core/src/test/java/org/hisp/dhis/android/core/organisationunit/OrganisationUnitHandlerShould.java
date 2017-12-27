@@ -27,7 +27,17 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.junit.Before;
@@ -42,14 +52,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(JUnit4.class)
 public class OrganisationUnitHandlerShould {
     @Mock
@@ -60,6 +62,9 @@ public class OrganisationUnitHandlerShould {
 
     @Mock
     private OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
+
+    @Mock
+    private ResourceHandler resourceHandler;
 
     @Mock
     private OrganisationUnit organisationUnit;
@@ -76,7 +81,6 @@ public class OrganisationUnitHandlerShould {
     // list of organisation units
     private List<OrganisationUnit> organisationUnits;
 
-
     // scope of org units
     private OrganisationUnitModel.Scope scope;
 
@@ -85,7 +89,7 @@ public class OrganisationUnitHandlerShould {
         MockitoAnnotations.initMocks(this);
         organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore);
+                organisationUnitProgramLinkStore, resourceHandler);
 
         when(organisationUnit.uid()).thenReturn("test_organisation_unit_uid");
         when(user.uid()).thenReturn("test_user_uid");
@@ -100,13 +104,13 @@ public class OrganisationUnitHandlerShould {
 
     public void do_nothing_when_passing_in_null_organisation_units() throws Exception {
         organisationUnitHandler.handleOrganisationUnits(
-                null, scope, user.uid()
-        );
+                null, scope, user.uid(), new Date());
 
         // verify that stores is never invoked
 
         verify(organisationUnitStore, never()).delete(anyString());
-        verify(organisationUnitStore, never()).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
+        verify(organisationUnitStore, never()).insert(anyString(), anyString(), anyString(),
+                anyString(), any(Date.class),
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyInt());
         verify(organisationUnitStore, never()).update(
@@ -117,9 +121,13 @@ public class OrganisationUnitHandlerShould {
 
         verify(userOrganisationUnitLinkStore, never()).update(
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
-        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
+        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(),
+                anyString());
 
         verify(organisationUnitProgramLinkStore, never()).insert(anyString(), anyString());
+
+        verify(resourceHandler, never()).handleResource(any(ResourceModel.Type.class),
+                any(Date.class));
     }
 
     @Test
@@ -128,7 +136,7 @@ public class OrganisationUnitHandlerShould {
 
         // passing in null args to user uid and org unit scope. We don't want to invoke link store
         organisationUnitHandler.handleOrganisationUnits(
-                organisationUnits, scope, user.uid());
+                organisationUnits, scope, user.uid(), new Date());
 
         verify(organisationUnitStore, times(1)).delete(organisationUnit.uid());
 
@@ -143,24 +151,32 @@ public class OrganisationUnitHandlerShould {
                 any(Date.class), any(Date.class), anyString(), anyInt());
 
         // verify that link store is never invoked
-        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
+        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(),
+                anyString());
         verify(userOrganisationUnitLinkStore, never()).update(
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
         );
         verify(organisationUnitProgramLinkStore, never()).insert(anyString(), anyString());
+
+        verify(resourceHandler, times(1)).handleResource(any(ResourceModel.Type.class),
+                any(Date.class));
     }
 
     @Test
-    public void invoke_only_update_when_handle_updatable_organisation_unit_and_link_store() throws Exception {
-        when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
+    public void invoke_only_update_when_handle_updatable_organisation_unit_and_link_store()
+            throws Exception {
+        when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(),
+                any(Date.class),
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(1);
+                any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(
+                1);
 
         when(userOrganisationUnitLinkStore.update(
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString())
         ).thenReturn(1);
 
-        organisationUnitHandler.handleOrganisationUnits(organisationUnits, scope, user.uid());
+        organisationUnitHandler.handleOrganisationUnits(organisationUnits, scope, user.uid(),
+                new Date());
 
         // verify that update is called once
         verify(organisationUnitStore, times(1)).update(
@@ -184,18 +200,25 @@ public class OrganisationUnitHandlerShould {
         );
 
         // verify that insert in link store is never called
-        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
+        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(),
+                anyString());
         verify(organisationUnitProgramLinkStore, times(1)).insert(anyString(), anyString());
+
+        verify(resourceHandler, times(1)).handleResource(any(ResourceModel.Type.class),
+                any(Date.class));
     }
 
     @Test
     public void invoke_only_update_when_handle_organisation_units_inserted() throws Exception {
-        when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
+        when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(),
+                any(Date.class),
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(1);
+                any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(
+                1);
 
         // we pass in null as scope parameter for not invoking the link store
-        organisationUnitHandler.handleOrganisationUnits(organisationUnits, null, user.uid());
+        organisationUnitHandler.handleOrganisationUnits(organisationUnits, null, user.uid(),
+                new Date());
 
         // verify that update is called once
         verify(organisationUnitStore, times(1)).update(
@@ -219,23 +242,31 @@ public class OrganisationUnitHandlerShould {
         );
 
         // verify that insert in link store is never called
-        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
+        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(),
+                anyString());
 
         verify(organisationUnitProgramLinkStore, times(1)).insert(anyString(), anyString());
+
+        verify(resourceHandler, times(1)).handleResource(any(ResourceModel.Type.class),
+                any(Date.class));
 
     }
 
     @Test
-    public void invoke_update_and_insert_when_handle_insertable_organisation_unit_and_link_store() throws Exception {
-        when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
+    public void invoke_update_and_insert_when_handle_insertable_organisation_unit_and_link_store()
+            throws Exception {
+        when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(),
+                any(Date.class),
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(0);
+                any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(
+                0);
 
         when(userOrganisationUnitLinkStore.update(
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString())
         ).thenReturn(0);
 
-        organisationUnitHandler.handleOrganisationUnits(organisationUnits, scope, user.uid());
+        organisationUnitHandler.handleOrganisationUnits(organisationUnits, scope, user.uid(),
+                new Date());
 
         // verify that insert is called once
         verify(organisationUnitStore, times(1)).insert(
@@ -255,25 +286,33 @@ public class OrganisationUnitHandlerShould {
         verify(organisationUnitStore, never()).delete(anyString());
 
         // verify that insert in link store is called once
-        verify(userOrganisationUnitLinkStore, times(1)).insert(anyString(), anyString(), anyString());
+        verify(userOrganisationUnitLinkStore, times(1)).insert(anyString(), anyString(),
+                anyString());
 
 
-        // verify that link store #update method is called once since we try to update before inserting
+        // verify that link store #update method is called once since we try to update before
+        // inserting
         verify(userOrganisationUnitLinkStore, times(1)).update(
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
         );
 
         verify(organisationUnitProgramLinkStore, times(1)).insert(anyString(), anyString());
+
+        verify(resourceHandler, times(1)).handleResource(any(ResourceModel.Type.class),
+                any(Date.class));
     }
 
     @Test
-    public void invoke_update_and_insert_when_handle_insertable_organisation_unit() throws Exception {
-        when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
+    public void invoke_update_and_insert_when_handle_insertable_organisation_unit()
+            throws Exception {
+        when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(),
+                any(Date.class),
                 any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(0);
+                any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(
+                0);
 
 
-        organisationUnitHandler.handleOrganisationUnits(organisationUnits, null, null);
+        organisationUnitHandler.handleOrganisationUnits(organisationUnits, null, null, new Date());
 
         // verify that insert is called once
         verify(organisationUnitStore, times(1)).insert(
@@ -293,12 +332,16 @@ public class OrganisationUnitHandlerShould {
         verify(organisationUnitStore, never()).delete(anyString());
 
         // verify that link store is never called
-        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
+        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(),
+                anyString());
 
         verify(userOrganisationUnitLinkStore, never()).update(
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
         );
 
         verify(organisationUnitProgramLinkStore, times(1)).insert(anyString(), anyString());
+
+        verify(resourceHandler, times(1)).handleResource(any(ResourceModel.Type.class),
+                any(Date.class));
     }
 }

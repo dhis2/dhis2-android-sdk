@@ -46,10 +46,12 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.SqLiteTransaction;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.data.http.HttpHeaderDate;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,6 +72,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -125,8 +128,7 @@ public class UserAuthenticateCallUnitShould {
 
     List<OrganisationUnit> organisationUnits;
 
-    @Mock
-    private Date lastUpdated;
+    private Date lastUpdated = new Date();
 
     @Mock
     private AuthenticatedUserModel authenticatedUser;
@@ -277,7 +279,7 @@ public class UserAuthenticateCallUnitShould {
             verify(userCredentialsHandler, never()).handleUserCredentials(
                     any(UserCredentials.class), any(User.class));
             verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
-                    any(OrganisationUnitModel.Scope.class), anyString());
+                    any(OrganisationUnitModel.Scope.class), anyString(), any(Date.class));
         }
     }
 
@@ -307,13 +309,18 @@ public class UserAuthenticateCallUnitShould {
         verify(userCredentialsHandler, never()).handleUserCredentials(
                 any(UserCredentials.class), any(User.class));
         verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
-                any(OrganisationUnitModel.Scope.class), anyString());
+                any(OrganisationUnitModel.Scope.class), anyString(), any(Date.class));
 
     }
 
     @Test
     public void persist_objects_after_successful_call() throws Exception {
-        when(userCall.execute()).thenReturn(Response.success(user));
+        String headerDateValue = new HttpHeaderDate(lastUpdated).toString();
+
+        Headers headers = new Headers.Builder().add(HeaderUtils.DATE, headerDateValue).build();
+
+
+        when(userCall.execute()).thenReturn(Response.success(user, headers));
 
         userAuthenticateCall.call();
 
@@ -339,7 +346,8 @@ public class UserAuthenticateCallUnitShould {
                 userCredentials, user);
 
         verify(organisationUnitHandler, times(1)).handleOrganisationUnits(
-                organisationUnits, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user.uid());
+                organisationUnits, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user.uid(),
+                HttpHeaderDate.parse(headerDateValue).getDate());
 
     }
 
@@ -367,7 +375,7 @@ public class UserAuthenticateCallUnitShould {
         verify(userCredentialsHandler, times(1)).handleUserCredentials(
                 userCredentials, user);
         verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
-                any(OrganisationUnitModel.Scope.class), anyString());
+                any(OrganisationUnitModel.Scope.class), anyString(), any(Date.class));
     }
 
     @Test

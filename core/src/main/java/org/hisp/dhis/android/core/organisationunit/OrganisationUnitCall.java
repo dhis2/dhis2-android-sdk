@@ -102,7 +102,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
 
         OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore);
+                organisationUnitProgramLinkStore, resourceHandler);
 
         Transaction transaction = database.beginNewTransaction();
         try {
@@ -117,14 +117,13 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                     organisationUnitHandler.handleOrganisationUnits(
                             response.body().items(),
                             OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
-                            user.uid()
+                            user.uid(), serverDate
                     );
                 } else {
                     break; //stop early unsuccessful:
                 }
             }
             if (response != null && response.isSuccessful()) {
-                resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDate);
                 transaction.setSuccessful();
             }
         } finally {

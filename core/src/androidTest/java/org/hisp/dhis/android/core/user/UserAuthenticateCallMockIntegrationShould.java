@@ -245,7 +245,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
         OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, new UserOrganisationUnitLinkStoreImpl(databaseAdapter()),
-                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter()));
+                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter()), resourceHandler);
 
         authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userStore,
                 userCredentialsHandler, resourceHandler,

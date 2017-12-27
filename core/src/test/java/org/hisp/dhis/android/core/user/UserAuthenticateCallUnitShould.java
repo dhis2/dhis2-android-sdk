@@ -91,7 +91,7 @@ public class UserAuthenticateCallUnitShould {
     private SqLiteTransaction sqLiteTransaction;
 
     @Mock
-    private UserStore userStore;
+    private UserHandler userHandler;
 
     @Mock
     private UserCredentialsHandler userCredentialsHandler;
@@ -141,7 +141,7 @@ public class UserAuthenticateCallUnitShould {
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
-        userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userStore,
+        userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userHandler,
                 userCredentialsHandler, resourceHandler,
                 authenticatedUserStore,
                 organisationUnitHandler, "test_user_name", "test_user_password");
@@ -272,10 +272,7 @@ public class UserAuthenticateCallUnitShould {
 
             // stores must not be invoked
             verify(authenticatedUserStore, never()).insert(anyString(), anyString());
-            verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                    any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), anyString());
+            verify(userHandler, never()).handleUser(any(User.class));
             verify(userCredentialsHandler, never()).handleUserCredentials(
                     any(UserCredentials.class), any(User.class));
             verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
@@ -302,10 +299,7 @@ public class UserAuthenticateCallUnitShould {
 
         // stores must not be invoked
         verify(authenticatedUserStore, never()).insert(anyString(), anyString());
-        verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString());
+        verify(userHandler, never()).handleUser(any(User.class));
         verify(userCredentialsHandler, never()).handleUserCredentials(
                 any(UserCredentials.class), any(User.class));
         verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
@@ -333,14 +327,7 @@ public class UserAuthenticateCallUnitShould {
         verify(authenticatedUserStore, times(1)).insert(
                 "test_user_uid", base64("test_user_name", "test_user_password"));
 
-        verify(userStore, times(1)).insert(
-                "test_user_uid", "test_user_code", "test_user_name", "test_user_display_name",
-                created, lastUpdated, "test_user_birthday", "test_user_education",
-                "test_user_gender", "test_user_job_title", "test_user_surname",
-                "test_user_first_name", "test_user_introduction", "test_user_employer",
-                "test_user_interests", "test_user_languages", "test_user_email",
-                "test_user_phone_number", "test_user_nationality"
-        );
+        verify(userHandler, times(1)).handleUser(user);
 
         verify(userCredentialsHandler, times(1)).handleUserCredentials(
                 userCredentials, user);
@@ -367,10 +354,7 @@ public class UserAuthenticateCallUnitShould {
 
         // stores must not be invoked
         verify(authenticatedUserStore, times(1)).insert(anyString(), anyString());
-        verify(userStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString());
+        verify(userHandler, times(1)).handleUser(any(User.class));
 
         verify(userCredentialsHandler, times(1)).handleUserCredentials(
                 userCredentials, user);

@@ -142,6 +142,7 @@ import org.hisp.dhis.android.core.user.UserAuthenticateCall;
 import org.hisp.dhis.android.core.user.UserCredentialsHandler;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
+import org.hisp.dhis.android.core.user.UserHandler;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
@@ -229,6 +230,7 @@ public final class D2 {
     private final CategoryOptionComboCategoryLinkStore categoryComboOptionCategoryLinkStore;
 
     //Handlers
+    private final UserHandler userHandler;
     private final UserCredentialsHandler userCredentialsHandler;
     private final EventHandler eventHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
@@ -334,6 +336,7 @@ public final class D2 {
                 databaseAdapter());
 
         //handlers
+        userHandler = new UserHandler(userStore);
         userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
         resourceHandler = new ResourceHandler(resourceStore);
 
@@ -389,7 +392,7 @@ public final class D2 {
             throw new NullPointerException("password == null");
         }
 
-        return new UserAuthenticateCall(userService, databaseAdapter, userStore,
+        return new UserAuthenticateCall(userService, databaseAdapter, userHandler,
                 userCredentialsHandler, resourceHandler,
                 authenticatedUserStore, organisationUnitHandler, username, password
         );

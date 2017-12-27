@@ -59,7 +59,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
     // stores and databaseAdapter related dependencies
     private final DatabaseAdapter databaseAdapter;
-    private final UserStore userStore;
+    private final UserHandler userHandler;
     private final UserCredentialsHandler userCredentialsHandler;
     private final ResourceHandler resourceHandler;
     private final AuthenticatedUserStore authenticatedUserStore;
@@ -74,7 +74,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     public UserAuthenticateCall(
             @NonNull UserService userService,
             @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull UserStore userStore,
+            @NonNull UserHandler userHandler,
             @NonNull UserCredentialsHandler userCredentialsHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
@@ -84,7 +84,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         this.userService = userService;
 
         this.databaseAdapter = databaseAdapter;
-        this.userStore = userStore;
+        this.userHandler = userHandler;
         this.userCredentialsHandler = userCredentialsHandler;
         this.resourceHandler = resourceHandler;
         this.authenticatedUserStore = authenticatedUserStore;
@@ -182,23 +182,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     @NonNull
     private void handleUser(User user, Date serverDate) {
 
-        int updatedRow = userStore.update(
-                user.uid(), user.code(), user.name(), user.displayName(), user.created(),
-                user.lastUpdated(), user.birthday(), user.education(),
-                user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                user.introduction(), user.employer(), user.interests(), user.languages(),
-                user.email(), user.phoneNumber(), user.nationality(), user.uid()
-        );
-
-        if (updatedRow <= 0) {
-            userStore.insert(
-                    user.uid(), user.code(), user.name(), user.displayName(), user.created(),
-                    user.lastUpdated(), user.birthday(), user.education(),
-                    user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                    user.introduction(), user.employer(), user.interests(), user.languages(),
-                    user.email(), user.phoneNumber(), user.nationality()
-            );
-        }
+        userHandler.handleUser(user);
 
         resourceHandler.handleResource(ResourceModel.Type.USER, serverDate);
 

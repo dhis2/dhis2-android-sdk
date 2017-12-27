@@ -33,8 +33,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
-import static okhttp3.internal.Util.UTC;
-
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -45,9 +43,10 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
@@ -55,9 +54,6 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -65,13 +61,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.Date;
 
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -155,7 +146,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
             ResourceModel.Columns.LAST_SYNCED
     };
 
-    private MockWebServer mockWebServer;
+    private Dhis2MockServer dhis2MockServer;
     private Call<Response<User>> authenticateUserCall;
 
     @Before
@@ -163,19 +154,9 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
     public void setUp() throws IOException {
         super.setUp();
 
-        mockWebServer = new MockWebServer();
-        mockWebServer.start();
+        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        MockResponse mockResponse = new MockResponse();
-
-        DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-        rfc1123.setLenient(false);
-        rfc1123.setTimeZone(UTC);
-        String dateHeaderValue = rfc1123.format(Calendar.getInstance().getTime());
-
-        mockResponse.setHeader(HeaderUtils.DATE, dateHeaderValue);
-
-        mockResponse.setBody("{\n" +
+        String stringBody = "{\n" +
                 "\n" +
                 "    \"created\": \"2015-03-31T13:31:09.324\",\n" +
                 "    \"lastUpdated\": \"2016-04-06T00:05:57.495\",\n" +
@@ -213,9 +194,9 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 "        }\n" +
                 "    ]\n" +
                 "\n" +
-                "}");
+                "}";
 
-        mockWebServer.enqueue(mockResponse);
+        dhis2MockServer.enqueueStringMockResponse(stringBody, new Date());
 
         // ToDo: consider moving this out
         ObjectMapper objectMapper = new ObjectMapper();
@@ -223,7 +204,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(mockWebServer.url("/"))
+                .baseUrl(dhis2MockServer.getBaseEndpoint())
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
@@ -406,6 +387,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
     public void tearDown() throws IOException {
         super.tearDown();
 
-        mockWebServer.shutdown();
+        dhis2MockServer.shutdown();
     }
 }

@@ -212,7 +212,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         UserService userService = retrofit.create(UserService.class);
 
         UserStore userStore = new UserStoreImpl(databaseAdapter());
-        UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
         OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(
                 databaseAdapter());
         AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(
@@ -221,16 +220,26 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
+        UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
         UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(
                 userCredentialsStore);
-        UserHandler userHandler = new UserHandler(userStore);
+
+        UserRoleStore userRoleStore = new UserRoleStoreImpl(databaseAdapter());
+        UserRoleProgramLinkStore userRoleProgramLinkStore =
+                new UserRoleProgramLinkStoreImpl(databaseAdapter());
+
+        UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore,
+                userRoleProgramLinkStore);
+
+        UserHandler userHandler = new UserHandler(userStore, userCredentialsHandler,
+                resourceHandler, userRoleHandler);
 
         OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, new UserOrganisationUnitLinkStoreImpl(databaseAdapter()),
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter()), resourceHandler);
 
         authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userHandler,
-                userCredentialsHandler, resourceHandler,
                 authenticatedUserStore,
                 organisationUnitHandler, "test_user", "test_password");
     }
@@ -344,20 +353,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         assertThatCursor(resource)
                 .hasRow(
                         2L,
-                        ResourceModel.Type.USER_CREDENTIALS,
-                        dateString
-                );
-
-        assertThatCursor(resource)
-                .hasRow(
-                        3L,
-                        ResourceModel.Type.AUTHENTICATED_USER,
-                        dateString
-                );
-
-        assertThatCursor(resource)
-                .hasRow(
-                        4L,
                         ResourceModel.Type.ORGANISATION_UNIT,
                         dateString
                 ).isExhausted();

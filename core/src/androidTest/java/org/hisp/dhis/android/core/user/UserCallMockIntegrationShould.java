@@ -231,13 +231,25 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
+
+        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore =
+                new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
+
+        UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(
+                userCredentialsStore);
+
+        UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore,
+                userRoleProgramLinkStore);
+
+        UserHandler userHandler = new UserHandler(userStore, userCredentialsHandler,
+                resourceHandler, userRoleHandler);
+
         organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitStore, organisationUnitProgramLinkStore,
                 resourceHandler);
 
         userCall = new UserCall(userService, databaseAdapter(),
-                userStore, userCredentialsStore, userRoleStore, resourceStore, new Date(),
-                userRoleProgramLinkStore);
+                userHandler, new Date());
 
         ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
         ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);

@@ -94,12 +94,6 @@ public class UserAuthenticateCallUnitShould {
     private UserHandler userHandler;
 
     @Mock
-    private UserCredentialsHandler userCredentialsHandler;
-
-    @Mock
-    private ResourceHandler resourceHandler;
-
-    @Mock
     private OrganisationUnitHandler organisationUnitHandler;
 
     @Mock
@@ -142,7 +136,6 @@ public class UserAuthenticateCallUnitShould {
         MockitoAnnotations.initMocks(this);
 
         userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userHandler,
-                userCredentialsHandler, resourceHandler,
                 authenticatedUserStore,
                 organisationUnitHandler, "test_user_name", "test_user_password");
 
@@ -272,9 +265,7 @@ public class UserAuthenticateCallUnitShould {
 
             // stores must not be invoked
             verify(authenticatedUserStore, never()).insert(anyString(), anyString());
-            verify(userHandler, never()).handleUser(any(User.class));
-            verify(userCredentialsHandler, never()).handleUserCredentials(
-                    any(UserCredentials.class), any(User.class));
+            verify(userHandler, never()).handleUser(any(User.class), any(Date.class));
             verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
                     any(OrganisationUnitModel.Scope.class), anyString(), any(Date.class));
         }
@@ -299,9 +290,7 @@ public class UserAuthenticateCallUnitShould {
 
         // stores must not be invoked
         verify(authenticatedUserStore, never()).insert(anyString(), anyString());
-        verify(userHandler, never()).handleUser(any(User.class));
-        verify(userCredentialsHandler, never()).handleUserCredentials(
-                any(UserCredentials.class), any(User.class));
+        verify(userHandler, never()).handleUser(any(User.class), any(Date.class));
         verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
                 any(OrganisationUnitModel.Scope.class), anyString(), any(Date.class));
 
@@ -327,15 +316,11 @@ public class UserAuthenticateCallUnitShould {
         verify(authenticatedUserStore, times(1)).insert(
                 "test_user_uid", base64("test_user_name", "test_user_password"));
 
-        verify(userHandler, times(1)).handleUser(user);
-
-        verify(userCredentialsHandler, times(1)).handleUserCredentials(
-                userCredentials, user);
+        verify(userHandler, times(1)).handleUser(any(User.class), any(Date.class));
 
         verify(organisationUnitHandler, times(1)).handleOrganisationUnits(
                 organisationUnits, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user.uid(),
                 HttpHeaderDate.parse(headerDateValue).getDate());
-
     }
 
 
@@ -354,10 +339,8 @@ public class UserAuthenticateCallUnitShould {
 
         // stores must not be invoked
         verify(authenticatedUserStore, times(1)).insert(anyString(), anyString());
-        verify(userHandler, times(1)).handleUser(any(User.class));
+        verify(userHandler, times(1)).handleUser(any(User.class), any(Date.class));
 
-        verify(userCredentialsHandler, times(1)).handleUserCredentials(
-                userCredentials, user);
         verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
                 any(OrganisationUnitModel.Scope.class), anyString(), any(Date.class));
     }

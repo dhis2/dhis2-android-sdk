@@ -90,13 +90,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserCredentialsStore;
+import org.hisp.dhis.android.core.user.UserHandler;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRole;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
-import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserService;
-import org.hisp.dhis.android.core.user.UserStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -165,22 +162,13 @@ public class MetadataCallShould {
     private ResourceStore resourceStore;
 
     @Mock
-    private UserCredentialsStore userCredentialsStore;
-
-    @Mock
-    private UserRoleStore userRoleStore;
-
-    @Mock
-    private UserRoleProgramLinkStore userRoleProgramLinkStore;
-
-    @Mock
     private OrganisationUnitStore organisationUnitStore;
 
     @Mock
     private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
 
     @Mock
-    private UserStore userStore;
+    private UserHandler userHandler;
 
     @Mock
     private ProgramStore programStore;
@@ -198,7 +186,8 @@ public class MetadataCallShould {
     private ProgramIndicatorStore programIndicatorStore;
 
     @Mock
-    private ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
+    private ProgramStageSectionProgramIndicatorLinkStore
+            programStageSectionProgramIndicatorLinkStore;
 
     @Mock
     private ProgramRuleActionStore programRuleActionStore;
@@ -304,7 +293,7 @@ public class MetadataCallShould {
 
     private Response errorResponse;
 
-    Dhis2MockServer  dhis2MockServer;
+    Dhis2MockServer dhis2MockServer;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -337,7 +326,8 @@ public class MetadataCallShould {
         when(organisationUnit.path()).thenReturn("path/to/org/unit");
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
-        when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
+        when(organisationUnitPayload.items()).thenReturn(
+                Collections.singletonList(organisationUnit));
         when(program.trackedEntity()).thenReturn(trackedEntity);
         when(programPayload.items()).thenReturn(Collections.singletonList(program));
         when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntity));
@@ -355,7 +345,6 @@ public class MetadataCallShould {
                 .build();
 
 
-
         categoryService = retrofit.create(CategoryService.class);
         comboService = retrofit.create(CategoryComboService.class);
 
@@ -363,21 +352,18 @@ public class MetadataCallShould {
         dhis2MockServer.enqueueMockResponse("category_combos.json");
 
 
-
-
-
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService,
                 programService, organisationUnitService, trackedEntityService, optionSetService,
-                systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
+                systemInfoStore, resourceStore, userHandler, organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
-                programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
+                programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
+                programRuleStore,
                 optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore, trackedEntityStore,
-                organisationUnitProgramLinkStore,categoryQuery, categoryService, categoryHandler,
-                CategoryComboQuery.defaultQuery(), comboService,mockCategoryComboHandler);
+                organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
+                CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
@@ -431,7 +417,8 @@ public class MetadataCallShould {
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
         verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
         verify(transaction, times(expectedTransactions)).end();
-        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful();//ie last one is not marked as success...
+        verify(transaction, atMost(expectedTransactions
+                - 1)).setSuccessful();//ie last one is not marked as success...
     }
 
     @Test
@@ -446,7 +433,8 @@ public class MetadataCallShould {
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
         verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
         verify(transaction, times(expectedTransactions)).end();
-        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful(); //taking in account the sub-transactions
+        verify(transaction, atMost(expectedTransactions
+                - 1)).setSuccessful(); //taking in account the sub-transactions
     }
 
     @Test

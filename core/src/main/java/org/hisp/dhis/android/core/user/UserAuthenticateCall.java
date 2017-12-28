@@ -41,8 +41,6 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
@@ -60,8 +58,6 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     // stores and databaseAdapter related dependencies
     private final DatabaseAdapter databaseAdapter;
     private final UserHandler userHandler;
-    private final UserCredentialsHandler userCredentialsHandler;
-    private final ResourceHandler resourceHandler;
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitHandler organisationUnitHandler;
 
@@ -75,8 +71,6 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             @NonNull UserService userService,
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull UserHandler userHandler,
-            @NonNull UserCredentialsHandler userCredentialsHandler,
-            @NonNull ResourceHandler resourceHandler,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
             @NonNull OrganisationUnitHandler organisationUnitHandler,
             @NonNull String username,
@@ -85,8 +79,6 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
         this.databaseAdapter = databaseAdapter;
         this.userHandler = userHandler;
-        this.userCredentialsHandler = userCredentialsHandler;
-        this.resourceHandler = resourceHandler;
         this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitHandler = organisationUnitHandler;
 
@@ -182,17 +174,9 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     @NonNull
     private void handleUser(User user, Date serverDate) {
 
-        userHandler.handleUser(user);
-
-        resourceHandler.handleResource(ResourceModel.Type.USER, serverDate);
-
-        userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
-
-        resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, serverDate);
-
         authenticatedUserStore.insert(user.uid(), base64(username, password));
 
-        resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, serverDate);
+        userHandler.handleUser(user, serverDate);
 
         if (user.organisationUnits() != null) {
             organisationUnitHandler.handleOrganisationUnits(

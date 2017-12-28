@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
+import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
@@ -82,13 +82,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
-import org.hisp.dhis.android.core.user.UserCredentialsStore;
+import org.hisp.dhis.android.core.user.UserHandler;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRole;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
-import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserService;
-import org.hisp.dhis.android.core.user.UserStore;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -98,7 +95,7 @@ import java.util.Set;
 import retrofit2.Response;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
- "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
+        "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
 public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
@@ -109,10 +106,7 @@ public class MetadataCall implements Call<Response> {
     private final OptionSetService optionSetService;
     private final SystemInfoStore systemInfoStore;
     private final ResourceStore resourceStore;
-    private final UserStore userStore;
-    private final UserCredentialsStore userCredentialsStore;
-    private final UserRoleStore userRoleStore;
-    private final UserRoleProgramLinkStore userRoleProgramLinkStore;
+    private final UserHandler userHandler;
     private final OrganisationUnitStore organisationUnitStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final ProgramStore programStore;
@@ -152,10 +146,7 @@ public class MetadataCall implements Call<Response> {
             @NonNull OptionSetService optionSetService,
             @NonNull SystemInfoStore systemInfoStore,
             @NonNull ResourceStore resourceStore,
-            @NonNull UserStore userStore,
-            @NonNull UserCredentialsStore userCredentialsStore,
-            @NonNull UserRoleStore userRoleStore,
-            @NonNull UserRoleProgramLinkStore userRoleProgramLinkStore,
+            @NonNull UserHandler userHandler,
             @NonNull OrganisationUnitStore organisationUnitStore,
             @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             @NonNull ProgramStore programStore,
@@ -191,10 +182,7 @@ public class MetadataCall implements Call<Response> {
         this.optionSetService = optionSetService;
         this.systemInfoStore = systemInfoStore;
         this.resourceStore = resourceStore;
-        this.userStore = userStore;
-        this.userCredentialsStore = userCredentialsStore;
-        this.userRoleStore = userRoleStore;
-        this.userRoleProgramLinkStore = userRoleProgramLinkStore;
+        this.userHandler = userHandler;
         this.organisationUnitStore = organisationUnitStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.programStore = programStore;
@@ -257,12 +245,8 @@ public class MetadataCall implements Call<Response> {
             response = new UserCall(
                     userService,
                     databaseAdapter,
-                    userStore,
-                    userCredentialsStore,
-                    userRoleStore,
-                    resourceStore,
-                    serverDate,
-                    userRoleProgramLinkStore
+                    userHandler,
+                    serverDate
             ).call();
             if (!response.isSuccessful()) {
                 return response;

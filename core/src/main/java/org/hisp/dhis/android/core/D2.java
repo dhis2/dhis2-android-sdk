@@ -39,22 +39,22 @@ import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryComboStore;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryHandler;
-import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionHandler;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryQuery;
@@ -145,6 +145,7 @@ import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserHandler;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
+import org.hisp.dhis.android.core.user.UserRoleHandler;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserRoleStore;
@@ -231,7 +232,6 @@ public final class D2 {
 
     //Handlers
     private final UserHandler userHandler;
-    private final UserCredentialsHandler userCredentialsHandler;
     private final EventHandler eventHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
@@ -336,9 +336,14 @@ public final class D2 {
                 databaseAdapter());
 
         //handlers
-        userHandler = new UserHandler(userStore);
-        userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
         resourceHandler = new ResourceHandler(resourceStore);
+        UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore,
+                userRoleProgramLinkStore);
+        UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(
+                userCredentialsStore);
+        userHandler = new UserHandler(userStore, userCredentialsHandler, resourceHandler,
+                userRoleHandler);
+
 
         organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
                 userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, resourceHandler);
@@ -393,7 +398,6 @@ public final class D2 {
         }
 
         return new UserAuthenticateCall(userService, databaseAdapter, userHandler,
-                userCredentialsHandler, resourceHandler,
                 authenticatedUserStore, organisationUnitHandler, username, password
         );
     }
@@ -465,8 +469,7 @@ public final class D2 {
         return new MetadataCall(
                 databaseAdapter, systemInfoService, userService, programService,
                 organisationUnitService,
-                trackedEntityService, optionSetService, systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
+                trackedEntityService, optionSetService, systemInfoStore, resourceStore, userHandler,
                 organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,

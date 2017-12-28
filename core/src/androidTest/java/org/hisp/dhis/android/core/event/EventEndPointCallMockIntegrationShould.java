@@ -113,6 +113,7 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void add_only_events_with_data_element_that_are_already_added_on_data_value_table()
             throws Exception {
 

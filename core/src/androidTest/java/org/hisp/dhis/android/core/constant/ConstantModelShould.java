@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.constant;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
+import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -60,6 +61,7 @@ public class ConstantModelShould {
     }
 
     @Test
+    @SmallTest
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.UID, Columns.CODE, Columns.NAME,
@@ -82,6 +84,7 @@ public class ConstantModelShould {
     }
 
     @Test
+    @SmallTest
     public void create_content_values_when_created_from_builder() {
         ConstantModel model = ConstantModel.builder()
                 .id(ID)

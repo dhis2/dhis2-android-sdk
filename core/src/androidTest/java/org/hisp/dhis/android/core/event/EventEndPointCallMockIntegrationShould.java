@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.event;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -53,6 +54,7 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void download_events_according_to_default_query() throws Exception {
         givenAMetadataInDatabase();
 
@@ -67,6 +69,7 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void download_number_of_events_according_to_page_limit() throws Exception {
         givenAMetadataInDatabase();
 
@@ -87,6 +90,7 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void remove_data_values_removed_in_server_after_second_events_download()
             throws Exception {
         givenAMetadataInDatabase();

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
+import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
@@ -44,6 +45,7 @@ public class UserRoleProgramLinkModelShould {
     private static final String PROGRAM = "test_program_uid";
 
     @Test
+    @SmallTest
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{Columns.ID, Columns.USER_ROLE, Columns.PROGRAM});
         cursor.addRow(new Object[]{ID, USER_ROLE, PROGRAM});
@@ -58,6 +60,7 @@ public class UserRoleProgramLinkModelShould {
     }
 
     @Test
+    @SmallTest
     public void create_content_values_when_created_from_builder() {
         UserRoleProgramLinkModel model = UserRoleProgramLinkModel.builder()
                 .id(ID)

@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.support.test.filters.LargeTest;
 import static com.google.common.truth.Truth.assertThat;
 
 import static junit.framework.Assert.assertTrue;
@@ -101,16 +102,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         trackedEntityInstance1Uid = codeGenerator.generate();
     }
 
-
     @Test
-    public void stub() throws Exception {
-
-    }
-    /*
-    * If you want run this test you need config the correct uids in the server side.
-    * At this moment is necessary add into the "child programme" program the category combo : Implementing Partner
-    * */
-    //@Test
+    @LargeTest
     public void response_true_when_data_sync() throws Exception {
 
         Response response = null;

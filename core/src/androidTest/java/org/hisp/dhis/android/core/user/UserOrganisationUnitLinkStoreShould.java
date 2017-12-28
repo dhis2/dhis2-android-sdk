@@ -28,9 +28,14 @@
 
 package org.hisp.dhis.android.core.user;
 
+import static com.google.common.truth.Truth.assertThat;
+
+import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.filters.MediumTest;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
@@ -39,9 +44,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 public class UserOrganisationUnitLinkStoreShould extends AbsStoreTestCase {
 
@@ -72,6 +74,7 @@ public class UserOrganisationUnitLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_in_data_base_when_insert() {
         long rowId = store.insert(
                 USER_UID,
@@ -89,6 +92,7 @@ public class UserOrganisationUnitLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_in_data_base_when_insert_deferrable_row() {
         final String deferrableUserUid = "deferrableUser";
         final String deferrableOrgUnitUid = "deferrableOrgUnit";
@@ -120,6 +124,7 @@ public class UserOrganisationUnitLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_in_data_base_when_delete_row() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(UserOrganisationUnitLinkModel.Columns.USER, USER_UID);
@@ -137,6 +142,7 @@ public class UserOrganisationUnitLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_all_rows_when_delete_without_params() {
         store.insert(
                 USER_UID,
@@ -154,6 +160,7 @@ public class UserOrganisationUnitLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_in_data_base_when_delete_user_foreign_key() {
         store.insert(
                 USER_UID,
@@ -169,6 +176,7 @@ public class UserOrganisationUnitLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_in_data_base_when_delete_organisation_unit_foreign_key() {
         store.insert(
                 USER_UID,
@@ -185,67 +193,79 @@ public class UserOrganisationUnitLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_sqlite_constraint_exception_when_insert_invalid_user_foreign_key() {
         store.insert("wrong", ORGANISATION_UNIT_UID, ORGANISATION_UNIT_SCOPE);
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void exception_sqlite_constraint_exception_when_insert_with_invalid_organisation_unit_foreign_key() {
         store.insert(USER_UID, "wrong", ORGANISATION_UNIT_SCOPE);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid_arg() {
         store.insert(null, ORGANISATION_UNIT_UID, ORGANISATION_UNIT_SCOPE);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_uid_arg() {
         store.update(null, ORGANISATION_UNIT_UID, ORGANISATION_UNIT_SCOPE,
                 USER_UID, ORGANISATION_UNIT_UID, ORGANISATION_UNIT_SCOPE);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_org_unit_uid_arg() {
         store.update(USER_UID, null, ORGANISATION_UNIT_SCOPE,
                 USER_UID, ORGANISATION_UNIT_UID, ORGANISATION_UNIT_SCOPE);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_org_unit_scope_arg() {
         store.update(USER_UID, ORGANISATION_UNIT_UID, null,
                 USER_UID, ORGANISATION_UNIT_UID, ORGANISATION_UNIT_SCOPE);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_where_uid_arg() {
         store.update(USER_UID, ORGANISATION_UNIT_UID, ORGANISATION_UNIT_SCOPE,
                 null, ORGANISATION_UNIT_UID, ORGANISATION_UNIT_SCOPE);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_where_org_unit_arg() {
         store.update(USER_UID, ORGANISATION_UNIT_UID, ORGANISATION_UNIT_SCOPE,
                 USER_UID, null, ORGANISATION_UNIT_SCOPE);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_where_org_unit_scope_arg() {
         store.update(USER_UID, ORGANISATION_UNIT_UID, ORGANISATION_UNIT_SCOPE,
                 USER_UID, ORGANISATION_UNIT_UID, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_delete_null_user_uid_arg() {
         store.delete(null, ORGANISATION_UNIT_UID, ORGANISATION_UNIT_SCOPE);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_delete_null_organisation_unit_uid_arg() {
         store.delete(USER_UID, null, ORGANISATION_UNIT_SCOPE);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_delete_null_organisation_unit_scope_arg() {
         store.delete(USER_UID, ORGANISATION_UNIT_UID, null);
     }

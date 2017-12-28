@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
+import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -62,6 +63,7 @@ public class ProgramRuleActionModelShould {
     private static final String DATE = "2011-12-24T12:24:25.203";
 
     @Test
+    @SmallTest
     public void create_model_when_created_from_database_cursor() throws ParseException {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
                 ProgramRuleActionModel.Columns.ID,
@@ -115,6 +117,7 @@ public class ProgramRuleActionModelShould {
     }
 
     @Test
+    @SmallTest
     public void create_content_values_when_created_from_builder() throws ParseException {
         Date date = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
 

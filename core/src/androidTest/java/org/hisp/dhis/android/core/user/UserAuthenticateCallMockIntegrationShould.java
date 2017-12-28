@@ -36,6 +36,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 import static okhttp3.internal.Util.UTC;
 
 import android.database.Cursor;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -254,6 +255,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
     }
 
     @Test
+    @MediumTest
     public void persist_user_in_data_base_when_call() throws Exception {
         Response response = authenticateUserCall.call();
 
@@ -383,6 +385,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
     }
 
     @Test
+    @MediumTest
     public void return_correct_user_when_call() throws Exception {
         Response<User> userResponse = authenticateUserCall.call();
 

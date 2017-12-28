@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core.category;
 
 import static junit.framework.Assert.assertTrue;
 
+import android.support.test.filters.MediumTest;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.Payload;
@@ -24,7 +26,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-public class CategoryEndpointCallShould extends AbsStoreTestCase {
+public class CategoryEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
 
@@ -54,6 +56,7 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void parse_category_successful() throws Exception {
 
         CategoryEndpointCall callEndpoint = provideCategoryEndpointCall();

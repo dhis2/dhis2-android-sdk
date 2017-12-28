@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.program;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -108,6 +109,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_program_stage_section_in_data_base_when_insert() {
 
         long rowId = store.insert(
@@ -140,6 +142,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_deferrable_program_stage_section_in_data_base_when_insert() {
         final String deferredProgramStage = "deferredProgramStage";
 
@@ -160,6 +163,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_program_stage_section_in_data_base_when_delete_program_stage() {
 
         ContentValues programStageSection = new ContentValues();
@@ -185,6 +189,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_sqlite_constraint_exception_when_insert_program_stage_section_with_invalid_foreign_key() {
         String WRONG_UID = "wrong";
         store.insert(
@@ -200,6 +205,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_in_data_base_when_update() throws Exception {
         // insertion of foreign key: program stage happens in the setUp method
 
@@ -232,6 +238,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_in_data_base_when_delete() throws Exception {
         // insertion of foreign key: program stage happens in the setUp method
 
@@ -261,30 +268,36 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_program_stage() {
         store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, null);
     }
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_program_stage() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, null, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_where_uid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }

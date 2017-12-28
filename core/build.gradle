@@ -119,6 +119,7 @@ dependencies {
     testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
     testCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     testCompile 'com.google.code.findbugs:annotations:3.0.0'
+    testCompile "com.android.support.test:runner:${libraries.testrunner}"
 
     // Android test dependencies
     androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"

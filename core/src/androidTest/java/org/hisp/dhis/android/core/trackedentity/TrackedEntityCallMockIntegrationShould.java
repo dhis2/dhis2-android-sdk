@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -141,6 +142,7 @@ public class TrackedEntityCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void have_valid_values_when_call() throws Exception {
         trackedEntityCall.call();
 

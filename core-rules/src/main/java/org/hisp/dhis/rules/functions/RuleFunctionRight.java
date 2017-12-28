@@ -26,7 +26,7 @@ final class RuleFunctionRight extends RuleFunction {
                     arguments.size() + " were supplied");
         }
 
-        return right(arguments.get(0),Integer.parseInt(arguments.get(1)));
+        return right(arguments.get(0), Integer.parseInt(arguments.get(1)));
     }
 
     /**
@@ -37,8 +37,9 @@ final class RuleFunctionRight extends RuleFunction {
      * @return the right substring.
      */
     private static String right(String inputString, int length) {
-        if (inputString == null)
+        if (inputString == null) {
             return "";
+        }
         int safeLength = Math.min(Math.max(0, length), inputString.length());
         return inputString.substring(inputString.length() - safeLength);
     }

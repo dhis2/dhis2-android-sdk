@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.enrollment;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
+import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.AndroidTestUtils;
@@ -65,6 +66,7 @@ public class EnrollmentModelShould {
     }
 
     @Test
+    @SmallTest
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.UID, Columns.CREATED, Columns.LAST_UPDATED, Columns.ORGANISATION_UNIT,
@@ -98,6 +100,7 @@ public class EnrollmentModelShould {
     }
 
     @Test
+    @SmallTest
     public void create_content_values_when_created_from_builder(){
         EnrollmentModel model = EnrollmentModel.builder()
                 .id(ID)

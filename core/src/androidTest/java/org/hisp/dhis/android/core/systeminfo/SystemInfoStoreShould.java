@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -79,6 +80,7 @@ public class SystemInfoStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_system_info_in_data_base_when_insert() throws ParseException {
 
         long rowId = store.insert(date, DATE_FORMAT, VERSION, CONTEXT_PATH);
@@ -97,6 +99,7 @@ public class SystemInfoStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_system_info_in_data_base_when_update() throws Exception {
         ContentValues systemInfo = new ContentValues();
         systemInfo.put(Columns.SERVER_DATE, DATE);
@@ -124,6 +127,7 @@ public class SystemInfoStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_system_info_in_data_base_when_delete() throws Exception {
         ContentValues systemInfo = new ContentValues();
         systemInfo.put(Columns.SERVER_DATE, DATE);
@@ -145,51 +149,61 @@ public class SystemInfoStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_date() {
         store.insert(null, DATE_FORMAT, VERSION, CONTEXT_PATH);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_dateFormat() {
         store.insert(date, null, VERSION, CONTEXT_PATH);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_version() {
         store.insert(date, DATE_FORMAT, null, CONTEXT_PATH);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_contextPath() {
         store.insert(date, DATE_FORMAT, VERSION, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_date() {
         store.update(null, DATE_FORMAT, VERSION, CONTEXT_PATH, CONTEXT_PATH);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void update_null_dateFormat() {
         store.update(date, null, VERSION, CONTEXT_PATH, CONTEXT_PATH);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void update_null_version() {
         store.update(date, DATE_FORMAT, null, CONTEXT_PATH, CONTEXT_PATH);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void update_null_contextPath() {
         store.update(date, DATE_FORMAT, VERSION, null, CONTEXT_PATH);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void update_null_whereContextPath() {
         store.update(date, DATE_FORMAT, VERSION, CONTEXT_PATH, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void delete_null_ContextPath() {
         store.delete(null);
     }

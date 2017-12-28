@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataelement;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.category.CategoryComboModel;
@@ -117,6 +118,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_data_element_in_database_when_insert() {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(OptionSetModel.TABLE, null, optionSet);
@@ -177,6 +179,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_deferrable_data_element_in_database_when_insert() {
         final String deferredOptionSetUid = "deferredOptionSetUid";
         final String deferredCategoryComboUid = "deferredCategoryComboUid";
@@ -206,6 +209,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_data_element_in_database_without_option_set_when_insert() {
         long rowId = store.insert(
                 UID,
@@ -262,6 +266,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_sqlite_constraint_exception_when_persist_a_data_element_with_invalid_option_set_foreign_key() {
         String fakeOptionSetUid = "fake_option_set_uid";
         store.insert(
@@ -289,6 +294,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_data_element_in_database_when_deleting_options_set_foreign_key() {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(OptionSetModel.TABLE, null, optionSet);
@@ -317,6 +323,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_data_element_in_database_when_update() throws Exception {
         // insert dataElement into database
         ContentValues dataElement = new ContentValues();
@@ -359,6 +366,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_data_element_in_database_when_delete() throws Exception {
 
         // insert dataElement into database
@@ -383,6 +391,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE,
@@ -390,6 +399,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE,
@@ -397,6 +407,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_whereUid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE,
@@ -404,6 +415,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }

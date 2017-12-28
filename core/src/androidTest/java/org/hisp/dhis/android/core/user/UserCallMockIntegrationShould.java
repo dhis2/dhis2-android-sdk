@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -267,6 +268,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_user_in_data_base_when_call() throws Exception {
         userCall.call();
 
@@ -297,6 +299,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_user_credentials_in_data_base_when_call() throws Exception {
         userCall.call();
 
@@ -328,6 +331,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_user_roles_in_data_base_when_call() throws Exception {
         userCall.call();
 

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
+import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel.Columns;
@@ -45,6 +46,7 @@ public class AuthenticatedUserModelShould {
     private static final String CREDENTIALS = "test_credentials";
 
     @Test
+    @SmallTest
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{Columns.ID, Columns.USER, Columns.CREDENTIALS});
         cursor.addRow(new Object[]{ID, USER, CREDENTIALS});
@@ -59,6 +61,7 @@ public class AuthenticatedUserModelShould {
     }
 
     @Test
+    @SmallTest
     public void create_content_values_when_created_from_builder() {
         AuthenticatedUserModel model = AuthenticatedUserModel.builder()
                 .id(ID)

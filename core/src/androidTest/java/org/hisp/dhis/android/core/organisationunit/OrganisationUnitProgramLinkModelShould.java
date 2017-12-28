@@ -28,15 +28,16 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import android.content.ContentValues;
 import android.database.MatrixCursor;
+import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class OrganisationUnitProgramLinkModelShould {
@@ -45,6 +46,7 @@ public class OrganisationUnitProgramLinkModelShould {
     private static final String PROGRAM_UID = "test_program_uid";
 
     @Test
+    @SmallTest
     public void create_model_when_created_from_database_cursor() throws Exception {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.ORGANISATION_UNIT, Columns.PROGRAM
@@ -65,6 +67,7 @@ public class OrganisationUnitProgramLinkModelShould {
     }
 
     @Test
+    @SmallTest
     public void create_content_values_when_created_from_builder() throws Exception {
         OrganisationUnitProgramLinkModel organisationUnitProgramLink = OrganisationUnitProgramLinkModel.builder()
                 .id(ID)

@@ -5,6 +5,8 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 
+import android.support.test.filters.MediumTest;
+
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
@@ -63,7 +65,9 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.shutdown();
     }
 
+
     @Test
+    @MediumTest
     public void not_download_tracked_entity_instances_if_does_not_exists_nothing_in_database()
             throws Exception {
 
@@ -75,6 +79,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void not_download_tracked_entity_instances_if_does_not_exists_synced_in_database()
             throws Exception {
 
@@ -89,6 +94,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void only_download_synced_tracked_entity_instance_that_exists_in_database()
             throws Exception {
         givenAMetadataInDatabase();
@@ -110,6 +116,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void download_all_synced_tracked_entity_instances_that_exists_in_database()
             throws Exception {
         givenAMetadataInDatabase();

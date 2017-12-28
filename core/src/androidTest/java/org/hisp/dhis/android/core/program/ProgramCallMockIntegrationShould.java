@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -238,6 +239,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_program_when_call() throws Exception {
         // Fake call to api
         programCall.call();
@@ -279,6 +281,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_program_stage_when_call() throws Exception {
         programCall.call();
         String[] projection = {
@@ -343,6 +346,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
      * @throws Exception
      */
     @Test
+    @MediumTest
     public void not_persist_program_stage_sections_when_call() throws Exception {
         programCall.call();
         String[] projection = {
@@ -362,6 +366,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_program_stage_data_element_when_call() throws Exception {
         programCall.call();
 
@@ -407,6 +412,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_data_element_when_call() throws Exception {
         programCall.call();
 
@@ -461,6 +467,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_option_set_when_call() throws Exception {
         programCall.call();
 
@@ -479,6 +486,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_program_rule_variables_on_call() throws Exception {
         programCall.call();
         String[] projection = {
@@ -516,6 +524,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_program_tracker_entity_attributes_when_call() throws Exception {
         programCall.call();
         String[] projection = {
@@ -564,6 +573,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_tracked_entity_attribute_when_call() throws Exception {
         programCall.call();
         String[] projection = {
@@ -623,6 +633,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_program_indicators_when_call() throws Exception {
         programCall.call();
 
@@ -671,6 +682,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_program_rules_when_call() throws Exception {
         programCall.call();
         String[] projection = {
@@ -704,6 +716,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_program_rule_actions_when_call() throws Exception {
         programCall.call();
 
@@ -756,6 +769,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
      * @throws Exception
      */
     @Test
+    @MediumTest
     public void not_persist_relationship_type_when_call() throws Exception {
         programCall.call();
 

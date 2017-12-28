@@ -39,6 +39,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
 
 import java.util.ArrayList;
@@ -97,6 +98,9 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
                     " WHERE " + TrackedEntityDataValueModel.Columns.EVENT + " =? AND " +
                     TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " =?;";
 
+
+    private static final String QUERY_SINGLE_DATA_ELEMENT_ON_DATA_ELEMENT_TABLE =
+            "SELECT * FROM " + DataElementModel.TABLE + " WHERE uid ='?'";
 
     private static final String QUERY_TRACKED_ENTITY_DATA_VALUES_ATTACHED_TO_TRACKER_EVENTS =
             "SELECT " +
@@ -208,6 +212,27 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
                         inArguments + ");", argumentValuesArray);
 
         return delete;
+    }
+
+    @Override
+    public boolean areAllDataValueAdded(
+            @NonNull List<TrackedEntityDataValue> trackedEntityDataValues) {
+        String queryStatement = QUERY_SINGLE_DATA_ELEMENT_ON_DATA_ELEMENT_TABLE;
+        boolean areAllAdded = true;
+
+        for (TrackedEntityDataValue item : trackedEntityDataValues) {
+            queryStatement = queryStatement.replace("?", item.dataElement());
+
+            Cursor cursor = databaseAdapter.query(queryStatement);
+            if (cursor.getCount() == 0) {
+                areAllAdded = false;
+                break;
+            }
+            cursor.close();
+            queryStatement = QUERY_SINGLE_DATA_ELEMENT_ON_DATA_ELEMENT_TABLE;
+
+        }
+        return areAllAdded;
     }
 
     @Override

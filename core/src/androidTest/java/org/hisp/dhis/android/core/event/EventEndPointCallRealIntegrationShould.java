@@ -48,9 +48,8 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
 
         eventEndPointCall.call();
 
-        verifyDownloadedEvents(50);
+        verifyDownloadedEvents(49);
     }
-
 
     @Test
     public void download_event_with_category_combo_option() throws Exception {

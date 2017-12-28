@@ -108,6 +108,24 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
         verifyDownloadedEvents("event_1_with_only_one_data_values.json");
     }
 
+    @Test
+    public void add_only_events_with_data_element_that_are_already_added_on_data_value_table()
+            throws Exception {
+
+        givenAMetadataInDatabase();
+
+        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+
+        //This JSON file has two events one that have data elements and
+        //other that doesn't have data elements
+        dhis2MockServer.enqueueMockResponse("two_events_one_with_data_value_not_added.json");
+        eventEndPointCall.call();
+
+        //Should only add the event that has data values
+        verifyDownloadedEvents("event_1_with_only_one_data_values.json");
+    }
+
     private void givenAMetadataInDatabase() throws Exception {
         dhis2MockServer.enqueueMockResponse("system_info.json");
         dhis2MockServer.enqueueMockResponse("user.json");
@@ -149,7 +167,8 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
                     event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.program(), event.programStage(), event.organisationUnit(),
                     event.eventDate(), event.status(), event.coordinates(), event.completedDate(),
-                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()), event.attributeCategoryOptions(),
+                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()),
+                    event.attributeCategoryOptions(),
                     event.attributeOptionCombo(), event.trackedEntityInstance());
 
             downloadedEvents.add(event);

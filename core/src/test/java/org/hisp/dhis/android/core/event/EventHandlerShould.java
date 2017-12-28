@@ -1,6 +1,15 @@
 package org.hisp.dhis.android.core.event;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,13 +20,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Date;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class EventHandlerShould {
@@ -49,15 +51,21 @@ public class EventHandlerShould {
 
         // verify that store is never invoked
         verify(eventStore, never()).delete(anyString());
-        verify(eventStore, never()).update(anyString(), anyString(), any(Date.class), any(Date.class),
+        verify(eventStore, never()).update(anyString(), anyString(), any(Date.class),
+                any(Date.class),
                 anyString(), anyString(),
-                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString(), anyString());
+                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
+                anyString(), anyString(), anyString());
 
-        verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class), any(Date.class),
+        verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class),
+                any(Date.class),
                 anyString(), anyString(),
-                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString());
+                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
+                anyString(), anyString());
     }
 
     @Test
@@ -70,37 +78,51 @@ public class EventHandlerShould {
         verify(eventStore, times(1)).delete(event.uid());
 
         // verify that update and insert is never invoked
-        verify(eventStore, never()).update(anyString(), anyString(), any(Date.class), any(Date.class),
+        verify(eventStore, never()).update(anyString(), anyString(), any(Date.class),
+                any(Date.class),
                 anyString(), anyString(),
-                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString(), anyString());
-        verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class), any(Date.class),
+                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
+                anyString(), anyString(), anyString());
+        verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class),
+                any(Date.class),
                 anyString(), anyString(),
-                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString());
+                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
+                anyString(), anyString());
     }
 
     @Test
     public void invoke_only_update_when_handle_event_inserted() throws Exception {
         when(eventStore.update(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
-                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString(), anyString())
+                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
+                anyString(), anyString(), anyString())
         ).thenReturn(1);
 
         eventHandler.handle(event);
 
         // verify that update is invoked once
-        verify(eventStore, times(1)).update(anyString(), anyString(), any(Date.class), any(Date.class),
+        verify(eventStore, times(1)).update(anyString(), anyString(), any(Date.class),
+                any(Date.class),
                 anyString(), anyString(),
-                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString(), anyString());
+                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
+                anyString(), anyString(), anyString());
 
         // verify that insert and delete is never invoked
-        verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class), any(Date.class),
+        verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class),
+                any(Date.class),
                 anyString(), anyString(),
-                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString());
+                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
+                anyString(), anyString());
         verify(eventStore, never()).delete(anyString());
     }
 
@@ -108,24 +130,66 @@ public class EventHandlerShould {
     public void invoke_update_and_insert_when_handle_event_not_inserted() throws Exception {
         when(eventStore.update(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
-                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString(), anyString())
+                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
+                anyString(), anyString(), anyString())
         ).thenReturn(0);
+
+        when(trackedEntityDataValueHandler.areAllDataValueAdded(
+                anyListOf(TrackedEntityDataValue.class))).thenReturn(true);
 
         eventHandler.handle(event);
 
         // verify that update and insert is invoked, since we're updating before inserting
-        verify(eventStore, times(1)).insert(anyString(), anyString(), any(Date.class), any(Date.class),
+        verify(eventStore, times(1)).insert(anyString(), anyString(), any(Date.class),
+                any(Date.class),
                 anyString(), anyString(),
-                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString());
+                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
+                anyString(), anyString());
 
-        verify(eventStore, times(1)).update(anyString(), anyString(), any(Date.class), any(Date.class),
+        verify(eventStore, times(1)).update(anyString(), anyString(), any(Date.class),
+                any(Date.class),
                 anyString(), anyString(),
-                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString(), anyString());
+                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
+                anyString(), anyString(), anyString());
 
         // verify that delete is never invoked
         verify(eventStore, never()).delete(anyString());
+    }
+
+    @Test
+    public void not_add_event_with_data_elements_that_not_exists() {
+        eventHandler.handle(event);
+
+        verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class),
+                any(Date.class),
+                anyString(), anyString(),
+                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
+                anyString(), anyString());
+
+    }
+
+    @Test
+    public void add_event_with_data_elements_that() {
+        when(trackedEntityDataValueHandler.areAllDataValueAdded(
+                anyListOf(TrackedEntityDataValue.class))).thenReturn(true);
+
+        eventHandler.handle(event);
+
+        verify(eventStore, times(1)).insert(anyString(), anyString(), any(Date.class),
+                any(Date.class),
+                anyString(), anyString(),
+                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
+                anyString(), anyString());
+
     }
 }

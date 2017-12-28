@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.configuration;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.test.filters.MediumTest;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
@@ -53,6 +54,7 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_row_in_database_when_save() {
         long rowId = store.save("http://testserver.org/");
 
@@ -66,6 +68,7 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void not_thrown_on_save_conflict() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
@@ -84,6 +87,7 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void not_persist_more_than_one_url_on_save() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
@@ -101,6 +105,7 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_persisted_rows_on_delete() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
@@ -116,12 +121,14 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void not_fail_if_no_rows_persisted_on_delete() {
         long deleted = store.delete();
         assertThat(deleted).isEqualTo(0);
     }
 
     @Test
+    @MediumTest
     public void return_persisted_row_when_query() {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
@@ -134,12 +141,14 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void return_null_if_no_rows_are_persisted() {
         ConfigurationModel persistedConfiguration = store.query();
         assertThat(persistedConfiguration).isNull();
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.save(null);
     }

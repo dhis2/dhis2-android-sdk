@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.event;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
@@ -164,6 +165,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_event_in_data_base_after_insert() {
         long rowId = eventStore.insert(
                 EVENT_UID,
@@ -213,6 +215,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_deferrable_event_in_data_base_after_insert() {
         final String deferredProgram = "deferredProgram";
         final String deferredProgramStage = "deferredProgramStage";
@@ -278,6 +281,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_event_nullable_in_data_base_after_insert() {
 
         long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
@@ -295,6 +299,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_event_in_data_base_after_delete_program_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
@@ -324,6 +329,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_event_in_data_base_after_delete_program_stage_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
@@ -353,6 +359,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_event_in_data_base_after_delete_organisation_unit_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
@@ -384,6 +391,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_event_in_data_base_after_update() throws Exception {
         ContentValues event = new ContentValues();
         event.put(Columns.UID, EVENT_UID);
@@ -418,6 +426,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_event_in_data_base_after_delete() throws Exception {
         ContentValues event = new ContentValues();
         event.put(Columns.UID, EVENT_UID);
@@ -441,6 +450,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_event_state_in_database_after_set_state() throws Exception {
         ContentValues event = new ContentValues();
         event.put(Columns.UID, EVENT_UID);
@@ -466,6 +476,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void return_list_of_events_after_query() throws Exception {
         ContentValues eventContentValues = new ContentValues();
         eventContentValues.put(Columns.UID, EVENT_UID);
@@ -516,6 +527,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void return_empty_list_with_no_events_after_query() throws Exception {
         Map<String, List<Event>> events = eventStore.queryEventsAttachedToEnrollmentToPost();
 
@@ -523,6 +535,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_exception_after_persist_event_with_invalid_program_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
@@ -548,6 +561,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_exception_after_persist_event_with_invalid_program_stage_foreign_key() throws ParseException {
         eventStore.insert(
                 EVENT_UID,
@@ -573,6 +587,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_exception_after_persist_event_with_invalid_organisation_unit_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
@@ -599,6 +614,7 @@ public class EventStoreShould extends AbsStoreTestCase {
 
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_exception_after_persist_event_with_invalid_enrollment_foreign_key() {
         eventStore.insert(
                 EVENT_UID,

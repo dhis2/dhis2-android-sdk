@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.resource;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
+import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -22,6 +23,7 @@ public class ResourceModelShould {
     private static final String DATE = "2017-01-18T13:39:00.000";
 
     @Test
+    @SmallTest
     public void create_model_when_created_from_database_cursor() throws Exception {
         MatrixCursor matrixCursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.RESOURCE_TYPE, Columns.LAST_SYNCED
@@ -42,6 +44,7 @@ public class ResourceModelShould {
     }
 
     @Test
+    @SmallTest
     public void create_content_values_when_created_from_builder() throws Exception {
         Date timeStamp = BaseIdentifiableObject.DATE_FORMAT.parse(DATE);
         ResourceModel resource = ResourceModel.builder()

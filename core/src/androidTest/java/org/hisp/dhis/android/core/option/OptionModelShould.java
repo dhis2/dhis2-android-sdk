@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.option;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
+import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -59,6 +60,7 @@ public class OptionModelShould {
     }
 
     @Test
+    @SmallTest
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
@@ -87,6 +89,7 @@ public class OptionModelShould {
     }
 
     @Test
+    @SmallTest
     public void create_content_values_when_created_from_builder() {
         OptionModel model = OptionModel.builder()
                 .id(ID)

@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import android.support.annotation.NonNull;
+import android.support.test.filters.MediumTest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,6 +54,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
     }
 
     @Test
+    @MediumTest
     public void download_tracked_entity_instance_enrollments_and_events() throws Exception {
         String teiUid = "PgmUFEQYZdt";
 
@@ -70,6 +72,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
     }
 
     @Test
+    @MediumTest
     public void remove_data_removed_in_server_after_second_download()
             throws Exception {
         String teiUid = "PgmUFEQYZdt";

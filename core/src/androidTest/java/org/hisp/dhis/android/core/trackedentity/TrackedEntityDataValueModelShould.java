@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
+import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -62,6 +63,7 @@ public class TrackedEntityDataValueModelShould {
     }
 
     @Test
+    @SmallTest
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
@@ -91,6 +93,7 @@ public class TrackedEntityDataValueModelShould {
     }
 
     @Test
+    @SmallTest
     public void create_content_values_when_created_from_builder() {
         TrackedEntityDataValueModel model = TrackedEntityDataValueModel.builder()
                 .id(ID)

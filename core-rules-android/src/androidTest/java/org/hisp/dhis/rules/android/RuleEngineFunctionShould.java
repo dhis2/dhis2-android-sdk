@@ -26,6 +26,8 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.support.test.filters.SmallTest;
+
 @RunWith(JUnit4.class)
 public class RuleEngineFunctionShould {
     private Duktape duktape;
@@ -36,6 +38,7 @@ public class RuleEngineFunctionShould {
     }
 
     @Test
+    @SmallTest
     public void return_true_if_evaluate_value_specified_has_value() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair.createForFeedback(
                 "test_action_content", "d2:hasValue('test_variable')");
@@ -61,6 +64,7 @@ public class RuleEngineFunctionShould {
     }
 
     @Test
+    @SmallTest
     public void return_false_if_no_evaluate_value_specified_has_value() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair.createForFeedback(
                 "test_action_content", "d2:hasValue('test_variable')");
@@ -85,6 +89,7 @@ public class RuleEngineFunctionShould {
     }
 
     @Test
+    @SmallTest
     public void return_correct_diff_on_evaluate_days_between() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair.createForFeedback(
                 "test_action_content", "d2:daysBetween(#{test_var_one}, #{test_var_two})");
@@ -113,6 +118,7 @@ public class RuleEngineFunctionShould {
     }
 
     @Test
+    @SmallTest
     public void return_expected_values_on_nested_functions_calls() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair.createForFeedback(
                 "test_action_content", "d2:floor(#{test_var_one} + d2:ceil(#{test_var_three})) " +

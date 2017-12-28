@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.category;
 
 import static org.junit.Assert.assertEquals;
 
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -30,6 +31,7 @@ public class CategoryOptionComboCategoryLinkStoreShould extends AbsStoreTestCase
     }
 
     @Test
+    @MediumTest
     public void insert_a_category_option_combo_link_category() throws Exception {
         givenACategoryOption();
         givenACategoryOptionCombo();

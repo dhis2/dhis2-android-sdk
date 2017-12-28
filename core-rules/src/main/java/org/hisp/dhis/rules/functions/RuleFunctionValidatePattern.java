@@ -46,8 +46,7 @@ final class RuleFunctionValidatePattern extends RuleFunction {
     private static Boolean validatePattern(String patternString, String inputToValidate) {
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(inputToValidate);
-        boolean matchFound = matcher.matches();
-        return matchFound;
+        return matcher.matches();
     }
 
 }

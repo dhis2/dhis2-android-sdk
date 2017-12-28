@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.program;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -112,6 +113,7 @@ public class ProgramRuleStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_program_rule_in_data_base_when_insert() {
         long rowId = store.insert(
                 UID, CODE, NAME, DISPLAY_NAME,
@@ -132,6 +134,7 @@ public class ProgramRuleStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_deferrable_program_rule_in_data_base_when_insert() {
         final String deferrableProgram = "deferrableProgram";
         final String deferrableProgramStage = "deferrableProgramStage";
@@ -159,6 +162,7 @@ public class ProgramRuleStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_program_rule_in_data_base_when_insert_without_program_stage_foreign_key() {
         long rowId = store.insert(
                 UID, CODE, NAME, DISPLAY_NAME,
@@ -181,6 +185,7 @@ public class ProgramRuleStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_sqlite_constraint_exception_when_insert_program_rule_in_data_base_without_program() {
         String wrongProgramUid = "wrong";
         store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION,
@@ -188,6 +193,7 @@ public class ProgramRuleStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_sqlite_constraint_exception_when_insert_with_wrong_program_stage_foreign_key() {
         String wrongProgramStageUid = "wrong";
         store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION,
@@ -195,6 +201,7 @@ public class ProgramRuleStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_program_rule_in_data_base_when_delete_program() {
         ContentValues programRule = new ContentValues();
         programRule.put(Columns.ID, ID);
@@ -217,6 +224,7 @@ public class ProgramRuleStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_program_rule_when_delete_program_stage() {
         ContentValues programRule = new ContentValues();
         programRule.put(Columns.ID, ID);
@@ -239,6 +247,7 @@ public class ProgramRuleStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_program_rule_in_data_base_when_update() throws Exception {
         ContentValues programRule = new ContentValues();
         programRule.put(Columns.UID, UID);
@@ -271,6 +280,7 @@ public class ProgramRuleStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_program_rule_in_data_base_when_delete() throws Exception {
         ContentValues programRule = new ContentValues();
         programRule.put(Columns.UID, UID);
@@ -298,31 +308,37 @@ public class ProgramRuleStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION, PROGRAM, PROGRAM_STAGE);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_program() {
         store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION, null, PROGRAM_STAGE);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION, PROGRAM, PROGRAM_STAGE, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_program() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION, null, PROGRAM_STAGE, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_whereUid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, PRIORITY, CONDITION, PROGRAM, PROGRAM_STAGE, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }

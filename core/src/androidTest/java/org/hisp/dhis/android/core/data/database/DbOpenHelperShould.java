@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import android.support.test.filters.SmallTest;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -40,6 +41,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class DbOpenHelperShould {
 
     @Test
+    @SmallTest
     public void have_tests_on_database_versions() {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , null);

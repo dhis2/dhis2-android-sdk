@@ -26,6 +26,8 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.support.test.filters.SmallTest;
+
 @RunWith(JUnit4.class)
 public class RuleEngineValueTypesShould {
 
@@ -42,6 +44,7 @@ public class RuleEngineValueTypesShould {
     }
 
     @Test
+    @SmallTest
     public void fallback_to_default_boolean_value_when_boolean_variable_without_valueM() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair
                 .createForFeedback("test_action_content", "#{test_variable}");
@@ -66,6 +69,7 @@ public class RuleEngineValueTypesShould {
     }
 
     @Test
+    @SmallTest
     public void fallback_to_default_numeric_value_on_numeric_variable_without_value() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair
                 .createForFeedback("test_action_content", "#{test_variable}");
@@ -90,6 +94,7 @@ public class RuleEngineValueTypesShould {
     }
 
     @Test
+    @SmallTest
     public void fallback_to_default_text_value_on_variable_without_value() throws Exception {
         RuleAction ruleAction = RuleActionDisplayKeyValuePair
                 .createForFeedback("test_action_content", "#{test_variable}");

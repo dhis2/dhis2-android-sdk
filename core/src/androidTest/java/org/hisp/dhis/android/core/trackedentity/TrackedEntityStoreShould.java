@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.test.filters.MediumTest;
+import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -85,6 +87,7 @@ public class TrackedEntityStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_shouldPersistRowInDatabase() {
         long rowId = store.insert(
                 UID,
@@ -116,6 +119,7 @@ public class TrackedEntityStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_shouldUpdateRowInDatabase() {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, UID);
 
@@ -167,6 +171,7 @@ public class TrackedEntityStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_shouldDeleteRowInDatabase() {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, UID);
 
@@ -183,6 +188,7 @@ public class TrackedEntityStoreShould extends AbsStoreTestCase {
 
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
                 DESCRIPTION, DISPLAY_DESCRIPTION
@@ -190,6 +196,7 @@ public class TrackedEntityStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
                 DESCRIPTION, DISPLAY_DESCRIPTION, UID
@@ -197,6 +204,7 @@ public class TrackedEntityStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_whereUid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
                 DESCRIPTION, DISPLAY_DESCRIPTION, null
@@ -204,6 +212,7 @@ public class TrackedEntityStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }

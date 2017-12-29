@@ -25,7 +25,7 @@ public class CategoryHandler {
     public void handle(Category category) {
 
         if (isDeleted(category)) {
-            categoryStore.delete(category);
+            categoryStore.delete(category.uid());
         } else {
 
             boolean updated = categoryStore.update(category, category);

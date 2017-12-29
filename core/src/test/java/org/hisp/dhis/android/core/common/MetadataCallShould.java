@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
+import org.hisp.dhis.android.core.constant.ConstantStore;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -57,6 +58,8 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandler;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectService;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
@@ -165,6 +168,9 @@ public class MetadataCallShould {
     private ResourceStore resourceStore;
 
     @Mock
+    private ConstantStore constantStore;
+
+    @Mock
     private UserCredentialsStore userCredentialsStore;
 
     @Mock
@@ -249,6 +255,9 @@ public class MetadataCallShould {
     private OptionSetService optionSetService;
 
     @Mock
+    private DeletedObjectService deletedObjectService;
+
+    @Mock
     private Date serverDateTime;
 
     @Mock
@@ -297,6 +306,9 @@ public class MetadataCallShould {
 
     @Mock
     private CategoryComboHandler mockCategoryComboHandler;
+    @Mock
+    private DeletedObjectHandler mockDeletedObjectHandler;
+
 
     // object to test
     private MetadataCall metadataCall;
@@ -369,7 +381,7 @@ public class MetadataCallShould {
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService,
                 programService, organisationUnitService, trackedEntityService, optionSetService,
-                systemInfoStore, resourceStore, userStore,
+                deletedObjectService, systemInfoStore, resourceStore, constantStore, userStore,
                 userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
@@ -377,7 +389,7 @@ public class MetadataCallShould {
                 optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore, trackedEntityStore,
                 organisationUnitProgramLinkStore,categoryQuery, categoryService, categoryHandler,
-                CategoryComboQuery.defaultQuery(), comboService,mockCategoryComboHandler);
+                CategoryComboQuery.defaultQuery(), comboService,mockCategoryComboHandler, mockDeletedObjectHandler);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 

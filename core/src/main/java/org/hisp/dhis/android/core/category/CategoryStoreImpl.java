@@ -59,11 +59,11 @@ public class CategoryStoreImpl implements CategoryStore {
     }
 
     @Override
-    public boolean delete(@NonNull Category category) {
+    public boolean delete(@NonNull String uid) {
 
-        validate(category);
+        isNull(uid);
 
-        bindForDelete(category);
+        bindForDelete(uid);
 
         return execute(deleteStatement);
     }
@@ -107,10 +107,10 @@ public class CategoryStoreImpl implements CategoryStore {
         isNull(category.uid());
     }
 
-    private void bindForDelete(@NonNull Category category) {
+    private void bindForDelete(@NonNull String uid) {
         final int whereUidIndex = 1;
 
-        sqLiteBind(deleteStatement, whereUidIndex, category.uid());
+        sqLiteBind(deleteStatement, whereUidIndex, uid);
     }
 
     private void bindUpdate(@NonNull Category oldCategory, @NonNull Category newCategory) {

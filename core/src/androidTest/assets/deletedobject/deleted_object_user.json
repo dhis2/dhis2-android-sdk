@@ -1,0 +1,15 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 0,
+    "pageSize": 50
+  },
+  "deletedObjects": [
+    {
+      "uid": "MXyJmlo9rge",
+      "deletedAt": "2017-05-19T14:59:03.130",
+      "klass": "User",
+      "deletedBy": "system"
+    }]
+}

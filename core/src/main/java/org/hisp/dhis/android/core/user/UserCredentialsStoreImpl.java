@@ -28,19 +28,34 @@
 
 package org.hisp.dhis.android.core.user;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserCredentialsStoreImpl implements UserCredentialsStore {
+
+    private static final String FIELDS =
+            "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.UID + ","
+                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.CODE + ","
+                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.NAME + ","
+                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.DISPLAY_NAME + ","
+                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.CREATED + ","
+                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.LAST_UPDATED + ","
+                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.USERNAME + ","
+                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.USER + " ";
+
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserCredentialsModel.TABLE + " (" +
             UserCredentialsModel.Columns.UID + ", " +
             UserCredentialsModel.Columns.CODE + ", " +
@@ -65,6 +80,9 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + UserCredentialsModel.TABLE +
             " WHERE " + UserCredentialsModel.Columns.UID + " =?;";
+
+    private static final String QUERY_USER_CREDENTIALS_BY_USER = "SELECT " +
+            FIELDS + " FROM "+UserCredentialsModel.TABLE + " where user like ?";
 
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
@@ -123,6 +141,13 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
         return databaseAdapter.delete(UserCredentialsModel.TABLE);
     }
 
+    @Override
+    public UserCredentials queryByUserUid(String uid) {
+        Cursor cursor = databaseAdapter.query(QUERY_USER_CREDENTIALS_BY_USER, uid);
+
+        return mapCredentialsFromCursor(cursor).get(0);
+    }
+
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
                                @Nullable String name, @Nullable String displayName,
                                @Nullable Date created, @Nullable Date lastUpdated,
@@ -135,5 +160,44 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
         sqLiteBind(sqLiteStatement, 6, lastUpdated);
         sqLiteBind(sqLiteStatement, 7, username);
         sqLiteBind(sqLiteStatement, 8, user);
+    }
+
+
+
+    private List<UserCredentials> mapCredentialsFromCursor(Cursor cursor) {
+        List<UserCredentials> users = new ArrayList<>(cursor.getCount());
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+
+                do {
+                    UserCredentials user = mapUserCredentialFromCursor(cursor);
+
+                    users.add(user);
+                }
+                while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return users;
+    }
+
+
+    private UserCredentials mapUserCredentialFromCursor(Cursor cursor) {
+        String uid = cursor.getString(0);
+        String code = cursor.getString(1);
+        String name = cursor.getString(2);
+        String displayName = cursor.getString(3);
+        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
+        Date lastUpdated = cursor.getString(5) == null ? null : parse(cursor.getString(5));
+        String username = cursor.getString(6);
+        String userUid = cursor.getString(7);
+
+        UserCredentials userCredentials = UserCredentials.create(uid,code, name, displayName,
+                created, lastUpdated, username, null, false);
+        return userCredentials;
     }
 }

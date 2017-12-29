@@ -8,7 +8,7 @@ public interface CategoryStore extends DeletableStore {
 
     long insert(@NonNull Category element);
 
-    boolean delete(@NonNull Category element);
+    boolean delete(@NonNull String uid);
 
     boolean update(@NonNull Category oldElement, @NonNull Category newElement);
 }

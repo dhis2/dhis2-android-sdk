@@ -41,9 +41,15 @@ import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.constant.ConstantStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.deletedobject.DeletedObject;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectEndPointCall;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandler;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectService;
+import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
@@ -76,6 +82,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
@@ -102,6 +109,7 @@ import retrofit2.Response;
 public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
+    private final DeletedObjectService deletedObjectService;
     private final UserService userService;
     private final ProgramService programService;
     private final OrganisationUnitService organisationUnitService;
@@ -109,6 +117,7 @@ public class MetadataCall implements Call<Response> {
     private final OptionSetService optionSetService;
     private final SystemInfoStore systemInfoStore;
     private final ResourceStore resourceStore;
+    private final ConstantStore constantStore;
     private final UserStore userStore;
     private final UserCredentialsStore userCredentialsStore;
     private final UserRoleStore userRoleStore;
@@ -138,6 +147,7 @@ public class MetadataCall implements Call<Response> {
     private final CategoryComboService categoryComboService;
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
+    private final DeletedObjectHandler deletedObjectHandler;
 
     private boolean isExecuted;
 
@@ -150,8 +160,10 @@ public class MetadataCall implements Call<Response> {
             @NonNull OrganisationUnitService organisationUnitService,
             @NonNull TrackedEntityService trackedEntityService,
             @NonNull OptionSetService optionSetService,
+            @NonNull DeletedObjectService deletedObjectService,
             @NonNull SystemInfoStore systemInfoStore,
             @NonNull ResourceStore resourceStore,
+            @NonNull ConstantStore constantStore,
             @NonNull UserStore userStore,
             @NonNull UserCredentialsStore userCredentialsStore,
             @NonNull UserRoleStore userRoleStore,
@@ -181,7 +193,8 @@ public class MetadataCall implements Call<Response> {
             @NonNull CategoryHandler categoryHandler,
             @NonNull CategoryComboQuery categoryComboQuery,
             @NonNull CategoryComboService categoryComboService,
-            @NonNull CategoryComboHandler categoryComboHandler) {
+            @NonNull CategoryComboHandler categoryComboHandler,
+            @NonNull DeletedObjectHandler deletedObjectHandler) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -189,8 +202,10 @@ public class MetadataCall implements Call<Response> {
         this.organisationUnitService = organisationUnitService;
         this.trackedEntityService = trackedEntityService;
         this.optionSetService = optionSetService;
+        this.deletedObjectService = deletedObjectService;
         this.systemInfoStore = systemInfoStore;
         this.resourceStore = resourceStore;
+        this.constantStore = constantStore;
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.userRoleStore = userRoleStore;
@@ -221,6 +236,7 @@ public class MetadataCall implements Call<Response> {
         this.categoryComboQuery = categoryComboQuery;
         this.categoryComboService = categoryComboService;
         this.categoryComboHandler = categoryComboHandler;
+        this.deletedObjectHandler = deletedObjectHandler;
     }
 
     @Override
@@ -254,6 +270,12 @@ public class MetadataCall implements Call<Response> {
             SystemInfo systemInfo = (SystemInfo) response.body();
             Date serverDate = systemInfo.serverDate();
 
+            response = syncDeletedObject(serverDate, User.class.getSimpleName());
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
             response = new UserCall(
                     userService,
                     databaseAdapter,
@@ -269,6 +291,13 @@ public class MetadataCall implements Call<Response> {
             }
 
             User user = (User) response.body();
+
+            response = syncDeletedObject(serverDate, OrganisationUnit.class.getSimpleName());
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
             response = new OrganisationUnitCall(
                     user, organisationUnitService, databaseAdapter, organisationUnitStore,
                     resourceStore, serverDate, userOrganisationUnitLinkStore,
@@ -276,18 +305,39 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
+
+            response = syncDeletedObject(serverDate, Category.class.getSimpleName());
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
             response = downloadCategories(serverDate);
 
             if (!response.isSuccessful()) {
                 return response;
             }
+
+            response = syncDeletedObject(serverDate, CategoryCombo.class.getSimpleName());
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
             response = downloadCategoryCombos(serverDate);
 
             if (!response.isSuccessful()) {
                 return response;
             }
 
+            response = syncDeletedObject(serverDate, Program.class.getSimpleName());
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
             Set<String> programUids = getAssignedProgramUids(user);
+
             response = new ProgramCall(
                     programService, databaseAdapter, resourceStore, programUids, programStore,
                     serverDate,
@@ -304,11 +354,24 @@ public class MetadataCall implements Call<Response> {
             }
 
             List<Program> programs = ((Response<Payload<Program>>) response).body().items();
+
+            response = syncDeletedObject(serverDate, TrackedEntity.class.getSimpleName());
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
             Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
             response = new TrackedEntityCall(
                     trackedEntityUids, databaseAdapter, trackedEntityStore,
                     resourceStore, trackedEntityService, serverDate
             ).call();
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            response = syncDeletedObject(serverDate, OptionSet.class.getSimpleName());
+
             if (!response.isSuccessful()) {
                 return response;
             }
@@ -327,6 +390,12 @@ public class MetadataCall implements Call<Response> {
         } finally {
             transaction.end();
         }
+    }
+
+    private Response<Payload<DeletedObject>> syncDeletedObject(Date serverDate, String klass) throws Exception {
+        return new DeletedObjectEndPointCall(deletedObjectService, databaseAdapter,
+                resourceStore,
+                deletedObjectHandler, serverDate, klass).call();
     }
 
     /// Utilty methods:

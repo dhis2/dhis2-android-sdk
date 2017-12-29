@@ -60,4 +60,6 @@ public interface UserCredentialsStore extends DeletableStore {
     int delete(@NonNull String uid);
 
     int delete();
+
+    UserCredentials queryByUserUid(String uid);
 }

@@ -102,7 +102,7 @@ public class CategoryStoreShould extends AbsStoreTestCase {
     }
 
     private void whenDeleteCategoryInserted() {
-        wasDeleted = store.delete(newCategory);
+        wasDeleted = store.delete(newCategory.uid());
     }
 
     private void whenUpdateCategory() {

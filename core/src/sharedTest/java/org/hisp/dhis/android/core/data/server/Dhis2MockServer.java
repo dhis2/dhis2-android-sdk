@@ -113,4 +113,10 @@ public class Dhis2MockServer {
     public RecordedRequest takeRequest() throws InterruptedException {
         return server.takeRequest();
     }
+
+    public void enqueueMockedResponsesFromArrayFiles(String[] fileArray) throws IOException {
+        for(String item:fileArray) {
+            enqueueMockResponse(item);
+        }
+    }
 }

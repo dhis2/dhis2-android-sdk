@@ -64,11 +64,15 @@ import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
+import org.hisp.dhis.android.core.constant.ConstantStore;
+import org.hisp.dhis.android.core.constant.ConstantStoreImpl;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandler;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectService;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -179,6 +183,7 @@ public final class D2 {
     private final EventService eventService;
     private final CategoryService categoryService;
     private final CategoryComboService comboService;
+    private final DeletedObjectService deletedObjectService;
 
     // Queries
     private final CategoryQuery categoryQuery = CategoryQuery.defaultQuery();
@@ -191,6 +196,7 @@ public final class D2 {
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitStore organisationUnitStore;
     private final ResourceStore resourceStore;
+    private final ConstantStore constantStore;
     private final SystemInfoStore systemInfoStore;
     private final UserRoleStore userRoleStore;
     private final UserRoleProgramLinkStore userRoleProgramLinkStore;
@@ -236,6 +242,7 @@ public final class D2 {
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
     private final OrganisationUnitHandler organisationUnitHandler;
+    private final DeletedObjectHandler deletedObjectHandler;
 
 
     @VisibleForTesting
@@ -254,6 +261,7 @@ public final class D2 {
         this.eventService = retrofit.create(EventService.class);
         this.categoryService = retrofit.create(CategoryService.class);
         this.comboService = retrofit.create(CategoryComboService.class);
+        this.deletedObjectService = retrofit.create(DeletedObjectService.class);
 
         // stores
 
@@ -269,6 +277,8 @@ public final class D2 {
                 new OrganisationUnitStoreImpl(databaseAdapter);
         this.resourceStore =
                 new ResourceStoreImpl(databaseAdapter);
+        this.constantStore =
+                new ConstantStoreImpl(databaseAdapter);
         this.systemInfoStore =
                 new SystemInfoStoreImpl(databaseAdapter);
         this.userRoleStore =
@@ -368,6 +378,10 @@ public final class D2 {
         categoryComboHandler = new CategoryComboHandler(categoryComboStore,
                 categoryComboOptionCategoryLinkStore,
                 categoryCategoryComboLinkStore, optionComboHandler);
+
+        deletedObjectHandler = new DeletedObjectHandler(userStore, userCredentialsStore,
+                categoryStore, categoryComboStore, categoryOptionComboStore,
+                constantStore, programStore, organisationUnitStore, optionSetStore, trackedEntityStore);
     }
 
     @NonNull
@@ -461,9 +475,9 @@ public final class D2 {
     public Call<Response> syncMetaData() {
         return new MetadataCall(
                 databaseAdapter, systemInfoService, userService, programService,
-                organisationUnitService,
-                trackedEntityService, optionSetService, systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
+                organisationUnitService, trackedEntityService, optionSetService,
+                deletedObjectService, systemInfoStore, resourceStore, constantStore,
+                userStore, userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
                 organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
@@ -474,7 +488,7 @@ public final class D2 {
                 programStageStore, relationshipStore, trackedEntityStore,
                 organisationUnitProgramLinkStore, categoryQuery,
                 categoryService, categoryHandler, categoryComboQuery, comboService,
-                categoryComboHandler);
+                categoryComboHandler, deletedObjectHandler);
     }
 
     @NonNull

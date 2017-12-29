@@ -79,7 +79,7 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     }
 
     private void whenDeleteCategoryComboInserted() {
-        wasDeleted = store.delete(newCategoryCombo);
+        wasDeleted = store.delete(newCategoryCombo.uid());
     }
 
     private void thenAssertLastInsertedIDIsOne() {

@@ -173,10 +173,9 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
     @NonNull
     private void handleUser(User user, Date serverDate) {
+        userHandler.handleUser(user, serverDate);
 
         authenticatedUserStore.insert(user.uid(), base64(username, password));
-
-        userHandler.handleUser(user, serverDate);
 
         if (user.organisationUnits() != null) {
             organisationUnitHandler.handleOrganisationUnits(

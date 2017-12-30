@@ -47,6 +47,7 @@ public class CategoryOptionComboCategoryLinkStoreShould extends AbsStoreTestCase
     }
 
     @Test
+    @MediumTest
     public void delete_a_category_option_combo_category_link() {
         whenInsertNewCategoryOptionComboCategoryLink();
 
@@ -58,6 +59,7 @@ public class CategoryOptionComboCategoryLinkStoreShould extends AbsStoreTestCase
     }
 
     @Test
+    @MediumTest
     public void delete_all_category_option_combo_category_link_from_db() {
         whenInsertNewCategoryOptionComboCategoryLink();
 
@@ -69,6 +71,7 @@ public class CategoryOptionComboCategoryLinkStoreShould extends AbsStoreTestCase
     }
 
     @Test
+    @MediumTest
     public void update_a_category_option_combo_category_link() {
         whenInsertNewCategoryOptionComboCategoryLink();
 
@@ -81,6 +84,7 @@ public class CategoryOptionComboCategoryLinkStoreShould extends AbsStoreTestCase
     }
 
     @Test
+    @MediumTest
     public void query_all_category_option_combo_category_link() {
         whenInsertNewCategoryOptionComboCategoryLink();
 

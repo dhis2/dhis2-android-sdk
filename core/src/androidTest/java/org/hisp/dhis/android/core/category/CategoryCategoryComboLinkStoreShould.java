@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.category;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+
 import static org.hisp.dhis.android.core.common.CategoryComboMockFactory.generateCategoryCombo;
 import static org.junit.Assert.assertEquals;
 

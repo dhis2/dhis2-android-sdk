@@ -44,6 +44,7 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_and_delete_a_category_combo() throws Exception {
 
         whenInsertNewCategoryCombo();
@@ -58,6 +59,7 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_a_category_combo() {
 
         whenInsertNewCategoryCombo();
@@ -69,6 +71,7 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_all_categories_combos_from_db() {
 
         whenInsertNewCategoryCombo();
@@ -82,6 +85,7 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void query_all_category_combos(){
 
         whenInsertNewCategoryCombo();

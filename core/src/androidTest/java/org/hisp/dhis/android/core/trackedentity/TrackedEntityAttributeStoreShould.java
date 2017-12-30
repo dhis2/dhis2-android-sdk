@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -121,6 +122,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_in_data_base_when_insert() {
         long rowId = store.insert(
                 UID,
@@ -178,6 +180,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_deferred_in_data_base_when_insert() {
         final String deferredOptionSet = "deferredOptionSet";
         database().beginTransaction();
@@ -204,6 +207,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_sqlite_constraint_exception_when_insert_without_foreign_key() throws ParseException {
         store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
                 DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM,
@@ -214,6 +218,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_tea_when_delete_option_set() throws Exception {
         ContentValues trackedEntityAttribute = new ContentValues();
         trackedEntityAttribute.put(Columns.ID, 1L);
@@ -236,6 +241,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_tea_in_data_base_when_update() throws Exception {
         ContentValues trackedEntityAttribute = new ContentValues();
         trackedEntityAttribute.put(Columns.UID, UID);
@@ -269,6 +275,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_tea_when_delete() throws Exception {
         ContentValues trackedEntityAttribute = new ContentValues();
         trackedEntityAttribute.put(Columns.UID, UID);
@@ -294,6 +301,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     // ToDo: consider introducing conflict resolution strategy
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME,
                 DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN, SORT_ORDER_IN_LIST_NO_PROGRAM, OPTION_SET_UID, VALUE_TYPE,
@@ -303,6 +311,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(
                 null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
@@ -313,6 +322,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_whereUid() {
         store.update(
                 UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
@@ -323,6 +333,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }

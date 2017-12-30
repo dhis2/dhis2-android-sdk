@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.user;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -68,6 +69,7 @@ public class AuthenticatedUserStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_in_data_base_when_insert() {
         // inserting authenticated user model item
         long rowId = authenticatedUserStore.insert(USER_UID, USER_CREDENTIALS);
@@ -80,16 +82,19 @@ public class AuthenticatedUserStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid_arg() {
         authenticatedUserStore.insert(null, USER_CREDENTIALS);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void ithrow_illegal_argument_exception_when_nsert_null_credentials_arg() {
         authenticatedUserStore.insert(USER_UID, null);
     }
 
     @Test
+    @MediumTest
     public void insert_in_data_base_when_insert_deferrable_row() {
         final String deferrableUserUid = "deferrableUserUid";
 
@@ -108,6 +113,7 @@ public class AuthenticatedUserStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void return_persisted_row_on_query() {
         ContentValues authenticatedUser = new ContentValues();
         authenticatedUser.put(AuthenticatedUserModel.Columns.USER, USER_UID);
@@ -124,11 +130,13 @@ public class AuthenticatedUserStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void return_empty_list_when_query_empty_table() {
         assertThat(authenticatedUserStore.query()).isEmpty();
     }
 
     @Test
+    @MediumTest
     public void delete_all_rows_in_data_base_when_delete_without_params() {
         ContentValues authenticatedUser = new ContentValues();
         authenticatedUser.put(AuthenticatedUserModel.Columns.USER, USER_UID);
@@ -145,6 +153,7 @@ public class AuthenticatedUserStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_authenticated_user_when_delete_user_foreign_key() {
         authenticatedUserStore.insert(USER_UID, USER_CREDENTIALS);
         database().delete(UserModel.TABLE, UserModel.Columns.UID + "=?", new String[]{USER_UID});
@@ -154,6 +163,7 @@ public class AuthenticatedUserStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_sqlite_constraint_exception_when_insert_authenticated_user_with_invalid_uid_foreign_key() {
         String wrongUserUid = "wrong";
         authenticatedUserStore.insert(wrongUserUid, USER_CREDENTIALS);

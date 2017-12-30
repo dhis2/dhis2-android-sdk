@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -34,6 +35,7 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_a_category_combo() throws Exception {
 
         whenInsertNewCategoryCombo();

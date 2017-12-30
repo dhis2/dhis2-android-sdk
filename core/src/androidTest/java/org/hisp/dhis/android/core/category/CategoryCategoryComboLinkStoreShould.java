@@ -2,11 +2,10 @@ package org.hisp.dhis.android.core.category;
 
 import static org.hisp.dhis.android.core.common.CategoryComboMockFactory.generateCategoryCombo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.CategoryMockFactory;
@@ -40,6 +39,7 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_a_category_combo_link() throws Exception {
 
         whenInsertNewCategoryComboLink();
@@ -48,6 +48,7 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_a_category_combo_link() throws Exception {
 
         whenInsertNewCategoryComboLink();
@@ -58,6 +59,7 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_a_category_combo_link() throws Exception {
 
         whenInsertNewCategoryComboLink();
@@ -69,6 +71,7 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_all_elements_on_category_combos_link_table() {
 
         whenInsertNewCategoryComboLink();
@@ -81,6 +84,7 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void query_all_category_combos_link() {
 
         whenInsertNewCategoryComboLink();

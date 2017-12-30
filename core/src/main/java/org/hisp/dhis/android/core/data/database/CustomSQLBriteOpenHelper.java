@@ -42,15 +42,18 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     private boolean isOnTestMode;
     private static BriteDatabase briteDatabase;
 
+    //The @link and the @see are commented because are generating bugs with travis
 
     /**
      * Create a helper object to create, open, and/or manage a database.
      * This method always returns very quickly.  The database is not actually
-     * created or opened until one of {@link #getWritableDatabase} or
-     * {@link #getReadableDatabase} is called.
-     *
-     * @see SQLBriteOpenHelper
+     * created or opened until one of
      */
+//    {@link com.squareup.sqlbrite2.BriteDatabase#getWritableDatabase} or
+//     * {@link com.squareup.sqlbrite2.BriteDatabase#getReadableDatabase} is called.
+//     *
+//     * @see com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper
+//     */
     public CustomSQLBriteOpenHelper(Context context, String name,
             SQLiteDatabase.CursorFactory factory, int version, String migrationTestDir) {
         super(context, name, factory, version);
@@ -63,11 +66,13 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     /**
      * Create a helper object to create, open, and/or manage a database.
      * This method always returns very quickly.  The database is not actually
-     * created or opened until one of {@link #getWritableDatabase} or
-     * {@link #getReadableDatabase} is called.
-     *
-     * @see SQLBriteOpenHelper
+     * created or opened until one of
      */
+//    {@link com.squareup.sqlbrite2.BriteDatabase#getWritableDatabase} or
+//     * {@link com.squareup.sqlbrite2.BriteDatabase#getReadableDatabase} is called.
+//     *
+//     * @see com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper
+//     */
     public CustomSQLBriteOpenHelper(Context context, String name,
             SQLiteDatabase.CursorFactory factory,
             int version, String migrationTestDir, DatabaseErrorHandler errorHandler) {
@@ -81,11 +86,13 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     /**
      * Create a helper object to create, open, and/or manage a testing database.
      * This method always returns very quickly.  The database is not actually
-     * created or opened until one of {@link #getWritableDatabase} or
-     * {@link #getReadableDatabase} is called.
-     *
-     * @see SQLBriteOpenHelper
+     * created or opened until one of
      */
+//     * {@link com.squareup.sqlbrite2.BriteDatabase#getWritableDatabase} or
+//     * {@link com.squareup.sqlbrite2.BriteDatabase#getReadableDatabase} is called.
+//     *
+//     * @see com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper
+
     public CustomSQLBriteOpenHelper(Context context, String name, int version) {
         super(context, name, null, version);
         this.context = context;
@@ -96,11 +103,13 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     /**
      * Create a helper object to create, open, and/or manage a testing database.
      * This method always returns very quickly.  The database is not actually
-     * created or opened until one of {@link #getWritableDatabase} or
-     * {@link #getReadableDatabase} is called.
-     *
-     * @see SQLBriteOpenHelper
+     * created or opened until one of
      */
+//    {@link com.squareup.sqlbrite2.BriteDatabase#getWritableDatabase} or
+//     * {@link com.squareup.sqlbrite2.BriteDatabase#getReadableDatabase} is called.
+//     *
+//     * @see com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper
+//     */
     public CustomSQLBriteOpenHelper(Context context, String name, int version, boolean testing,
             String migrationTestDir) {
         super(context, name, null, version);
@@ -143,15 +152,18 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         }
     }
 
+    //{@link com.squareup.sqlbrite2.BriteDatabase}
     /**
-     * Create a {@link BriteDatabase} instance.N
+     * Create a  instance.N
      * This method always returns very quickly.  The database is not actually
-     * created or opened until one of {@link #getWritableDatabase} or
-     * {@link #getReadableDatabase} is called.
-     *
-     * @see SQLBriteOpenHelper
-     * @see BriteDatabase
+     * created or opened until one of
      */
+//    {@link com.squareup.sqlbrite2.BriteDatabase#getWritableDatabase} or
+//     * {@link com.squareup.sqlbrite2.BriteDatabase#getReadableDatabase} is called.
+//     *
+//     * @see com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper
+//     * @see com.squareup.sqlbrite2.BriteDatabase
+//     */
 
     @SuppressWarnings("PMD")
     public synchronized static BriteDatabase get(Context context, String name, int version) {
@@ -165,14 +177,19 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
 
 
     /**
-     * Create a {@link BriteDatabase} instance.
-     * This method always returns very quickly.  The database is not actually
-     * created or opened until one of {@link #getWritableDatabase} or
-     * {@link #getReadableDatabase} is called.
-     *
-     * @see SQLBriteOpenHelper
-     * @see BriteDatabase
+     * Create a
      */
+//    {@link com.squareup.sqlbrite2.BriteDatabase}
+    /** instance.
+     * This method always returns very quickly.  The database is not actually
+     * created or opened until one of
+     */
+//    {@link com.squareup.sqlbrite2.BriteDatabase#getWritableDatabase} or
+//     * {@link com.squareup.sqlbrite2.BriteDatabase#getReadableDatabase} is called.
+//     *
+//     * @see com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper
+//     * @see com.squareup.sqlbrite2.BriteDatabase
+//     */
 
     @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
     public synchronized static BriteDatabase get(Context context, String name,
@@ -188,14 +205,19 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
 
 
     /**
-     * Create a {@link BriteDatabase} instance.
-     * This method always returns very quickly.  The database is not actually
-     * created or opened until one of {@link #getWritableDatabase} or
-     * {@link #getReadableDatabase} is called.
-     *
-     * @see SQLBriteOpenHelper
-     * @see BriteDatabase
+     * Create a
      */
+//    {@link com.squareup.sqlbrite2.BriteDatabase}
+     /** instance.
+     * This method always returns very quickly.  The database is not actually
+     * created or opened until one of
+     */
+//     {@link com.squareup.sqlbrite2.BriteDatabase#getWritableDatabase} or
+//     * {@link com.squareup.sqlbrite2.BriteDatabase#getReadableDatabase} is called.
+//     *
+//     * @see com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper
+//     * @see com.squareup.sqlbrite2.BriteDatabase
+//     */
 
     @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
     public synchronized static BriteDatabase get(Context context, String name,
@@ -210,15 +232,17 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         return briteDatabase;
     }
 
-    /**
-     * Create a {@link BriteDatabase} instance for testing.
-     * This method always returns very quickly.  The database is not actually
-     * created or opened until one of {@link #getWritableDatabase} or
-     * {@link #getReadableDatabase} is called.
-     *
-     * @see SQLBriteOpenHelper
-     * @see BriteDatabase
+//    /**
+//     * Create a {@link com.squareup.sqlbrite2.BriteDatabase} instance for testing.
+     /** This method always returns very quickly.  The database is not actually
+     * created or opened until one of
      */
+//     * {@link com.squareup.sqlbrite2.BriteDatabase#getWritableDatabase} or
+//     * {@link com.squareup.sqlbrite2.BriteDatabase#getReadableDatabase} is called.
+//     *
+//     * @see com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper
+//     * @see com.squareup.sqlbrite2.BriteDatabase
+//     */
 
     @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
     public synchronized static BriteDatabase get(Context context, String name, int version, boolean testing,

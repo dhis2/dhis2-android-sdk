@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -81,6 +82,7 @@ public class UserRoleStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_in_data_base_when_insert() {
         long rowId = userRoleStore.insert(UID, CODE, NAME, DISPLAY_NAME, date, date);
         Cursor cursor = database().query(UserRoleModel.TABLE, PROJECTION, null, null, null, null, null, null);
@@ -90,6 +92,7 @@ public class UserRoleStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_in_data_base_when_update() throws Exception {
         ContentValues userRole = new ContentValues();
         userRole.put(Columns.ID, ID);
@@ -112,6 +115,7 @@ public class UserRoleStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_in_data_base_when_delete() throws Exception {
         ContentValues userRole = new ContentValues();
         userRole.put(Columns.ID, ID);
@@ -135,21 +139,25 @@ public class UserRoleStoreShould extends AbsStoreTestCase {
     }
 
     @Test (expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid() {
         userRoleStore.insert(null, CODE, NAME, DISPLAY_NAME, date, date);
     }
 
     @Test (expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_uid() {
         userRoleStore.update(null, CODE, NAME, DISPLAY_NAME, date, date, UID);
     }
 
     @Test (expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_where() {
         userRoleStore.update(UID, CODE, NAME, DISPLAY_NAME, date, date, null);
     }
 
     @Test (expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_delete_null_arg() {
         userRoleStore.delete(null);
     }

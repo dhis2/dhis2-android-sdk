@@ -37,6 +37,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -107,6 +108,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_tracked_entity_attribute_value_in_data_base_when_insert() {
         long rowId = store.insert(VALUE, date, date,
                 TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
@@ -122,6 +124,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_deferrable_tracked_entity_attribute_value_in_data_base_when_insert() {
         final String deferredTrackedEntityAttribute = "deferredTrackedEntityAttribute";
         final String deferredTrackedEntityInstance = "deferredTrackedEntityInstance";
@@ -149,6 +152,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_nullable_tracked_entity_attribute_value_in_data_base_when_insert_nullable_tracked_entity_attribute_value() {
         long rowId = store.insert(null, date, date, TRACKED_ENTITY_ATTRIBUTE,
                 TRACKED_ENTITY_INSTANCE);
@@ -165,6 +169,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_event_in_data_base_after_update() throws Exception {
         long rowId = store.insert(
                 "0", date, date, TRACKED_ENTITY_ATTRIBUTE,
@@ -188,6 +193,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_tracked_entity_attribute_value_by_instance_and_attribute_uids()
             throws Exception {
         store.insert(
@@ -219,18 +225,21 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void
     throw_sqlite_constraint_exception_when_insert_tracked_entity_attribute_value_with_invalid_tracked_entity_attribute() {
         store.insert(VALUE, date, date, "wrong", TRACKED_ENTITY_INSTANCE);
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void
     throw_sqlite_constraint_exception_when_insert_tracked_entity_attribute_value_with_invalid_tracked_entity_instance() {
         store.insert(VALUE, date, date, TRACKED_ENTITY_ATTRIBUTE, "wrong");
     }
 
     @Test
+    @MediumTest
     public void delete_tracked_entity_attribute_value_in_data_base_when_delete_tracked_entity_attribute() {
         insert_nullable_tracked_entity_attribute_value_in_data_base_when_insert_nullable_tracked_entity_attribute_value();
 
@@ -244,6 +253,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_tracked_entity_attribute_value_in_data_base_when_delete_tracked_entity_instance() {
         insert_nullable_tracked_entity_attribute_value_in_data_base_when_insert_nullable_tracked_entity_attribute_value();
 
@@ -258,11 +268,13 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
 
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_tracked_entity() {
         store.insert(VALUE, date, date, null, TRACKED_ENTITY_INSTANCE);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_tracked_entity_instance() {
         store.insert(VALUE, date, date, TRACKED_ENTITY_ATTRIBUTE, null);
     }

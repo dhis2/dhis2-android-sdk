@@ -8,6 +8,10 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@SuppressWarnings({
+        "PMD.CyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity"
+})
 public abstract class RuleFunction {
     static final String DATE_PATTERN = "yyyy-MM-dd";
 

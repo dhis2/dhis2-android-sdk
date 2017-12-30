@@ -27,12 +27,14 @@ final class RuleFunctionSubString extends RuleFunction {
                     arguments.size() + " were supplied");
         }
 
-        return String.valueOf(substring(arguments.get(0), Integer.parseInt(arguments.get(1)), Integer.parseInt(arguments.get(2))));
+        return String.valueOf(substring(arguments.get(0), Integer.parseInt(arguments.get(1)),
+                Integer.parseInt(arguments.get(2))));
     }
 
     private static String substring(String inputString, int startIndex, int endIndex) {
-        if (inputString == null)
+        if (inputString == null) {
             return "";
+        }
         int safeStartIndex = Math.min(Math.max(0, startIndex), inputString.length());
         int safeEndIndex = Math.min(Math.max(0, endIndex), inputString.length());
         return inputString.substring(safeStartIndex, safeEndIndex);

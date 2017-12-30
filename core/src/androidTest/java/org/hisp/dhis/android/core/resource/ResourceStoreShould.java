@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.resource;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -46,6 +47,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_resource_in_data_base_when_insert() {
         long rowId = store.insert(RESOURCE_TYPE.name(), date);
         Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
@@ -54,6 +56,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_resource_in_data_base_when_insert_without_last_synced() {
         long rowId = store.insert(RESOURCE_TYPE.name(), null);
         Cursor cursor = database().query(ResourceModel.TABLE, PROJECTION, null, null, null, null, null);
@@ -63,6 +66,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
 
 
     @Test
+    @MediumTest
     public void update_resource_in_data_base_when_update_existing() {
         database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE.name(), dateString2));
 
@@ -75,6 +79,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_without_insert_resource_when__update() {
         int returnValue = store.update(RESOURCE_TYPE.name(), date, RESOURCE_TYPE.name());
 
@@ -85,6 +90,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void not_update_resource_in_data_base_without_where() {
         database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE.name(), dateString));
 
@@ -97,6 +103,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_resource_in_data_base_when_delete_row() {
         database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE.name(), dateString));
         int returnValue = store.delete(RESOURCE_TYPE.name());
@@ -108,6 +115,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void return_last_updated_when_get_last_updated() {
         database().insert(ResourceModel.TABLE, null, createResource(RESOURCE_TYPE.name(), dateString));
 
@@ -118,6 +126,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void return_null_when_get_last_updated_if_not_exists() {
         String lastUpdated = store.getLastUpdated(RESOURCE_TYPE);
         assertThat(lastUpdated).isNull();
@@ -131,22 +140,26 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, date);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, date, RESOURCE_TYPE.name());
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_programRule() {
         store.update(RESOURCE_TYPE.name(), date, null);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }

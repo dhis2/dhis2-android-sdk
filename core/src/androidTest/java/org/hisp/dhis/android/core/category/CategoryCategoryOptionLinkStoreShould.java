@@ -1,6 +1,10 @@
 package org.hisp.dhis.android.core.category;
 
+import static org.hisp.dhis.android.core.common.CategoryMockFactory.generateCategory;
+import static org.hisp.dhis.android.core.common.CategoryOptionMockFactory.generatedCategoryOption;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import android.support.test.runner.AndroidJUnit4;
 
@@ -10,12 +14,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @RunWith(AndroidJUnit4.class)
 public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
+    private static final String DEFAULT_CATEGORY_OPTION_UID = "TNYQzTHdoxL";
+    private static final String DEFAULT_CATEGORY_UID = "KfdsGBcoiCa";
+    private static final String UPDATED_CATEGORY_UID = "category_uid";
     private CategoryCategoryOptionLinkStore store;
     private Category newCategory;
     private CategoryOption newCategoryOption;
@@ -32,52 +39,111 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
     @Test
     public void insert_a_category_option_link() throws Exception {
-        givenACategory();
-        givenACategoryOption();
-        givenACategoryOptionLinkModel();
 
-        whenInsertNewCategory();
-        whenInsertNewOption();
         whenInsertNewCategoryOptionLink();
 
-        thenAssertLastInsertedIDIsOne();
+        thenAssertThatNewCategoryOptionLinkWasInserted();
+    }
+
+    @Test
+    public void delete_a_category_option_link() {
+
+        whenInsertNewCategoryOptionLink();
+
+        thenAssertThatNewCategoryOptionLinkWasInserted();
+
+        whenDeleteNewCategoryOptionLink();
+
+        thenAssertThereAreNotItemsOnCategoryOptionLinkTable();
+
+    }
+
+    @Test
+    public void delete_all_elements_on_category_option_link_table() {
+
+        whenInsertNewCategoryOptionLink();
+
+        thenAssertThatNewCategoryOptionLinkWasInserted();
+
+        whenDeleteAllElementsOnCategoryComboLinkTable();
+
+        thenAssertThereAreNotItemsOnCategoryOptionLinkTable();
+    }
+
+    @Test
+    public void update_a_category_option_link() {
+
+        whenInsertNewCategoryOptionLink();
+
+        thenAssertThatNewCategoryOptionLinkWasInserted();
+
+        whenUpdateANewCategoryOptionLink();
+
+        thenAssertThatCategoryOptionWasUpdated();
+
+    }
+
+    @Test
+    public void query_all_category_options_link(){
+
+        whenInsertNewCategoryOptionLink();
+
+        thenAssertThatNewCategoryOptionLinkWasInserted();
+
+        thenAssertQueryAllBringData();
+
+    }
+
+    private void thenAssertQueryAllBringData() {
+        List<CategoryCategoryOptionLinkModel> items = store.queryAll();
+        assertFalse(items.isEmpty());
+    }
+
+    private void thenAssertThatCategoryOptionWasUpdated() {
+
+        List<CategoryCategoryOptionLinkModel> list = store.queryAll();
+        assertTrue(Objects.equals(list.get(0).category(), UPDATED_CATEGORY_UID));
+    }
+
+    private void whenDeleteAllElementsOnCategoryComboLinkTable() {
+        store.delete();
+    }
+
+    private void thenAssertThereAreNotItemsOnCategoryOptionLinkTable() {
+        assertTrue(store.queryAll().isEmpty());
+    }
+
+    private void whenDeleteNewCategoryOptionLink() {
+        store.delete(newCategoryCategoryOptionLinkModel);
     }
 
     private void givenACategory() {
-        Date today = new Date();
-
-        newCategory = Category.builder()
-                .uid("KfdsGBcoiCa")
-                .code("BIRTHS_ATTENDED")
-                .created(today)
-                .name("Births attended by")
-                .shortName("Births attended by")
-                .displayName("Births attended by")
-                .categoryOptions(new ArrayList<CategoryOption>())
-                .dataDimensionType("DISAGGREGATION").build();
+        newCategory = generateCategory(DEFAULT_CATEGORY_UID);
     }
 
-    private void givenACategoryOption() {
-        Date today = new Date();
+    private void givenACategoryOption(String uid) {
+        newCategoryOption = generateANewCategoryOption(uid);
+    }
 
-        newCategoryOption = CategoryOption.builder()
-                .uid("TNYQzTHdoxL")
-                .code("MCH_AIDES")
-                .created(today)
-                .name("MCH Aides")
-                .shortName("MCH Aides")
-                .displayName("MCH Aides")
-                .build();
+    private CategoryOption generateANewCategoryOption(String uid) {
+        return generatedCategoryOption(uid);
     }
 
     private void givenACategoryOptionLinkModel() {
         newCategoryCategoryOptionLinkModel = CategoryCategoryOptionLinkModel.builder()
-                .option("TNYQzTHdoxL")
-                .category("KfdsGBcoiCa")
+                .categoryOption(DEFAULT_CATEGORY_OPTION_UID)
+                .category(DEFAULT_CATEGORY_UID)
                 .build();
     }
 
     private void whenInsertNewCategoryOptionLink() {
+        givenACategory();
+        givenACategoryOption(DEFAULT_CATEGORY_OPTION_UID);
+        givenACategoryOptionLinkModel();
+
+        whenInsertNewCategory();
+        whenInsertNewOption();
+
         lastInsertedID = store.insert(newCategoryCategoryOptionLinkModel);
     }
 
@@ -91,7 +157,25 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
         optionStore.insert(newCategoryOption);
     }
 
-    private void thenAssertLastInsertedIDIsOne(){
+    private void thenAssertThatNewCategoryOptionLinkWasInserted() {
         assertEquals(lastInsertedID, 1);
+    }
+
+    private void whenUpdateANewCategoryOptionLink() {
+        Category category = generateCategory(UPDATED_CATEGORY_UID);
+
+        CategoryStoreImpl categoryStore = new CategoryStoreImpl(databaseAdapter());
+        categoryStore.insert(category);
+
+        CategoryCategoryOptionLinkModel categoryOptionLinkModelToBeUpdated =
+                CategoryCategoryOptionLinkModel
+                        .builder()
+                        .categoryOption(DEFAULT_CATEGORY_OPTION_UID)
+                        .category(UPDATED_CATEGORY_UID).build();
+
+        CategoryCategoryOptionLinkModel oldCategoryCategoryOptionLinkModel =
+                newCategoryCategoryOptionLinkModel;
+
+        store.update(oldCategoryCategoryOptionLinkModel, categoryOptionLinkModelToBeUpdated);
     }
 }

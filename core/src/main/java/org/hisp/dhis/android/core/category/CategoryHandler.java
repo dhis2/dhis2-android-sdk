@@ -56,7 +56,7 @@ public class CategoryHandler {
 
         return CategoryCategoryOptionLinkModel.builder().category(
                 category.uid())
-                .option(option.uid())
+                .categoryOption(option.uid())
                 .build();
     }
 }

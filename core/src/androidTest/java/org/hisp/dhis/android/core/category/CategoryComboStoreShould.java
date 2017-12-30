@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.category;
 
+import static org.hisp.dhis.android.core.common.CategoryComboMockFactory.generateCategoryCombo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -12,12 +13,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
+
 
 @RunWith(AndroidJUnit4.class)
 public class CategoryComboStoreShould extends AbsStoreTestCase {
 
+    private static final String DEFAULT_CATEGORY_COMBO_UID = "DEFAULT_CATEGORY_COMBO_UID";
+    private static final String UPDATED_CATEGORY_COMBO_UID = "UPDATED_CATEGORY_COMBO_UID";
     private CategoryComboStore store;
     private CategoryCombo newCategoryCombo;
     private long lastInsertedId;
@@ -28,23 +31,21 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
         store = new CategoryComboStoreImpl(databaseAdapter());
-
     }
 
     @Test
     public void insert_a_category_combo() throws Exception {
-        givenACategoryCombo();
 
         whenInsertNewCategoryCombo();
 
-        thenAssertLastInsertedIDIsOne();
+        thenAssertCategoryComboWasInserted();
     }
 
     @Test
     public void insert_and_delete_a_category_combo() throws Exception {
-        givenACategoryCombo();
 
         whenInsertNewCategoryCombo();
+
         whenDeleteCategoryComboInserted();
 
         thenAssertStoreReturnsDeleted();
@@ -54,25 +55,49 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
         thenAssertStoreReturnsNotDeleted();
     }
 
-    private void givenACategoryCombo() {
-        newCategoryCombo = generateCategoryCombo();
+    @Test
+    public void update_a_category_combo() {
+
+        whenInsertNewCategoryCombo();
+
+        whenUpdateACategoryCombo();
+
+        thenAssertThatCategoryComboWasUpdated();
+
     }
 
-    private CategoryCombo generateCategoryCombo(){
-        Date today = new Date();
+    @Test
+    public void delete_all_categories_combos_from_db() {
 
-        return CategoryCombo.builder()
-                .uid("m2jTvAj5kkm")
-                .code("BIRTHS")
-                .created(today)
-                .name("Births")
-                .displayName("Births")
-                .isDefault(false)
-                .categories(new ArrayList<Category>())
-                .build();
+        whenInsertNewCategoryCombo();
+
+        thenAssertCategoryComboWasInserted();
+
+        whenDeleteAllCategoriesCombosFromDB();
+
+        thenAssertThereAreNotCategoryCombosInDB();
+
+    }
+
+    @Test
+    public void query_all_category_combos(){
+
+        whenInsertNewCategoryCombo();
+
+        thenAssertCategoryComboWasInserted();
+
+        thenAssertQueryAllBringCategoryCombosFromDB();
+
+    }
+
+    private void givenACategoryCombo() {
+        newCategoryCombo = generateCategoryCombo(DEFAULT_CATEGORY_COMBO_UID);
     }
 
     private void whenInsertNewCategoryCombo() {
+
+        givenACategoryCombo();
+
         lastInsertedId = store.insert(newCategoryCombo);
     }
 
@@ -80,7 +105,7 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
         wasDeleted = store.delete(newCategoryCombo);
     }
 
-    private void thenAssertLastInsertedIDIsOne() {
+    private void thenAssertCategoryComboWasInserted() {
         assertEquals(lastInsertedId, 1);
     }
 
@@ -90,5 +115,33 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
 
     private void thenAssertStoreReturnsNotDeleted() {
         assertFalse(wasDeleted);
+    }
+
+    private void thenAssertThatCategoryComboWasUpdated() {
+        List<CategoryCombo> list = store.queryAll();
+        assertEquals(list.get(0).uid(), UPDATED_CATEGORY_COMBO_UID);
+    }
+
+    private void whenUpdateACategoryCombo() {
+
+        CategoryCombo updatedCategoryCombo = generateCategoryCombo(UPDATED_CATEGORY_COMBO_UID);
+
+        CategoryCombo oldCategoryCombo = newCategoryCombo;
+
+        store.update(oldCategoryCombo, updatedCategoryCombo);
+    }
+
+    private void whenDeleteAllCategoriesCombosFromDB() {
+        store.delete();
+    }
+
+    private void thenAssertThereAreNotCategoryCombosInDB() {
+        List<CategoryCombo> list = store.queryAll();
+        assertTrue(list.isEmpty());
+    }
+
+    private void thenAssertQueryAllBringCategoryCombosFromDB() {
+        List<CategoryCombo> list = store.queryAll();
+        assertFalse(list.isEmpty());
     }
 }

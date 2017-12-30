@@ -9,7 +9,7 @@ final public class SqliteCheckerUtility {
 
     public static boolean isTableEmpty(DatabaseAdapter databaseAdapter, String table) {
         boolean isTableEmpty = true;
-        Cursor res = databaseAdapter.query(" SELECT * FROM "+table);
+        Cursor res = databaseAdapter.query(" SELECT * FROM " + table);
         int value = res.getCount();
         if (value > 0) {
             isTableEmpty = false;
@@ -23,10 +23,10 @@ final public class SqliteCheckerUtility {
                 + "type='table' and name!='android_metadata' and name!='sqlite_sequence'");
         int value = res.getColumnIndex("name");
         if (value != -1) {
-            while (res.moveToNext()){
+            while (res.moveToNext()) {
                 String tableName = res.getString(value);
                 Cursor resTable = databaseAdapter.query(
-                        "SELECT * from " + tableName , null);
+                        "SELECT * from " + tableName);
                 if (resTable.getCount() > 0) {
                     isDatabaseEmpty = false;
                     break;
@@ -41,7 +41,7 @@ final public class SqliteCheckerUtility {
         boolean isExist = false;
         Cursor res = db.query(
                 "SELECT " + fieldName + " from " + tableName + " where " + fieldName + " = '"
-                        + fieldValue + "'", null);
+                        + fieldValue + "'");
         int value = res.getCount();
         if (value == 1) {
             isExist = true;
@@ -49,9 +49,9 @@ final public class SqliteCheckerUtility {
         return isExist;
     }
 
-    public static boolean isFieldExist(String tableName, String fieldName,  DatabaseAdapter db) {
+    public static boolean isFieldExist(String tableName, String fieldName, DatabaseAdapter db) {
         boolean isExist = false;
-        Cursor res = db.query("PRAGMA table_info(" + tableName + ")", null);
+        Cursor res = db.query("PRAGMA table_info(" + tableName + ")");
         int value = res.getColumnIndex("name");
         if (value != -1) {
             while (res.moveToNext()) {

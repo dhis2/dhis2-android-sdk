@@ -253,9 +253,8 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userStore,
                 userCredentialsHandler, resourceHandler,
                 authenticatedUserStore,
-                organisationUnitHandler, "test_user", "test_password",
-                , DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
+                organisationUnitHandler, "test_user", "test_password"
+                , DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
     }
 
     @Test

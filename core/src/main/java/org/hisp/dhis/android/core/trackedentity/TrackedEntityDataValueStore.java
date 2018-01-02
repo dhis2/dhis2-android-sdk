@@ -39,8 +39,8 @@ import java.util.Map;
 
 public interface TrackedEntityDataValueStore extends DeletableStore {
     long insert(@NonNull String event, @Nullable Date created, @Nullable Date lastUpdated,
-                @Nullable String dataElement, @Nullable String storedBy,
-                @Nullable String value, @Nullable Boolean providedElsewhere
+            @Nullable String dataElement, @Nullable String storedBy,
+            @Nullable String value, @Nullable Boolean providedElsewhere
     );
 
     int update(@NonNull String event, @Nullable Date created, @Nullable Date lastUpdated,
@@ -54,4 +54,6 @@ public interface TrackedEntityDataValueStore extends DeletableStore {
     Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues();
 
     Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(Boolean singleEvents);
+
+    boolean areAllDataValueAdded(@NonNull List<TrackedEntityDataValue> trackedEntityDataValues);
 }

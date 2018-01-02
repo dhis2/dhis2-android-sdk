@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -48,24 +49,36 @@ public class EventHandler {
             }
 
 
-            int updatedRow = eventStore.update(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
+            int updatedRow = eventStore.update(event.uid(), event.enrollmentUid(), event.created(),
+                    event.lastUpdated(),
                     event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.status(), latitude, longitude, event.program(), event.programStage(),
                     event.organisationUnit(), event.eventDate(), event.completedDate(),
-                    event.dueDate(), State.SYNCED, event.attributeCategoryOptions(), event.attributeOptionCombo(),
+                    event.dueDate(), State.SYNCED, event.attributeCategoryOptions(),
+                    event.attributeOptionCombo(),
                     event.trackedEntityInstance(), event.uid());
 
-            if (updatedRow <= 0) {
-                eventStore.insert(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
+            List<TrackedEntityDataValue> trackedEntityDataValues = event.trackedEntityDataValues();
+            boolean areDataValuesAdded = trackedEntityDataValueHandler.areAllDataValueAdded(
+                    trackedEntityDataValues);
+
+            if (updatedRow <= 0 && areDataValuesAdded) {
+
+                eventStore.insert(event.uid(), event.enrollmentUid(), event.created(),
+                        event.lastUpdated(),
                         event.createdAtClient(), event.lastUpdatedAtClient(),
-                        event.status(), latitude, longitude, event.program(), event.programStage(),
+                        event.status(), latitude, longitude, event.program(),
+                        event.programStage(),
                         event.organisationUnit(), event.eventDate(), event.completedDate(),
-                        event.dueDate(), State.SYNCED, event.attributeCategoryOptions(), event.attributeOptionCombo(),
+                        event.dueDate(), State.SYNCED, event.attributeCategoryOptions(),
+                        event.attributeOptionCombo(),
                         event.trackedEntityInstance());
             }
 
-            trackedEntityDataValueHandler.handle(event.uid(),
-                    event.trackedEntityDataValues());
+            if (areDataValuesAdded) {
+                trackedEntityDataValueHandler.handle(event.uid(),
+                        event.trackedEntityDataValues());
+            }
         }
     }
 

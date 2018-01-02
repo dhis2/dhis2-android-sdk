@@ -1,0 +1,19 @@
+up:
+  - ALTER TABLE DataElement ADD COLUMN categoryCombo Text;
+  - ALTER TABLE Program ADD COLUMN categoryCombo Text;
+  - ALTER TABLE Event ADD COLUMN attributeCategoryOptions Text;
+  - ALTER TABLE Event ADD COLUMN attributeOptionCombo Text;
+  - ALTER TABLE Event ADD COLUMN trackedEntityInstance Text;
+  - CREATE TABLE CategoryCategoryOptionLink (_id INTEGER PRIMARY KEY AUTOINCREMENT,category TEXT NOT NULL,option TEXT NOT NULL,  FOREIGN KEY (category)  REFERENCES Category (uid)  ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (categoryOption)  REFERENCES CategoryOption (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,UNIQUE (category, categoryOption));
+  - CREATE TABLE CategoryOptionComboCategoryLink (_id INTEGER PRIMARY KEY AUTOINCREMENT,categoryOptionCombo TEXT NOT NULL,category TEXT NOT NULL,  FOREIGN KEY (categoryOptionCombo)  REFERENCES CategoryOptionCombo (uid)  ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (category)  REFERENCES CategoryOption (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,UNIQUE (categoryOptionCombo, category));
+  - CREATE TABLE CategoryOptionCombo (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,code TEXT,name TEXT,displayName TEXT,created TEXT,lastUpdated TEXT, categoryCombo TEXT,  FOREIGN KEY (categoryCombo)  REFERENCES CategoryCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED );
+  - CREATE TABLE CategoryOption (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,code TEXT,name TEXT,displayName TEXT,created TEXT,lastUpdated TEXT);
+  - CREATE TABLE CategoryCategoryComboLink (_id INTEGER PRIMARY KEY AUTOINCREMENT,category TEXT NOT NULL,categoryCombo TEXT NOT NULL,  FOREIGN KEY (category)  REFERENCES Category (uid)  ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (categoryCombo)  REFERENCES CategoryCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,UNIQUE (category, categoryCombo));
+  - CREATE TABLE CategoryCombo (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,code TEXT,name TEXT,displayName TEXT,created TEXT,lastUpdated TEXT, isDefault INTEGER);
+  - CREATE TABLE Category (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,code TEXT,name TEXT,displayName TEXT,created TEXT,lastUpdated TEXT,dataDimensionType TEXT);
+down:
+  - DROP TABLE IF EXISTS CategoryCombo;
+  - DROP TABLE IF EXISTS CategoryCategoryComboLink;
+  - DROP TABLE IF EXISTS CategoryOptionCombo;
+  - DROP TABLE IF EXISTS CategoryOptionComboCategoryLink;
+  - DROP TABLE IF EXISTS CategoryCategoryOptionLink;

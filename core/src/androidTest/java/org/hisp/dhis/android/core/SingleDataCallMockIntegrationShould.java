@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -44,6 +45,7 @@ public class SingleDataCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void download_number_of_events_according_to_limit_by_org_unit() throws Exception {
         int eventLimitByOrgUnit = 122;
 
@@ -67,10 +69,11 @@ public class SingleDataCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("system_info.json");
         dhis2MockServer.enqueueMockResponse("user.json");
         dhis2MockServer.enqueueMockResponse("organisationUnits.json");
+        dhis2MockServer.enqueueMockResponse("categories.json");
+        dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
         dhis2MockServer.enqueueMockResponse("option_sets.json");
-
         d2.syncMetaData().call();
     }
 }

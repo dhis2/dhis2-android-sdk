@@ -29,6 +29,17 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
+import org.hisp.dhis.android.core.category.CategoryEndpointCall;
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
+import org.hisp.dhis.android.core.category.CategoryComboQuery;
+import org.hisp.dhis.android.core.category.CategoryComboService;
+import org.hisp.dhis.android.core.category.CategoryHandler;
+import org.hisp.dhis.android.core.category.CategoryQuery;
+import org.hisp.dhis.android.core.category.CategoryService;
+import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -59,6 +70,7 @@ import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
@@ -85,7 +97,8 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
+ "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
 public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
@@ -119,6 +132,12 @@ public class MetadataCall implements Call<Response> {
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
+    private final CategoryQuery categoryQuery;
+    private final CategoryComboQuery categoryComboQuery;
+    private final CategoryService categoryService;
+    private final CategoryComboService categoryComboService;
+    private final CategoryHandler categoryHandler;
+    private final CategoryComboHandler categoryComboHandler;
 
     private boolean isExecuted;
 
@@ -159,6 +178,12 @@ public class MetadataCall implements Call<Response> {
             @NonNull RelationshipTypeStore relationshipStore,
             @NonNull TrackedEntityStore trackedEntityStore,
             @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
+            @NonNull CategoryQuery categoryQuery,
+            @NonNull CategoryService categoryService,
+            @NonNull CategoryHandler categoryHandler,
+            @NonNull CategoryComboQuery categoryComboQuery,
+            @NonNull CategoryComboService categoryComboService,
+            @NonNull CategoryComboHandler categoryComboHandler,
             boolean isTranslationOn,
             @NonNull String translationLocale) {
         this.databaseAdapter = databaseAdapter;
@@ -194,6 +219,12 @@ public class MetadataCall implements Call<Response> {
         this.relationshipStore = relationshipStore;
         this.trackedEntityStore = trackedEntityStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
+        this.categoryQuery = categoryQuery;
+        this.categoryService = categoryService;
+        this.categoryHandler = categoryHandler;
+        this.categoryComboQuery = categoryComboQuery;
+        this.categoryComboService = categoryComboService;
+        this.categoryComboHandler = categoryComboHandler;
         this.isTranslationOn = isTranslationOn;
         this.translationLocale = translationLocale;
     }
@@ -205,6 +236,7 @@ public class MetadataCall implements Call<Response> {
         }
     }
 
+    @SuppressWarnings("PMD.NPathComplexity")
     @Override
     public Response call() throws Exception {
         synchronized (this) {
@@ -252,6 +284,16 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
+            response = downloadCategories(serverDate);
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+            response = downloadCategoryCombos(serverDate);
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
 
             Set<String> programUids = getAssignedProgramUids(user);
             response = new ProgramCall(
@@ -287,6 +329,7 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
+
             transaction.setSuccessful();
             return response;
         } finally {
@@ -412,5 +455,22 @@ public class MetadataCall implements Call<Response> {
                 }
             }
         }
+    }
+
+    private Response<Payload<Category>> downloadCategories(Date serverDate) throws Exception {
+        ResponseValidator<Category> validator = new ResponseValidator<>();
+        return new CategoryEndpointCall(categoryQuery, categoryService, validator,
+                categoryHandler,
+                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
+    }
+
+    private Response<Payload<CategoryCombo>> downloadCategoryCombos(Date serverDate)
+            throws Exception {
+
+        ResponseValidator<CategoryCombo> comboValidator = new ResponseValidator<>();
+
+        return new CategoryComboEndpointCall(categoryComboQuery, categoryComboService,
+                comboValidator, categoryComboHandler,
+                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
     }
 }

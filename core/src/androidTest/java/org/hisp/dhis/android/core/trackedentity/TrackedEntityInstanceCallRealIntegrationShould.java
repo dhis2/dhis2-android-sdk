@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.support.test.filters.LargeTest;
+
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
@@ -8,6 +10,7 @@ import org.hisp.dhis.android.core.common.TrackedEntityInstanceCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 
@@ -23,10 +26,8 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTest
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-    //This test is commented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    //@Test
+    @Test
+    @LargeTest
     public void download_tei_enrollments_and_events() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn(RealServerMother.user, RealServerMother.password).call();

@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.support.test.filters.LargeTest;
+import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -9,7 +11,6 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
@@ -46,10 +47,8 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     pragma foreign_keys = on;
     pragma foreign_key_check;*/
 
-    //This test is uncommented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    //@Test
+    @Test
+    @LargeTest
     public void response_successful_on_sync_meta_data_two_times() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();
@@ -68,5 +67,31 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         //This way I can make sure that additive (updates) work as well.
         //The changes could be to one of the programs, adding stuff to it.
         // adding a new program..etc.
+    }
+
+    @Test
+    @LargeTest
+    public void response_successful_on_login_wipe_db_and_login() throws Exception {
+        retrofit2.Response response = null;
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+
+        d2.wipeDB().call();
+
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+    }
+
+    @Test
+    @LargeTest
+    public void response_successful_on_login_logout_and_login() throws Exception {
+        retrofit2.Response response = null;
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+
+        d2.logout().call();
+
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
     }
 }

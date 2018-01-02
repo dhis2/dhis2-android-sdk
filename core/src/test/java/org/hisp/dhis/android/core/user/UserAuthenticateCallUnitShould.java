@@ -28,15 +28,31 @@
 
 package org.hisp.dhis.android.core.user;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
+import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import static okhttp3.Credentials.basic;
+
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.SqLiteTransaction;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +68,7 @@ import org.mockito.stubbing.Answer;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -59,22 +76,6 @@ import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
-
-import static okhttp3.Credentials.basic;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
-import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 @RunWith(JUnit4.class)
@@ -93,16 +94,13 @@ public class UserAuthenticateCallUnitShould {
     private UserStore userStore;
 
     @Mock
-    private UserCredentialsStore userCredentialsStore;
+    private UserCredentialsHandler userCredentialsHandler;
 
     @Mock
-    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private ResourceHandler resourceHandler;
 
     @Mock
-    private ResourceStore resourceStore;
-
-    @Mock
-    private OrganisationUnitStore organisationUnitStore;
+    private OrganisationUnitHandler organisationUnitHandler;
 
     @Mock
     private AuthenticatedUserStore authenticatedUserStore;
@@ -128,6 +126,8 @@ public class UserAuthenticateCallUnitShould {
     @Mock
     private Date created;
 
+    List<OrganisationUnit> organisationUnits;
+
     @Mock
     private Date lastUpdated;
 
@@ -143,10 +143,9 @@ public class UserAuthenticateCallUnitShould {
         MockitoAnnotations.initMocks(this);
 
         userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userStore,
-                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore,
+                userCredentialsHandler, resourceHandler,
                 authenticatedUserStore,
-                organisationUnitStore, "test_user_name", "test_user_password",
-                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+                organisationUnitHandler, "test_user_name", "test_user_password",DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
 
         when(userCredentials.uid()).thenReturn("test_user_credentials_uid");
         when(userCredentials.code()).thenReturn("test_user_credentials_code");
@@ -174,9 +173,7 @@ public class UserAuthenticateCallUnitShould {
         when(organisationUnit.level()).thenReturn(4);
         when(organisationUnit.parent()).thenReturn(null);
 
-        List<OrganisationUnit> organisationUnits = Arrays.asList(
-                organisationUnit
-        );
+        organisationUnits = Arrays.asList(organisationUnit);
 
         when(user.uid()).thenReturn("test_user_uid");
         when(user.code()).thenReturn("test_user_code");
@@ -199,7 +196,6 @@ public class UserAuthenticateCallUnitShould {
         when(user.nationality()).thenReturn("test_user_nationality");
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(organisationUnits);
-
 
         when(userService.authenticate(any(String.class), any(Fields.class), anyBoolean(),
                 anyString())).thenReturn(userCall);
@@ -283,14 +279,10 @@ public class UserAuthenticateCallUnitShould {
                     any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                     anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                     anyString(), anyString(), anyString(), anyString());
-            verify(userCredentialsStore, never()).insert(anyString(), anyString(), anyString(),
-                    anyString(), any(Date.class), any(Date.class), anyString(), anyString());
-            verify(organisationUnitStore, never()).insert(anyString(), anyString(), anyString(),
-                    anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                    anyString(), any(Integer.class));
-            verify(userOrganisationUnitLinkStore, never()).insert(
-                    anyString(), anyString(), anyString());
+            verify(userCredentialsHandler, never()).handleUserCredentials(
+                    any(UserCredentials.class), any(User.class));
+            verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
+                    any(OrganisationUnitModel.Scope.class), anyString());
         }
     }
 
@@ -317,14 +309,11 @@ public class UserAuthenticateCallUnitShould {
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString());
-        verify(userCredentialsStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString());
-        verify(organisationUnitStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), any(Integer.class));
-        verify(userOrganisationUnitLinkStore, never()).insert(
-                anyString(), anyString(), anyString());
+        verify(userCredentialsHandler, never()).handleUserCredentials(
+                any(UserCredentials.class), any(User.class));
+        verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
+                any(OrganisationUnitModel.Scope.class), anyString());
+
     }
 
     @Test
@@ -351,35 +340,12 @@ public class UserAuthenticateCallUnitShould {
                 "test_user_phone_number", "test_user_nationality"
         );
 
-        verify(userCredentialsStore, times(1)).insert(
-                "test_user_credentials_uid",
-                "test_user_credentials_code",
-                "test_user_credentials_name",
-                "test_user_credentials_display_name",
-                created, lastUpdated,
-                "test_user_credentials_username",
-                "test_user_uid"
-        );
+        verify(userCredentialsHandler, times(1)).handleUserCredentials(
+                userCredentials, user);
 
-        verify(organisationUnitStore, times(1)).insert(
-                "test_organisation_unit_uid",
-                "test_organisation_unit_code",
-                "test_organisation_unit_name",
-                "test_organisation_unit_display_name",
-                created, lastUpdated,
-                "test_organisation_unit_short_name",
-                "test_organisation_unit_display_short_name",
-                "test_organisation_unit_description",
-                "test_organisation_unit_display_description",
-                "test_organisation_unit_path",
-                created, lastUpdated, null, 4
-        );
+        verify(organisationUnitHandler, times(1)).handleOrganisationUnits(
+                organisationUnits, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user.uid());
 
-        verify(userOrganisationUnitLinkStore, times(1)).insert(
-                "test_user_uid",
-                "test_organisation_unit_uid",
-                OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name()
-        );
     }
 
 
@@ -402,14 +368,11 @@ public class UserAuthenticateCallUnitShould {
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString());
-        verify(userCredentialsStore, times(1)).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString());
-        verify(organisationUnitStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), any(Integer.class));
-        verify(userOrganisationUnitLinkStore, never()).insert(
-                anyString(), anyString(), anyString());
+
+        verify(userCredentialsHandler, times(1)).handleUserCredentials(
+                userCredentials, user);
+        verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
+                any(OrganisationUnitModel.Scope.class), anyString());
     }
 
     @Test

@@ -26,25 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.category;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.google.auto.value.AutoValue;
+import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+public class CreateCategoryOptionComboUtils {
 
-// TODO: Write CategoryOptionCobo- Store, StoreImp, Model and their tests (Datacapture)
-@AutoValue
-@JsonDeserialize(builder = AutoValue_CategoryOptionCombo.Builder.class)
-public abstract class CategoryOptionCombo extends BaseNameableObject {
-    // no fields
+    public static final String TEST_CODE = "test_code";
+    public static final String TEST_NAME = "test_name";
+    public static final String TEST_DISPLAY_NAME = "test_display_name";
+    public static final String TEST_CREATED = "2001-02-07T16:04:40.387";
+    public static final String TEST_LAST_UPDATED = "2001-02-07T16:04:40.387";
 
-    public static Builder builder() {
-        return new AutoValue_CategoryOptionCombo.Builder();
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
-        public abstract CategoryOptionCombo build();
+    public static ContentValues create(long id, String uid) {
+        ContentValues categoryOptionCombo = new ContentValues();
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.ID, id);
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.UID, uid);
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.CODE, TEST_CODE);
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.NAME, TEST_NAME);
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.DISPLAY_NAME, TEST_DISPLAY_NAME);
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.CREATED, TEST_CREATED);
+        categoryOptionCombo.put(CategoryOptionComboModel.Columns.LAST_UPDATED, TEST_LAST_UPDATED);
+        return categoryOptionCombo;
     }
 }

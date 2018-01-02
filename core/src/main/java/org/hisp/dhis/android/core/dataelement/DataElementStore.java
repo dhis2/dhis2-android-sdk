@@ -49,7 +49,8 @@ public interface DataElementStore extends DeletableStore {
             @Nullable String aggregationOperator, @Nullable String formName,
             @Nullable String numberType, @Nullable String domainType,
             @Nullable String dimension, @Nullable String displayFormName,
-            @Nullable String optionSet
+            @Nullable String optionSet,
+            @Nullable String categoryCombo
     );
 
     int delete(String uid);
@@ -65,6 +66,7 @@ public interface DataElementStore extends DeletableStore {
             @Nullable String aggregationOperator, @Nullable String formName,
             @Nullable String numberType, @Nullable String domainType,
             @Nullable String dimension, @Nullable String displayFormName,
-            @Nullable String optionSet, @NonNull String whereDataElementUid
+            @Nullable String optionSet,
+            @Nullable String categoryCombo, @NonNull String whereDataElementUid
     );
 }

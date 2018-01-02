@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.constant;
 
 import android.database.Cursor;
+import android.support.test.filters.MediumTest;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -66,6 +67,7 @@ public class ConstantStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_row_in_database_when_insert() {
         long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, VALUE);
         Cursor cursor = database().query(ConstantModel.TABLE, CONSTANT_PROJECTION, null, null, null, null, null);
@@ -77,6 +79,7 @@ public class ConstantStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, VALUE);
     }

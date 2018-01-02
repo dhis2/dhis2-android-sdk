@@ -1,0 +1,127 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 1,
+    "pageSize": 50
+  },
+  "categories": [
+    {
+      "lastUpdated": "2017-12-21T03:32:22.508",
+      "created": "2012-11-21T12:15:18.537",
+      "name": "default",
+      "id": "vGs6omsRekv",
+      "shortName": "default",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "default",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2016-04-12T20:37:48.414",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "default",
+          "id": "as6ygGvUGNg",
+          "shortName": "default",
+          "displayName": "default"
+        }
+      ]
+    },{
+      "lastUpdated": "2017-10-09T16:03:48.729",
+      "code": "BIRTHS_ATTENDED",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Births attended by",
+      "id": "KfdsGBcoiCa",
+      "shortName": "Births attended by",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Births attended by",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MCH_AIDES",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "MCH Aides",
+          "id": "TNYQzTHdoxL",
+          "shortName": "MCH Aides",
+          "displayName": "MCH Aides"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "SECHN",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "SECHN",
+          "id": "TXGfLxZlInA",
+          "shortName": "SECHN",
+          "displayName": "SECHN"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "TRAINED_TBA",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Trained TBA",
+          "id": "uZUnebiT5DI",
+          "shortName": "Trained TBA",
+          "displayName": "Trained TBA"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:27:46.728",
+      "code": "GENDER",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Gender",
+      "id": "cX5k9anHEHd",
+      "shortName": "Gender",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Gender",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "FMLE",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Female",
+          "id": "apsOixVZlf1",
+          "shortName": "Female",
+          "displayName": "Female"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "MLE",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "Male",
+          "id": "jRbMi0aBjYn",
+          "shortName": "Male",
+          "displayName": "Male"
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2013-05-28T09:59:48.308",
+      "code": "LOC_PHU_COMM",
+      "created": "2011-12-24T12:24:25.155",
+      "name": "Location PHU/Community",
+      "id": "x3uo8LqiTBk",
+      "shortName": "Location PHU/Community",
+      "dataDimensionType": "DISAGGREGATION",
+      "displayName": "Location PHU/Community",
+      "categoryOptions": [
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "IN_COMM",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "In Community",
+          "id": "wHFX72Y0KXx",
+          "shortName": "In Community",
+          "displayName": "In Community"
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:24.149",
+          "code": "AT_PHU",
+          "created": "2011-12-24T12:24:24.149",
+          "name": "At PHU",
+          "id": "Fp4gVHbRvEV",
+          "shortName": "At PHU",
+          "displayName": "At PHU"
+        }
+      ]
+    }
+  ]
+}

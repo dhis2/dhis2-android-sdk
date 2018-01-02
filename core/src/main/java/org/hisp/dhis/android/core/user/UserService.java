@@ -33,6 +33,7 @@ import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLA
 
 import org.hisp.dhis.android.core.data.api.Which;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Which;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

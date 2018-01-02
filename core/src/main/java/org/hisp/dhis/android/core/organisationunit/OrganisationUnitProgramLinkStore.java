@@ -33,4 +33,6 @@ import org.hisp.dhis.android.core.common.DeletableStore;
 
 public interface OrganisationUnitProgramLinkStore extends DeletableStore {
     long insert(@NonNull String organisationUnitUid, @NonNull String programUid);
+
+    boolean exists(@NonNull String organisationUnitUid, @NonNull String programUid);
 }

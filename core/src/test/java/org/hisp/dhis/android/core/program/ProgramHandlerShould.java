@@ -152,14 +152,14 @@ public class ProgramHandlerShould {
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString());
+                anyString(), anyString(), anyString());
 
         verify(programStore, never()).update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString());
+                anyString(), anyString(), anyString(), anyString());
 
         // verify that all the handlers is called once
 
@@ -179,7 +179,7 @@ public class ProgramHandlerShould {
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString())).thenReturn(0);
+                anyString(), anyString(), anyString(), anyString())).thenReturn(0);
 
         programHandler.handleProgram(program);
 
@@ -189,7 +189,7 @@ public class ProgramHandlerShould {
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString());
+                anyString(), anyString(), anyString());
 
         // verify that update is called since we update before we can insert
         verify(programStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
@@ -197,7 +197,7 @@ public class ProgramHandlerShould {
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString());
+                anyString(), anyString(), anyString(), anyString());
 
         // verify that delete is never called
         verify(programStore, never()).delete(anyString());
@@ -221,7 +221,7 @@ public class ProgramHandlerShould {
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString())).thenReturn(1);
+                anyString(), anyString(), anyString(), anyString())).thenReturn(1);
 
         programHandler.handleProgram(program);
 
@@ -231,7 +231,7 @@ public class ProgramHandlerShould {
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString());
+                anyString(), anyString(), anyString(), anyString());
 
         // check that insert and delete is never called
         verify(programStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
@@ -239,7 +239,7 @@ public class ProgramHandlerShould {
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString());
+                anyString(), anyString(), anyString());
 
         verify(programStore, never()).delete(anyString());
 
@@ -264,7 +264,7 @@ public class ProgramHandlerShould {
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString());
+                anyString(), anyString(), anyString());
 
         verify(programStore, never()).delete(anyString());
 
@@ -273,7 +273,7 @@ public class ProgramHandlerShould {
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString());
+                anyString(), anyString(), anyString(), anyString());
 
         // verify that handlers is never called
         verify(programStageHandler, never()).handleProgramStage(anyString(), anyListOf(ProgramStage.class));

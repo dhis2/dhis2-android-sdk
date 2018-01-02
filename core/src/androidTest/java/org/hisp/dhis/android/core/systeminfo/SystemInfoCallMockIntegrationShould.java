@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -127,6 +128,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_system_info_when_call() throws Exception {
         // fake call to api to retrieve response
         systeminfoCall.call();
@@ -143,6 +145,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_system_info_when_call() throws Exception {
         ContentValues systemInfo = new ContentValues();
         systemInfo.put(SystemInfoModel.Columns.SERVER_DATE, "2017-02-27T15:00:46.332");

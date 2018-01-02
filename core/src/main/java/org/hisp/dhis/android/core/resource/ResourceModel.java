@@ -54,11 +54,15 @@ public abstract class ResourceModel extends BaseModel {
         EVENT,
         SYSTEM_INFO,
         USER,
+        USER_CREDENTIALS,
         ORGANISATION_UNIT,
+        AUTHENTICATED_USER,
         PROGRAM,
         OPTION_SET,
         TRACKED_ENTITY,
-        TRACKED_ENTITY_INSTANCE
+        TRACKED_ENTITY_INSTANCE,
+        CATEGORY,
+        CATEGORY_COMBO
     }
 
     @Nullable

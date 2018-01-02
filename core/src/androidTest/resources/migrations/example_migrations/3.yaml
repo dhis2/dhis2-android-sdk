@@ -1,0 +1,6 @@
+up:
+  - create table if not exists TestTable (testColumn Integer)
+seeds:
+  - INSERT INTO TestTable (testColumn) VALUES (1)
+down:
+  - DROP TABLE TestTable

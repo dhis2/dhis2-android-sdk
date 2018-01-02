@@ -5,7 +5,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 
-import android.support.test.runner.AndroidJUnit4;
+import android.support.test.filters.MediumTest;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -25,7 +25,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -66,7 +65,9 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.shutdown();
     }
 
+
     @Test
+    @MediumTest
     public void not_download_tracked_entity_instances_if_does_not_exists_nothing_in_database()
             throws Exception {
 
@@ -78,6 +79,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void not_download_tracked_entity_instances_if_does_not_exists_synced_in_database()
             throws Exception {
 
@@ -92,6 +94,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void only_download_synced_tracked_entity_instance_that_exists_in_database()
             throws Exception {
         givenAMetadataInDatabase();
@@ -113,6 +116,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void download_all_synced_tracked_entity_instances_that_exists_in_database()
             throws Exception {
         givenAMetadataInDatabase();
@@ -187,10 +191,11 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("system_info.json");
         dhis2MockServer.enqueueMockResponse("user.json");
         dhis2MockServer.enqueueMockResponse("organisationUnits.json");
+        dhis2MockServer.enqueueMockResponse("categories.json");
+        dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
         dhis2MockServer.enqueueMockResponse("option_sets.json");
-
         d2.syncMetaData().call();
     }
 

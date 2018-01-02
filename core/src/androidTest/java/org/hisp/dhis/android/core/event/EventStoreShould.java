@@ -31,8 +31,13 @@ package org.hisp.dhis.android.core.event;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
+import org.hisp.dhis.android.core.category.CategoryOptionModel;
+import org.hisp.dhis.android.core.category.CreateCategoryOptionComboUtils;
+import org.hisp.dhis.android.core.category.CreateCategoryOptionUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -65,6 +70,7 @@ import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class EventStoreShould extends AbsStoreTestCase {
@@ -84,10 +90,14 @@ public class EventStoreShould extends AbsStoreTestCase {
             Columns.EVENT_DATE, // eventDate
             Columns.COMPLETE_DATE, // completedDate
             Columns.DUE_DATE, // dueDate
-            Columns.STATE
+            Columns.STATE,
+            Columns.ATTRIBUTE_CATEGORY_OPTIONS,
+            Columns.ATTRIBUTE_OPTION_COMBO,
+            Columns.TRACKED_ENTITY_INSTANCE
     };
     private static final String EVENT_UID = "test_uid";
     private static final String ENROLLMENT_UID = "test_enrollment";
+    private static final String TRACKED_ENTITY_INSTANCE = "test_tracked_entity_instance";
     private static final EventStatus STATUS = EventStatus.ACTIVE;
     private static final String LATITUDE = "10.832152";
     private static final String LONGITUDE = "59.345231";
@@ -103,6 +113,8 @@ public class EventStoreShould extends AbsStoreTestCase {
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
     private static final long RELATIONSHIP_TYPE_ID = 3L;
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
+    private static final String ATTRIBUTE_CATEGORY_OPTION_UID = "attributeCategoryOptionUid";
+    private static final String ATTRIBUTE_OPTION_COMBO_UID = "attributeOptionComboUid";
     private final Date date;
 
     private final String dateString;
@@ -132,14 +144,20 @@ public class EventStoreShould extends AbsStoreTestCase {
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
-        String trackedEntityInstanceUid = "trackedEntityInstanceUid";
-        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(trackedEntityInstanceUid,
+        ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(TRACKED_ENTITY_INSTANCE,
                 ORGANISATION_UNIT, TRACKED_ENTITY_UID);
         ContentValues enrollment = CreateEnrollmentUtils.create(
-                ENROLLMENT_UID, PROGRAM, ORGANISATION_UNIT, trackedEntityInstanceUid
+                ENROLLMENT_UID, PROGRAM, ORGANISATION_UNIT, TRACKED_ENTITY_INSTANCE
         );
 
-
+        ContentValues categoryOptionCombo = CreateCategoryOptionComboUtils.create(
+                1L, ATTRIBUTE_OPTION_COMBO_UID
+        );
+        database().insert(CategoryOptionComboModel.TABLE, null, categoryOptionCombo);
+        ContentValues categoryOption = CreateCategoryOptionUtils.create(
+                1l, ATTRIBUTE_CATEGORY_OPTION_UID
+        );
+        database().insert(CategoryOptionModel.TABLE, null, categoryOption);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
         database().insert(ProgramStageModel.TABLE, null, programStage);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
@@ -147,6 +165,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_event_in_data_base_after_insert() {
         long rowId = eventStore.insert(
                 EVENT_UID,
@@ -164,7 +183,10 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date, // eventDate
                 date, // completedDate
                 date, // dueDate
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID,
+                TRACKED_ENTITY_INSTANCE
         );
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
 
@@ -185,16 +207,24 @@ public class EventStoreShould extends AbsStoreTestCase {
                 dateString, // eventDate
                 dateString, // completedDate
                 dateString, // dueDate
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID,
+                TRACKED_ENTITY_INSTANCE
         ).isExhausted();
     }
 
     @Test
+    @MediumTest
     public void persist_deferrable_event_in_data_base_after_insert() {
         final String deferredProgram = "deferredProgram";
         final String deferredProgramStage = "deferredProgramStage";
         final String deferredOrganisationUnit = "deferredOrganisationUnit";
 
+        ContentValues program = CreateProgramUtils.create(11L, deferredProgram,
+                RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
+        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(11L, deferredOrganisationUnit);
+        ContentValues programStage = CreateProgramStageUtils.create(11L, deferredProgramStage, PROGRAM);
         database().beginTransaction();
         long rowId = eventStore.insert(
                 EVENT_UID,
@@ -212,13 +242,12 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date, // eventDate
                 date, // completedDate
                 date, // dueDate
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID,
+                TRACKED_ENTITY_INSTANCE
         );
 
-        ContentValues program = CreateProgramUtils.create(11L, deferredProgram,
-                RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(11L, deferredOrganisationUnit);
-        ContentValues programStage = CreateProgramStageUtils.create(11L, deferredProgramStage, PROGRAM);
 
         database().insert(ProgramModel.TABLE, null, program);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
@@ -244,22 +273,33 @@ public class EventStoreShould extends AbsStoreTestCase {
                 dateString, // eventDate
                 dateString, // completedDate
                 dateString, // dueDate
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID,
+                TRACKED_ENTITY_INSTANCE
         ).isExhausted();
     }
 
     @Test
+    @MediumTest
     public void persist_event_nullable_in_data_base_after_insert() {
 
         long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
-                PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null);
+                PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID,
+                TRACKED_ENTITY_INSTANCE);
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
-                PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null).isExhausted();
+                PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID,
+                TRACKED_ENTITY_INSTANCE).isExhausted();
     }
 
     @Test
+    @MediumTest
     public void delete_event_in_data_base_after_delete_program_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
@@ -277,7 +317,10 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID,
+                TRACKED_ENTITY_INSTANCE
         );
 
         database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + "=?", new String[]{PROGRAM});
@@ -286,6 +329,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_event_in_data_base_after_delete_program_stage_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
@@ -303,7 +347,10 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID,
+                TRACKED_ENTITY_INSTANCE
         );
 
         database().delete(ProgramStageModel.TABLE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
@@ -312,6 +359,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_event_in_data_base_after_delete_organisation_unit_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
@@ -329,7 +377,10 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID,
+                TRACKED_ENTITY_INSTANCE
         );
 
         database().delete(OrganisationUnitModel.TABLE,
@@ -340,6 +391,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_event_in_data_base_after_update() throws Exception {
         ContentValues event = new ContentValues();
         event.put(Columns.UID, EVENT_UID);
@@ -357,8 +409,13 @@ public class EventStoreShould extends AbsStoreTestCase {
 
         Date updatedDate = new Date();
 
-        eventStore.update(EVENT_UID, null, null, null, null, null, null, null, null,
-                PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, updatedDate, null, null, null, EVENT_UID);
+        int updated = eventStore.update(EVENT_UID, null, null, null, null, null, null, null, null,
+                PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, updatedDate, null, null, null,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID, TRACKED_ENTITY_INSTANCE,
+                EVENT_UID);
+
+        assertTrue(updated==1);
 
         cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
 
@@ -369,6 +426,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_event_in_data_base_after_delete() throws Exception {
         ContentValues event = new ContentValues();
         event.put(Columns.UID, EVENT_UID);
@@ -392,6 +450,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_event_state_in_database_after_set_state() throws Exception {
         ContentValues event = new ContentValues();
         event.put(Columns.UID, EVENT_UID);
@@ -417,6 +476,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void return_list_of_events_after_query() throws Exception {
         ContentValues eventContentValues = new ContentValues();
         eventContentValues.put(Columns.UID, EVENT_UID);
@@ -467,6 +527,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void return_empty_list_with_no_events_after_query() throws Exception {
         Map<String, List<Event>> events = eventStore.queryEventsAttachedToEnrollmentToPost();
 
@@ -474,6 +535,7 @@ public class EventStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_exception_after_persist_event_with_invalid_program_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
@@ -491,11 +553,15 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID,
+                TRACKED_ENTITY_INSTANCE
         );
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_exception_after_persist_event_with_invalid_program_stage_foreign_key() throws ParseException {
         eventStore.insert(
                 EVENT_UID,
@@ -513,11 +579,15 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID,
+                TRACKED_ENTITY_INSTANCE
         );
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_exception_after_persist_event_with_invalid_organisation_unit_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
@@ -535,12 +605,16 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID,
+                TRACKED_ENTITY_INSTANCE
         );
     }
 
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_exception_after_persist_event_with_invalid_enrollment_foreign_key() {
         eventStore.insert(
                 EVENT_UID,
@@ -558,7 +632,10 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 date,
-                STATE
+                STATE,
+                ATTRIBUTE_CATEGORY_OPTION_UID,
+                ATTRIBUTE_OPTION_COMBO_UID,
+                TRACKED_ENTITY_INSTANCE
         );
     }
 

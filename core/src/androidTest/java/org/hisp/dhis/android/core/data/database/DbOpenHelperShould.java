@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import android.support.test.filters.SmallTest;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
@@ -37,13 +39,12 @@ import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class DbOpenHelperShould {
-    private static final int DATABASE_TESTS_VERSION = 1;
 
     @Test
+    @SmallTest
     public void have_tests_on_database_versions() {
-        // ToDo: tests for schema migration (requires some research to be done)
-        // make sure that whenever database version is bumped,
-        // corresponding schema migration tests are implemented
-        assertThat(DATABASE_TESTS_VERSION).isEqualTo(DbOpenHelper.VERSION);
+        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
+                , null);
+        assertThat(dbOpenHelper.getWritableDatabase().getVersion()).isEqualTo(DbOpenHelper.VERSION);
     }
 }

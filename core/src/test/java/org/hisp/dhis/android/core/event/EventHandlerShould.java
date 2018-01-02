@@ -52,12 +52,12 @@ public class EventHandlerShould {
         verify(eventStore, never()).update(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString());
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString(), anyString());
 
         verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class));
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString());
     }
 
     @Test
@@ -73,11 +73,11 @@ public class EventHandlerShould {
         verify(eventStore, never()).update(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString());
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString(), anyString());
         verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class));
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString());
     }
 
     @Test
@@ -85,7 +85,7 @@ public class EventHandlerShould {
         when(eventStore.update(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString())
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString(), anyString())
         ).thenReturn(1);
 
         eventHandler.handle(event);
@@ -94,13 +94,13 @@ public class EventHandlerShould {
         verify(eventStore, times(1)).update(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString());
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString(), anyString());
 
         // verify that insert and delete is never invoked
         verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class));
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString());
         verify(eventStore, never()).delete(anyString());
     }
 
@@ -109,7 +109,7 @@ public class EventHandlerShould {
         when(eventStore.update(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString())
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString(), anyString())
         ).thenReturn(0);
 
         eventHandler.handle(event);
@@ -118,12 +118,12 @@ public class EventHandlerShould {
         verify(eventStore, times(1)).insert(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class));
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString());
 
         verify(eventStore, times(1)).update(anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(),
                 any(EventStatus.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString());
+                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(), anyString(), anyString(), anyString());
 
         // verify that delete is never invoked
         verify(eventStore, never()).delete(anyString());

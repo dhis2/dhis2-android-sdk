@@ -26,56 +26,59 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.category;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
 
-import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
-// TODO: Write CategoryCombo- Store, StoreImp, Model and their tests (Datacapture)
 @AutoValue
-@JsonDeserialize(builder = AutoValue_CategoryCombo.Builder.class)
-public abstract class CategoryCombo extends BaseIdentifiableObject {
-    private static final String JSON_PROPERTY_IS_DEFAULT = "isDefault";
-    private static final String JSON_PROPERTY_CATEGORIES = "categories";
+public abstract class CategoryCategoryOptionLinkModel extends BaseModel {
+    public static final String TABLE = "CategoryCategoryOptionLink";
+
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String CATEGORY = "category";
+        public static final String CATEGORY_OPTION = "categoryOption";
+
+    }
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_IS_DEFAULT)
-    public abstract Boolean isDefault();
+    @ColumnName(Columns.CATEGORY)
+    public abstract String category();
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CATEGORIES)
-    public abstract List<Category> categories();
+    @ColumnName(Columns.CATEGORY_OPTION)
+    public abstract String option();
 
+    @NonNull
+    public abstract ContentValues toContentValues();
+
+    @NonNull
     public static Builder builder() {
-        return new AutoValue_CategoryCombo.Builder();
+        return new $$AutoValue_CategoryCategoryOptionLinkModel.Builder();
+    }
+
+    @NonNull
+    public static CategoryCategoryOptionLinkModel create(Cursor cursor) {
+        return AutoValue_CategoryCategoryOptionLinkModel.createFromCursor(cursor);
+
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
 
-        @JsonProperty(JSON_PROPERTY_IS_DEFAULT)
-        public abstract Builder isDefault(@Nullable Boolean isDefault);
+        public abstract Builder category(@Nullable String category);
 
-        @JsonProperty(JSON_PROPERTY_CATEGORIES)
-        public abstract Builder categories(@Nullable List<Category> categories);
+        public abstract Builder option(@Nullable String option);
 
-        // internal, not exposed
-        abstract List<Category> categories();
-
-        abstract CategoryCombo autoBuild();
-
-        public CategoryCombo build() {
-            categories(safeUnmodifiableList(categories()));
-            return autoBuild();
-        }
+        public abstract CategoryCategoryOptionLinkModel build();
     }
 }

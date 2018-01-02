@@ -73,6 +73,10 @@ public class ProgramHandler {
             if (program.trackedEntity() != null) {
                 trackedEntityUid = program.trackedEntity().uid();
             }
+            String categoryCombo = null;
+            if (program.categoryCombo() != null) {
+                categoryCombo = program.categoryCombo().uid();
+            }
             String relationshipTypeUid = null;
             if (program.relationshipType() != null) {
                 relationshipTypeUid = program.relationshipType().uid();
@@ -88,7 +92,7 @@ public class ProgramHandler {
                     program.selectIncidentDatesInFuture(), program.captureCoordinates(),
                     program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
                     program.programType(), relationshipTypeUid, program.relationshipText(),
-                    relatedProgramUid, trackedEntityUid, program.uid());
+                    relatedProgramUid, trackedEntityUid, categoryCombo, program.uid());
 
             if (updatedRow <= 0) {
                 programStore.insert(
@@ -101,7 +105,7 @@ public class ProgramHandler {
                         program.selectIncidentDatesInFuture(), program.captureCoordinates(),
                         program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
                         program.programType(), relationshipTypeUid, program.relationshipText(),
-                        relatedProgramUid, trackedEntityUid);
+                        relatedProgramUid, trackedEntityUid, categoryCombo);
             }
         }
         // programStageHandler will invoke programStageSectionHandler, programStageDataElementHandler,
@@ -113,6 +117,5 @@ public class ProgramHandler {
         programRuleHandler.handleProgramRules(program.programRules());
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
         relationshipHandler.handleRelationshipType(program.relationshipType());
-        // TODO: delete or persist categoryCombos
     }
 }

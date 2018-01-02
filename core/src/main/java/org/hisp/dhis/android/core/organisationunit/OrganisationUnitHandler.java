@@ -130,10 +130,13 @@ public class OrganisationUnitHandler {
             for (int j = 0; j < programSize; j++) {
                 Program program = programs.get(j);
 
-                organisationUnitProgramLinkStore.insert(
-                        organisationUnit.uid(),
-                        program.uid()
-                );
+                if (!organisationUnitProgramLinkStore.exists(organisationUnit.uid(),
+                        program.uid())) {
+                    organisationUnitProgramLinkStore.insert(
+                            organisationUnit.uid(),
+                            program.uid()
+                    );
+                }
             }
         }
     }

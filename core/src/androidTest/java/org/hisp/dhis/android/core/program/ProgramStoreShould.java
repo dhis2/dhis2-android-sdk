@@ -31,8 +31,11 @@ package org.hisp.dhis.android.core.program;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.program.ProgramModel.Columns;
@@ -83,7 +86,8 @@ public class ProgramStoreShould extends AbsStoreTestCase {
             Columns.RELATIONSHIP_TYPE,
             Columns.RELATIONSHIP_TEXT,
             Columns.RELATED_PROGRAM,
-            Columns.TRACKED_ENTITY
+            Columns.TRACKED_ENTITY,
+            Columns.CATEGORY_COMBO
     };
 
     //BaseIdentifiableModel attributes:
@@ -123,6 +127,9 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     private static final Long TRACKED_ENTITY_ID = 4L;
 
     private static final String TRACKED_ENTITY = "TrackedEntityUid";
+    private static final Long CATEGORY_COMBO_ID = 4L;
+
+    private static final String CATEGORY_COMBO = "CategoryComboUid";
 
     private final Date date;
     private final String dateString;
@@ -147,9 +154,13 @@ public class ProgramStoreShould extends AbsStoreTestCase {
         //TrackedEntity foreign key corresponds to table entry
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY);
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(CATEGORY_COMBO_ID, CATEGORY_COMBO);
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
     }
 
     @Test
+    @MediumTest
     public void insert_program_in_data_base_when_insert() {
         long rowId = store.insert(
                 UID,
@@ -180,7 +191,8 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE,
                 RELATIONSHIP_TEXT,
                 null,
-                TRACKED_ENTITY
+                TRACKED_ENTITY,
+                CATEGORY_COMBO
         );
 
         Cursor cursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null, null);
@@ -215,27 +227,18 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE,
                 RELATIONSHIP_TEXT,
                 null,
-                TRACKED_ENTITY
+                TRACKED_ENTITY,
+                CATEGORY_COMBO
         ).isExhausted();
     }
 
     @Test
+    @MediumTest
     public void insert_program_with_deferred_foreign_key_in_data_base_when_insert() {
         final String deferredRelationshipTypeUid = "deferredRelationshipTypeUid";
         final String deferredTrackedEntityUid = "deferredTrackedEntityUid";
+        final String deferredCategoryComboUid = "deferredCategoryComboUid";
 
-        database().beginTransaction();
-        long rowId = store.insert(
-                UID,
-                CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
-                DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
-                INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
-                IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
-                USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, deferredRelationshipTypeUid,
-                RELATIONSHIP_TEXT,
-                UID2,
-                deferredTrackedEntityUid
-        );
         //RelationshipType foreign key corresponds to table entry
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(2L, deferredRelationshipTypeUid);
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
@@ -243,16 +246,25 @@ public class ProgramStoreShould extends AbsStoreTestCase {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(2L, deferredTrackedEntityUid);
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
 
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(2L, deferredCategoryComboUid);
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
+        database().beginTransaction();
+        long rowId = store.insert(
+                UID, CODE, NAME, DISPLAY_NAME, date,
+                date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION,
+                VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE, INCIDENT_DATE_LABEL,
+                REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD, IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A,
+                SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES, USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE,
+                deferredRelationshipTypeUid, RELATIONSHIP_TEXT, UID2, deferredTrackedEntityUid, deferredCategoryComboUid
+        );
+
         long rowId2 = store.insert(
-                UID2,
-                CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
-                DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
-                INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
-                IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
-                USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE,
-                RELATIONSHIP_TEXT,
-                UID,
-                TRACKED_ENTITY
+                UID2, CODE, NAME, DISPLAY_NAME, date,
+                date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION,
+                VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE, INCIDENT_DATE_LABEL,
+                REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD, IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A,
+                SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES, USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE,
+                RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, UID, TRACKED_ENTITY, CATEGORY_COMBO
         );
         database().setTransactionSuccessful();
         database().endTransaction();
@@ -262,64 +274,58 @@ public class ProgramStoreShould extends AbsStoreTestCase {
         assertThat(rowId).isEqualTo(1L);
         assertThat(rowId2).isEqualTo(2L);
         assertThatCursor(cursor).hasRow(
-                UID,
-                CODE, NAME, DISPLAY_NAME, dateString, dateString, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
-                DISPLAY_DESCRIPTION, VERSION, toInteger(ONLY_ENROLL_ONCE), ENROLLMENT_DATE_LABEL,
-                toInteger(DISPLAY_INCIDENT_DATE), INCIDENT_DATE_LABEL, toInteger(REGISTRATION),
-                toInteger(SELECT_ENROLLMENT_DATES_IN_FUTURE), toInteger(DATA_ENTRY_METHOD),
-                toInteger(IGNORE_OVERDUE_EVENTS), toInteger(RELATIONSHIP_FROM_A),
-                toInteger(SELECT_INCIDENT_DATES_IN_FUTURE), toInteger(CAPTURE_COORDINATES),
-                toInteger(USE_FIRST_STAGE_DURING_REGISTRATION), toInteger(DISPLAY_FRONT_PAGE_LIST),
-                PROGRAM_TYPE, deferredRelationshipTypeUid, RELATIONSHIP_TEXT,
-                UID2,
-                deferredTrackedEntityUid
+                UID, CODE, NAME, DISPLAY_NAME, dateString,
+                dateString, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION,
+                VERSION, toInteger(ONLY_ENROLL_ONCE), ENROLLMENT_DATE_LABEL, toInteger(DISPLAY_INCIDENT_DATE), INCIDENT_DATE_LABEL,
+                toInteger(REGISTRATION), toInteger(SELECT_ENROLLMENT_DATES_IN_FUTURE), toInteger(DATA_ENTRY_METHOD), toInteger(IGNORE_OVERDUE_EVENTS), toInteger(RELATIONSHIP_FROM_A),
+                toInteger(SELECT_INCIDENT_DATES_IN_FUTURE), toInteger(CAPTURE_COORDINATES), toInteger(USE_FIRST_STAGE_DURING_REGISTRATION), toInteger(DISPLAY_FRONT_PAGE_LIST), PROGRAM_TYPE, deferredRelationshipTypeUid, RELATIONSHIP_TEXT,
+                UID2, deferredTrackedEntityUid, deferredCategoryComboUid
         );
         assertThatCursor(cursor).hasRow(
-                UID2,
-                CODE, NAME, DISPLAY_NAME, dateString, dateString, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
-                DISPLAY_DESCRIPTION, VERSION, toInteger(ONLY_ENROLL_ONCE), ENROLLMENT_DATE_LABEL,
-                toInteger(DISPLAY_INCIDENT_DATE), INCIDENT_DATE_LABEL, toInteger(REGISTRATION),
-                toInteger(SELECT_ENROLLMENT_DATES_IN_FUTURE), toInteger(DATA_ENTRY_METHOD),
-                toInteger(IGNORE_OVERDUE_EVENTS), toInteger(RELATIONSHIP_FROM_A),
-                toInteger(SELECT_INCIDENT_DATES_IN_FUTURE), toInteger(CAPTURE_COORDINATES),
-                toInteger(USE_FIRST_STAGE_DURING_REGISTRATION), toInteger(DISPLAY_FRONT_PAGE_LIST), PROGRAM_TYPE,
-                RELATIONSHIP_TYPE, RELATIONSHIP_TEXT,
-                UID,
-                TRACKED_ENTITY
+                UID2, CODE, NAME, DISPLAY_NAME, dateString,
+                dateString, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
+                DISPLAY_DESCRIPTION, VERSION, toInteger(ONLY_ENROLL_ONCE), ENROLLMENT_DATE_LABEL, toInteger(DISPLAY_INCIDENT_DATE),
+                INCIDENT_DATE_LABEL, toInteger(REGISTRATION), toInteger(SELECT_ENROLLMENT_DATES_IN_FUTURE), toInteger(DATA_ENTRY_METHOD), toInteger(IGNORE_OVERDUE_EVENTS),
+                toInteger(RELATIONSHIP_FROM_A), toInteger(SELECT_INCIDENT_DATES_IN_FUTURE), toInteger(CAPTURE_COORDINATES), toInteger(USE_FIRST_STAGE_DURING_REGISTRATION), toInteger(DISPLAY_FRONT_PAGE_LIST), PROGRAM_TYPE,
+                RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, UID, TRACKED_ENTITY, CATEGORY_COMBO
         );
         assertThatCursor(cursor).isExhausted();
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_sqlite_constraint_exception_when__persistProgramWithInvalidRelationshipTypeForeignKey() {
         store.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, RELATIONSHIP_FROM_A, null, null, null, null, PROGRAM_TYPE,
-                "wrong", null, null, TRACKED_ENTITY);
+                "wrong", null, null, TRACKED_ENTITY, CATEGORY_COMBO);
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_sqlite_constraint_exception_when__persistProgramWithInvalidTrackedEntityForeignKey() {
         store.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, RELATIONSHIP_FROM_A, null, null, null, null, PROGRAM_TYPE,
-                RELATIONSHIP_TYPE, null, null, "wrong");
+                RELATIONSHIP_TYPE, null, null, "wrong", CATEGORY_COMBO);
     }
 
     @Test
+    @MediumTest
     public void insert_program_in_data_base_when_insert_nullable_program() {
         long rowId = store.insert(
                 UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
-                null, null, null, PROGRAM_TYPE, null, null, null, null);
+                null, null, null, PROGRAM_TYPE, null, null, null, null, null);
 
         Cursor cursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, toInteger(RELATIONSHIP_FROM_A), null,
-                null, null, null, PROGRAM_TYPE, null, null, null, null).isExhausted();
+                null, null, null, PROGRAM_TYPE, null, null, null, null, null).isExhausted();
     }
 
     @Test
+    @MediumTest
     public void delete_program_when_delete_relationship_type_foreign_key() {
         store.insert(
                 UID,
@@ -350,7 +356,8 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE,
                 RELATIONSHIP_TEXT,
                 null,
-                TRACKED_ENTITY
+                TRACKED_ENTITY,
+                CATEGORY_COMBO
         );
 
         database().delete(RelationshipTypeModel.TABLE,
@@ -361,6 +368,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_program_when_delete_tracked_entity_foreign_key() {
         store.insert(
                 UID,
@@ -391,7 +399,8 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE,
                 RELATIONSHIP_TEXT,
                 null,
-                TRACKED_ENTITY
+                TRACKED_ENTITY,
+                CATEGORY_COMBO
         );
 
         database().delete(TrackedEntityModel.TABLE,
@@ -402,6 +411,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_program_in_data_base_when_update() throws Exception {
         // insert program into database
         ContentValues program = new ContentValues();
@@ -428,7 +438,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD, IGNORE_OVERDUE_EVENTS,
                 RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
                 USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE,
-                null, null, null, null, UID
+                null, null, null, null, null, UID
         );
 
         // check that store returns 1 when successfully update
@@ -442,6 +452,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_program_in_data_base_when_delete() throws Exception {
         // insert program into database
         ContentValues program = new ContentValues();
@@ -468,36 +479,40 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
                 INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
                 IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
                 USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE,
-                RELATIONSHIP_TEXT, null, TRACKED_ENTITY);
+                RELATIONSHIP_TEXT, null, TRACKED_ENTITY, CATEGORY_COMBO);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
                 INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
                 IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
                 USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE,
-                RELATIONSHIP_TEXT, null, TRACKED_ENTITY, UID);
+                RELATIONSHIP_TEXT, null, TRACKED_ENTITY, CATEGORY_COMBO, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_where_uid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE,
                 INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
                 IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
                 USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE,
-                RELATIONSHIP_TEXT, null, TRACKED_ENTITY, null);
+                RELATIONSHIP_TEXT, null, TRACKED_ENTITY, CATEGORY_COMBO,null);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }

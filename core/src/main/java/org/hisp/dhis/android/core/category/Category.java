@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.category;
 
 import android.support.annotation.Nullable;
 
@@ -35,31 +35,58 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 
 import java.util.Collections;
 import java.util.List;
 
-// TODO: Write Category- Store, StoreImp, Model and their tests (Datacapture)
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Category.Builder.class)
 public abstract class Category extends BaseNameableObject {
-    private static final String JSON_PROPERTY_CATEGORY_OPTIONS = "categoryOptions";
+    private static final String CATEGORY_OPTIONS = "categoryOptions";
+    private static final String DATA_DIMENSION_TYPE = "dataDimensionType";
+
+    public static final Field<Category, String> uid = Field.create(UID);
+    public static final Field<Category, String> code = Field.create(CODE);
+    public static final Field<Category, String> name = Field.create(NAME);
+    public static final Field<Category, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<Category, String> created = Field.create(CREATED);
+    public static final Field<Category, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<Category, Boolean> deleted = Field.create(DELETED);
+    public static final Field<Category, String> shortName = Field.create(SHORT_NAME);
+    public static final Field<Category, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+    public static final Field<Category, String> dataDimensionType = Field.create(
+            DATA_DIMENSION_TYPE);
+
+    public static final NestedField<Category, CategoryOption> categoryOptions = NestedField.create(
+            CATEGORY_OPTIONS);
+
 
     @Nullable
-    @JsonProperty(JSON_PROPERTY_CATEGORY_OPTIONS)
+    @JsonProperty(DATA_DIMENSION_TYPE)
+    public abstract String dataDimensionType();
+
+    @Nullable
+    @JsonProperty(CATEGORY_OPTIONS)
     public abstract List<CategoryOption> categoryOptions();
 
     public static Builder builder() {
         return new AutoValue_Category.Builder();
     }
 
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
 
-        @JsonProperty(JSON_PROPERTY_CATEGORY_OPTIONS)
+        @JsonProperty(CATEGORY_OPTIONS)
         public abstract Builder categoryOptions(@Nullable List<CategoryOption> categoryOptions);
 
+        @JsonProperty(DATA_DIMENSION_TYPE)
+        public abstract Builder dataDimensionType(String dimensionType);
+
         // used only to support unmodifiable collections
+        @Nullable
         abstract List<CategoryOption> categoryOptions();
 
         // used only to support unmodifiable collections
@@ -67,6 +94,7 @@ public abstract class Category extends BaseNameableObject {
 
         public Category build() {
             if (categoryOptions() != null) {
+                //noinspection ConstantConditions
                 categoryOptions(Collections.unmodifiableList(categoryOptions()));
             }
 

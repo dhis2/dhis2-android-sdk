@@ -31,8 +31,11 @@ package org.hisp.dhis.android.core.dataelement;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -71,7 +74,8 @@ public class DataElementStoreShould extends AbsStoreTestCase {
             Columns.DOMAIN_TYPE,
             Columns.DIMENSION,
             Columns.DISPLAY_FORM_NAME,
-            Columns.OPTION_SET
+            Columns.OPTION_SET,
+            Columns.CATEGORY_COMBO
     };
 
     private static final long ID = 21L;
@@ -94,6 +98,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     private static final String DIMENSION = "test_dimension";
     private static final String DISPLAY_FORM_NAME = "test_displayFormName";
     private static final String OPTION_SET = "test_optionSet";
+    private static final String CATEGORY_COMBO = "test_categorycombo";
 
     private DataElementStore store;
 
@@ -113,9 +118,13 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_data_element_in_database_when_insert() {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(OptionSetModel.TABLE, null, optionSet);
+
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(ID, CATEGORY_COMBO);
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
 
         long rowId = store.insert(
                 UID,
@@ -136,7 +145,8 @@ public class DataElementStoreShould extends AbsStoreTestCase {
                 DOMAIN_TYPE,
                 DIMENSION,
                 DISPLAY_FORM_NAME,
-                OPTION_SET
+                OPTION_SET,
+                CATEGORY_COMBO
         );
         Cursor cursor = database().query(DataElementModel.TABLE, DATA_ELEMENT_PROJECTION,
                 null, null, null, null, null);
@@ -163,22 +173,29 @@ public class DataElementStoreShould extends AbsStoreTestCase {
                 DOMAIN_TYPE,
                 DIMENSION,
                 DISPLAY_FORM_NAME,
-                OPTION_SET
+                OPTION_SET,
+                CATEGORY_COMBO
         ).isExhausted();
     }
 
     @Test
+    @MediumTest
     public void persist_deferrable_data_element_in_database_when_insert() {
         final String deferredOptionSetUid = "deferredOptionSetUid";
+        final String deferredCategoryComboUid = "deferredCategoryComboUid";
 
+        ContentValues optionSet = CreateOptionSetUtils.create(2L, deferredOptionSetUid);
+        database().insert(OptionSetModel.TABLE, null, optionSet);
+
+        ContentValues categoryOption = CreateCategoryComboUtils.create(2L, deferredCategoryComboUid);
+        database().insert(CategoryComboModel.TABLE, null, categoryOption);
         database().beginTransaction();
         long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT,
                 AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE, DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME,
-                deferredOptionSetUid
+                deferredOptionSetUid, deferredCategoryComboUid
         );
-        ContentValues optionSet = CreateOptionSetUtils.create(2L, deferredOptionSetUid);
-        database().insert(OptionSetModel.TABLE, null, optionSet);
+
         database().setTransactionSuccessful();
         database().endTransaction();
 
@@ -187,11 +204,12 @@ public class DataElementStoreShould extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, VALUE_TYPE, 0, AGGREGATION_OPERATOR,
                 FORM_NAME, NUMBER_TYPE, DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME,
-                deferredOptionSetUid
+                deferredOptionSetUid, deferredCategoryComboUid
         ).isExhausted();
     }
 
     @Test
+    @MediumTest
     public void persist_data_element_in_database_without_option_set_when_insert() {
         long rowId = store.insert(
                 UID,
@@ -212,6 +230,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
                 DOMAIN_TYPE,
                 DIMENSION,
                 DISPLAY_FORM_NAME,
+                null,
                 null
         );
 
@@ -241,12 +260,14 @@ public class DataElementStoreShould extends AbsStoreTestCase {
                 DOMAIN_TYPE,
                 DIMENSION,
                 DISPLAY_FORM_NAME,
+                null,
                 null
         ).isExhausted();
     }
 
     @Test(expected = SQLiteConstraintException.class)
-    public void throw_sqlite_constraint_exception_when_persist_a_data_element_with_invalid_foreign_key() {
+    @MediumTest
+    public void throw_sqlite_constraint_exception_when_persist_a_data_element_with_invalid_option_set_foreign_key() {
         String fakeOptionSetUid = "fake_option_set_uid";
         store.insert(
                 UID,
@@ -267,11 +288,13 @@ public class DataElementStoreShould extends AbsStoreTestCase {
                 DOMAIN_TYPE,
                 DIMENSION,
                 DISPLAY_FORM_NAME,
-                fakeOptionSetUid
-        );
+                fakeOptionSetUid,
+                null
+                );
     }
 
     @Test
+    @MediumTest
     public void delete_data_element_in_database_when_deleting_options_set_foreign_key() {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(OptionSetModel.TABLE, null, optionSet);
@@ -300,6 +323,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_data_element_in_database_when_update() throws Exception {
         // insert dataElement into database
         ContentValues dataElement = new ContentValues();
@@ -328,6 +352,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
                 DIMENSION,
                 DISPLAY_FORM_NAME,
                 null, // null OptionSetUid
+                null, // null categorycombo
                 UID);
 
         // checking that update was successful
@@ -341,6 +366,7 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_data_element_in_database_when_delete() throws Exception {
 
         // insert dataElement into database
@@ -365,27 +391,31 @@ public class DataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE,
-                DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET);
+                DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET, CATEGORY_COMBO);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE,
-                DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET, UID);
+                DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET, CATEGORY_COMBO, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_null_whereUid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION,
                 DISPLAY_DESCRIPTION, VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_OPERATOR, FORM_NAME, NUMBER_TYPE,
-                DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET, null);
+                DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET, CATEGORY_COMBO, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
-
 import static com.google.common.truth.Truth.assertThat;
 
 import android.database.sqlite.SQLiteDatabase;

@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import android.support.annotation.NonNull;
+import android.support.test.filters.MediumTest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,6 +54,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
     }
 
     @Test
+    @MediumTest
     public void download_tracked_entity_instance_enrollments_and_events() throws Exception {
         String teiUid = "PgmUFEQYZdt";
 
@@ -70,6 +72,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
     }
 
     @Test
+    @MediumTest
     public void remove_data_removed_in_server_after_second_download()
             throws Exception {
         String teiUid = "PgmUFEQYZdt";
@@ -101,10 +104,11 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         dhis2MockServer.enqueueMockResponse("system_info.json");
         dhis2MockServer.enqueueMockResponse("user.json");
         dhis2MockServer.enqueueMockResponse("organisationUnits.json");
+        dhis2MockServer.enqueueMockResponse("categories.json");
+        dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
         dhis2MockServer.enqueueMockResponse("option_sets.json");
-
         d2.syncMetaData().call();
     }
 
@@ -230,7 +234,9 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                     event.program(), event.programStage(), event.organisationUnit(),
                     event.eventDate(), event.status(), event.coordinates(),
                     event.completedDate(),
-                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()));
+                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()),
+                    event.attributeCategoryOptions(), event.attributeOptionCombo(),
+                    event.trackedEntityInstance());
 
             if (downloadedEvents.get(event.enrollmentUid()) == null) {
                 downloadedEvents.put(event.enrollmentUid(), new ArrayList<Event>());

@@ -14,17 +14,39 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface EventService {
+    String FILTER = "filter";
+    String ORG_UNIT = "orgUnit";
+    String PROGRAM = "program";
+    String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+    String FIELDS = "fields";
+    String PAGING = "paging";
+    String PAGE_SIZE = "pageSize";
+    String PAGE = "page";
+    String EVENTS = "events";
+    String ATTRIBUTE_CATEGORY_COMBO = "attributeCc";
+    String ATTRIBUTE_CATEGORY_OPTION = "attributeCos";
 
-    @POST("events")
+    @POST(EVENTS)
     Call<WebResponse> postEvents(@Body EventPayload events);
 
-    @GET("events")
-    Call<Payload<Event>> getEvents(@Query("orgUnit") String orgUnit,
-            @Query("program") String program,
-            @Query("trackedEntityInstance") String trackedEntityInstance,
-            @Query("fields") @Which Fields<Event> fields,
-            @Query("filter") @Where Filter<Event, String> lastUpdated,
-            @Query("filter") @Where Filter<Event, String> uids,
-            @Query("paging") Boolean paging, @Query("page") int page,
-            @Query("pageSize") int pageSize);
+    @GET(EVENTS)
+    Call<Payload<Event>> getEvents(@Query(ORG_UNIT) String orgUnit,
+            @Query(PROGRAM) String program,
+            @Query(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
+            @Query(FIELDS) @Which Fields<Event> fields,
+            @Query(FILTER) @Where Filter<Event, String> lastUpdated,
+            @Query(FILTER) @Where Filter<Event, String> uids,
+            @Query(PAGING) Boolean paging, @Query(PAGE) int page,
+            @Query(PAGE_SIZE) int pageSize);
+
+    @GET(EVENTS)
+    Call<Payload<Event>> getEvents(@Query(ORG_UNIT) String orgUnit,
+            @Query(PROGRAM) String program,
+            @Query(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
+            @Query(FIELDS) @Which Fields<Event> fields,
+            @Query(FILTER) @Where Filter<Event, String> lastUpdated,
+            @Query(FILTER) @Where Filter<Event, String> uids,
+            @Query(PAGING) Boolean paging, @Query(PAGE) int page,
+            @Query(PAGE_SIZE) int pageSize, @Query(ATTRIBUTE_CATEGORY_COMBO) String categoryCombo,
+            @Query(ATTRIBUTE_CATEGORY_OPTION) String categoryOption);
 }

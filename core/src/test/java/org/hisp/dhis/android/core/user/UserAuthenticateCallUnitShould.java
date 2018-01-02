@@ -61,10 +61,14 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 import static okhttp3.Credentials.basic;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
 import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
@@ -139,8 +143,10 @@ public class UserAuthenticateCallUnitShould {
         MockitoAnnotations.initMocks(this);
 
         userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userStore,
-                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore, authenticatedUserStore,
-                organisationUnitStore, "test_user_name", "test_user_password");
+                userCredentialsStore, userOrganisationUnitLinkStore, resourceStore,
+                authenticatedUserStore,
+                organisationUnitStore, "test_user_name", "test_user_password",
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
 
         when(userCredentials.uid()).thenReturn("test_user_credentials_uid");
         when(userCredentials.code()).thenReturn("test_user_credentials_code");
@@ -157,9 +163,11 @@ public class UserAuthenticateCallUnitShould {
         when(organisationUnit.created()).thenReturn(created);
         when(organisationUnit.lastUpdated()).thenReturn(lastUpdated);
         when(organisationUnit.shortName()).thenReturn("test_organisation_unit_short_name");
-        when(organisationUnit.displayShortName()).thenReturn("test_organisation_unit_display_short_name");
+        when(organisationUnit.displayShortName()).thenReturn(
+                "test_organisation_unit_display_short_name");
         when(organisationUnit.description()).thenReturn("test_organisation_unit_description");
-        when(organisationUnit.displayDescription()).thenReturn("test_organisation_unit_display_description");
+        when(organisationUnit.displayDescription()).thenReturn(
+                "test_organisation_unit_display_description");
         when(organisationUnit.path()).thenReturn("test_organisation_unit_path");
         when(organisationUnit.openingDate()).thenReturn(created);
         when(organisationUnit.closedDate()).thenReturn(lastUpdated);
@@ -193,7 +201,8 @@ public class UserAuthenticateCallUnitShould {
         when(user.organisationUnits()).thenReturn(organisationUnits);
 
 
-        when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(userCall);
+        when(userService.authenticate(any(String.class), any(Fields.class), anyBoolean(),
+                anyString())).thenReturn(userCall);
 
         when(databaseAdapter.beginNewTransaction()).then(new Answer<Transaction>() {
             @Override
@@ -210,7 +219,8 @@ public class UserAuthenticateCallUnitShould {
     public void invoke_server_with_correct_parameters_after_call() throws Exception {
         when(userCall.execute()).thenReturn(Response.success(user));
         when(userService.authenticate(
-                credentialsCaptor.capture(), filterCaptor.capture())
+                credentialsCaptor.capture(), filterCaptor.capture(), anyBoolean(),
+                anyString())
         ).thenReturn(userCall);
 
         userAuthenticateCall.call();
@@ -221,7 +231,8 @@ public class UserAuthenticateCallUnitShould {
         assertThat(filterCaptor.getValue().fields())
                 .contains(User.uid, User.code, User.name, User.displayName, User.created,
                         User.lastUpdated, User.birthday, User.education, User.gender, User.jobTitle,
-                        User.surname, User.firstName, User.introduction, User.employer, User.interests,
+                        User.surname, User.firstName, User.introduction, User.employer,
+                        User.interests,
                         User.languages, User.email, User.phoneNumber, User.nationality,
                         User.userCredentials.with(
                                 UserCredentials.uid,
@@ -286,8 +297,9 @@ public class UserAuthenticateCallUnitShould {
     @Test
     @SuppressWarnings("unchecked")
     public void not_invoke_stores_on_exception_on_request_fail() throws Exception {
-        when(userCall.execute()).thenReturn(Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
-                ResponseBody.create(MediaType.parse("application/json"), "{}")));
+        when(userCall.execute()).thenReturn(
+                Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
+                        ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
         Response<User> userResponse = userAuthenticateCall.call();
 

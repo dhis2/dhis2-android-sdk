@@ -47,6 +47,7 @@ import java.util.List;
 import retrofit2.Response;
 
 import static okhttp3.Credentials.basic;
+
 import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 
 // ToDo: ask about API changes
@@ -63,6 +64,8 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     private final ResourceStore resourceStore;
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitStore organisationUnitStore;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     // username and password of candidate
     private final String username;
@@ -80,7 +83,12 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             @NonNull AuthenticatedUserStore authenticatedUserStore,
             @NonNull OrganisationUnitStore organisationUnitStore,
             @NonNull String username,
-            @NonNull String password) {
+            @NonNull String password,
+            boolean isTranslationOn,
+            @NonNull String translationLocale) {
+
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
         this.userService = userService;
 
         this.databaseAdapter = databaseAdapter;
@@ -159,7 +167,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                         OrganisationUnit.level,
                         OrganisationUnit.parent.with(
                                 OrganisationUnit.uid))
-        ).build()).execute();
+        ).build(), isTranslationOn, translationLocale).execute();
     }
 
     private Long saveUser(Response<User> response) {
@@ -188,7 +196,8 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             UserCredentials userCredentials = user.userCredentials();
             userCredentialsStore.insert(
                     userCredentials.uid(), userCredentials.code(), userCredentials.name(),
-                    userCredentials.displayName(), userCredentials.created(), userCredentials.lastUpdated(),
+                    userCredentials.displayName(), userCredentials.created(),
+                    userCredentials.lastUpdated(),
                     userCredentials.username(), user.uid()
             );
 
@@ -219,7 +228,8 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                             organisationUnit.path(),
                             organisationUnit.openingDate(),
                             organisationUnit.closedDate(),
-                            organisationUnit.parent() == null ? null : organisationUnit.parent().uid(),
+                            organisationUnit.parent() == null ? null
+                                    : organisationUnit.parent().uid(),
                             organisationUnit.level()
                     );
 
@@ -229,7 +239,8 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
                     // insert link between user and organisation unit
                     userOrganisationUnitLinkStore.insert(
-                            user.uid(), organisationUnit.uid(), OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name()
+                            user.uid(), organisationUnit.uid(),
+                            OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name()
                     );
                 }
             }

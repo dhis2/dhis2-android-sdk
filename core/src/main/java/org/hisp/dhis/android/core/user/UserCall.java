@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user;
 
 
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.calls.Call;
@@ -60,15 +61,22 @@ public final class UserCall implements Call<Response<User>> {
     // server date time
     private final Date serverDate;
     private boolean isExecuted;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     public UserCall(UserService userService,
-                    DatabaseAdapter databaseAdapter,
-                    UserStore userStore,
-                    UserCredentialsStore userCredentialsStore,
-                    UserRoleStore userRoleStore,
-                    ResourceStore resourceStore,
-                    Date serverDate,
-                    UserRoleProgramLinkStore userRoleProgramLinkStore) {
+            DatabaseAdapter databaseAdapter,
+            UserStore userStore,
+            UserCredentialsStore userCredentialsStore,
+            UserRoleStore userRoleStore,
+            ResourceStore resourceStore,
+            Date serverDate,
+            UserRoleProgramLinkStore userRoleProgramLinkStore,
+            boolean isTranslationOn,
+            @NonNull String translationLocale) {
+
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
         this.userService = userService;
         this.databaseAdapter = databaseAdapter;
         this.userCredentialsStore = userCredentialsStore;
@@ -97,8 +105,10 @@ public final class UserCall implements Call<Response<User>> {
         Response<User> response = getUser();
         if (response.isSuccessful()) {
             UserHandler userHandler = new UserHandler(userStore);
-            UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
-            UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore, userRoleProgramLinkStore);
+            UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(
+                    userCredentialsStore);
+            UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore,
+                    userRoleProgramLinkStore);
             ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
             Transaction transaction = databaseAdapter.beginNewTransaction();
@@ -140,7 +150,8 @@ public final class UserCall implements Call<Response<User>> {
                         UserCredentials.created,
                         UserCredentials.lastUpdated,
                         UserCredentials.username,
-                        UserCredentials.userRoles.with(UserRole.uid, UserRole.programs.with(Program.uid))
+                        UserCredentials.userRoles.with(UserRole.uid,
+                                UserRole.programs.with(Program.uid))
                 ),
                 User.organisationUnits.with(
                         OrganisationUnit.uid,
@@ -149,7 +160,7 @@ public final class UserCall implements Call<Response<User>> {
                 ),
                 User.teiSearchOrganisationUnits.with(OrganisationUnit.uid)
         ).build();
-        return userService.getUser(fields).execute();
+        return userService.getUser(fields, isTranslationOn, translationLocale).execute();
     }
 
 }

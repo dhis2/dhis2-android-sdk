@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.user;
 
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_LOCALE;
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLATION;
+
 import org.hisp.dhis.android.core.data.api.Which;
 import org.hisp.dhis.android.core.data.api.Fields;
 
@@ -40,9 +43,11 @@ public interface UserService {
 
     @GET("me")
     Call<User> authenticate(@Header("Authorization") String credentials,
-            @Query("fields") @Which Fields<User> fields);
+            @Query("fields") @Which Fields<User> fields,
+            @Query("translation") boolean isTranslationOn, @Query("locale") String locale);
 
     @GET("me")
-    Call<User> getUser(@Query("fields") @Which Fields<User> fields);
+    Call<User> getUser(@Query("fields") @Which Fields<User> fields,
+            @Query(QUERY_TRANSLATION) boolean isTranslationOn, @Query(QUERY_LOCALE) String locale);
 
 }

@@ -107,7 +107,8 @@ public class MetadataCall implements Call<Response> {
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramIndicatorStore programIndicatorStore;
-    private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
+    private final ProgramStageSectionProgramIndicatorLinkStore
+            programStageSectionProgramIndicatorLinkStore;
     private final ProgramRuleActionStore programRuleActionStore;
     private final ProgramRuleStore programRuleStore;
     private final OptionStore optionStore;
@@ -122,40 +123,44 @@ public class MetadataCall implements Call<Response> {
     private boolean isExecuted;
 
     private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
-                        @NonNull SystemInfoService systemInfoService,
-                        @NonNull UserService userService,
-                        @NonNull ProgramService programService,
-                        @NonNull OrganisationUnitService organisationUnitService,
-                        @NonNull TrackedEntityService trackedEntityService,
-                        @NonNull OptionSetService optionSetService,
-                        @NonNull SystemInfoStore systemInfoStore,
-                        @NonNull ResourceStore resourceStore,
-                        @NonNull UserStore userStore,
-                        @NonNull UserCredentialsStore userCredentialsStore,
-                        @NonNull UserRoleStore userRoleStore,
-                        @NonNull UserRoleProgramLinkStore userRoleProgramLinkStore,
-                        @NonNull OrganisationUnitStore organisationUnitStore,
-                        @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                        @NonNull ProgramStore programStore,
-                        @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
-                        @NonNull ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
-                        @NonNull ProgramRuleVariableStore programRuleVariableStore,
-                        @NonNull ProgramIndicatorStore programIndicatorStore,
-                        @NonNull ProgramStageSectionProgramIndicatorLinkStore
-                                programStageSectionProgramIndicatorLinkStore,
-                        @NonNull ProgramRuleActionStore programRuleActionStore,
-                        @NonNull ProgramRuleStore programRuleStore,
-                        @NonNull OptionStore optionStore,
-                        @NonNull OptionSetStore optionSetStore,
-                        @NonNull DataElementStore dataElementStore,
-                        @NonNull ProgramStageDataElementStore programStageDataElementStore,
-                        @NonNull ProgramStageSectionStore programStageSectionStore,
-                        @NonNull ProgramStageStore programStageStore,
-                        @NonNull RelationshipTypeStore relationshipStore,
-                        @NonNull TrackedEntityStore trackedEntityStore,
-                        @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore) {
+            @NonNull SystemInfoService systemInfoService,
+            @NonNull UserService userService,
+            @NonNull ProgramService programService,
+            @NonNull OrganisationUnitService organisationUnitService,
+            @NonNull TrackedEntityService trackedEntityService,
+            @NonNull OptionSetService optionSetService,
+            @NonNull SystemInfoStore systemInfoStore,
+            @NonNull ResourceStore resourceStore,
+            @NonNull UserStore userStore,
+            @NonNull UserCredentialsStore userCredentialsStore,
+            @NonNull UserRoleStore userRoleStore,
+            @NonNull UserRoleProgramLinkStore userRoleProgramLinkStore,
+            @NonNull OrganisationUnitStore organisationUnitStore,
+            @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+            @NonNull ProgramStore programStore,
+            @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
+            @NonNull ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
+            @NonNull ProgramRuleVariableStore programRuleVariableStore,
+            @NonNull ProgramIndicatorStore programIndicatorStore,
+            @NonNull ProgramStageSectionProgramIndicatorLinkStore
+                    programStageSectionProgramIndicatorLinkStore,
+            @NonNull ProgramRuleActionStore programRuleActionStore,
+            @NonNull ProgramRuleStore programRuleStore,
+            @NonNull OptionStore optionStore,
+            @NonNull OptionSetStore optionSetStore,
+            @NonNull DataElementStore dataElementStore,
+            @NonNull ProgramStageDataElementStore programStageDataElementStore,
+            @NonNull ProgramStageSectionStore programStageSectionStore,
+            @NonNull ProgramStageStore programStageStore,
+            @NonNull RelationshipTypeStore relationshipStore,
+            @NonNull TrackedEntityStore trackedEntityStore,
+            @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
+            boolean isTranslationOn,
+            @NonNull String translationLocale) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -176,7 +181,8 @@ public class MetadataCall implements Call<Response> {
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
         this.programRuleVariableStore = programRuleVariableStore;
         this.programIndicatorStore = programIndicatorStore;
-        this.programStageSectionProgramIndicatorLinkStore = programStageSectionProgramIndicatorLinkStore;
+        this.programStageSectionProgramIndicatorLinkStore =
+                programStageSectionProgramIndicatorLinkStore;
         this.programRuleActionStore = programRuleActionStore;
         this.programRuleStore = programRuleStore;
         this.optionStore = optionStore;
@@ -188,6 +194,8 @@ public class MetadataCall implements Call<Response> {
         this.relationshipStore = relationshipStore;
         this.trackedEntityStore = trackedEntityStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -228,7 +236,9 @@ public class MetadataCall implements Call<Response> {
                     userRoleStore,
                     resourceStore,
                     serverDate,
-                    userRoleProgramLinkStore
+                    userRoleProgramLinkStore,
+                    isTranslationOn,
+                    translationLocale
             ).call();
             if (!response.isSuccessful()) {
                 return response;
@@ -245,10 +255,14 @@ public class MetadataCall implements Call<Response> {
 
             Set<String> programUids = getAssignedProgramUids(user);
             response = new ProgramCall(
-                    programService, databaseAdapter, resourceStore, programUids, programStore, serverDate,
-                    trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
-                    programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                    programRuleStore, optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
+                    programService, databaseAdapter, resourceStore, programUids, programStore,
+                    serverDate,
+                    trackedEntityAttributeStore, programTrackedEntityAttributeStore,
+                    programRuleVariableStore,
+                    programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
+                    programRuleActionStore,
+                    programRuleStore, optionStore, optionSetStore, dataElementStore,
+                    programStageDataElementStore,
                     programStageSectionStore, programStageStore, relationshipStore
             ).call();
             if (!response.isSuccessful()) {
@@ -302,7 +316,8 @@ public class MetadataCall implements Call<Response> {
 
         for (int j = 0; j < programStagesSize; j++) {
             ProgramStage programStage = programStages.get(j);
-            List<ProgramStageDataElement> programStageDataElements = programStage.programStageDataElements();
+            List<ProgramStageDataElement> programStageDataElements =
+                    programStage.programStageDataElements();
             int programStageDataElementSize = programStageDataElements.size();
 
             for (int k = 0; k < programStageDataElementSize; k++) {
@@ -322,7 +337,8 @@ public class MetadataCall implements Call<Response> {
                 program.programTrackedEntityAttributes();
 
         for (int j = 0; j < programTrackedEntityAttributeSize; j++) {
-            ProgramTrackedEntityAttribute programTrackedEntityAttribute = programTrackedEntityAttributes.get(j);
+            ProgramTrackedEntityAttribute programTrackedEntityAttribute =
+                    programTrackedEntityAttributes.get(j);
 
             if (programTrackedEntityAttribute.trackedEntityAttribute() != null &&
                     programTrackedEntityAttribute.trackedEntityAttribute().optionSet() != null) {
@@ -350,7 +366,8 @@ public class MetadataCall implements Call<Response> {
     }
 
     private Set<String> getAssignedProgramUids(User user) {
-        if (user == null || user.userCredentials() == null || user.userCredentials().userRoles() == null) {
+        if (user == null || user.userCredentials() == null
+                || user.userCredentials().userRoles() == null) {
             return null;
         }
 

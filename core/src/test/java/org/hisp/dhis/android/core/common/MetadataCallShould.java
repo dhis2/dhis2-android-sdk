@@ -27,6 +27,17 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -92,15 +103,6 @@ import javax.net.ssl.HttpsURLConnection;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class MetadataCallShould {
@@ -177,7 +179,8 @@ public class MetadataCallShould {
     private ProgramIndicatorStore programIndicatorStore;
 
     @Mock
-    private ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
+    private ProgramStageSectionProgramIndicatorLinkStore
+            programStageSectionProgramIndicatorLinkStore;
 
     @Mock
     private ProgramRuleActionStore programRuleActionStore;
@@ -280,7 +283,9 @@ public class MetadataCallShould {
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
 
         when(systemInfoService.getSystemInfo(any(Fields.class))).thenReturn(systemInfoCall);
-        when(userService.getUser(any(Fields.class))).thenReturn(userCall);
+        when(userService.getUser(any(Fields.class), anyBoolean(),
+                anyString())).thenReturn(
+                userCall);
         when(organisationUnitService.getOrganisationUnits(
                 anyString(), any(Fields.class), any(Filter.class), anyBoolean(), anyBoolean())
         ).thenReturn(organisationUnitCall);
@@ -300,7 +305,8 @@ public class MetadataCallShould {
         when(organisationUnit.path()).thenReturn("path/to/org/unit");
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
-        when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
+        when(organisationUnitPayload.items()).thenReturn(
+                Collections.singletonList(organisationUnit));
         when(program.trackedEntity()).thenReturn(trackedEntity);
         when(programPayload.items()).thenReturn(Collections.singletonList(program));
         when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntity));
@@ -313,13 +319,16 @@ public class MetadataCallShould {
                 databaseAdapter, systemInfoService, userService,
                 programService, organisationUnitService, trackedEntityService, optionSetService,
                 systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
+                userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
+                organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
-                programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
+                programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
+                programRuleStore,
                 optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore, trackedEntityStore,
-                organisationUnitProgramLinkStore);
+                organisationUnitProgramLinkStore, DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
@@ -365,7 +374,8 @@ public class MetadataCallShould {
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
         verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
         verify(transaction, times(expectedTransactions)).end();
-        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful();//ie last one is not marked as success...
+        verify(transaction, atMost(expectedTransactions
+                - 1)).setSuccessful();//ie last one is not marked as success...
     }
 
     @Test
@@ -380,7 +390,8 @@ public class MetadataCallShould {
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
         verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
         verify(transaction, times(expectedTransactions)).end();
-        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful(); //taking in account the sub-transactions
+        verify(transaction, atMost(expectedTransactions
+                - 1)).setSuccessful(); //taking in account the sub-transactions
     }
 
     @Test

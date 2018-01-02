@@ -130,6 +130,7 @@ import org.hisp.dhis.android.core.user.UserStoreImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
@@ -195,12 +196,16 @@ public final class D2 {
     private final EventHandler eventHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
-
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     @VisibleForTesting
-    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter) {
+    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
+            boolean isTranslationOn, @NonNull String translationLocale) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
 
         // services
         this.userService = retrofit.create(UserService.class);
@@ -320,7 +325,8 @@ public final class D2 {
 
         return new UserAuthenticateCall(userService, databaseAdapter, userStore,
                 userCredentialsStore, userOrganisationUnitLinkStore, resourceStore,
-                authenticatedUserStore, organisationUnitStore, username, password
+                authenticatedUserStore, organisationUnitStore, username, password,
+                isTranslationOn, translationLocale
         );
     }
 
@@ -386,7 +392,7 @@ public final class D2 {
                 optionSetStore, dataElementStore, programStageDataElementStore,
                 programStageSectionStore,
                 programStageStore, relationshipStore, trackedEntityStore,
-                organisationUnitProgramLinkStore);
+                organisationUnitProgramLinkStore,isTranslationOn,translationLocale);
     }
 
     @NonNull
@@ -420,6 +426,9 @@ public final class D2 {
         private ConfigurationModel configuration;
         private DatabaseAdapter databaseAdapter;
         private OkHttpClient okHttpClient;
+        private boolean isTranslationOn;
+        private Locale translationLocale = Locale.ENGLISH;
+
 
         public Builder() {
             // empty constructor
@@ -440,6 +449,12 @@ public final class D2 {
         @NonNull
         public Builder okHttpClient(@NonNull OkHttpClient okHttpClient) {
             this.okHttpClient = okHttpClient;
+            return this;
+        }
+        @NonNull
+        public Builder translation(@NonNull Locale locale) {
+            this.isTranslationOn = true;
+            this.translationLocale = locale;
             return this;
         }
 
@@ -469,7 +484,7 @@ public final class D2 {
                     .validateEagerly(true)
                     .build();
 
-            return new D2(retrofit, databaseAdapter);
+            return new D2(retrofit, databaseAdapter,isTranslationOn,translationLocale.toString());
         }
     }
 }

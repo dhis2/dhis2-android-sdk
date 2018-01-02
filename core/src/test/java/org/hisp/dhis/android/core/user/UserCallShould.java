@@ -49,6 +49,7 @@ import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -57,6 +58,7 @@ import retrofit2.Response;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -130,7 +132,7 @@ public class UserCallShould {
         userSyncCall = new UserCall(
                 userService, databaseAdapter,
                 userStore, userCredentialsStore, userRoleStore, resourceStore,
-                serverDate, userRoleProgramLinkStore
+                serverDate, userRoleProgramLinkStore, false, Locale.ENGLISH.getDisplayCountry()
         );
 
         when(userCredentials.uid()).thenReturn("user_credentials_uid");
@@ -160,7 +162,8 @@ public class UserCallShould {
         when(organisationUnit.shortName()).thenReturn("organisation_unit_shortName");
         when(organisationUnit.shortName()).thenReturn("organisation_unit_displayShortName");
         when(organisationUnit.description()).thenReturn("organisation_unit_description");
-        when(organisationUnit.displayDescription()).thenReturn("organisation_unit_displayDescription");
+        when(organisationUnit.displayDescription()).thenReturn(
+                "organisation_unit_displayDescription");
         when(organisationUnit.path()).thenReturn("organisation/unit/path");
         when(organisationUnit.openingDate()).thenReturn(created);
         when(organisationUnit.closedDate()).thenReturn(created);
@@ -194,7 +197,8 @@ public class UserCallShould {
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
-        when(userService.getUser(any(Fields.class))).thenReturn(userCall);
+        when(userService.getUser(any(Fields.class), anyBoolean(), anyString())).thenReturn(
+                userCall);
 
     }
 
@@ -202,7 +206,8 @@ public class UserCallShould {
     @SuppressWarnings("unchecked")
     public void return_correct_fields_after_invoke_user_sync_call() throws Exception {
         when(userCall.execute()).thenReturn(Response.success(user));
-        when(userService.getUser(filterCaptor.capture())).thenReturn(userCall);
+        when(userService.getUser(filterCaptor.capture(), anyBoolean(), anyString())).thenReturn(
+                userCall);
 
         // fake call to api
         userSyncCall.call();
@@ -255,13 +260,18 @@ public class UserCallShould {
             verify(transaction, never()).end();
 
             verify(userStore, never()).insert(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                    anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                    any(Date.class),
+                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                    anyString(),
                     anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
             verify(userStore, never()).update(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
+                    anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                    any(Date.class),
+                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                    anyString(),
+                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                    anyString());
             verify(userStore, never()).delete(anyString());
 
             verify(userCredentialsStore, never()).insert(
@@ -276,10 +286,12 @@ public class UserCallShould {
             verify(userCredentialsStore, never()).delete(anyString());
 
             verify(userRoleStore, never()).insert(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class)
+                    anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                    any(Date.class)
             );
             verify(userRoleStore, never()).update(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class), anyString()
+                    anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                    any(Date.class), anyString()
             );
             verify(userRoleStore, never()).delete(anyString());
         }
@@ -288,8 +300,9 @@ public class UserCallShould {
     @Test
     public void not_invoke_stores_after_call_failure() throws Exception {
         // unauthorized
-        when(userCall.execute()).thenReturn(Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
-                ResponseBody.create(MediaType.parse("application/json"), "{}")));
+        when(userCall.execute()).thenReturn(
+                Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
+                        ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
         Response<User> response = userSyncCall.call();
 
@@ -302,13 +315,18 @@ public class UserCallShould {
         verify(transaction, never()).end();
 
         verify(userStore, never()).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                any(Date.class),
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
         verify(userStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
+                anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                any(Date.class),
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                anyString());
         verify(userStore, never()).delete(anyString());
 
         verify(userCredentialsStore, never()).insert(
@@ -326,7 +344,8 @@ public class UserCallShould {
                 anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class)
         );
         verify(userRoleStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class), anyString()
+                anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                any(Date.class), anyString()
         );
         verify(userRoleStore, never()).delete(anyString());
     }
@@ -377,8 +396,10 @@ public class UserCallShould {
         userSyncCall.call();
 
         verify(userStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                any(Date.class),
+                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
+                anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
         );
 

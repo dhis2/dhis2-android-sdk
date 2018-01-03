@@ -29,12 +29,14 @@
 package org.hisp.dhis.android.core.user;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
 import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
 import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
@@ -44,15 +46,22 @@ import static org.mockito.Mockito.when;
 
 import static okhttp3.Credentials.basic;
 
+import android.support.annotation.NonNull;
+
+import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.SqLiteTransaction;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.data.server.RetrofitFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,13 +78,15 @@ import org.mockito.stubbing.Answer;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
+import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 @RunWith(JUnit4.class)
@@ -126,7 +137,7 @@ public class UserAuthenticateCallUnitShould {
     @Mock
     private Date created;
 
-    List<OrganisationUnit> organisationUnits;
+    private List<OrganisationUnit> organisationUnits;
 
     @Mock
     private Date lastUpdated;
@@ -137,15 +148,22 @@ public class UserAuthenticateCallUnitShould {
     // call we are testing
     private Call<Response<User>> userAuthenticateCall;
 
+    private Dhis2MockServer dhis2MockServer;
+    private Retrofit retrofit;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
+
         userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userStore,
                 userCredentialsHandler, resourceHandler,
                 authenticatedUserStore,
-                organisationUnitHandler, "test_user_name", "test_user_password",DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+                organisationUnitHandler, "test_user_name", "test_user_password",
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
 
         when(userCredentials.uid()).thenReturn("test_user_credentials_uid");
         when(userCredentials.code()).thenReturn("test_user_credentials_code");
@@ -173,7 +191,7 @@ public class UserAuthenticateCallUnitShould {
         when(organisationUnit.level()).thenReturn(4);
         when(organisationUnit.parent()).thenReturn(null);
 
-        organisationUnits = Arrays.asList(organisationUnit);
+        organisationUnits = Collections.singletonList(organisationUnit);
 
         when(user.uid()).thenReturn("test_user_uid");
         when(user.code()).thenReturn("test_user_code");
@@ -208,6 +226,11 @@ public class UserAuthenticateCallUnitShould {
             }
         });
 
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        dhis2MockServer.shutdown();
     }
 
     @Test
@@ -371,7 +394,7 @@ public class UserAuthenticateCallUnitShould {
 
         verify(userCredentialsHandler, times(1)).handleUserCredentials(
                 userCredentials, user);
-        verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
+        verify(organisationUnitHandler, never()).handleOrganisationUnits(anyListOf(OrganisationUnit.class),
                 any(OrganisationUnitModel.Scope.class), anyString());
     }
 
@@ -416,7 +439,8 @@ public class UserAuthenticateCallUnitShould {
 
     @Test
     public void throw_illegal_state_exception_if_user_already_signed_in() throws Exception {
-        when(authenticatedUserStore.query()).thenReturn(Arrays.asList(authenticatedUser));
+        when(authenticatedUserStore.query()).thenReturn(
+                Collections.singletonList(authenticatedUser));
 
         try {
             userAuthenticateCall.call();
@@ -426,4 +450,46 @@ public class UserAuthenticateCallUnitShould {
             // swallow exception
         }
     }
+
+    @Test
+    public void append_translation_variables_to_the_query_string()
+            throws Exception {
+
+        whenCallUserAuthenticateCallWithMockWebservice();
+
+        RecordedRequest request = dhis2MockServer.takeRequest();
+
+        thenAssertTranslationParametersAreInclude(request);
+    }
+
+    private void thenAssertTranslationParametersAreInclude(RecordedRequest request) {
+        MatcherAssert.assertThat(request.getPath(), containsString(
+                "translation=" + DEFAULT_IS_TRANSLATION_ON + "&locale="
+                        + DEFAULT_TRANSLATION_LOCALE));
+    }
+
+    private void whenCallUserAuthenticateCallWithMockWebservice() throws Exception {
+
+        UserAuthenticateCall userAuthenticateCallWithMockWebservice =
+                provideUserAuthenticateCallWithMockWebservice();
+
+        dhis2MockServer.enqueueMockResponse("me.json");
+        userAuthenticateCallWithMockWebservice.call();
+    }
+
+    @NonNull
+    private UserAuthenticateCall provideUserAuthenticateCallWithMockWebservice() {
+        UserService mockUserService = retrofit.create(UserService.class);
+
+
+        return new UserAuthenticateCall(
+                mockUserService,
+                databaseAdapter, userStore,
+                userCredentialsHandler, resourceHandler,
+                authenticatedUserStore,
+                organisationUnitHandler, "test_user_name", "test_user_password",
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+    }
+
+
 }

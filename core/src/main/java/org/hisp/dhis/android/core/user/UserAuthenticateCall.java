@@ -165,7 +165,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                         OrganisationUnit.level,
                         OrganisationUnit.parent.with(
                                 OrganisationUnit.uid))
-        ).build(),isTranslationOn, translationLocale).execute();
+        ).build(), isTranslationOn, translationLocale).execute();
     }
 
     private void saveUser(Response<User> response) throws Exception {
@@ -186,7 +186,6 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         }
     }
 
-    @NonNull
     private void handleUser(User user, Date serverDateTime) {
 
         int updatedRow = userStore.update(

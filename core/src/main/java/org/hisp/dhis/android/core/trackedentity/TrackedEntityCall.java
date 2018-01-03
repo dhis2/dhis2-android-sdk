@@ -56,19 +56,25 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
     private final Date serverDate;
     private final ResourceModel.Type resourceType = ResourceModel.Type.TRACKED_ENTITY;
     private Boolean isExecuted = false;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     public TrackedEntityCall(@Nullable Set<String> uidSet,
-                             @NonNull DatabaseAdapter databaseAdapter,
-                             @NonNull TrackedEntityStore trackedEntityStore,
-                             @NonNull ResourceStore resourceStore,
-                             @NonNull TrackedEntityService service,
-                             @NonNull Date serverDate) {
+            @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull TrackedEntityStore trackedEntityStore,
+            @NonNull ResourceStore resourceStore,
+            @NonNull TrackedEntityService service,
+            @NonNull Date serverDate,
+            boolean isTranslationOn,
+            @NonNull String translationLocale) {
         this.uidSet = uidSet;
         this.databaseAdapter = databaseAdapter;
         this.trackedEntityStore = trackedEntityStore;
         this.resourceStore = resourceStore;
         this.service = service;
         this.serverDate = new Date(serverDate.getTime());
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -88,8 +94,9 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
         }
 
         if (uidSet.size() > MAX_UIDS) {
-            throw new IllegalArgumentException("Can't handle the amount of tracked entities: " + uidSet.size() + ". " +
-                    "Max size is: " + MAX_UIDS);
+            throw new IllegalArgumentException(
+                    "Can't handle the amount of tracked entities: " + uidSet.size() + ". " +
+                            "Max size is: " + MAX_UIDS);
         }
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
@@ -121,7 +128,8 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
         return response;
     }
 
-    private Response<Payload<TrackedEntity>> getTrackedEntities(String lastUpdated) throws IOException {
+    private Response<Payload<TrackedEntity>> getTrackedEntities(String lastUpdated)
+            throws IOException {
         return service.trackedEntities(
                 Fields.<TrackedEntity>builder().fields(
                         TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
@@ -133,6 +141,6 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
                 TrackedEntity.uid.in(uidSet),
                 TrackedEntity.lastUpdated.gt(lastUpdated),
                 false
-        ).execute();
+                , isTranslationOn, translationLocale).execute();
     }
 }

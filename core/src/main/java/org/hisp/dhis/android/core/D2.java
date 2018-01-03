@@ -481,21 +481,22 @@ public final class D2 {
                 organisationUnitProgramLinkStore, categoryQuery,
                 categoryService, categoryHandler, categoryComboQuery, comboService,
                 categoryComboHandler,
-                isTranslationOn,translationLocale);
+                isTranslationOn, translationLocale);
     }
 
     @NonNull
     public Call<Response> syncSingleData(int eventLimitByOrgUnit) {
         return new SingleDataCall(organisationUnitStore, systemInfoStore, systemInfoService,
                 resourceStore,
-                eventService, databaseAdapter, resourceHandler, eventHandler, eventLimitByOrgUnit);
+                eventService, databaseAdapter, resourceHandler, eventHandler, eventLimitByOrgUnit,
+                isTranslationOn, translationLocale);
     }
 
     @NonNull
     public Call<Response> syncTrackerData() {
         return new TrackerDataCall(trackedEntityInstanceStore, systemInfoStore, systemInfoService,
                 resourceStore, trackedEntityInstanceService, databaseAdapter, resourceHandler,
-                trackedEntityInstanceHandler);
+                trackedEntityInstanceHandler, isTranslationOn, translationLocale);
     }
 
     @NonNull
@@ -540,6 +541,7 @@ public final class D2 {
             this.okHttpClient = okHttpClient;
             return this;
         }
+
         @NonNull
         public Builder translation(@NonNull Locale locale) {
             this.isTranslationOn = true;
@@ -573,7 +575,7 @@ public final class D2 {
                     .validateEagerly(true)
                     .build();
 
-            return new D2(retrofit, databaseAdapter,isTranslationOn,translationLocale.toString());
+            return new D2(retrofit, databaseAdapter, isTranslationOn, translationLocale.toString());
         }
     }
 }

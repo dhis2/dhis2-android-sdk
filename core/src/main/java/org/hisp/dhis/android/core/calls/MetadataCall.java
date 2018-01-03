@@ -98,7 +98,7 @@ import java.util.Set;
 import retrofit2.Response;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
- "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
+        "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
 public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
@@ -236,7 +236,7 @@ public class MetadataCall implements Call<Response> {
         }
     }
 
-    @SuppressWarnings("PMD.NPathComplexity")
+    @SuppressWarnings({"PMD.NPathComplexity", "PMD.ExcessiveMethodLength"})
     @Override
     public Response call() throws Exception {
         synchronized (this) {
@@ -252,7 +252,8 @@ public class MetadataCall implements Call<Response> {
         try {
             response = new SystemInfoCall(
                     databaseAdapter, systemInfoStore,
-                    systemInfoService, resourceStore
+                    systemInfoService, resourceStore,
+                    isTranslationOn, translationLocale
             ).call();
             if (!response.isSuccessful()) {
                 return response;
@@ -280,7 +281,7 @@ public class MetadataCall implements Call<Response> {
             response = new OrganisationUnitCall(
                     user, organisationUnitService, databaseAdapter, organisationUnitStore,
                     resourceStore, serverDate, userOrganisationUnitLinkStore,
-                    organisationUnitProgramLinkStore).call();
+                    organisationUnitProgramLinkStore, isTranslationOn, translationLocale).call();
             if (!response.isSuccessful()) {
                 return response;
             }
@@ -305,7 +306,8 @@ public class MetadataCall implements Call<Response> {
                     programRuleActionStore,
                     programRuleStore, optionStore, optionSetStore, dataElementStore,
                     programStageDataElementStore,
-                    programStageSectionStore, programStageStore, relationshipStore
+                    programStageSectionStore, programStageStore, relationshipStore, isTranslationOn,
+                    translationLocale
             ).call();
             if (!response.isSuccessful()) {
                 return response;
@@ -315,7 +317,8 @@ public class MetadataCall implements Call<Response> {
             Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
             response = new TrackedEntityCall(
                     trackedEntityUids, databaseAdapter, trackedEntityStore,
-                    resourceStore, trackedEntityService, serverDate
+                    resourceStore, trackedEntityService, serverDate, isTranslationOn,
+                    translationLocale
             ).call();
             if (!response.isSuccessful()) {
                 return response;
@@ -324,7 +327,7 @@ public class MetadataCall implements Call<Response> {
             Set<String> optionSetUids = getAssignedOptionSetUids(programs);
             response = new OptionSetCall(
                     optionSetService, optionSetStore, databaseAdapter, resourceStore,
-                    optionSetUids, serverDate, optionStore
+                    optionSetUids, serverDate, optionStore, isTranslationOn, translationLocale
             ).call();
             if (!response.isSuccessful()) {
                 return response;
@@ -461,7 +464,8 @@ public class MetadataCall implements Call<Response> {
         ResponseValidator<Category> validator = new ResponseValidator<>();
         return new CategoryEndpointCall(categoryQuery, categoryService, validator,
                 categoryHandler,
-                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
+                new ResourceHandler(resourceStore), databaseAdapter, serverDate, isTranslationOn,
+                translationLocale).call();
     }
 
     private Response<Payload<CategoryCombo>> downloadCategoryCombos(Date serverDate)
@@ -471,6 +475,7 @@ public class MetadataCall implements Call<Response> {
 
         return new CategoryComboEndpointCall(categoryComboQuery, categoryComboService,
                 comboValidator, categoryComboHandler,
-                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
+                new ResourceHandler(resourceStore), databaseAdapter, serverDate, isTranslationOn,
+                translationLocale).call();
     }
 }

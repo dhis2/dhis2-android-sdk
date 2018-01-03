@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.option;
 
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -56,13 +58,16 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     private final Date serverDate;
     private final Set<String> uids;
     private boolean isExecuted;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     public OptionSetCall(OptionSetService optionSetService,
-                         OptionSetStore optionSetStore,
-                         DatabaseAdapter databaseAdapter,
-                         ResourceStore resourceStore,
-                         Set<String> uids,
-                         Date serverDate, OptionStore optionStore) {
+            OptionSetStore optionSetStore,
+            DatabaseAdapter databaseAdapter,
+            ResourceStore resourceStore,
+            Set<String> uids,
+            Date serverDate, OptionStore optionStore, boolean isTranslationOn,
+            @NonNull String translationLocale) {
         this.optionSetService = optionSetService;
         this.optionSetStore = optionSetStore;
         this.databaseAdapter = databaseAdapter;
@@ -70,6 +75,8 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
         this.uids = uids;
         this.serverDate = new Date(serverDate.getTime());
         this.optionStore = optionStore;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
 
@@ -92,7 +99,8 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
 
         if (uids.size() > MAX_UIDS) {
             throw new IllegalArgumentException(
-                    "Can't handle the amount of option sets: " + uids.size() + ". " + "Max size is: " + MAX_UIDS);
+                    "Can't handle the amount of option sets: " + uids.size() + ". "
+                            + "Max size is: " + MAX_UIDS);
 
         }
         Response<Payload<OptionSet>> response = getOptionSets(uids);
@@ -118,7 +126,8 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
                 )
         ).build();
 
-        return optionSetService.optionSets(false, optionSetFields, OptionSet.uid.in(uids)).execute();
+        return optionSetService.optionSets(false, optionSetFields, OptionSet.uid.in(uids),
+                isTranslationOn, translationLocale).execute();
     }
 
     private void saveOptionSets(Response<Payload<OptionSet>> response) {

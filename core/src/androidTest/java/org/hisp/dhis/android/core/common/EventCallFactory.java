@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.common;
 
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
+
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -29,11 +32,11 @@ public class EventCallFactory {
                 .withPageLimit(pageLimit)
                 .build();
 
-        EventEndPointCall eventEndPointCall = new EventEndPointCall(eventService, databaseAdapter,
+        return new EventEndPointCall(eventService, databaseAdapter,
                 resourceHandler,
-                eventHandler, new Date(), eventQuery);
+                eventHandler, new Date(), eventQuery, DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
 
-        return eventEndPointCall;
     }
 
     public static EventEndPointCall create(Retrofit retrofit,
@@ -63,10 +66,10 @@ public class EventCallFactory {
                 .withCategoryComboAndCategoryOption(categoryCombo, categoryOption)
                 .build();
 
-        EventEndPointCall eventEndPointCall = new EventEndPointCall(eventService, databaseAdapter,
+        return new EventEndPointCall(eventService, databaseAdapter,
                 resourceHandler,
-                eventHandler, new Date(), eventQuery);
+                eventHandler, new Date(), eventQuery, DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
 
-        return eventEndPointCall;
     }
 }

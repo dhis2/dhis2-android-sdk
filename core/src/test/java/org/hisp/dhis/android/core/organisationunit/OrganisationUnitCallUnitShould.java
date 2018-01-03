@@ -27,19 +27,23 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.Cursor;
 
+import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.data.server.RetrofitFactory;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,11 +64,18 @@ import javax.net.ssl.HttpsURLConnection;
 import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
+import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import static junit.framework.Assert.fail;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
@@ -76,17 +87,10 @@ import static org.mockito.Mockito.when;
 public class OrganisationUnitCallUnitShould {
 
     @Mock
-    private Cursor cursor;
-
-    @Mock
     private DatabaseAdapter database;
 
     @Mock
     private Transaction transaction;
-
-
-    @Mock
-    private OrganisationUnitHandler organisationUnitHandler;
 
     @Mock
     private OrganisationUnitStore organisationUnitStore;
@@ -128,9 +132,6 @@ public class OrganisationUnitCallUnitShould {
     private OrganisationUnit organisationUnit;
 
     @Mock
-    private OrganisationUnit organisationUnit2;
-
-    @Mock
     private Payload<OrganisationUnit> payload;
 
     @Mock
@@ -148,8 +149,16 @@ public class OrganisationUnitCallUnitShould {
     //the call we are testing:
     private OrganisationUnitCall organisationUnitCall;
 
+    private Dhis2MockServer dhis2MockServer;
+
+    private Retrofit retrofit;
+
     @Before
     public void setUp() throws IOException {
+
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
+
         MockitoAnnotations.initMocks(this);
         lastUpdated = new Date();
 
@@ -162,9 +171,11 @@ public class OrganisationUnitCallUnitShould {
         when(organisationUnit.created()).thenReturn(created);
         when(organisationUnit.lastUpdated()).thenReturn(lastUpdated);
         when(organisationUnit.shortName()).thenReturn("organisation_unit_short_name");
-        when(organisationUnit.displayShortName()).thenReturn("organisation_unit_display_short_name");
+        when(organisationUnit.displayShortName()).thenReturn(
+                "organisation_unit_display_short_name");
         when(organisationUnit.description()).thenReturn("organisation_unit_description");
-        when(organisationUnit.displayDescription()).thenReturn("organisation_unit_display_description");
+        when(organisationUnit.displayDescription()).thenReturn(
+                "organisation_unit_display_description");
         when(organisationUnit.path()).thenReturn("/root/orgUnitUid1");
         when(organisationUnit.openingDate()).thenReturn(created);
         when(organisationUnit.closedDate()).thenReturn(lastUpdated);
@@ -197,16 +208,23 @@ public class OrganisationUnitCallUnitShould {
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
                 organisationUnitStore,
                 resourceStore,
-                serverDate, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
+                serverDate, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
 
         //Return only one organisationUnit.
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
 
         when(organisationUnitService.getOrganisationUnits(
-                uidCaptor.capture(), fieldsCaptor.capture(), filterCaptor.capture(), descendantsCaptor.capture(),
-                pagingCaptor.capture()
+                uidCaptor.capture(), fieldsCaptor.capture(), filterCaptor.capture(),
+                descendantsCaptor.capture(),
+                pagingCaptor.capture(), anyBoolean(), anyString()
         )).thenReturn(retrofitCall);
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        dhis2MockServer.shutdown();
     }
 
     @Test
@@ -219,12 +237,14 @@ public class OrganisationUnitCallUnitShould {
         assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
         assertThat(fieldsCaptor.getValue().fields()).contains(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
+                OrganisationUnit.displayName, OrganisationUnit.created,
+                OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
                 OrganisationUnit.path, OrganisationUnit.openingDate,
                 OrganisationUnit.closedDate, OrganisationUnit.level, OrganisationUnit.deleted,
-                OrganisationUnit.parent.with(OrganisationUnit.uid), OrganisationUnit.programs.with(Program.uid)
+                OrganisationUnit.parent.with(OrganisationUnit.uid),
+                OrganisationUnit.programs.with(Program.uid)
         );
         assertThat(filterCaptor.getValue()).isNull();
         assertThat(descendantsCaptor.getValue()).isTrue();
@@ -243,7 +263,8 @@ public class OrganisationUnitCallUnitShould {
         assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
         assertThat(fieldsCaptor.getValue().fields()).contains(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
+                OrganisationUnit.displayName, OrganisationUnit.created,
+                OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
                 OrganisationUnit.path, OrganisationUnit.openingDate,
@@ -294,7 +315,8 @@ public class OrganisationUnitCallUnitShould {
     @Test
     @SuppressWarnings("unchecked")
     public void invoke_store_if_request_succeeds() throws Exception {
-        Headers headers = new Headers.Builder().add(HeaderUtils.DATE, lastUpdated.toString()).build();
+        Headers headers = new Headers.Builder().add(HeaderUtils.DATE,
+                lastUpdated.toString()).build();
         when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
         Response<Payload<OrganisationUnit>> response = Response.success(payload, headers);
         when(retrofitCall.execute()).thenReturn(response);
@@ -306,7 +328,8 @@ public class OrganisationUnitCallUnitShould {
         verify(transaction, times(1)).end();
 
         verify(organisationUnitStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                any(Date.class),
                 anyString(), anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyInt()
         );
@@ -342,9 +365,12 @@ public class OrganisationUnitCallUnitShould {
     @Test
     @SuppressWarnings("unchecked")
     public void mark_as_executed_after_call() {
-        when(organisationUnitStore.insert(any(String.class), any(String.class), any(String.class), any(String.class),
-                any(Date.class), any(Date.class), any(String.class), any(String.class), any(String.class),
-                any(String.class), any(String.class), any(Date.class), any(Date.class), any(String.class),
+        when(organisationUnitStore.insert(any(String.class), any(String.class), any(String.class),
+                any(String.class),
+                any(Date.class), any(Date.class), any(String.class), any(String.class),
+                any(String.class),
+                any(String.class), any(String.class), any(Date.class), any(Date.class),
+                any(String.class),
                 any(Integer.class))
         ).thenThrow(IOException.class);
 
@@ -367,5 +393,40 @@ public class OrganisationUnitCallUnitShould {
         } catch (Exception e) {
             assertThat(organisationUnitCall.isExecuted()).isTrue();
         }
+    }
+
+    @Test
+    public void append_translation_variables_to_the_query_string()
+            throws Exception {
+
+        whenCallOrganizationUnitCall();
+
+        thenAssertTranslationParametersAreInclude();
+    }
+
+    private void whenCallOrganizationUnitCall() throws Exception {
+        OrganisationUnitCall callWithMockWebservice = provideOrganizationUnitCallWithMockWebservice();
+
+        dhis2MockServer.enqueueMockResponse("organisationUnits.json");
+        callWithMockWebservice.call();
+    }
+
+    private void thenAssertTranslationParametersAreInclude() throws InterruptedException {
+        RecordedRequest request = dhis2MockServer.takeRequest();
+
+        MatcherAssert.assertThat(request.getPath(), containsString(
+                "translation=" + DEFAULT_IS_TRANSLATION_ON + "&locale="
+                        + DEFAULT_TRANSLATION_LOCALE));
+    }
+
+    private OrganisationUnitCall provideOrganizationUnitCallWithMockWebservice() {
+        OrganisationUnitService mockService = retrofit.create(OrganisationUnitService.class);
+
+        return new OrganisationUnitCall(user, mockService,
+                database,
+                organisationUnitStore,
+                resourceStore,
+                serverDate, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
     }
 }

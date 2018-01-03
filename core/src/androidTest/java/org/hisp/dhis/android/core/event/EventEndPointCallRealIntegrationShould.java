@@ -48,7 +48,7 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
 
         eventEndPointCall.call();
 
-        verifyDownloadedEvents(49);
+        verifyDownloadedEvents(50);
     }
 
     @Test

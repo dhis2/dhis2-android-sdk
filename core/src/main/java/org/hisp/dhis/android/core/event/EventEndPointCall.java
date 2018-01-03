@@ -25,15 +25,18 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
     private final Date serverDate;
     private final ResourceHandler resourceHandler;
     private final EventHandler eventHandler;
-
     private boolean isExecuted;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
+    @SuppressWarnings("ConstantConditions")
     public EventEndPointCall(@NonNull EventService eventService,
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull ResourceHandler resourceHandler,
             @NonNull EventHandler eventHandler,
             @NonNull Date serverDate,
-            @NonNull EventQuery eventQuery) {
+            @NonNull EventQuery eventQuery, boolean isTranslationOn,
+            @NonNull String translationLocale) {
 
         this.eventService = eventService;
         this.databaseAdapter = databaseAdapter;
@@ -41,6 +44,8 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
         this.eventHandler = eventHandler;
         this.eventQuery = eventQuery;
         this.serverDate = new Date(serverDate.getTime());
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
 
         if (eventQuery != null && eventQuery.getUIds() != null &&
                 eventQuery.getUIds().size() > MAX_UIDS) {
@@ -77,17 +82,19 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
                     eventQuery.getOrgUnit(), eventQuery.getProgram(),
                     eventQuery.getTrackedEntityInstance(), getSingleFields(),
                     Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
-                    Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize()).execute();
+                    Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize(), isTranslationOn,
+                    translationLocale).execute();
         } else {
-            CategoryCombo categoryCombo =  eventQuery.getCategoryCombo();
-            CategoryOption categoryOption =  eventQuery.getCategoryOption();
+            CategoryCombo categoryCombo = eventQuery.getCategoryCombo();
+            CategoryOption categoryOption = eventQuery.getCategoryOption();
 
             eventsByLastUpdated = eventService.getEvents(
                     eventQuery.getOrgUnit(), eventQuery.getProgram(),
                     eventQuery.getTrackedEntityInstance(), getSingleFields(),
                     Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
                     Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize(),
-                    categoryCombo.uid(), categoryOption.uid()).execute();
+                    categoryCombo.uid(), categoryOption.uid(), isTranslationOn,
+                    translationLocale).execute();
         }
 
         if (eventsByLastUpdated.isSuccessful() && eventsByLastUpdated.body().items() != null) {

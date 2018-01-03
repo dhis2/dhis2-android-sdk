@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.common;
 
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
+
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.Category;
@@ -16,8 +19,9 @@ import java.util.Date;
 import retrofit2.Retrofit;
 
 public class CategoryCallFactory {
+
     @NonNull
-    public static CategoryEndpointCall create(Retrofit retrofit, DatabaseAdapter databaseAdapter){
+    public static CategoryEndpointCall create(Retrofit retrofit, DatabaseAdapter databaseAdapter) {
         CategoryService categoryService = retrofit.create(CategoryService.class);
 
         ResponseValidator<Category> categoryResponseValidator = new ResponseValidator<>();
@@ -28,10 +32,9 @@ public class CategoryCallFactory {
 
         CategoryQuery categoryQuery = CategoryQuery.defaultQuery();
 
-        CategoryEndpointCall categoryEndpointCall = new CategoryEndpointCall(categoryQuery,
+        return new CategoryEndpointCall(categoryQuery,
                 categoryService, categoryResponseValidator, categoryHandler, resourceHandler,
-                databaseAdapter, new Date());
+                databaseAdapter, new Date(), DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
 
-        return categoryEndpointCall;
     }
 }

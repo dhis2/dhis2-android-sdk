@@ -27,6 +27,11 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_LOCALE;
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLATION;
+
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -46,6 +51,7 @@ public interface OrganisationUnitService {
             @Query("fields") @Which Fields<OrganisationUnit> fields,
             @Query("filter") @Where Filter<OrganisationUnit, String> lastUpdated,
             @Query("includeDescendants") Boolean descendants,
-            @Query("paging") Boolean paging
+            @Query("paging") Boolean paging, @Query(QUERY_TRANSLATION) boolean isTranslationOn,
+            @NonNull @Query(QUERY_LOCALE) String locale
     );
 }

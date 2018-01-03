@@ -27,13 +27,18 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.data.server.RetrofitFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,14 +54,18 @@ import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
+import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
@@ -64,6 +73,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import android.support.annotation.NonNull;
 
 @RunWith(JUnit4.class)
 public class UserCallShould {
@@ -124,15 +135,21 @@ public class UserCallShould {
     @Mock
     private UserRoleProgramLinkStore userRoleProgramLinkStore;
 
+    private Dhis2MockServer dhis2MockServer;
+    private Retrofit retrofit;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
         userSyncCall = new UserCall(
                 userService, databaseAdapter,
                 userStore, userCredentialsStore, userRoleStore, resourceStore,
-                serverDate, userRoleProgramLinkStore, false, Locale.ENGLISH.getDisplayCountry()
+                serverDate, userRoleProgramLinkStore,  DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE
         );
 
         when(userCredentials.uid()).thenReturn("user_credentials_uid");
@@ -200,6 +217,11 @@ public class UserCallShould {
         when(userService.getUser(any(Fields.class), anyBoolean(), anyString())).thenReturn(
                 userCall);
 
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        dhis2MockServer.shutdown();
     }
 
     @Test
@@ -416,5 +438,40 @@ public class UserCallShould {
 
         verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
 
+    }
+
+    @Test
+    public void append_translation_variables_to_the_query_string()
+            throws Exception {
+
+        whenCallUserCall();
+
+        thenAssertTranslationParametersAreInclude();
+    }
+
+    private void thenAssertTranslationParametersAreInclude() throws InterruptedException {
+        RecordedRequest request = dhis2MockServer.takeRequest();
+
+        MatcherAssert.assertThat(request.getPath(), containsString(
+                "translation=" + DEFAULT_IS_TRANSLATION_ON + "&locale="
+                        + DEFAULT_TRANSLATION_LOCALE));
+    }
+
+    private void whenCallUserCall() throws Exception {
+        UserCall userSyncCallWithMockWebservice = provideUserCallWithMockWebservice();
+
+        dhis2MockServer.enqueueMockResponse("me.json");
+        userSyncCallWithMockWebservice.call();
+    }
+
+    @NonNull
+    private UserCall provideUserCallWithMockWebservice() {
+        UserService mockUserService = retrofit.create(UserService.class);
+        return new UserCall(
+                mockUserService, databaseAdapter,
+                userStore, userCredentialsStore, userRoleStore, resourceStore,
+                serverDate, userRoleProgramLinkStore,  DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE
+        );
     }
 }

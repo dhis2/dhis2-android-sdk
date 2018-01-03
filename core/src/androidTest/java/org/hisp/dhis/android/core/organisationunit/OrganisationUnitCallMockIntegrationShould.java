@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.program.ProgramModel;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.user.User;
@@ -67,11 +66,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
 public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase {
-    public static final String[] ORGANISATION_UNIT_PROJECTION = {
+    private static final String[] ORGANISATION_UNIT_PROJECTION = {
             OrganisationUnitModel.Columns.UID,
             OrganisationUnitModel.Columns.CODE,
             OrganisationUnitModel.Columns.NAME,
@@ -260,14 +261,19 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-        List<OrganisationUnit> organisationUnits = Collections.singletonList(OrganisationUnit.create("O6uvpzGd5pu",
-                null, null, null, null, null, null, null, null, null, null, "/ImspTQPwCqd/O6uvpzGd5pu", null, null,
-                null, null, false));
-        UserCredentials userCredentials = UserCredentials.create("credentials_uid", "code", "name", null, null,
+        List<OrganisationUnit> organisationUnits = Collections.singletonList(
+                OrganisationUnit.create("O6uvpzGd5pu",
+                        null, null, null, null, null, null, null, null, null, null,
+                        "/ImspTQPwCqd/O6uvpzGd5pu", null, null,
+                        null, null, false));
+        UserCredentials userCredentials = UserCredentials.create("credentials_uid", "code", "name",
+                null, null,
                 null, null, null, null);
         //dependencies for the OrganisationUnitCall:
-        OrganisationUnitService organisationUnitService = retrofit.create(OrganisationUnitService.class);
-        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
+        OrganisationUnitService organisationUnitService = retrofit.create(
+                OrganisationUnitService.class);
+        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(
+                databaseAdapter());
         UserOrganisationUnitLinkStore userOrganisationUnitLinkStore =
                 new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
         OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore =
@@ -275,8 +281,10 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
         // Create a user with the root as assigned organisation unit (for the test):
-        User user = User.create("user_uid", "code", "name", "display_name", new Date(), new Date(), "birthday",
-                "education", "gender", "job_title", "surname", "firstName", "introduction", "employer", "interests",
+        User user = User.create("user_uid", "code", "name", "display_name", new Date(), new Date(),
+                "birthday",
+                "education", "gender", "job_title", "surname", "firstName", "introduction",
+                "employer", "interests",
                 "languages", "email", "phoneNumber", "nationality",
                 userCredentials,
                 organisationUnits,
@@ -325,15 +333,18 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         program8.put(ProgramModel.Columns.UID, "ur1Edk5Oe2n");
         database().insert(ProgramModel.TABLE, null, program8);
 
-        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, databaseAdapter(),
+        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
+                databaseAdapter(),
                 organisationUnitStore, resourceStore, new Date(), userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore);
+                organisationUnitProgramLinkStore, DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
     }
 
     @Test
     @MediumTest
     public void persist_organisation_unit_tree_in_data_base_after_call() throws Exception {
-        //Insert User in the User tables, such that UserOrganisationUnitLink's foreign key is satisfied:
+        //Insert User in the User tables, such that UserOrganisationUnitLink's foreign key is
+        // satisfied:
         ContentValues userContentValues = new ContentValues();
         userContentValues.put(UserModel.Columns.UID, "user_uid");
         userContentValues.put(UserModel.Columns.CODE, "code");
@@ -357,7 +368,6 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         database().insert(UserModel.TABLE, null, userContentValues);
 
 
-
         organisationUnitCall.call();
 
         Cursor organisationUnitCursor = database().query(OrganisationUnitModel.TABLE,
@@ -374,19 +384,29 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         //GBO:
         assertThatCursor(organisationUnitCursor).hasRow("YmmeuGbqOwR", "OU_544", "Gbo", "Gbo",
                 "2012-02-17T15:54:39.987", "2014-11-25T09:37:53.358", "Gbo", "Gbo", null, null,
-                "/ImspTQPwCqd/O6uvpzGd5pu/YmmeuGbqOwR", "1970-01-01T00:00:00.000", null, 3, "O6uvpzGd5pu");
+                "/ImspTQPwCqd/O6uvpzGd5pu/YmmeuGbqOwR", "1970-01-01T00:00:00.000", null, 3,
+                "O6uvpzGd5pu");
         //Selenga:
-        assertThatCursor(organisationUnitCursor).hasRow("KctpIIucige", "OU_550", "Selenga", "Selenga",
-                "2012-02-17T15:54:39.987", "2014-11-25T09:37:53.364", "Selenga", "Selenga", null, null,
-                "/ImspTQPwCqd/O6uvpzGd5pu/KctpIIucige", "1970-01-01T00:00:00.000", null, 3, "O6uvpzGd5pu");
+        assertThatCursor(organisationUnitCursor).hasRow("KctpIIucige", "OU_550", "Selenga",
+                "Selenga",
+                "2012-02-17T15:54:39.987", "2014-11-25T09:37:53.364", "Selenga", "Selenga", null,
+                null,
+                "/ImspTQPwCqd/O6uvpzGd5pu/KctpIIucige", "1970-01-01T00:00:00.000", null, 3,
+                "O6uvpzGd5pu");
         //Yengema CHP:
-        assertThatCursor(organisationUnitCursor).hasRow("EFTcruJcNmZ", "OU_636", "Yengema CHP", "Yengema CHP",
-                "2012-02-17T15:54:39.987", "2014-11-25T09:37:53.553", "Yengema CHP", "Yengema CHP", null, null,
-                "/ImspTQPwCqd/O6uvpzGd5pu/BGGmAwx33dj/EFTcruJcNmZ", "1994-01-01T00:00:00.000", null, 4, "BGGmAwx33dj");
+        assertThatCursor(organisationUnitCursor).hasRow("EFTcruJcNmZ", "OU_636", "Yengema CHP",
+                "Yengema CHP",
+                "2012-02-17T15:54:39.987", "2014-11-25T09:37:53.553", "Yengema CHP", "Yengema CHP",
+                null, null,
+                "/ImspTQPwCqd/O6uvpzGd5pu/BGGmAwx33dj/EFTcruJcNmZ", "1994-01-01T00:00:00.000", null,
+                4, "BGGmAwx33dj");
         //Wallehun MCHP:
-        assertThatCursor(organisationUnitCursor).hasRow("tZxqVn3xNrA", "OU_678886", "Wallehun MCHP", "Wallehun MCHP",
-                "2012-02-17T15:54:39.987", "2014-11-25T09:37:54.900", "Wallehun MCHP", "Wallehun MCHP", null, null,
-                "/ImspTQPwCqd/O6uvpzGd5pu/BGGmAwx33dj/tZxqVn3xNrA", "2010-01-01T00:00:00.000", null, 4, "BGGmAwx33dj");
+        assertThatCursor(organisationUnitCursor).hasRow("tZxqVn3xNrA", "OU_678886", "Wallehun MCHP",
+                "Wallehun MCHP",
+                "2012-02-17T15:54:39.987", "2014-11-25T09:37:54.900", "Wallehun MCHP",
+                "Wallehun MCHP", null, null,
+                "/ImspTQPwCqd/O6uvpzGd5pu/BGGmAwx33dj/tZxqVn3xNrA", "2010-01-01T00:00:00.000", null,
+                4, "BGGmAwx33dj");
         //Link tables:
         assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "O6uvpzGd5pu");
         assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "YmmeuGbqOwR");
@@ -396,7 +416,8 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 "tZxqVn3xNrA").isExhausted();
 
         // TODO: make sure this date is correctly formated:
-        // assertThatCursor(resourceCursor).hasRow(OrganisationUnit.class.getSimpleName(), "2017-02-21T16:44:46.000");
+        // assertThatCursor(resourceCursor).hasRow(OrganisationUnit.class.getSimpleName(),
+        // "2017-02-21T16:44:46.000");
 
     }
 

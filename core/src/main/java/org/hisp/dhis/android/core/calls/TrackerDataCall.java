@@ -33,6 +33,8 @@ public class TrackerDataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final ResourceHandler resourceHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     private boolean isExecuted;
 
@@ -44,7 +46,9 @@ public class TrackerDataCall implements Call<Response> {
             @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull ResourceHandler resourceHandler,
-            @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler) {
+            @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
+            boolean isTranslationOn,
+            @NonNull String translationLocale) {
 
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
 
@@ -56,6 +60,8 @@ public class TrackerDataCall implements Call<Response> {
         this.databaseAdapter = databaseAdapter;
         this.resourceHandler = resourceHandler;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -86,7 +92,8 @@ public class TrackerDataCall implements Call<Response> {
 
                 response = new SystemInfoCall(
                         databaseAdapter, systemInfoStore,
-                        systemInfoService, resourceStore
+                        systemInfoService, resourceStore,
+                        isTranslationOn, translationLocale
                 ).call();
 
                 if (!response.isSuccessful()) {
@@ -116,7 +123,7 @@ public class TrackerDataCall implements Call<Response> {
 
             response = new TrackedEntityInstanceEndPointCall(trackedEntityInstanceService,
                     databaseAdapter, trackedEntityInstanceHandler, resourceHandler,
-                    serverDate, entry.getValue().uid()).call();
+                    serverDate, entry.getValue().uid(), isTranslationOn, translationLocale).call();
 
             if (!response.isSuccessful()) {
                 return response;

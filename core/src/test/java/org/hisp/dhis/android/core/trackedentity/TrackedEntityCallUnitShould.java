@@ -27,16 +27,34 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
+import static junit.framework.Assert.fail;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.assertj.core.util.Sets;
+import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.data.server.RetrofitFactory;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,23 +71,12 @@ import java.util.Date;
 import java.util.HashSet;
 
 import okhttp3.Headers;
+import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Response;
-
-import static junit.framework.Assert.fail;
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import retrofit2.Retrofit;
 
 @RunWith(JUnit4.class)
 public class TrackedEntityCallUnitShould {
-
-    @Mock
-    private Cursor cursor;
 
     @Mock
     @SuppressWarnings("CannotMockFinalClass")
@@ -119,8 +126,15 @@ public class TrackedEntityCallUnitShould {
     //the call we are testing:
     private TrackedEntityCall call;
 
+    private Dhis2MockServer dhis2MockServer;
+
+    private Retrofit retrofit;
+
     @Before
     public void setUp() throws IOException {
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
+
         MockitoAnnotations.initMocks(this);
         when(trackedEntity.uid()).thenReturn("uid1");
         when(trackedEntity.code()).thenReturn("code");
@@ -135,16 +149,22 @@ public class TrackedEntityCallUnitShould {
         when(trackedEntity.displayDescription()).thenReturn("display_description");
 
         call = new TrackedEntityCall(Sets.newLinkedHashSet(trackedEntity.uid()), database,
-                trackedEntityStore, resourceStore, service, serverDate);
+                trackedEntityStore, resourceStore, service, serverDate, DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
 
         when(database.beginNewTransaction()).thenReturn(transaction);
         when(service.trackedEntities(
                 fieldsCaptor.capture(),
                 idFilterCaptor.capture(),
                 lastUpdatedFilterCaptor.capture(),
-                pagingCaptor.capture()
+                pagingCaptor.capture(), anyBoolean(), anyString()
         )).thenReturn(retrofitCall);
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        dhis2MockServer.shutdown();
     }
 
     @Test
@@ -169,7 +189,8 @@ public class TrackedEntityCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void invoke_server_with_correct_parameters_after_call_with_last_updated() throws Exception {
+    public void invoke_server_with_correct_parameters_after_call_with_last_updated()
+            throws Exception {
         String date = "2014-11-25T09:37:53.358";
         when(resourceStore.getLastUpdated(eq(ResourceModel.Type.TRACKED_ENTITY))).thenReturn(date);
         when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
@@ -217,10 +238,13 @@ public class TrackedEntityCallUnitShould {
         verify(transaction, times(1)).setSuccessful();
         verify(transaction, times(1)).end();
         verify(trackedEntityStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
+                anyString(), anyString(), anyString(), anyString(), any(Date.class),
+                any(Date.class),
                 anyString(), anyString(), anyString(), anyString());
-        //TODO: after implementing the SystemInfoCall, tests..etc modify this to actually check the date:
-        //Right now it only checks if: (Date) null is an instance of Date.class, not a terribly useful:
+        //TODO: after implementing the SystemInfoCall, tests..etc modify this to actually check
+        // the date:
+        //Right now it only checks if: (Date) null is an instance of Date.class, not a terribly
+        // useful:
         verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
     }
 
@@ -229,12 +253,13 @@ public class TrackedEntityCallUnitShould {
     @SuppressWarnings("unchecked")
     public void not_fail_on_empty_input() throws IOException {
         TrackedEntityCall call = new TrackedEntityCall(new HashSet<String>(), database,
-                trackedEntityStore, resourceStore, service, serverDate);
+                trackedEntityStore, resourceStore, service, serverDate, DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
         when(service.trackedEntities(
                 fieldsCaptor.capture(),
                 idFilterCaptor.capture(),
                 lastUpdatedFilterCaptor.capture(),
-                pagingCaptor.capture()
+                pagingCaptor.capture(), anyBoolean(), anyString()
         )).thenReturn(retrofitCall);
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
 
@@ -282,6 +307,37 @@ public class TrackedEntityCallUnitShould {
         } catch (Exception e) {
             assertThat(call.isExecuted()).isTrue();
         }
+    }
+
+    @Test
+    public void append_translation_variables_to_the_query_string()
+            throws Exception {
+
+        whenCallTrackedEntityCallWithMockWebservice();
+
+        thenAssertTranslationParametersAreInclude();
+    }
+
+    private void thenAssertTranslationParametersAreInclude() throws InterruptedException {
+        RecordedRequest request = dhis2MockServer.takeRequest();
+
+        MatcherAssert.assertThat(request.getPath(), containsString(
+                "translation=" + DEFAULT_IS_TRANSLATION_ON + "&locale="
+                        + DEFAULT_TRANSLATION_LOCALE));
+    }
+
+    private void whenCallTrackedEntityCallWithMockWebservice() throws Exception {
+        TrackedEntityService mockService = retrofit.create(TrackedEntityService.class);
+
+        TrackedEntityCall callWithMockWebservice = new TrackedEntityCall(
+                Sets.newLinkedHashSet(trackedEntity.uid()), database,
+                trackedEntityStore, resourceStore, mockService, serverDate,
+                DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
+
+        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
+        callWithMockWebservice.call();
+
     }
 }
 

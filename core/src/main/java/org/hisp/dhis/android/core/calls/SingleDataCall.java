@@ -38,6 +38,8 @@ public class SingleDataCall implements Call<Response> {
     private final int eventLimitByOrgUnit;
 
     private boolean isExecuted;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     public SingleDataCall(
             @NonNull OrganisationUnitStore organisationUnitStore,
@@ -48,7 +50,8 @@ public class SingleDataCall implements Call<Response> {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull ResourceHandler resourceHandler,
             @NonNull EventHandler eventHandler,
-            int eventLimitByOrgUnit) {
+            int eventLimitByOrgUnit, boolean isTranslationOn,
+            @NonNull String translationLocale) {
 
         this.organisationUnitStore = organisationUnitStore;
 
@@ -60,8 +63,9 @@ public class SingleDataCall implements Call<Response> {
         this.databaseAdapter = databaseAdapter;
         this.resourceHandler = resourceHandler;
         this.eventHandler = eventHandler;
-
         this.eventLimitByOrgUnit = eventLimitByOrgUnit;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -87,7 +91,9 @@ public class SingleDataCall implements Call<Response> {
 
             response = new SystemInfoCall(
                     databaseAdapter, systemInfoStore,
-                    systemInfoService, resourceStore
+                    systemInfoService, resourceStore,
+                    isTranslationOn, translationLocale
+
             ).call();
 
             if (!response.isSuccessful()) {
@@ -144,7 +150,8 @@ public class SingleDataCall implements Call<Response> {
                         .build();
 
                 response = new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
-                        eventHandler, serverDate, eventQuery).call();
+                        eventHandler, serverDate, eventQuery, isTranslationOn,
+                        translationLocale).call();
 
                 if (!response.isSuccessful()) {
                     return response;

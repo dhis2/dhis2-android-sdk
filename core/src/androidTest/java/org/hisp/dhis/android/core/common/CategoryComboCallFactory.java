@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.common;
 
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
+
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -17,21 +20,24 @@ import retrofit2.Retrofit;
 
 public class CategoryComboCallFactory {
     @NonNull
-    public static CategoryComboEndpointCall create(Retrofit retrofit, DatabaseAdapter databaseAdapter){
+    public static CategoryComboEndpointCall create(Retrofit retrofit,
+            DatabaseAdapter databaseAdapter) {
         CategoryComboService categoryComboService = retrofit.create(CategoryComboService.class);
 
         ResponseValidator<CategoryCombo> categoryComboResponseValidator = new ResponseValidator<>();
 
-        CategoryComboHandler categoryComboHandler = HandlerFactory.createCategoryComboHandler(databaseAdapter);
+        CategoryComboHandler categoryComboHandler = HandlerFactory.createCategoryComboHandler(
+                databaseAdapter);
 
         ResourceHandler resourceHandler = HandlerFactory.createResourceHandler(databaseAdapter);
 
         CategoryComboQuery categoryComboQuery = CategoryComboQuery.defaultQuery();
 
-        CategoryComboEndpointCall categoryComboEndpointCall = new CategoryComboEndpointCall(categoryComboQuery,
-                categoryComboService, categoryComboResponseValidator, categoryComboHandler, resourceHandler,
-                databaseAdapter, new Date());
+        return new CategoryComboEndpointCall(
+                categoryComboQuery,
+                categoryComboService, categoryComboResponseValidator, categoryComboHandler,
+                resourceHandler,
+                databaseAdapter, new Date(), DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
 
-        return categoryComboEndpointCall;
     }
 }

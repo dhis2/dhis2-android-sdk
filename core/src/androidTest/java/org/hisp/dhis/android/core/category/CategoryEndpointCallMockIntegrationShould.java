@@ -2,6 +2,9 @@ package org.hisp.dhis.android.core.category;
 
 import static junit.framework.Assert.assertTrue;
 
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
+
 import android.support.test.filters.MediumTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -96,7 +99,8 @@ public class CategoryEndpointCallMockIntegrationShould extends AbsStoreTestCase 
         Date serverDate = new Date();
 
         return new CategoryEndpointCall(query, categoryService, validator, handler, resourceHandler,
-                databaseAdapter(), serverDate);
+                databaseAdapter(), serverDate, DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
 
     }
 }

@@ -60,7 +60,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
@@ -81,6 +80,8 @@ import java.util.Set;
 
 import retrofit2.Response;
 
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
@@ -155,7 +156,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         ProgramRuleVariableHandler programRuleVariableHandler =
                 new ProgramRuleVariableHandler(programRuleVariableStore);
 
-        ProgramIndicatorStore programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter());
+        ProgramIndicatorStore programIndicatorStore = new ProgramIndicatorStoreImpl(
+                databaseAdapter());
         ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore =
                 new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter());
         ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(
@@ -163,10 +165,13 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 programStageSectionProgramIndicatorLinkStore
         );
 
-        ProgramRuleActionStore programRuleActionStore = new ProgramRuleActionStoreImpl(databaseAdapter());
-        ProgramRuleActionHandler programRuleActionHandler = new ProgramRuleActionHandler(programRuleActionStore);
+        ProgramRuleActionStore programRuleActionStore = new ProgramRuleActionStoreImpl(
+                databaseAdapter());
+        ProgramRuleActionHandler programRuleActionHandler = new ProgramRuleActionHandler(
+                programRuleActionStore);
         ProgramRuleStore programRuleStore = new ProgramRuleStoreImpl(databaseAdapter());
-        ProgramRuleHandler programRuleHandler = new ProgramRuleHandler(programRuleStore, programRuleActionHandler);
+        ProgramRuleHandler programRuleHandler = new ProgramRuleHandler(programRuleStore,
+                programRuleActionHandler);
 
         OptionStore optionStore = new OptionStoreImpl(databaseAdapter());
         OptionHandler optionHandler = new OptionHandler(optionStore);
@@ -175,15 +180,18 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
 
         DataElementStore dataElementStore = new DataElementStoreImpl(databaseAdapter());
-        DataElementHandler dataElementHandler = new DataElementHandler(dataElementStore, optionSetHandler);
+        DataElementHandler dataElementHandler = new DataElementHandler(dataElementStore,
+                optionSetHandler);
         ProgramStageDataElementStore programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter());
 
-        ProgramStageDataElementHandler programStageDataElementHandler = new ProgramStageDataElementHandler(
-                programStageDataElementStore, dataElementHandler
-        );
+        ProgramStageDataElementHandler programStageDataElementHandler =
+                new ProgramStageDataElementHandler(
+                        programStageDataElementStore, dataElementHandler
+                );
 
-        ProgramStageSectionStore programStageSectionStore = new ProgramStageSectionStoreImpl(databaseAdapter());
+        ProgramStageSectionStore programStageSectionStore = new ProgramStageSectionStoreImpl(
+                databaseAdapter());
         ProgramStageSectionHandler programStageSectionHandler = new ProgramStageSectionHandler(
                 programStageSectionStore,
                 programStageDataElementHandler,
@@ -198,7 +206,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         );
 
         RelationshipTypeStore relationshipStore = new RelationshipTypeStoreImpl(databaseAdapter());
-        RelationshipTypeHandler relationshipTypeHandler = new RelationshipTypeHandler(relationshipStore);
+        RelationshipTypeHandler relationshipTypeHandler = new RelationshipTypeHandler(
+                relationshipStore);
         ProgramService programService = d2.retrofit().create(ProgramService.class);
         ProgramStore programStore = new ProgramStoreImpl(databaseAdapter());
 
@@ -213,7 +222,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 relationshipTypeHandler);
 
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
 
         Set<String> uids = new HashSet<>();
         uids.add("uid1");
@@ -231,10 +240,15 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
 
         programCall = new ProgramCall(
                 programService, databaseAdapter(), resourceStore, uids, programStore, new Date(),
-                trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
-                programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore
+                trackedEntityAttributeStore, programTrackedEntityAttributeStore,
+                programRuleVariableStore,
+                programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
+                programRuleActionStore,
+                programRuleStore, optionStore, optionSetStore, dataElementStore,
+                programStageDataElementStore,
+                programStageSectionStore, programStageStore, relationshipStore,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE
+
         );
     }
 
@@ -244,7 +258,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         // Fake call to api
         programCall.call();
 
-        Cursor programCursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null);
+        Cursor programCursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null,
+                null, null, null);
 
         assertThatCursor(programCursor).hasRow(
                 "IpHINAT79UW",
@@ -310,7 +325,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 ProgramStageModel.Columns.PROGRAM
         };
         Cursor programStageCursor = database().query(ProgramStageModel.TABLE, projection,
-                ProgramStageModel.Columns.UID + "=?", new String[]{"A03MvHHogjR"}, null, null, null);
+                ProgramStageModel.Columns.UID + "=?", new String[]{"A03MvHHogjR"}, null, null,
+                null);
 
         assertThatCursor(programStageCursor).hasRow(
                 "A03MvHHogjR",
@@ -340,10 +356,9 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     /**
-     * There is no ProgramStageSections in the payload in setUpMethod. Therefore we need to check that
+     * There is no ProgramStageSections in the payload in setUpMethod. Therefore we need to check
+     * that
      * no program stage sections exists in database
-     *
-     * @throws Exception
      */
     @Test
     @MediumTest
@@ -359,7 +374,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 ProgramStageSectionModel.Columns.SORT_ORDER,
                 ProgramStageSectionModel.Columns.PROGRAM_STAGE
         };
-        Cursor programStageSectionCursor = database().query(ProgramStageSectionModel.TABLE, projection,
+        Cursor programStageSectionCursor = database().query(ProgramStageSectionModel.TABLE,
+                projection,
                 null, null, null, null, null);
 
         assertThatCursor(programStageSectionCursor).isExhausted();
@@ -387,7 +403,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION
         };
 
-        Cursor programStageDataElementCursor = database().query(ProgramStageDataElementModel.TABLE, projection,
+        Cursor programStageDataElementCursor = database().query(ProgramStageDataElementModel.TABLE,
+                projection,
                 ProgramStageDataElementModel.Columns.PROGRAM_STAGE + "=?" +
                         " AND " +
                         ProgramStageDataElementModel.Columns.DATA_ELEMENT + "=?",
@@ -504,8 +521,10 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         };
 
-        Cursor programRuleVariableCursor = database().query(ProgramRuleVariableModel.TABLE, projection,
-                ProgramRuleVariableModel.Columns.UID + "=?", new String[]{"g2GooOydipB"}, null, null, null);
+        Cursor programRuleVariableCursor = database().query(ProgramRuleVariableModel.TABLE,
+                projection,
+                ProgramRuleVariableModel.Columns.UID + "=?", new String[]{"g2GooOydipB"}, null,
+                null, null);
 
         assertThatCursor(programRuleVariableCursor).hasRow(
                 "g2GooOydipB",
@@ -546,7 +565,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER
         };
 
-        Cursor programTrackedEntityAttributeCursor = database().query(ProgramTrackedEntityAttributeModel.TABLE,
+        Cursor programTrackedEntityAttributeCursor = database().query(
+                ProgramTrackedEntityAttributeModel.TABLE,
                 projection,
                 ProgramTrackedEntityAttributeModel.Columns.UID + "=?",
                 new String[]{"l2T72XzBCLd"},
@@ -602,8 +622,10 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 TrackedEntityAttributeModel.Columns.INHERIT
         };
 
-        Cursor trackedEntityAttributeCursor = database().query(TrackedEntityAttributeModel.TABLE, projection,
-                TrackedEntityAttributeModel.Columns.UID + "=?", new String[]{"w75KJ2mc4zz"}, null, null, null);
+        Cursor trackedEntityAttributeCursor = database().query(TrackedEntityAttributeModel.TABLE,
+                projection,
+                TrackedEntityAttributeModel.Columns.UID + "=?", new String[]{"w75KJ2mc4zz"}, null,
+                null, null);
 
         assertThatCursor(trackedEntityAttributeCursor).hasRow(
                 "w75KJ2mc4zz",
@@ -657,7 +679,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         };
 
         Cursor programIndicatorCursor = database().query(ProgramIndicatorModel.TABLE, projection,
-                ProgramIndicatorModel.Columns.UID + "=?", new String[]{"rXoaHGAXWy9"}, null, null, null);
+                ProgramIndicatorModel.Columns.UID + "=?", new String[]{"rXoaHGAXWy9"}, null, null,
+                null);
         assertThatCursor(programIndicatorCursor).hasRow(
                 "rXoaHGAXWy9",
                 null,
@@ -672,7 +695,9 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 "Sum of BCG doses, measles doses and yellow fever doses." +
                         " If Apgar score over or equal to 2, multiply by 2.",
                 0, // false
-                "(#{A03MvHHogjR.bx6fsa0t90x} +  #{A03MvHHogjR.FqlgKAG8HOu} + #{A03MvHHogjR.rxBfISxXS2U}) " +
+                "(#{A03MvHHogjR.bx6fsa0t90x} +  #{A03MvHHogjR.FqlgKAG8HOu} + #{A03MvHHogjR"
+                        + ".rxBfISxXS2U}) "
+                        +
                         "* d2:condition('#{A03MvHHogjR.a3kGcGDCuk6} >= 2',1,2)",
                 "rXoaHGAXWy9",
                 null,
@@ -740,7 +765,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         };
 
         Cursor programRuleActionCursor = database().query(ProgramRuleActionModel.TABLE, projection,
-                ProgramRuleActionModel.Columns.UID + "=?", new String[]{"v434s5YPDcP"}, null, null, null);
+                ProgramRuleActionModel.Columns.UID + "=?", new String[]{"v434s5YPDcP"}, null, null,
+                null);
 
         assertThatCursor(programRuleActionCursor).hasRow(
                 "v434s5YPDcP",
@@ -763,10 +789,9 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     /**
-     * Relationship type doesn't exist for the program in the payload. Therefore we'll need to check that it doesn't
+     * Relationship type doesn't exist for the program in the payload. Therefore we'll need to check
+     * that it doesn't
      * exist in the database
-     *
-     * @throws Exception
      */
     @Test
     @MediumTest

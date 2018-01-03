@@ -60,18 +60,20 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
     private final ResourceStore resourceStore;
-
     private final Date serverDate;
     private boolean isExecuted;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     public OrganisationUnitCall(@NonNull User user,
-                                @NonNull OrganisationUnitService organisationUnitService,
-                                @NonNull DatabaseAdapter database,
-                                @NonNull OrganisationUnitStore organisationUnitStore,
-                                @NonNull ResourceStore resourceStore,
-                                @NonNull Date serverDate,
-                                @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                                @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore) {
+            @NonNull OrganisationUnitService organisationUnitService,
+            @NonNull DatabaseAdapter database,
+            @NonNull OrganisationUnitStore organisationUnitStore,
+            @NonNull ResourceStore resourceStore,
+            @NonNull Date serverDate,
+            @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+            @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
+            boolean isTranslationOn, @NonNull String translationLocale) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
         this.database = database;
@@ -80,6 +82,8 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         this.serverDate = new Date(serverDate.getTime());
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -110,7 +114,8 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
                     resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
             );
-            // Call OrganisationUnitService for each tree root & try to handleTrackedEntity sub-tree:
+            // Call OrganisationUnitService for each tree root & try to handleTrackedEntity
+            // sub-tree:
             for (String uid : rootOrgUnitUids) {
                 response = getOrganisationUnit(uid, lastUpdatedFilter);
                 if (response.isSuccessful()) {
@@ -139,14 +144,17 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
 
         Fields<OrganisationUnit> fields = Fields.<OrganisationUnit>builder().fields(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
+                OrganisationUnit.displayName, OrganisationUnit.created,
+                OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
-                OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
+                OrganisationUnit.displayDescription, OrganisationUnit.path,
+                OrganisationUnit.openingDate,
                 OrganisationUnit.closedDate, OrganisationUnit.level, OrganisationUnit.deleted,
                 OrganisationUnit.parent.with(OrganisationUnit.uid),
                 OrganisationUnit.programs.with(Program.uid)
         ).build();
-        return organisationUnitService.getOrganisationUnits(uid, fields, lastUpdatedFilter, true, false).execute();
+        return organisationUnitService.getOrganisationUnits(uid, fields, lastUpdatedFilter, true,
+                false, isTranslationOn, translationLocale).execute();
     }
 }

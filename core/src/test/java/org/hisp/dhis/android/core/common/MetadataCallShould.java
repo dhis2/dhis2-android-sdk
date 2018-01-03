@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.common;
 
 import static junit.framework.Assert.assertTrue;
+
 import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
 import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -38,10 +39,10 @@ import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
@@ -81,7 +82,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
@@ -150,14 +150,8 @@ public class MetadataCallShould {
     @Mock
     private SystemInfo systemInfo;
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<Category>> categoryInfo;
-
     @Mock
     private SystemInfoService systemInfoService;
-
-    @Mock
-    private SystemInfoHandler systemInfoHandler;
 
     @Mock
     private SystemInfoStore systemInfoStore;
@@ -289,13 +283,9 @@ public class MetadataCallShould {
     @Mock
     private CategoryQuery categoryQuery;
 
-    private CategoryService categoryService;
-
     @Mock
     private CategoryHandler categoryHandler;
 
-
-    private CategoryComboService comboService;
 
     @Mock
     private CategoryComboHandler mockCategoryComboHandler;
@@ -303,10 +293,9 @@ public class MetadataCallShould {
     // object to test
     private MetadataCall metadataCall;
 
-
     private Response errorResponse;
 
-    Dhis2MockServer  dhis2MockServer;
+    private Dhis2MockServer dhis2MockServer;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -317,20 +306,24 @@ public class MetadataCallShould {
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
 
-        when(systemInfoService.getSystemInfo(any(Fields.class))).thenReturn(systemInfoCall);
+        when(systemInfoService.getSystemInfo(any(Fields.class), anyBoolean(),
+                anyString())).thenReturn(systemInfoCall);
         when(userService.getUser(any(Fields.class), anyBoolean(),
                 anyString())).thenReturn(userCall);
         when(organisationUnitService.getOrganisationUnits(
-                anyString(), any(Fields.class), any(Filter.class), anyBoolean(), anyBoolean())
+                anyString(), any(Fields.class), any(Filter.class), anyBoolean(), anyBoolean(),
+                anyBoolean(), anyString())
         ).thenReturn(organisationUnitCall);
         when(programService.getPrograms(
-                any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
+                any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean(), anyBoolean(),
+                anyString())
         ).thenReturn(programCall);
         when(trackedEntityService.trackedEntities(
-                any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
+                any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean(),
+                anyBoolean(), anyString())
         ).thenReturn(trackedEntityCall);
         when(optionSetService.optionSets(
-                anyBoolean(), any(Fields.class), any(Filter.class))
+                anyBoolean(), any(Fields.class), any(Filter.class), anyBoolean(), anyString())
         ).thenReturn(optionSetCall);
 
 
@@ -359,29 +352,28 @@ public class MetadataCallShould {
                 .build();
 
 
-
-        categoryService = retrofit.create(CategoryService.class);
-        comboService = retrofit.create(CategoryComboService.class);
+        CategoryService categoryService = retrofit.create(CategoryService.class);
+        CategoryComboService comboService = retrofit.create(CategoryComboService.class);
 
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
-
-
-
 
 
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService,
                 programService, organisationUnitService, trackedEntityService, optionSetService,
                 systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
+                userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
+                organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
-                programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
+                programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
+                programRuleStore,
                 optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore, trackedEntityStore,
-                organisationUnitProgramLinkStore,categoryQuery, categoryService, categoryHandler,
-                CategoryComboQuery.defaultQuery(), comboService,mockCategoryComboHandler, DEFAULT_IS_TRANSLATION_ON,
+                organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
+                CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
+                DEFAULT_IS_TRANSLATION_ON,
                 DEFAULT_TRANSLATION_LOCALE);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);

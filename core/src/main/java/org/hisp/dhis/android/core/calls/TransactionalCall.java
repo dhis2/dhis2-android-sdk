@@ -25,49 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.calls;
 
-package org.hisp.dhis.android.core.data.database;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.data.database.Transaction;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import retrofit2.Response;
 
-import org.junit.After;
-import org.junit.Before;
+public abstract class TransactionalCall implements Call<Response> {
+    private boolean isExecuted;
+    protected final GenericCallData data;
 
-import java.io.IOException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
-    private String dbName = null;
-
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+    protected TransactionalCall(GenericCallData data) {
+        this.data = data;
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
+    @Override
+    public final boolean isExecuted() {
+        synchronized (this) {
+            return isExecuted;
+        }
     }
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
+    public abstract Response callBody() throws Exception;
 
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
-    }
+    @Override
+    public final Response call() throws Exception {
+        synchronized (this) {
+            if (isExecuted) {
+                throw new IllegalStateException("Already executed");
+            }
 
-    protected Cursor getCursor(String table, String[] columns) {
-        return sqLiteDatabase.query(table, columns,
-                null, null, null, null, null);
+            isExecuted = true;
+        }
+
+        Transaction transaction = data.databaseAdapter().beginNewTransaction();
+        try {
+            Response response = callBody();
+            transaction.setSuccessful();
+            return response;
+        } finally {
+            transaction.end();
+        }
     }
 }

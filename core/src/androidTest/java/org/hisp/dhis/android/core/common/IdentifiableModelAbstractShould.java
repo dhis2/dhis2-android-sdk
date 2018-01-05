@@ -26,48 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import org.hisp.dhis.android.core.utils.ColumnsAsserts;
+import org.junit.Test;
 
-import org.junit.After;
-import org.junit.Before;
+public abstract class IdentifiableModelAbstractShould<M extends BaseIdentifiableObjectModel,
+        P extends BaseIdentifiableObject> extends ModelAbstractShould<M, P> {
 
-import java.io.IOException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
-    private String dbName = null;
-
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+    public IdentifiableModelAbstractShould(String[] columns, int columnsLength, ModelFactory<M, P> modelFactory) {
+        super(columns, columnsLength, modelFactory);
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
-    }
-
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
-
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
-    }
-
-    protected Cursor getCursor(String table, String[] columns) {
-        return sqLiteDatabase.query(table, columns,
-                null, null, null, null, null);
+    @Test
+    public void have_identifiable_model_columns() {
+        ColumnsAsserts.testIdentifiableModelColumns(columns);
     }
 }

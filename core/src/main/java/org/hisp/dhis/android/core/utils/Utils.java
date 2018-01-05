@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -89,5 +90,12 @@ public final class Utils {
         }
     }
 
+    public static <T> T[] appendInNewArray(T[] first, T... rest) {
+        int totalLength = first.length + rest.length;
 
+        T[] result = Arrays.copyOf(first, totalLength);
+        int offset = first.length;
+        System.arraycopy(rest, 0, result, offset, rest.length);
+        return result;
+    }
 }

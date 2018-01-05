@@ -28,14 +28,19 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public abstract class BaseIdentifiableObjectModel extends BaseModel implements IdentifiableObject {
 
@@ -46,6 +51,10 @@ public abstract class BaseIdentifiableObjectModel extends BaseModel implements I
         public static final String DISPLAY_NAME = "displayName";
         public static final String CREATED = "created";
         public static final String LAST_UPDATED = "lastUpdated";
+
+        public static String[] all() {
+            return Utils.appendInNewArray(BaseModel.Columns.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED);
+        }
     }
 
     @Override
@@ -74,13 +83,30 @@ public abstract class BaseIdentifiableObjectModel extends BaseModel implements I
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
+    public String createdStr() {
+        return BaseIdentifiableObject.DATE_FORMAT.format(created());
+    }
+
     @Override
     @Nullable
     @ColumnName(Columns.LAST_UPDATED)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
-    protected static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
+    public String lastUpdatedStr() {
+        return BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated());
+    }
+
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, uid());
+        sqLiteBind(sqLiteStatement, 2, code());
+        sqLiteBind(sqLiteStatement, 3, name());
+        sqLiteBind(sqLiteStatement, 4, displayName());
+        sqLiteBind(sqLiteStatement, 5, created());
+        sqLiteBind(sqLiteStatement, 6, lastUpdated());
+    }
+
+    public static abstract class Builder<T extends Builder> extends BaseModel.Builder<T> {
         public abstract T uid(String uid);
 
         public abstract T code(@Nullable String code);

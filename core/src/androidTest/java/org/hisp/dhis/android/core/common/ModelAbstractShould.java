@@ -26,48 +26,56 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import android.database.MatrixCursor;
 
-import org.junit.After;
-import org.junit.Before;
-
-import java.io.IOException;
+import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
+import org.junit.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
-    private String dbName = null;
+public abstract class ModelAbstractShould<M extends BaseModel, P> {
 
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+    protected final M model;
+    protected final P pojo;
+    protected final String[] columns;
+    protected final int columnsLength;
+    protected final ModelFactory<M, P> modelFactory;
+
+    public ModelAbstractShould(String[] columns, int columnsLength, ModelFactory<M, P> modelFactory) {
+        this.model = buildModel();
+        this.pojo = buildPojo();
+        this.columns = columns;
+        this.columnsLength = columnsLength;
+        this.modelFactory = modelFactory;
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
+    protected abstract M buildModel();
+
+    protected abstract P buildPojo();
+
+    protected abstract Object[] getModelAsObjectArray();
+
+    @Test
+    public void create_model_from_cursor() {
+        MatrixCursor cursor = new MatrixCursor(ColumnsArrayUtils.getColumnsWithId(columns));
+        cursor.addRow(getModelAsObjectArray());
+        cursor.moveToFirst();
+
+        M modelFromDB = modelFactory.fromCursor(cursor);
+        cursor.close();
+
+        assertThat(modelFromDB).isEqualTo(model);
     }
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
+    @Test
+    public void create_model_from_pojo() {
+        assertThat(modelFactory.fromPojo(pojo)).isEqualTo(model);
     }
 
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
-    }
-
-    protected Cursor getCursor(String table, String[] columns) {
-        return sqLiteDatabase.query(table, columns,
-                null, null, null, null, null);
+    @Test
+    public void have_correct_number_of_columns() {
+        assertThat(columns.length).isEqualTo(columnsLength);
     }
 }

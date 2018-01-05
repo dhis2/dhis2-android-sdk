@@ -26,48 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import com.google.auto.value.AutoValue;
 
-import org.junit.After;
-import org.junit.Before;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 
-import java.io.IOException;
+import java.util.Date;
 
-import static com.google.common.truth.Truth.assertThat;
+import retrofit2.Retrofit;
 
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
-    private String dbName = null;
+@AutoValue
+public abstract class GenericCallData {
+    public abstract DatabaseAdapter databaseAdapter();
+    public abstract ResourceHandler resourceHandler();
+    public abstract Retrofit retrofit();
+    public abstract Date serverDate();
 
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
-    }
-
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
-
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
-    }
-
-    protected Cursor getCursor(String table, String[] columns) {
-        return sqLiteDatabase.query(table, columns,
-                null, null, null, null, null);
+    public static GenericCallData create(DatabaseAdapter databaseAdapter,
+                                         ResourceHandler resourceHandler,
+                                         Retrofit retrofit) {
+        return new AutoValue_GenericCallData(databaseAdapter, resourceHandler, retrofit, new Date());
     }
 }

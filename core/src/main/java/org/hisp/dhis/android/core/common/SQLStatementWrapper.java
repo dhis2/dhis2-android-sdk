@@ -26,48 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import android.database.sqlite.SQLiteStatement;
 
-import org.junit.After;
-import org.junit.Before;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.io.IOException;
+public class SQLStatementWrapper {
+    public final SQLiteStatement insert;
+    public final SQLiteStatement update;
+    public final SQLiteStatement deleteById;
 
-import static com.google.common.truth.Truth.assertThat;
-
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
-    private String dbName = null;
-
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
-    }
-
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
-
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
-    }
-
-    protected Cursor getCursor(String table, String[] columns) {
-        return sqLiteDatabase.query(table, columns,
-                null, null, null, null, null);
+    public SQLStatementWrapper(SQLStatementBuilder builder, DatabaseAdapter databaseAdapter) {
+        this.insert = databaseAdapter.compileStatement(builder.insert());
+        this.update = databaseAdapter.compileStatement(builder.update());
+        this.deleteById = databaseAdapter.compileStatement(builder.deleteById());
     }
 }

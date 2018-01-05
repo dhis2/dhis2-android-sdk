@@ -48,10 +48,18 @@ public abstract class NestedField<Parent, Child> implements Property<Parent, Chi
 
     @SafeVarargs
     public final NestedField<Parent, ?> with(Property<Child, ?>... properties) {
+        return with(Arrays.asList(properties));
+    }
+
+    public final NestedField<Parent, ?> with(List<Property<Child, ?>> properties) {
         if (properties != null) {
-            return new AutoValue_NestedField<>(name(), Arrays.asList(properties));
+            return new AutoValue_NestedField<>(name(), properties);
         }
 
         return create(name());
+    }
+
+    public final NestedField<Parent, ?> with(Fields<Child> childFields) {
+        return with(childFields.fields());
     }
 }

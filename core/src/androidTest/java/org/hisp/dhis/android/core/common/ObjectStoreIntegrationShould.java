@@ -26,48 +26,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.After;
+import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.common.StoreMocks.optionSetCursorAssert;
 
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
-    private String dbName = null;
+@RunWith(AndroidJUnit4.class)
+public class ObjectStoreIntegrationShould extends AbsStoreTestCase {
 
+    private ObjectStore<OptionSetModel> store;
+
+    private OptionSetModel model;
+
+    @Override
     @Before
     public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+        super.setUp();
+        this.model = StoreMocks.generateOptionSetModel();
+        this.store = StoreFactory.objectStore(databaseAdapter(),
+                OptionSetModel.TABLE, OptionSetModel.Columns.all());
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
+    @Test
+    public void insert_model() {
+        store.insert(model);
+        Cursor cursor = getCursor(OptionSetModel.TABLE, OptionSetModel.Columns.all());
+        optionSetCursorAssert(cursor, model);
     }
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
+    @Test(expected = IllegalArgumentException.class)
+    public void throw_exception_for_null_when_inserting() {
+        store.insert(null);
     }
 
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
-    }
-
-    protected Cursor getCursor(String table, String[] columns) {
-        return sqLiteDatabase.query(table, columns,
-                null, null, null, null, null);
+    @Test(expected = SQLiteConstraintException.class)
+    public void throw_exception_for_second_identical_insertion() {
+        store.insert(this.model);
+        store.insert(this.model);
     }
 }

@@ -25,49 +25,49 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common;
 
-package org.hisp.dhis.android.core.data.database;
+import java.util.Collection;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-import org.junit.After;
-import org.junit.Before;
+public abstract class GenericHandlerImpl<
+        P extends BaseIdentifiableObject,
+        M extends BaseIdentifiableObjectModel & StatementBinder> implements GenericHandler<P, M> {
 
-import java.io.IOException;
+    private final IdentifiableObjectStore<M> store;
 
-import static com.google.common.truth.Truth.assertThat;
-
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
-    private String dbName = null;
-
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+    public GenericHandlerImpl(IdentifiableObjectStore<M> store) {
+        this.store = store;
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
+    @Override
+    public final void handle(P p) {
+        if (p == null) {
+            return;
+        }
+        deleteOrPersist(p);
     }
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
+    @Override
+    public final void handleMany(Collection<P> pCollection) {
+        for(P p : pCollection) {
+            handle(p);
+        }
     }
 
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+    private void deleteOrPersist(P p) {
+        M m = pojoToModel(p);
+        if (isDeleted(p) && m.uid() != null) {
+            store.delete(m.uid());
+        } else {
+            store.updateOrInsert(m);
+        }
+
+        this.afterObjectPersisted(p);
     }
 
-    protected Cursor getCursor(String table, String[] columns) {
-        return sqLiteDatabase.query(table, columns,
-                null, null, null, null, null);
-    }
+    protected void afterObjectPersisted(P p) {}
+
+    protected abstract M pojoToModel(P p);
 }

@@ -26,48 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 
-import org.junit.After;
-import org.junit.Before;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.io.IOException;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-import static com.google.common.truth.Truth.assertThat;
+public class ObjectStoreImpl<M extends Model & StatementBinder> implements ObjectStore<M> {
+    protected final DatabaseAdapter databaseAdapter;
+    protected final SQLiteStatement insertStatement;
+    protected final SQLStatementBuilder builder;
 
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
-    private String dbName = null;
-
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+    ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
+                       SQLStatementBuilder builder) {
+        this.databaseAdapter = databaseAdapter;
+        this.insertStatement = insertStatement;
+        this.builder = builder;
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
-    }
-
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
-    }
-
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
-    }
-
-    protected Cursor getCursor(String table, String[] columns) {
-        return sqLiteDatabase.query(table, columns,
-                null, null, null, null, null);
+    @Override
+    public void insert(@NonNull M m) throws RuntimeException {
+        isNull(m);
+        m.bindToStatement(insertStatement);
+        Long insertedRowId = databaseAdapter.executeInsert(builder.tableName, insertStatement);
+        insertStatement.clearBindings();
+        if (insertedRowId == -1) {
+            throw new RuntimeException("Nothing was inserted.");
+        }
     }
 }

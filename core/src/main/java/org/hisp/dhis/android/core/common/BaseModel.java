@@ -37,6 +37,10 @@ public abstract class BaseModel implements Model {
 
     public static class Columns {
         public static final String ID = BaseColumns._ID;
+
+        public static String[] all() {
+            return new String[] { };
+        }
     }
 
     @Override
@@ -44,7 +48,7 @@ public abstract class BaseModel implements Model {
     @ColumnName(BaseModel.Columns.ID)
     public abstract Long id();
 
-    protected static abstract class Builder<T extends Builder> {
+    public static abstract class Builder<T extends Builder> {
         public abstract T id(Long id);
     }
 }

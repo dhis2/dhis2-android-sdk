@@ -29,5 +29,5 @@
 package org.hisp.dhis.android.core.event;
 
 public enum EventStatus {
-    ACTIVE, COMPLETED, SCHEDULE, SKIPPED
+    ACTIVE, COMPLETED, SCHEDULE, SKIPPED, VISITED
 }

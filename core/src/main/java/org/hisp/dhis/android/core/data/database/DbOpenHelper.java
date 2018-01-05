@@ -28,13 +28,23 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns
+        .ORGANISATION_UNIT_SCOPE;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
+import android.util.Log;
 
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkModel;
+import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CategoryModel;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkModel;
+import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkModel;
+import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
@@ -70,19 +80,117 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserRoleModel;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel;
 
-import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
 })
-public class DbOpenHelper extends SQLiteOpenHelper {
+public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
-    static final int VERSION = 1;
+    static int VERSION = 2;
+    public String mockedSqlDatabase = "";
+    private static final String CREATE_CONFIGURATION_TABLE =
+            "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
+                    ConfigurationModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    ConfigurationModel.Columns.SERVER_URL + " TEXT NOT NULL UNIQUE" +
+                    ");";
 
-    private static final String CREATE_CONFIGURATION_TABLE = "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
-            ConfigurationModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ConfigurationModel.Columns.SERVER_URL + " TEXT NOT NULL UNIQUE" +
+    private static final String CREATE_CATEGORY_TABLE =
+            "CREATE TABLE " + CategoryModel.TABLE + " (" +
+                    CategoryModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    CategoryModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+                    CategoryModel.Columns.CODE + " TEXT," +
+                    CategoryModel.Columns.NAME + " TEXT," +
+                    CategoryModel.Columns.DISPLAY_NAME + " TEXT," +
+                    CategoryModel.Columns.CREATED + " TEXT," +
+                    CategoryModel.Columns.LAST_UPDATED + " TEXT," +
+                    CategoryModel.Columns.DATA_DIMENSION_TYPE + " TEXT" + ");";
+
+    private static final String CREATE_CATEGORY_OPTION_TABLE =
+            "CREATE TABLE " + CategoryOptionModel.TABLE + " (" +
+                    CategoryModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    CategoryModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+                    CategoryModel.Columns.CODE + " TEXT," +
+                    CategoryModel.Columns.NAME + " TEXT," +
+                    CategoryModel.Columns.DISPLAY_NAME + " TEXT," +
+                    CategoryModel.Columns.CREATED + " TEXT," +
+                    CategoryModel.Columns.LAST_UPDATED + " TEXT" + ");";
+
+    private static final String CREATE_CATEGORY_CATEGORY_OPTION_LINK_TABLE = "CREATE TABLE " +
+            CategoryCategoryOptionLinkModel.TABLE + " (" +
+            CategoryCategoryOptionLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            CategoryCategoryOptionLinkModel.Columns.CATEGORY + " TEXT NOT NULL," +
+            CategoryCategoryOptionLinkModel.Columns.CATEGORY_OPTION + " TEXT NOT NULL, " +
+            " FOREIGN KEY (" + CategoryCategoryOptionLinkModel.Columns.CATEGORY + ") " +
+            " REFERENCES " + CategoryModel.TABLE + " (" + CategoryModel.Columns.UID + ") " +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+            " FOREIGN KEY (" + CategoryCategoryOptionLinkModel.Columns.CATEGORY_OPTION + ") " +
+            " REFERENCES " + CategoryOptionModel.TABLE + " (" + CategoryOptionModel.Columns.UID
+            + ")" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+            "UNIQUE (" + CategoryCategoryOptionLinkModel.Columns.CATEGORY + ", " +
+            CategoryCategoryOptionLinkModel.Columns.CATEGORY_OPTION + ")" +
+            ");";
+
+    private static final String CREATE_CATEGORY_COMBO_TABLE =
+            "CREATE TABLE " + CategoryComboModel.TABLE + " (" +
+                    CategoryComboModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    CategoryComboModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+                    CategoryComboModel.Columns.CODE + " TEXT," +
+                    CategoryComboModel.Columns.NAME + " TEXT," +
+                    CategoryComboModel.Columns.DISPLAY_NAME + " TEXT," +
+                    CategoryComboModel.Columns.CREATED + " TEXT," +
+                    CategoryComboModel.Columns.LAST_UPDATED + " TEXT, " +
+                    CategoryComboModel.Columns.IS_DEFAULT + " INTEGER" + ");";
+
+    private static final String CREATE_CATEGORY_CATEGORY_COMBO_LINK_TABLE = "CREATE TABLE " +
+            CategoryCategoryComboLinkModel.TABLE + " (" +
+            CategoryCategoryComboLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+            CategoryCategoryComboLinkModel.Columns.CATEGORY + " TEXT NOT NULL," +
+            CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO + " TEXT NOT NULL, " +
+            " FOREIGN KEY (" + CategoryCategoryComboLinkModel.Columns.CATEGORY + ") " +
+            " REFERENCES " + CategoryModel.TABLE + " (" + CategoryModel.Columns.UID + ") " +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+            " FOREIGN KEY (" + CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO + ") " +
+            " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"
+            +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+            "UNIQUE (" + CategoryCategoryComboLinkModel.Columns.CATEGORY + ", " +
+            CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO + ")" +
+            ");";
+
+    private static final String CREATE_CATEGORY_OPTION_COMBO_TABLE =
+            "CREATE TABLE " + CategoryOptionComboModel.TABLE + " (" +
+                    CategoryOptionComboModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    CategoryOptionComboModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+                    CategoryOptionComboModel.Columns.CODE + " TEXT," +
+                    CategoryOptionComboModel.Columns.NAME + " TEXT," +
+                    CategoryOptionComboModel.Columns.DISPLAY_NAME + " TEXT," +
+                    CategoryOptionComboModel.Columns.CREATED + " TEXT," +
+                    CategoryOptionComboModel.Columns.LAST_UPDATED + " TEXT, " +
+                    CategoryOptionComboModel.Columns.CATEGORY_COMBO + " TEXT, " +
+                    " FOREIGN KEY (" + CategoryOptionComboModel.Columns.CATEGORY_COMBO + ") " +
+                    " REFERENCES " + CategoryComboModel.TABLE + " ("
+                    + CategoryComboModel.Columns.UID + ")" +
+                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED );";
+
+    private static final String CREATE_CATEGORY_OPTION_COMBO_CATEGORY_LINK_TABLE = "CREATE TABLE " +
+            CategoryOptionComboCategoryLinkModel.TABLE + " (" +
+            CategoryOptionComboCategoryLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            +
+            CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + " TEXT NOT NULL," +
+            CategoryOptionComboCategoryLinkModel.Columns.CATEGORY + " TEXT NOT NULL, " +
+            " FOREIGN KEY (" + CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + ") " +
+            " REFERENCES " + CategoryOptionComboModel.TABLE + " ("
+            + CategoryOptionComboModel.Columns.UID + ") " +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+            "UNIQUE (" + CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + ", " +
+            CategoryOptionComboCategoryLinkModel.Columns.CATEGORY + ")" +
             ");";
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + UserModel.TABLE + " (" +
@@ -154,7 +262,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + UserModel.TABLE + " (" + UserModel.Columns.UID + ") " +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             " FOREIGN KEY (" + UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ") " +
-            " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID + ")" +
+            " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID
+            + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             "UNIQUE (" + UserOrganisationUnitLinkModel.Columns.USER + ", " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ", " +
@@ -171,17 +280,18 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
-    private static final String CREATE_OPTION_SET_TABLE = "CREATE TABLE " + OptionSetModel.TABLE + " (" +
-            OptionSetModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            OptionSetModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            OptionSetModel.Columns.CODE + " TEXT," +
-            OptionSetModel.Columns.NAME + " TEXT," +
-            OptionSetModel.Columns.DISPLAY_NAME + " TEXT," +
-            OptionSetModel.Columns.CREATED + " TEXT," +
-            OptionSetModel.Columns.LAST_UPDATED + " TEXT," +
-            OptionSetModel.Columns.VERSION + " INTEGER," +
-            OptionSetModel.Columns.VALUE_TYPE + " TEXT" +
-            ");";
+    private static final String CREATE_OPTION_SET_TABLE =
+            "CREATE TABLE " + OptionSetModel.TABLE + " (" +
+                    OptionSetModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    OptionSetModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+                    OptionSetModel.Columns.CODE + " TEXT," +
+                    OptionSetModel.Columns.NAME + " TEXT," +
+                    OptionSetModel.Columns.DISPLAY_NAME + " TEXT," +
+                    OptionSetModel.Columns.CREATED + " TEXT," +
+                    OptionSetModel.Columns.LAST_UPDATED + " TEXT," +
+                    OptionSetModel.Columns.VERSION + " INTEGER," +
+                    OptionSetModel.Columns.VALUE_TYPE + " TEXT" +
+                    ");";
 
     private static final String CREATE_OPTION_TABLE = "CREATE TABLE " + OptionModel.TABLE + " (" +
             OptionModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -194,7 +304,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             OptionModel.Columns.OPTION_SET + " TEXT NOT NULL," +
             " FOREIGN KEY (" + OptionModel.Columns.OPTION_SET + ") " +
             " REFERENCES " + OptionSetModel.TABLE +
-            " (" + OptionSetModel.Columns.UID + ") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED " +
+            " (" + OptionSetModel.Columns.UID + ") ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED "
+            +
             ");";
 
     private static final String CREATE_PROGRAM_TABLE = "CREATE TABLE " + ProgramModel.TABLE + " (" +
@@ -228,54 +339,65 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramModel.Columns.RELATIONSHIP_TEXT + " TEXT," +
             ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
             ProgramModel.Columns.TRACKED_ENTITY + " TEXT," +
+            ProgramModel.Columns.CATEGORY_COMBO + " TEXT," +
             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
-            " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID + ")" +
+            " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID
+            + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
             " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY + ")" +
-            " REFERENCES " + TrackedEntityModel.TABLE + " (" + TrackedEntityModel.Columns.UID + ")" +
+            " REFERENCES " + TrackedEntityModel.TABLE + " (" + TrackedEntityModel.Columns.UID + ")"
+            +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " FOREIGN KEY (" + ProgramModel.Columns.CATEGORY_COMBO + ")" +
+            " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"
+            +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
-    private static final String CREATE_TRACKED_ENTITY_TABLE = "CREATE TABLE " + TrackedEntityModel.TABLE +
-            " (" +
-            TrackedEntityModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            TrackedEntityModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            TrackedEntityModel.Columns.CODE + " TEXT," +
-            TrackedEntityModel.Columns.NAME + " TEXT," +
-            TrackedEntityModel.Columns.DISPLAY_NAME + " TEXT," +
-            TrackedEntityModel.Columns.CREATED + " TEXT," +
-            TrackedEntityModel.Columns.LAST_UPDATED + " TEXT," +
-            TrackedEntityModel.Columns.SHORT_NAME + " TEXT," +
-            TrackedEntityModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-            TrackedEntityModel.Columns.DESCRIPTION + " TEXT," +
-            TrackedEntityModel.Columns.DISPLAY_DESCRIPTION + " TEXT" +
-            ");";
+    private static final String CREATE_TRACKED_ENTITY_TABLE =
+            "CREATE TABLE " + TrackedEntityModel.TABLE +
+                    " (" +
+                    TrackedEntityModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    TrackedEntityModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+                    TrackedEntityModel.Columns.CODE + " TEXT," +
+                    TrackedEntityModel.Columns.NAME + " TEXT," +
+                    TrackedEntityModel.Columns.DISPLAY_NAME + " TEXT," +
+                    TrackedEntityModel.Columns.CREATED + " TEXT," +
+                    TrackedEntityModel.Columns.LAST_UPDATED + " TEXT," +
+                    TrackedEntityModel.Columns.SHORT_NAME + " TEXT," +
+                    TrackedEntityModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+                    TrackedEntityModel.Columns.DESCRIPTION + " TEXT," +
+                    TrackedEntityModel.Columns.DISPLAY_DESCRIPTION + " TEXT" +
+                    ");";
 
-    private static final String CREATE_DATA_ELEMENT_TABLE = "CREATE TABLE " + DataElementModel.TABLE + " (" +
-            DataElementModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            DataElementModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            DataElementModel.Columns.CODE + " TEXT," +
-            DataElementModel.Columns.NAME + " TEXT," +
-            DataElementModel.Columns.DISPLAY_NAME + " TEXT," +
-            DataElementModel.Columns.CREATED + " TEXT," +
-            DataElementModel.Columns.LAST_UPDATED + " TEXT," +
-            DataElementModel.Columns.SHORT_NAME + " TEXT," +
-            DataElementModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-            DataElementModel.Columns.DESCRIPTION + " TEXT," +
-            DataElementModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
-            DataElementModel.Columns.VALUE_TYPE + " TEXT," +
-            DataElementModel.Columns.ZERO_IS_SIGNIFICANT + " INTEGER," +
-            DataElementModel.Columns.AGGREGATION_TYPE + " TEXT," +
-            DataElementModel.Columns.FORM_NAME + " TEXT," +
-            DataElementModel.Columns.NUMBER_TYPE + " TEXT," +
-            DataElementModel.Columns.DOMAIN_TYPE + " TEXT," +
-            DataElementModel.Columns.DIMENSION + " TEXT," +
-            DataElementModel.Columns.DISPLAY_FORM_NAME + " TEXT," +
-            DataElementModel.Columns.OPTION_SET + " TEXT," +
-            " FOREIGN KEY ( " + DataElementModel.Columns.OPTION_SET + ")" +
-            " REFERENCES " + OptionSetModel.TABLE + " (" + OptionSetModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-            ");";
+    private static final String CREATE_DATA_ELEMENT_TABLE =
+            "CREATE TABLE " + DataElementModel.TABLE + " (" +
+                    DataElementModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    DataElementModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+                    DataElementModel.Columns.CODE + " TEXT," +
+                    DataElementModel.Columns.NAME + " TEXT," +
+                    DataElementModel.Columns.DISPLAY_NAME + " TEXT," +
+                    DataElementModel.Columns.CREATED + " TEXT," +
+                    DataElementModel.Columns.LAST_UPDATED + " TEXT," +
+                    DataElementModel.Columns.SHORT_NAME + " TEXT," +
+                    DataElementModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+                    DataElementModel.Columns.DESCRIPTION + " TEXT," +
+                    DataElementModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
+                    DataElementModel.Columns.VALUE_TYPE + " TEXT," +
+                    DataElementModel.Columns.ZERO_IS_SIGNIFICANT + " INTEGER," +
+                    DataElementModel.Columns.AGGREGATION_TYPE + " TEXT," +
+                    DataElementModel.Columns.FORM_NAME + " TEXT," +
+                    DataElementModel.Columns.NUMBER_TYPE + " TEXT," +
+                    DataElementModel.Columns.DOMAIN_TYPE + " TEXT," +
+                    DataElementModel.Columns.DIMENSION + " TEXT," +
+                    DataElementModel.Columns.DISPLAY_FORM_NAME + " TEXT," +
+                    DataElementModel.Columns.OPTION_SET + " TEXT," +
+                    DataElementModel.Columns.CATEGORY_COMBO + " TEXT," +
+                    " FOREIGN KEY ( " + DataElementModel.Columns.OPTION_SET + ")" +
+                    " REFERENCES " + OptionSetModel.TABLE + " (" + OptionSetModel.Columns.UID + ")"
+                    +
+                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+                    ");";
 
     private static final String CREATE_PROGRAM_STAGE_DATA_ELEMENT_TABLE = "CREATE TABLE " +
             ProgramStageDataElementModel.TABLE + " (" +
@@ -301,25 +423,30 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + DataElementModel.TABLE + " (" + DataElementModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             " FOREIGN KEY (" + ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + ")" +
-            " REFERENCES " + ProgramStageSectionModel.TABLE + " (" + ProgramStageSectionModel.Columns.UID + ")" +
+            " REFERENCES " + ProgramStageSectionModel.TABLE + " ("
+            + ProgramStageSectionModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
-    private static final String CREATE_RELATIONSHIP_TABLE = "CREATE TABLE " + RelationshipModel.TABLE + " (" +
-            RelationshipModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + " TEXT NOT NULL," +
-            RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + " TEXT NOT NULL," +
-            RelationshipModel.Columns.RELATIONSHIP_TYPE + " TEXT NOT NULL," +
-            " FOREIGN KEY (" + RelationshipModel.Columns.RELATIONSHIP_TYPE + ") " +
-            " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-            " FOREIGN KEY (" + RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + ") " +
-            " REFERENCES " + TrackedEntityInstanceModel.TABLE + " (" + TrackedEntityInstanceModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-            " FOREIGN KEY (" + RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + ") " +
-            " REFERENCES " + TrackedEntityInstanceModel.TABLE + " (" + TrackedEntityInstanceModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-            ");";
+    private static final String CREATE_RELATIONSHIP_TABLE =
+            "CREATE TABLE " + RelationshipModel.TABLE + " (" +
+                    RelationshipModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + " TEXT NOT NULL," +
+                    RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + " TEXT NOT NULL," +
+                    RelationshipModel.Columns.RELATIONSHIP_TYPE + " TEXT NOT NULL," +
+                    " FOREIGN KEY (" + RelationshipModel.Columns.RELATIONSHIP_TYPE + ") " +
+                    " REFERENCES " + RelationshipTypeModel.TABLE + " ("
+                    + RelationshipTypeModel.Columns.UID + ")" +
+                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+                    " FOREIGN KEY (" + RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + ") " +
+                    " REFERENCES " + TrackedEntityInstanceModel.TABLE + " ("
+                    + TrackedEntityInstanceModel.Columns.UID + ")" +
+                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+                    " FOREIGN KEY (" + RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + ") " +
+                    " REFERENCES " + TrackedEntityInstanceModel.TABLE + " ("
+                    + TrackedEntityInstanceModel.Columns.UID + ")" +
+                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+                    ");";
 
     private static final String CREATE_RELATIONSHIP_TYPE_TABLE = "CREATE TABLE " +
             RelationshipTypeModel.TABLE + " (" +
@@ -403,7 +530,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " REFERENCES " + ProgramStageModel.TABLE + " (" + ProgramStageModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
-            " REFERENCES " + TrackedEntityAttributeModel.TABLE + "(" + TrackedEntityAttributeModel.Columns.UID + ")" +
+            " REFERENCES " + TrackedEntityAttributeModel.TABLE + "("
+            + TrackedEntityAttributeModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             " FOREIGN KEY (" + ProgramRuleVariableModel.Columns.DATA_ELEMENT + ")" +
             " REFERENCES " + DataElementModel.TABLE + " (" + DataElementModel.Columns.UID + ")" +
@@ -455,12 +583,14 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             ProgramTrackedEntityAttributeModel.Columns.DESCRIPTION + " TEXT," +
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
             ProgramTrackedEntityAttributeModel.Columns.MANDATORY + " INTEGER," +
-            ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT NOT NULL," +
+            ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT NOT NULL,"
+            +
             ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + " INTEGER," +
             ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + " INTEGER," +
             ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER + " INTEGER," +
             ProgramTrackedEntityAttributeModel.Columns.PROGRAM + " TEXT NOT NULL," +
-            " FOREIGN KEY (" + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
+            " FOREIGN KEY (" + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE
+            + ")" +
             " REFERENCES " + TrackedEntityAttributeModel.TABLE +
             " (" + TrackedEntityAttributeModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
@@ -490,24 +620,26 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
-    private static final String CREATE_CONSTANT_TABLE = "CREATE TABLE " + ConstantModel.TABLE + " (" +
-            ConstantModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ConstantModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            ConstantModel.Columns.CODE + " TEXT," +
-            ConstantModel.Columns.NAME + " TEXT," +
-            ConstantModel.Columns.DISPLAY_NAME + " TEXT," +
-            ConstantModel.Columns.CREATED + " TEXT," +
-            ConstantModel.Columns.LAST_UPDATED + " TEXT," +
-            ConstantModel.Columns.VALUE + " TEXT" +
-            ");";
+    private static final String CREATE_CONSTANT_TABLE =
+            "CREATE TABLE " + ConstantModel.TABLE + " (" +
+                    ConstantModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    ConstantModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+                    ConstantModel.Columns.CODE + " TEXT," +
+                    ConstantModel.Columns.NAME + " TEXT," +
+                    ConstantModel.Columns.DISPLAY_NAME + " TEXT," +
+                    ConstantModel.Columns.CREATED + " TEXT," +
+                    ConstantModel.Columns.LAST_UPDATED + " TEXT," +
+                    ConstantModel.Columns.VALUE + " TEXT" +
+                    ");";
 
-    private static final String CREATE_SYSTEM_INFO_TABLE = "CREATE TABLE " + SystemInfoModel.TABLE + " (" +
-            SystemInfoModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            SystemInfoModel.Columns.SERVER_DATE + " TEXT," +
-            SystemInfoModel.Columns.DATE_FORMAT + " TEXT," +
-            SystemInfoModel.Columns.VERSION + " TEXT," +
-            SystemInfoModel.Columns.CONTEXT_PATH + " TEXT" +
-            ");";
+    private static final String CREATE_SYSTEM_INFO_TABLE =
+            "CREATE TABLE " + SystemInfoModel.TABLE + " (" +
+                    SystemInfoModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    SystemInfoModel.Columns.SERVER_DATE + " TEXT," +
+                    SystemInfoModel.Columns.DATE_FORMAT + " TEXT," +
+                    SystemInfoModel.Columns.VERSION + " TEXT," +
+                    SystemInfoModel.Columns.CONTEXT_PATH + " TEXT" +
+                    ");";
 
     private static final String CREATE_PROGRAM_INDICATOR_TABLE = "CREATE TABLE " +
             ProgramIndicatorModel.TABLE + " (" +
@@ -605,11 +737,13 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityAttributeValueModel.Columns.VALUE + " TEXT," +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT NOT NULL," +
             TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + " TEXT NOT NULL," +
-            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ")" +
+            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE
+            + ")" +
             " REFERENCES " + TrackedEntityAttributeModel.TABLE +
             " (" + TrackedEntityAttributeModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
-            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + ") " +
+            " FOREIGN KEY (" + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE
+            + ") " +
             " REFERENCES " + TrackedEntityInstanceModel.TABLE +
             " (" + TrackedEntityInstanceModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
@@ -633,6 +767,9 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             EventModel.Columns.COMPLETE_DATE + " TEXT," +
             EventModel.Columns.DUE_DATE + " TEXT," +
             EventModel.Columns.STATE + " TEXT," +
+            EventModel.Columns.ATTRIBUTE_CATEGORY_OPTIONS + " TEXT," +
+            EventModel.Columns.ATTRIBUTE_OPTION_COMBO + " TEXT," +
+            EventModel.Columns.TRACKED_ENTITY_INSTANCE + " TEXT," +
             " FOREIGN KEY (" + EventModel.Columns.PROGRAM + ")" +
             " REFERENCES " + ProgramModel.TABLE +
             " (" + ProgramModel.Columns.UID + ")" +
@@ -648,7 +785,17 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             " FOREIGN KEY (" + EventModel.Columns.ORGANISATION_UNIT + ")" +
             " REFERENCES " + OrganisationUnitModel.TABLE +
             " (" + OrganisationUnitModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+            " FOREIGN KEY (" + EventModel.Columns.TRACKED_ENTITY_INSTANCE + ")" +
+            " REFERENCES " + TrackedEntityInstanceModel.TABLE + " (" + TrackedEntityInstanceModel.Columns.UID + ")" +
+            " ON DELETE CASCADE," +
+            " FOREIGN KEY (" + EventModel.Columns.ATTRIBUTE_CATEGORY_OPTIONS + ")" +
+            " REFERENCES " + CategoryOptionModel.TABLE + " (" + CategoryOptionModel.Columns.UID + ")"+
+            " ON DELETE CASCADE," +
+            " FOREIGN KEY (" + EventModel.Columns.ATTRIBUTE_OPTION_COMBO + ")" +
+            " REFERENCES " + CategoryOptionComboModel.TABLE + " (" + CategoryOptionComboModel.Columns.UID + ")"
+            +
+            " ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_INSTANCE_TABLE = "CREATE TABLE " +
@@ -663,48 +810,52 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + " TEXT NOT NULL," +
             TrackedEntityInstanceModel.Columns.STATE + " TEXT," +
             " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + ")" +
-            " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID + ")" +
+            " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID
+            + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + ")" +
-            " REFERENCES " + TrackedEntityModel.TABLE + " (" + TrackedEntityModel.Columns.UID + ")" +
+            " REFERENCES " + TrackedEntityModel.TABLE + " (" + TrackedEntityModel.Columns.UID + ")"
+            +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
-    private static final String CREATE_ENROLLMENT_TABLE = "CREATE TABLE " + EnrollmentModel.TABLE + " (" +
-            EnrollmentModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            EnrollmentModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            EnrollmentModel.Columns.CREATED + " TEXT," +
-            EnrollmentModel.Columns.LAST_UPDATED + " TEXT," +
-            EnrollmentModel.Columns.CREATED_AT_CLIENT + " TEXT," +
-            EnrollmentModel.Columns.LAST_UPDATED_AT_CLIENT + " TEXT," +
-            EnrollmentModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
-            EnrollmentModel.Columns.PROGRAM + " TEXT NOT NULL," +
-            EnrollmentModel.Columns.DATE_OF_ENROLLMENT + " TEXT," +
-            EnrollmentModel.Columns.DATE_OF_INCIDENT + " TEXT," +
-            EnrollmentModel.Columns.FOLLOW_UP + " INTEGER," +
-            EnrollmentModel.Columns.ENROLLMENT_STATUS + " TEXT," +
-            EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE + " TEXT NOT NULL," +
-            EnrollmentModel.Columns.LATITUDE + " TEXT," +
-            EnrollmentModel.Columns.LONGITUDE + " TEXT," +
-            EnrollmentModel.Columns.STATE + " TEXT," +
-            " FOREIGN KEY (" + EnrollmentModel.Columns.ORGANISATION_UNIT + ")" +
-            " REFERENCES " + OrganisationUnitModel.TABLE +
-            " (" + OrganisationUnitModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " FOREIGN KEY (" + EnrollmentModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + ProgramModel.TABLE +
-            " (" + ProgramModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " FOREIGN KEY (" + EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE + ")" +
-            " REFERENCES " + TrackedEntityInstanceModel.TABLE +
-            " (" + TrackedEntityInstanceModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-            ");";
+    private static final String CREATE_ENROLLMENT_TABLE =
+            "CREATE TABLE " + EnrollmentModel.TABLE + " (" +
+                    EnrollmentModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    EnrollmentModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+                    EnrollmentModel.Columns.CREATED + " TEXT," +
+                    EnrollmentModel.Columns.LAST_UPDATED + " TEXT," +
+                    EnrollmentModel.Columns.CREATED_AT_CLIENT + " TEXT," +
+                    EnrollmentModel.Columns.LAST_UPDATED_AT_CLIENT + " TEXT," +
+                    EnrollmentModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+                    EnrollmentModel.Columns.PROGRAM + " TEXT NOT NULL," +
+                    EnrollmentModel.Columns.DATE_OF_ENROLLMENT + " TEXT," +
+                    EnrollmentModel.Columns.DATE_OF_INCIDENT + " TEXT," +
+                    EnrollmentModel.Columns.FOLLOW_UP + " INTEGER," +
+                    EnrollmentModel.Columns.ENROLLMENT_STATUS + " TEXT," +
+                    EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE + " TEXT NOT NULL," +
+                    EnrollmentModel.Columns.LATITUDE + " TEXT," +
+                    EnrollmentModel.Columns.LONGITUDE + " TEXT," +
+                    EnrollmentModel.Columns.STATE + " TEXT," +
+                    " FOREIGN KEY (" + EnrollmentModel.Columns.ORGANISATION_UNIT + ")" +
+                    " REFERENCES " + OrganisationUnitModel.TABLE +
+                    " (" + OrganisationUnitModel.Columns.UID + ")" +
+                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                    " FOREIGN KEY (" + EnrollmentModel.Columns.PROGRAM + ")" +
+                    " REFERENCES " + ProgramModel.TABLE +
+                    " (" + ProgramModel.Columns.UID + ")" +
+                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                    " FOREIGN KEY (" + EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE + ")" +
+                    " REFERENCES " + TrackedEntityInstanceModel.TABLE +
+                    " (" + TrackedEntityInstanceModel.Columns.UID + ")" +
+                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+                    ");";
 
-    private static final String CREATE_RESOURCE_TABLE = "CREATE TABLE " + ResourceModel.TABLE + " (" +
-            ResourceModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ResourceModel.Columns.RESOURCE_TYPE + " TEXT NOT NULL," +
-            ResourceModel.Columns.LAST_SYNCED + " TEXT" + ");";
+    private static final String CREATE_RESOURCE_TABLE =
+            "CREATE TABLE " + ResourceModel.TABLE + " (" +
+                    ResourceModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    ResourceModel.Columns.RESOURCE_TYPE + " TEXT NOT NULL," +
+                    ResourceModel.Columns.LAST_SYNCED + " TEXT" + ");";
 
     private static final String CREATE_ORGANISATION_UNIT_PROGRAM_LINK_TABLE = "CREATE TABLE " +
             OrganisationUnitProgramLinkModel.TABLE + " (" +
@@ -712,7 +863,8 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
             OrganisationUnitProgramLinkModel.Columns.PROGRAM + " TEXT NOT NULL," +
             " FOREIGN KEY (" + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ")" +
-            " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID + ")" +
+            " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID
+            + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
             " FOREIGN KEY (" + OrganisationUnitProgramLinkModel.Columns.PROGRAM + ")" +
             " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
@@ -721,15 +873,16 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             OrganisationUnitProgramLinkModel.Columns.PROGRAM + ")" +
             ");";
 
-    private static final String CREATE_USER_ROLE_TABLE = "CREATE TABLE " + UserRoleModel.TABLE + " (" +
-            UserRoleModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            UserRoleModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            UserRoleModel.Columns.CODE + " TEXT," +
-            UserRoleModel.Columns.NAME + " TEXT," +
-            UserRoleModel.Columns.DISPLAY_NAME + " TEXT," +
-            UserRoleModel.Columns.CREATED + " TEXT," +
-            UserRoleModel.Columns.LAST_UPDATED + " TEXT" +
-            ");";
+    private static final String CREATE_USER_ROLE_TABLE =
+            "CREATE TABLE " + UserRoleModel.TABLE + " (" +
+                    UserRoleModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    UserRoleModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+                    UserRoleModel.Columns.CODE + " TEXT," +
+                    UserRoleModel.Columns.NAME + " TEXT," +
+                    UserRoleModel.Columns.DISPLAY_NAME + " TEXT," +
+                    UserRoleModel.Columns.CREATED + " TEXT," +
+                    UserRoleModel.Columns.LAST_UPDATED + " TEXT" +
+                    ");";
 
     private static final String CREATE_USER_ROLE_PROGRAM_TABLE = "CREATE TABLE " +
             UserRoleProgramLinkModel.TABLE + " (" +
@@ -746,20 +899,32 @@ public class DbOpenHelper extends SQLiteOpenHelper {
             UserRoleProgramLinkModel.Columns.PROGRAM + ")" +
             ");";
 
-    private static final String CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE = "CREATE TABLE " +
-            ProgramStageSectionProgramIndicatorLinkModel.TABLE + " (" +
-            ProgramStageSectionProgramIndicatorLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + " TEXT NOT NULL," +
-            ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + " TEXT NOT NULL," +
-            " FOREIGN KEY (" + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + ") " +
-            " REFERENCES " + ProgramStageSectionModel.TABLE + " (" + ProgramStageModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " FOREIGN KEY (" + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + ") " +
-            " REFERENCES " + ProgramIndicatorModel.TABLE + " (" + ProgramIndicatorModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
-            " UNIQUE (" + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + ", " +
-            ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + ")" +
-            ");";
+    private static final String CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE =
+            "CREATE TABLE " +
+                    ProgramStageSectionProgramIndicatorLinkModel.TABLE + " (" +
+                    ProgramStageSectionProgramIndicatorLinkModel.Columns.ID
+                    + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION
+                    + " TEXT NOT NULL," +
+                    ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR
+                    + " TEXT NOT NULL," +
+                    " FOREIGN KEY ("
+                    + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION
+                    + ") " +
+                    " REFERENCES " + ProgramStageSectionModel.TABLE + " ("
+                    + ProgramStageModel.Columns.UID + ")" +
+                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                    " FOREIGN KEY ("
+                    + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + ") "
+                    +
+                    " REFERENCES " + ProgramIndicatorModel.TABLE + " ("
+                    + ProgramIndicatorModel.Columns.UID + ")" +
+                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
+                    " UNIQUE ("
+                    + ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION
+                    + ", " +
+                    ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + ")" +
+                    ");";
 
     /**
      * This method should be used only for testing purposes
@@ -806,21 +971,44 @@ public class DbOpenHelper extends SQLiteOpenHelper {
         database.execSQL(CREATE_USER_ROLE_TABLE);
         database.execSQL(CREATE_USER_ROLE_PROGRAM_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE);
+        database.execSQL(CREATE_CATEGORY_TABLE);
+        database.execSQL(CREATE_CATEGORY_OPTION_TABLE);
+        database.execSQL(CREATE_CATEGORY_CATEGORY_OPTION_LINK_TABLE);
+        database.execSQL(CREATE_CATEGORY_COMBO_TABLE);
+        database.execSQL(CREATE_CATEGORY_CATEGORY_COMBO_LINK_TABLE);
+        database.execSQL(CREATE_CATEGORY_OPTION_COMBO_TABLE);
+        database.execSQL(CREATE_CATEGORY_OPTION_COMBO_CATEGORY_LINK_TABLE);
         return database;
     }
 
+    public DbOpenHelper(Context context, String databaseName, int version, String migrationTestDir,
+            String sqlDatabase) {
+        super(context, databaseName, version, true, migrationTestDir);
+        mockedSqlDatabase = sqlDatabase;
+    }
+
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
+        super(context, databaseName, VERSION);
+    }
+
+    public DbOpenHelper(Context context, String databaseName, int testVersion) {
+        super(context, databaseName, testVersion);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        create(db);
+        String emptySqlFile = "";
+        if (emptySqlFile.equals(mockedSqlDatabase)) {
+            create(db);
+        } else {
+            populateDBfromResource(db, mockedSqlDatabase);
+        }
+        super.onCreate(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // ToDo: logic for proper schema migration
+        super.onUpgrade(db, oldVersion, newVersion);
     }
 
     @Override
@@ -829,5 +1017,34 @@ public class DbOpenHelper extends SQLiteOpenHelper {
 
         // enable foreign key support in database
         db.execSQL("PRAGMA foreign_keys = ON;");
+    }
+
+    private SQLiteDatabase populateDBfromResource(SQLiteDatabase database, String databaseSqlFile) {
+        String emptySqlFile = "";
+        if (emptySqlFile.equals(databaseSqlFile)) {
+            return database;
+        }
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream(databaseSqlFile);
+        InputStreamReader inputStreamReader = new InputStreamReader(in, Charset.forName("UTF-8"));
+        BufferedReader reader = new BufferedReader(inputStreamReader);
+        String line = null;
+        try {
+            line = reader.readLine();
+            while (line != null) {
+                database.execSQL(line);
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            Log.e(getClass().getName(), e.getMessage());
+        } finally {
+            try {
+                reader.close();
+                inputStreamReader.close();
+                in.close();
+            } catch (IOException e) {
+                Log.e(getClass().getName(), e.getMessage());
+            }
+        }
+        return database;
     }
 }

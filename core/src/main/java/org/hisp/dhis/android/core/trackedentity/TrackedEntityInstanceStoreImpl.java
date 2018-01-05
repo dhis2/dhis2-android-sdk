@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -40,9 +43,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Colum
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals",
@@ -91,9 +91,15 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             "  TrackedEntityInstance.lastUpdatedAtClient, " +
             "  TrackedEntityInstance.organisationUnit, " +
             "  TrackedEntityInstance.trackedEntity " +
-            "FROM TrackedEntityInstance " +
-            "WHERE state = 'TO_POST' OR state = 'TO_UPDATE'";
+            "FROM TrackedEntityInstance ";
 
+    private static final String QUERY_STATEMENT_TO_POST =
+            QUERY_STATEMENT +
+                    " WHERE state = 'TO_POST' OR state = 'TO_UPDATE'";
+
+    private static final String QUERY_STATEMENT_SYNCED =
+            QUERY_STATEMENT +
+                    " WHERE state = 'SYNCED'";
 
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
@@ -182,8 +188,33 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
     }
 
     @Override
-    public Map<String, TrackedEntityInstance> query() {
+    public Map<String, TrackedEntityInstance> queryToPost() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT_TO_POST);
+        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = mapFromCursor(cursor);
+
+        return trackedEntityInstanceMap;
+    }
+
+    @Override
+    public Map<String, TrackedEntityInstance> querySynced() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT_SYNCED);
+        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = mapFromCursor(cursor);
+
+        return trackedEntityInstanceMap;
+    }
+
+
+    @Override
+    public Map<String, TrackedEntityInstance> queryAll() {
         Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
+
+        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = mapFromCursor(cursor);
+
+        return trackedEntityInstanceMap;
+    }
+
+    @NonNull
+    private Map<String, TrackedEntityInstance> mapFromCursor(Cursor cursor) {
         Map<String, TrackedEntityInstance> trackedEntityInstanceMap = new HashMap<>();
         try {
             if (cursor.getCount() > 0) {
@@ -207,7 +238,6 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         } finally {
             cursor.close();
         }
-
         return trackedEntityInstanceMap;
     }
 }

@@ -1,0 +1,100 @@
+{
+  "organisationUnits": [
+    {
+      "code": "OU_651071",
+      "level": 4,
+      "created": "2012-02-17T15:54:39.987",
+      "lastUpdated": "2017-05-22T15:21:48.515",
+      "name": "Adonkia CHP",
+      "id": "Rp268JB6Ne4",
+      "shortName": "Adonkia CHP",
+      "displayName": "Adonkia CHP",
+      "displayShortName": "Adonkia CHP",
+      "path": "/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/Rp268JB6Ne4",
+      "openingDate": "2010-01-01T00:00:00.000",
+      "parent": {
+        "id": "qtr8GGlm4gg"
+      },
+      "programs": [
+        {
+          "id": "q04UBOqq3rp"
+        },
+        {
+          "id": "kla3mAPgvCH"
+        },
+        {
+          "id": "uy2gU8kT1jF"
+        },
+        {
+          "id": "VBqh0ynB2wv"
+        },
+        {
+          "id": "eBAyeGv0exc"
+        },
+        {
+          "id": "lxAQ7Zs9VYR"
+        },
+        {
+          "id": "IpHINAT79UW"
+        },
+        {
+          "id": "bMcwwoVnbSR"
+        },
+        {
+          "id": "ur1Edk5Oe2n"
+        },
+        {
+          "id": "WSGAb5XwJ3Y"
+        }
+      ]
+    },
+    {
+      "code": "OU_278371",
+      "level": 4,
+      "created": "2012-02-17T15:54:39.987",
+      "lastUpdated": "2017-05-22T15:21:48.518",
+      "name": "Afro Arab Clinic",
+      "id": "cDw53Ej8rju",
+      "shortName": "Afro Arab Clinic",
+      "displayName": "Afro Arab Clinic",
+      "displayShortName": "Afro Arab Clinic",
+      "path": "/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/cDw53Ej8rju",
+      "openingDate": "2008-01-01T00:00:00.000",
+      "parent": {
+        "id": "qtr8GGlm4gg"
+      },
+      "programs": [
+        {
+          "id": "q04UBOqq3rp"
+        },
+        {
+          "id": "kla3mAPgvCH"
+        },
+        {
+          "id": "uy2gU8kT1jF"
+        },
+        {
+          "id": "VBqh0ynB2wv"
+        },
+        {
+          "id": "eBAyeGv0exc"
+        },
+        {
+          "id": "lxAQ7Zs9VYR"
+        },
+        {
+          "id": "IpHINAT79UW"
+        },
+        {
+          "id": "bMcwwoVnbSR"
+        },
+        {
+          "id": "ur1Edk5Oe2n"
+        },
+        {
+          "id": "WSGAb5XwJ3Y"
+        }
+      ]
+    }
+  ]
+}

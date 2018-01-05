@@ -31,9 +31,11 @@ package org.hisp.dhis.android.core.program;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
+
 import java.util.Date;
 
-public interface ProgramRuleActionStore {
+public interface ProgramRuleActionStore extends DeletableStore {
     long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
                 @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
                 @Nullable String data, @Nullable String content, @Nullable String location,

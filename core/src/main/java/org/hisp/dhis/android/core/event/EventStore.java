@@ -31,13 +31,14 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.State;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public interface EventStore {
+public interface EventStore extends DeletableStore {
     long insert(@NonNull String uid,
                 @Nullable String enrollmentUid,
                 @NonNull Date created,
@@ -53,7 +54,10 @@ public interface EventStore {
                 @NonNull Date eventDate,
                 @Nullable Date completedDate,
                 @Nullable Date dueDate,
-                @NonNull State state
+                @NonNull State state,
+                @Nullable String attributeCategoryOptions,
+                @NonNull String attributeOptionCombo,
+                @Nullable String trackedEntityInstance
     );
 
     int update(@NonNull String uid,
@@ -72,6 +76,9 @@ public interface EventStore {
                @Nullable Date completedDate,
                @Nullable Date dueDate,
                @NonNull State state,
+               @Nullable String attributeCategoryOptions,
+               @NonNull String attributeOptionCombo,
+               @Nullable String trackedEntityInstance,
                @NonNull String whereEventUid
     );
 
@@ -82,4 +89,8 @@ public interface EventStore {
     Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
 
     List<Event> querySingleEventsToPost();
+
+    List<Event> querySingleEvents();
+
+    List<Event> queryAll();
 }

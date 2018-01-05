@@ -31,6 +31,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
 
@@ -82,6 +83,9 @@ ext {
             equalsverifier  : "2.1.8",
 
             // plugins
-            errorpronecore  : "2.0.15"
+            errorpronecore  : "2.0.15",
+
+            //database
+            sqlbritemigrations  : "v1.0.1",
     ]
 }

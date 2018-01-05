@@ -1,0 +1,48 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 23,
+    "pageSize": 50
+  },
+  "categoryCombos": [
+    {
+      "lastUpdated": "2016-04-18T16:04:34.745",
+      "code": "BIRTHS",
+      "created": "2011-12-24T12:24:25.203",
+      "name": "Births",
+      "id": "m2jTvAj5kkm",
+      "isDefault": false,
+      "displayName": "Births",
+      "categories": [
+        {
+          "id": "KfdsGBcoiCa"
+        },
+        {
+          "id": "cX5k9anHEHd"
+        }
+      ],
+      "categoryOptionCombos": [
+        {
+          "lastUpdated": "2011-12-24T12:24:25.319",
+          "code": "COC_359669",
+          "created": "2011-12-24T12:24:25.319",
+          "name": "Trained TBA, At PHU",
+          "id": "Gmbgme7z9BF",
+          "displayName": "Trained TBA, At PHU",
+          "categoryCombo": {
+            "id": "m2jTvAj5kkm"
+          },
+          "categoryOptions": [
+            {
+              "id": "uZUnebiT5DI"
+            },
+            {
+              "id": "Fp4gVHbRvEV"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

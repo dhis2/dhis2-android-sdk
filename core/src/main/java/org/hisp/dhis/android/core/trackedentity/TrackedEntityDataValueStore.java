@@ -31,15 +31,27 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public interface TrackedEntityDataValueStore {
+public interface TrackedEntityDataValueStore extends DeletableStore {
     long insert(@NonNull String event, @Nullable Date created, @Nullable Date lastUpdated,
                 @Nullable String dataElement, @Nullable String storedBy,
                 @Nullable String value, @Nullable Boolean providedElsewhere
     );
+
+    int update(@NonNull String event, @Nullable Date created, @Nullable Date lastUpdated,
+            @Nullable String dataElement, @Nullable String storedBy,
+            @Nullable String value, @Nullable Boolean providedElsewhere);
+
+    int deleteByEventAndDataElementUIds(@NonNull String eventUid, @NonNull List<String> uIds);
+
+    List<TrackedEntityDataValue> queryTrackedEntityDataValues(String event);
+
+    Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues();
 
     Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(Boolean singleEvents);
 }

@@ -65,6 +65,7 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
         public static final String RELATIONSHIP_TEXT = "relationshipText";
         public static final String RELATED_PROGRAM = "relatedProgram";
         public static final String TRACKED_ENTITY = "trackedEntity";
+        public static final String CATEGORY_COMBO = "categoryCombo";
     }
 
     public static ProgramModel create(Cursor cursor) {
@@ -155,11 +156,9 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
     @ColumnName(Columns.TRACKED_ENTITY)
     public abstract String trackedEntity();
 
-    //TODO: Add these to the model/sql/... later:
-//    @Nullable
-//    @ColumnName(Columns.CATEGORY_COMBO)
-//    public abstract String categoryCombo();
-//
+    @Nullable
+    @ColumnName(Columns.CATEGORY_COMBO)
+    public abstract String categoryCombo();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
@@ -201,8 +200,8 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
         public abstract Builder relatedProgram(@Nullable String relatedProgram);
 
         public abstract Builder trackedEntity(@Nullable String trackedEntity);
-//
-//        public abstract Builder categoryCombo(@Nullable String categoryCombo);
+
+        public abstract Builder categoryCombo(@Nullable String categoryCombo);
 
         public abstract ProgramModel build();
     }

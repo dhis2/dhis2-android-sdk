@@ -62,11 +62,15 @@ import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementHandler;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
@@ -78,6 +82,7 @@ import org.hisp.dhis.android.core.event.EventService;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
@@ -203,9 +208,6 @@ public final class D2 {
             programStageSectionProgramIndicatorLinkStore;
     private final ProgramRuleActionStore programRuleActionStore;
     private final ProgramRuleStore programRuleStore;
-    private final OptionStore optionStore;
-    private final OptionSetStore optionSetStore;
-    private final DataElementStore dataElementStore;
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
@@ -237,6 +239,9 @@ public final class D2 {
     private final CategoryComboHandler categoryComboHandler;
     private final OrganisationUnitHandler organisationUnitHandler;
 
+    // handlers
+    private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
+    private final OptionSetHandler optionSetHandler;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter) {
@@ -256,7 +261,6 @@ public final class D2 {
         this.comboService = retrofit.create(CategoryComboService.class);
 
         // stores
-
         this.userStore =
                 new UserStoreImpl(databaseAdapter);
         this.userCredentialsStore =
@@ -291,12 +295,6 @@ public final class D2 {
                 new ProgramRuleActionStoreImpl(databaseAdapter);
         this.programRuleStore =
                 new ProgramRuleStoreImpl(databaseAdapter);
-        this.optionStore =
-                new OptionStoreImpl(databaseAdapter);
-        this.optionSetStore =
-                new OptionSetStoreImpl(databaseAdapter);
-        this.dataElementStore =
-                new DataElementStoreImpl(databaseAdapter);
         this.programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter);
         this.programStageSectionStore =
@@ -368,6 +366,10 @@ public final class D2 {
         categoryComboHandler = new CategoryComboHandler(categoryComboStore,
                 categoryComboOptionCategoryLinkStore,
                 categoryCategoryComboLinkStore, optionComboHandler);
+
+        // handlers
+        this.optionSetHandler = OptionSetHandler.create(databaseAdapter);
+        this.dataElementHandler = DataElementHandler.create(databaseAdapter, this.optionSetHandler);
     }
 
     @NonNull
@@ -433,8 +435,6 @@ public final class D2 {
         deletableStoreList.add(programRuleActionStore);
         deletableStoreList.add(programRuleStore);
         deletableStoreList.add(optionStore);
-        deletableStoreList.add(optionSetStore);
-        deletableStoreList.add(dataElementStore);
         deletableStoreList.add(programStageDataElementStore);
         deletableStoreList.add(programStageSectionStore);
         deletableStoreList.add(programStageStore);
@@ -465,16 +465,20 @@ public final class D2 {
                 trackedEntityService, optionSetService, systemInfoStore, resourceStore, userStore,
                 userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
                 organisationUnitStore,
+                databaseAdapter, systemInfoService, userService, programService, organisationUnitService,
+                trackedEntityService, optionSetService,
+                systemInfoStore, resourceStore, userStore,
+                userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore, optionStore,
-                optionSetStore, dataElementStore, programStageDataElementStore,
+                programStageDataElementStore,
                 programStageSectionStore,
                 programStageStore, relationshipStore, trackedEntityStore,
                 organisationUnitProgramLinkStore, categoryQuery,
                 categoryService, categoryHandler, categoryComboQuery, comboService,
-                categoryComboHandler);
+                categoryComboHandler, optionSetHandler, dataElementHandler, retrofit);
     }
 
     @NonNull

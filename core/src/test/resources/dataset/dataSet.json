@@ -1,0 +1,49 @@
+{
+  "lastUpdated": "2015-08-09T12:35:36.743",
+  "id": "lyLU2wR22tC",
+  "created": "2012-06-10T00:36:10.036",
+  "name": "ART monthly summary",
+  "shortName": "ART 2010",
+  "code": "DS_394131",
+  "validCompleteOnly": false,
+  "publicAccess": "rw------",
+  "skipOffline": false,
+  "formType": "CUSTOM",
+  "version": 22,
+  "timelyDays": 0,
+  "dimensionItemType": "REPORTING_RATE",
+  "dataElementDecoration": false,
+  "displayName": "ART monthly summary",
+  "notifyCompletingUser": false,
+  "noValueRequiresComment": false,
+  "displayShortName": "ART 2010",
+  "externalAccess": false,
+  "fieldCombinationRequired": false,
+  "renderHorizontally": false,
+  "renderAsTabs": false,
+  "dimensionItem": "lyLU2wR22tC",
+  "mobile": false,
+  "periodType": "Monthly",
+  "openFuturePeriods": 0,
+  "expiryDays": 0,
+  "categoryCombo": {
+    "id": "O4VaNks6tta"
+  },
+  "dataSetElements": [
+    {
+      "dataElement": {
+        "id": "n91IylSb1JQ"
+      }
+    },
+    {
+      "dataElement": {
+        "id": "QrhlrvV6Xs8"
+      }
+    },
+    {
+      "dataElement": {
+        "id": "ksGURIlASZB"
+      }
+    }
+  ]
+}

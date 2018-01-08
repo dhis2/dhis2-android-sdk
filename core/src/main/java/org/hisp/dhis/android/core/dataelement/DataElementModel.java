@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataelement;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -38,11 +39,17 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.ModelFactory;
+import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
+import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class DataElementModel extends BaseNameableObjectModel {
+public abstract class DataElementModel extends BaseNameableObjectModel implements StatementBinder {
 
     public static final String TABLE = "DataElement";
 
@@ -57,11 +64,52 @@ public abstract class DataElementModel extends BaseNameableObjectModel {
         public static final String DISPLAY_FORM_NAME = "displayFormName";
         public static final String OPTION_SET = "optionSet";
         public static final String CATEGORY_COMBO = "categoryCombo";
+
+        public static String[] all() {
+            return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(),
+                    VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_TYPE, FORM_NAME, NUMBER_TYPE,
+                    DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET);
+        }
     }
 
     public static DataElementModel create(Cursor cursor) {
         return AutoValue_DataElementModel.createFromCursor(cursor);
     }
+
+    public static ModelFactory<DataElementModel, DataElement> Factory
+            = new ModelFactory<DataElementModel, DataElement>() {
+
+        @Override
+        public DataElementModel fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+
+        @Override
+        public DataElementModel fromPojo(DataElement dataElement) {
+            OptionSet optionSet = dataElement.optionSet();
+            return DataElementModel.builder()
+                    .uid(dataElement.uid())
+                    .code(dataElement.code())
+                    .name(dataElement.name())
+                    .displayName(dataElement.displayName())
+                    .created(dataElement.created())
+                    .lastUpdated(dataElement.lastUpdated())
+                    .shortName(dataElement.shortName())
+                    .displayShortName(dataElement.displayShortName())
+                    .description(dataElement.description())
+                    .displayDescription(dataElement.displayDescription())
+                    .valueType(dataElement.valueType())
+                    .zeroIsSignificant(dataElement.zeroIsSignificant())
+                    .aggregationType(dataElement.aggregationType())
+                    .formName(dataElement.formName())
+                    .numberType(dataElement.numberType())
+                    .domainType(dataElement.domainType())
+                    .dimension(dataElement.dimension())
+                    .displayFormName(dataElement.displayFormName())
+                    .optionSet(optionSet != null ? optionSet.uid() : null)
+                    .build();
+        }
+    };
 
     public static Builder builder() {
         return new $$AutoValue_DataElementModel.Builder();
@@ -135,5 +183,19 @@ public abstract class DataElementModel extends BaseNameableObjectModel {
 
         public abstract DataElementModel build();
 
+    }
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 11, valueType());
+        sqLiteBind(sqLiteStatement, 12, zeroIsSignificant());
+        sqLiteBind(sqLiteStatement, 13, aggregationType());
+        sqLiteBind(sqLiteStatement, 14, formName());
+        sqLiteBind(sqLiteStatement, 15, numberType());
+        sqLiteBind(sqLiteStatement, 16, domainType());
+        sqLiteBind(sqLiteStatement, 17, dimension());
+        sqLiteBind(sqLiteStatement, 18, displayFormName());
+        sqLiteBind(sqLiteStatement, 19, optionSet());
     }
 }

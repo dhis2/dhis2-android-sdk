@@ -27,7 +27,8 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,26 +36,24 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Date;
+import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class OptionSetHandlerShould {
     @Mock
-    private OptionSetStore optionSetStore;
+    private IdentifiableObjectStore<OptionSetModel> optionSetStore;
 
     @Mock
     private OptionSet optionSet;
 
     @Mock
     private OptionHandler optionHandler;
+
+    @Mock
+    private List<Option> options;
 
     // object to test
     private OptionSetHandler optionSetHandler;
@@ -64,75 +63,18 @@ public class OptionSetHandlerShould {
         MockitoAnnotations.initMocks(this);
         optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
         when(optionSet.uid()).thenReturn("test_option_set_uid");
+        when(optionSet.options()).thenReturn(options);
     }
 
     @Test
-    public void do_nothing_when_passing_in_null() throws Exception {
-        optionSetHandler.handleOptionSet(null);
-
-        // verify that delete, update and insert is never called
-        verify(optionSetStore, never()).delete(anyString());
-
-        verify(optionSetStore, never()).update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyInt(), any(ValueType.class), anyString());
-
-        verify(optionSetStore, never()).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyInt(), any(ValueType.class));
-
+    public void handle_option_sets() throws Exception {
+        optionSetHandler.handle(optionSet);
+        verify(optionHandler).handleOptions(options);
     }
 
     @Test
-    public void invoke_delete_when_handle_option_set_set_as_deleted() throws Exception {
-        when(optionSet.deleted()).thenReturn(Boolean.TRUE);
-
-        optionSetHandler.handleOptionSet(optionSet);
-
-        // verify that delete is called once
-        verify(optionSetStore, times(1)).delete(optionSet.uid());
-
-        // verify that update and insert is never called
-        verify(optionSetStore, never()).update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyInt(), any(ValueType.class), anyString());
-
-        verify(optionSetStore, never()).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyInt(), any(ValueType.class));
-
-    }
-
-    @Test
-    public void invoke_only_update_when_handle_option_set_inserted() throws Exception {
-        when(optionSetStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyInt(), any(ValueType.class), anyString())).thenReturn(1);
-
-        optionSetHandler.handleOptionSet(optionSet);
-
-        // verify that update is called once
-        verify(optionSetStore, times(1)).update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyInt(), any(ValueType.class), anyString());
-
-        // verify that insert and delete is never called
-        verify(optionSetStore, never()).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyInt(), any(ValueType.class));
-
-        verify(optionSetStore, never()).delete(anyString());
-    }
-
-    @Test
-    public void invoke_update_and_insert_when_handle_option_set_not_inserted() throws Exception {
-        when(optionSetStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyInt(), any(ValueType.class), anyString())).thenReturn(0);
-
-        optionSetHandler.handleOptionSet(optionSet);
-
-        // verify that insert is called once
-        verify(optionSetStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyInt(), any(ValueType.class));
-
-        // verify that update is called once since we update before we insert
-        verify(optionSetStore, times(1)).update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyInt(), any(ValueType.class), anyString());
-
-        // verify that delete is never called
-        verify(optionSetStore, never()).delete(anyString());
+    public void extend_generic_handler_impl() {
+        GenericHandlerImpl<OptionSet, OptionSetModel> genericHandler =
+                new OptionSetHandler(null,null);
     }
 }

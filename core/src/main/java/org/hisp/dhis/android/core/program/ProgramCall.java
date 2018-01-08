@@ -29,18 +29,14 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementHandler;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.option.OptionHandler;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetHandler;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
@@ -84,13 +80,11 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                        ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore,
                        ProgramRuleActionStore programRuleActionStore,
                        ProgramRuleStore programRuleStore,
-                       OptionStore optionStore,
-                       OptionSetStore optionSetStore,
-                       DataElementStore dataElementStore,
                        ProgramStageDataElementStore programStageDataElementStore,
                        ProgramStageSectionStore programStageSectionStore,
                        ProgramStageStore programStageStore,
-                       RelationshipTypeStore relationshipStore) {
+                       RelationshipTypeStore relationshipStore,
+                       GenericHandler<DataElement, DataElementModel> dataElementHandler) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;
         this.resourceStore = resourceStore;
@@ -103,10 +97,6 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
 
         ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore);
-
-        OptionHandler optionHandler = new OptionHandler(optionStore);
-        OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
-        DataElementHandler dataElementHandler = new DataElementHandler(dataElementStore, optionSetHandler);
 
         ProgramStageDataElementHandler programStageDataElementHandler = new ProgramStageDataElementHandler(
                 programStageDataElementStore, dataElementHandler

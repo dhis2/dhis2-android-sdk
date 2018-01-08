@@ -28,45 +28,13 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
-import org.hisp.dhis.android.core.common.ValueType;
-
-import java.util.Date;
-
-public interface DataElementStore extends DeletableStore {
-
-    long insert(
-            @NonNull String uid,
-            @Nullable String code,
-            @NonNull String name,
-            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @Nullable String shortName, @Nullable String displayShortName,
-            @Nullable String description, @Nullable String displayDescription,
-            @NonNull ValueType valueType, @Nullable Boolean zeroIsSignificant,
-            @Nullable String aggregationOperator, @Nullable String formName,
-            @Nullable String numberType, @Nullable String domainType,
-            @Nullable String dimension, @Nullable String displayFormName,
-            @Nullable String optionSet,
-            @Nullable String categoryCombo
-    );
-
-    int delete(String uid);
-
-    int update(
-            @NonNull String uid,
-            @Nullable String code,
-            @NonNull String name,
-            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @Nullable String shortName, @Nullable String displayShortName,
-            @Nullable String description, @Nullable String displayDescription,
-            @NonNull ValueType valueType, @Nullable Boolean zeroIsSignificant,
-            @Nullable String aggregationOperator, @Nullable String formName,
-            @Nullable String numberType, @Nullable String domainType,
-            @Nullable String dimension, @Nullable String displayFormName,
-            @Nullable String optionSet,
-            @Nullable String categoryCombo, @NonNull String whereDataElementUid
-    );
+public class DataElementStore {
+    public static IdentifiableObjectStore<DataElementModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.identifiableStore(databaseAdapter,
+                DataElementModel.TABLE, DataElementModel.Columns.all());
+    }
 }

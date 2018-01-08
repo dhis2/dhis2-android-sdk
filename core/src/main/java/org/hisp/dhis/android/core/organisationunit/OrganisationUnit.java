@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.program.Program;
 
 import java.util.Date;
@@ -53,6 +54,7 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     private static final String CLOSED_DATE = "closedDate";
     private static final String LEVEL = "level";
     private static final String PROGRAMS = "programs";
+    private static final String DATA_SETS = "dataSets";
 
     public static final Field<OrganisationUnit, String> uid = Field.create(BaseIdentifiableObject.UID);
     public static final Field<OrganisationUnit, String> code = Field.create(BaseIdentifiableObject.CODE);
@@ -71,6 +73,7 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     public static final Field<OrganisationUnit, Boolean> deleted = Field.create(DELETED);
     public static final NestedField<OrganisationUnit, OrganisationUnit> parent = NestedField.create(PARENT);
     public static final NestedField<OrganisationUnit, Program> programs = NestedField.create(PROGRAMS);
+    public static final NestedField<OrganisationUnit, DataSet> dataSets = NestedField.create(DATA_SETS);
 
     @Nullable
     @JsonProperty(PARENT)
@@ -96,6 +99,10 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     @JsonProperty(PROGRAMS)
     public abstract List<Program> programs();
 
+    @Nullable
+    @JsonProperty(DATA_SETS)
+    public abstract List<DataSet> dataSets();
+
     @JsonCreator
     public static OrganisationUnit create(
             @JsonProperty(UID) String uid,
@@ -114,9 +121,10 @@ public abstract class OrganisationUnit extends BaseNameableObject {
             @JsonProperty(CLOSED_DATE) Date closedDate,
             @JsonProperty(LEVEL) Integer level,
             @JsonProperty(PROGRAMS) List<Program> programs,
+            @JsonProperty(DATA_SETS) List<DataSet> dataSets,
             @JsonProperty(DELETED) Boolean deleted) {
         return new AutoValue_OrganisationUnit(uid, code, name, displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription, parent, path, openingDate,
-                closedDate, level, safeUnmodifiableList(programs));
+                closedDate, level, safeUnmodifiableList(programs), safeUnmodifiableList(dataSets));
     }
 }

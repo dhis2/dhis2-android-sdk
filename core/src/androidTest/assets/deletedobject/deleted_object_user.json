@@ -7,9 +7,10 @@
   },
   "deletedObjects": [
     {
-      "uid": "MXyJmlo9rge",
+      "uid": "DXyJmlo9rge",
       "deletedAt": "2017-05-19T14:59:03.130",
       "klass": "User",
       "deletedBy": "system"
-    }]
+    }
+  ]
 }

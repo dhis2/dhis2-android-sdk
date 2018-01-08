@@ -2,18 +2,18 @@ package org.hisp.dhis.android.core.deletedobject;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.CATEGORY_COMBOS;
-import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_EXPECTED_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_EMPTY;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.ALTERNATIVE_USER;
+import static org.hisp.dhis.android.core.common.MockedCalls.NORMAL_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.ORGANISATION_UNITS;
 import static org.hisp.dhis.android.core.common.MockedCalls.PROGRAMS;
 import static org.hisp.dhis.android.core.common.MockedCalls.SYSTEM_INFO;
 import static org.hisp.dhis.android.core.common.MockedCalls.TRACKED_ENTITIES;
-import static org.hisp.dhis.android.core.common.MockedCalls.USER;
 
 import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
@@ -79,9 +79,10 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
     @Test
     @MediumTest
     public void not_delete_nothing_when_the_deletable_object_list_is_empty() throws Exception {
-        MockedCalls.givenAMetadataInDatabase(dhis2MockServer, d2);
+        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
+        d2.syncMetaData().call();
 
-        verifyDownloadedUsers(DELETED_EXPECTED_USER);
+        verifyDownloadedUsers(NORMAL_USER);
         //verifyDownloadedOrganisationUnits("events_1.json");
         //verifyDownloadedCategories("events_1.json");
         //verifyDownloadedCategoryCombo("events_1.json");
@@ -93,12 +94,13 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
     @Test
     @MediumTest
     public void delete_the_given_deleted_user() throws Exception {
-        MockedCalls.givenAMetadataInDatabase(dhis2MockServer, d2);
+        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
+        d2.syncMetaData().call();
 
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
         d2.syncMetaData().call();
 
-        verifyDownloadedUsers(DELETED_EXPECTED_USER);
+        verifyDownloadedUsers(AFTER_DELETE_EXPECTED_USER);
     }
 
     @Test

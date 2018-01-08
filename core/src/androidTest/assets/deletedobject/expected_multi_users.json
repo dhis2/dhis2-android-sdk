@@ -1,0 +1,22 @@
+{
+  "users": [{
+    "created": "2015-03-11T13:31:09.324",
+    "lastUpdated": "2016-04-11T00:05:57.495",
+    "name": "Matt Smith",
+    "id": "MXyJmlo9rge",
+    "displayName": "Matt Smith",
+    "firstName": "Matt",
+    "surname": "Smith",
+    "email": "matt@hmail.com",
+    "userCredentials": {
+      "lastUpdated": "2017-11-19T11:45:37.250",
+      "code": "android",
+      "created": "2015-03-11T13:31:09.206",
+      "name": "Matt Smith",
+      "id": "ZZfCOxtkURr",
+      "displayName": "Matt Smith",
+      "username": "android",
+      "deleted": false
+    }
+  }]
+}

@@ -3,7 +3,6 @@ package org.hisp.dhis.android.core.common;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
@@ -25,14 +24,22 @@ public class MockedCalls {
             "deletedobject/deleted_object_user.json";
     public static final String SYSTEM_INFO = "system_info.json";
     public static final String USER = "user.json";
+    public static final String ADMIN_USER = "admin/user.json";
     public static final String ALTERNATIVE_USER = "deletedobject/alternative_user.json";
     public static final String ORGANISATION_UNITS = "organisationUnits.json";
+    public static final String ADMIN_ORGANISATION_UNITS = "admin/organisation_units.json";
+
     public static final String CATEGORIES = "categories.json";
     public static final String CATEGORY_COMBOS = "category_combos.json";
     public static final String PROGRAMS = "programs.json";
     public static final String TRACKED_ENTITIES = "tracked_entities.json";
     public static final String OPTION_SETS = "option_sets.json";
-    public static final String DELETED_EXPECTED_USER = "deletedobject/user.json";
+    public static final String AFTER_DELETE_EXPECTED_USER =
+            "deletedobject/expected_multi_users.json";
+    public static final String MULTI_USERS_EXPECTED =
+            "deletedobject/expected_not_deleted_user.json";
+    public static final String NORMAL_USER =
+            "deletedobject/expected_normal_user.json";
 
     final static String[] commonMetadataJsonFiles = new String[]{
             SYSTEM_INFO,
@@ -43,13 +50,25 @@ public class MockedCalls {
             DELETED_OBJECT_EMPTY, PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY, OPTION_SETS};
+    final static String[] adminCommonMetadataJsonFiles = new String[]{
+            SYSTEM_INFO,
+            DELETED_OBJECT_EMPTY, ADMIN_USER,
+            DELETED_OBJECT_EMPTY, ADMIN_ORGANISATION_UNITS,
+            DELETED_OBJECT_EMPTY, CATEGORIES,
+            DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
+            DELETED_OBJECT_EMPTY, PROGRAMS,
+            DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
+            DELETED_OBJECT_EMPTY, OPTION_SETS};
 
-    public static void givenAMetadataInDatabase(Dhis2MockServer dhis2MockServer, D2 d2)
+    public static void givenAMetadataInDatabase(Dhis2MockServer dhis2MockServer)
             throws Exception {
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataJsonFiles);
-        d2.syncMetaData().call();
     }
 
+    public static void givenAMetadataWithDescendantsInDatabase(Dhis2MockServer dhis2MockServer)
+            throws IOException {
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(adminCommonMetadataJsonFiles);
+    }
     public static Payload<User> parseUserResponse(String file) throws IOException {
         String expectedResponseJson = new AssetsFileReader().getStringFromFile(file);
 

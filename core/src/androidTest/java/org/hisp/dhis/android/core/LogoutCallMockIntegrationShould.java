@@ -13,6 +13,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
+import org.hisp.dhis.android.core.common.MockedCalls;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
@@ -189,28 +190,14 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenAMetadataInDatabase() throws Exception {
-        dhis2MockServer.enqueueMockResponse("system_info.json");
-        dhis2MockServer.enqueueMockResponse("user.json");
-        dhis2MockServer.enqueueMockResponse("organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
+        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
         Response response = d2.syncMetaData().call();
 
         assertThat(response.isSuccessful(), is(true));
     }
 
     private void givenAMetadataWithDescendantsInDatabase() throws Exception {
-        dhis2MockServer.enqueueMockResponse("system_info.json");
-        dhis2MockServer.enqueueMockResponse("admin/user.json");
-        dhis2MockServer.enqueueMockResponse("admin/organisation_units.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
+        MockedCalls.givenAMetadataWithDescendantsInDatabase(dhis2MockServer);
 
         Response response = d2.syncMetaData().call();
 

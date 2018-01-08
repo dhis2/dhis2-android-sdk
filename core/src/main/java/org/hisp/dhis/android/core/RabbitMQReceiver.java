@@ -11,11 +11,7 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.TimeoutException;
 
 public class RabbitMQReceiver {
     private final static String QUEUE_NAME = "dhis2";
@@ -35,7 +31,7 @@ public class RabbitMQReceiver {
                     AMQP.BasicProperties properties, byte[] body)
                     throws IOException {
                 String message = new String(body, "UTF-8");
-                System.out.println(" [x] Received '" + message + "'");
+                System.out.println("[x] Received '" + message + "'");
             }
         };
         channel.basicConsume(QUEUE_NAME, true, consumer);
@@ -45,10 +41,10 @@ public class RabbitMQReceiver {
     private ConnectionFactory setupFactory() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
 
-        factory.setUsername("guest");
-        factory.setPassword("guest");
+        factory.setUsername("guest2");
+        factory.setPassword("guest2");
         factory.setVirtualHost("/");
-        factory.setHost("localhost");
+        factory.setHost("192.168.0.169");
         factory.setPort(5672);
 
         return factory;

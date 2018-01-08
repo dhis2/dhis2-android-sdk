@@ -87,5 +87,9 @@ ext {
 
             //database
             sqlbritemigrations  : "v1.0.1",
+
+            // rabbitmq
+            // 5.x release series of this library require JDK 8
+            rabbitmq: "4.1.0"
     ]
 }

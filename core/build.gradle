@@ -112,6 +112,9 @@ dependencies {
     compile "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
     annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
 
+    //RabbitMQ
+    compile "com.rabbitmq:amqp-client:${libraries.rabbitmq}"
+
     // Java test dependencies
     testCompile "junit:junit:${libraries.junit}"
     testCompile "org.mockito:mockito-core:${libraries.mockito}"
@@ -130,6 +133,7 @@ dependencies {
         exclude group: 'junit' // Android has JUnit built in.
     }
     compile 'com.google.code.findbugs:annotations:3.0.0'
+
 }
 
 apply from: rootProject.file("plugins/gradle-mvn-push.gradle")

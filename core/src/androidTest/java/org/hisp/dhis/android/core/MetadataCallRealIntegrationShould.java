@@ -13,6 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.concurrent.TimeoutException;
 
 public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     /**
@@ -21,6 +23,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
+    private RabbitMQReceiver rabbitMQReceiver;
     Exception e;
 
     @Before
@@ -29,6 +32,12 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         super.setUp();
 
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+
+        try {
+            rabbitMQReceiver = new RabbitMQReceiver(new URL(RealServerMother.url));
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
     }
 
 
@@ -61,6 +70,8 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         //second sync:
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
+
+        Thread.sleep(50000);
 
         //TODO: add aditional sync + break point.
         //when debugger stops at the new break point manually change metadata online & resume.

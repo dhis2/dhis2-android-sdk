@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.category.CategoryComboCategoryLinkModel;
-import org.hisp.dhis.android.core.category.CategoryComboCategoryOptionComboLinkModel;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.junit.Before;
@@ -48,13 +45,6 @@ public class DataSetParentLinkManagerShould {
 
     @Mock
     private ObjectStore<DataSetDataElementLinkModel> dataSetDataElementStore;
-
-    @Mock
-    private ObjectStore<CategoryComboCategoryLinkModel> categoryComboCategoryStore;
-
-    @Mock
-    private ObjectStore<CategoryComboCategoryOptionComboLinkModel>
-            categoryComboCategoryOptionComboStore;
 
     @Mock
     private DataSet dataSet1;
@@ -77,9 +67,7 @@ public class DataSetParentLinkManagerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         linkManager = new DataSetParentLinkManager(
-                dataSetDataElementStore,
-                categoryComboCategoryStore,
-                categoryComboCategoryOptionComboStore);
+                dataSetDataElementStore);
         when(dataSet1.uid()).thenReturn("test_data_uid_uid1");
         when(dataSet2.uid()).thenReturn("test_data_uid_uid2");
         when(dataSet1.dataSetElements()).thenReturn(Lists.newArrayList(decc1, decc2));

@@ -27,17 +27,6 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import static junit.framework.Assert.assertTrue;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.MetadataCall;
@@ -56,11 +45,11 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetService;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
@@ -119,6 +108,16 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import static junit.framework.Assert.assertTrue;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class MetadataCallShould {
@@ -207,15 +206,6 @@ public class MetadataCallShould {
     private ProgramRuleStore programRuleStore;
 
     @Mock
-    private OptionStore optionStore;
-
-    @Mock
-    private OptionSetStore optionSetStore;
-
-    @Mock
-    private DataElementStore dataElementStore;
-
-    @Mock
     private ProgramStageDataElementStore programStageDataElementStore;
 
     @Mock
@@ -298,6 +288,12 @@ public class MetadataCallShould {
     @Mock
     private CategoryComboHandler mockCategoryComboHandler;
 
+    @Mock
+    private GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
+
+    @Mock
+    private GenericHandler<DataElement, DataElementModel> dataElementHandler;
+
     // object to test
     private MetadataCall metadataCall;
 
@@ -374,10 +370,11 @@ public class MetadataCallShould {
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
-                optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
+                programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore, trackedEntityStore,
                 organisationUnitProgramLinkStore,categoryQuery, categoryService, categoryHandler,
-                CategoryComboQuery.defaultQuery(), comboService,mockCategoryComboHandler);
+                CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
+                optionSetHandler, dataElementHandler, retrofit);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
@@ -395,7 +392,7 @@ public class MetadataCallShould {
     }
 
     @Test
-    public void returns_category_combo_payload_when_execute_metadata_call() throws Exception {
+    public void returns_last_response_successful() throws Exception {
         Response response = metadataCall.call();
         // assert that last successful response is returned
 

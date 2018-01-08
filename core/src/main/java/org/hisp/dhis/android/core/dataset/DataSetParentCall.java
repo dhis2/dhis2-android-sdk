@@ -28,12 +28,9 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.calls.TransactionalCall;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
-import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementEndpointCall;
 import org.hisp.dhis.android.core.user.User;
 
@@ -42,8 +39,6 @@ import java.util.List;
 import retrofit2.Response;
 
 import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getAssignedDataSetUids;
-import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getCategoryComboUids;
-import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getCategoryUids;
 import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getDataElementUids;
 
 public class DataSetParentCall extends TransactionalCall {
@@ -65,21 +60,11 @@ public class DataSetParentCall extends TransactionalCall {
         List<DataSet> dataSets = dataSetResponse.body().items();
         DataElementEndpointCall dataElementEndpointCall =
                 DataElementEndpointCall.create(data, getDataElementUids(dataSets));
-        dataElementEndpointCall.call();
+        Response<Payload<DataElement>> dataElementResponse = dataElementEndpointCall.call();
 
-        CategoryComboEndpointCall categoryComboEndpointCall =
-                CategoryComboEndpointCall.create(data,getCategoryComboUids(dataSets));
-        Response<Payload<CategoryCombo>> categoryComboResponse = categoryComboEndpointCall.call();
-
-        List<CategoryCombo> categoryCombos = categoryComboResponse.body().items();
-        CategoryEndpointCall categoryEndpointCall =
-                CategoryEndpointCall.create(data, getCategoryUids(categoryCombos));
-        Response<Payload<Category>> categoryResponse = categoryEndpointCall.call();
-
-        linkManager.saveCategoryComboLinks(categoryCombos);
         linkManager.saveDataSetDataElementLinks(dataSets);
 
-        return categoryResponse;
+        return dataElementResponse;
     }
 
     public static DataSetParentCall create(User user, GenericCallData data) {

@@ -39,22 +39,22 @@ import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryComboStore;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryHandler;
-import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionHandler;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryQuery;
@@ -62,8 +62,10 @@ import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
@@ -72,7 +74,10 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
+import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
+import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkStore;
+import org.hisp.dhis.android.core.dataset.DataSetModel;
+import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -83,9 +88,9 @@ import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.option.OptionSetHandler;
+import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
@@ -208,6 +213,9 @@ public final class D2 {
             programStageSectionProgramIndicatorLinkStore;
     private final ProgramRuleActionStore programRuleActionStore;
     private final ProgramRuleStore programRuleStore;
+    private final OptionStore optionStore;
+    private final IdentifiableObjectStore<OptionSetModel> optionSetStore;
+    private final IdentifiableObjectStore<DataElementModel> dataElementStore;
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
@@ -229,6 +237,9 @@ public final class D2 {
     private final CategoryCategoryComboLinkStore categoryCategoryComboLinkStore;
     private final CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore;
     private final CategoryOptionComboCategoryLinkStore categoryComboOptionCategoryLinkStore;
+
+    private final IdentifiableObjectStore<DataSetModel> dataSetStore;
+    private final ObjectStore<DataSetDataElementLinkModel> dataSetDataElementLinkStore;
 
     //Handlers
     private final UserCredentialsHandler userCredentialsHandler;
@@ -295,6 +306,12 @@ public final class D2 {
                 new ProgramRuleActionStoreImpl(databaseAdapter);
         this.programRuleStore =
                 new ProgramRuleStoreImpl(databaseAdapter);
+        this.optionStore =
+                new OptionStoreImpl(databaseAdapter);
+        this.optionSetStore =
+                OptionSetStore.create(databaseAdapter);
+        this.dataElementStore =
+                DataElementStore.create(databaseAdapter);
         this.programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter);
         this.programStageSectionStore =
@@ -330,6 +347,9 @@ public final class D2 {
                 databaseAdapter());
         CategoryOptionComboStore categoryOptionComboStore = new CategoryOptionComboStoreImpl(
                 databaseAdapter());
+
+        this.dataSetStore = DataSetStore.create(databaseAdapter());
+        this.dataSetDataElementLinkStore = DataSetDataElementLinkStore.create(databaseAdapter());
 
         //handlers
         userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
@@ -435,6 +455,8 @@ public final class D2 {
         deletableStoreList.add(programRuleActionStore);
         deletableStoreList.add(programRuleStore);
         deletableStoreList.add(optionStore);
+        deletableStoreList.add(optionSetStore);
+        deletableStoreList.add(dataElementStore);
         deletableStoreList.add(programStageDataElementStore);
         deletableStoreList.add(programStageSectionStore);
         deletableStoreList.add(programStageStore);
@@ -452,6 +474,8 @@ public final class D2 {
         deletableStoreList.add(categoryComboOptionCategoryLinkStore);
         deletableStoreList.add(categoryComboStore);
         deletableStoreList.add(categoryCategoryComboLinkStore);
+        deletableStoreList.add(dataSetStore);
+        deletableStoreList.add(dataSetDataElementLinkStore);
         return new LogOutUserCallable(
                 deletableStoreList
         );
@@ -460,11 +484,6 @@ public final class D2 {
     @NonNull
     public Call<Response> syncMetaData() {
         return new MetadataCall(
-                databaseAdapter, systemInfoService, userService, programService,
-                organisationUnitService,
-                trackedEntityService, optionSetService, systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
-                organisationUnitStore,
                 databaseAdapter, systemInfoService, userService, programService, organisationUnitService,
                 trackedEntityService, optionSetService,
                 systemInfoStore, resourceStore, userStore,
@@ -472,7 +491,7 @@ public final class D2 {
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, optionStore,
+                programRuleStore,
                 programStageDataElementStore,
                 programStageSectionStore,
                 programStageStore, relationshipStore, trackedEntityStore,

@@ -57,4 +57,9 @@ public class ObjectStoreImpl<M extends Model & StatementBinder> implements Objec
             throw new RuntimeException("Nothing was inserted.");
         }
     }
+
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(builder.tableName);
+    }
 }

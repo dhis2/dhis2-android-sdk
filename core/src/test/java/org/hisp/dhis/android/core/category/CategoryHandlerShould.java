@@ -44,7 +44,7 @@ public class CategoryHandlerShould {
         Category deletedCategory = givenADeletedCategory();
 
         mCategoryHandler.handle(deletedCategory);
-        verify(mockCategoryStore).delete(deletedCategory);
+        verify(mockCategoryStore).delete(deletedCategory.uid());
     }
 
     @Test

@@ -42,6 +42,7 @@ import java.util.Date;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OptionSetStoreImpl implements OptionSetStore {
+
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             OptionSetModel.Columns.UID +
             " FROM " + OptionSetModel.TABLE +

@@ -48,10 +48,12 @@ import java.util.List;
         "PMD.NPathComplexity",
 })
 public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
+
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             OrganisationUnitModel.Columns.UID +
             " FROM " + OrganisationUnitModel.TABLE +
             " WHERE "+OrganisationUnitModel.Columns.UID+" =?;";
+
     private static final String INSERT_STATEMENT = "INSERT INTO " + OrganisationUnitModel.TABLE + " (" +
             OrganisationUnitModel.Columns.UID + ", " +
             OrganisationUnitModel.Columns.CODE + ", " +

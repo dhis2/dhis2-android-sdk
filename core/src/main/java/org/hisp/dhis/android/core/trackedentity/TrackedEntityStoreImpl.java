@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,6 +42,12 @@ import java.util.Date;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class TrackedEntityStoreImpl implements TrackedEntityStore {
+
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            TrackedEntityModel.Columns.UID +
+            " FROM " + TrackedEntityModel.TABLE +
+            " WHERE "+TrackedEntityModel.Columns.UID+" =?;";
+
     private static final String INSERT_STATEMENT = "INSERT INTO " + TrackedEntityModel.TABLE + " (" +
             TrackedEntityModel.Columns.UID + ", " +
             TrackedEntityModel.Columns.CODE + ", " +
@@ -147,5 +154,11 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(TrackedEntityModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String trackedEntityUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, trackedEntityUId);
+        return cursor.getCount()>0;
     }
 }

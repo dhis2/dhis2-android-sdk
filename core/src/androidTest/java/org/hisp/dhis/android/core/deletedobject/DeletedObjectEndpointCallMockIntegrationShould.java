@@ -38,6 +38,8 @@ import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.android.core.user.UserStoreImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -100,6 +102,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         d2.syncMetaData().call();
 
         verifyIfUserIsDeleted("DXyJmlo9rge");
+        verifyIfUserIsDeleted("DXyJmlo9rge");
     }
 
     @Test
@@ -112,6 +115,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
         d2.syncMetaData().call();
 
+        verifyIfOrganisationUnitIsPersisted("DiszpKrYNg8");
+        verifyIfOrganisationUnitIsDeleted("YuQRtpLP102");
         verifyIfOrganisationUnitIsDeleted("YuQRtpLP10I");
     }
 
@@ -125,6 +130,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
         d2.syncMetaData().call();
 
+        verifyIfOrganisationUnitIsPersisted("DiszpKrYNg8");
         verifyIfCategoryIsDeleted("vGs6omsRekv");
         verifyIfCategoryIsDeleted("cX5k9anHEHd");
     }
@@ -137,7 +143,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
 
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
         d2.syncMetaData().call();
-
+        verifyIfOptionSetIsPersisted("xjA5E9MimMU");
         verifyIfOptionSetIsDeleted("egT1YqFWsVk");
         verifyIfOptionSetIsDeleted("WckXGsyYola");
     }
@@ -150,6 +156,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
 
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
         d2.syncMetaData().call();
+        verifyIfCategoryComboIsPersisted("p0KPaWEg3cf");
         verifyIfCategoryComboIsDeleted("TXGfLxZlInA");
         verifyIfCategoryComboIsDeleted("TNYQzTHdoxL");
     }
@@ -162,8 +169,9 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
 
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
         d2.syncMetaData().call();
-        verifyIfCategoryComboIsDeleted("TXGfLxZlInA");
-        verifyIfCategoryComboIsDeleted("TNYQzTHdoxL");
+        verifyIfProgramIsPersisted("lxAQ7Zs9VYR");
+        verifyIfProgramIsDeleted("TXGfLxZlInA");
+        verifyIfProgramIsDeleted("TNYQzTHdoxL");
     }
 
     @Test
@@ -174,14 +182,22 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
 
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
         d2.syncMetaData().call();
-        verifyIfCategoryComboIsDeleted("nEenWmSyUE2");
-        verifyIfCategoryComboIsDeleted("nEenWmSyUE3");
+        verifyIfTrackedEntityIsPersisted("nEenWmSyUEp");
+        verifyIfTrackedEntityIsDeleted("nEenWmSyUE2");
+        verifyIfTrackedEntityIsDeleted("nEenWmSyUE3");
     }
 
     @Test
     @MediumTest
     public void delete_the_given_deleted_constants() throws Exception {
+        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
+        d2.syncMetaData().call();
 
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
+        d2.syncMetaData().call();
+        verifyIfTrackedEntityIsPersisted("nEenWmSyUEp");
+        verifyIfTrackedEntityIsDeleted("nEenWmSyUE2");
+        verifyIfTrackedEntityIsDeleted("nEenWmSyUE3");
     }
 
     @Test
@@ -194,6 +210,46 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     @MediumTest
     public void delete_the_given_deleted_data_elements() throws Exception {
 
+    }
+
+    private void verifyIfTrackedEntityIsPersisted(String trackedEntityUId) {
+        TrackedEntityStoreImpl store = new TrackedEntityStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(trackedEntityUId);
+
+        assertThat(isPersisted, is(true));
+    }
+
+    private void verifyIfTrackedEntityIsDeleted(String trackedEntityUId) {
+        TrackedEntityStoreImpl store = new TrackedEntityStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(trackedEntityUId);
+
+        assertThat(isPersisted, is(false));
+    }
+
+    private void verifyIfProgramIsPersisted(String programUId) {
+        ProgramStoreImpl store = new ProgramStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(programUId);
+
+        assertThat(isPersisted, is(true));
+    }
+
+    private void verifyIfProgramIsDeleted(String programUId) {
+        ProgramStoreImpl store = new ProgramStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(programUId);
+
+        assertThat(isPersisted, is(false));
+    }
+
+    private void verifyIfCategoryComboIsPersisted(String categoryComboUId) {
+        CategoryComboStoreImpl store = new CategoryComboStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(categoryComboUId);
+
+        assertThat(isPersisted, is(true));
     }
 
     private void verifyIfCategoryComboIsDeleted(String categoryComboUId) {
@@ -220,6 +276,14 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         assertThat(isPersisted, is(false));
     }
 
+    private void verifyIfOrganisationUnitIsPersisted(String organisationUnitUid) {
+        OrganisationUnitStoreImpl store = new OrganisationUnitStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(organisationUnitUid);
+
+        assertThat(isPersisted, is(true));
+    }
+
 
     private void verifyIfUserIsDeleted(String userUId) {
         UserStoreImpl store = new UserStoreImpl(databaseAdapter());
@@ -237,4 +301,11 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         assertThat(isPersisted, is(false));
     }
 
+    private void verifyIfOptionSetIsPersisted(String optionSetUid) {
+        OptionSetStoreImpl store = new OptionSetStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(optionSetUid);
+
+        assertThat(isPersisted, is(true));
+    }
 }

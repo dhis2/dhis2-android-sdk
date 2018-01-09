@@ -31,12 +31,13 @@ final class RuleFunctionSplit extends RuleFunction {
                     arguments.size() + " were supplied");
         }
 
-        return (split(arguments.get(0), arguments.get(1), Integer.parseInt(arguments.get(2))));
+        return split(arguments.get(0), arguments.get(1), Integer.parseInt(arguments.get(2)));
     }
 
     private static String split(String inputString, String splitString, int fieldIndex) {
-        if (inputString == null || splitString == null)
+        if (inputString == null || splitString == null) {
             return "";
+        }
         String[] fields = inputString.split(Pattern.quote(splitString));
         return fieldIndex >= 0 && fieldIndex < fields.length ? fields[fieldIndex] : "";
     }

@@ -30,7 +30,7 @@ final class RuleFunctionFloor extends RuleFunction {
                     arguments.size() + " were supplied");
         }
 
-        return String.valueOf(Double.valueOf(Math.floor(toDouble(arguments.get(0), 0.0))).intValue());
+        return String.valueOf(((int) Math.floor(toDouble(arguments.get(0), 0.0))));
     }
 
     private static double toDouble(@Nullable final String str, final double defaultValue) {

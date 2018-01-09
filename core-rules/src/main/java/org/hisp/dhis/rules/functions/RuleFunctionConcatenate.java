@@ -23,7 +23,7 @@ final class RuleFunctionConcatenate extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
-        StringBuffer finalValue = new StringBuffer();
+        StringBuilder finalValue = new StringBuilder();
 
         if (arguments != null) {
             for (String value : arguments) {

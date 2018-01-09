@@ -32,8 +32,9 @@ final class RuleFunctionSubString extends RuleFunction {
     }
 
     private static String substring(String inputString, int startIndex, int endIndex) {
-        if (inputString == null)
+        if (inputString == null) {
             return "";
+        }
         int safeStartIndex = Math.min(Math.max(0, startIndex), inputString.length());
         int safeEndIndex = Math.min(Math.max(0, endIndex), inputString.length());
         return inputString.substring(safeStartIndex, safeEndIndex);

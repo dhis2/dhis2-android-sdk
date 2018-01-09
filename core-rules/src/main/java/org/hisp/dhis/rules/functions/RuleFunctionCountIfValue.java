@@ -46,8 +46,7 @@ final class RuleFunctionCountIfValue extends RuleFunction {
 
         if (ruleVariableValue != null && valueToCompare != null && !valueToCompare.isEmpty()) {
             if (ruleVariableValue.value() != null) {
-                if (ruleVariableValue.candidates() != null
-                        && ruleVariableValue.candidates().size() > 0) {
+                if (ruleVariableValue.candidates().size() > 0) {
 
                     for (String candidateValue : ruleVariableValue.candidates()) {
                         if (candidateValue != null && candidateValue.equals(valueToCompare)) {

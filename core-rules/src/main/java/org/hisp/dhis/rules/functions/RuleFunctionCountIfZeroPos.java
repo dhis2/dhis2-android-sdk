@@ -44,8 +44,7 @@ final class RuleFunctionCountIfZeroPos extends RuleFunction {
         Integer count = 0;
         if (ruleVariableValue != null) {
             if (ruleVariableValue.value() != null) {
-                if (ruleVariableValue.candidates() != null
-                        && ruleVariableValue.candidates().size() > 0) {
+                if (ruleVariableValue.candidates().size() > 0) {
                     for (String candidateValue : ruleVariableValue.candidates()) {
                         if (ifZeroPos(candidateValue)) {
                             count++;

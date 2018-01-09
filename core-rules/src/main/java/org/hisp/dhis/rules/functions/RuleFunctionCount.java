@@ -42,8 +42,7 @@ final class RuleFunctionCount extends RuleFunction {
         Integer count = 0;
         if (ruleVariableValue != null) {
             if (ruleVariableValue.value() != null) {
-                if (ruleVariableValue.candidates() != null
-                        && ruleVariableValue.candidates().size() > 0) {
+                if (ruleVariableValue.candidates().size() > 0) {
                     count = ruleVariableValue.candidates().size();
                 } else {
                     //If there is a value found for the variable, the count is 1 even if there is

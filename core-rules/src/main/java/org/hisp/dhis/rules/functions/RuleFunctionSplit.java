@@ -37,7 +37,7 @@ final class RuleFunctionSplit extends RuleFunction {
     private static String split(String inputString, String splitString, int fieldIndex) {
         if (inputString == null || splitString == null)
             return "";
-        String[] fields = inputString == null ? new String[0] : inputString.split(Pattern.quote(splitString));
+        String[] fields = inputString.split(Pattern.quote(splitString));
         return fieldIndex >= 0 && fieldIndex < fields.length ? fields[fieldIndex] : "";
     }
 

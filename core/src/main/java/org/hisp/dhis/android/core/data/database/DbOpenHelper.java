@@ -92,7 +92,7 @@ import java.nio.charset.Charset;
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
-    static int VERSION = 2;
+    static int VERSION = 3;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -106,6 +106,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     CategoryModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
                     CategoryModel.Columns.CODE + " TEXT," +
                     CategoryModel.Columns.NAME + " TEXT," +
+                    CategoryModel.Columns.SHORT_NAME + " TEXT," +
                     CategoryModel.Columns.DISPLAY_NAME + " TEXT," +
                     CategoryModel.Columns.CREATED + " TEXT," +
                     CategoryModel.Columns.LAST_UPDATED + " TEXT," +
@@ -117,6 +118,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     CategoryModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
                     CategoryModel.Columns.CODE + " TEXT," +
                     CategoryModel.Columns.NAME + " TEXT," +
+                    CategoryModel.Columns.SHORT_NAME + " TEXT," +
                     CategoryModel.Columns.DISPLAY_NAME + " TEXT," +
                     CategoryModel.Columns.CREATED + " TEXT," +
                     CategoryModel.Columns.LAST_UPDATED + " TEXT" + ");";

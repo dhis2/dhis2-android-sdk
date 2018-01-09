@@ -28,10 +28,11 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
                     CategoryModel.Columns.UID + ", " +
                     CategoryModel.Columns.CODE + ", " +
                     CategoryModel.Columns.NAME + ", " +
+                    CategoryModel.Columns.SHORT_NAME + ", " +
                     CategoryModel.Columns.DISPLAY_NAME + ", " +
                     CategoryModel.Columns.CREATED + ", " +
                     CategoryModel.Columns.LAST_UPDATED + ") " +
-                    "VALUES(?, ?, ?, ?, ?, ?);";
+                    "VALUES(?, ?, ?, ?, ?, ?, ?);";
 
     private static final String EQUAL_QUESTION_MARK = "=?";
     private static final String DELETE_STATEMENT = "DELETE FROM " + CategoryOptionModel.TABLE +
@@ -41,6 +42,7 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
             CategoryModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ", " +
             CategoryModel.Columns.CODE + " " + EQUAL_QUESTION_MARK + ", " +
             CategoryModel.Columns.NAME + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryModel.Columns.SHORT_NAME + " " + EQUAL_QUESTION_MARK + ", " +
             CategoryModel.Columns.DISPLAY_NAME + " " + EQUAL_QUESTION_MARK + ", " +
             CategoryModel.Columns.CREATED + " " + EQUAL_QUESTION_MARK + ", " +
             CategoryModel.Columns.LAST_UPDATED + " " + EQUAL_QUESTION_MARK + " WHERE " +
@@ -49,6 +51,7 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
     private static final String FIELDS = CategoryOptionModel.TABLE +"."+ CategoryOptionModel.Columns.UID + "," +
             CategoryOptionModel.TABLE +"."+ CategoryOptionModel.Columns.CODE + "," +
             CategoryOptionModel.TABLE +"."+ CategoryOptionModel.Columns.NAME + "," +
+            CategoryOptionModel.TABLE +"."+ CategoryOptionModel.Columns.SHORT_NAME + "," +
             CategoryOptionModel.TABLE +"."+ CategoryOptionModel.Columns.DISPLAY_NAME + "," +
             CategoryOptionModel.TABLE +"."+ CategoryOptionModel.Columns.CREATED + "," +
             CategoryOptionModel.TABLE +"."+ CategoryOptionModel.Columns.LAST_UPDATED;
@@ -140,9 +143,10 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
         sqLiteBind(sqLiteStatement, 1, option.uid());
         sqLiteBind(sqLiteStatement, 2, option.code());
         sqLiteBind(sqLiteStatement, 3, option.name());
-        sqLiteBind(sqLiteStatement, 4, option.displayName());
-        sqLiteBind(sqLiteStatement, 5, option.created());
-        sqLiteBind(sqLiteStatement, 6, option.lastUpdated());
+        sqLiteBind(sqLiteStatement, 4, option.shortName());
+        sqLiteBind(sqLiteStatement, 5, option.displayName());
+        sqLiteBind(sqLiteStatement, 6, option.created());
+        sqLiteBind(sqLiteStatement, 7, option.lastUpdated());
     }
 
     @Override
@@ -179,12 +183,13 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
         String uid = cursor.getString(0);
         String code = cursor.getString(1);
         String name = cursor.getString(2);
-        String displayName = cursor.getString(3);
-        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-        Date lastUpdated = cursor.getString(5) == null ? null : parse(cursor.getString(5));
+        String shortName = cursor.getString(3);
+        String displayName = cursor.getString(4);
+        Date created = cursor.getString(5) == null ? null : parse(cursor.getString(5));
+        Date lastUpdated = cursor.getString(6) == null ? null : parse(cursor.getString(6));
 
         categoryOption = CategoryOption.create(
-                uid, code, name, displayName, created, lastUpdated);
+                uid, code, name, shortName, displayName, created, lastUpdated);
 
         return categoryOption;
     }

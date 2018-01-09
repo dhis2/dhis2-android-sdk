@@ -82,11 +82,12 @@ public abstract class CategoryOption extends BaseNameableObject {
             @JsonProperty(UID) String uid,
             @JsonProperty(CODE) String code,
             @JsonProperty(NAME) String name,
+            @JsonProperty(SHORT_NAME) String shortName,
             @JsonProperty(DISPLAY_NAME) String displayName,
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated
     ) {
-        return builder().uid(uid).code(code).name(name).displayName(displayName).created(
+        return builder().uid(uid).code(code).name(name).shortName(shortName).displayName(displayName).created(
                 created).lastUpdated(lastUpdated).build();
     }
 

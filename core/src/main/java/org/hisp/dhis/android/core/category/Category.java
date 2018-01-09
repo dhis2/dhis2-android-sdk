@@ -72,6 +72,10 @@ public abstract class Category extends BaseNameableObject {
 
     @Nullable
     @JsonProperty(CATEGORY_OPTIONS)
+    public abstract String shortName();
+
+    @Nullable
+    @JsonProperty(CATEGORY_OPTIONS)
     public abstract List<CategoryOption> categoryOptions();
 
     public static Builder builder() {
@@ -87,6 +91,9 @@ public abstract class Category extends BaseNameableObject {
 
         @JsonProperty(DATA_DIMENSION_TYPE)
         public abstract Builder dataDimensionType(String dimensionType);
+
+        @JsonProperty(SHORT_NAME)
+        public abstract Builder shortName(String shortName);
 
         // used only to support unmodifiable collections
         @Nullable

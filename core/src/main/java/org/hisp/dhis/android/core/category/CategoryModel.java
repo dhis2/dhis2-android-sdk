@@ -37,21 +37,24 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 
 
 @AutoValue
-public abstract class CategoryModel extends BaseIdentifiableObjectModel {
+public abstract class CategoryModel extends BaseNameableObjectModel {
     public static final String TABLE = "Category";
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String DATA_DIMENSION_TYPE = "dataDimensionType";
-
     }
 
     @Nullable
     @ColumnName(Columns.DATA_DIMENSION_TYPE)
     public abstract String dataDimensionType();
 
+    @Nullable
+    @ColumnName(Columns.SHORT_NAME)
+    public abstract String shortName();
 
     @NonNull
     public abstract ContentValues toContentValues();
@@ -68,7 +71,8 @@ public abstract class CategoryModel extends BaseIdentifiableObjectModel {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
+    public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
+
         public abstract Builder dataDimensionType(@Nullable String dimensionType);
 
         public abstract CategoryModel build();

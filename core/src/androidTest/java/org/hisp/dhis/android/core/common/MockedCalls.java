@@ -22,10 +22,13 @@ public class MockedCalls {
             "deletedobject/deleted_object_empty.json";
     public static final String DELETED_OBJECT_USER =
             "deletedobject/deleted_object_user.json";
+    public static final String DELETED_OBJECT_ORGANISATION_UNITS =
+            "deletedobject/deleted_object_organisation_unit.json";
     public static final String SYSTEM_INFO = "system_info.json";
     public static final String USER = "user.json";
     public static final String ADMIN_USER = "admin/user.json";
     public static final String ALTERNATIVE_USER = "deletedobject/alternative_user.json";
+    public static final String MULTIPLE_ORGANISATIONN_UNITS = "deletedobject/multiple_organisationUnits.json";
     public static final String ORGANISATION_UNITS = "organisationUnits.json";
     public static final String ADMIN_ORGANISATION_UNITS = "admin/organisation_units.json";
 
@@ -36,6 +39,8 @@ public class MockedCalls {
     public static final String OPTION_SETS = "option_sets.json";
     public static final String AFTER_DELETE_EXPECTED_USER =
             "deletedobject/expected_multi_users.json";
+    public static final String AFTER_DELETE_EXPECTED_ORGANISATION_UNIT =
+            "deletedobject/expected_not_deleted_organisationUnit.json";
     public static final String MULTI_USERS_EXPECTED =
             "deletedobject/expected_not_deleted_user.json";
     public static final String NORMAL_USER =

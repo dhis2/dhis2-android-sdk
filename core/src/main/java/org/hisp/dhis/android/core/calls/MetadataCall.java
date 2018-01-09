@@ -302,6 +302,7 @@ public class MetadataCall implements Call<Response> {
                     user, organisationUnitService, databaseAdapter, organisationUnitStore,
                     resourceStore, serverDate, userOrganisationUnitLinkStore,
                     organisationUnitProgramLinkStore).call();
+
             if (!response.isSuccessful()) {
                 return response;
             }

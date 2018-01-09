@@ -2,12 +2,15 @@ package org.hisp.dhis.android.core.deletedobject;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_ORGANISATION_UNIT;
 import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.CATEGORY_COMBOS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_EMPTY;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_ORGANISATION_UNITS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.ALTERNATIVE_USER;
+import static org.hisp.dhis.android.core.common.MockedCalls.MULTIPLE_ORGANISATIONN_UNITS;
 import static org.hisp.dhis.android.core.common.MockedCalls.NORMAL_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.ORGANISATION_UNITS;
@@ -48,7 +51,16 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
     String[] metadataJsonWithRemovedUser = new String[]{
             SYSTEM_INFO,
             DELETED_OBJECT_USER, ALTERNATIVE_USER,
-            DELETED_OBJECT_EMPTY, ORGANISATION_UNITS,
+            DELETED_OBJECT_ORGANISATION_UNITS, ORGANISATION_UNITS,
+            DELETED_OBJECT_EMPTY, CATEGORIES,
+            DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
+            DELETED_OBJECT_EMPTY, PROGRAMS,
+            DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
+            DELETED_OBJECT_EMPTY, OPTION_SETS};
+    public final static String[] commonMetadataWithMultipleObjectsJsonFiles = new String[]{
+            SYSTEM_INFO,
+            DELETED_OBJECT_EMPTY, ALTERNATIVE_USER,
+            DELETED_OBJECT_EMPTY, MULTIPLE_ORGANISATIONN_UNITS,
             DELETED_OBJECT_EMPTY, CATEGORIES,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
             DELETED_OBJECT_EMPTY, PROGRAMS,
@@ -83,7 +95,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
         d2.syncMetaData().call();
 
         verifyDownloadedUsers(NORMAL_USER);
-        //verifyDownloadedOrganisationUnits("events_1.json");
+        verifyDownloadedOrganisationUnits(AFTER_DELETE_EXPECTED_ORGANISATION_UNIT);
         //verifyDownloadedCategories("events_1.json");
         //verifyDownloadedCategoryCombo("events_1.json");
         //verifyDownloadedPrograms("events_1.json");
@@ -106,6 +118,13 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
     @Test
     @MediumTest
     public void delete_the_given_deleted_organisation_unit() throws Exception {
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        d2.syncMetaData().call();
+
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
+        d2.syncMetaData().call();
+
+        verifyDownloadedOrganisationUnits(AFTER_DELETE_EXPECTED_ORGANISATION_UNIT);
 
     }
 
@@ -165,7 +184,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
     private void verifyDownloadedOrganisationUnits(String file) throws IOException {
         Payload<OrganisationUnit> expectedOrganisationUnitsResponse = MockedCalls.parseOrganisationUnitResponse(file);
 
-        List<OrganisationUnit> downloadedOrganisationUnits = DownloadedItemsGetter.getDownloadedOrganisationUnits(databaseAdapter());
+        List<OrganisationUnit> downloadedOrganisationUnits = DownloadedItemsGetter.getDownloadedOrganisationUnits(d2.databaseAdapter());
 
         assertThat(downloadedOrganisationUnits.size(), is(expectedOrganisationUnitsResponse.items().size()));
         assertThat(downloadedOrganisationUnits, is(expectedOrganisationUnitsResponse.items()));

@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
@@ -85,7 +86,12 @@ public class DownloadedItemsGetter {
 
     public static List<OrganisationUnit> getDownloadedOrganisationUnits(
             DatabaseAdapter databaseAdapter) {
-        return null;
+
+        OrganisationUnitStoreImpl store = new OrganisationUnitStoreImpl(databaseAdapter);
+
+        List<OrganisationUnit> downloadedItemsWithoutDependencies = store.queryOrganisationUnits();
+
+        return downloadedItemsWithoutDependencies;
     }
 
     public static List<Category> getDownloadedCategories(DatabaseAdapter databaseAdapter) {

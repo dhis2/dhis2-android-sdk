@@ -65,22 +65,21 @@ public class MetadataCallMocklIntegrationShould extends AbsStoreTestCase {
     }
 
 
-        //@Test
-        //@MediumTest
-        public void not_delete_nothing_when_the_deletable_object_list_is_empty () throws Exception {
-            dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataJsonFiles);
-            d2.syncMetaData().call();
+    //@Test
+    //@MediumTest
+    public void not_delete_nothing_when_the_deletable_object_list_is_empty() throws Exception {
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataJsonFiles);
+        d2.syncMetaData().call();
 
-            verifyDownloadedUsers(NORMAL_USER);
-            verifyDownloadedOrganisationUnits(AFTER_DELETE_EXPECTED_ORGANISATION_UNIT);
-            verifyDownloadedCategories(SIMPLE_CATEGORIES);
-            //TODO verify all metadata
-            //verifyDownloadedCategoryCombo(".json");
-            //verifyDownloadedPrograms("1.json");
-            //verifyDownloadedTrackedEntities(".json");
-            //verifyDownloadedOptionSets(".json");
-        }
-
+        verifyDownloadedUsers(NORMAL_USER);
+        verifyDownloadedOrganisationUnits(AFTER_DELETE_EXPECTED_ORGANISATION_UNIT);
+        verifyDownloadedCategories(SIMPLE_CATEGORIES);
+        //TODO verify all metadata
+        //verifyDownloadedCategoryCombo(".json");
+        //verifyDownloadedPrograms("1.json");
+        //verifyDownloadedTrackedEntities(".json");
+        //verifyDownloadedOptionSets(".json");
+    }
 
 
     private void verifyDownloadedUsers(String file) throws IOException {
@@ -94,11 +93,14 @@ public class MetadataCallMocklIntegrationShould extends AbsStoreTestCase {
 
 
     private void verifyDownloadedOrganisationUnits(String file) throws IOException {
-        Payload<OrganisationUnit> expectedOrganisationUnitsResponse = MockedCalls.parseOrganisationUnitResponse(file);
+        Payload<OrganisationUnit> expectedOrganisationUnitsResponse =
+                MockedCalls.parseOrganisationUnitResponse(file);
 
-        List<OrganisationUnit> downloadedOrganisationUnits = DownloadedItemsGetter.getDownloadedOrganisationUnits(d2.databaseAdapter());
+        List<OrganisationUnit> downloadedOrganisationUnits =
+                DownloadedItemsGetter.getDownloadedOrganisationUnits(d2.databaseAdapter());
 
-        assertThat(downloadedOrganisationUnits.size(), is(expectedOrganisationUnitsResponse.items().size()));
+        assertThat(downloadedOrganisationUnits.size(),
+                is(expectedOrganisationUnitsResponse.items().size()));
         assertThat(downloadedOrganisationUnits, is(expectedOrganisationUnitsResponse.items()));
     }
 
@@ -106,18 +108,22 @@ public class MetadataCallMocklIntegrationShould extends AbsStoreTestCase {
     private void verifyDownloadedCategories(String file) throws IOException {
         Payload<Category> expectedCategoriesResponse = MockedCalls.parseCategoryResponse(file);
 
-        List<Category> downloadedCategories = DownloadedItemsGetter.getDownloadedCategories(databaseAdapter());
+        List<Category> downloadedCategories = DownloadedItemsGetter.getDownloadedCategories(
+                databaseAdapter());
 
         assertThat(downloadedCategories.size(), is(expectedCategoriesResponse.items().size()));
         assertThat(downloadedCategories, is(expectedCategoriesResponse.items()));
     }
 
     private void verifyDownloadedCategoryCombo(String file) throws IOException {
-        Payload<CategoryCombo> expectedCategoryCombosResponse = MockedCalls.parseCategoryComboResponse(file);
+        Payload<CategoryCombo> expectedCategoryCombosResponse =
+                MockedCalls.parseCategoryComboResponse(file);
 
-        List<CategoryCombo> downloadedCategoryCombos = DownloadedItemsGetter.getDownloadedCategoryCombos(databaseAdapter());
+        List<CategoryCombo> downloadedCategoryCombos =
+                DownloadedItemsGetter.getDownloadedCategoryCombos(databaseAdapter());
 
-        assertThat(downloadedCategoryCombos.size(), is(expectedCategoryCombosResponse.items().size()));
+        assertThat(downloadedCategoryCombos.size(),
+                is(expectedCategoryCombosResponse.items().size()));
         assertThat(downloadedCategoryCombos, is(expectedCategoryCombosResponse.items()));
     }
 
@@ -125,7 +131,8 @@ public class MetadataCallMocklIntegrationShould extends AbsStoreTestCase {
     private void verifyDownloadedPrograms(String file) throws IOException {
         Payload<Program> expectedProgramsResponse = MockedCalls.parseProgramResponse(file);
 
-        List<Program> downloadedPrograms = DownloadedItemsGetter.getDownloadedPrograms(databaseAdapter());
+        List<Program> downloadedPrograms = DownloadedItemsGetter.getDownloadedPrograms(
+                databaseAdapter());
 
         assertThat(downloadedPrograms.size(), is(expectedProgramsResponse.items().size()));
         assertThat(downloadedPrograms, is(expectedProgramsResponse.items()));
@@ -133,11 +140,14 @@ public class MetadataCallMocklIntegrationShould extends AbsStoreTestCase {
 
 
     private void verifyDownloadedTrackedEntities(String file) throws IOException {
-        Payload<TrackedEntity> expectedTrackedEntitiesResponse = MockedCalls.parseTrackedEntityResponse(file);
+        Payload<TrackedEntity> expectedTrackedEntitiesResponse =
+                MockedCalls.parseTrackedEntityResponse(file);
 
-        List<TrackedEntity> downloadedTrackedEntities = DownloadedItemsGetter.getDownloadedTrackedEntities(databaseAdapter());
+        List<TrackedEntity> downloadedTrackedEntities =
+                DownloadedItemsGetter.getDownloadedTrackedEntities(databaseAdapter());
 
-        assertThat(downloadedTrackedEntities.size(), is(expectedTrackedEntitiesResponse.items().size()));
+        assertThat(downloadedTrackedEntities.size(),
+                is(expectedTrackedEntitiesResponse.items().size()));
         assertThat(downloadedTrackedEntities, is(expectedTrackedEntitiesResponse.items()));
     }
 
@@ -145,7 +155,8 @@ public class MetadataCallMocklIntegrationShould extends AbsStoreTestCase {
     private void verifyDownloadedOptionSets(String file) throws IOException {
         Payload<OptionSet> expectedOptionSetsResponse = MockedCalls.parseOptionSetResponse(file);
 
-        List<OptionSet> downloadedOptionSets = DownloadedItemsGetter.getDownloadedOptionSets(databaseAdapter());
+        List<OptionSet> downloadedOptionSets = DownloadedItemsGetter.getDownloadedOptionSets(
+                databaseAdapter());
 
         assertThat(downloadedOptionSets.size(), is(expectedOptionSetsResponse.items().size()));
         assertThat(downloadedOptionSets, is(expectedOptionSetsResponse.items()));

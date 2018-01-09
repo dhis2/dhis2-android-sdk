@@ -29,6 +29,9 @@ public class MockedCalls {
     public static final String DELETED_OBJECT_CATEGORY_COMBO =
             "deletedobject/deleted_object_category_combo.json";
 
+    public static final String DELETED_OBJECT_PROGRAMS =
+            "deletedobject/deleted_object_programs.json";
+
     public static final String SYSTEM_INFO = "system_info.json";
     public static final String USER = "user.json";
     public static final String ADMIN_USER = "admin/user.json";
@@ -43,7 +46,9 @@ public class MockedCalls {
     public static final String PROGRAMS = "programs.json";
     public static final String TRACKED_ENTITIES = "tracked_entities.json";
     public static final String OPTION_SETS = "option_sets.json";
+
     public static final String AFTER_DELETED_OPTION_SETS = "deletedobject/option_sets.json";
+    public static final String AFTER_PROGRAMS = "deletedobject/after_delete_programs.json";
     public static final String AFTER_DELETE_EXPECTED_USER =
             "deletedobject/expected_multi_users.json";
     public static final String AFTER_DELETE_EXPECTED_ORGANISATION_UNIT =

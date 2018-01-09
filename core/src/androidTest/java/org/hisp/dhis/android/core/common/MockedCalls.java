@@ -37,7 +37,7 @@ public class MockedCalls {
     public static final String USER = "user.json";
     public static final String ADMIN_USER = "admin/user.json";
     public static final String ALTERNATIVE_USER = "deletedobject/alternative_user.json";
-    public static final String MULTIPLE_ORGANISATIONN_UNITS = "deletedobject/multiple_organisationUnits.json";
+    public static final String MULTIPLE_ORGANISATION_UNITS = "deletedobject/multiple_organisationUnits.json";
     public static final String ORGANISATION_UNITS = "organisationUnits.json";
     public static final String ADMIN_ORGANISATION_UNITS = "admin/organisation_units.json";
     public static final String SIMPLE_CATEGORIES = "deletedobject/simple_categories.json";

@@ -6,11 +6,8 @@ import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_CATEGORIES;
-import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_ORGANISATION_UNIT;
-import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_PROGRAMS;
 import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_TRACKED_ENTITIES;
-import static org.hisp.dhis.android.core.common.MockedCalls.CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.CATEGORY_COMBOS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORY_COMBO;
@@ -20,15 +17,13 @@ import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGR
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_TRACKED_ENTITY;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.ALTERNATIVE_USER;
-import static org.hisp.dhis.android.core.common.MockedCalls.MULTIPLE_ORGANISATIONN_UNITS;
-import static org.hisp.dhis.android.core.common.MockedCalls.NORMAL_USER;
+import static org.hisp.dhis.android.core.common.MockedCalls.MULTIPLE_ORGANISATION_UNITS;
 import static org.hisp.dhis.android.core.common.MockedCalls.OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.ORGANISATION_UNITS;
 import static org.hisp.dhis.android.core.common.MockedCalls.PROGRAMS;
 import static org.hisp.dhis.android.core.common.MockedCalls.SIMPLE_CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.SYSTEM_INFO;
 import static org.hisp.dhis.android.core.common.MockedCalls.TRACKED_ENTITIES;
-import static org.hisp.dhis.android.core.common.MockedCalls.USER;
 
 import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
@@ -67,7 +62,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     public final static String[] commonMetadataWithMultipleObjectsJsonFiles = new String[]{
             SYSTEM_INFO,
             DELETED_OBJECT_EMPTY, ALTERNATIVE_USER,
-            DELETED_OBJECT_EMPTY, MULTIPLE_ORGANISATIONN_UNITS,
+            DELETED_OBJECT_EMPTY, MULTIPLE_ORGANISATION_UNITS,
             DELETED_OBJECT_EMPTY, SIMPLE_CATEGORIES,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
             DELETED_OBJECT_EMPTY, PROGRAMS,

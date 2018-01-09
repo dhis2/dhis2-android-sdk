@@ -26,6 +26,9 @@ public class MockedCalls {
             "deletedobject/deleted_object_organisation_unit.json";
     public static final String DELETED_OBJECT_CATEGORIES =
             "deletedobject/deleted_object_categories.json";
+    public static final String DELETED_OBJECT_CATEGORY_COMBO =
+            "deletedobject/deleted_object_category_combo.json";
+
     public static final String SYSTEM_INFO = "system_info.json";
     public static final String USER = "user.json";
     public static final String ADMIN_USER = "admin/user.json";

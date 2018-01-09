@@ -26,7 +26,7 @@ final class RuleFunctionRight extends RuleFunction {
                     arguments.size() + " were supplied");
         }
 
-        return right(arguments.get(0),Integer.parseInt(arguments.get(1)));
+        return right(arguments.get(0), Integer.parseInt(arguments.get(1)));
     }
 
     /**

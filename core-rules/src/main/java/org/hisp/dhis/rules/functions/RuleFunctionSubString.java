@@ -27,7 +27,8 @@ final class RuleFunctionSubString extends RuleFunction {
                     arguments.size() + " were supplied");
         }
 
-        return String.valueOf(substring(arguments.get(0), Integer.parseInt(arguments.get(1)), Integer.parseInt(arguments.get(2))));
+        return String.valueOf(substring(arguments.get(0), Integer.parseInt(arguments.get(1)),
+                Integer.parseInt(arguments.get(2))));
     }
 
     private static String substring(String inputString, int startIndex, int endIndex) {

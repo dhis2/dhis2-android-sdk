@@ -29,12 +29,13 @@ final class RuleFunctionLeft extends RuleFunction {
                     arguments.size() + " were supplied");
         }
 
-        return left(arguments.get(0),Integer.parseInt(arguments.get(1)));
+        return left(arguments.get(0), Integer.parseInt(arguments.get(1)));
     }
 
     private static String left(String inputString, int length) {
-        if (inputString == null)
+        if (inputString == null) {
             return "";
+        }
         int safeLength = Math.min(Math.max(0, length), inputString.length());
         return inputString.substring(0, safeLength);
     }

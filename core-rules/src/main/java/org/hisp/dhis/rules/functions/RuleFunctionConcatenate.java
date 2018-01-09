@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Produces a string concatenated string from the input parameters.
@@ -24,16 +23,16 @@ final class RuleFunctionConcatenate extends RuleFunction {
     @Override
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
-        String finalValue = "";
+        StringBuilder finalValue = new StringBuilder();
 
         if (arguments != null) {
             for (String value : arguments) {
                 if (value != null) {
-                    finalValue += value;
+                    finalValue.append(value);
                 }
             }
         }
 
-        return finalValue;
+        return finalValue.toString();
     }
 }

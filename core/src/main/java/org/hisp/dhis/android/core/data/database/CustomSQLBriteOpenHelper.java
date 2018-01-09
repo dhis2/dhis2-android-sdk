@@ -19,7 +19,7 @@ import java.util.Map;
 
 import io.reactivex.schedulers.Schedulers;
 
-/**
+/*
  * A helper class to manage database migrations and seeding using
  * an application's raw asset files.
  * <p>
@@ -43,7 +43,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     private static BriteDatabase briteDatabase;
 
 
-    /**
+    /*
      * Create a helper object to create, open, and/or manage a database.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -60,7 +60,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Create a helper object to create, open, and/or manage a database.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -78,7 +78,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Create a helper object to create, open, and/or manage a testing database.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -93,7 +93,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         this.isOnTestMode = false;
     }
 
-    /**
+    /*
      * Create a helper object to create, open, and/or manage a testing database.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -127,7 +127,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         }
     }
 
-    /**
+    /*
      * Upgrade database to latest new version
      */
     @Override
@@ -143,7 +143,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         }
     }
 
-    /**
+    /*
      * Create a {@link BriteDatabase} instance.N
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -164,7 +164,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Create a {@link BriteDatabase} instance.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -187,7 +187,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Create a {@link BriteDatabase} instance.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -210,7 +210,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         return briteDatabase;
     }
 
-    /**
+    /*
      * Create a {@link BriteDatabase} instance for testing.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -231,7 +231,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         return briteDatabase;
     }
 
-    /**
+    /*
      * Downgrade database to previous old version
      */
     @Override
@@ -248,7 +248,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Load and parse all required database migrations.
      */
     public List<Map<String, List<String>>> parse(int oldVersion, int newVersion, boolean up)
@@ -278,7 +278,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Load and parse initial database migrations.
      * <p>
      * It used it creating initial database
@@ -291,7 +291,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Parse migration file
      * <p>
      * It used to upgrade database to newer version
@@ -319,7 +319,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Apply up migration scripts and seed database with provided seeds
      */
     private void up(SQLiteDatabase database, Map<String, List<String>> scripts) {
@@ -353,7 +353,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         }
     }
 
-    /**
+    /*
      * Apply up migration scripts and seed database with provided seeds
      */
     private void up(SQLiteDatabase database, List<Map<String, List<String>>> scripts) {
@@ -373,7 +373,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Apply down migration scripts
      */
     private void down(SQLiteDatabase database, Map<String, List<String>> scripts) {
@@ -397,7 +397,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         }
     }
 
-    /**
+    /*
      * Apply down migration scripts
      */
     private void down(SQLiteDatabase database, List<Map<String, List<String>>> scripts) {

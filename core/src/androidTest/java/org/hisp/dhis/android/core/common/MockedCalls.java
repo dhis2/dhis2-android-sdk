@@ -40,6 +40,7 @@ public class MockedCalls {
     public static final String PROGRAMS = "programs.json";
     public static final String TRACKED_ENTITIES = "tracked_entities.json";
     public static final String OPTION_SETS = "option_sets.json";
+    public static final String AFTER_DELETED_OPTION_SETS = "deletedobject/option_sets.json";
     public static final String AFTER_DELETE_EXPECTED_USER =
             "deletedobject/expected_multi_users.json";
     public static final String AFTER_DELETE_EXPECTED_ORGANISATION_UNIT =
@@ -60,6 +61,7 @@ public class MockedCalls {
             DELETED_OBJECT_EMPTY, PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY, OPTION_SETS};
+
     final static String[] adminCommonMetadataJsonFiles = new String[]{
             SYSTEM_INFO,
             DELETED_OBJECT_EMPTY, ADMIN_USER,

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.option;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
@@ -41,6 +42,11 @@ import java.util.Date;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class OptionSetStoreImpl implements OptionSetStore {
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            OptionSetModel.Columns.UID +
+            " FROM " + OptionSetModel.TABLE +
+            " WHERE "+OptionSetModel.Columns.UID+" =?;";
+
     private static final String INSERT_STATEMENT = "INSERT INTO " + OptionSetModel.TABLE + " (" +
             OptionSetModel.Columns.UID + ", " +
             OptionSetModel.Columns.CODE + ", " +
@@ -122,6 +128,12 @@ public class OptionSetStoreImpl implements OptionSetStore {
         deleteStatement.clearBindings();
 
         return delete;
+    }
+
+    @Override
+    public boolean exists(String optionSetUid) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, optionSetUid);
+        return cursor.getCount()>0;
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @NonNull String code,

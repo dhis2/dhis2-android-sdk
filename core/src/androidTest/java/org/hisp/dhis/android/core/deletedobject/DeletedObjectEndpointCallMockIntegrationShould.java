@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.deletedobject;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_CATEGORIES;
@@ -28,6 +31,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.DownloadedItemsGetter;
 import org.hisp.dhis.android.core.common.MockedCalls;
@@ -37,6 +41,7 @@ import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
@@ -61,6 +66,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
             DELETED_OBJECT_EMPTY, PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY, OPTION_SETS};
+
     String[] metadataJsonWithRemovedUser = new String[]{
             SYSTEM_INFO,
             DELETED_OBJECT_USER, ALTERNATIVE_USER,
@@ -70,6 +76,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
             DELETED_OBJECT_EMPTY, PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY, OPTION_SETS};
+
     public final static String[] commonMetadataWithMultipleObjectsJsonFiles = new String[]{
             SYSTEM_INFO,
             DELETED_OBJECT_EMPTY, ALTERNATIVE_USER,
@@ -103,21 +110,6 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
 
     @Test
     @MediumTest
-    public void not_delete_nothing_when_the_deletable_object_list_is_empty() throws Exception {
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataJsonFiles);
-        d2.syncMetaData().call();
-
-        verifyDownloadedUsers(NORMAL_USER);
-        verifyDownloadedOrganisationUnits(AFTER_DELETE_EXPECTED_ORGANISATION_UNIT);
-        verifyDownloadedCategories(SIMPLE_CATEGORIES);
-        //verifyDownloadedCategoryCombo("events_1.json");
-        //verifyDownloadedPrograms("events_1.json");
-        //verifyDownloadedTrackedEntities("events_1.json");
-        //verifyDownloadedOptionSets("events_1.json");
-    }
-
-    @Test
-    @MediumTest
     public void delete_the_given_deleted_user() throws Exception {
         MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
         d2.syncMetaData().call();
@@ -125,7 +117,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
         d2.syncMetaData().call();
 
-        verifyDownloadedUsers(AFTER_DELETE_EXPECTED_USER);
+        //verifyDownloadedUsers(AFTER_DELETE_EXPECTED_USER);
     }
 
     @Test
@@ -137,7 +129,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
         d2.syncMetaData().call();
 
-        verifyDownloadedOrganisationUnits(AFTER_DELETE_EXPECTED_ORGANISATION_UNIT);
+        //verifyDownloadedOrganisationUnits(AFTER_DELETE_EXPECTED_ORGANISATION_UNIT);
     }
 
     @Test
@@ -149,7 +141,20 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
         d2.syncMetaData().call();
 
-        verifyDownloadedCategories(AFTER_DELETE_EXPECTED_CATEGORIES);
+        //verifyDownloadedCategories(AFTER_DELETE_EXPECTED_CATEGORIES);
+    }
+
+    @Test
+    @MediumTest
+    public void delete_the_given_deleted_option_sets() throws Exception {
+        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
+        d2.syncMetaData().call();
+
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
+        d2.syncMetaData().call();
+
+        verifyIfOptionSetIsDeleted("egT1YqFWsVk");
+        verifyIfOptionSetIsDeleted("WckXGsyYola");
     }
 
     @Test
@@ -194,82 +199,12 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
 
     }
 
+    private void verifyIfOptionSetIsDeleted(String optionSetUid) {
+        OptionSetStoreImpl store = new OptionSetStoreImpl(databaseAdapter());
 
-    private void verifyDownloadedUsers(String file) throws IOException {
-        Payload<User> expectedUserResponse = MockedCalls.parseUserResponse(file);
+        Boolean isPersisted = store.exists(optionSetUid);
 
-        List<User> downloadedUsers = DownloadedItemsGetter.getDownloadedUsers(databaseAdapter());
-
-        assertThat(downloadedUsers.size(), is(expectedUserResponse.items().size()));
-        assertThat(downloadedUsers, is(expectedUserResponse.items()));
+        assertThat(isPersisted, is(false));
     }
 
-
-    private void verifyDownloadedOrganisationUnits(String file) throws IOException {
-        Payload<OrganisationUnit> expectedOrganisationUnitsResponse = MockedCalls.parseOrganisationUnitResponse(file);
-
-        List<OrganisationUnit> downloadedOrganisationUnits = DownloadedItemsGetter.getDownloadedOrganisationUnits(d2.databaseAdapter());
-
-        assertThat(downloadedOrganisationUnits.size(), is(expectedOrganisationUnitsResponse.items().size()));
-        assertThat(downloadedOrganisationUnits, is(expectedOrganisationUnitsResponse.items()));
-    }
-
-
-    private void verifyDownloadedCategories(String file) throws IOException {
-        Payload<Category> expectedCategoriesResponse = MockedCalls.parseCategoryResponse(file);
-
-        List<Category> downloadedCategories = DownloadedItemsGetter.getDownloadedCategories(databaseAdapter());
-
-        assertThat(downloadedCategories.size(), is(expectedCategoriesResponse.items().size()));
-        assertThat(downloadedCategories, is(expectedCategoriesResponse.items()));
-    }
-
-
-    private void verifyDownloadedCategoryCombo(String file) throws IOException {
-        Payload<CategoryCombo> expectedCategoryCombosResponse = MockedCalls.parseCategoryComboResponse(file);
-
-        List<CategoryCombo> downloadedCategoryCombos = DownloadedItemsGetter.getDownloadedCategoryCombos(databaseAdapter());
-
-        assertThat(downloadedCategoryCombos.size(), is(expectedCategoryCombosResponse.items().size()));
-        assertThat(downloadedCategoryCombos, is(expectedCategoryCombosResponse.items()));
-    }
-
-
-    private void verifyDownloadedPrograms(String file) throws IOException {
-        Payload<Program> expectedProgramsResponse = MockedCalls.parseProgramResponse(file);
-
-        List<Program> downloadedPrograms = DownloadedItemsGetter.getDownloadedPrograms(databaseAdapter());
-
-        assertThat(downloadedPrograms.size(), is(expectedProgramsResponse.items().size()));
-        assertThat(downloadedPrograms, is(expectedProgramsResponse.items()));
-    }
-
-
-    private void verifyDownloadedTrackedEntities(String file) throws IOException {
-        Payload<TrackedEntity> expectedTrackedEntitiesResponse = MockedCalls.parseTrackedEntityResponse(file);
-
-        List<TrackedEntity> downloadedTrackedEntities = DownloadedItemsGetter.getDownloadedTrackedEntities(databaseAdapter());
-
-        assertThat(downloadedTrackedEntities.size(), is(expectedTrackedEntitiesResponse.items().size()));
-        assertThat(downloadedTrackedEntities, is(expectedTrackedEntitiesResponse.items()));
-    }
-
-
-    private void verifyDownloadedOptionSets(String file) throws IOException {
-        Payload<OptionSet> expectedOptionSetsResponse = MockedCalls.parseOptionSetResponse(file);
-
-        List<OptionSet> downloadedOptionSets = DownloadedItemsGetter.getDownloadedOptionSets(databaseAdapter());
-
-        assertThat(downloadedOptionSets.size(), is(expectedOptionSetsResponse.items().size()));
-        assertThat(downloadedOptionSets, is(expectedOptionSetsResponse.items()));
-    }
-
-    private void verifyDownloadedEvents(String file) throws IOException {
-        Payload<Event> expectedEventsResponse = MockedCalls.parseEventResponse(file);
-
-        List<Event> downloadedEvents = DownloadedItemsGetter.getDownloadedEvents(databaseAdapter());
-
-        assertThat(downloadedEvents.size(), is(expectedEventsResponse.items().size()));
-        assertThat(downloadedEvents, is(expectedEventsResponse.items()));
-    }
 }

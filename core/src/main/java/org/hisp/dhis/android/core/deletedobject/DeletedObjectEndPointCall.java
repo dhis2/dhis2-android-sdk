@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -72,18 +73,12 @@ public class DeletedObjectEndPointCall implements Call<Response<Payload<DeletedO
 
         String lastSyncedDeletedObjects = resourceHandler.getLastUpdated(type);
 
-        Response<Payload<DeletedObject>> deletedObjectsByLastUpdated;
-        if (lastSyncedDeletedObjects == null) {
-            deletedObjectsByLastUpdated = deletedObjectService.getDeletedObjects(getSingleFields(),
-                    true,
-                    deletedObjectKlass).execute();
-        } else {
-            deletedObjectsByLastUpdated = deletedObjectService.getDeletedObjectsDeletedAt(
-                    getSingleFields(),
-                    true,
-                    deletedObjectKlass, lastSyncedDeletedObjects).execute();
+        Filter<DeletedObject, String> lastUpdatedFilter = DeletedObject.deletedAt.gt(lastSyncedDeletedObjects
+        );
+        Response<Payload<DeletedObject>> deletedObjectsByLastUpdated =
+                deletedObjectService.getDeletedObjectsDeletedAt(
+                getSingleFields(), true, deletedObjectKlass, lastUpdatedFilter).execute();
 
-        }
         if (deletedObjectsByLastUpdated.isSuccessful()
                 && deletedObjectsByLastUpdated.body().items() != null) {
             List<DeletedObject> deletedObjects = deletedObjectsByLastUpdated.body().items();

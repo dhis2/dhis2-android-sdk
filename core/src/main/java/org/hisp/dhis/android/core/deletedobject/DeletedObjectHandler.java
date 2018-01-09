@@ -4,7 +4,9 @@ package org.hisp.dhis.android.core.deletedobject;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.CategoryComboStore;
+import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
+import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.constant.ConstantStore;
 import org.hisp.dhis.android.core.option.OptionSetStore;
@@ -36,6 +38,10 @@ public class DeletedObjectHandler {
     private final OptionSetStore optionSetStore;
     @NonNull
     private final TrackedEntityStore trackedEntityStore;
+    @NonNull
+    private final CategoryOptionStore categoryOptionStore;
+
+
 
     public DeletedObjectHandler(
             @NonNull UserStore userStore,
@@ -47,7 +53,8 @@ public class DeletedObjectHandler {
             @NonNull ProgramStore programStore,
             @NonNull OrganisationUnitStore organisationUnitStore,
             @NonNull OptionSetStore optionSetStore,
-            @NonNull TrackedEntityStore trackedEntityStore) {
+            @NonNull TrackedEntityStore trackedEntityStore,
+            @NonNull CategoryOptionStore categoryOptionStore) {
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.categoryStore = categoryStore;
@@ -58,6 +65,7 @@ public class DeletedObjectHandler {
         this.organisationUnitStore = organisationUnitStore;
         this.optionSetStore = optionSetStore;
         this.trackedEntityStore = trackedEntityStore;
+        this.categoryOptionStore = categoryOptionStore;
     }
 
     public void handle(String uid, ResourceModel.Type type) {
@@ -79,6 +87,8 @@ public class DeletedObjectHandler {
             deleteCategoryCombo(uid);
         } else if (type.equals(ResourceModel.Type.DELETED_CATEGORY)) {
             deleteCategory(uid);
+        } else if (type.equals(ResourceModel.Type.DELETED_CATEGORY_OPTION)) {
+            deleteCategoryOption(uid);
         }
     }
 
@@ -114,4 +124,9 @@ public class DeletedObjectHandler {
     private void deleteUser(String userUid) {
         userStore.delete(userUid);
     }
+
+    private void deleteCategoryOption(String uid) {
+        categoryOptionStore.delete(uid);
+    }
+
 }

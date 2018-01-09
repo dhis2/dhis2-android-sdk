@@ -11,10 +11,12 @@ public interface CategoryOptionStore extends DeletableStore {
 
     long insert(@NonNull CategoryOption categoryOption);
 
-    boolean delete(@NonNull CategoryOption categoryOption);
+    boolean delete(@NonNull String uid);
 
     boolean update(@NonNull CategoryOption oldCategoryOption,
             @NonNull CategoryOption newCategoryOption);
 
     List<CategoryOption> queryAll();
+
+    Boolean exists(String categoryOptionUid);
 }

@@ -26,6 +26,8 @@ public class MockedCalls {
             "deletedobject/deleted_object_organisation_unit.json";
     public static final String DELETED_OBJECT_CATEGORIES =
             "deletedobject/deleted_object_categories.json";
+    public static final String DELETED_OBJECT_CATEGORY_OPTIONS =
+            "deletedobject/deleted_object_category_options.json";
     public static final String DELETED_OBJECT_CATEGORY_COMBO =
             "deletedobject/deleted_object_category_combo.json";
     public static final String DELETED_OBJECT_PROGRAMS =
@@ -57,6 +59,8 @@ public class MockedCalls {
             "deletedobject/expected_not_deleted_organisationUnit.json";
     public static final String AFTER_DELETE_EXPECTED_CATEGORIES =
             "deletedobject/simple_categories_after_delete.json";
+    public static final String EMPTY_CATEGORIES =
+            "deletedobject/empty_categories_after_delete.json";
     public static final String MULTI_USERS_EXPECTED =
             "deletedobject/expected_not_deleted_user.json";
     public static final String NORMAL_USER =
@@ -66,6 +70,7 @@ public class MockedCalls {
             SYSTEM_INFO,
             DELETED_OBJECT_EMPTY, USER,
             DELETED_OBJECT_EMPTY, ORGANISATION_UNITS,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORIES,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
             DELETED_OBJECT_EMPTY, PROGRAMS,
@@ -76,6 +81,7 @@ public class MockedCalls {
             SYSTEM_INFO,
             DELETED_OBJECT_EMPTY, ADMIN_USER,
             DELETED_OBJECT_EMPTY, ADMIN_ORGANISATION_UNITS,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORIES,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
             DELETED_OBJECT_EMPTY, PROGRAMS,

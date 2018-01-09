@@ -69,6 +69,7 @@ public abstract class ResourceModel extends BaseModel {
         DELETED_OPTION_SET,
         DELETED_TRACKED_ENTITY,
         DELETED_CATEGORY,
+        DELETED_CATEGORY_OPTION,
         DELETED_CATEGORY_COMBO,
     }
 

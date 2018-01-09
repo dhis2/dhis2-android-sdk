@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -110,6 +111,8 @@ public class DeletedObjectEndPointCall implements Call<Response<Payload<DeletedO
             return ResourceModel.Type.DELETED_CATEGORY;
         } else if (klass.equals(CategoryCombo.class.getSimpleName())) {
             return ResourceModel.Type.DELETED_CATEGORY_COMBO;
+        } else if (klass.equals(CategoryOption.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_CATEGORY_OPTION;
         }
         return null;
     }

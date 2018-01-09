@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.user.UserModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +19,11 @@ import java.util.List;
 
 public class CategoryOptionStoreImpl implements CategoryOptionStore {
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            CategoryOptionModel.Columns.UID +
+            " FROM " + CategoryOptionModel.TABLE +
+            " WHERE "+CategoryOptionModel.Columns.UID+" =?;";
+
     protected final DatabaseAdapter databaseAdapter;
     protected final SQLiteStatement insertStatement;
     protected final SQLiteStatement updateStatement;
@@ -25,26 +31,26 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
 
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryOptionModel.TABLE + " (" +
-                    CategoryModel.Columns.UID + ", " +
-                    CategoryModel.Columns.CODE + ", " +
-                    CategoryModel.Columns.NAME + ", " +
-                    CategoryModel.Columns.DISPLAY_NAME + ", " +
-                    CategoryModel.Columns.CREATED + ", " +
-                    CategoryModel.Columns.LAST_UPDATED + ") " +
+                    CategoryOptionModel.Columns.UID + ", " +
+                    CategoryOptionModel.Columns.CODE + ", " +
+                    CategoryOptionModel.Columns.NAME + ", " +
+                    CategoryOptionModel.Columns.DISPLAY_NAME + ", " +
+                    CategoryOptionModel.Columns.CREATED + ", " +
+                    CategoryOptionModel.Columns.LAST_UPDATED + ") " +
                     "VALUES(?, ?, ?, ?, ?, ?);";
 
     private static final String EQUAL_QUESTION_MARK = "=?";
     private static final String DELETE_STATEMENT = "DELETE FROM " + CategoryOptionModel.TABLE +
-            " WHERE " + CategoryModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ";";
+            " WHERE " + CategoryOptionModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ";";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + CategoryOptionModel.TABLE + " SET " +
-            CategoryModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ", " +
-            CategoryModel.Columns.CODE + " " + EQUAL_QUESTION_MARK + ", " +
-            CategoryModel.Columns.NAME + " " + EQUAL_QUESTION_MARK + ", " +
-            CategoryModel.Columns.DISPLAY_NAME + " " + EQUAL_QUESTION_MARK + ", " +
-            CategoryModel.Columns.CREATED + " " + EQUAL_QUESTION_MARK + ", " +
-            CategoryModel.Columns.LAST_UPDATED + " " + EQUAL_QUESTION_MARK + " WHERE " +
-            CategoryModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ";";
+            CategoryOptionModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryOptionModel.Columns.CODE + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryOptionModel.Columns.NAME + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryOptionModel.Columns.DISPLAY_NAME + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryOptionModel.Columns.CREATED + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryOptionModel.Columns.LAST_UPDATED + " " + EQUAL_QUESTION_MARK + " WHERE " +
+            CategoryOptionModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ";";
 
     private static final String FIELDS = CategoryOptionModel.TABLE +"."+ CategoryOptionModel.Columns.UID + "," +
             CategoryOptionModel.TABLE +"."+ CategoryOptionModel.Columns.CODE + "," +
@@ -75,11 +81,11 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
     }
 
     @Override
-    public boolean delete(@NonNull CategoryOption categoryOption) {
+    public boolean delete(@NonNull String uid) {
 
-        validate(categoryOption);
+        isNull(uid);
 
-        bindForDelete(categoryOption);
+        bindForDelete(uid);
 
         return execute(deleteStatement);
     }
@@ -123,10 +129,10 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
         isNull(category.uid());
     }
 
-    private void bindForDelete(@NonNull CategoryOption option) {
+    private void bindForDelete(@NonNull String uid) {
         final int whereUidIndex = 1;
 
-        sqLiteBind(deleteStatement, whereUidIndex, option.uid());
+        sqLiteBind(deleteStatement, whereUidIndex, uid);
     }
 
     private void bindUpdate(@NonNull CategoryOption oldOption, @NonNull CategoryOption newOption) {
@@ -187,6 +193,12 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
                 uid, code, name, displayName, created, lastUpdated);
 
         return categoryOption;
+    }
+
+    @Override
+    public Boolean exists(String userUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, userUId);
+        return cursor.getCount()>0;
     }
 
     @Override

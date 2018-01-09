@@ -60,4 +60,6 @@ public interface OrganisationUnitStore extends DeletableStore {
     int delete();
 
     List<OrganisationUnit> queryOrganisationUnits();
+
+    Boolean exists(String organisationUnitUId);
 }

@@ -58,4 +58,5 @@ public interface UserStore extends DeletableStore{
 
     int delete();
 
+    Boolean exists(String userUId);
 }

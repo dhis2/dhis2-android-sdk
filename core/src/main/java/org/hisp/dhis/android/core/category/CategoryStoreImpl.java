@@ -17,6 +17,11 @@ import java.util.List;
 
 public class CategoryStoreImpl implements CategoryStore {
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            CategoryModel.Columns.UID +
+            " FROM " + CategoryModel.TABLE +
+            " WHERE "+CategoryModel.Columns.UID+" =?;";
+
     private static final String INSERT_STATEMENT = "INSERT INTO " + CategoryModel.TABLE + " (" +
             CategoryModel.Columns.UID + ", " +
             CategoryModel.Columns.CODE + ", " +
@@ -156,6 +161,12 @@ public class CategoryStoreImpl implements CategoryStore {
         Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
 
         return mapOrgUnitsFromCursor(cursor);
+    }
+
+    @Override
+    public Boolean exists(String categoryUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, categoryUId);
+        return cursor.getCount()>0;
     }
 
     private List<Category> mapOrgUnitsFromCursor(Cursor cursor) {

@@ -15,4 +15,6 @@ public interface CategoryStore extends DeletableStore {
     boolean update(@NonNull Category oldElement, @NonNull Category newElement);
 
     List<Category> queryAll();
+
+    Boolean exists(String categoryUId);
 }

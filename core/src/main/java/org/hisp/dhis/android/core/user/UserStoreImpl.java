@@ -46,6 +46,11 @@ import java.util.List;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserStoreImpl implements UserStore {
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            UserModel.Columns.UID +
+            " FROM " + UserModel.TABLE +
+            " WHERE "+UserModel.Columns.UID+" =?;";
+
     private static final String FIELDS =
             "  "+ UserModel.TABLE + "." +UserModel.Columns.UID + ","
                     + "  "+ UserModel.TABLE + "." +UserModel.Columns.CODE + ","
@@ -190,6 +195,12 @@ public class UserStoreImpl implements UserStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(UserModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String userUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, userUId);
+        return cursor.getCount()>0;
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,

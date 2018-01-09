@@ -43,9 +43,11 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -117,7 +119,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
         d2.syncMetaData().call();
 
-        //verifyDownloadedUsers(AFTER_DELETE_EXPECTED_USER);
+        verifyIfUserIsDeleted("DXyJmlo9rge");
     }
 
     @Test
@@ -129,9 +131,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
         d2.syncMetaData().call();
 
-        //verifyDownloadedOrganisationUnits(AFTER_DELETE_EXPECTED_ORGANISATION_UNIT);
+        verifyIfOrganisationUnitIsDeleted("YuQRtpLP10I");
     }
-
     @Test
     @MediumTest
     public void delete_the_given_deleted_categories() throws Exception {
@@ -141,7 +142,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
         d2.syncMetaData().call();
 
-        //verifyDownloadedCategories(AFTER_DELETE_EXPECTED_CATEGORIES);
+        verifyIfCategoryIsDeleted("vGs6omsRekv");
+        verifyIfCategoryIsDeleted("cX5k9anHEHd");
     }
 
     @Test
@@ -197,6 +199,31 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
     @MediumTest
     public void delete_the_given_deleted_data_elements() throws Exception {
 
+    }
+
+    private void verifyIfCategoryIsDeleted(String categoryUId) {
+        CategoryStoreImpl store = new CategoryStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(categoryUId);
+
+        assertThat(isPersisted, is(false));
+    }
+
+    private void verifyIfOrganisationUnitIsDeleted(String organisationUnitUId) {
+        OrganisationUnitStoreImpl store = new OrganisationUnitStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(organisationUnitUId);
+
+        assertThat(isPersisted, is(false));
+    }
+
+
+    private void verifyIfUserIsDeleted(String userUId) {
+        UserStoreImpl store = new UserStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(userUId);
+
+        assertThat(isPersisted, is(false));
     }
 
     private void verifyIfOptionSetIsDeleted(String optionSetUid) {

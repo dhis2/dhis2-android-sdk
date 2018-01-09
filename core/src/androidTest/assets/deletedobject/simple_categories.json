@@ -13,7 +13,6 @@
       "id": "vGs6omsRekv",
       "dataDimensionType": "DISAGGREGATION",
       "displayName": "default",
-      "shortName": "default",
       "categoryOptions": []
     },{
       "lastUpdated": "2017-10-09T16:03:48.729",
@@ -23,7 +22,6 @@
       "id": "KfdsGBcoiCa",
       "dataDimensionType": "DISAGGREGATION",
       "displayName": "Births attended by",
-      "shortName": "Births",
       "categoryOptions": []
     },
     {
@@ -34,7 +32,6 @@
       "id": "cX5k9anHEHd",
       "dataDimensionType": "DISAGGREGATION",
       "displayName": "Gender",
-      "shortName": "Gender",
       "categoryOptions": []
     },
     {
@@ -45,7 +42,6 @@
       "id": "x3uo8LqiTBk",
       "dataDimensionType": "DISAGGREGATION",
       "displayName": "Location PHU/Community",
-      "shortName": "PHU",
       "categoryOptions": []
     }
   ]

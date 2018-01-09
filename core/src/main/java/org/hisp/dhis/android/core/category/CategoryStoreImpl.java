@@ -26,17 +26,15 @@ public class CategoryStoreImpl implements CategoryStore {
             CategoryModel.Columns.UID + ", " +
             CategoryModel.Columns.CODE + ", " +
             CategoryModel.Columns.NAME + ", " +
-            CategoryModel.Columns.SHORT_NAME + ", " +
             CategoryModel.Columns.DISPLAY_NAME + ", " +
             CategoryModel.Columns.CREATED + ", " +
             CategoryModel.Columns.LAST_UPDATED + ", " +
             CategoryModel.Columns.DATA_DIMENSION_TYPE + ") " +
-            "VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
+            "VALUES(?, ?, ?, ?, ?, ?, ?);";
     private static final String QUERY_STATEMENT = "SELECT " +
             CategoryModel.Columns.UID + "," +
             CategoryModel.Columns.CODE + "," +
             CategoryModel.Columns.NAME + "," +
-            CategoryModel.Columns.SHORT_NAME + "," +
             CategoryModel.Columns.DISPLAY_NAME + "," +
             CategoryModel.Columns.CREATED + "," +
             CategoryModel.Columns.LAST_UPDATED + "," +
@@ -56,7 +54,6 @@ public class CategoryStoreImpl implements CategoryStore {
             CategoryModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ", " +
             CategoryModel.Columns.CODE + " " + EQUAL_QUESTION_MARK + ", " +
             CategoryModel.Columns.NAME + " " + EQUAL_QUESTION_MARK + ", " +
-            CategoryModel.Columns.SHORT_NAME + " " + EQUAL_QUESTION_MARK + ", " +
             CategoryModel.Columns.DISPLAY_NAME + " " + EQUAL_QUESTION_MARK + ", " +
             CategoryModel.Columns.CREATED + " " + EQUAL_QUESTION_MARK + ", " +
             CategoryModel.Columns.LAST_UPDATED + " " + EQUAL_QUESTION_MARK + ", " +
@@ -147,11 +144,10 @@ public class CategoryStoreImpl implements CategoryStore {
         sqLiteBind(sqLiteStatement, 1, category.uid());
         sqLiteBind(sqLiteStatement, 2, category.code());
         sqLiteBind(sqLiteStatement, 3, category.name());
-        sqLiteBind(sqLiteStatement, 4, category.shortName());
-        sqLiteBind(sqLiteStatement, 5, category.displayName());
-        sqLiteBind(sqLiteStatement, 6, category.created());
-        sqLiteBind(sqLiteStatement, 7, category.lastUpdated());
-        sqLiteBind(sqLiteStatement, 8, category.dataDimensionType());
+        sqLiteBind(sqLiteStatement, 4, category.displayName());
+        sqLiteBind(sqLiteStatement, 5, category.created());
+        sqLiteBind(sqLiteStatement, 6, category.lastUpdated());
+        sqLiteBind(sqLiteStatement, 7, category.dataDimensionType());
 
     }
 
@@ -199,19 +195,17 @@ public class CategoryStoreImpl implements CategoryStore {
         String uid = cursor.getString(0);
         String code = cursor.getString(1);
         String name = cursor.getString(2);
-        String shortName = cursor.getString(3);
-        String displayName = cursor.getString(4);
-        Date created = cursor.getString(5) == null ? null : parse(cursor.getString(5));
-        Date lastUpdated = cursor.getString(6) == null ? null : parse(
-                cursor.getString(6));
-        String dataDimensionType = cursor.getString(7);
+        String displayName = cursor.getString(3);
+        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
+        Date lastUpdated = cursor.getString(5) == null ? null : parse(
+                cursor.getString(5));
+        String dataDimensionType = cursor.getString(6);
 
         return Category.builder()
                 .uid(uid)
                 .code(code)
                 .created(created)
                 .name(name)
-                .shortName(shortName)
                 .lastUpdated(lastUpdated)
                 .displayName(displayName)
                 .categoryOptions(new ArrayList<CategoryOption>())

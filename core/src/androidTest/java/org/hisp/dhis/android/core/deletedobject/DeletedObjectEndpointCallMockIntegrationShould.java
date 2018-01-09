@@ -9,6 +9,7 @@ import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTE
 import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_ORGANISATION_UNIT;
 import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_PROGRAMS;
+import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_TRACKED_ENTITIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.CATEGORY_COMBOS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORIES;
@@ -16,6 +17,7 @@ import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEG
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_EMPTY;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_ORGANISATION_UNITS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAMS;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_TRACKED_ENTITY;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.ALTERNATIVE_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.MULTIPLE_ORGANISATIONN_UNITS;
@@ -59,7 +61,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_CATEGORIES, AFTER_DELETE_EXPECTED_CATEGORIES,
             DELETED_OBJECT_CATEGORY_COMBO, CATEGORY_COMBOS,
             DELETED_OBJECT_PROGRAMS, AFTER_PROGRAMS,
-            DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
+            DELETED_OBJECT_TRACKED_ENTITY, AFTER_TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY, OPTION_SETS};
 
     public final static String[] commonMetadataWithMultipleObjectsJsonFiles = new String[]{
@@ -159,12 +161,6 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
 
     @Test
     @MediumTest
-    public void delete_the_given_deleted_program() throws Exception {
-
-    }
-
-    @Test
-    @MediumTest
     public void delete_the_given_deleted_programs() throws Exception {
         MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
         d2.syncMetaData().call();
@@ -177,8 +173,14 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
 
     @Test
     @MediumTest
-    public void delete_the_given_deleted_constant() throws Exception {
+    public void delete_the_given_deleted_tracked_entity() throws Exception {
+        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
+        d2.syncMetaData().call();
 
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
+        d2.syncMetaData().call();
+        verifyIfCategoryComboIsDeleted("nEenWmSyUE2");
+        verifyIfCategoryComboIsDeleted("nEenWmSyUE3");
     }
 
     @Test

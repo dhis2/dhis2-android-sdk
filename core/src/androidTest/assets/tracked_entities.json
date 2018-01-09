@@ -8,6 +8,24 @@
       "displayDescription": "Person",
       "displayName": "Person",
       "description": "Person"
+    },
+    {
+      "lastUpdated": "2015-11-14T13:36:53.063",
+      "created": "2014-02-20T12:28:56.409",
+      "name": "Building",
+      "id": "nEenWmSyUE2",
+      "displayDescription": "Building",
+      "displayName": "Building",
+      "description": "Building"
+    },
+    {
+      "lastUpdated": "2015-11-14T13:36:53.063",
+      "created": "2014-02-20T12:28:56.409",
+      "name": "Facility",
+      "id": "nEenWmSyUE3",
+      "displayDescription": "Facility",
+      "displayName": "Facility",
+      "description": "Facility"
     }
   ]
 }

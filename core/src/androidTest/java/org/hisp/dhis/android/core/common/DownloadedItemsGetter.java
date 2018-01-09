@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
@@ -95,7 +96,12 @@ public class DownloadedItemsGetter {
     }
 
     public static List<Category> getDownloadedCategories(DatabaseAdapter databaseAdapter) {
-        return null;
+
+        CategoryStoreImpl store = new CategoryStoreImpl(databaseAdapter);
+
+        List<Category> downloadedItemsWithoutDependencies = store.queryAll();
+
+        return downloadedItemsWithoutDependencies;
     }
 
     public static List<CategoryCombo> getDownloadedCategoryCombos(DatabaseAdapter databaseAdapter) {

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
@@ -37,8 +38,10 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.yaml.snakeyaml.events.Event;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @AutoValue

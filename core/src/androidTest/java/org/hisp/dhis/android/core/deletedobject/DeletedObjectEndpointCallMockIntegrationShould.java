@@ -2,10 +2,12 @@ package org.hisp.dhis.android.core.deletedobject;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_ORGANISATION_UNIT;
 import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.CATEGORY_COMBOS;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_EMPTY;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_ORGANISATION_UNITS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_USER;
@@ -15,8 +17,10 @@ import static org.hisp.dhis.android.core.common.MockedCalls.NORMAL_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.ORGANISATION_UNITS;
 import static org.hisp.dhis.android.core.common.MockedCalls.PROGRAMS;
+import static org.hisp.dhis.android.core.common.MockedCalls.SIMPLE_CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.SYSTEM_INFO;
 import static org.hisp.dhis.android.core.common.MockedCalls.TRACKED_ENTITIES;
+import static org.hisp.dhis.android.core.common.MockedCalls.USER;
 
 import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
@@ -48,11 +52,20 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTestCase {
 
+    final static String[] commonMetadataJsonFiles = new String[]{
+            SYSTEM_INFO,
+            DELETED_OBJECT_EMPTY, USER,
+            DELETED_OBJECT_EMPTY, ORGANISATION_UNITS,
+            DELETED_OBJECT_EMPTY, SIMPLE_CATEGORIES,
+            DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
+            DELETED_OBJECT_EMPTY, PROGRAMS,
+            DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
+            DELETED_OBJECT_EMPTY, OPTION_SETS};
     String[] metadataJsonWithRemovedUser = new String[]{
             SYSTEM_INFO,
             DELETED_OBJECT_USER, ALTERNATIVE_USER,
             DELETED_OBJECT_ORGANISATION_UNITS, ORGANISATION_UNITS,
-            DELETED_OBJECT_EMPTY, CATEGORIES,
+            DELETED_OBJECT_CATEGORIES, AFTER_DELETE_EXPECTED_CATEGORIES,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
             DELETED_OBJECT_EMPTY, PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
@@ -61,7 +74,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
             SYSTEM_INFO,
             DELETED_OBJECT_EMPTY, ALTERNATIVE_USER,
             DELETED_OBJECT_EMPTY, MULTIPLE_ORGANISATIONN_UNITS,
-            DELETED_OBJECT_EMPTY, CATEGORIES,
+            DELETED_OBJECT_EMPTY, SIMPLE_CATEGORIES,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
             DELETED_OBJECT_EMPTY, PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
@@ -91,12 +104,12 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
     @Test
     @MediumTest
     public void not_delete_nothing_when_the_deletable_object_list_is_empty() throws Exception {
-        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataJsonFiles);
         d2.syncMetaData().call();
 
         verifyDownloadedUsers(NORMAL_USER);
         verifyDownloadedOrganisationUnits(AFTER_DELETE_EXPECTED_ORGANISATION_UNIT);
-        //verifyDownloadedCategories("events_1.json");
+        verifyDownloadedCategories(SIMPLE_CATEGORIES);
         //verifyDownloadedCategoryCombo("events_1.json");
         //verifyDownloadedPrograms("events_1.json");
         //verifyDownloadedTrackedEntities("events_1.json");
@@ -125,7 +138,18 @@ public class DeletedObjectEndpointCallMockIntegrationShould  extends AbsStoreTes
         d2.syncMetaData().call();
 
         verifyDownloadedOrganisationUnits(AFTER_DELETE_EXPECTED_ORGANISATION_UNIT);
+    }
 
+    @Test
+    @MediumTest
+    public void delete_the_given_deleted_categories() throws Exception {
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        d2.syncMetaData().call();
+
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
+        d2.syncMetaData().call();
+
+        verifyDownloadedCategories(AFTER_DELETE_EXPECTED_CATEGORIES);
     }
 
     @Test

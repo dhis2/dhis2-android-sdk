@@ -43,6 +43,9 @@ public class MockedCalls {
             "deletedobject/deleted_object_tracked_entity.json";
     public static final String DELETED_OBJECT_PROGRAM_STAGES =
             "deletedobject/deleted_object_program_stages.json";
+    public static final String DELETED_OBJECT_PROGRAM_STAGE_DATA_ELEMENTS =
+            "deletedobject/deleted_object_program_stage_data_elements.json";
+
     public static final String DELETED_OBJECT_DATA_ELEMENTS =
             "deletedobject/deleted_object_data_elements.json";
     public static final String DELETED_OBJECT_PROGRAM_INDICATORS =
@@ -98,6 +101,7 @@ public class MockedCalls {
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY,
@@ -111,6 +115,7 @@ public class MockedCalls {
             DELETED_OBJECT_EMPTY, CATEGORIES,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,

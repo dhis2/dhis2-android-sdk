@@ -388,6 +388,12 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
+            response = syncDeletedObject(serverDate, ProgramStageDataElement.class.getSimpleName());
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
             response = syncDeletedObject(serverDate, Program.class.getSimpleName());
 
             if (!response.isSuccessful()) {

@@ -18,6 +18,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -62,6 +63,8 @@ public class DeletedObjectHandler {
     private final ProgramRuleVariableStore programRuleVariableStore;
     @NonNull
     private final ProgramStageStore programStageStore;
+    @NonNull
+    private final ProgramStageDataElementStore programStageDataElementStore;
 
 
 
@@ -83,7 +86,8 @@ public class DeletedObjectHandler {
             @NonNull ProgramRuleStore programRuleStore,
             @NonNull ProgramRuleActionStore programRuleActionStore,
             @NonNull ProgramRuleVariableStore programRuleVariableStore,
-            @NonNull ProgramStageStore programStageStore) {
+            @NonNull ProgramStageStore programStageStore,
+            @NonNull ProgramStageDataElementStore programStageDataElementStore) {
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.categoryStore = categoryStore;
@@ -102,6 +106,7 @@ public class DeletedObjectHandler {
         this.programRuleActionStore = programRuleActionStore;
         this.programRuleVariableStore = programRuleVariableStore;
         this.programStageStore = programStageStore;
+        this.programStageDataElementStore = programStageDataElementStore;
     }
 
     public void handle(String uid, ResourceModel.Type type) {
@@ -141,7 +146,13 @@ public class DeletedObjectHandler {
             deleteProgramRuleVariable(uid);
         } else if (type.equals(ResourceModel.Type.DELETED_PROGRAM_STAGE)) {
             deleteProgramStage(uid);
+        } else if (type.equals(ResourceModel.Type.DELETED_PROGRAM_STAGE_DATA_ELEMENT)) {
+            deleteProgramStageDataElement(uid);
         }
+    }
+
+    private void deleteProgramStageDataElement(String uid) {
+        programStageDataElementStore.delete(uid);
     }
 
     private void deleteProgramStage(String uid) {

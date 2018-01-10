@@ -65,7 +65,7 @@ public abstract class DataElementCategoryCombo {
 
     public String categoryComboUid() {
         return categoryCombo() != null ? categoryCombo().uid() :
-                null;
+                CategoryComboModel.DEFAULT_UID;
     }
 
     @JsonCreator

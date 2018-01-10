@@ -7,15 +7,15 @@
   },
   "deletedObjects": [
     {
-      "uid": "m2jTvAj5kkm",
+      "uid": "bRowv6yZOF2",
       "deletedAt": "2017-05-31T13:44:50.802",
-      "klass": "CategoryCombo",
+      "klass": "CategoryOptionCombo",
       "deletedBy": "system"
     },
     {
-      "uid": "p0KPaWEg3cf",
+      "uid": "Gmbgme7z9BF",
       "deletedAt": "2017-05-31T13:44:50.802",
-      "klass": "CategoryCombo",
+      "klass": "CategoryOptionCombo",
       "deletedBy": "system"
     }
   ]

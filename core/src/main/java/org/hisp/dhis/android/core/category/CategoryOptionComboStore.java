@@ -17,4 +17,6 @@ public interface CategoryOptionComboStore extends DeletableStore {
             @NonNull CategoryOptionCombo newElement);
 
     List<CategoryOptionCombo> queryAll();
+
+    Boolean exists(String uid);
 }

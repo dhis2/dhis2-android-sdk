@@ -28,6 +28,8 @@ public class MockedCalls {
             "deletedobject/deleted_object_categories.json";
     public static final String DELETED_OBJECT_CATEGORY_OPTIONS =
             "deletedobject/deleted_object_category_options.json";
+    public static final String DELETED_OBJECT_CATEGORY_OPTION_COMBO =
+            "deletedobject/deleted_object_category_option_combo.json";
     public static final String DELETED_OBJECT_CATEGORY_COMBO =
             "deletedobject/deleted_object_category_combo.json";
     public static final String DELETED_OBJECT_OPTION_SETS =
@@ -72,6 +74,7 @@ public class MockedCalls {
             DELETED_OBJECT_EMPTY, ORGANISATION_UNITS,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORIES,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
             DELETED_OBJECT_EMPTY, PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
@@ -83,6 +86,7 @@ public class MockedCalls {
             DELETED_OBJECT_EMPTY, ADMIN_ORGANISATION_UNITS,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORIES,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
             DELETED_OBJECT_EMPTY, PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,

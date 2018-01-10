@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.user.UserModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,6 +18,11 @@ import java.util.List;
 
 
 public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
+
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            CategoryOptionComboModel.Columns.UID +
+            " FROM " + CategoryOptionComboModel.TABLE +
+            " WHERE "+CategoryOptionComboModel.Columns.UID+" =?;";
 
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
@@ -213,5 +219,11 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
         return databaseAdapter.delete(CategoryOptionComboModel.TABLE);
     }
 
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount()>0;
+    }
 }
 

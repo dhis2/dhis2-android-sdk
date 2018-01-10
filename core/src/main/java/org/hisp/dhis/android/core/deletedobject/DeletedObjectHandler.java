@@ -89,6 +89,8 @@ public class DeletedObjectHandler {
             deleteCategory(uid);
         } else if (type.equals(ResourceModel.Type.DELETED_CATEGORY_OPTION)) {
             deleteCategoryOption(uid);
+        } else if (type.equals(ResourceModel.Type.DELETED_CATEGORY_OPTION_COMBO)) {
+            deleteCategoryOptionCombo(uid);
         }
     }
 

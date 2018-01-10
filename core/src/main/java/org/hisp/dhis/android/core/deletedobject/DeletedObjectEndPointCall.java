@@ -6,6 +6,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -71,28 +72,33 @@ public class DeletedObjectEndPointCall implements Call<Response<Payload<DeletedO
         if (type == null) {
             throw new IllegalArgumentException(deletedObjectKlass + " unsupported klass type");
         }
+        Response<Payload<DeletedObject>> deletedObjectsByLastUpdated = null;
+try {
+    String lastSyncedDeletedObjects = resourceHandler.getLastUpdated(type);
 
-        String lastSyncedDeletedObjects = resourceHandler.getLastUpdated(type);
+    Filter<DeletedObject, String> lastUpdatedFilter = DeletedObject.deletedAt.gt(
+            lastSyncedDeletedObjects
+    );
+    deletedObjectsByLastUpdated =
+            deletedObjectService.getDeletedObjectsDeletedAt(
+                    getSingleFields(), true, deletedObjectKlass, lastUpdatedFilter).execute();
 
-        Filter<DeletedObject, String> lastUpdatedFilter = DeletedObject.deletedAt.gt(lastSyncedDeletedObjects
-        );
-        Response<Payload<DeletedObject>> deletedObjectsByLastUpdated =
-                deletedObjectService.getDeletedObjectsDeletedAt(
-                getSingleFields(), true, deletedObjectKlass, lastUpdatedFilter).execute();
+    if (deletedObjectsByLastUpdated.isSuccessful()
+            && deletedObjectsByLastUpdated.body().items() != null) {
+        List<DeletedObject> deletedObjects = deletedObjectsByLastUpdated.body().items();
 
-        if (deletedObjectsByLastUpdated.isSuccessful()
-                && deletedObjectsByLastUpdated.body().items() != null) {
-            List<DeletedObject> deletedObjects = deletedObjectsByLastUpdated.body().items();
+        int size = deletedObjects.size();
 
-            int size = deletedObjects.size();
-
-            for (int i = 0; i < size; i++) {
-                DeletedObject deletedObject = deletedObjects.get(i);
-                deletedObjectHandler.handle(deletedObject.uid(), type);
-            }
-
-            resourceHandler.handleResource(type, serverDate);
+        for (int i = 0; i < size; i++) {
+            DeletedObject deletedObject = deletedObjects.get(i);
+            deletedObjectHandler.handle(deletedObject.uid(), type);
         }
+
+        resourceHandler.handleResource(type, serverDate);
+    }
+}catch (Exception e){
+    throw new IllegalStateException("Unknow error executed"+e.getMessage());
+}
         return deletedObjectsByLastUpdated;
     }
 
@@ -113,7 +119,10 @@ public class DeletedObjectEndPointCall implements Call<Response<Payload<DeletedO
             return ResourceModel.Type.DELETED_CATEGORY_COMBO;
         } else if (klass.equals(CategoryOption.class.getSimpleName())) {
             return ResourceModel.Type.DELETED_CATEGORY_OPTION;
+        } else if (klass.equals(CategoryOptionCombo.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_CATEGORY_OPTION_COMBO;
         }
+
         return null;
     }
 

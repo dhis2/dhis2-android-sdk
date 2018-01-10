@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.ResponseValidator;
@@ -327,6 +328,13 @@ public class MetadataCall implements Call<Response> {
             }
 
             response = syncDeletedObject(serverDate, CategoryCombo.class.getSimpleName());
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+
+            response = syncDeletedObject(serverDate, CategoryOptionCombo.class.getSimpleName());
 
             if (!response.isSuccessful()) {
                 return response;

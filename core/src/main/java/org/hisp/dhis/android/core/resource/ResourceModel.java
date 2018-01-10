@@ -71,6 +71,7 @@ public abstract class ResourceModel extends BaseModel {
         DELETED_CATEGORY,
         DELETED_CATEGORY_OPTION,
         DELETED_CATEGORY_COMBO,
+        DELETED_CATEGORY_OPTION_COMBO
     }
 
     @Nullable

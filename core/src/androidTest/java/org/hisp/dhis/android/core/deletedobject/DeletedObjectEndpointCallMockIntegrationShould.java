@@ -5,6 +5,7 @@ import static junit.framework.Assert.assertTrue;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORY_OPTION_COMBO;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_PROGRAMS;
@@ -34,6 +35,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -62,16 +64,30 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_ORGANISATION_UNITS, EMPTY_ORGANISATION_UNITS,
             DELETED_OBJECT_CATEGORIES,
             DELETED_OBJECT_CATEGORY_OPTIONS, EMPTY_CATEGORIES,
-            DELETED_OBJECT_CATEGORY_COMBO, EMPTY_CATEGORY_COMBOS,
+            DELETED_OBJECT_CATEGORY_COMBO,
+            DELETED_OBJECT_EMPTY, EMPTY_CATEGORY_COMBOS,
             DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
             DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
             DELETED_OBJECT_OPTION_SETS, EMPTY_OPTION_SETS};
+    String[] metadataJsonWithDeletedCategoryComboOptionsObjects = new String[]{
+            SYSTEM_INFO,
+            DELETED_OBJECT_USER, ALTERNATIVE_USER,
+            DELETED_OBJECT_ORGANISATION_UNITS, EMPTY_ORGANISATION_UNITS,
+            DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, EMPTY_CATEGORIES,
+            DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_CATEGORY_OPTION_COMBO, EMPTY_CATEGORY_COMBOS,
+            DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
+            DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
+            DELETED_OBJECT_OPTION_SETS, EMPTY_OPTION_SETS};
+
     public final static String[] commonMetadataWithMultipleObjectsJsonFiles = new String[]{
             SYSTEM_INFO,
             DELETED_OBJECT_EMPTY, ALTERNATIVE_USER,
             DELETED_OBJECT_EMPTY, MULTIPLE_ORGANISATION_UNITS,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, SIMPLE_CATEGORIES,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
             DELETED_OBJECT_EMPTY, MULTIPLE_PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
@@ -189,6 +205,21 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfCategoryComboIsDeleted("p0KPaWEg3cf");
         verifyIfCategoryComboIsDeleted("m2jTvAj5kkm");
     }
+
+    @Test
+    @MediumTest
+    public void delete_the_given_deleted_category_option_combo() throws Exception {
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        d2.syncMetaData().call();
+        verifyIfCategoryOptionComboIsPersisted("bRowv6yZOF2");
+        verifyIfCategoryOptionComboIsPersisted("Gmbgme7z9BF");
+
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedCategoryComboOptionsObjects);
+        d2.syncMetaData().call();
+        verifyIfCategoryOptionComboIsDeleted("bRowv6yZOF2");
+        verifyIfCategoryOptionComboIsDeleted("Gmbgme7z9BF");
+    }
+
 
     @Test
     @MediumTest
@@ -339,6 +370,22 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         OptionSetStoreImpl store = new OptionSetStoreImpl(databaseAdapter());
 
         Boolean isPersisted = store.exists(optionSetUid);
+
+        assertThat(isPersisted, is(true));
+    }
+
+    private void verifyIfCategoryOptionComboIsDeleted(String uid) {
+        CategoryOptionComboStoreImpl store = new CategoryOptionComboStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(uid);
+
+        assertThat(isPersisted, is(false));
+    }
+
+    private void verifyIfCategoryOptionComboIsPersisted(String uid) {
+        CategoryOptionComboStoreImpl store = new CategoryOptionComboStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(uid);
 
         assertThat(isPersisted, is(true));
     }

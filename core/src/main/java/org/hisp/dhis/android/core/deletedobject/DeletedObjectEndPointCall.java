@@ -21,6 +21,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
+import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -135,6 +136,8 @@ public class DeletedObjectEndPointCall implements Call<Response<Payload<DeletedO
             return ResourceModel.Type.DELETED_PROGRAM_RULE_ACTION;
         } else if (klass.equals(ProgramRuleVariable.class.getSimpleName())) {
             return ResourceModel.Type.DELETED_PROGRAM_RULE_VARIABLE;
+        } else if (klass.equals(ProgramStage.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_PROGRAM_STAGE;
         }
 
         return null;

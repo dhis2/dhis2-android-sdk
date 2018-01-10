@@ -384,7 +384,7 @@ public final class D2 {
                 categoryStore, categoryComboStore, categoryOptionComboStore,
                 constantStore, programStore, organisationUnitStore, optionSetStore, trackedEntityStore,
                 categoryOptionStore, dataElementStore, optionStore, programIndicatorStore, programRuleStore,
-                programRuleActionStore, programRuleVariableStore);
+                programRuleActionStore, programRuleVariableStore, programStageStore);
     }
 
     @NonNull

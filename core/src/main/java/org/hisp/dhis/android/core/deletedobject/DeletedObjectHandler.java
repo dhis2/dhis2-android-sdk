@@ -18,6 +18,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
+import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
@@ -59,6 +60,8 @@ public class DeletedObjectHandler {
     private final ProgramRuleActionStore programRuleActionStore;
     @NonNull
     private final ProgramRuleVariableStore programRuleVariableStore;
+    @NonNull
+    private final ProgramStageStore programStageStore;
 
 
 
@@ -79,7 +82,8 @@ public class DeletedObjectHandler {
             @NonNull ProgramIndicatorStore programIndicatorStore,
             @NonNull ProgramRuleStore programRuleStore,
             @NonNull ProgramRuleActionStore programRuleActionStore,
-            @NonNull ProgramRuleVariableStore programRuleVariableStore) {
+            @NonNull ProgramRuleVariableStore programRuleVariableStore,
+            @NonNull ProgramStageStore programStageStore) {
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.categoryStore = categoryStore;
@@ -97,6 +101,7 @@ public class DeletedObjectHandler {
         this.programRuleStore = programRuleStore;
         this.programRuleActionStore = programRuleActionStore;
         this.programRuleVariableStore = programRuleVariableStore;
+        this.programStageStore = programStageStore;
     }
 
     public void handle(String uid, ResourceModel.Type type) {
@@ -134,7 +139,13 @@ public class DeletedObjectHandler {
             deleteProgramRuleAction(uid);
         } else if (type.equals(ResourceModel.Type.DELETED_PROGRAM_RULE_VARIABLE)) {
             deleteProgramRuleVariable(uid);
+        } else if (type.equals(ResourceModel.Type.DELETED_PROGRAM_STAGE)) {
+            deleteProgramStage(uid);
         }
+    }
+
+    private void deleteProgramStage(String uid) {
+        programStageStore.delete(uid);
     }
 
     private void deleteProgramRuleVariable(String uid) {

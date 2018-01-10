@@ -77,7 +77,8 @@ public abstract class ResourceModel extends BaseModel {
         DELETED_PROGRAM_INDICATOR,
         DELETED_PROGRAM_RULE,
         DELETED_PROGRAM_RULE_ACTION,
-        DELETED_PROGRAM_RULE_VARIABLE
+        DELETED_PROGRAM_RULE_VARIABLE,
+        DELETED_PROGRAM_STAGE
     }
 
     @Nullable

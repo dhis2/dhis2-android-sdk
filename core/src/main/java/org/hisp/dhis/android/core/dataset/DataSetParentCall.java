@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementEndpointCall;
 import org.hisp.dhis.android.core.user.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Response;

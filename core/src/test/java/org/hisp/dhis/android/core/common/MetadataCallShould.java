@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
@@ -47,6 +48,9 @@ import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.dataelement.DataElementService;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetService;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetService;
@@ -86,7 +90,6 @@ import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserService;
 import org.hisp.dhis.android.core.user.UserStore;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -97,6 +100,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -144,6 +148,12 @@ public class MetadataCallShould {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<Payload<OptionSet>> optionSetCall;
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private retrofit2.Call<Payload<DataSet>> dataSetCall;
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private retrofit2.Call<Payload<DataElement>> dataElementCall;
 
     @Mock
     private SystemInfo systemInfo;
@@ -239,6 +249,12 @@ public class MetadataCallShould {
     private OptionSetService optionSetService;
 
     @Mock
+    private DataSetService dataSetService;
+
+    @Mock
+    private DataElementService dataElementService;
+
+    @Mock
     private Date serverDateTime;
 
     @Mock
@@ -248,6 +264,8 @@ public class MetadataCallShould {
     private UserCredentials userCredentials;
 
     @Mock
+    private UserRole userRole;
+
     private List<UserRole> userRoles;
 
     @Mock
@@ -266,13 +284,28 @@ public class MetadataCallShould {
     private Payload<OptionSet> optionSetPayload;
 
     @Mock
+    private Payload<DataSet> dataSetPayload;
+
+    @Mock
+    private Payload<DataElement> dataElementPayload;
+
+    @Mock
     private OptionSet optionSet;
+
+    @Mock
+    private CategoryCombo categoryCombo;
 
     @Mock
     private Program program;
 
     @Mock
     private TrackedEntity trackedEntity;
+
+    @Mock
+    private DataSet dataSet;
+
+    @Mock
+    private DataElement dataElement;
 
     @Mock
     private CategoryQuery categoryQuery;
@@ -325,7 +358,17 @@ public class MetadataCallShould {
         when(optionSetService.optionSets(
                 anyBoolean(), any(Fields.class), any(Filter.class))
         ).thenReturn(optionSetCall);
+        when(dataSetService.getDataSets(
+                any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
+        ).thenReturn(dataSetCall);
+        when(dataElementService.getDataElements(
+                any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
+        ).thenReturn(dataElementCall);
 
+
+        when(userRole.dataSets()).thenReturn(new ArrayList<DataSet>());
+        userRoles = new ArrayList<>();
+        userRoles.add(userRole);
 
         when(systemInfo.serverDate()).thenReturn(serverDateTime);
         when(userCredentials.userRoles()).thenReturn(userRoles);
@@ -339,6 +382,9 @@ public class MetadataCallShould {
         when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntity));
         when(trackedEntity.uid()).thenReturn("test_tracked_entity_uid");
         when(optionSetPayload.items()).thenReturn(Collections.singletonList(optionSet));
+        when(dataSetPayload.items()).thenReturn(Collections.singletonList(dataSet));
+        when(dataElementPayload.items()).thenReturn(Collections.singletonList(dataElement));
+        when(dataSet.categoryCombo()).thenReturn(categoryCombo);
 
         when(resourceStore.getLastUpdated(any(ResourceModel.Type.class))).thenReturn("2017-01-01");
 
@@ -384,15 +430,12 @@ public class MetadataCallShould {
         when(programCall.execute()).thenReturn(Response.success(programPayload));
         when(trackedEntityCall.execute()).thenReturn(Response.success(trackedEntityPayload));
         when(optionSetCall.execute()).thenReturn(Response.success(optionSetPayload));
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        dhis2MockServer.shutdown();
+        when(dataSetCall.execute()).thenReturn(Response.success(dataSetPayload));
+        when(dataElementCall.execute()).thenReturn(Response.success(dataElementPayload));
     }
 
     @Test
-    public void returns_last_response_successful() throws Exception {
+    public void return_last_response_successful() throws Exception {
         Response response = metadataCall.call();
         // assert that last successful response is returned
 

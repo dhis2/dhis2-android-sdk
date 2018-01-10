@@ -58,6 +58,7 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.deletedobject.DeletedObject;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandler;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectService;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -122,6 +123,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+import retrofit2.http.DELETE;
 
 @RunWith(JUnit4.class)
 public class MetadataCallShould {
@@ -141,6 +143,9 @@ public class MetadataCallShould {
     private retrofit2.Call<Payload<OrganisationUnit>> organisationUnitCall;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private retrofit2.Call<Payload<DeletedObject>> deletableObjectCall;
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<Payload<Program>> programCall;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -154,6 +159,7 @@ public class MetadataCallShould {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<Payload<Category>> categoryInfo;
+
 
     @Mock
     private SystemInfoService systemInfoService;
@@ -262,6 +268,8 @@ public class MetadataCallShould {
 
     @Mock
     private User user;
+    @Mock
+    private DeletedObject deletedObject;
 
     @Mock
     private UserCredentials userCredentials;
@@ -274,6 +282,9 @@ public class MetadataCallShould {
 
     @Mock
     private Payload<OrganisationUnit> organisationUnitPayload;
+
+    @Mock
+    private Payload<DeletedObject> deletedObjectPayload;
 
     @Mock
     private Payload<Program> programPayload;
@@ -326,18 +337,37 @@ public class MetadataCallShould {
         errorResponse = Response.error(
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
-
         when(systemInfoService.getSystemInfo(any(Fields.class))).thenReturn(systemInfoCall);
+
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class))).thenReturn(deletableObjectCall);
+
         when(userService.getUser(any(Fields.class))).thenReturn(userCall);
+
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class)))
+                .thenReturn(deletableObjectCall);
+
         when(organisationUnitService.getOrganisationUnits(
                 anyString(), any(Fields.class), any(Filter.class), anyBoolean(), anyBoolean())
         ).thenReturn(organisationUnitCall);
+
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class))).thenReturn(deletableObjectCall);
+
         when(programService.getPrograms(
                 any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
         ).thenReturn(programCall);
+
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class))).thenReturn(deletableObjectCall);
+
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class))).thenReturn(deletableObjectCall);
+
         when(trackedEntityService.trackedEntities(
                 any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
         ).thenReturn(trackedEntityCall);
+
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class))).thenReturn(deletableObjectCall);
+
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class))).thenReturn(deletableObjectCall);
+
         when(optionSetService.optionSets(
                 anyBoolean(), any(Fields.class), any(Filter.class))
         ).thenReturn(optionSetCall);
@@ -347,9 +377,11 @@ public class MetadataCallShould {
         when(userCredentials.userRoles()).thenReturn(userRoles);
         when(organisationUnit.uid()).thenReturn("unit");
         when(organisationUnit.path()).thenReturn("path/to/org/unit");
+        when(deletedObject.uid()).thenReturn("uid");
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
         when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
+        when(deletedObjectPayload.items()).thenReturn(Collections.singletonList(deletedObject));
         when(program.trackedEntity()).thenReturn(trackedEntity);
         when(programPayload.items()).thenReturn(Collections.singletonList(program));
         when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntity));
@@ -395,6 +427,7 @@ public class MetadataCallShould {
 
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
         when(userCall.execute()).thenReturn(Response.success(user));
+        when(deletableObjectCall.execute()).thenReturn(Response.success(deletedObjectPayload));
         when(organisationUnitCall.execute()).thenReturn(Response.success(organisationUnitPayload));
         when(programCall.execute()).thenReturn(Response.success(programPayload));
         when(trackedEntityCall.execute()).thenReturn(Response.success(trackedEntityPayload));
@@ -466,6 +499,22 @@ public class MetadataCallShould {
     public void verify_transaction_fail_when_program_call_fail() throws Exception {
         final int expectedTransactions = 6;
         when(programCall.execute()).thenReturn(errorResponse);
+
+        Response response = metadataCall.call();
+
+        assertThat(response).isEqualTo(errorResponse);
+        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
+        verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
+        verify(transaction, times(expectedTransactions)).end();
+        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void verify_transaction_fail_when_deleteObject_call_fail() throws Exception {
+        final int expectedTransactions = 2;
+
+        when(deletableObjectCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 

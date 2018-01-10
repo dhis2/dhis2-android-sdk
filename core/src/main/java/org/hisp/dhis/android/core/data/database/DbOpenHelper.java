@@ -951,8 +951,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             /* TODO default categroyCombo has to be downloaded in order not to violate
                             foreign key constraint */
                             /*" FOREIGN KEY (" + DataSetDataElementLinkModel.Columns.CATEGORY_COMBO + ") " +
-                            " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")" +*/
-                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +*/
                             " UNIQUE (" + DataSetDataElementLinkModel.Columns.DATA_SET + ", " +
                             DataSetDataElementLinkModel.Columns.DATA_ELEMENT + ", " +
                             DataSetDataElementLinkModel.Columns.CATEGORY_COMBO + ")"

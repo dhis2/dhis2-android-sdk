@@ -77,6 +77,7 @@ import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
+import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
 import org.hisp.dhis.android.core.program.ProgramStageSectionStore;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
@@ -389,6 +390,12 @@ public class MetadataCall implements Call<Response> {
             }
 
             response = syncDeletedObject(serverDate, ProgramStageDataElement.class.getSimpleName());
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            response = syncDeletedObject(serverDate, ProgramStageSection.class.getSimpleName());
 
             if (!response.isSuccessful()) {
                 return response;

@@ -19,6 +19,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
+import org.hisp.dhis.android.core.program.ProgramStageSectionStore;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -65,6 +66,8 @@ public class DeletedObjectHandler {
     private final ProgramStageStore programStageStore;
     @NonNull
     private final ProgramStageDataElementStore programStageDataElementStore;
+    @NonNull
+    private final ProgramStageSectionStore programStageSectionStore;
 
 
 
@@ -87,7 +90,8 @@ public class DeletedObjectHandler {
             @NonNull ProgramRuleActionStore programRuleActionStore,
             @NonNull ProgramRuleVariableStore programRuleVariableStore,
             @NonNull ProgramStageStore programStageStore,
-            @NonNull ProgramStageDataElementStore programStageDataElementStore) {
+            @NonNull ProgramStageDataElementStore programStageDataElementStore,
+            @NonNull ProgramStageSectionStore programStageSectionStore) {
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.categoryStore = categoryStore;
@@ -107,6 +111,7 @@ public class DeletedObjectHandler {
         this.programRuleVariableStore = programRuleVariableStore;
         this.programStageStore = programStageStore;
         this.programStageDataElementStore = programStageDataElementStore;
+        this.programStageSectionStore = programStageSectionStore;
     }
 
     public void handle(String uid, ResourceModel.Type type) {
@@ -148,7 +153,13 @@ public class DeletedObjectHandler {
             deleteProgramStage(uid);
         } else if (type.equals(ResourceModel.Type.DELETED_PROGRAM_STAGE_DATA_ELEMENT)) {
             deleteProgramStageDataElement(uid);
+        } else if (type.equals(ResourceModel.Type.DELETED_PROGRAM_STAGE_SECTION)) {
+            deleteProgramStageSection(uid);
         }
+    }
+
+    private void deleteProgramStageSection(String uid) {
+        programStageSectionStore.delete(uid);
     }
 
     private void deleteProgramStageDataElement(String uid) {

@@ -84,6 +84,7 @@ import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -413,6 +414,13 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
+
+            response = syncDeletedObject(serverDate, RelationshipType.class.getSimpleName());
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
             response = syncDeletedObject(serverDate, Program.class.getSimpleName());
 
             if (!response.isSuccessful()) {

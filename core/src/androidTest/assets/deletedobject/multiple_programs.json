@@ -8744,11 +8744,11 @@
             "relationshipType": {
                 "lastUpdated": "2014-04-14T13:53:20.166",
                 "created": "2013-09-19T15:17:41.000",
-                "name": "Mother-Child",
-                "id": "V2kkHafqs8G",
-                "displayName": "Mother-Child",
-                "aIsToB": "Mother",
-                "bIsToA": "Child"
+                "name": "Mother-Child 2",
+                "id": "V2kkHafqs82",
+                "displayName": "Mother-Child2",
+                "aIsToB": "Mother2",
+                "bIsToA": "Child2"
             },
             "programRuleVariables": [
                 {

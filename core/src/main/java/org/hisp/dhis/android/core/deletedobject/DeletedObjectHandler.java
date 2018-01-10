@@ -24,6 +24,7 @@ import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
@@ -75,6 +76,8 @@ public class DeletedObjectHandler {
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     @NonNull
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    @NonNull
+    private final RelationshipTypeStore relationshipTypeStore;
 
 
 
@@ -100,7 +103,8 @@ public class DeletedObjectHandler {
             @NonNull ProgramStageDataElementStore programStageDataElementStore,
             @NonNull ProgramStageSectionStore programStageSectionStore,
             @NonNull ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
-            @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore) {
+            @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
+            @NonNull RelationshipTypeStore relationshipTypeStore) {
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.categoryStore = categoryStore;
@@ -123,6 +127,7 @@ public class DeletedObjectHandler {
         this.programStageSectionStore = programStageSectionStore;
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
+        this.relationshipTypeStore = relationshipTypeStore;
     }
 
     public void handle(String uid, ResourceModel.Type type) {
@@ -170,7 +175,13 @@ public class DeletedObjectHandler {
             deleteProgramTrackedEntityAttribute(uid);
         } else if (type.equals(ResourceModel.Type.DELETED_TRACKED_ENTITY_ATTRIBUTE)) {
             deleteTrackedEntityAttribute(uid);
+        } else if (type.equals(ResourceModel.Type.DELETED_RELATIONSHIP_TYPE)) {
+            deleteRelationshipType(uid);
         }
+    }
+
+    private void deleteRelationshipType(String uid) {
+        relationshipTypeStore.delete(uid);
     }
 
     private void deleteTrackedEntityAttribute(String uid) {

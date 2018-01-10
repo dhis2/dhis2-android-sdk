@@ -25,6 +25,7 @@ import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -150,6 +151,8 @@ public class DeletedObjectEndPointCall implements Call<Response<Payload<DeletedO
             return ResourceModel.Type.DELETED_PROGRAM_TRACKED_ENTITY_ATTRIBUTE;
         } else if (klass.equals(TrackedEntityAttribute.class.getSimpleName())) {
             return ResourceModel.Type.DELETED_TRACKED_ENTITY_ATTRIBUTE;
+        } else if (klass.equals(RelationshipType.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_RELATIONSHIP_TYPE;
         }
 
 

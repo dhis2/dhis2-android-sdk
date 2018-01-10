@@ -14,6 +14,7 @@ import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
+import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -52,6 +53,8 @@ public class DeletedObjectHandler {
     private final ProgramIndicatorStore programIndicatorStore;
     @NonNull
     private final ProgramRuleStore programRuleStore;
+    @NonNull
+    private final ProgramRuleActionStore programRuleActionStore;
 
 
 
@@ -70,7 +73,8 @@ public class DeletedObjectHandler {
             @NonNull DataElementStore dataElementStore,
             @NonNull OptionStore optionStore,
             @NonNull ProgramIndicatorStore programIndicatorStore,
-            @NonNull ProgramRuleStore programRuleStore) {
+            @NonNull ProgramRuleStore programRuleStore,
+            @NonNull ProgramRuleActionStore programRuleActionStore) {
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.categoryStore = categoryStore;
@@ -86,6 +90,7 @@ public class DeletedObjectHandler {
         this.optionStore = optionStore;
         this.programIndicatorStore = programIndicatorStore;
         this.programRuleStore = programRuleStore;
+        this.programRuleActionStore = programRuleActionStore;
     }
 
     public void handle(String uid, ResourceModel.Type type) {
@@ -119,7 +124,13 @@ public class DeletedObjectHandler {
             deleteProgramIndicator(uid);
         } else if (type.equals(ResourceModel.Type.DELETED_PROGRAM_RULE)) {
             deleteProgramRule(uid);
+        } else if (type.equals(ResourceModel.Type.DELETED_PROGRAM_RULE_ACTION)) {
+            deleteProgramRuleAction(uid);
         }
+    }
+
+    private void deleteProgramRuleAction(String uid) {
+        programRuleActionStore.delete(uid);
     }
 
     private void deleteProgramRule(String uid) {

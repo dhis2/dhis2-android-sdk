@@ -47,6 +47,8 @@ public class MockedCalls {
             "deletedobject/deleted_object_program_indicators.json";
     public static final String DELETED_OBJECT_PROGRAM_RULES =
             "deletedobject/deleted_object_program_rules.json";
+    public static final String DELETED_OBJECT_PROGRAM_RULE_ACTIONS =
+            "deletedobject/deleted_object_program_rule_actions.json";
 
 
     public static final String SYSTEM_INFO = "system_info.json";
@@ -89,6 +91,7 @@ public class MockedCalls {
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY,
@@ -102,6 +105,7 @@ public class MockedCalls {
             DELETED_OBJECT_EMPTY, CATEGORIES,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,

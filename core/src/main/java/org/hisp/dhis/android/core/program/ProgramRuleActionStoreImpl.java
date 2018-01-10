@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.program;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,6 +44,12 @@ import java.util.Date;
         "PMD.AvoidDuplicateLiterals"
 })
 public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
+
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            ProgramRuleActionModel.Columns.UID +
+            " FROM " + ProgramRuleActionModel.TABLE +
+            " WHERE "+ProgramRuleActionModel.Columns.UID+" =?;";
+
     private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramRuleActionModel.TABLE + " (" +
             ProgramRuleActionModel.Columns.UID + ", " +
             ProgramRuleActionModel.Columns.CODE + ", " +
@@ -204,5 +211,11 @@ public class ProgramRuleActionStoreImpl implements ProgramRuleActionStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(ProgramRuleActionModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String userUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, userUId);
+        return cursor.getCount()>0;
     }
 }

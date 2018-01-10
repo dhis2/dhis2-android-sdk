@@ -7,6 +7,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORY_OPTION_COMBO;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_DATA_ELEMENTS;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_OPTIONS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_PROGRAMS;
@@ -46,6 +47,7 @@ import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
+import org.hisp.dhis.android.core.option.OptionStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
@@ -71,6 +73,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_DATA_ELEMENTS,
             DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
             DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
+            DELETED_OBJECT_OPTIONS,
             DELETED_OBJECT_OPTION_SETS, EMPTY_OPTION_SETS};
     String[] metadataJsonWithDeletedCategoryComboOptionsObjects = new String[]{
             SYSTEM_INFO,
@@ -83,6 +86,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
             DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_OPTION_SETS, EMPTY_OPTION_SETS};
 
     public final static String[] commonMetadataWithMultipleObjectsJsonFiles = new String[]{
@@ -96,6 +100,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, MULTIPLE_PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, OPTION_SETS};
 
     private Dhis2MockServer dhis2MockServer;
@@ -195,6 +200,21 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfOptionSetIsPersisted("xjA5E9MimMU");
         verifyIfOptionSetIsDeleted("VQ2lai3OfVG");
         verifyIfOptionSetIsDeleted("R3mpvjqJ81H");
+    }
+
+    @Test
+    @MediumTest
+    public void delete_the_given_deleted_options() throws Exception {
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        d2.syncMetaData().call();
+        verifyIfOptionsIsPersisted("Yjte6foKMny");
+        verifyIfOptionsIsPersisted("wfkKVdPBzho");
+
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
+        d2.syncMetaData().call();
+        verifyIfOptionSetIsPersisted("xjA5E9MimMU");
+        verifyIfOptionsIsDeleted("Yjte6foKMny");
+        verifyIfOptionsIsDeleted("wfkKVdPBzho");
     }
 
     @Test
@@ -422,6 +442,23 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
 
     private void verifyIfDataElementIsDeleted(String uid) {
         DataElementStoreImpl store = new DataElementStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(uid);
+
+        assertThat(isPersisted, is(false));
+    }
+
+
+    private void verifyIfOptionsIsPersisted(String uid) {
+        OptionStoreImpl store = new OptionStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(uid);
+
+        assertThat(isPersisted, is(true));
+    }
+
+    private void verifyIfOptionsIsDeleted(String uid) {
+        OptionStoreImpl store = new OptionStoreImpl(databaseAdapter());
 
         Boolean isPersisted = store.exists(uid);
 

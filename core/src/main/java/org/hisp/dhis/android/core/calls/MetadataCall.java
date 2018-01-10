@@ -52,6 +52,7 @@ import org.hisp.dhis.android.core.deletedobject.DeletedObject;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectEndPointCall;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandler;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectService;
+import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
 import org.hisp.dhis.android.core.option.OptionSetService;
@@ -392,6 +393,11 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
+            response = syncDeletedObject(serverDate, Option.class.getSimpleName());
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
             response = syncDeletedObject(serverDate, OptionSet.class.getSimpleName());
 
             if (!response.isSuccessful()) {

@@ -383,7 +383,7 @@ public final class D2 {
         deletedObjectHandler = new DeletedObjectHandler(userStore, userCredentialsStore,
                 categoryStore, categoryComboStore, categoryOptionComboStore,
                 constantStore, programStore, organisationUnitStore, optionSetStore, trackedEntityStore,
-                categoryOptionStore, dataElementStore);
+                categoryOptionStore, dataElementStore, optionStore);
     }
 
     @NonNull

@@ -13,6 +13,7 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
@@ -124,6 +125,8 @@ try {
             return ResourceModel.Type.DELETED_CATEGORY_OPTION_COMBO;
         } else if (klass.equals(DataElement.class.getSimpleName())) {
             return ResourceModel.Type.DELETED_DATA_ELEMENT;
+        } else if (klass.equals(Option.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_OPTION;
         }
 
 

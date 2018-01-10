@@ -11,6 +11,7 @@ import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.constant.ConstantStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSetStore;
+import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -43,6 +44,8 @@ public class DeletedObjectHandler {
     private final CategoryOptionStore categoryOptionStore;
     @NonNull
     private final DataElementStore dataElementStore;
+    @NonNull
+    private final OptionStore optionStore;
 
 
 
@@ -58,7 +61,8 @@ public class DeletedObjectHandler {
             @NonNull OptionSetStore optionSetStore,
             @NonNull TrackedEntityStore trackedEntityStore,
             @NonNull CategoryOptionStore categoryOptionStore,
-            @NonNull DataElementStore dataElementStore) {
+            @NonNull DataElementStore dataElementStore,
+            @NonNull OptionStore optionStore) {
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.categoryStore = categoryStore;
@@ -71,6 +75,7 @@ public class DeletedObjectHandler {
         this.trackedEntityStore = trackedEntityStore;
         this.categoryOptionStore = categoryOptionStore;
         this.dataElementStore = dataElementStore;
+        this.optionStore = optionStore;
     }
 
     public void handle(String uid, ResourceModel.Type type) {
@@ -98,7 +103,13 @@ public class DeletedObjectHandler {
             deleteCategoryOptionCombo(uid);
         } else if (type.equals(ResourceModel.Type.DELETED_DATA_ELEMENT)) {
             deleteDataElement(uid);
+        } else if (type.equals(ResourceModel.Type.DELETED_OPTION)) {
+            deleteOption(uid);
         }
+    }
+
+    private void deleteOption(String uid) {
+        optionStore.delete(uid);
     }
 
     private void deleteDataElement(String uid) {

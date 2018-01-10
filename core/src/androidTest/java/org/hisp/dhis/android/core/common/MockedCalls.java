@@ -34,6 +34,9 @@ public class MockedCalls {
             "deletedobject/deleted_object_category_combo.json";
     public static final String DELETED_OBJECT_OPTION_SETS =
             "deletedobject/deleted_object_option_sets.json";
+    public static final String DELETED_OBJECT_OPTIONS =
+            "deletedobject/deleted_object_options.json";
+
     public static final String DELETED_OBJECT_PROGRAMS =
             "deletedobject/deleted_object_programs.json";
     public static final String DELETED_OBJECT_TRACKED_ENTITY =
@@ -82,6 +85,7 @@ public class MockedCalls {
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, OPTION_SETS};
 
     final static String[] adminCommonMetadataJsonFiles = new String[]{
@@ -95,6 +99,7 @@ public class MockedCalls {
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, OPTION_SETS};
 
     public static void givenAMetadataInDatabase(Dhis2MockServer dhis2MockServer)

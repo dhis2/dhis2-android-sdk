@@ -21,13 +21,7 @@
       "zeroIsSignificant": false,
       "url": "",
       "optionSetValue": true,
-      "dimensionItemType": "DATA_ELEMENT",
-      "optionSet": {
-        "id": "fUS7fy2HbaI"
-      },
-      "categoryCombo": {
-        "id": "p0KPaWEg3cf"
-      }
+      "dimensionItemType": "DATA_ELEMENT"
     }
   ]
 }

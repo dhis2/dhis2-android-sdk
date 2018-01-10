@@ -54,6 +54,7 @@ import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DESCRIPTI
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DISPLAY_DESCRIPTION;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DISPLAY_NAME;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DISPLAY_SHORT_NAME;
+import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.IS_DEFAULT;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.NAME;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.SHORT_NAME;
@@ -95,7 +96,8 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel
         return DataSet.create(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, PeriodType.Monthly,
                 CategoryCombo.create("cc_uid", CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED,
-                        new ArrayList<Category>(), new ArrayList<CategoryOptionCombo>(), DELETED),
+                        IS_DEFAULT,
+                        new ArrayList<Category>(), new ArrayList<CategoryOptionCombo>()),
                 false, 1, 10, 100, false,
                 0, false, false,
                 false, false, false,

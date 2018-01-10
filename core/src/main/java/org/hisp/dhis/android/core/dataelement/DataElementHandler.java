@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.GenericHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 
 public class DataElementHandler extends GenericHandlerImpl<DataElement, DataElementModel> {
@@ -50,7 +49,7 @@ public class DataElementHandler extends GenericHandlerImpl<DataElement, DataElem
     }
 
     public static DataElementHandler create(DatabaseAdapter databaseAdapter,
-                                            OptionSetHandler optionSetHandler) {
+                                            GenericHandler<OptionSet, OptionSetModel> optionSetHandler) {
         return new DataElementHandler(DataElementStore.create(databaseAdapter), optionSetHandler);
     }
 

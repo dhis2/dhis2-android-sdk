@@ -42,7 +42,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class DataSetShould extends BaseObjectShould implements ObjectShould {
 
     public DataSetShould() {
-        super("dataset/dataSet.json");
+        super("dataset/data_set.json");
     }
 
     @Override

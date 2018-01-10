@@ -59,7 +59,7 @@ public class OrganisationUnitShould {
     public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         InputStream jsonStream = this.getClass().getClassLoader()
-                .getResourceAsStream("organisationunit/organisationUnit.json");
+                .getResourceAsStream("organisationunit/organisation_unit.json");
 
         OrganisationUnit organisationUnit = objectMapper.readValue(jsonStream, OrganisationUnit.class);
 

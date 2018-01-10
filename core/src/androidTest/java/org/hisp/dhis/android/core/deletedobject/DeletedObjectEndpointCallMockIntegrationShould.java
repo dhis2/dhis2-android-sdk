@@ -5,9 +5,10 @@ import static junit.framework.Assert.assertTrue;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_CATEGORIES;
-import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_PROGRAMS;
-import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_TRACKED_ENTITIES;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_OPTION_SETS;
+import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_OPTION_SETS;
+import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_PROGRAMS;
+import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_TRACKED_ENTITIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.CATEGORY_COMBOS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORY_COMBO;
@@ -19,10 +20,11 @@ import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_TRACK
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.ALTERNATIVE_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_CATEGORIES;
+import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_CATEGORY_COMBOS;
+import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_ORGANISATION_UNITS;
 import static org.hisp.dhis.android.core.common.MockedCalls.MULTIPLE_ORGANISATION_UNITS;
+import static org.hisp.dhis.android.core.common.MockedCalls.MULTIPLE_PROGRAMS;
 import static org.hisp.dhis.android.core.common.MockedCalls.OPTION_SETS;
-import static org.hisp.dhis.android.core.common.MockedCalls.ORGANISATION_UNITS;
-import static org.hisp.dhis.android.core.common.MockedCalls.PROGRAMS;
 import static org.hisp.dhis.android.core.common.MockedCalls.SIMPLE_CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.SYSTEM_INFO;
 import static org.hisp.dhis.android.core.common.MockedCalls.TRACKED_ENTITIES;
@@ -54,28 +56,16 @@ import java.io.IOException;
 @RunWith(AndroidJUnit4.class)
 public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
-    String[] metadataJsonWithRemovedUser = new String[]{
+    String[] metadataJsonWithDeletedObjects = new String[]{
             SYSTEM_INFO,
             DELETED_OBJECT_USER, ALTERNATIVE_USER,
-            DELETED_OBJECT_ORGANISATION_UNITS, ORGANISATION_UNITS,
-            DELETED_OBJECT_CATEGORIES,
-            DELETED_OBJECT_EMPTY, AFTER_DELETE_EXPECTED_CATEGORIES,
-            DELETED_OBJECT_CATEGORY_COMBO, CATEGORY_COMBOS,
-            DELETED_OBJECT_PROGRAMS, AFTER_PROGRAMS,
-            DELETED_OBJECT_TRACKED_ENTITY, AFTER_TRACKED_ENTITIES,
-            DELETED_OBJECT_EMPTY, OPTION_SETS};
-
-    String[] metadataJsonWithRemovedCategoryOption = new String[]{
-            SYSTEM_INFO,
-            DELETED_OBJECT_USER, ALTERNATIVE_USER,
-            DELETED_OBJECT_ORGANISATION_UNITS, ORGANISATION_UNITS,
+            DELETED_OBJECT_ORGANISATION_UNITS, EMPTY_ORGANISATION_UNITS,
             DELETED_OBJECT_CATEGORIES,
             DELETED_OBJECT_CATEGORY_OPTIONS, EMPTY_CATEGORIES,
-            DELETED_OBJECT_CATEGORY_COMBO, CATEGORY_COMBOS,
-            DELETED_OBJECT_PROGRAMS, AFTER_PROGRAMS,
-            DELETED_OBJECT_TRACKED_ENTITY, AFTER_TRACKED_ENTITIES,
-            DELETED_OBJECT_EMPTY, OPTION_SETS};
-
+            DELETED_OBJECT_CATEGORY_COMBO, EMPTY_CATEGORY_COMBOS,
+            DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
+            DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
+            DELETED_OBJECT_OPTION_SETS, EMPTY_OPTION_SETS};
     public final static String[] commonMetadataWithMultipleObjectsJsonFiles = new String[]{
             SYSTEM_INFO,
             DELETED_OBJECT_EMPTY, ALTERNATIVE_USER,
@@ -83,7 +73,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, SIMPLE_CATEGORIES,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
-            DELETED_OBJECT_EMPTY, PROGRAMS,
+            DELETED_OBJECT_EMPTY, MULTIPLE_PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY, OPTION_SETS};
 
@@ -114,7 +104,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
         d2.syncMetaData().call();
 
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
 
         verifyIfUserIsDeleted("DXyJmlo9rge");
@@ -126,8 +116,10 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
                 commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
+        verifyIfOrganisationUnitIsPersisted("YuQRtpLP102");
+        verifyIfOrganisationUnitIsPersisted("YuQRtpLP10I");
 
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
 
         verifyIfOrganisationUnitIsPersisted("DiszpKrYNg8");
@@ -141,8 +133,10 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
                 commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
+        verifyIfCategoryIsPersisted("vGs6omsRekv");
+        verifyIfCategoryIsPersisted("cX5k9anHEHd");
 
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
 
         verifyIfCategoryIsPersisted("KfdsGBcoiCa");
@@ -155,8 +149,10 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     public void delete_the_given_deleted_categoryOptions() throws Exception {
         MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
         d2.syncMetaData().call();
+        verifyIfCategoryOptionIsPersisted("TXGfLxZlInA");
+        verifyIfCategoryOptionIsPersisted("uZUnebiT5DI");
 
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedCategoryOption);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
 
         verifyIfCategoryIsPersisted("KfdsGBcoiCa");
@@ -168,40 +164,46 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     @Test
     @MediumTest
     public void delete_the_given_deleted_option_sets() throws Exception {
-        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
+        verifyIfOptionSetIsPersisted("VQ2lai3OfVG");
+        verifyIfOptionSetIsPersisted("R3mpvjqJ81H");
 
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
         verifyIfOptionSetIsPersisted("xjA5E9MimMU");
-        verifyIfOptionSetIsDeleted("egT1YqFWsVk");
-        verifyIfOptionSetIsDeleted("WckXGsyYola");
+        verifyIfOptionSetIsDeleted("VQ2lai3OfVG");
+        verifyIfOptionSetIsDeleted("R3mpvjqJ81H");
     }
 
     @Test
     @MediumTest
     public void delete_the_given_deleted_category_combo() throws Exception {
-        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
-        d2.syncMetaData().call();
-
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
         verifyIfCategoryComboIsPersisted("p0KPaWEg3cf");
-        verifyIfCategoryComboIsDeleted("TXGfLxZlInA");
-        verifyIfCategoryComboIsDeleted("TNYQzTHdoxL");
+        verifyIfCategoryComboIsPersisted("m2jTvAj5kkm");
+
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
+        d2.syncMetaData().call();
+        verifyIfCategoryComboIsDeleted("p0KPaWEg3cf");
+        verifyIfCategoryComboIsDeleted("m2jTvAj5kkm");
     }
 
     @Test
     @MediumTest
     public void delete_the_given_deleted_programs() throws Exception {
-        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
+        //given
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
-
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
+        verifyIfProgramIsPersisted("q04UBOqq3rp");
+        verifyIfProgramIsPersisted("kla3mAPgvCH");
+        //when
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
-        verifyIfProgramIsPersisted("lxAQ7Zs9VYR");
-        verifyIfProgramIsDeleted("TXGfLxZlInA");
-        verifyIfProgramIsDeleted("TNYQzTHdoxL");
+        //then
+        verifyIfProgramIsDeleted("q04UBOqq3rp");
+        verifyIfProgramIsDeleted("kla3mAPgvCH");
     }
 
     @Test
@@ -209,21 +211,10 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     public void delete_the_given_deleted_tracked_entity() throws Exception {
         MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
         d2.syncMetaData().call();
+        verifyIfTrackedEntityIsPersisted("nEenWmSyUE2");
+        verifyIfTrackedEntityIsPersisted("nEenWmSyUE3");
 
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
-        d2.syncMetaData().call();
-        verifyIfTrackedEntityIsPersisted("nEenWmSyUEp");
-        verifyIfTrackedEntityIsDeleted("nEenWmSyUE2");
-        verifyIfTrackedEntityIsDeleted("nEenWmSyUE3");
-    }
-
-    @Test
-    @MediumTest
-    public void delete_the_given_deleted_constants() throws Exception {
-        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
-        d2.syncMetaData().call();
-
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithRemovedUser);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
         verifyIfTrackedEntityIsPersisted("nEenWmSyUEp");
         verifyIfTrackedEntityIsDeleted("nEenWmSyUE2");

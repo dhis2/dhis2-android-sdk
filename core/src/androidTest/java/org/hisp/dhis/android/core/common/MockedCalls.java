@@ -30,6 +30,8 @@ public class MockedCalls {
             "deletedobject/deleted_object_category_options.json";
     public static final String DELETED_OBJECT_CATEGORY_COMBO =
             "deletedobject/deleted_object_category_combo.json";
+    public static final String DELETED_OBJECT_OPTION_SETS =
+            "deletedobject/deleted_object_option_sets.json";
     public static final String DELETED_OBJECT_PROGRAMS =
             "deletedobject/deleted_object_programs.json";
     public static final String DELETED_OBJECT_TRACKED_ENTITY =
@@ -47,22 +49,20 @@ public class MockedCalls {
     public static final String CATEGORIES = "categories.json";
     public static final String CATEGORY_COMBOS = "category_combos.json";
     public static final String PROGRAMS = "programs.json";
+    public static final String MULTIPLE_PROGRAMS = "deletedobject/multiple_programs.json";
     public static final String TRACKED_ENTITIES = "tracked_entities.json";
     public static final String OPTION_SETS = "option_sets.json";
-
-    public static final String AFTER_DELETED_OPTION_SETS = "deletedobject/option_sets.json";
-    public static final String AFTER_PROGRAMS = "deletedobject/after_delete_programs.json";
-    public static final String AFTER_TRACKED_ENTITIES = "deletedobject/after_delete_tracked_entity.json";
-    public static final String AFTER_DELETE_EXPECTED_USER =
-            "deletedobject/expected_multi_users.json";
+    public static final String EMPTY_OPTION_SETS = "deletedobject/empty_option_sets.json";
+    public static final String EMPTY_PROGRAMS = "deletedobject/empty_programs.json";
+    public static final String EMPTY_TRACKED_ENTITIES = "deletedobject/empty_tracked_entity.json";
     public static final String AFTER_DELETE_EXPECTED_ORGANISATION_UNIT =
             "deletedobject/expected_not_deleted_organisationUnit.json";
-    public static final String AFTER_DELETE_EXPECTED_CATEGORIES =
-            "deletedobject/simple_categories_after_delete.json";
     public static final String EMPTY_CATEGORIES =
-            "deletedobject/empty_categories_after_delete.json";
-    public static final String MULTI_USERS_EXPECTED =
-            "deletedobject/expected_not_deleted_user.json";
+            "deletedobject/empty_categories.json";
+    public static final String EMPTY_CATEGORY_COMBOS =
+            "deletedobject/empty_category_combos.json";
+    public static final String EMPTY_ORGANISATION_UNITS =
+            "deletedobject/empty_organisation_units.json";
     public static final String NORMAL_USER =
             "deletedobject/expected_normal_user.json";
 

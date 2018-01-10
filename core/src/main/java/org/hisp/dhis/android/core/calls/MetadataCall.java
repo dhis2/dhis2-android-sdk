@@ -67,6 +67,7 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramCall;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
+import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
@@ -344,6 +345,12 @@ public class MetadataCall implements Call<Response> {
             }
 
             response = downloadCategoryCombos(serverDate);
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            response = syncDeletedObject(serverDate, ProgramRule.class.getSimpleName());
 
             if (!response.isSuccessful()) {
                 return response;

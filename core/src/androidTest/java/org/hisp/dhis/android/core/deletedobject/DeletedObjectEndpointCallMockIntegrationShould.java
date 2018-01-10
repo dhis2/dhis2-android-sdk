@@ -10,6 +10,7 @@ import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_DATA_
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_OPTIONS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_INDICATORS;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_RULES;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_PROGRAMS;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_TRACKED_ENTITIES;
@@ -51,6 +52,7 @@ import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.android.core.user.UserStoreImpl;
@@ -72,6 +74,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_CATEGORY_OPTIONS, EMPTY_CATEGORIES,
             DELETED_OBJECT_CATEGORY_COMBO,
             DELETED_OBJECT_EMPTY, EMPTY_CATEGORY_COMBOS,
+            DELETED_OBJECT_PROGRAM_RULES,
             DELETED_OBJECT_PROGRAM_INDICATORS,
             DELETED_OBJECT_DATA_ELEMENTS,
             DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
@@ -88,6 +91,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_CATEGORY_OPTION_COMBO, EMPTY_CATEGORY_COMBOS,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
             DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY,
@@ -101,6 +105,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_EMPTY, SIMPLE_CATEGORIES,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, MULTIPLE_PROGRAMS,
@@ -300,6 +305,20 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
 
     @Test
     @MediumTest
+    public void delete_the_given_program_rules() throws Exception {
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        d2.syncMetaData().call();
+        verifyIfProgramRuleIsPersisted("fd3wL1quxGb");
+        verifyIfProgramRuleIsPersisted("OfWLsxH5ylF");
+
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
+        d2.syncMetaData().call();
+        verifyIfProgramRuleIsDeleted("fd3wL1quxGb");
+        verifyIfProgramRuleIsDeleted("OfWLsxH5ylF");
+    }
+
+    @Test
+    @MediumTest
     public void delete_the_given_deleted_tracked_entity() throws Exception {
         MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
         d2.syncMetaData().call();
@@ -311,6 +330,23 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfTrackedEntityIsPersisted("nEenWmSyUEp");
         verifyIfTrackedEntityIsDeleted("nEenWmSyUE2");
         verifyIfTrackedEntityIsDeleted("nEenWmSyUE3");
+    }
+
+    private void verifyIfProgramRuleIsPersisted(String uid) {
+        ProgramRuleStoreImpl store = new ProgramRuleStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(uid);
+
+        assertThat(isPersisted, is(true));
+    }
+
+    private void verifyIfProgramRuleIsDeleted(String uid) {
+        ProgramRuleStoreImpl store = new ProgramRuleStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(uid);
+
+        assertThat(isPersisted, is(false));
+
     }
 
     private void verifyIfProgramIndicatorIsPersisted(String uid) {

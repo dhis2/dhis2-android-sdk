@@ -26,48 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.common;
 
-import android.support.test.runner.AndroidJUnit4;
+import android.database.MatrixCursor;
 
-import org.hisp.dhis.android.core.common.LinkModelAbstractShould;
-import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel.Columns;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
-import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(AndroidJUnit4.class)
-public class DataSetDataElementLinkModelShould extends LinkModelAbstractShould<DataSetDataElementLinkModel> {
+public abstract class LinkModelAbstractShould<M extends BaseModel> {
 
-    public DataSetDataElementLinkModelShould() {
-        super(DataSetDataElementLinkModel.Columns.all(), 3, DataSetDataElementLinkModel.Factory);
+    protected final M model;
+    protected final String[] columns;
+    protected final int columnsLength;
+    protected final LinkModelFactory<M> linkModelFactory;
+
+    public LinkModelAbstractShould(String[] columns, int columnsLength, LinkModelFactory<M> linkModelFactory) {
+        this.model = buildModel();
+        this.columns = columns;
+        this.columnsLength = columnsLength;
+        this.linkModelFactory = linkModelFactory;
     }
 
-    @Override
-    protected DataSetDataElementLinkModel buildModel() {
-        return DataSetDataElementLinkModel.create(
-                "data_set_uid", "data_element_uid",
-                "category_combo_uid");
-    }
+    protected abstract M buildModel();
 
-    @Override
-    protected Object[] getModelAsObjectArray() {
-        return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
-                model.dataSet(), model.dataElement(), model.categoryCombo());
+    protected abstract Object[] getModelAsObjectArray();
+
+    @Test
+    public void create_model_from_cursor() {
+        MatrixCursor cursor = new MatrixCursor(ColumnsArrayUtils.getColumnsWithId(columns));
+        cursor.addRow(getModelAsObjectArray());
+        cursor.moveToFirst();
+
+        M modelFromDB = linkModelFactory.fromCursor(cursor);
+        cursor.close();
+
+        assertThat(modelFromDB).isEqualTo(model);
     }
 
     @Test
-    public void have_data_set_data_element_model_columns() {
-        List<String> columnsList = Arrays.asList(Columns.all());
-
-        assertThat(columnsList.contains(Columns.DATA_SET)).isEqualTo(true);
-        assertThat(columnsList.contains(Columns.DATA_ELEMENT)).isEqualTo(true);
-        assertThat(columnsList.contains(Columns.CATEGORY_COMBO)).isEqualTo(true);
+    public void have_correct_number_of_columns() {
+        assertThat(columns.length).isEqualTo(columnsLength);
     }
 }

@@ -37,6 +37,7 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.LinkModelFactory;
 import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -56,6 +57,14 @@ public abstract class DataSetDataElementLinkModel extends BaseModel implements S
                     DATA_SET, DATA_ELEMENT, CATEGORY_COMBO);
         }
     }
+
+    public static LinkModelFactory<DataSetDataElementLinkModel> Factory
+            = new LinkModelFactory<DataSetDataElementLinkModel>() {
+        @Override
+        public DataSetDataElementLinkModel fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
 
     public static DataSetDataElementLinkModel create(Cursor cursor) {
         return AutoValue_DataSetDataElementLinkModel.createFromCursor(cursor);

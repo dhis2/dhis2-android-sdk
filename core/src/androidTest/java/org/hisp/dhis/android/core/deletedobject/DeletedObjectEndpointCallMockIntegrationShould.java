@@ -6,6 +6,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORY_OPTION_COMBO;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_DATA_ELEMENTS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_PROGRAMS;
@@ -43,6 +44,7 @@ import org.hisp.dhis.android.core.common.MockedCalls;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
@@ -66,6 +68,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_CATEGORY_OPTIONS, EMPTY_CATEGORIES,
             DELETED_OBJECT_CATEGORY_COMBO,
             DELETED_OBJECT_EMPTY, EMPTY_CATEGORY_COMBOS,
+            DELETED_OBJECT_DATA_ELEMENTS,
             DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
             DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
             DELETED_OBJECT_OPTION_SETS, EMPTY_OPTION_SETS};
@@ -77,6 +80,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_EMPTY, EMPTY_CATEGORIES,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_CATEGORY_OPTION_COMBO, EMPTY_CATEGORY_COMBOS,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
             DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
             DELETED_OBJECT_OPTION_SETS, EMPTY_OPTION_SETS};
@@ -89,6 +93,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_EMPTY, SIMPLE_CATEGORIES,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, MULTIPLE_PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY, OPTION_SETS};
@@ -218,6 +223,23 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         d2.syncMetaData().call();
         verifyIfCategoryOptionComboIsDeleted("bRowv6yZOF2");
         verifyIfCategoryOptionComboIsDeleted("Gmbgme7z9BF");
+    }
+
+
+    @Test
+    @MediumTest
+    public void delete_the_given_deleted_data_element() throws Exception {
+        //given
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        d2.syncMetaData().call();
+        //when
+        verifyIfDataElementIsPersisted("Ok9OQpitjQr");
+        verifyIfDataElementIsPersisted("sWoqcoByYmD");
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
+        d2.syncMetaData().call();
+        //then
+        verifyIfDataElementIsDeleted("Ok9OQpitjQr");
+        verifyIfDataElementIsDeleted("sWoqcoByYmD");
     }
 
 
@@ -388,5 +410,21 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         Boolean isPersisted = store.exists(uid);
 
         assertThat(isPersisted, is(true));
+    }
+
+    private void verifyIfDataElementIsPersisted(String uid) {
+        DataElementStoreImpl store = new DataElementStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(uid);
+
+        assertThat(isPersisted, is(true));
+    }
+
+    private void verifyIfDataElementIsDeleted(String uid) {
+        DataElementStoreImpl store = new DataElementStoreImpl(databaseAdapter());
+
+        Boolean isPersisted = store.exists(uid);
+
+        assertThat(isPersisted, is(false));
     }
 }

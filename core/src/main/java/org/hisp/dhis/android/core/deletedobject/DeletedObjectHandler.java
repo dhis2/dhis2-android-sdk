@@ -9,6 +9,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.constant.ConstantStore;
+import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
@@ -40,6 +41,8 @@ public class DeletedObjectHandler {
     private final TrackedEntityStore trackedEntityStore;
     @NonNull
     private final CategoryOptionStore categoryOptionStore;
+    @NonNull
+    private final DataElementStore dataElementStore;
 
 
 
@@ -54,7 +57,8 @@ public class DeletedObjectHandler {
             @NonNull OrganisationUnitStore organisationUnitStore,
             @NonNull OptionSetStore optionSetStore,
             @NonNull TrackedEntityStore trackedEntityStore,
-            @NonNull CategoryOptionStore categoryOptionStore) {
+            @NonNull CategoryOptionStore categoryOptionStore,
+            @NonNull DataElementStore dataElementStore) {
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.categoryStore = categoryStore;
@@ -66,6 +70,7 @@ public class DeletedObjectHandler {
         this.optionSetStore = optionSetStore;
         this.trackedEntityStore = trackedEntityStore;
         this.categoryOptionStore = categoryOptionStore;
+        this.dataElementStore = dataElementStore;
     }
 
     public void handle(String uid, ResourceModel.Type type) {
@@ -91,7 +96,13 @@ public class DeletedObjectHandler {
             deleteCategoryOption(uid);
         } else if (type.equals(ResourceModel.Type.DELETED_CATEGORY_OPTION_COMBO)) {
             deleteCategoryOptionCombo(uid);
+        } else if (type.equals(ResourceModel.Type.DELETED_DATA_ELEMENT)) {
+            deleteDataElement(uid);
         }
+    }
+
+    private void deleteDataElement(String uid) {
+        dataElementStore.delete(uid);
     }
 
     private void deleteOrganisationUnit(String uid) {

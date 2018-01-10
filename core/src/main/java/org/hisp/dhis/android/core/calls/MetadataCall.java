@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.constant.ConstantStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.deletedobject.DeletedObject;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectEndPointCall;
@@ -341,6 +342,11 @@ public class MetadataCall implements Call<Response> {
             }
 
             response = downloadCategoryCombos(serverDate);
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+            response = syncDeletedObject(serverDate, DataElement.class.getSimpleName());
 
             if (!response.isSuccessful()) {
                 return response;

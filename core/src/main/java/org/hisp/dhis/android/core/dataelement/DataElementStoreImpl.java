@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataelement;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,6 +45,12 @@ import java.util.Date;
         "PMD.AvoidDuplicateLiterals"
 })
 public class DataElementStoreImpl implements DataElementStore {
+
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            DataElementModel.Columns.UID +
+            " FROM " + DataElementModel.TABLE +
+            " WHERE "+DataElementModel.Columns.UID+" =?;";
+
     private static final String INSERT_STATEMENT = "INSERT INTO " + DataElementModel.TABLE + " (" +
             DataElementModel.Columns.UID + ", " +
             DataElementModel.Columns.CODE + ", " +
@@ -201,5 +208,11 @@ public class DataElementStoreImpl implements DataElementStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(DataElementModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String userUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, userUId);
+        return cursor.getCount()>0;
     }
 }

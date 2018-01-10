@@ -191,8 +191,6 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("option_sets.json");
         dhis2MockServer.enqueueMockResponse("data_sets.json");
         dhis2MockServer.enqueueMockResponse("data_elements.json");
-        dhis2MockServer.enqueueMockResponse("data_sets.json");
-        dhis2MockServer.enqueueMockResponse("data_elements.json");
         d2.syncMetaData().call();
     }
 

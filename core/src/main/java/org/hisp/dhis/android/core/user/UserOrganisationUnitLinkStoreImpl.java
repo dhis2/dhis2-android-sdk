@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.user;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
@@ -40,6 +41,12 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
         "PMD.AvoidDuplicateLiterals"
 })
 public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLinkStore {
+
+    private static final String EXIST_BY_ID_STATEMENT = "SELECT " +
+            UserOrganisationUnitLinkModel.Columns.ID +
+            " FROM " + UserOrganisationUnitLinkModel.TABLE +
+            " WHERE "+UserOrganisationUnitLinkModel.Columns.ID+" =?;";
+
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             UserOrganisationUnitLinkModel.TABLE + " (" +
             UserOrganisationUnitLinkModel.Columns.USER + ", " +
@@ -131,6 +138,12 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
     @Override
     public int delete() {
         return databaseAdapter.delete(UserOrganisationUnitLinkModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String id) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, id);
+        return cursor.getCount()>0;
     }
 
 }

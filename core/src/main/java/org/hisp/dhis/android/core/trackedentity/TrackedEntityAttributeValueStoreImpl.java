@@ -53,6 +53,11 @@ import java.util.Map;
 })
 public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttributeValueStore {
 
+    private static final String EXIST_BY_ID_STATEMENT = "SELECT " +
+            TrackedEntityAttributeValueModel.Columns.ID +
+            " FROM " + TrackedEntityAttributeValueModel.TABLE +
+            " WHERE "+TrackedEntityAttributeValueModel.Columns.ID+" =?;";
+
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityAttributeValueModel.TABLE + " (" +
             TrackedEntityAttributeValueModel.Columns.VALUE + ", " +
@@ -256,4 +261,11 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
     public int delete() {
         return databaseAdapter.delete(TrackedEntityAttributeValueModel.TABLE);
     }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, uId);
+        return cursor.getCount()>0;
+    }
+
 }

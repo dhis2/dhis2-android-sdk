@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.relationship;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,6 +44,12 @@ import java.util.Date;
         "PMD.AvoidDuplicateLiterals"
 })
 public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
+
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            RelationshipTypeModel.Columns.UID +
+            " FROM " + RelationshipTypeModel.TABLE +
+            " WHERE "+RelationshipTypeModel.Columns.UID+" =?;";
+
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             RelationshipTypeModel.TABLE + " (" +
             RelationshipTypeModel.Columns.UID + ", " +
@@ -157,5 +164,11 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(RelationshipTypeModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount()>0;
     }
 }

@@ -51,6 +51,4 @@ public interface OptionSetStore extends DeletableStore {
     int delete(
             @NonNull String uid
     );
-
-    boolean exists(String optionSetUid);
 }

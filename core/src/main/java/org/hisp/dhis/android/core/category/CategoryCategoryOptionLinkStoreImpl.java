@@ -4,6 +4,7 @@ package org.hisp.dhis.android.core.category;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
@@ -11,6 +12,12 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 
 public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOptionLinkStore {
+
+
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            CategoryCategoryOptionLinkModel.Columns.UID +
+            " FROM " + CategoryCategoryOptionLinkModel.TABLE +
+            " WHERE "+CategoryCategoryOptionLinkModel.Columns.UID+" =?;";
 
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
@@ -58,5 +65,12 @@ public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOpti
     public int delete() {
         return databaseAdapter.delete(CategoryCategoryOptionLinkModel.TABLE);
     }
+
+    @Override
+    public Boolean exists(String userUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, userUId);
+        return cursor.getCount()>0;
+    }
+
 }
 

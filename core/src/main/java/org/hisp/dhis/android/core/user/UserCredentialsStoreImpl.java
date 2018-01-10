@@ -46,6 +46,11 @@ import java.util.List;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserCredentialsStoreImpl implements UserCredentialsStore {
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            UserCredentialsModel.Columns.UID +
+            " FROM " + UserCredentialsModel.TABLE +
+            " WHERE "+UserCredentialsModel.Columns.UID+" =?;";
+
     private static final String FIELDS =
             "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.UID + ","
                     + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.CODE + ","
@@ -199,5 +204,11 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
         UserCredentials userCredentials = UserCredentials.create(uid,code, name, displayName,
                 created, lastUpdated, username, null, false);
         return userCredentials;
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount()>0;
     }
 }

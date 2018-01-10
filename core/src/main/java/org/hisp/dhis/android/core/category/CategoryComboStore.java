@@ -16,6 +16,4 @@ public interface CategoryComboStore extends DeletableStore {
     boolean delete(@NonNull String uid);
 
     List<CategoryCombo> queryAll();
-
-    Boolean exists(String categoryComboUId);
 }

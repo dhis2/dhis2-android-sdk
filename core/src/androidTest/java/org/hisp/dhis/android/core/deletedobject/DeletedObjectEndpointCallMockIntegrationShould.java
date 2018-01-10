@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.MockedCalls;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
@@ -55,6 +56,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramRuleStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.android.core.user.UserStoreImpl;
@@ -142,122 +144,164 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     @Test
     @MediumTest
     public void delete_the_given_deleted_user() throws Exception {
+        UserStoreImpl userStore = new UserStoreImpl(databaseAdapter());
         MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
         d2.syncMetaData().call();
+        verifyIfIsPersisted("DXyJmlo9rge", userStore);
 
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
 
-        verifyIfUserIsDeleted("DXyJmlo9rge");
+        verifyIfIsDeleted("DXyJmlo9rge", userStore);
     }
 
     @Test
     @MediumTest
     public void delete_the_given_deleted_organisation_unit() throws Exception {
+        OrganisationUnitStoreImpl organisationUnitStore = new OrganisationUnitStoreImpl(
+                databaseAdapter());
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
                 commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
-        verifyIfOrganisationUnitIsPersisted("YuQRtpLP102");
-        verifyIfOrganisationUnitIsPersisted("YuQRtpLP10I");
+        verifyIfIsPersisted("YuQRtpLP102", organisationUnitStore);
+        verifyIfIsPersisted("YuQRtpLP10I", organisationUnitStore);
 
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
 
-        verifyIfOrganisationUnitIsPersisted("DiszpKrYNg8");
-        verifyIfOrganisationUnitIsDeleted("YuQRtpLP102");
-        verifyIfOrganisationUnitIsDeleted("YuQRtpLP10I");
+        verifyIfIsPersisted("DiszpKrYNg8", organisationUnitStore);
+        verifyIfIsDeleted("YuQRtpLP102", organisationUnitStore);
+        verifyIfIsDeleted("YuQRtpLP10I", organisationUnitStore);
     }
 
     @Test
     @MediumTest
     public void delete_the_given_deleted_categories() throws Exception {
+        CategoryStoreImpl categoryStore = new CategoryStoreImpl(databaseAdapter());
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
                 commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
-        verifyIfCategoryIsPersisted("vGs6omsRekv");
-        verifyIfCategoryIsPersisted("cX5k9anHEHd");
+        verifyIfIsPersisted("vGs6omsRekv", categoryStore);
+        verifyIfIsPersisted("cX5k9anHEHd", categoryStore);
 
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
 
-        verifyIfCategoryIsPersisted("KfdsGBcoiCa");
-        verifyIfCategoryIsDeleted("vGs6omsRekv");
-        verifyIfCategoryIsDeleted("cX5k9anHEHd");
+        verifyIfIsPersisted("KfdsGBcoiCa", categoryStore);
+
+        verifyIfIsDeleted("vGs6omsRekv", categoryStore);
+        verifyIfIsDeleted("cX5k9anHEHd", categoryStore);
     }
 
     @Test
     @MediumTest
     public void delete_the_given_deleted_categoryOptions() throws Exception {
+        //given
+        CategoryStoreImpl categoryStore = new CategoryStoreImpl(databaseAdapter());
+        CategoryOptionStoreImpl categoryOptionStore = new CategoryOptionStoreImpl(
+                databaseAdapter());
         MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
         d2.syncMetaData().call();
-        verifyIfCategoryOptionIsPersisted("TXGfLxZlInA");
-        verifyIfCategoryOptionIsPersisted("uZUnebiT5DI");
+        verifyIfIsPersisted("TXGfLxZlInA", categoryOptionStore);
+        verifyIfIsPersisted("uZUnebiT5DI", categoryOptionStore);
 
+        //when
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
 
-        verifyIfCategoryIsPersisted("KfdsGBcoiCa");
-        verifyIfCategoryOptionIsDeleted("TXGfLxZlInA");
-        verifyIfCategoryOptionIsDeleted("uZUnebiT5DI");
-        verifyIfCategoryOptionIsPersisted("TNYQzTHdoxL");
+        //then
+        verifyIfIsPersisted("KfdsGBcoiCa", categoryStore);
+        verifyIfIsPersisted("TNYQzTHdoxL", categoryOptionStore);
+
+        verifyIfIsDeleted("TXGfLxZlInA", categoryOptionStore);
+        verifyIfIsDeleted("uZUnebiT5DI", categoryOptionStore);
     }
 
     @Test
     @MediumTest
     public void delete_the_given_deleted_option_sets() throws Exception {
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        //given
+        OptionSetStoreImpl optionSetStore = new OptionSetStoreImpl(databaseAdapter());
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
-        verifyIfOptionSetIsPersisted("VQ2lai3OfVG");
-        verifyIfOptionSetIsPersisted("R3mpvjqJ81H");
+        verifyIfIsPersisted("VQ2lai3OfVG", optionSetStore);
+        verifyIfIsPersisted("R3mpvjqJ81H", optionSetStore);
 
+        //when
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
-        verifyIfOptionSetIsPersisted("xjA5E9MimMU");
-        verifyIfOptionSetIsDeleted("VQ2lai3OfVG");
-        verifyIfOptionSetIsDeleted("R3mpvjqJ81H");
+
+        //then
+        verifyIfIsPersisted("xjA5E9MimMU", optionSetStore);
+
+        verifyIfIsDeleted("VQ2lai3OfVG", optionSetStore);
+        verifyIfIsDeleted("R3mpvjqJ81H", optionSetStore);
     }
 
     @Test
     @MediumTest
     public void delete_the_given_deleted_options() throws Exception {
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        //given
+        OptionSetStoreImpl optionSetStore = new OptionSetStoreImpl(databaseAdapter());
+        OptionStoreImpl optionStore = new OptionStoreImpl(databaseAdapter());
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
-        verifyIfOptionsIsPersisted("Yjte6foKMny");
-        verifyIfOptionsIsPersisted("wfkKVdPBzho");
+        verifyIfIsPersisted("Yjte6foKMny", optionStore);
+        verifyIfIsPersisted("wfkKVdPBzho", optionStore);
 
+        //when
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
-        verifyIfOptionSetIsPersisted("xjA5E9MimMU");
-        verifyIfOptionsIsDeleted("Yjte6foKMny");
-        verifyIfOptionsIsDeleted("wfkKVdPBzho");
+
+        //then
+        verifyIfIsPersisted("xjA5E9MimMU", optionSetStore);
+
+        verifyIfIsDeleted("Yjte6foKMny", optionStore);
+        verifyIfIsDeleted("wfkKVdPBzho", optionStore);
     }
 
     @Test
     @MediumTest
     public void delete_the_given_deleted_category_combo() throws Exception {
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        //given
+        CategoryComboStoreImpl categoryComboStore = new CategoryComboStoreImpl(databaseAdapter());
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
-        verifyIfCategoryComboIsPersisted("p0KPaWEg3cf");
-        verifyIfCategoryComboIsPersisted("m2jTvAj5kkm");
+        verifyIfIsPersisted("p0KPaWEg3cf", categoryComboStore);
+        verifyIfIsPersisted("m2jTvAj5kkm", categoryComboStore);
 
+        //when
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
-        verifyIfCategoryComboIsDeleted("p0KPaWEg3cf");
-        verifyIfCategoryComboIsDeleted("m2jTvAj5kkm");
+
+        //then
+        verifyIfIsDeleted("p0KPaWEg3cf", categoryComboStore);
+        verifyIfIsDeleted("m2jTvAj5kkm", categoryComboStore);
     }
 
     @Test
     @MediumTest
     public void delete_the_given_deleted_category_option_combo() throws Exception {
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        //given
+        CategoryOptionComboStoreImpl categoryOptionComboStore = new CategoryOptionComboStoreImpl(
+                databaseAdapter());
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
-        verifyIfCategoryOptionComboIsPersisted("bRowv6yZOF2");
-        verifyIfCategoryOptionComboIsPersisted("Gmbgme7z9BF");
+        verifyIfIsPersisted("bRowv6yZOF2", categoryOptionComboStore);
+        verifyIfIsPersisted("Gmbgme7z9BF", categoryOptionComboStore);
 
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedCategoryComboOptionsObjects);
+        //when
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                metadataJsonWithDeletedCategoryComboOptionsObjects);
         d2.syncMetaData().call();
-        verifyIfCategoryOptionComboIsDeleted("bRowv6yZOF2");
-        verifyIfCategoryOptionComboIsDeleted("Gmbgme7z9BF");
+
+        //then
+        verifyIfIsDeleted("bRowv6yZOF2", categoryOptionComboStore);
+        verifyIfIsDeleted("Gmbgme7z9BF", categoryOptionComboStore);
     }
 
 
@@ -265,16 +309,20 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     @MediumTest
     public void delete_the_given_deleted_data_element() throws Exception {
         //given
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        DataElementStoreImpl dataElementStore = new DataElementStoreImpl(databaseAdapter());
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
+        verifyIfIsPersisted("Ok9OQpitjQr", dataElementStore);
+        verifyIfIsPersisted("sWoqcoByYmD", dataElementStore);
+
         //when
-        verifyIfDataElementIsPersisted("Ok9OQpitjQr");
-        verifyIfDataElementIsPersisted("sWoqcoByYmD");
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
+
         //then
-        verifyIfDataElementIsDeleted("Ok9OQpitjQr");
-        verifyIfDataElementIsDeleted("sWoqcoByYmD");
+        verifyIfIsDeleted("Ok9OQpitjQr", dataElementStore);
+        verifyIfIsDeleted("sWoqcoByYmD", dataElementStore);
     }
 
 
@@ -282,293 +330,111 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     @MediumTest
     public void delete_the_given_deleted_programs() throws Exception {
         //given
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        ProgramStoreImpl programStore = new ProgramStoreImpl(databaseAdapter());
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
-        verifyIfProgramIsPersisted("q04UBOqq3rp");
-        verifyIfProgramIsPersisted("kla3mAPgvCH");
+        verifyIfIsPersisted("q04UBOqq3rp", programStore);
+        verifyIfIsPersisted("kla3mAPgvCH", programStore);
+
         //when
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
+
         //then
-        verifyIfProgramIsDeleted("q04UBOqq3rp");
-        verifyIfProgramIsDeleted("kla3mAPgvCH");
+        verifyIfIsDeleted("q04UBOqq3rp", programStore);
+        verifyIfIsDeleted("kla3mAPgvCH", programStore);
     }
 
     @Test
     @MediumTest
     public void delete_the_given_program_indicators() throws Exception {
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        //given
+        ProgramIndicatorStoreImpl programIndicatorStore = new ProgramIndicatorStoreImpl(
+                databaseAdapter());
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
-        verifyIfProgramIndicatorIsPersisted("Kswd1r4qWLh");
-        verifyIfProgramIndicatorIsPersisted("hAHF3BEHGjM");
+        verifyIfIsPersisted("Kswd1r4qWLh", programIndicatorStore);
+        verifyIfIsPersisted("hAHF3BEHGjM", programIndicatorStore);
 
+        //when
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
-        verifyIfProgramIndicatorIsDeleted("Kswd1r4qWLh");
-        verifyIfProgramIndicatorIsDeleted("hAHF3BEHGjM");
+
+        //then
+        verifyIfIsDeleted("Kswd1r4qWLh", programIndicatorStore);
+        verifyIfIsDeleted("hAHF3BEHGjM", programIndicatorStore);
     }
 
     @Test
     @MediumTest
     public void delete_the_given_program_rules() throws Exception {
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        //given
+        ProgramRuleStoreImpl programRuleStore = new ProgramRuleStoreImpl(databaseAdapter());
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
-        verifyIfProgramRuleIsPersisted("fd3wL1quxGb");
-        verifyIfProgramRuleIsPersisted("OfWLsxH5ylF");
+        verifyIfIsPersisted("fd3wL1quxGb", programRuleStore);
+        verifyIfIsPersisted("OfWLsxH5ylF", programRuleStore);
 
+        //when
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
-        verifyIfProgramRuleIsDeleted("fd3wL1quxGb");
-        verifyIfProgramRuleIsDeleted("OfWLsxH5ylF");
+
+        //then
+        verifyIfIsDeleted("fd3wL1quxGb", programRuleStore);
+        verifyIfIsDeleted("OfWLsxH5ylF", programRuleStore);
     }
 
     @Test
     @MediumTest
     public void delete_the_given_program_rule_actions() throws Exception {
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        //given
+        ProgramRuleActionStoreImpl programRuleActionStore = new ProgramRuleActionStoreImpl(
+                databaseAdapter());
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
-        verifyIfProgramRuleActionIsPersisted("hLOEPUPseEv");
-        verifyIfProgramRuleActionIsPersisted("actonrw1065");
+        verifyIfIsPersisted("hLOEPUPseEv", programRuleActionStore);
+        verifyIfIsPersisted("actonrw1065", programRuleActionStore);
 
+        //when
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
-        verifyIfProgramRuleActionIsDeleted("hLOEPUPseEv");
-        verifyIfProgramRuleActionIsDeleted("actonrw1065");
+
+        //then
+        verifyIfIsDeleted("hLOEPUPseEv", programRuleActionStore);
+        verifyIfIsDeleted("actonrw1065", programRuleActionStore);
     }
 
     @Test
     @MediumTest
     public void delete_the_given_deleted_tracked_entity() throws Exception {
+        //given
+        TrackedEntityStoreImpl trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter());
         MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
         d2.syncMetaData().call();
-        verifyIfTrackedEntityIsPersisted("nEenWmSyUE2");
-        verifyIfTrackedEntityIsPersisted("nEenWmSyUE3");
+        verifyIfIsPersisted("nEenWmSyUE2", trackedEntityStore);
+        verifyIfIsPersisted("nEenWmSyUE3", trackedEntityStore);
 
+        //when
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
-        verifyIfTrackedEntityIsPersisted("nEenWmSyUEp");
-        verifyIfTrackedEntityIsDeleted("nEenWmSyUE2");
-        verifyIfTrackedEntityIsDeleted("nEenWmSyUE3");
+
+        //then
+        verifyIfIsPersisted("nEenWmSyUEp", trackedEntityStore);
+        verifyIfIsDeleted("nEenWmSyUE2", trackedEntityStore);
+        verifyIfIsDeleted("nEenWmSyUE3", trackedEntityStore);
     }
 
-    private void verifyIfProgramRuleIsPersisted(String uid) {
-        ProgramRuleStoreImpl store = new ProgramRuleStoreImpl(databaseAdapter());
-
+    private void verifyIfIsPersisted(String uid, DeletableStore store) {
         Boolean isPersisted = store.exists(uid);
-
         assertThat(isPersisted, is(true));
     }
 
-    private void verifyIfProgramRuleIsDeleted(String uid) {
-        ProgramRuleStoreImpl store = new ProgramRuleStoreImpl(databaseAdapter());
-
+    private void verifyIfIsDeleted(String uid, DeletableStore store) {
         Boolean isPersisted = store.exists(uid);
-
-        assertThat(isPersisted, is(false));
-
-    }
-
-    private void verifyIfProgramIndicatorIsPersisted(String uid) {
-        ProgramIndicatorStoreImpl store = new ProgramIndicatorStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(uid);
-
-        assertThat(isPersisted, is(true));
-    }
-
-    private void verifyIfProgramIndicatorIsDeleted(String uid) {
-        ProgramIndicatorStoreImpl store = new ProgramIndicatorStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(uid);
-
-        assertThat(isPersisted, is(false));
-    }
-
-
-    private void verifyIfCategoryOptionIsPersisted(String categoryOptionUid) {
-        CategoryOptionStoreImpl store = new CategoryOptionStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(categoryOptionUid);
-
-        assertThat(isPersisted, is(true));
-
-    }
-
-    private void verifyIfCategoryOptionIsDeleted(String categoryOptionUid) {
-        CategoryOptionStoreImpl store = new CategoryOptionStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(categoryOptionUid);
-
-        assertThat(isPersisted, is(false));
-    }
-
-    private void verifyIfTrackedEntityIsPersisted(String trackedEntityUId) {
-        TrackedEntityStoreImpl store = new TrackedEntityStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(trackedEntityUId);
-
-        assertThat(isPersisted, is(true));
-    }
-
-    private void verifyIfTrackedEntityIsDeleted(String trackedEntityUId) {
-        TrackedEntityStoreImpl store = new TrackedEntityStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(trackedEntityUId);
-
-        assertThat(isPersisted, is(false));
-    }
-
-    private void verifyIfProgramIsPersisted(String programUId) {
-        ProgramStoreImpl store = new ProgramStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(programUId);
-
-        assertThat(isPersisted, is(true));
-    }
-
-    private void verifyIfProgramIsDeleted(String programUId) {
-        ProgramStoreImpl store = new ProgramStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(programUId);
-
-        assertThat(isPersisted, is(false));
-    }
-
-    private void verifyIfCategoryComboIsPersisted(String categoryComboUId) {
-        CategoryComboStoreImpl store = new CategoryComboStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(categoryComboUId);
-
-        assertThat(isPersisted, is(true));
-    }
-
-    private void verifyIfCategoryComboIsDeleted(String categoryComboUId) {
-        CategoryComboStoreImpl store = new CategoryComboStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(categoryComboUId);
-
-        assertThat(isPersisted, is(false));
-    }
-
-    private void verifyIfCategoryIsPersisted(String categoryUId) {
-        CategoryStoreImpl store = new CategoryStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(categoryUId);
-
-        assertThat(isPersisted, is(true));
-    }
-
-    private void verifyIfCategoryIsDeleted(String categoryUId) {
-        CategoryStoreImpl store = new CategoryStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(categoryUId);
-
-        assertThat(isPersisted, is(false));
-    }
-
-    private void verifyIfOrganisationUnitIsDeleted(String organisationUnitUId) {
-        OrganisationUnitStoreImpl store = new OrganisationUnitStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(organisationUnitUId);
-
-        assertThat(isPersisted, is(false));
-    }
-
-    private void verifyIfOrganisationUnitIsPersisted(String organisationUnitUid) {
-        OrganisationUnitStoreImpl store = new OrganisationUnitStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(organisationUnitUid);
-
-        assertThat(isPersisted, is(true));
-    }
-
-
-    private void verifyIfUserIsDeleted(String userUId) {
-        UserStoreImpl store = new UserStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(userUId);
-
-        assertThat(isPersisted, is(false));
-    }
-
-    private void verifyIfOptionSetIsDeleted(String optionSetUid) {
-        OptionSetStoreImpl store = new OptionSetStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(optionSetUid);
-
-        assertThat(isPersisted, is(false));
-    }
-
-    private void verifyIfOptionSetIsPersisted(String optionSetUid) {
-        OptionSetStoreImpl store = new OptionSetStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(optionSetUid);
-
-        assertThat(isPersisted, is(true));
-    }
-
-    private void verifyIfCategoryOptionComboIsDeleted(String uid) {
-        CategoryOptionComboStoreImpl store = new CategoryOptionComboStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(uid);
-
-        assertThat(isPersisted, is(false));
-    }
-
-    private void verifyIfCategoryOptionComboIsPersisted(String uid) {
-        CategoryOptionComboStoreImpl store = new CategoryOptionComboStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(uid);
-
-        assertThat(isPersisted, is(true));
-    }
-
-    private void verifyIfDataElementIsPersisted(String uid) {
-        DataElementStoreImpl store = new DataElementStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(uid);
-
-        assertThat(isPersisted, is(true));
-    }
-
-    private void verifyIfDataElementIsDeleted(String uid) {
-        DataElementStoreImpl store = new DataElementStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(uid);
-
-        assertThat(isPersisted, is(false));
-    }
-
-
-    private void verifyIfOptionsIsPersisted(String uid) {
-        OptionStoreImpl store = new OptionStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(uid);
-
-        assertThat(isPersisted, is(true));
-    }
-
-    private void verifyIfOptionsIsDeleted(String uid) {
-        OptionStoreImpl store = new OptionStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(uid);
-
-        assertThat(isPersisted, is(false));
-    }
-
-    private void verifyIfProgramRuleActionIsPersisted(String uid) {
-        ProgramRuleActionStoreImpl store = new ProgramRuleActionStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(uid);
-
-        assertThat(isPersisted, is(true));
-    }
-
-    private void verifyIfProgramRuleActionIsDeleted(String uid) {
-        ProgramRuleActionStoreImpl store = new ProgramRuleActionStoreImpl(databaseAdapter());
-
-        Boolean isPersisted = store.exists(uid);
-
         assertThat(isPersisted, is(false));
     }
 }

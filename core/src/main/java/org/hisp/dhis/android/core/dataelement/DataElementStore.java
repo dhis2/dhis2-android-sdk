@@ -69,6 +69,4 @@ public interface DataElementStore extends DeletableStore {
             @Nullable String optionSet,
             @Nullable String categoryCombo, @NonNull String whereDataElementUid
     );
-
-    Boolean exists(String uid);
 }

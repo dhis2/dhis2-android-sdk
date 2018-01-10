@@ -42,6 +42,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
+
+    private static final String EXIST_BY_ID_STATEMENT = "SELECT " +
+            AuthenticatedUserModel.Columns.ID +
+            " FROM " + AuthenticatedUserModel.TABLE +
+            " WHERE "+AuthenticatedUserModel.Columns.ID+" =?;";
+
     private static final String[] PROJECTION = new String[]{
             AuthenticatedUserModel.Columns.ID,
             AuthenticatedUserModel.Columns.USER,
@@ -104,6 +110,12 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(AuthenticatedUserModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String id) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, id);
+        return cursor.getCount()>0;
     }
 
 }

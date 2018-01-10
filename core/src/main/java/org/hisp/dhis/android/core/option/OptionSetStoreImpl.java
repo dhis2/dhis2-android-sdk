@@ -131,12 +131,6 @@ public class OptionSetStoreImpl implements OptionSetStore {
         return delete;
     }
 
-    @Override
-    public boolean exists(String optionSetUid) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, optionSetUid);
-        return cursor.getCount()>0;
-    }
-
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @NonNull String code,
                                @NonNull String name, @NonNull String displayName, @NonNull Date created,
                                @NonNull Date lastUpdated, @NonNull Integer version, @NonNull ValueType valueType) {
@@ -153,5 +147,11 @@ public class OptionSetStoreImpl implements OptionSetStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(OptionSetModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount()>0;
     }
 }

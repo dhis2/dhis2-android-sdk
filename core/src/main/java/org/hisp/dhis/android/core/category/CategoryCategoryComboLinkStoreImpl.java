@@ -17,6 +17,12 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
 
+
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            CategoryCategoryComboLinkModel.Columns.UID +
+            " FROM " + CategoryCategoryComboLinkModel.TABLE +
+            " WHERE " + CategoryCategoryComboLinkModel.Columns.UID + " =?;";
+
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryCategoryComboLinkModel.TABLE + " (" +
                     CategoryCategoryComboLinkModel.Columns.CATEGORY + ", " +
@@ -24,8 +30,10 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
                     "VALUES(?, ?);";
 
     private static final String FIELDS =
-            CategoryCategoryComboLinkModel.TABLE + "." + CategoryCategoryComboLinkModel.Columns.CATEGORY + "," +
-                    CategoryCategoryComboLinkModel.TABLE + "." + CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO;
+            CategoryCategoryComboLinkModel.TABLE + "."
+                    + CategoryCategoryComboLinkModel.Columns.CATEGORY + "," +
+                    CategoryCategoryComboLinkModel.TABLE + "."
+                    + CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO;
 
     private static final String QUERY_ALL_CATEGORY_COMBO_LINKS = "SELECT " +
             FIELDS + " FROM " + CategoryCategoryComboLinkModel.TABLE;
@@ -51,7 +59,8 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
         isNull(link.combo());
     }
 
-    private void bind(SQLiteStatement sqLiteStatement, @NonNull CategoryCategoryComboLinkModel link) {
+    private void bind(SQLiteStatement sqLiteStatement,
+            @NonNull CategoryCategoryComboLinkModel link) {
         sqLiteBind(sqLiteStatement, 1, link.category());
         sqLiteBind(sqLiteStatement, 2, link.combo());
     }
@@ -72,7 +81,8 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
     }
 
     private List<CategoryCategoryComboLink> mapCategoryCategoryComboLinksFromCursor(Cursor cursor) {
-        List<CategoryCategoryComboLink> categoryCategoryComboLinks = new ArrayList<>(cursor.getCount());
+        List<CategoryCategoryComboLink> categoryCategoryComboLinks = new ArrayList<>(
+                cursor.getCount());
 
         try {
             if (cursor.getCount() > 0) {
@@ -108,5 +118,10 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
     public int delete() {
         return databaseAdapter.delete(CategoryCategoryComboLinkModel.TABLE);
     }
-}
 
+    @Override
+    public Boolean exists(String userUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, userUId);
+        return cursor.getCount() > 0;
+    }
+}

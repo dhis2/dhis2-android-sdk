@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.systeminfo;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
@@ -40,6 +41,12 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoModel.Columns;
 import java.util.Date;
 
 public class SystemInfoStoreImpl implements SystemInfoStore {
+
+    private static final String EXIST_BY_ID_STATEMENT = "SELECT " +
+            Columns.ID +
+            " FROM " + SystemInfoModel.TABLE +
+            " WHERE "+Columns.ID+" =?;";
+
     private static final String INSERT_STATEMENT = "INSERT INTO " + SystemInfoModel.TABLE + " (" +
             Columns.SERVER_DATE + ", " +
             Columns.DATE_FORMAT + ", " +
@@ -128,4 +135,11 @@ public class SystemInfoStoreImpl implements SystemInfoStore {
     public int delete() {
         return databaseAdapter.delete(SystemInfoModel.TABLE);
     }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, uId);
+        return cursor.getCount()>0;
+    }
+
 }

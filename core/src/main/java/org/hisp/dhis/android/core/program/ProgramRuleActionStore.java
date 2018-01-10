@@ -57,6 +57,4 @@ public interface ProgramRuleActionStore extends DeletableStore {
     );
 
     int delete(String uid);
-
-    Boolean exists(String uid);
 }

@@ -37,6 +37,12 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitProgramLinkStore {
+
+    private static final String EXIST_BY_ID_STATEMENT = "SELECT " +
+            OrganisationUnitProgramLinkModel.Columns.ID +
+            " FROM " + OrganisationUnitProgramLinkModel.TABLE +
+            " WHERE "+OrganisationUnitProgramLinkModel.Columns.ID+" =?;";
+
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             OrganisationUnitProgramLinkModel.TABLE + " (" +
             OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT + ", " +
@@ -93,5 +99,11 @@ public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitPro
     @Override
     public int delete() {
         return databaseAdapter.delete(OrganisationUnitProgramLinkModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, uId);
+        return cursor.getCount()>0;
     }
 }

@@ -41,6 +41,11 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class ConfigurationStoreImpl implements ConfigurationStore {
 
+    private static final String EXIST_BY_ID_STATEMENT = "SELECT " +
+            ConfigurationModel.Columns.ID +
+            " FROM configuration "+
+            " WHERE "+ConfigurationModel.Columns.ID+" =?;";
+
     private static final long CONFIGURATION_ID = 1L;
 
     public static final String INSERT_STATEMENT = "INSERT INTO " + ConfigurationModel.CONFIGURATION
@@ -105,5 +110,11 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(ConfigurationModel.CONFIGURATION, null, null);
+    }
+
+    @Override
+    public Boolean exists(String id) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, id);
+        return cursor.getCount()>0;
     }
 }

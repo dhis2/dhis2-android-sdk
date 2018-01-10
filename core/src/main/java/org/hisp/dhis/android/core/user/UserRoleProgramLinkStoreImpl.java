@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
@@ -37,6 +38,12 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
 
 public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
+
+    private static final String EXIST_BY_ID_STATEMENT = "SELECT " +
+            Columns.ID +
+            " FROM " + UserRoleProgramLinkModel.TABLE +
+            " WHERE "+Columns.ID+" =?;";
+
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserRoleProgramLinkModel.TABLE + " (" +
             Columns.USER_ROLE + ", " + Columns.PROGRAM + ") " +
             "VALUES (?, ?);";
@@ -106,5 +113,11 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(UserRoleProgramLinkModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String id) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, id);
+        return cursor.getCount()>0;
     }
 }

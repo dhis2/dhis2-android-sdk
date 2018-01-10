@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,6 +44,11 @@ import java.util.Date;
         "PMD.AvoidDuplicateLiterals"
 })
 public class UserRoleStoreImpl implements UserRoleStore {
+
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            Columns.UID +
+            " FROM " + UserRoleModel.TABLE +
+            " WHERE "+Columns.UID+" =?;";
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserRoleModel.TABLE + "( " +
             Columns.UID + ", " +
@@ -141,5 +147,11 @@ public class UserRoleStoreImpl implements UserRoleStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(UserRoleModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount()>0;
     }
 }

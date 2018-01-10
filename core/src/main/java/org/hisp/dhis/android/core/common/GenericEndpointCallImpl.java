@@ -48,8 +48,6 @@ public abstract class GenericEndpointCallImpl<P extends BaseIdentifiableObject>
     private Set<String> uids;
     private Integer limit;
 
-    private Response<Payload<P>> response;
-
     public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, ?> handler,
                                    ResourceModel.Type resourceType, Set<String> uids,
                                    Integer limit) {
@@ -69,11 +67,6 @@ public abstract class GenericEndpointCallImpl<P extends BaseIdentifiableObject>
 
     @Override
     public final Response<Payload<P>> call() throws Exception {
-        download();
-        return persist();
-    }
-
-    private Response<Payload<P>> download() throws Exception {
         synchronized (this) {
             if (isExecuted) {
                 throw new IllegalArgumentException("Already executed");
@@ -89,19 +82,18 @@ public abstract class GenericEndpointCallImpl<P extends BaseIdentifiableObject>
         }
 
         String lastUpdated = data.resourceHandler().getLastUpdated(resourceType);
-        response = getCall(uids, lastUpdated).execute();
+        Response<Payload<P>> response = getCall(uids, lastUpdated).execute();
 
-        if (response == null && !response.isSuccessful()) {
-            throw new RuntimeException("Call returned unsuccessful response: " + response);
-        } else {
-            return response;
+        if (isValidResponse(response)) {
+            persist(response);
         }
+        return response;
     }
 
     protected abstract retrofit2.Call<Payload<P>> getCall(Set<String> uids,
                                                           String lastUpdated) throws IOException;
 
-    private Response<Payload<P>> persist() {
+    private Response<Payload<P>> persist(Response<Payload<P>> response) {
         if (response == null) {
             throw new RuntimeException("Trying to process call without download data");
         }
@@ -119,5 +111,9 @@ public abstract class GenericEndpointCallImpl<P extends BaseIdentifiableObject>
             }
         }
         return response;
+    }
+
+    private boolean isValidResponse(Response<Payload<P>> response) {
+        return response.isSuccessful() && response.body().items() != null;
     }
 }

@@ -17,6 +17,7 @@ import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -127,6 +128,8 @@ try {
             return ResourceModel.Type.DELETED_DATA_ELEMENT;
         } else if (klass.equals(Option.class.getSimpleName())) {
             return ResourceModel.Type.DELETED_OPTION;
+        } else if (klass.equals(ProgramIndicator.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_PROGRAM_INDICATOR;
         }
 
 

@@ -65,6 +65,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramCall;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
@@ -347,6 +348,13 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
+
+            response = syncDeletedObject(serverDate, ProgramIndicator.class.getSimpleName());
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
             response = syncDeletedObject(serverDate, DataElement.class.getSimpleName());
 
             if (!response.isSuccessful()) {

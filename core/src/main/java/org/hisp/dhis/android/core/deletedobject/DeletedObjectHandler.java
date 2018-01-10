@@ -13,6 +13,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
@@ -46,6 +47,8 @@ public class DeletedObjectHandler {
     private final DataElementStore dataElementStore;
     @NonNull
     private final OptionStore optionStore;
+    @NonNull
+    private final ProgramIndicatorStore programIndicatorStore;
 
 
 
@@ -62,7 +65,8 @@ public class DeletedObjectHandler {
             @NonNull TrackedEntityStore trackedEntityStore,
             @NonNull CategoryOptionStore categoryOptionStore,
             @NonNull DataElementStore dataElementStore,
-            @NonNull OptionStore optionStore) {
+            @NonNull OptionStore optionStore,
+            @NonNull ProgramIndicatorStore programIndicatorStore) {
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.categoryStore = categoryStore;
@@ -76,6 +80,7 @@ public class DeletedObjectHandler {
         this.categoryOptionStore = categoryOptionStore;
         this.dataElementStore = dataElementStore;
         this.optionStore = optionStore;
+        this.programIndicatorStore = programIndicatorStore;
     }
 
     public void handle(String uid, ResourceModel.Type type) {
@@ -105,7 +110,13 @@ public class DeletedObjectHandler {
             deleteDataElement(uid);
         } else if (type.equals(ResourceModel.Type.DELETED_OPTION)) {
             deleteOption(uid);
+        } else if (type.equals(ResourceModel.Type.DELETED_PROGRAM_INDICATOR)) {
+            deleteProgramIndicator(uid);
         }
+    }
+
+    private void deleteProgramIndicator(String uid) {
+        programIndicatorStore.delete(uid);
     }
 
     private void deleteOption(String uid) {

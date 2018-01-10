@@ -73,7 +73,8 @@ public abstract class ResourceModel extends BaseModel {
         DELETED_CATEGORY_COMBO,
         DELETED_CATEGORY_OPTION_COMBO,
         DELETED_DATA_ELEMENT,
-        DELETED_OPTION
+        DELETED_OPTION,
+        DELETED_PROGRAM_INDICATOR
     }
 
     @Nullable

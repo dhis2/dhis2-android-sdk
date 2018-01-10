@@ -77,6 +77,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
+import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
@@ -497,7 +498,8 @@ public final class D2 {
                 programStageStore, relationshipStore, trackedEntityStore,
                 organisationUnitProgramLinkStore, categoryQuery,
                 categoryService, categoryHandler, categoryComboQuery, comboService,
-                categoryComboHandler, optionSetHandler, dataElementHandler, retrofit);
+                categoryComboHandler, optionSetHandler, dataElementHandler, DataSetParentCall.FACTORY,
+                retrofit);
     }
 
     @NonNull

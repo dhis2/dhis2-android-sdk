@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.TransactionalCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
@@ -34,7 +35,6 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementEndpointCall;
 import org.hisp.dhis.android.core.user.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Response;
@@ -68,8 +68,15 @@ public class DataSetParentCall extends TransactionalCall {
         return dataElementResponse;
     }
 
-    public static DataSetParentCall create(User user, GenericCallData data) {
-        return new DataSetParentCall(user, data,
-                DataSetParentLinkManager.create(data.databaseAdapter()));
+    public interface Factory {
+        public Call<Response> create(User user, GenericCallData data);
     }
+
+    public static Factory FACTORY = new Factory() {
+        @Override
+        public Call<Response> create(User user, GenericCallData data) {
+            return new DataSetParentCall(user, data,
+                    DataSetParentLinkManager.create(data.databaseAdapter()));
+        }
+    };
 }

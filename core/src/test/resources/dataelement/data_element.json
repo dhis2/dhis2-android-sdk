@@ -9,7 +9,6 @@
   "aggregationType": "AVERAGE",
   "domainType": "TRACKER",
   "displayName": "MCH ANC Visit",
-  "publicAccess": "rw------",
   "displayShortName": "ANC Visit",
   "externalAccess": false,
   "valueType": "TEXT",

@@ -143,6 +143,7 @@ public class MetadataCall implements Call<Response> {
     private final CategoryComboService categoryComboService;
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
+    private final DataSetParentCall.Factory dataSertParentCallFactory;
 
     private boolean isExecuted;
 
@@ -186,6 +187,7 @@ public class MetadataCall implements Call<Response> {
                         @NonNull CategoryComboHandler categoryComboHandler,
                         @NonNull GenericHandler<OptionSet, OptionSetModel> optionSetHandler,
                         @NonNull GenericHandler<DataElement, DataElementModel> dataElementHandler,
+                        @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
                         @NonNull Retrofit retrofit
                         ) {
         this.databaseAdapter = databaseAdapter;
@@ -226,6 +228,7 @@ public class MetadataCall implements Call<Response> {
         this.categoryComboHandler = categoryComboHandler;
         this.optionSetHandler = optionSetHandler;
         this.dataElementHandler = dataElementHandler;
+        this.dataSertParentCallFactory = dataSetParentCallFactory;
 
         this.retrofit = retrofit;
     }
@@ -328,7 +331,7 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
-            response = DataSetParentCall.create(user, data).call();
+            response = dataSertParentCallFactory.create(user, data).call();
             if (!response.isSuccessful()) {
                 return response;
             }

@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
+
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class RelationshipStoreImpl implements RelationshipStore {
 
@@ -69,4 +69,8 @@ public class RelationshipStoreImpl implements RelationshipStore {
         return ret;
     }
 
+    @Override
+    public int delete() {
+        return databaseAdapter.delete(RelationshipModel.TABLE);
+    }
 }

@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.configuration;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-public interface ConfigurationStore {
+import org.hisp.dhis.android.core.common.DeletableStore;
+
+public interface ConfigurationStore extends DeletableStore {
     long save(@NonNull String serverUrl);
 
     @Nullable

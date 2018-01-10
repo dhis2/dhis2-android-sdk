@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class RuleVariableValue {
-
     @Nullable
     public abstract String value();
 

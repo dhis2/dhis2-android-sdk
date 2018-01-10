@@ -31,9 +31,11 @@ package org.hisp.dhis.android.core.program;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
+
 import java.util.Date;
 
-public interface ProgramStore {
+public interface ProgramStore extends DeletableStore {
     long insert(
             @NonNull String uid,
             @Nullable String code,
@@ -63,9 +65,8 @@ public interface ProgramStore {
             @Nullable String relationshipType,
             @Nullable String relationshipText,
             @Nullable String relatedProgram,
-            @Nullable String trackedEntity
-            //TODO: add category combo when implemented.
-//            @NonNull CategoryCombo categoryCombo
+            @Nullable String trackedEntity,
+            @Nullable String categoryCombo
     );
 
     int update(
@@ -98,6 +99,7 @@ public interface ProgramStore {
             @Nullable String relationshipText,
             @Nullable String relatedProgram,
             @Nullable String trackedEntity,
+            @Nullable String categoryCombo,
             @NonNull String whereProgramUid);
 
     int delete(@NonNull String uid);

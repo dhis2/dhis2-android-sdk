@@ -1,0 +1,1150 @@
+{
+  "pager": {
+      "page": 1,
+      "pageCount": 1,
+      "total": 1,
+      "pageSize": 50
+  },
+  "programs": [
+      {
+          "lastUpdated": "2017-01-26T19:39:33.356",
+          "id": "IpHINAT79UW",
+          "created": "2013-03-04T11:41:07.494",
+          "name": "Child Programme",
+          "shortName": "Child Programme",
+          "displayName": "Child Programme",
+          "ignoreOverdueEvents": false,
+          "dataEntryMethod": false,
+          "displayShortName": "Child Programme",
+          "captureCoordinates": true,
+          "displayFrontPageList": false,
+          "enrollmentDateLabel": "Date of enrollment",
+          "onlyEnrollOnce": true,
+          "programType": "WITH_REGISTRATION",
+          "relationshipFromA": false,
+          "version": 5,
+          "selectIncidentDatesInFuture": false,
+          "incidentDateLabel": "Date of birth",
+          "displayIncidentDate": true,
+          "selectEnrollmentDatesInFuture": false,
+          "registration": true,
+          "useFirstStageDuringRegistration": true,
+          "trackedEntity": {
+              "id": "nEenWmSyUEp"
+          },
+          "categoryCombo": {
+              "id": "nM3u9s5a52V"
+          },
+          "programRuleVariables": [
+              {
+                  "created": "2015-08-07T18:41:55.152",
+                  "lastUpdated": "2015-08-07T18:41:55.153",
+                  "name": "apgarscore",
+                  "id": "g2GooOydipB",
+                  "displayName": "apgarscore",
+                  "programRuleVariableSourceType": "DATAELEMENT_NEWEST_EVENT_PROGRAM",
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  },
+                  "dataElement": {
+                      "id": "a3kGcGDCuk6"
+                  }
+              },
+              {
+                  "created": "2015-09-14T21:17:40.956",
+                  "lastUpdated": "2015-09-14T21:17:40.958",
+                  "name": "apgarcomment",
+                  "id": "aKpfPKSRQnv",
+                  "displayName": "apgarcomment",
+                  "programRuleVariableSourceType": "DATAELEMENT_NEWEST_EVENT_PROGRAM",
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  },
+                  "dataElement": {
+                      "id": "H6uSAMO5WLD"
+                  }
+              }
+          ],
+          "programTrackedEntityAttributes": [
+              {
+                  "created": "2017-01-26T19:39:33.347",
+                  "lastUpdated": "2017-01-26T19:39:33.347",
+                  "name": "Child Programme First name",
+                  "id": "l2T72XzBCLd",
+                  "shortName": "Child Programme First name",
+                  "displayName": "Child Programme First name",
+                  "mandatory": false,
+                  "displayShortName": "Child Programme First name",
+                  "displayInList": true,
+                  "valueType": "TEXT",
+                  "sortOrder": 99,
+                  "allowFutureDate": false,
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  },
+                  "trackedEntityAttribute": {
+                      "code": "MMD_PER_NAM",
+                      "created": "2014-06-06T20:41:25.233",
+                      "lastUpdated": "2015-10-20T13:57:00.939",
+                      "name": "First name",
+                      "id": "w75KJ2mc4zz",
+                      "shortName": "First name",
+                      "displayDescription": "First name",
+                      "programScope": false,
+                      "displayInListNoProgram": true,
+                      "displayName": "First name",
+                      "searchScope": "SEARCH_ORG_UNITS",
+                      "pattern": "",
+                      "description": "First name",
+                      "displayShortName": "First name",
+                      "sortOrderInListNoProgram": 1,
+                      "displayOnVisitSchedule": false,
+                      "generated": false,
+                      "inherit": false,
+                      "unique": false,
+                      "valueType": "TEXT",
+                      "orgunitScope": false
+                  }
+              },
+              {
+                  "created": "2017-01-26T19:39:33.350",
+                  "lastUpdated": "2017-01-26T19:39:33.350",
+                  "name": "Child Programme Last name",
+                  "id": "XmRd2ZDjWhF",
+                  "shortName": "Child Programme Last name",
+                  "displayName": "Child Programme Last name",
+                  "mandatory": false,
+                  "displayShortName": "Child Programme Last name",
+                  "displayInList": true,
+                  "valueType": "TEXT",
+                  "sortOrder": 99,
+                  "allowFutureDate": false,
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  },
+                  "trackedEntityAttribute": {
+                      "created": "2015-04-14T10:21:48.043",
+                      "lastUpdated": "2015-10-20T13:57:00.944",
+                      "name": "Last name",
+                      "id": "zDhUuAYrxNC",
+                      "shortName": "Last name",
+                      "displayDescription": "Last name",
+                      "programScope": false,
+                      "displayInListNoProgram": true,
+                      "displayName": "Last name",
+                      "searchScope": "SEARCH_ORG_UNITS",
+                      "pattern": "",
+                      "description": "Last name",
+                      "displayShortName": "Last name",
+                      "sortOrderInListNoProgram": 2,
+                      "displayOnVisitSchedule": false,
+                      "generated": false,
+                      "inherit": false,
+                      "unique": false,
+                      "valueType": "TEXT",
+                      "orgunitScope": false
+                  }
+              },
+              {
+                  "created": "2017-01-26T19:39:33.352",
+                  "lastUpdated": "2017-01-26T19:39:33.352",
+                  "name": "Child Programme Gender",
+                  "id": "pWEEfUJUjej",
+                  "shortName": "Child Programme Gender",
+                  "displayName": "Child Programme Gender",
+                  "mandatory": false,
+                  "displayShortName": "Child Programme Gender",
+                  "displayInList": false,
+                  "valueType": "TEXT",
+                  "sortOrder": 99,
+                  "allowFutureDate": false,
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  },
+                  "trackedEntityAttribute": {
+                      "created": "2014-01-09T19:12:46.526",
+                      "lastUpdated": "2015-10-20T13:57:01.028",
+                      "name": "Gender",
+                      "id": "cejWyOfXge6",
+                      "shortName": "Gender",
+                      "displayDescription": "Gender",
+                      "programScope": false,
+                      "displayInListNoProgram": false,
+                      "displayName": "Gender",
+                      "searchScope": "SEARCH_ORG_UNITS",
+                      "pattern": "",
+                      "description": "Gender",
+                      "displayShortName": "Gender",
+                      "sortOrderInListNoProgram": 0,
+                      "displayOnVisitSchedule": false,
+                      "generated": false,
+                      "inherit": false,
+                      "unique": false,
+                      "valueType": "TEXT",
+                      "orgunitScope": false
+                  }
+              }
+          ],
+          "programIndicators": [
+              {
+                  "created": "2015-10-20T11:26:19.631",
+                  "lastUpdated": "2015-10-20T11:26:19.631",
+                  "name": "Health immunization score",
+                  "id": "rXoaHGAXWy9",
+                  "shortName": "Health immunization score",
+                  "displayDescription": "Sum of BCG doses, measles doses and yellow fever doses. If Apgar score over or equal to 2, multiply by 2.",
+                  "expression": "(#{A03MvHHogjR.bx6fsa0t90x} +  #{A03MvHHogjR.FqlgKAG8HOu} + #{A03MvHHogjR.rxBfISxXS2U}) * d2:condition('#{A03MvHHogjR.a3kGcGDCuk6} >= 2',1,2)",
+                  "dimensionItem": "rXoaHGAXWy9",
+                  "displayName": "Health immunization score",
+                  "displayInForm": false,
+                  "description": "Sum of BCG doses, measles doses and yellow fever doses. If Apgar score over or equal to 2, multiply by 2.",
+                  "displayShortName": "Health immunization score",
+                  "decimals": 2,
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  }
+              },
+              {
+                  "created": "2015-09-14T20:25:55.543",
+                  "lastUpdated": "2015-12-13T12:50:25.642",
+                  "name": "Average weight",
+                  "id": "GxdhnY5wmHq",
+                  "shortName": "Average weight",
+                  "expression": "(#{A03MvHHogjR.UXz7xuGCEhU}+#{ZzYYXq4fJie.GQY2lXrypjO})/V{value_count}",
+                  "dimensionItem": "GxdhnY5wmHq",
+                  "displayName": "Average weight",
+                  "displayInForm": true,
+                  "displayShortName": "Average weight",
+                  "filter": "V{value_count}>0",
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  }
+              },
+              {
+                  "created": "2015-08-06T22:48:42.650",
+                  "lastUpdated": "2015-08-09T21:42:06.928",
+                  "name": "Measles + Yellow fever doses",
+                  "id": "fM7RZGVndZE",
+                  "shortName": "Measles + Yellow fever doses",
+                  "expression": "#{ZzYYXq4fJie.FqlgKAG8HOu} + #{ZzYYXq4fJie.rxBfISxXS2U}",
+                  "dimensionItem": "fM7RZGVndZE",
+                  "displayName": "Measles + Yellow fever doses",
+                  "displayInForm": true,
+                  "displayShortName": "Measles + Yellow fever doses",
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  }
+              },
+              {
+                  "created": "2015-08-07T19:04:29.117",
+                  "lastUpdated": "2015-08-07T19:04:29.117",
+                  "name": "Measles + Yellow fever doses female",
+                  "id": "eo73fim1b2i",
+                  "shortName": "Measles + Yellow fever doses female",
+                  "expression": "#{ZzYYXq4fJie.FqlgKAG8HOu} + #{ZzYYXq4fJie.rxBfISxXS2U}",
+                  "dimensionItem": "eo73fim1b2i",
+                  "displayName": "Measles + Yellow fever doses female",
+                  "displayInForm": false,
+                  "displayShortName": "Measles + Yellow fever doses female",
+                  "filter": "A{cejWyOfXge6} == 'Female'",
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  }
+              },
+              {
+                  "created": "2015-08-06T22:49:20.128",
+                  "lastUpdated": "2015-08-06T22:51:19.787",
+                  "name": "Measles + Yellow fever doses low infant weight",
+                  "id": "tt54DiKuQ9c",
+                  "shortName": "Measles + Yellow fever doses low infant weight",
+                  "expression": "#{ZzYYXq4fJie.FqlgKAG8HOu} + #{ZzYYXq4fJie.rxBfISxXS2U}",
+                  "dimensionItem": "tt54DiKuQ9c",
+                  "displayName": "Measles + Yellow fever doses low infant weight",
+                  "displayInForm": false,
+                  "displayShortName": "Measles + Yellow fever doses low infant weight",
+                  "filter": "#{ZzYYXq4fJie.GQY2lXrypjO} < 2700",
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  }
+              },
+              {
+                  "created": "2017-01-20T10:32:26.388",
+                  "lastUpdated": "2017-01-20T10:32:26.388",
+                  "name": "Weight gain(in g) between birth and last postnatal",
+                  "id": "qhTkqwAJLMv",
+                  "shortName": "Weight gain(g)",
+                  "displayDescription": "The average number of grams the baby has gained through the postnatal period. Only counted among the babies that has completed the postnatal period.",
+                  "expression": "#{ZzYYXq4fJie.GQY2lXrypjO} - #{A03MvHHogjR.UXz7xuGCEhU}",
+                  "dimensionItem": "qhTkqwAJLMv",
+                  "displayName": "Weight gain(in g) between birth and last postnatal",
+                  "displayInForm": false,
+                  "description": "The average number of grams the baby has gained through the postnatal period. Only counted among the babies that has completed the postnatal period.",
+                  "displayShortName": "Weight gain(g)",
+                  "filter": "#{ZzYYXq4fJie.GQY2lXrypjO} != 0 && #{A03MvHHogjR.UXz7xuGCEhU} != 0 && V{enrollment_status} == 'COMPLETED'",
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  }
+              },
+              {
+                  "created": "2015-08-06T22:35:40.391",
+                  "lastUpdated": "2015-08-06T22:35:40.391",
+                  "name": "BCG doses low birth weight",
+                  "id": "hCYU0G5Ti2T",
+                  "shortName": "BCG doses low birth weight",
+                  "expression": "#{A03MvHHogjR.bx6fsa0t90x}",
+                  "dimensionItem": "hCYU0G5Ti2T",
+                  "displayName": "BCG doses low birth weight",
+                  "displayInForm": false,
+                  "displayShortName": "BCG doses low birth weight",
+                  "filter": "#{A03MvHHogjR.UXz7xuGCEhU} < 2700",
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  }
+              },
+              {
+                  "created": "2015-08-06T22:25:14.645",
+                  "lastUpdated": "2015-08-06T22:25:14.645",
+                  "name": "BCG doses",
+                  "id": "p2Zxg0wcPQ3",
+                  "shortName": "BCG doses",
+                  "expression": "#{A03MvHHogjR.bx6fsa0t90x}",
+                  "dimensionItem": "p2Zxg0wcPQ3",
+                  "displayName": "BCG doses",
+                  "displayInForm": false,
+                  "displayShortName": "BCG doses",
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  }
+              }
+          ],
+          "programStages": [
+              {
+                  "lastUpdated": "2016-10-11T10:32:53.527",
+                  "id": "A03MvHHogjR",
+                  "created": "2013-03-04T11:41:07.541",
+                  "name": "Birth",
+                  "allowGenerateNextVisit": false,
+                  "executionDateLabel": "Report date",
+                  "validCompleteOnly": false,
+                  "displayName": "Birth",
+                  "openAfterEnrollment": false,
+                  "repeatable": false,
+                  "captureCoordinates": false,
+                  "formType": "DEFAULT",
+                  "displayGenerateEventBox": false,
+                  "generatedByEnrollmentDate": false,
+                  "autoGenerateEvent": false,
+                  "sortOrder": 1,
+                  "blockEntryForm": false,
+                  "hideDueDate": false,
+                  "minDaysFromStart": 0,
+                  "programStageDataElements": [
+                      {
+                          "lastUpdated": "2016-01-15T18:13:49.600",
+                          "created": "2015-03-31T09:53:05.015",
+                          "id": "LBNxoXdMnkv",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": false,
+                          "sortOrder": 0,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "A03MvHHogjR"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006098",
+                              "created": "2012-09-20T08:37:02.003",
+                              "lastUpdated": "2016-04-20T17:32:10.262",
+                              "name": "MCH Apgar Score",
+                              "id": "a3kGcGDCuk6",
+                              "shortName": "Apgar Score",
+                              "displayDescription": "Apgar is a quick test performed on a baby at 1 and 5 minutes after birth. The 1-minute score determines how well the baby tolerated the birthing process. The 5-minute score tells the doctor how well the baby is doing outside the mother's womb.",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Apgar Score",
+                              "description": "Apgar is a quick test performed on a baby at 1 and 5 minutes after birth. The 1-minute score determines how well the baby tolerated the birthing process. The 5-minute score tells the doctor how well the baby is doing outside the mother's womb.",
+                              "displayFormName": "Apgar Score",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Apgar Score",
+                              "formName": "Apgar Score",
+                              "valueType": "NUMBER"
+                          }
+                      },
+                      {
+                          "lastUpdated": "2016-01-15T18:13:49.612",
+                          "created": "2015-08-07T14:46:19.073",
+                          "id": "yYMGxXpfl0Z",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": false,
+                          "sortOrder": 1,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "A03MvHHogjR"
+                          },
+                          "dataElement": {
+                              "created": "2015-08-07T14:44:59.734",
+                              "lastUpdated": "2015-08-07T14:45:56.684",
+                              "name": "MCH Apgar comment",
+                              "id": "H6uSAMO5WLD",
+                              "shortName": "Apgar comment",
+                              "aggregationType": "SUM",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Apgar comment",
+                              "displayFormName": "Apgar comment",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Apgar comment",
+                              "formName": "Apgar comment",
+                              "valueType": "LONG_TEXT"
+                          }
+                      },
+                      {
+                          "lastUpdated": "2016-01-15T18:13:49.621",
+                          "created": "2015-03-31T09:53:05.049",
+                          "id": "u2FvnCDCBcD",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": false,
+                          "sortOrder": 2,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "A03MvHHogjR"
+                          },
+                          "dataElement": {
+                              "code": "DE_2005736",
+                              "created": "2012-09-20T17:37:45.474",
+                              "lastUpdated": "2014-11-11T21:56:05.418",
+                              "name": "MCH Weight (g)",
+                              "id": "UXz7xuGCEhU",
+                              "shortName": "Weight (g)",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Weight (g)",
+                              "displayFormName": "Weight (g)",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Weight (g)",
+                              "formName": "Weight (g)",
+                              "valueType": "NUMBER"
+                          }
+                      },
+                      {
+                          "lastUpdated": "2016-01-15T18:13:49.625",
+                          "created": "2015-03-31T09:53:05.084",
+                          "id": "XLFc6tTftb5",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": false,
+                          "sortOrder": 3,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "A03MvHHogjR"
+                          },
+                          "dataElement": {
+                              "code": "DE_2008294",
+                              "created": "2012-09-21T13:12:38.012",
+                              "lastUpdated": "2014-11-11T21:56:05.404",
+                              "name": "MCH ARV at birth",
+                              "id": "wQLfBvPrXqq",
+                              "shortName": "ARV at birth",
+                              "displayDescription": "Onlu used for birth details.",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH ARV at birth",
+                              "description": "Onlu used for birth details.",
+                              "displayFormName": "ARV at birth",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "ARV at birth",
+                              "formName": "ARV at birth",
+                              "valueType": "TEXT",
+                              "optionSet": {
+                                  "id": "f38bstJioPs",
+                                  "version": 1
+                              }
+                          }
+                      },
+                      {
+                          "lastUpdated": "2016-01-15T18:13:49.630",
+                          "created": "2015-03-31T09:53:05.109",
+                          "id": "p8eX3rSkKN0",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": false,
+                          "sortOrder": 4,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "A03MvHHogjR"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006101",
+                              "created": "2012-09-20T08:40:33.607",
+                              "lastUpdated": "2015-08-06T22:17:09.056",
+                              "name": "MCH BCG dose",
+                              "id": "bx6fsa0t90x",
+                              "shortName": "BCG dose",
+                              "aggregationType": "SUM",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH BCG dose",
+                              "displayFormName": "BCG dose",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "BCG dose",
+                              "formName": "BCG dose",
+                              "valueType": "BOOLEAN"
+                          }
+                      },
+                      {
+                          "lastUpdated": "2016-01-15T18:13:49.635",
+                          "created": "2015-03-31T09:53:05.136",
+                          "id": "O4dwFWakvGO",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": false,
+                          "sortOrder": 5,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "A03MvHHogjR"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006104",
+                              "created": "2012-09-20T18:03:44.110",
+                              "lastUpdated": "2015-08-06T16:44:30.622",
+                              "name": "MCH OPV dose",
+                              "id": "ebaJjqltK5N",
+                              "shortName": "OPV dose",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH OPV dose",
+                              "displayFormName": "OPV dose",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "OPV dose",
+                              "formName": "OPV dose",
+                              "valueType": "TEXT",
+                              "optionSet": {
+                                  "id": "kzgQRhOCadd",
+                                  "version": 1
+                              }
+                          }
+                      },
+                      {
+                          "lastUpdated": "2016-01-15T18:13:49.638",
+                          "created": "2015-03-31T09:53:05.159",
+                          "id": "xtjAxBGQNNV",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": false,
+                          "sortOrder": 6,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "A03MvHHogjR"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006103",
+                              "created": "2012-09-20T08:43:58.131",
+                              "lastUpdated": "2014-11-11T21:56:05.414",
+                              "name": "MCH Infant Feeding",
+                              "id": "X8zyunlgUfM",
+                              "shortName": "Infant Feeding",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Infant Feeding",
+                              "displayFormName": "Infant Feeding",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Infant Feeding",
+                              "formName": "Infant Feeding",
+                              "valueType": "TEXT",
+                              "optionSet": {
+                                  "id": "x31y45jvIQL",
+                                  "version": 1
+                              }
+                          }
+                      },
+                      {
+                          "lastUpdated": "2016-01-15T18:13:49.641",
+                          "created": "2016-01-15T18:13:49.641",
+                          "id": "JYyXbTmBBls",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": false,
+                          "sortOrder": 7,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "A03MvHHogjR"
+                          },
+                          "dataElement": {
+                              "created": "2016-01-15T18:13:32.416",
+                              "lastUpdated": "2016-01-15T22:44:11.475",
+                              "name": "Birth certificate",
+                              "id": "uf3svrmp8Oj",
+                              "shortName": "Birth certificate",
+                              "aggregationType": "SUM",
+                              "domainType": "TRACKER",
+                              "displayName": "Birth certificate",
+                              "displayFormName": "Birth certificate",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Birth certificate",
+                              "valueType": "FILE_RESOURCE"
+                          }
+                      }
+                  ],
+                  "programStageSections": [ ]
+              },
+              {
+                  "lastUpdated": "2015-08-06T20:16:48.321",
+                  "id": "ZzYYXq4fJie",
+                  "created": "2013-03-04T11:41:07.541",
+                  "name": "Baby Postnatal",
+                  "allowGenerateNextVisit": false,
+                  "validCompleteOnly": false,
+                  "displayName": "Baby Postnatal",
+                  "openAfterEnrollment": false,
+                  "repeatable": false,
+                  "captureCoordinates": false,
+                  "formType": "DEFAULT",
+                  "displayGenerateEventBox": false,
+                  "generatedByEnrollmentDate": false,
+                  "autoGenerateEvent": true,
+                  "sortOrder": 2,
+                  "blockEntryForm": false,
+                  "hideDueDate": false,
+                  "minDaysFromStart": 6,
+                  "programStageDataElements": [
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.340",
+                          "created": "2015-03-27T16:27:19.000",
+                          "id": "ztoQtbuXzsI",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": true,
+                          "sortOrder": 0,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006099",
+                              "created": "2012-09-20T08:44:53.428",
+                              "lastUpdated": "2014-11-11T21:56:05.550",
+                              "name": "MCH Infant Weight  (g)",
+                              "id": "GQY2lXrypjO",
+                              "shortName": "Infant Weight (g)",
+                              "displayDescription": "Infant weight in grams",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Infant Weight  (g)",
+                              "description": "Infant weight in grams",
+                              "displayFormName": "Infant Weight (g)",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Infant Weight (g)",
+                              "formName": "Infant Weight (g)",
+                              "valueType": "NUMBER",
+                              "optionSet": {
+                                  "id": "x31y45jvIQL",
+                                  "version": 1
+                              },
+                              "categoryCombo": {
+                                  "id": "p0KPaWEg3cf"
+                              }
+                          }
+                      },
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.354",
+                          "created": "2015-03-27T16:27:19.000",
+                          "id": "vdc1saaN2ma",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": true,
+                          "sortOrder": 1,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006103",
+                              "created": "2012-09-20T08:43:58.131",
+                              "lastUpdated": "2014-11-11T21:56:05.414",
+                              "name": "MCH Infant Feeding",
+                              "id": "X8zyunlgUfM",
+                              "shortName": "Infant Feeding",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Infant Feeding",
+                              "displayFormName": "Infant Feeding",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Infant Feeding",
+                              "formName": "Infant Feeding",
+                              "valueType": "TEXT",
+                              "optionSet": {
+                                  "id": "x31y45jvIQL",
+                                  "version": 1
+                              }
+                          }
+                      },
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.366",
+                          "created": "2015-08-06T13:42:22.491",
+                          "id": "Vpx18GqyLcK",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": true,
+                          "sortOrder": 2,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006125",
+                              "created": "2015-08-06T13:36:22.541",
+                              "lastUpdated": "2015-08-06T22:17:50.754",
+                              "name": "MCH Measles dose",
+                              "id": "FqlgKAG8HOu",
+                              "shortName": "Measles dose",
+                              "aggregationType": "SUM",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Measles dose",
+                              "displayFormName": "Measles dose",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Measles dose",
+                              "formName": "Measles dose",
+                              "valueType": "BOOLEAN"
+                          }
+                      },
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.376",
+                          "created": "2015-08-06T13:42:22.499",
+                          "id": "WlYechRHVo3",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": true,
+                          "sortOrder": 3,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "created": "2015-08-06T13:39:31.690",
+                              "lastUpdated": "2015-08-06T16:43:12.445",
+                              "name": "MCH Penta dose",
+                              "id": "vTUhAUZFoys",
+                              "shortName": "Penta dose",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Penta dose",
+                              "displayFormName": "Penta dose",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Penta dose",
+                              "formName": "Penta dose",
+                              "valueType": "TEXT",
+                              "optionSet": {
+                                  "id": "kzgQRhOCadd",
+                                  "version": 1
+                              }
+                          }
+                      },
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.385",
+                          "created": "2015-08-06T13:42:22.504",
+                          "id": "WucAVPYvcEO",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": true,
+                          "sortOrder": 4,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006126",
+                              "created": "2015-08-06T13:41:15.499",
+                              "lastUpdated": "2015-08-06T22:18:27.907",
+                              "name": "MCH Yellow fever dose",
+                              "id": "rxBfISxXS2U",
+                              "shortName": "Yellow fever dose",
+                              "aggregationType": "SUM",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Yellow fever dose",
+                              "displayFormName": "Yellow fever dose",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Yellow fever dose",
+                              "formName": "Yellow fever dose",
+                              "valueType": "BOOLEAN"
+                          }
+                      },
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.394",
+                          "created": "2015-08-06T14:04:45.215",
+                          "id": "EL5dr5x0WbZ",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": false,
+                          "sortOrder": 5,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "code": "DE_2005744",
+                              "created": "2012-09-20T08:45:02.015",
+                              "lastUpdated": "2015-08-06T13:44:32.035",
+                              "name": "MCH IPT dose",
+                              "id": "lNNb3truQoi",
+                              "shortName": "IPT dose",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH IPT dose",
+                              "displayFormName": "IPT dose",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "IPT dose",
+                              "formName": "IPT dose",
+                              "valueType": "TEXT",
+                              "optionSet": {
+                                  "id": "nH8Y04zS7UV",
+                                  "version": 1
+                              }
+                          }
+                      },
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.402",
+                          "created": "2015-03-27T16:27:19.000",
+                          "id": "IpPWDRlHJSe",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": true,
+                          "sortOrder": 6,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006105",
+                              "created": "2012-09-20T18:01:19.313",
+                              "lastUpdated": "2015-08-06T16:43:25.692",
+                              "name": "MCH DPT dose",
+                              "id": "pOe0ogW4OWd",
+                              "shortName": "DPT dose",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH DPT dose",
+                              "displayFormName": "DPT dose",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "DPT dose",
+                              "formName": "DPT dose",
+                              "valueType": "TEXT",
+                              "optionSet": {
+                                  "id": "udkr3ihaeD3",
+                                  "version": 1
+                              }
+                          }
+                      },
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.408",
+                          "created": "2015-03-27T16:27:19.000",
+                          "id": "xSTVGEIbarb",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": true,
+                          "sortOrder": 7,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006106",
+                              "created": "2012-09-20T08:46:58.580",
+                              "lastUpdated": "2015-08-06T22:21:28.678",
+                              "name": "MCH Vit A",
+                              "id": "HLmTEmupdX0",
+                              "shortName": "Vit A",
+                              "aggregationType": "SUM",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Vit A",
+                              "displayFormName": "Vit A",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Vit A",
+                              "formName": "Vit A",
+                              "valueType": "BOOLEAN"
+                          }
+                      },
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.416",
+                          "created": "2015-03-27T16:27:19.000",
+                          "id": "YCO2FVT0wXL",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": true,
+                          "sortOrder": 8,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006107",
+                              "created": "2012-09-20T08:44:35.860",
+                              "lastUpdated": "2014-11-11T21:56:05.548",
+                              "name": "MCH Infant HIV Test Result",
+                              "id": "cYGaxwK615G",
+                              "shortName": "Infant HIV Test Result",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Infant HIV Test Result",
+                              "displayFormName": "Infant HIV Test Result",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Infant HIV Test Result",
+                              "formName": "Infant HIV Test Result",
+                              "valueType": "TEXT",
+                              "optionSet": {
+                                  "id": "oXR37f2wOb1",
+                                  "version": 1
+                              }
+                          }
+                      },
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.423",
+                          "created": "2015-03-27T16:27:19.000",
+                          "id": "VlOvjLKnoyw",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": true,
+                          "sortOrder": 9,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006108",
+                              "created": "2012-09-20T08:43:45.821",
+                              "lastUpdated": "2014-11-11T21:56:05.416",
+                              "name": "MCH HIV Test Type",
+                              "id": "hDZbpskhqDd",
+                              "shortName": "HIV Test Type",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH HIV Test Type",
+                              "displayFormName": "HIV Test Type",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "HIV Test Type",
+                              "formName": "HIV Test Type",
+                              "valueType": "TEXT",
+                              "optionSet": {
+                                  "id": "OGmE3wUMEzu",
+                                  "version": 1
+                              }
+                          }
+                      },
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.433",
+                          "created": "2015-03-27T16:27:19.000",
+                          "id": "rqmcdr07fxQ",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": false,
+                          "sortOrder": 10,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006100",
+                              "created": "2012-09-21T13:02:22.744",
+                              "lastUpdated": "2014-11-11T21:56:05.599",
+                              "name": "MCH Child ARVs",
+                              "id": "sj3j9Hwc7so",
+                              "shortName": "Child ARVs",
+                              "displayDescription": "ARVs for child postnatal visits.",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Child ARVs",
+                              "description": "ARVs for child postnatal visits.",
+                              "displayFormName": "Child ARVs",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Child ARVs",
+                              "formName": "Child ARVs",
+                              "valueType": "TEXT",
+                              "optionSet": {
+                                  "id": "dgsftM0rXu2",
+                                  "version": 1
+                              }
+                          }
+                      },
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.444",
+                          "created": "2015-03-27T16:27:19.000",
+                          "id": "LfgZNmadu4W",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": false,
+                          "sortOrder": 11,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006109",
+                              "created": "2012-09-20T08:46:17.717",
+                              "lastUpdated": "2014-11-11T21:56:05.417",
+                              "name": "MCH Septrin Given",
+                              "id": "aei1xRjSU2l",
+                              "shortName": "Septrin Given",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Septrin Given",
+                              "displayFormName": "Septrin Given",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Septrin Given",
+                              "formName": "Septrin Given",
+                              "valueType": "TEXT",
+                              "optionSet": {
+                                  "id": "XdI8KRJiRoZ",
+                                  "version": 1
+                              }
+                          }
+                      },
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.452",
+                          "created": "2015-03-27T16:27:19.000",
+                          "id": "sfYk4rKw18B",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": false,
+                          "sortOrder": 12,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "code": "DE_2006110",
+                              "created": "2012-09-20T08:46:05.594",
+                              "lastUpdated": "2014-11-11T21:56:05.402",
+                              "name": "MCH Results given to caretaker",
+                              "id": "BeynU4L6VCQ",
+                              "shortName": "Results given to caretake",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Results given to caretaker",
+                              "displayFormName": "Results given to caretaker",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Results given to caretake",
+                              "formName": "Results given to caretaker",
+                              "valueType": "TEXT",
+                              "optionSet": {
+                                  "id": "XdI8KRJiRoZ",
+                                  "version": 1
+                              }
+                          }
+                      },
+                      {
+                          "lastUpdated": "2015-08-06T20:16:48.460",
+                          "created": "2015-03-27T16:27:19.000",
+                          "id": "LiV2YoatDud",
+                          "displayInReports": false,
+                          "compulsory": false,
+                          "allowProvidedElsewhere": false,
+                          "sortOrder": 13,
+                          "allowFutureDate": false,
+                          "programStage": {
+                              "id": "ZzYYXq4fJie"
+                          },
+                          "dataElement": {
+                              "code": "DE_2008126",
+                              "created": "2012-09-20T16:18:26.595",
+                              "lastUpdated": "2014-11-11T21:56:05.403",
+                              "name": "MCH Visit Comment",
+                              "id": "OuJ6sgPyAbC",
+                              "shortName": "Visit Comment",
+                              "displayDescription": "Free text comment used to put additional information for a visit.",
+                              "aggregationType": "AVERAGE",
+                              "domainType": "TRACKER",
+                              "displayName": "MCH Visit Comment",
+                              "description": "Free text comment used to put additional information for a visit.",
+                              "displayFormName": "Visit comment (optional)",
+                              "zeroIsSignificant": false,
+                              "displayShortName": "Visit Comment",
+                              "formName": "Visit comment (optional)",
+                              "valueType": "LONG_TEXT"
+                          }
+                      }
+                  ],
+                  "programStageSections": [ ]
+              }
+          ],
+          "programRules": [
+              {
+                  "lastUpdated": "2015-09-14T22:22:15.383",
+                  "created": "2015-09-14T21:17:40.841",
+                  "name": "Ask for comment for low apgar",
+                  "id": "NAgjOfWMXg6",
+                  "condition": "#{apgarscore} >= 0 && #{apgarscore} < 4 && #{apgarcomment} == ''",
+                  "displayName": "Ask for comment for low apgar",
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  },
+                  "programRuleActions": [
+                      {
+                          "created": "2015-09-14T21:17:41.033",
+                          "lastUpdated": "2015-09-14T22:22:15.458",
+                          "id": "v434s5YPDcP",
+                          "programRuleActionType": "SHOWWARNING",
+                          "content": "It is suggested that an explanation is provided when the Apgar score is below 4",
+                          "dataElement": {
+                              "id": "H6uSAMO5WLD"
+                          },
+                          "programRule": {
+                              "id": "NAgjOfWMXg6"
+                          }
+                      }
+                  ]
+              },
+              {
+                  "lastUpdated": "2015-09-14T22:25:02.149",
+                  "created": "2015-09-14T22:20:33.429",
+                  "name": "Demand comment if apgar is under zero",
+                  "id": "tTPMkizzUZg",
+                  "condition": "#{apgarscore} <0 && #{apgarcomment} == ''",
+                  "displayName": "Demand comment if apgar is under zero",
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  },
+                  "programRuleActions": [
+                      {
+                          "created": "2015-09-14T22:20:33.543",
+                          "lastUpdated": "2015-09-14T22:25:02.200",
+                          "id": "t944GaMzNbs",
+                          "programRuleActionType": "SHOWERROR",
+                          "content": "If the apgar score is below zero, an explanation must be provided.",
+                          "dataElement": {
+                              "id": "a3kGcGDCuk6"
+                          },
+                          "programRule": {
+                              "id": "tTPMkizzUZg"
+                          }
+                      }
+                  ]
+              },
+              {
+                  "lastUpdated": "2015-09-14T21:25:08.933",
+                  "created": "2015-08-07T18:41:55.082",
+                  "name": "Hide Apgar comment if score > 7",
+                  "id": "ppdTpuQC7Q5",
+                  "condition": "#{apgarscore} > 7",
+                  "displayName": "Hide Apgar comment if score > 7",
+                  "program": {
+                      "id": "IpHINAT79UW"
+                  },
+                  "programRuleActions": [
+                      {
+                          "created": "2015-08-07T18:41:55.210",
+                          "lastUpdated": "2015-09-14T21:25:08.981",
+                          "id": "iwGAWKvStTt",
+                          "programRuleActionType": "HIDEFIELD",
+                          "content": "",
+                          "dataElement": {
+                              "id": "H6uSAMO5WLD"
+                          },
+                          "programRule": {
+                              "id": "ppdTpuQC7Q5"
+                          }
+                      }
+                  ]
+              }
+          ]
+      }
+  ]
+}

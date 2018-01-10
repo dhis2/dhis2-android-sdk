@@ -31,9 +31,12 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.Date;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
-public interface OrganisationUnitStore {
+import java.util.Date;
+import java.util.List;
+
+public interface OrganisationUnitStore extends DeletableStore {
     long insert(
             @NonNull String uid, @Nullable String code, @Nullable String name,
             @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
@@ -56,4 +59,5 @@ public interface OrganisationUnitStore {
 
     int delete();
 
+    List<OrganisationUnit> queryOrganisationUnits();
 }

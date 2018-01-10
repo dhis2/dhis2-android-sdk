@@ -12,6 +12,7 @@ import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_OPTIO
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_INDICATORS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_RULES;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_RULE_ACTIONS;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_RULE_VARIABLES;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_PROGRAMS;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_TRACKED_ENTITIES;
@@ -80,6 +81,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_EMPTY, EMPTY_CATEGORY_COMBOS,
             DELETED_OBJECT_PROGRAM_RULES,
             DELETED_OBJECT_PROGRAM_RULE_ACTIONS,
+            DELETED_OBJECT_PROGRAM_RULE_VARIABLES,
             DELETED_OBJECT_PROGRAM_INDICATORS,
             DELETED_OBJECT_DATA_ELEMENTS,
             DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
@@ -98,6 +100,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
             DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY,
@@ -111,6 +114,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_EMPTY, SIMPLE_CATEGORIES,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
@@ -426,6 +430,22 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsPersisted("nEenWmSyUEp", trackedEntityStore);
         verifyIfIsDeleted("nEenWmSyUE2", trackedEntityStore);
         verifyIfIsDeleted("nEenWmSyUE3", trackedEntityStore);
+    }
+
+    @Test
+    @MediumTest
+    public void delete_the_given_program_rule_variables() throws Exception {
+        ProgramRuleVariableStoreImpl
+                programRuleVariableStore = new ProgramRuleVariableStoreImpl(databaseAdapter());
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        d2.syncMetaData().call();
+        verifyIfIsPersisted("RycV5uDi66i", programRuleVariableStore);
+        verifyIfIsPersisted("zINGRka3g9N", programRuleVariableStore);
+
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
+        d2.syncMetaData().call();
+        verifyIfIsDeleted("RycV5uDi66i", programRuleVariableStore);
+        verifyIfIsDeleted("zINGRka3g9N", programRuleVariableStore);
     }
 
     private void verifyIfIsPersisted(String uid, DeletableStore store) {

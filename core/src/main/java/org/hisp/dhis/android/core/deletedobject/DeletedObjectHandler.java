@@ -16,6 +16,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
+import org.hisp.dhis.android.core.program.ProgramRuleVariable;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
@@ -55,6 +57,8 @@ public class DeletedObjectHandler {
     private final ProgramRuleStore programRuleStore;
     @NonNull
     private final ProgramRuleActionStore programRuleActionStore;
+    @NonNull
+    private final ProgramRuleVariableStore programRuleVariableStore;
 
 
 
@@ -74,7 +78,8 @@ public class DeletedObjectHandler {
             @NonNull OptionStore optionStore,
             @NonNull ProgramIndicatorStore programIndicatorStore,
             @NonNull ProgramRuleStore programRuleStore,
-            @NonNull ProgramRuleActionStore programRuleActionStore) {
+            @NonNull ProgramRuleActionStore programRuleActionStore,
+            @NonNull ProgramRuleVariableStore programRuleVariableStore) {
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.categoryStore = categoryStore;
@@ -91,6 +96,7 @@ public class DeletedObjectHandler {
         this.programIndicatorStore = programIndicatorStore;
         this.programRuleStore = programRuleStore;
         this.programRuleActionStore = programRuleActionStore;
+        this.programRuleVariableStore = programRuleVariableStore;
     }
 
     public void handle(String uid, ResourceModel.Type type) {
@@ -126,7 +132,13 @@ public class DeletedObjectHandler {
             deleteProgramRule(uid);
         } else if (type.equals(ResourceModel.Type.DELETED_PROGRAM_RULE_ACTION)) {
             deleteProgramRuleAction(uid);
+        } else if (type.equals(ResourceModel.Type.DELETED_PROGRAM_RULE_VARIABLE)) {
+            deleteProgramRuleVariable(uid);
         }
+    }
+
+    private void deleteProgramRuleVariable(String uid) {
+        programRuleVariableStore.delete(uid);
     }
 
     private void deleteProgramRuleAction(String uid) {

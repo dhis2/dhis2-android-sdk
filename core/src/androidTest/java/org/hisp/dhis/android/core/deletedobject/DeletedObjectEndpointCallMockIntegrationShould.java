@@ -19,6 +19,8 @@ import static org.hisp.dhis.android.core.common.MockedCalls
         .DELETED_OBJECT_PROGRAM_STAGE_DATA_ELEMENTS;
 import static org.hisp.dhis.android.core.common.MockedCalls
         .DELETED_OBJECT_PROGRAM_TRACKED_ENTITY_ATTRIBUTES;
+import static org.hisp.dhis.android.core.common.MockedCalls
+        .DELETED_OBJECT_TRACKED_ENTITY_ATTRIBUTES;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_PROGRAMS;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_TRACKED_ENTITIES;
@@ -69,6 +71,7 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.android.core.user.UserStoreImpl;
 import org.junit.After;
@@ -98,6 +101,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
             DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
             DELETED_OBJECT_OPTIONS,
@@ -111,6 +115,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_EMPTY, EMPTY_CATEGORIES,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_CATEGORY_OPTION_COMBO, EMPTY_CATEGORY_COMBOS,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
@@ -142,6 +147,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_PROGRAM_STAGE_DATA_ELEMENTS,
             DELETED_OBJECT_PROGRAM_STAGE_SECTIONS,
             DELETED_OBJECT_PROGRAM_TRACKED_ENTITY_ATTRIBUTES,
+            DELETED_OBJECT_TRACKED_ENTITY_ATTRIBUTES,
             DELETED_OBJECT_EMPTY, EMPTY_PROGRAMS,
             DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY,
@@ -155,6 +161,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_EMPTY, SIMPLE_CATEGORIES,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
+            DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY,
@@ -451,6 +458,26 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         //then
         verifyIfIsDeleted("d7ZILSbPgYh", programSectionStore);
         verifyIfIsDeleted("OeSqs7pkKqI", programSectionStore);
+    }
+
+    @Test
+    @MediumTest
+    public void delete_the_given_deleted_tracked_entity_attributes() throws Exception {
+        //given
+        TrackedEntityAttributeStoreImpl trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl(databaseAdapter());
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                commonMetadataWithMultipleObjectsJsonFiles);
+        d2.syncMetaData().call();
+        verifyIfIsPersisted("iESIqZ0R0R0", trackedEntityAttributeStore);
+        verifyIfIsPersisted("VqEFza8wbwA", trackedEntityAttributeStore);
+
+        //when
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedProgramStagesObjects);
+        d2.syncMetaData().call();
+
+        //then
+        verifyIfIsDeleted("iESIqZ0R0R0", trackedEntityAttributeStore);
+        verifyIfIsDeleted("VqEFza8wbwA", trackedEntityAttributeStore);
     }
 
     @Test

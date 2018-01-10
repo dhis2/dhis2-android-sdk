@@ -92,6 +92,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
@@ -407,6 +408,11 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
+            response = syncDeletedObject(serverDate, TrackedEntityAttribute.class.getSimpleName());
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
             response = syncDeletedObject(serverDate, Program.class.getSimpleName());
 
             if (!response.isSuccessful()) {

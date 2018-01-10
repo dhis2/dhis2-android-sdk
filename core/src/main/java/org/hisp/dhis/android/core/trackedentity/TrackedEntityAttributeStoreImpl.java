@@ -173,7 +173,6 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
     public int delete(@NonNull String uid) {
         isNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
-
         int delete = databaseAdapter.executeUpdateDelete(TrackedEntityAttributeModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
         return delete;

@@ -58,6 +58,10 @@ public abstract class DataSetDataElementLinkModel extends BaseModel implements S
         }
     }
 
+    public static DataSetDataElementLinkModel create(Cursor cursor) {
+        return AutoValue_DataSetDataElementLinkModel.createFromCursor(cursor);
+    }
+
     public static LinkModelFactory<DataSetDataElementLinkModel> Factory
             = new LinkModelFactory<DataSetDataElementLinkModel>() {
         @Override
@@ -65,10 +69,6 @@ public abstract class DataSetDataElementLinkModel extends BaseModel implements S
             return create(cursor);
         }
     };
-
-    public static DataSetDataElementLinkModel create(Cursor cursor) {
-        return AutoValue_DataSetDataElementLinkModel.createFromCursor(cursor);
-    }
 
     public static DataSetDataElementLinkModel create(
             String dataSetUid, String dataElementUid, String categoryComboUid) {

@@ -8,7 +8,7 @@ public abstract class AmpqConfiguration {
 
     public abstract String virtualHost();
 
-    public abstract String userName();
+    public abstract String username();
 
     public abstract String password();
 
@@ -24,7 +24,7 @@ public abstract class AmpqConfiguration {
 
         public abstract AmpqConfiguration.Builder setVirtualHost(String value);
 
-        public abstract AmpqConfiguration.Builder setUserName(String value);
+        public abstract AmpqConfiguration.Builder setUsername(String value);
 
         public abstract AmpqConfiguration.Builder setPassword(String value);
 

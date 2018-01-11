@@ -5,7 +5,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MetadataClassFactory {
+public final class MetadataClassFactory {
     private static final Map<String, Class<?>> metadataClassMap = createMap();
 
     private static Map<String, Class<?>> createMap() {
@@ -21,5 +21,8 @@ public class MetadataClassFactory {
         } else {
             throw new IllegalArgumentException("No exists a metadata class for name: " + name);
         }
+    }
+
+    private MetadataClassFactory() {
     }
 }

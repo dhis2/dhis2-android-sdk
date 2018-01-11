@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.common.audit;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,13 +17,10 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.audit.MetadataAudit;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class MetadataChangeConsumer {
-    public interface MetadataChangeHandler {
-        void handle(MetadataAudit metadataAudit);
-    }
-
     private final static String EXCHANGE_NAME = "dhis2";
     private final AmpqConfiguration ampqConfiguration;
 
@@ -63,7 +62,7 @@ public class MetadataChangeConsumer {
     private ConnectionFactory setupFactory() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
 
-        factory.setUsername(ampqConfiguration.userName());
+        factory.setUsername(ampqConfiguration.username());
         factory.setPassword(ampqConfiguration.password());
         factory.setVirtualHost(ampqConfiguration.virtualHost());
         factory.setHost(ampqConfiguration.host());
@@ -78,22 +77,19 @@ public class MetadataChangeConsumer {
             public void handleDelivery(String consumerTag, Envelope envelope,
                     AMQP.BasicProperties properties, byte[] body) throws IOException {
                 String message = new String(body, "UTF-8");
-                System.out.println(
-                        " [x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
 
                 if (metadataChangeHandler != null) {
                     try {
                         metadataChangeHandler.handle(
                                 parseMetadataAudit(envelope.getRoutingKey(), message));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Log.e(this.getClass().getSimpleName(), e.getMessage());
                     }
                 }
             }
         };
-        channel.basicConsume(queueName, true, consumer);
 
-        System.out.println(" [*] Waiting for ampq messages.");
+        channel.basicConsume(queueName, true, consumer);
     }
 
     private MetadataAudit parseMetadataAudit(String routingKey, String body)
@@ -109,12 +105,16 @@ public class MetadataChangeConsumer {
 
     private JavaType getType(String className, ObjectMapper objectMapper)
             throws ClassNotFoundException {
-        String capitalizedClassName = className.substring(0, 1).toUpperCase() + className.substring(
-                1);
+        String capitalizedClassName = className.substring(0, 1).toUpperCase(Locale.getDefault()) +
+                className.substring(1);
 
         Class<?> klass = MetadataClassFactory.getByName(capitalizedClassName);
 
         return objectMapper.getTypeFactory()
                 .constructParametricType(MetadataAudit.class, klass);
+    }
+
+    public interface MetadataChangeHandler {
+        void handle(MetadataAudit metadataAudit);
     }
 }

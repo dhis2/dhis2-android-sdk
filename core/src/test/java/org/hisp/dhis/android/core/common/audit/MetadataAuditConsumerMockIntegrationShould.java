@@ -31,7 +31,7 @@ public class MetadataAuditConsumerMockIntegrationShould {
                 AmpqConfiguration.builder()
                         .setHost("localhost")
                         .setVirtualHost("/")
-                        .setUserName("guest")
+                        .setUsername("guest")
                         .setPassword("guest")
                         .setPort(5672)
                         .build();

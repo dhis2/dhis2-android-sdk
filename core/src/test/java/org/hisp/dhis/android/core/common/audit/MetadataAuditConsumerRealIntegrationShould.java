@@ -26,7 +26,7 @@ public class MetadataAuditConsumerRealIntegrationShould {
                 AmpqConfiguration.builder()
                         .setHost("192.168.1.37")
                         .setVirtualHost("/")
-                        .setUserName("guest2")
+                        .setUsername("guest2")
                         .setPassword("guest2")
                         .setPort(5672)
                         .build());
@@ -39,8 +39,8 @@ public class MetadataAuditConsumerRealIntegrationShould {
 
     //The goal of this test is research how messages are received from rabbitmq
     //this test must to be commented because need a message broker, rabbitmq configuration
-    //in dhis2 server and manual metadata change.
-    @Test
+    //in dhis2 server and manual metadata change.MetadataAudit.java
+    //@Test
     public void return_metadata_change_message() throws Exception {
         consumer.setMetadataChangeHandler(new MetadataChangeConsumer.MetadataChangeHandler() {
             @Override

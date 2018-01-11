@@ -1,12 +1,12 @@
 package org.hisp.dhis.android.core.data.audit;
 
-
 import java.util.Date;
 
+@SuppressWarnings("PMD.UnusedLocalVariable")
 public class MetadataAudit<T> {
     private int id;
 
-    private Date createdAt = new Date();
+    private final Date createdAt = new Date();
 
     private String createdBy;
 
@@ -20,71 +20,36 @@ public class MetadataAudit<T> {
 
     private T value;
 
-    public MetadataAudit() {
-    }
-
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+        return new Date(createdAt.getTime());
     }
 
     public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
     public String getKlass() {
         return klass;
-    }
-
-    public void setKlass(String klass) {
-        this.klass = klass;
     }
 
     public String getUid() {
         return uid;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
     public String getCode() {
         return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public AuditType getType() {
         return type;
     }
 
-    public void setType(AuditType type) {
-        this.type = type;
-    }
-
     public T getValue() {
         return value;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
     }
 
     @Override

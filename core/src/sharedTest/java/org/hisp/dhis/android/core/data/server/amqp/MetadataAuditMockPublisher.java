@@ -47,7 +47,7 @@ public class MetadataAuditMockPublisher {
     private ConnectionFactory setupFactory() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
 
-        factory.setUsername(ampqConfiguration.userName());
+        factory.setUsername(ampqConfiguration.username());
         factory.setPassword(ampqConfiguration.password());
         factory.setVirtualHost(ampqConfiguration.virtualHost());
         factory.setHost(ampqConfiguration.host());

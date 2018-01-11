@@ -211,8 +211,8 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
     }
 
     @Override
-    public Boolean exists(String categoryUId) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, categoryUId);
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
         return cursor.getCount()>0;
     }
     @Override

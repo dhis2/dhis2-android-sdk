@@ -120,8 +120,8 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
     }
 
     @Override
-    public Boolean exists(String userUId) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, userUId);
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
         return cursor.getCount() > 0;
     }
 }

@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.dataelement;
 
 import android.support.test.runner.AndroidJUnit4;
 
@@ -6,6 +6,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.dataset.DataSetEndpointCall;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.Before;
@@ -19,34 +20,34 @@ import java.util.Set;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
+public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCase {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private DataSetEndpointCall dataSetCall;
+    private DataElementEndpointCall dataElementCall;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
         d2 = D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
-        dataSetCall = createCall();
+        dataElementCall = createCall();
     }
 
-    private DataSetEndpointCall createCall() {
+    private DataElementEndpointCall createCall() {
         ResourceHandler resourceHandler =
                 new ResourceHandler(new ResourceStoreImpl(databaseAdapter()));
         GenericCallData data = GenericCallData.create(databaseAdapter(), resourceHandler, d2.retrofit());
 
         Set<String> uids = new HashSet<>();
 
-        uids.add("BfMAe6Itzgt");
-        uids.add("Lpw6GcnTrmS");
-        uids.add("TuL8IOPzpHh");
+        uids.add("FTRrcoaog83");
+        uids.add("P3jJH5Tu5VC");
+        uids.add("FQ2o8UBlcrS");
 
-        return DataSetEndpointCall.create(data, uids);
+        return DataElementEndpointCall.create(data, uids);
     }
 
     // @Test
@@ -60,8 +61,8 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */
 
-        retrofit2.Response dataSetResponse = dataSetCall.call();
-        assertThat(dataSetResponse.isSuccessful()).isTrue();
+        retrofit2.Response dataElementResponse = dataElementCall.call();
+        assertThat(dataElementResponse.isSuccessful()).isTrue();
     }
 
     @Test

@@ -17,8 +17,8 @@ android:
   - extra-android-support
 env:
   global:
-  - secure: "cY/fqS1b19hNzMMpxNOMpUCZBD+gALjNSq+4M+5UdeUya0ed/H2O1d/Hj/W6uCDgF6mDrGrjzplpowtReyODAdNwuqGloKM2stW8pmcW1uNo+ptKfTEd1P0M+2zLhqb9N1fdEy/PmnFFquid9uD+ru+nW8UiWe3Uesd6UrVOAvI="
-  - secure: "gDaPXqvLiOlU+jnIoFgJl15G2a3c2byC2+g1SXPvkg+1Ujz2RXLpk2vEQ58UZuSHVdoDFjhWiA+PrrHiRTDhzPZhExMjLWhYpERCmUypdzA+EBhIBTxzdA5wPC3BDJZ47SjxSTpYrSTv1T2dTm/Opoi+LhXfqQOCPnmQWZegCFI="
+  - secure: "XVjRNpEzXe1TuT6v1FklkNr6f50jbA4qS51Cg9vCE5u5WEbFTuKPkoFhyRv3clTpLm2QS+kF/Iah0P9GjCvYI4VOcfe+zp+p3LCc4vZjFtdfFJfdZ1+P9IiSB4rUnvnHdxzHg3QEAxAO/zMEzUFAkCc6OyZruEcuid1q8vHu6r4="
+  - secure: "XXl6Te0fn10PTM/myO3kwI5j1drZqTNWhlANxzQ94hmz26Bc9xPDc/EVCA4ijKiro9S1grFuBoVU/5bGa8NLBK05W2YdisMcnL+KobZqtYK7nKtRVg2aNAkl60NwO9DOzgmG77BQccDZEnd7fwdxwX7/rujQ/uYutCQG9dp3alI="
 
 branches:
   only:
@@ -41,10 +41,10 @@ after_success:
 
 notifications:
   slack:
-    secure: AkHqcKUwKfSfljvrHXkSaYwjLfLiiqdwRL3zqim9EMIA+AoqW9dhkwoegbeSr44plK82KJsVgo7UrSDLSiJR3UCXtjgkYwwf+hqOM7BVbIK/uTglrjhrDeJ4ZrE/W/FP1O4oeFYE1QZFeAFEb9yLtKBG8rfoQNDl4t83auWuehA=
+    secure: "AkHqcKUwKfSfljvrHXkSaYwjLfLiiqdwRL3zqim9EMIA+AoqW9dhkwoegbeSr44plK82KJsVgo7UrSDLSiJR3UCXtjgkYwwf+hqOM7BVbIK/uTglrjhrDeJ4ZrE/W/FP1O4oeFYE1QZFeAFEb9yLtKBG8rfoQNDl4t83auWuehA="
   email: true
 
 cache:
   directories:
-  - "$HOME/.m2"
-  - "$HOME/.gradle"
+  - $HOME/.m2
+  - $HOME/.gradle

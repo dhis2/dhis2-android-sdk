@@ -188,19 +188,6 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
         ProgramStoreImpl programStore = new ProgramStoreImpl(d2.databaseAdapter());
-        CategoryStoreImpl categoryStore = new CategoryStoreImpl(d2.databaseAdapter());
-        CategoryComboStoreImpl categoryComboStore = new CategoryComboStoreImpl(d2.databaseAdapter());
-        CategoryOptionComboStoreImpl categoryOptionComboStore = new CategoryOptionComboStoreImpl(d2.databaseAdapter());
-        OrganisationUnitStoreImpl organisationUnitStore = new OrganisationUnitStoreImpl(d2.databaseAdapter());
-        OptionSetStoreImpl optionSetStore = new OptionSetStoreImpl(d2.databaseAdapter());
-        UserStoreImpl userStore = new UserStoreImpl(d2.databaseAdapter());
-        TrackedEntityStoreImpl trackedEntityStore = new TrackedEntityStoreImpl(d2.databaseAdapter());
-        CategoryOptionStoreImpl categoryOptionStore = new CategoryOptionStoreImpl(d2.databaseAdapter());
-        DataElementStoreImpl dataElementStore = new DataElementStoreImpl(d2.databaseAdapter());
-        OptionStoreImpl optionStore = new OptionStoreImpl(d2.databaseAdapter());
-
-
-
         DeletedObjectHandler deletedObjectHandler = new DeletedObjectHandler(userStore,
                 categoryStore, categoryComboStore, categoryOptionComboStore,
                 programStore, organisationUnitStore, optionSetStore, trackedEntityStore,
@@ -225,6 +212,7 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_PROGRAM);
         assertPersistedDate(date, lastUpdated);
 
+        //when
         response = new DeletedObjectEndPointCall(
                 deletedObjectService, resourceStore,
                 deletedObjectHandler, new Date(), Program.class.getSimpleName()).call();

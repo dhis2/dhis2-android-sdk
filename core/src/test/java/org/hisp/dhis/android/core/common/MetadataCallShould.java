@@ -339,34 +339,34 @@ public class MetadataCallShould {
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
         when(systemInfoService.getSystemInfo(any(Fields.class))).thenReturn(systemInfoCall);
 
-        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class))).thenReturn(deletableObjectCall);
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), anyString())).thenReturn(deletableObjectCall);
 
         when(userService.getUser(any(Fields.class))).thenReturn(userCall);
 
-        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class)))
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), anyString()))
                 .thenReturn(deletableObjectCall);
 
         when(organisationUnitService.getOrganisationUnits(
                 anyString(), any(Fields.class), any(Filter.class), anyBoolean(), anyBoolean())
         ).thenReturn(organisationUnitCall);
 
-        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class))).thenReturn(deletableObjectCall);
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), anyString())).thenReturn(deletableObjectCall);
 
         when(programService.getPrograms(
                 any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
         ).thenReturn(programCall);
 
-        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class))).thenReturn(deletableObjectCall);
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), anyString())).thenReturn(deletableObjectCall);
 
-        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class))).thenReturn(deletableObjectCall);
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), anyString())).thenReturn(deletableObjectCall);
 
         when(trackedEntityService.trackedEntities(
                 any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
         ).thenReturn(trackedEntityCall);
 
-        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class))).thenReturn(deletableObjectCall);
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), anyString())).thenReturn(deletableObjectCall);
 
-        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), any(Filter.class))).thenReturn(deletableObjectCall);
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), anyString())).thenReturn(deletableObjectCall);
 
         when(optionSetService.optionSets(
                 anyBoolean(), any(Fields.class), any(Filter.class))

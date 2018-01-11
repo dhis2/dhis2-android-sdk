@@ -11,10 +11,14 @@ import com.google.common.truth.Truth;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryComboStore;
+import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
+import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
+import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryStore;
+import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.CategoryCallFactory;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
@@ -23,9 +27,13 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
 import org.hisp.dhis.android.core.option.OptionSetStore;
+import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.option.OptionStore;
+import org.hisp.dhis.android.core.option.OptionStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
@@ -43,7 +51,9 @@ import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.android.core.user.UserStore;
+import org.hisp.dhis.android.core.user.UserStoreImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -180,6 +190,19 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
         ProgramStoreImpl programStore = new ProgramStoreImpl(d2.databaseAdapter());
+        CategoryStoreImpl categoryStore = new CategoryStoreImpl(d2.databaseAdapter());
+        CategoryComboStoreImpl categoryComboStore = new CategoryComboStoreImpl(d2.databaseAdapter());
+        CategoryOptionComboStoreImpl categoryOptionComboStore = new CategoryOptionComboStoreImpl(d2.databaseAdapter());
+        OrganisationUnitStoreImpl organisationUnitStore = new OrganisationUnitStoreImpl(d2.databaseAdapter());
+        OptionSetStoreImpl optionSetStore = new OptionSetStoreImpl(d2.databaseAdapter());
+        UserStoreImpl userStore = new UserStoreImpl(d2.databaseAdapter());
+        TrackedEntityStoreImpl trackedEntityStore = new TrackedEntityStoreImpl(d2.databaseAdapter());
+        CategoryOptionStoreImpl categoryOptionStore = new CategoryOptionStoreImpl(d2.databaseAdapter());
+        DataElementStoreImpl dataElementStore = new DataElementStoreImpl(d2.databaseAdapter());
+        OptionStoreImpl optionStore = new OptionStoreImpl(d2.databaseAdapter());
+
+
+
         DeletedObjectHandler deletedObjectHandler = new DeletedObjectHandler(userStore,
                 categoryStore, categoryComboStore, categoryOptionComboStore,
                 programStore, organisationUnitStore, optionSetStore, trackedEntityStore,

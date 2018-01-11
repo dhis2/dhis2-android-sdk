@@ -73,6 +73,8 @@ import org.hisp.dhis.android.core.program.ProgramStageStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
+import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.android.core.user.UserStoreImpl;
@@ -99,11 +101,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_PROGRAM_RULE_VARIABLES,
             DELETED_OBJECT_PROGRAM_INDICATORS,
             DELETED_OBJECT_DATA_ELEMENTS,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_RELATIONSHIP_TYPES,
             DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
             DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
@@ -114,21 +113,12 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             SYSTEM_INFO,
             DELETED_OBJECT_USER, ALTERNATIVE_USER,
             DELETED_OBJECT_ORGANISATION_UNITS, EMPTY_ORGANISATION_UNITS,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, EMPTY_CATEGORIES,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_CATEGORY_OPTION_COMBO, EMPTY_CATEGORY_COMBOS,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, EMPTY_CATEGORIES,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_CATEGORY_OPTION_COMBO, EMPTY_CATEGORY_COMBOS,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_PROGRAMS, EMPTY_PROGRAMS,
             DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY,
@@ -139,23 +129,14 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_USER, ALTERNATIVE_USER,
             DELETED_OBJECT_ORGANISATION_UNITS, EMPTY_ORGANISATION_UNITS,
             DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, EMPTY_CATEGORIES,
-            DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, EMPTY_CATEGORIES, DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_CATEGORY_OPTION_COMBO, EMPTY_CATEGORY_COMBOS,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_PROGRAM_STAGES,
-            DELETED_OBJECT_PROGRAM_STAGE_DATA_ELEMENTS,
-            DELETED_OBJECT_PROGRAM_STAGE_SECTIONS,
-            DELETED_OBJECT_PROGRAM_TRACKED_ENTITY_ATTRIBUTES,
-            DELETED_OBJECT_TRACKED_ENTITY_ATTRIBUTES,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, EMPTY_PROGRAMS,
-            DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES,
-            DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_PROGRAM_STAGES,
+            DELETED_OBJECT_PROGRAM_STAGE_DATA_ELEMENTS, DELETED_OBJECT_PROGRAM_STAGE_SECTIONS,
+            DELETED_OBJECT_PROGRAM_TRACKED_ENTITY_ATTRIBUTES, DELETED_OBJECT_TRACKED_ENTITY_ATTRIBUTES,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, EMPTY_PROGRAMS,
+            DELETED_OBJECT_TRACKED_ENTITY, EMPTY_TRACKED_ENTITIES, DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_OPTION_SETS, EMPTY_OPTION_SETS};
 
     public final static String[] commonMetadataWithMultipleObjectsJsonFiles = new String[]{
@@ -166,21 +147,13 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
             DELETED_OBJECT_EMPTY, SIMPLE_CATEGORIES,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, MULTIPLE_PROGRAMS,
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, OPTION_SETS};
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, OPTION_SETS};
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
@@ -201,6 +174,31 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         super.tearDown();
 
         dhis2MockServer.shutdown();
+    }
+
+    @Test
+    @MediumTest
+    public void have_empty_deleted_resources_model_on_start_and_persisted_on_pull_end()
+            throws Exception {
+        ResourceStoreImpl resourceStore = new ResourceStoreImpl(databaseAdapter());
+        for (ResourceModel.Type resource : ResourceModel.Type.values()) {
+            String lastUpdated = resourceStore.getLastUpdated(resource);
+            assertTrue(lastUpdated == null);
+        }
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                commonMetadataWithMultipleObjectsJsonFiles);
+        d2.syncMetaData().call();
+        for (ResourceModel.Type resource : ResourceModel.Type.values()) {
+            String lastUpdated = resourceStore.getLastUpdated(resource);
+            //Ignore not called resources
+            if (resource.equals(ResourceModel.Type.EVENT) || resource.equals(
+                    ResourceModel.Type.TRACKED_ENTITY_INSTANCE)
+                    || resource.equals(ResourceModel.Type.USER_CREDENTIALS)
+                    || resource.equals(ResourceModel.Type.AUTHENTICATED_USER)) {
+                continue;
+            }
+            assertFalse(lastUpdated.equals(""));
+        }
     }
 
     @Test
@@ -237,15 +235,17 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     @Test
     @MediumTest
     public void delete_the_given_deleted_program_tracked_entity_attributes() throws Exception {
-        ProgramTrackedEntityAttributeStoreImpl programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStoreImpl(
-                databaseAdapter());
+        ProgramTrackedEntityAttributeStoreImpl programTrackedEntityAttributeStore =
+                new ProgramTrackedEntityAttributeStoreImpl(
+                        databaseAdapter());
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
                 commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
         verifyIfIsPersisted("CgwB73TbuLC", programTrackedEntityAttributeStore);
         verifyIfIsPersisted("r5BFLb7DBUz", programTrackedEntityAttributeStore);
 
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedProgramStagesObjects);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                metadataJsonWithDeletedProgramStagesObjects);
         d2.syncMetaData().call();
 
         verifyIfIsDeleted("CgwB73TbuLC", programTrackedEntityAttributeStore);
@@ -455,7 +455,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsPersisted("A03MvHHogjR", programStageStore);
 
         //when
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedProgramStagesObjects);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                metadataJsonWithDeletedProgramStagesObjects);
         d2.syncMetaData().call();
 
         //then
@@ -467,7 +468,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     @MediumTest
     public void delete_the_given_deleted_program_sections() throws Exception {
         //given
-        ProgramStageSectionStoreImpl programSectionStore = new ProgramStageSectionStoreImpl(databaseAdapter());
+        ProgramStageSectionStoreImpl programSectionStore = new ProgramStageSectionStoreImpl(
+                databaseAdapter());
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
                 commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
@@ -475,7 +477,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsPersisted("OeSqs7pkKqI", programSectionStore);
 
         //when
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedProgramStagesObjects);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                metadataJsonWithDeletedProgramStagesObjects);
         d2.syncMetaData().call();
 
         //then
@@ -487,7 +490,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     @MediumTest
     public void delete_the_given_deleted_tracked_entity_attributes() throws Exception {
         //given
-        TrackedEntityAttributeStoreImpl trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl(databaseAdapter());
+        TrackedEntityAttributeStoreImpl trackedEntityAttributeStore =
+                new TrackedEntityAttributeStoreImpl(databaseAdapter());
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
                 commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
@@ -495,7 +499,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsPersisted("VqEFza8wbwA", trackedEntityAttributeStore);
 
         //when
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedProgramStagesObjects);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                metadataJsonWithDeletedProgramStagesObjects);
         d2.syncMetaData().call();
 
         //then
@@ -507,7 +512,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     @MediumTest
     public void delete_the_given_deleted_program_stage_data_elements() throws Exception {
         //given
-        ProgramStageDataElementStoreImpl programStageDataElementStore = new ProgramStageDataElementStoreImpl(databaseAdapter());
+        ProgramStageDataElementStoreImpl programStageDataElementStore =
+                new ProgramStageDataElementStoreImpl(databaseAdapter());
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
                 commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
@@ -515,7 +521,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsPersisted("vdc1saaN2ma", programStageDataElementStore);
 
         //when
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedProgramStagesObjects);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                metadataJsonWithDeletedProgramStagesObjects);
         d2.syncMetaData().call();
 
         //then
@@ -610,7 +617,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     public void delete_the_given_program_rule_variables() throws Exception {
         ProgramRuleVariableStoreImpl
                 programRuleVariableStore = new ProgramRuleVariableStoreImpl(databaseAdapter());
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataWithMultipleObjectsJsonFiles);
+        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
+                commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
         verifyIfIsPersisted("RycV5uDi66i", programRuleVariableStore);
         verifyIfIsPersisted("zINGRka3g9N", programRuleVariableStore);

@@ -87,9 +87,6 @@ public class DeletedObjectEndPointCall implements Call<Response<Payload<DeletedO
         Response<Payload<DeletedObject>> deletedObjectsByLastUpdated = null;
         String lastSyncedDeletedObjects = resourceHandler.getLastUpdated(type);
 
-        Filter<DeletedObject, String> lastUpdatedFilter = DeletedObject.deletedAt.gt(
-                lastSyncedDeletedObjects
-        );
         deletedObjectsByLastUpdated =
                 deletedObjectService.getDeletedObjectsDeletedAt(
                         getSingleFields(), true, deletedObjectKlass, lastSyncedDeletedObjects).execute();

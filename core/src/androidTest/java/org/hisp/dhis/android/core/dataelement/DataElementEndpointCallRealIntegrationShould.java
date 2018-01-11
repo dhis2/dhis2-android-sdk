@@ -51,7 +51,7 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
     }
 
     // @Test
-    public void download_data_sets() throws Exception {
+    public void download_data_elements() throws Exception {
         retrofit2.Response loginResponse = d2.logIn("android", "Android123").call();
         assertThat(loginResponse.isSuccessful()).isTrue();
 

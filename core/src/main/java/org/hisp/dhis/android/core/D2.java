@@ -64,8 +64,6 @@ import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
-import org.hisp.dhis.android.core.constant.ConstantStore;
-import org.hisp.dhis.android.core.constant.ConstantStoreImpl;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -196,7 +194,6 @@ public final class D2 {
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitStore organisationUnitStore;
     private final ResourceStore resourceStore;
-    private final ConstantStore constantStore;
     private final SystemInfoStore systemInfoStore;
     private final UserRoleStore userRoleStore;
     private final UserRoleProgramLinkStore userRoleProgramLinkStore;
@@ -278,8 +275,6 @@ public final class D2 {
                 new OrganisationUnitStoreImpl(databaseAdapter);
         this.resourceStore =
                 new ResourceStoreImpl(databaseAdapter);
-        this.constantStore =
-                new ConstantStoreImpl(databaseAdapter);
         this.systemInfoStore =
                 new SystemInfoStoreImpl(databaseAdapter);
         this.userRoleStore =
@@ -481,7 +476,7 @@ public final class D2 {
         return new MetadataCall(
                 databaseAdapter, systemInfoService, userService, programService,
                 organisationUnitService, trackedEntityService, optionSetService,
-                deletedObjectService, systemInfoStore, resourceStore, constantStore,
+                deletedObjectService, systemInfoStore, resourceStore,
                 userStore, userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
                 organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,

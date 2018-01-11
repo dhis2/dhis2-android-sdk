@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.constant.ConstantStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -128,7 +127,6 @@ public class MetadataCall implements Call<Response> {
     private final OptionSetService optionSetService;
     private final SystemInfoStore systemInfoStore;
     private final ResourceStore resourceStore;
-    private final ConstantStore constantStore;
     private final UserStore userStore;
     private final UserCredentialsStore userCredentialsStore;
     private final UserRoleStore userRoleStore;
@@ -174,7 +172,6 @@ public class MetadataCall implements Call<Response> {
             @NonNull DeletedObjectService deletedObjectService,
             @NonNull SystemInfoStore systemInfoStore,
             @NonNull ResourceStore resourceStore,
-            @NonNull ConstantStore constantStore,
             @NonNull UserStore userStore,
             @NonNull UserCredentialsStore userCredentialsStore,
             @NonNull UserRoleStore userRoleStore,
@@ -216,7 +213,6 @@ public class MetadataCall implements Call<Response> {
         this.deletedObjectService = deletedObjectService;
         this.systemInfoStore = systemInfoStore;
         this.resourceStore = resourceStore;
-        this.constantStore = constantStore;
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.userRoleStore = userRoleStore;
@@ -275,9 +271,11 @@ public class MetadataCall implements Call<Response> {
                     databaseAdapter, systemInfoStore,
                     systemInfoService, resourceStore
             ).call();
+
             if (!response.isSuccessful()) {
                 return response;
             }
+
             SystemInfo systemInfo = (SystemInfo) response.body();
             Date serverDate = systemInfo.serverDate();
 
@@ -297,6 +295,7 @@ public class MetadataCall implements Call<Response> {
                     serverDate,
                     userRoleProgramLinkStore
             ).call();
+
             if (!response.isSuccessful()) {
                 return response;
             }
@@ -318,165 +317,28 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
-            response = syncDeletedObject(serverDate, Category.class.getSimpleName());
+            response = syncCategories(serverDate);
 
-            if (!response.isSuccessful()) {
+            if(!response.isSuccessful()){
                 return response;
             }
 
-            response = syncDeletedObject(serverDate, CategoryOption.class.getSimpleName());
+            response = syncPrograms(serverDate, user);
 
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = downloadCategories(serverDate);
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = syncDeletedObject(serverDate, CategoryCombo.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-
-            response = syncDeletedObject(serverDate, CategoryOptionCombo.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = downloadCategoryCombos(serverDate);
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = syncDeletedObject(serverDate, ProgramRule.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = syncDeletedObject(serverDate, ProgramRuleAction.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = syncDeletedObject(serverDate, ProgramRuleVariable.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = syncDeletedObject(serverDate, ProgramIndicator.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = syncDeletedObject(serverDate, DataElement.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = syncDeletedObject(serverDate, ProgramStage.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = syncDeletedObject(serverDate, ProgramStageDataElement.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = syncDeletedObject(serverDate, ProgramStageSection.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = syncDeletedObject(serverDate, ProgramTrackedEntityAttribute.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = syncDeletedObject(serverDate, TrackedEntityAttribute.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = syncDeletedObject(serverDate, RelationshipType.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            response = syncDeletedObject(serverDate, Program.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            Set<String> programUids = getAssignedProgramUids(user);
-
-            response = new ProgramCall(
-                    programService, databaseAdapter, resourceStore, programUids, programStore,
-                    serverDate,
-                    trackedEntityAttributeStore, programTrackedEntityAttributeStore,
-                    programRuleVariableStore,
-                    programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
-                    programRuleActionStore,
-                    programRuleStore, optionStore, optionSetStore, dataElementStore,
-                    programStageDataElementStore,
-                    programStageSectionStore, programStageStore, relationshipStore
-            ).call();
-            if (!response.isSuccessful()) {
+            if(!response.isSuccessful()){
                 return response;
             }
 
             List<Program> programs = ((Response<Payload<Program>>) response).body().items();
 
-            response = syncDeletedObject(serverDate, TrackedEntity.class.getSimpleName());
+            response = syncTrackedEntities(serverDate, programs);
 
             if (!response.isSuccessful()) {
                 return response;
             }
 
-            Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
-            response = new TrackedEntityCall(
-                    trackedEntityUids, databaseAdapter, trackedEntityStore,
-                    resourceStore, trackedEntityService, serverDate
-            ).call();
-            if (!response.isSuccessful()) {
-                return response;
-            }
+            response = syncOptionSets(serverDate, programs);
 
-            response = syncDeletedObject(serverDate, Option.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-            response = syncDeletedObject(serverDate, OptionSet.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
-            Set<String> optionSetUids = getAssignedOptionSetUids(programs);
-            response = new OptionSetCall(
-                    optionSetService, optionSetStore, databaseAdapter, resourceStore,
-                    optionSetUids, serverDate, optionStore
-            ).call();
             if (!response.isSuccessful()) {
                 return response;
             }
@@ -488,9 +350,174 @@ public class MetadataCall implements Call<Response> {
         }
     }
 
+    private Response syncOptionSets(Date serverDate, List<Program> programs) throws Exception {
+        Response response = syncDeletedObject(serverDate, Option.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+        response = syncDeletedObject(serverDate, OptionSet.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        Set<String> optionSetUids = getAssignedOptionSetUids(programs);
+        response = new OptionSetCall(
+                optionSetService, optionSetStore, databaseAdapter, resourceStore,
+                optionSetUids, serverDate, optionStore
+        ).call();
+
+        return response;
+    }
+
+    private Response syncTrackedEntities(Date serverDate, List<Program> programs) throws Exception {
+        Response response = syncDeletedObject(serverDate, TrackedEntity.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
+        response = new TrackedEntityCall(
+                trackedEntityUids, databaseAdapter, trackedEntityStore,
+                resourceStore, trackedEntityService, serverDate
+        ).call();
+
+        return response;
+    }
+    private Response syncCategories(Date serverDate)
+            throws Exception {
+
+        Response response = syncDeletedObject(serverDate, Category.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = syncDeletedObject(serverDate, CategoryOption.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = downloadCategories(serverDate);
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = syncDeletedObject(serverDate, CategoryCombo.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+
+        response = syncDeletedObject(serverDate, CategoryOptionCombo.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = downloadCategoryCombos(serverDate);
+
+        return response;
+    }
+
+
+    private Response syncPrograms(Date serverDate, User user)
+            throws Exception {
+        Response response = syncDeletedObject(serverDate, ProgramRule.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = syncDeletedObject(serverDate, ProgramRuleAction.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = syncDeletedObject(serverDate, ProgramRuleVariable.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = syncDeletedObject(serverDate, ProgramIndicator.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = syncDeletedObject(serverDate, DataElement.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = syncDeletedObject(serverDate, ProgramStage.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = syncDeletedObject(serverDate, ProgramStageDataElement.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = syncDeletedObject(serverDate, ProgramStageSection.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = syncDeletedObject(serverDate, ProgramTrackedEntityAttribute.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = syncDeletedObject(serverDate, TrackedEntityAttribute.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = syncDeletedObject(serverDate, RelationshipType.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = syncDeletedObject(serverDate, Program.class.getSimpleName());
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        Set<String> programUids = getAssignedProgramUids(user);
+
+        response = new ProgramCall(
+                programService, databaseAdapter, resourceStore, programUids, programStore,
+                serverDate,
+                trackedEntityAttributeStore, programTrackedEntityAttributeStore,
+                programRuleVariableStore,
+                programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
+                programRuleActionStore,
+                programRuleStore, optionStore, optionSetStore, dataElementStore,
+                programStageDataElementStore,
+                programStageSectionStore, programStageStore, relationshipStore
+        ).call();
+        return response;
+    }
+
     private Response<Payload<DeletedObject>> syncDeletedObject(Date serverDate, String klass) throws Exception {
-        return new DeletedObjectEndPointCall(deletedObjectService, databaseAdapter,
-                resourceStore,
+        return new DeletedObjectEndPointCall(deletedObjectService, resourceStore,
                 deletedObjectHandler, serverDate, klass).call();
     }
 

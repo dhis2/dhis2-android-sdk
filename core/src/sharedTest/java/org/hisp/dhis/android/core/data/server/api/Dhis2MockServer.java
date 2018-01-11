@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.server;
+package org.hisp.dhis.android.core.data.server.api;
 
 import static okhttp3.internal.Util.UTC;
 

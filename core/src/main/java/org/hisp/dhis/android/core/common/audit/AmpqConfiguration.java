@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.common.ampq;
+package org.hisp.dhis.android.core.common.audit;
 
 import com.google.auto.value.AutoValue;
 

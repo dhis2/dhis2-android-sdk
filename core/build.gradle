@@ -121,12 +121,14 @@ dependencies {
     testCompile "org.assertj:assertj-core:${libraries.assertj}"
     testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
     testCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
+    testCompile "org.apache.qpid:qpid-broker:${libraries.qpidbroker}"
     testCompile 'com.google.code.findbugs:annotations:3.0.0'
     testCompile "com.android.support.test:runner:${libraries.testrunner}"
 
     // Android test dependencies
     androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"
     androidTestCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
+    androidTestCompile "org.apache.qpid:qpid-broker:${libraries.qpidbroker}"
     androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
     androidTestCompile "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
     androidTestCompile("com.google.truth:truth:${libraries.truth}") {

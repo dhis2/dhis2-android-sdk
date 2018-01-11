@@ -1,5 +1,8 @@
-package org.hisp.dhis.android.core.common.ampq;
+package org.hisp.dhis.android.core.common.audit;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -8,11 +11,15 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.audit.MetadataAudit;
+
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class MetadataChangeConsumer {
     public interface MetadataChangeHandler {
-        void handle(String routingKey, String message);
+        void handle(MetadataAudit metadataAudit);
     }
 
     private final static String EXCHANGE_NAME = "dhis2";
@@ -75,7 +82,12 @@ public class MetadataChangeConsumer {
                         " [x] Received '" + envelope.getRoutingKey() + "':'" + message + "'");
 
                 if (metadataChangeHandler != null) {
-                    metadataChangeHandler.handle(envelope.getRoutingKey(), message);
+                    try {
+                        metadataChangeHandler.handle(
+                                parseMetadataAudit(envelope.getRoutingKey(), message));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         };
@@ -84,5 +96,25 @@ public class MetadataChangeConsumer {
         System.out.println(" [*] Waiting for ampq messages.");
     }
 
+    private MetadataAudit parseMetadataAudit(String routingKey, String body)
+            throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper()
+                .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
+        JavaType type = getType(routingKey.split(Pattern.quote("."))[1], objectMapper);
+
+        return objectMapper.readValue(body, type);
+    }
+
+    private JavaType getType(String className, ObjectMapper objectMapper)
+            throws ClassNotFoundException {
+        String capitalizedClassName = className.substring(0, 1).toUpperCase() + className.substring(
+                1);
+
+        Class<?> klass = MetadataClassFactory.getByName(capitalizedClassName);
+
+        return objectMapper.getTypeFactory()
+                .constructParametricType(MetadataAudit.class, klass);
+    }
 }

@@ -1,9 +1,10 @@
-package org.hisp.dhis.android.core.common.ampq;
+package org.hisp.dhis.android.core.common.audit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
+import org.hisp.dhis.android.core.data.audit.MetadataAudit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,14 +12,13 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
-public class MetadataChangeConsumerRealIntegrationShould {
+public class MetadataAuditConsumerRealIntegrationShould {
 
     MetadataChangeConsumer consumer;
 
     private final CountDownLatch lock = new CountDownLatch(1);
 
-    String key;
-    String msg;
+    MetadataAudit metadataAuditInfo;
 
     @Before
     public void setUp() throws Exception {
@@ -40,21 +40,18 @@ public class MetadataChangeConsumerRealIntegrationShould {
     //The goal of this test is research how messages are received from rabbitmq
     //this test must to be commented because need a message broker, rabbitmq configuration
     //in dhis2 server and manual metadata change.
-
-    //@Test
+    @Test
     public void return_metadata_change_message() throws Exception {
         consumer.setMetadataChangeHandler(new MetadataChangeConsumer.MetadataChangeHandler() {
             @Override
-            public void handle(String routingKey, String message) {
-                key = routingKey;
-                msg = message;
+            public void handle(MetadataAudit metadataAudit) {
+                metadataAuditInfo = metadataAudit;
                 lock.countDown();
             }
         });
 
         lock.await();
 
-        assertThat(key, is(notNullValue()));
-        assertThat(msg, is(notNullValue()));
+        assertThat(metadataAuditInfo, is(notNullValue()));
     }
 }

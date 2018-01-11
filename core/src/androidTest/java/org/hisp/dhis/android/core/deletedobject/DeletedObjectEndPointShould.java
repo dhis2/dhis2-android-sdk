@@ -51,8 +51,7 @@ public class DeletedObjectEndPointShould  extends AbsStoreTestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_exception_if_type_is_not_supported() throws Exception {
-        new DeletedObjectEndPointCall(deletedObjectService, databaseAdapter,
-                resourceStore,
+        new DeletedObjectEndPointCall(deletedObjectService, resourceStore,
                 deleteObjectHandler, new Date(), "wrong_klass").call();
     }
 }

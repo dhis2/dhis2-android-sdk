@@ -201,7 +201,7 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
         String username = cursor.getString(6);
         String userUid = cursor.getString(7);
 
-        UserCredentials userCredentials = UserCredentials.create(uid,code, name, displayName,
+        UserCredentials userCredentials = UserCredentials.create(uid, code, name, displayName,
                 created, lastUpdated, username, null, false);
         return userCredentials;
     }

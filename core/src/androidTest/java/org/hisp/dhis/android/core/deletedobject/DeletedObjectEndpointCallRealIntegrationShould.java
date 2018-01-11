@@ -142,8 +142,7 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         //when
         Date date = new Date();
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService , d2.databaseAdapter(),
-                resourceStore, deletedObjectHandler,
+                deletedObjectService , resourceStore, deletedObjectHandler,
                 date, Program.class.getSimpleName()).call();
 
         //then
@@ -174,8 +173,7 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService , d2.databaseAdapter(),
-                new ResourceStoreImpl(d2.databaseAdapter()),
+                deletedObjectService, new ResourceStoreImpl(d2.databaseAdapter()),
                 deletedObjectHandler, new Date(), Program.class.getSimpleName()).call();
 
         //then
@@ -219,8 +217,7 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
 
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService , d2.databaseAdapter(),
-                resourceStore,
+                deletedObjectService, resourceStore,
                 deletedObjectHandler, date, Program.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
         assertTrue(hasDeletedObjects(response));
@@ -229,8 +226,7 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         assertPersistedDate(date, lastUpdated);
 
         response = new DeletedObjectEndPointCall(
-                deletedObjectService , d2.databaseAdapter(),
-                resourceStore,
+                deletedObjectService, resourceStore,
                 deletedObjectHandler, new Date(), Program.class.getSimpleName()).call();
 
         //then

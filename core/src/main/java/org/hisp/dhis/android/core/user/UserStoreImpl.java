@@ -285,8 +285,8 @@ public class UserStoreImpl implements UserStore {
         String phoneNumber = cursor.getString(17);
         String nationality = cursor.getString(18);
 
-        UserCredentials userCredentials = UserCredentials.create("","","","",
-                new Date(),new Date(),"",null, false);
+        UserCredentials userCredentials = UserCredentials.create("", "", "", "",
+                new Date(), new Date(), "", null, false);
 
         user = User.create(
                 uid, code, name, displayName, created, lastUpdated, birthday, education, gender,

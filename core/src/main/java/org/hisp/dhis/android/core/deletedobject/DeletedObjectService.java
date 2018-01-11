@@ -2,17 +2,11 @@ package org.hisp.dhis.android.core.deletedobject;
 
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventPayload;
-import org.hisp.dhis.android.core.imports.WebResponse;
 
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface DeletedObjectService {

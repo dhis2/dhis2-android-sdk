@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.user.UserModel;
 
 import java.util.ArrayList;
 import java.util.Date;

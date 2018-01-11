@@ -17,8 +17,8 @@ android:
   - extra-android-support
 env:
   global:
-  - secure: WbGInHX+bL8MPaUOZUYAaPsVqjxCag3nhoI7cnIhsYaw4/YENJ7mGPd1QZM7QxmsBxCjwLzrBfLg/r9ziX2sJ6J8OHuVeILPY0xrb2wBvgKI9AFfIHHWXGXaypSsKsFnqhTMIyPF6RRngu0rI+DqtljnLBBbA3SmIcvV1+9WeHQ=
-  - secure: VRooEJvYGrxAcApgfwPb/QyGXrMBFeSQgslFeS5g+E7T9hKggixetV8qI3vTceMCh3PGPMSfWhxmFa9JQaSLj2lnCGy0lAt5RYUDiQgVLmN25o8U3qMUZUglk+5Ba3hWgzFjb5XIj2QCvjDax2G00PyU7ycONWMsNnWJ9Ws80Ag=
+  - secure: "cY/fqS1b19hNzMMpxNOMpUCZBD+gALjNSq+4M+5UdeUya0ed/H2O1d/Hj/W6uCDgF6mDrGrjzplpowtReyODAdNwuqGloKM2stW8pmcW1uNo+ptKfTEd1P0M+2zLhqb9N1fdEy/PmnFFquid9uD+ru+nW8UiWe3Uesd6UrVOAvI="
+  - secure: "gDaPXqvLiOlU+jnIoFgJl15G2a3c2byC2+g1SXPvkg+1Ujz2RXLpk2vEQ58UZuSHVdoDFjhWiA+PrrHiRTDhzPZhExMjLWhYpERCmUypdzA+EBhIBTxzdA5wPC3BDJZ47SjxSTpYrSTv1T2dTm/Opoi+LhXfqQOCPnmQWZegCFI="
 
 branches:
   only:

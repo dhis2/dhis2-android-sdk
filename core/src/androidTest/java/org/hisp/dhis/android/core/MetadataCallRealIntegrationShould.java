@@ -23,7 +23,6 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private RabbitMQReceiver rabbitMQReceiver;
     Exception e;
 
     @Before
@@ -32,12 +31,6 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         super.setUp();
 
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
-
-        try {
-            rabbitMQReceiver = new RabbitMQReceiver(new URL(RealServerMother.url));
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
     }
 
 
@@ -59,6 +52,9 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     @Test
     @LargeTest
     public void response_successful_on_sync_meta_data_two_times() throws Exception {
+
+        Thread.sleep(60000);
+
         retrofit2.Response response = null;
         response = d2.logIn("admin", "district").call();
         assertThat(response.isSuccessful()).isTrue();

@@ -115,6 +115,36 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
         verifyDownloadedEvents("event_1_with_only_one_data_values.json");
     }
 
+    @Test
+    @MediumTest
+    public void remove_event_removed_in_server_after_second_events_download()
+            throws Exception {
+        givenAMetadataInDatabase();
+
+        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+
+        dhis2MockServer.enqueueMockResponse("event_1_with_all_data_values.json");
+
+        eventEndPointCall.call();
+
+        eventEndPointCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+
+        dhis2MockServer.enqueueMockResponse("event_1_with_delete_true.json");
+
+        eventEndPointCall.call();
+
+        verifyDownloadedEventsIsZero();
+    }
+
+    private void verifyDownloadedEventsIsZero() {
+
+        List<Event> downloadedEvents = getDownloadedEvents();
+
+        assertThat(downloadedEvents.size(), is(0));
+    }
+
     private void givenAMetadataInDatabase() throws Exception {
         MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
         Response response = d2.syncMetaData().call();

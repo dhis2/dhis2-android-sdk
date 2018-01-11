@@ -380,9 +380,9 @@ public final class D2 {
                 categoryComboOptionCategoryLinkStore,
                 categoryCategoryComboLinkStore, optionComboHandler);
 
-        deletedObjectHandler = new DeletedObjectHandler(userStore, userCredentialsStore,
+        deletedObjectHandler = new DeletedObjectHandler(userStore,
                 categoryStore, categoryComboStore, categoryOptionComboStore,
-                constantStore, programStore, organisationUnitStore, optionSetStore, trackedEntityStore,
+                programStore, organisationUnitStore, optionSetStore, trackedEntityStore,
                 categoryOptionStore, dataElementStore, optionStore, programIndicatorStore, programRuleStore,
                 programRuleActionStore, programRuleVariableStore, programStageStore, programStageDataElementStore,
                 programStageSectionStore, programTrackedEntityAttributeStore, trackedEntityAttributeStore,

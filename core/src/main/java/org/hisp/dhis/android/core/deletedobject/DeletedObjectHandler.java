@@ -35,15 +35,11 @@ public class DeletedObjectHandler {
     @NonNull
     private final UserStore userStore;
     @NonNull
-    private final UserCredentialsStore userCredentialsStore;
-    @NonNull
     private final CategoryStore categoryStore;
     @NonNull
     private final CategoryComboStore categoryComboStore;
     @NonNull
     private final CategoryOptionComboStore categoryOptionComboStore;
-    @NonNull
-    private final ConstantStore constantStore;
     @NonNull
     private final ProgramStore programStore;
     @NonNull
@@ -83,11 +79,9 @@ public class DeletedObjectHandler {
 
     public DeletedObjectHandler(
             @NonNull UserStore userStore,
-            @NonNull UserCredentialsStore userCredentialsStore,
             @NonNull CategoryStore categoryStore,
             @NonNull CategoryComboStore categoryComboStore,
             @NonNull CategoryOptionComboStore categoryOptionComboStore,
-            @NonNull ConstantStore constantStore,
             @NonNull ProgramStore programStore,
             @NonNull OrganisationUnitStore organisationUnitStore,
             @NonNull OptionSetStore optionSetStore,
@@ -106,11 +100,9 @@ public class DeletedObjectHandler {
             @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
             @NonNull RelationshipTypeStore relationshipTypeStore) {
         this.userStore = userStore;
-        this.userCredentialsStore = userCredentialsStore;
         this.categoryStore = categoryStore;
         this.categoryComboStore = categoryComboStore;
         this.categoryOptionComboStore = categoryOptionComboStore;
-        this.constantStore = constantStore;
         this.programStore = programStore;
         this.organisationUnitStore = organisationUnitStore;
         this.optionSetStore = optionSetStore;

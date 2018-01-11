@@ -17,7 +17,6 @@ import retrofit2.http.Query;
 
 public interface DeletedObjectService {
     String FIELDS = "fields";
-    String FILTER = "filter";
     String KLASS = "klass";
     String DELETED_AT = "deletedAt";
     String SKIP_PAGING = "skipPaging";
@@ -27,7 +26,7 @@ public interface DeletedObjectService {
     Call<Payload<DeletedObject>> getDeletedObjectsDeletedAt(
             @Query(FIELDS) @Which Fields<DeletedObject> fields,
             @Query(SKIP_PAGING) Boolean paging, @Query(KLASS) String klass,
-            @Query(FILTER) @Where Filter<DeletedObject, String> deletedAt);
+            @Query(DELETED_AT) @Where String deletedAt);
 
     @GET(DELETED_OBJECTS)
     Call<Payload<DeletedObject>> getDeletedObjects(

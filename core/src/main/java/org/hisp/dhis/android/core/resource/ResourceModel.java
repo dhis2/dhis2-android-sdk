@@ -36,8 +36,29 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.program.ProgramRule;
+import org.hisp.dhis.android.core.program.ProgramRuleAction;
+import org.hisp.dhis.android.core.program.ProgramRuleVariable;
+import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramStageSection;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.user.User;
 
 import java.util.Date;
 
@@ -115,6 +136,54 @@ public abstract class ResourceModel extends BaseModel {
         public abstract Builder lastSynced(@Nullable Date lastSynced);
 
         public abstract ResourceModel build();
+    }
+
+    public static ResourceModel.Type getResourceModelFromKlass(String klass) {
+        if (klass.equals(User.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_USER;
+        } else if (klass.equals(OrganisationUnit.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_ORGANISATION_UNIT;
+        } else if (klass.equals(Program.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_PROGRAM;
+        } else if (klass.equals(OptionSet.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_OPTION_SET;
+        } else if (klass.equals(TrackedEntity.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_TRACKED_ENTITY;
+        } else if (klass.equals(Category.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_CATEGORY;
+        } else if (klass.equals(CategoryCombo.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_CATEGORY_COMBO;
+        } else if (klass.equals(CategoryOption.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_CATEGORY_OPTION;
+        } else if (klass.equals(CategoryOptionCombo.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_CATEGORY_OPTION_COMBO;
+        } else if (klass.equals(DataElement.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_DATA_ELEMENT;
+        } else if (klass.equals(Option.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_OPTION;
+        } else if (klass.equals(ProgramIndicator.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_PROGRAM_INDICATOR;
+        } else if (klass.equals(ProgramRule.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_PROGRAM_RULE;
+        } else if (klass.equals(ProgramRuleAction.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_PROGRAM_RULE_ACTION;
+        } else if (klass.equals(ProgramRuleVariable.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_PROGRAM_RULE_VARIABLE;
+        } else if (klass.equals(ProgramStage.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_PROGRAM_STAGE;
+        } else if (klass.equals(ProgramStageDataElement.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_PROGRAM_STAGE_DATA_ELEMENT;
+        } else if (klass.equals(ProgramStageSection.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_PROGRAM_STAGE_SECTION;
+        } else if (klass.equals(ProgramTrackedEntityAttribute.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_PROGRAM_TRACKED_ENTITY_ATTRIBUTE;
+        } else if (klass.equals(TrackedEntityAttribute.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_TRACKED_ENTITY_ATTRIBUTE;
+        } else if (klass.equals(RelationshipType.class.getSimpleName())) {
+            return ResourceModel.Type.DELETED_RELATIONSHIP_TYPE;
+        }
+
+        return null;
     }
 
 }

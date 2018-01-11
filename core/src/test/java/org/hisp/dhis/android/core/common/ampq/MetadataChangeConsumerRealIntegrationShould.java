@@ -41,7 +41,7 @@ public class MetadataChangeConsumerRealIntegrationShould {
     //this test must to be commented because need a message broker, rabbitmq configuration
     //in dhis2 server and manual metadata change.
 
-    @Test
+    //@Test
     public void return_metadata_change_message() throws Exception {
         consumer.setMetadataChangeHandler(new MetadataChangeConsumer.MetadataChangeHandler() {
             @Override

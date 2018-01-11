@@ -81,6 +81,7 @@ ext {
             truth           : "0.31",
             testrunner      : "0.5",
             equalsverifier  : "2.1.8",
+            qpidbroker      : "6.1.5",
 
             // plugins
             errorpronecore  : "2.0.15",

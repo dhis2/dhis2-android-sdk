@@ -123,6 +123,7 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
     }
 
     private void validate(@NonNull CategoryCombo category) {
+        isNull(category.uid());
     }
 
     private void bindForDelete(@NonNull String uid) {

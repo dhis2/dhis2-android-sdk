@@ -26,6 +26,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.core.user.UserStore;
 
+@SuppressWarnings({"PMD.TooManyFields"})
 public class DeletedObjectHandler {
     @NonNull
     private final UserStore userStore;
@@ -69,7 +70,6 @@ public class DeletedObjectHandler {
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     @NonNull
     private final RelationshipTypeStore relationshipTypeStore;
-
 
 
     public DeletedObjectHandler(
@@ -121,6 +121,7 @@ public class DeletedObjectHandler {
         removeResource(uid, type);
     }
 
+    @SuppressWarnings("PMD")
     private void removeResource(String uid, ResourceModel.Type type) {
         if (type.equals(ResourceModel.Type.DELETED_USER)) {
             deleteUser(uid);

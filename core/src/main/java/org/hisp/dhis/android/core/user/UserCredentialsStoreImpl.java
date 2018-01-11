@@ -199,7 +199,6 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
         Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
         Date lastUpdated = cursor.getString(5) == null ? null : parse(cursor.getString(5));
         String username = cursor.getString(6);
-        String userUid = cursor.getString(7);
 
         UserCredentials userCredentials = UserCredentials.create(uid, code, name, displayName,
                 created, lastUpdated, username, null, false);

@@ -40,6 +40,9 @@ import org.hisp.dhis.android.core.resource.ResourceModel.Columns;
 
 import java.util.Date;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class ResourceStoreImpl implements ResourceStore {
 
     private static final String EXIST_BY_ID_STATEMENT = "SELECT " +

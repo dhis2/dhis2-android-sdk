@@ -63,6 +63,8 @@ import org.hisp.dhis.android.core.user.User;
 import java.util.Date;
 
 @AutoValue
+@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity", "PMD.CouplingBetweenObjects", "PMD.ExcessiveImports"})
 public abstract class ResourceModel extends BaseModel {
     public static final String TABLE = "Resource";
 

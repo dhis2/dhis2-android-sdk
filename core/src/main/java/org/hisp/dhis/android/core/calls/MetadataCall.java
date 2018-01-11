@@ -115,7 +115,9 @@ import java.util.Set;
 import retrofit2.Response;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
- "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
+        "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity", "PMD.GodClass",
+        "PMD.CouplingBetweenObjects", "PMD.NPathComplexity, PMD.PrematureDeclaration"
+})
 public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
@@ -253,8 +255,8 @@ public class MetadataCall implements Call<Response> {
         }
     }
 
-    @SuppressWarnings("PMD.NPathComplexity")
     @Override
+    @SuppressWarnings({"PMD.NPathComplexity"})
     public Response call() throws Exception {
         synchronized (this) {
             if (isExecuted) {
@@ -300,6 +302,7 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
+            @SuppressWarnings({"PMD.PrematureDeclaration"})
             User user = (User) response.body();
 
             response = syncDeletedObject(serverDate, OrganisationUnit.class.getSimpleName());
@@ -425,7 +428,7 @@ public class MetadataCall implements Call<Response> {
         return response;
     }
 
-
+    @SuppressWarnings("PMD.NPathComplexity")
     private Response syncPrograms(Date serverDate, User user)
             throws Exception {
         Response response = syncDeletedObject(serverDate, ProgramRule.class.getSimpleName());

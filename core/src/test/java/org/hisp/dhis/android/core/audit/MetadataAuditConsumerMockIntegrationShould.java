@@ -1,11 +1,11 @@
-package org.hisp.dhis.android.core.common.audit;
+package org.hisp.dhis.android.core.audit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 import org.hamcrest.CoreMatchers;
-import org.hisp.dhis.android.core.data.audit.MetadataAudit;
+import org.hisp.dhis.android.core.audit.model.MetadataAudit;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.junit.After;
 import org.junit.Before;
@@ -22,7 +22,7 @@ import java.util.concurrent.CountDownLatch;
 @RunWith(Parameterized.class)
 public class MetadataAuditConsumerMockIntegrationShould {
 
-    @Parameters(name = "{index} MetadataChangeConsumer should return: {0},{1},{2}")
+    @Parameters(name = "{index} MetadataAuditConsumer should return: {0},{1},{2}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {IllegalArgumentException.class, "metadata.noExistsKey.create.ApToHMl1NnE",
@@ -34,7 +34,7 @@ public class MetadataAuditConsumerMockIntegrationShould {
         });
     }
 
-    private MetadataChangeConsumer consumer;
+    private MetadataAuditConsumer consumer;
     private MetadataAuditMockPublisher mockPublisher;
     private EmbeddedAmqpBroker embeddedAmqpBroker;
 
@@ -55,8 +55,8 @@ public class MetadataAuditConsumerMockIntegrationShould {
 
     @Before
     public void setUp() throws Exception {
-        AmpqConfiguration ampqConfiguration =
-                AmpqConfiguration.builder()
+        MetadataAuditConnection metadataAuditConnection =
+                MetadataAuditConnection.builder()
                         .setHost("localhost")
                         .setVirtualHost("/")
                         .setUsername("guest")
@@ -65,10 +65,10 @@ public class MetadataAuditConsumerMockIntegrationShould {
                         .build();
 
         embeddedAmqpBroker = new EmbeddedAmqpBroker();
-        embeddedAmqpBroker.start(String.valueOf(ampqConfiguration.port()));
+        embeddedAmqpBroker.start(String.valueOf(metadataAuditConnection.port()));
 
-        consumer = new MetadataChangeConsumer(ampqConfiguration);
-        mockPublisher = new MetadataAuditMockPublisher(ampqConfiguration,
+        consumer = new MetadataAuditConsumer(metadataAuditConnection);
+        mockPublisher = new MetadataAuditMockPublisher(metadataAuditConnection,
                 new ResourcesFileReader());
     }
 
@@ -82,7 +82,7 @@ public class MetadataAuditConsumerMockIntegrationShould {
 
     @Test
     public void return_result_according_to_parameter_test() throws Exception {
-        consumer.setMetadataChangeHandler(new MetadataChangeConsumer.MetadataChangeHandler() {
+        consumer.setMetadataAuditHandler(new MetadataAuditConsumer.MetadataAuditHandler() {
             @Override
             public void handle(MetadataAudit metadataAudit) {
                 result = metadataAudit.getClass();

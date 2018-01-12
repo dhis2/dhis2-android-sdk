@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.common.audit;
+package org.hisp.dhis.android.core.audit;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -11,15 +11,16 @@ import java.io.IOException;
 public class MetadataAuditMockPublisher {
     private static final String EXCHANGE_NAME = "dhis2";
 
-    private AmpqConfiguration ampqConfiguration;
+    private MetadataAuditConnection metadataAuditConnection;
     private IFileReader fileReader;
 
     private Connection connection;
     private Channel channel;
 
-    public MetadataAuditMockPublisher(AmpqConfiguration ampqConfiguration, IFileReader fileReader)
+    public MetadataAuditMockPublisher(MetadataAuditConnection metadataAuditConnection,
+            IFileReader fileReader)
             throws Exception {
-        this.ampqConfiguration = ampqConfiguration;
+        this.metadataAuditConnection = metadataAuditConnection;
         this.fileReader = fileReader;
 
         connectToMessageBroker();
@@ -46,11 +47,11 @@ public class MetadataAuditMockPublisher {
     private ConnectionFactory setupFactory() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
 
-        factory.setUsername(ampqConfiguration.username());
-        factory.setPassword(ampqConfiguration.password());
-        factory.setVirtualHost(ampqConfiguration.virtualHost());
-        factory.setHost(ampqConfiguration.host());
-        factory.setPort(ampqConfiguration.port());
+        factory.setUsername(metadataAuditConnection.username());
+        factory.setPassword(metadataAuditConnection.password());
+        factory.setVirtualHost(metadataAuditConnection.virtualHost());
+        factory.setHost(metadataAuditConnection.host());
+        factory.setPort(metadataAuditConnection.port());
 
         return factory;
     }

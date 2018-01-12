@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.common.audit;
+package org.hisp.dhis.android.core.audit;
 
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;

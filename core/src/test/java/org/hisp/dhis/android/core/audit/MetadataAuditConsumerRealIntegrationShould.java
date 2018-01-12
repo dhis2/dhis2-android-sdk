@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.common.audit;
+package org.hisp.dhis.android.core.audit;
 
 import static junit.framework.Assert.fail;
 
@@ -6,17 +6,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
-import org.hisp.dhis.android.core.data.audit.MetadataAudit;
+import org.hisp.dhis.android.core.audit.model.MetadataAudit;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 public class MetadataAuditConsumerRealIntegrationShould {
 
-    MetadataChangeConsumer consumer;
+    MetadataAuditConsumer consumer;
 
     private final CountDownLatch lock = new CountDownLatch(1);
 
@@ -24,8 +23,8 @@ public class MetadataAuditConsumerRealIntegrationShould {
 
     @Before
     public void setUp() throws Exception {
-        consumer = new MetadataChangeConsumer(
-                AmpqConfiguration.builder()
+        consumer = new MetadataAuditConsumer(
+                MetadataAuditConnection.builder()
                         .setHost("192.168.1.42")
                         .setVirtualHost("/")
                         .setUsername("guest2")
@@ -44,7 +43,7 @@ public class MetadataAuditConsumerRealIntegrationShould {
     //in dhis2 server and manual metadata change.MetadataAudit.java
     //@Test
     public void return_metadata_change_message() throws Exception {
-        consumer.setMetadataChangeHandler(new MetadataChangeConsumer.MetadataChangeHandler() {
+        consumer.setMetadataAuditHandler(new MetadataAuditConsumer.MetadataAuditHandler() {
             @Override
             public void handle(MetadataAudit metadataAudit) {
                 metadataAuditInfo = metadataAudit;

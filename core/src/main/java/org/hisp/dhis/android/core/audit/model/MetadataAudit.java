@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.data.audit;
+package org.hisp.dhis.android.core.audit.model;
 
 import java.util.Date;
 

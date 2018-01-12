@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.common.audit;
+package org.hisp.dhis.android.core.audit;
 
 
 import org.apache.qpid.server.Broker;

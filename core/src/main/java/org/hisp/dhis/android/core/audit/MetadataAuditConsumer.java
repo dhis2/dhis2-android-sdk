@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.common.audit;
+package org.hisp.dhis.android.core.audit;
 
 import android.util.Log;
 
@@ -14,31 +14,31 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.audit.MetadataAudit;
+import org.hisp.dhis.android.core.audit.model.MetadataAudit;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-public class MetadataChangeConsumer {
+public class MetadataAuditConsumer {
     private final static String EXCHANGE_NAME = "dhis2";
-    private final AmpqConfiguration ampqConfiguration;
+    private final MetadataAuditConnection metadataAuditConnection;
 
     private Connection connection;
     private Channel channel;
     private String queueName;
 
-    private MetadataChangeHandler metadataChangeHandler;
+    private MetadataAuditHandler metadataAuditHandler;
 
-    public MetadataChangeConsumer(AmpqConfiguration ampqConfiguration) throws Exception {
+    public MetadataAuditConsumer(MetadataAuditConnection metadataAuditConnection) throws Exception {
 
-        this.ampqConfiguration = ampqConfiguration;
+        this.metadataAuditConnection = metadataAuditConnection;
 
         connectToMessageBroker();
     }
 
-    public void setMetadataChangeHandler(MetadataChangeHandler metadataChangeHandler)
+    public void setMetadataAuditHandler(MetadataAuditHandler metadataAuditHandler)
             throws IOException {
-        this.metadataChangeHandler = metadataChangeHandler;
+        this.metadataAuditHandler = metadataAuditHandler;
 
         createConsumer();
     }
@@ -61,11 +61,11 @@ public class MetadataChangeConsumer {
     private ConnectionFactory setupFactory() throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
 
-        factory.setUsername(ampqConfiguration.username());
-        factory.setPassword(ampqConfiguration.password());
-        factory.setVirtualHost(ampqConfiguration.virtualHost());
-        factory.setHost(ampqConfiguration.host());
-        factory.setPort(ampqConfiguration.port());
+        factory.setUsername(metadataAuditConnection.username());
+        factory.setPassword(metadataAuditConnection.password());
+        factory.setVirtualHost(metadataAuditConnection.virtualHost());
+        factory.setHost(metadataAuditConnection.host());
+        factory.setPort(metadataAuditConnection.port());
 
         return factory;
     }
@@ -77,12 +77,12 @@ public class MetadataChangeConsumer {
                     AMQP.BasicProperties properties, byte[] body) throws IOException {
                 String message = new String(body, "UTF-8");
 
-                if (metadataChangeHandler != null) {
+                if (metadataAuditHandler != null) {
                     try {
-                        metadataChangeHandler.handle(
+                        metadataAuditHandler.handle(
                                 parseMetadataAudit(envelope.getRoutingKey(), message));
                     } catch (Exception e) {
-                        metadataChangeHandler.error(e);
+                        metadataAuditHandler.error(e);
                         Log.e(this.getClass().getSimpleName(), e.getMessage());
                     }
                 }
@@ -111,7 +111,7 @@ public class MetadataChangeConsumer {
                 .constructParametricType(MetadataAudit.class, klass);
     }
 
-    public interface MetadataChangeHandler {
+    public interface MetadataAuditHandler {
         void handle(MetadataAudit metadataAudit);
 
         void error(Throwable throwable);

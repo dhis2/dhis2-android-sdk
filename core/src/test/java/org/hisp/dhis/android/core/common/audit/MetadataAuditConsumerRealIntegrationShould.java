@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.common.audit;
 
+import static junit.framework.Assert.fail;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -24,7 +26,7 @@ public class MetadataAuditConsumerRealIntegrationShould {
     public void setUp() throws Exception {
         consumer = new MetadataChangeConsumer(
                 AmpqConfiguration.builder()
-                        .setHost("192.168.1.37")
+                        .setHost("192.168.1.42")
                         .setVirtualHost("/")
                         .setUsername("guest2")
                         .setPassword("guest2")
@@ -46,6 +48,12 @@ public class MetadataAuditConsumerRealIntegrationShould {
             @Override
             public void handle(MetadataAudit metadataAudit) {
                 metadataAuditInfo = metadataAudit;
+                lock.countDown();
+            }
+
+            @Override
+            public void error(Throwable throwable) {
+                fail(throwable.getMessage());
                 lock.countDown();
             }
         });

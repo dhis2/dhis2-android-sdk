@@ -83,6 +83,7 @@ public class MetadataChangeConsumer {
                         metadataChangeHandler.handle(
                                 parseMetadataAudit(envelope.getRoutingKey(), message));
                     } catch (Exception e) {
+                        metadataChangeHandler.error(e);
                         Log.e(this.getClass().getSimpleName(), e.getMessage());
                     }
                 }
@@ -103,12 +104,9 @@ public class MetadataChangeConsumer {
         return objectMapper.readValue(body, type);
     }
 
-    private JavaType getType(String className, ObjectMapper objectMapper)
-            throws ClassNotFoundException {
-        String capitalizedClassName = className.substring(0, 1).toUpperCase(Locale.getDefault()) +
-                className.substring(1);
+    private JavaType getType(String className, ObjectMapper objectMapper) {
 
-        Class<?> klass = MetadataClassFactory.getByName(capitalizedClassName);
+        Class<?> klass = MetadataClassFactory.getByName(className);
 
         return objectMapper.getTypeFactory()
                 .constructParametricType(MetadataAudit.class, klass);
@@ -116,5 +114,7 @@ public class MetadataChangeConsumer {
 
     public interface MetadataChangeHandler {
         void handle(MetadataAudit metadataAudit);
+
+        void error(Throwable throwable);
     }
 }

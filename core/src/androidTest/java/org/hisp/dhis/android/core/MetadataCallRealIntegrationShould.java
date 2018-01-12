@@ -53,10 +53,8 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     @LargeTest
     public void response_successful_on_sync_meta_data_two_times() throws Exception {
 
-        Thread.sleep(60000);
-
         retrofit2.Response response = null;
-        response = d2.logIn("admin", "district").call();
+        response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
 
         //first sync:
@@ -66,8 +64,6 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         //second sync:
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
-
-        Thread.sleep(50000);
 
         //TODO: add aditional sync + break point.
         //when debugger stops at the new break point manually change metadata online & resume.
@@ -80,12 +76,12 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     @LargeTest
     public void response_successful_on_login_wipe_db_and_login() throws Exception {
         retrofit2.Response response = null;
-        response = d2.logIn("admin", "district").call();
+        response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
 
         d2.wipeDB().call();
 
-        response = d2.logIn("admin", "district").call();
+        response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
     }
 
@@ -93,12 +89,12 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     @LargeTest
     public void response_successful_on_login_logout_and_login() throws Exception {
         retrofit2.Response response = null;
-        response = d2.logIn("admin", "district").call();
+        response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
 
         d2.logout().call();
 
-        response = d2.logIn("admin", "district").call();
+        response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
     }
 }

@@ -17,7 +17,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.audit.MetadataAudit;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class MetadataChangeConsumer {

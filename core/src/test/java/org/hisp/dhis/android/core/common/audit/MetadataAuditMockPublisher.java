@@ -1,10 +1,9 @@
-package org.hisp.dhis.android.core.data.server.amqp;
+package org.hisp.dhis.android.core.common.audit;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-import org.hisp.dhis.android.core.common.audit.AmpqConfiguration;
 import org.hisp.dhis.android.core.data.file.IFileReader;
 
 import java.io.IOException;

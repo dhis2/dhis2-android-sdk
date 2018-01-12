@@ -128,7 +128,6 @@ dependencies {
     // Android test dependencies
     androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"
     androidTestCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
-    androidTestCompile "org.apache.qpid:qpid-broker:${libraries.qpidbroker}"
     androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
     androidTestCompile "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
     androidTestCompile("com.google.truth:truth:${libraries.truth}") {

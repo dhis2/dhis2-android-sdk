@@ -7,8 +7,6 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import org.hamcrest.CoreMatchers;
 import org.hisp.dhis.android.core.data.audit.MetadataAudit;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.data.server.amqp.EmbeddedAmqpBroker;
-import org.hisp.dhis.android.core.data.server.amqp.MetadataAuditMockPublisher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

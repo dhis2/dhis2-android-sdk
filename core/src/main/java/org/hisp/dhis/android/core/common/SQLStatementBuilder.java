@@ -35,10 +35,12 @@ import java.util.Arrays;
 public class SQLStatementBuilder {
     public final String tableName;
     public final String[] columns;
+    public final String[] updateWhereColumns;
 
-    public SQLStatementBuilder(String tableName, String[] columns) {
+    public SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
         this.tableName = tableName;
         this.columns = columns;
+        this.updateWhereColumns = updateWhereColumns;
     }
 
     private String commaSeparatedColumns() {
@@ -58,10 +60,10 @@ public class SQLStatementBuilder {
         return commaSeparatedArrayValues(array);
     }
 
-    private String commaSeparatedColumnEqualInterrogationMark() {
-        String[] array = new String[columns.length];
-        for (int i = 0; i < columns.length; i++) {
-            array[i] = columns[i] + "=?";
+    private String commaSeparatedColumnEqualInterrogationMark(String[] cols) {
+        String[] array = new String[cols.length];
+        for (int i = 0; i < cols.length; i++) {
+            array[i] = cols[i] + "=?";
         }
         return commaSeparatedArrayValues(array);
     }
@@ -78,8 +80,13 @@ public class SQLStatementBuilder {
     }
 
     public String update() {
-        return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark() +
+        return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
                 " WHERE " + BaseIdentifiableObjectModel.Columns.UID + "=?;";
+    }
+
+    public String updateWhere() {
+        return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
+                " WHERE " + commaSeparatedColumnEqualInterrogationMark(updateWhereColumns) + ";";
     }
 
     private static String createTableWrapper(String tableName, String[] columnsWithAttributes) {

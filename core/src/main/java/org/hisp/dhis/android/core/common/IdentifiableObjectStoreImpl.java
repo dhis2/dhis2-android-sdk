@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -75,15 +74,6 @@ public class IdentifiableObjectStoreImpl<M extends BaseIdentifiableObjectModel &
             update(m);
         } catch (Exception e){
             insert(m);
-        }
-    }
-
-    private void executeUpdateDelete(SQLiteStatement statement) throws RuntimeException {
-        int numberOfAffectedRows = databaseAdapter.executeUpdateDelete(builder.tableName, statement);
-        statement.clearBindings();
-
-        if (numberOfAffectedRows != 1) {
-            throw new RuntimeException("Unexpected number of affected rows: " + numberOfAffectedRows);
         }
     }
 }

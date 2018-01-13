@@ -25,39 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.common;
 
-import java.util.List;
+import android.support.annotation.NonNull;
 
-class DataSetParentLinkManager {
-    private final ObjectWithoutUidStore<DataSetDataElementLinkModel> dataSetDataElementStore;
+public interface ObjectWithoutUidStore<M extends Model & UpdateWhereStatementBinder> extends ObjectStore<M> {
 
-    DataSetParentLinkManager(
-            ObjectWithoutUidStore<DataSetDataElementLinkModel> dataSetDataElementStore) {
-        this.dataSetDataElementStore = dataSetDataElementStore;
-    }
+    public void updateWhere(@NonNull M m) throws RuntimeException;
 
-    static DataSetParentLinkManager create(DatabaseAdapter databaseAdapter) {
-        return new DataSetParentLinkManager(
-                DataSetDataElementLinkStore.create(databaseAdapter));
-    }
-
-    void saveDataSetDataElementLinks(List<DataSet> dataSets) {
-        for (DataSet dataSet : dataSets) {
-            saveDataSetDataElementLink(dataSet);
-        }
-    }
-
-    private void saveDataSetDataElementLink(DataSet dataSet) {
-        for (DataElementUids dataSetDataElement : dataSet.dataSetElements()) {
-            this.dataSetDataElementStore.updateOrInsertWhere(
-                    DataSetDataElementLinkModel.create(
-                            dataSet.uid(),
-                            dataSetDataElement.dataElement().uid()
-                    ));
-        }
-    }
+    public void updateOrInsertWhere(@NonNull M m) throws RuntimeException;
 }

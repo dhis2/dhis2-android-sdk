@@ -34,15 +34,18 @@ public class StoreFactory {
 
     public static <I extends BaseIdentifiableObjectModel & StatementBinder> IdentifiableObjectStore<I>
     identifiableStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns);
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
         SQLStatementWrapper statements = new SQLStatementWrapper(statementBuilder, databaseAdapter);
         return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder);
     }
 
-    public static <I extends BaseModel & StatementBinder> ObjectStore<I>
-    objectStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns);
-        return new ObjectStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(
-                statementBuilder.insert()), statementBuilder);
+    public static <I extends BaseModel & UpdateWhereStatementBinder> ObjectWithoutUidStore<I>
+    objectWithoutUidStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns,
+                          String[] whereUpdateColumns) {
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, whereUpdateColumns);
+        return new ObjectWithoutUidStoreImpl<>(databaseAdapter,
+                databaseAdapter.compileStatement(statementBuilder.insert()),
+                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
+                statementBuilder);
     }
 }

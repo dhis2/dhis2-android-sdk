@@ -25,39 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.common;
+
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.List;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-class DataSetParentLinkManager {
-    private final ObjectWithoutUidStore<DataSetDataElementLinkModel> dataSetDataElementStore;
+public class ObjectWithoutUidStoreImpl<M extends Model & UpdateWhereStatementBinder>
+        extends ObjectStoreImpl<M> implements ObjectWithoutUidStore<M> {
+    protected final SQLiteStatement updateWhereStatement;
 
-    DataSetParentLinkManager(
-            ObjectWithoutUidStore<DataSetDataElementLinkModel> dataSetDataElementStore) {
-        this.dataSetDataElementStore = dataSetDataElementStore;
+    ObjectWithoutUidStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
+                              SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
+        super(databaseAdapter, insertStatement, builder);
+        this.updateWhereStatement = updateWhereStatement;
     }
 
-    static DataSetParentLinkManager create(DatabaseAdapter databaseAdapter) {
-        return new DataSetParentLinkManager(
-                DataSetDataElementLinkStore.create(databaseAdapter));
+    @Override
+    public void updateWhere(@NonNull M m) throws RuntimeException {
+        isNull(m);
+        m.bindToStatement(updateWhereStatement);
+        m.bindToUpdateWhereStatement(updateWhereStatement);
+        executeUpdateDelete(updateWhereStatement);
     }
 
-    void saveDataSetDataElementLinks(List<DataSet> dataSets) {
-        for (DataSet dataSet : dataSets) {
-            saveDataSetDataElementLink(dataSet);
-        }
-    }
-
-    private void saveDataSetDataElementLink(DataSet dataSet) {
-        for (DataElementUids dataSetDataElement : dataSet.dataSetElements()) {
-            this.dataSetDataElementStore.updateOrInsertWhere(
-                    DataSetDataElementLinkModel.create(
-                            dataSet.uid(),
-                            dataSetDataElement.dataElement().uid()
-                    ));
+    @Override
+    public void updateOrInsertWhere(@NonNull M m) throws RuntimeException {
+        try {
+            updateWhere(m);
+        } catch (Exception e){
+            insert(m);
         }
     }
 }

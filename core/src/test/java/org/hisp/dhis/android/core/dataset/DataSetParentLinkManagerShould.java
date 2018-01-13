@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataset;
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +45,7 @@ import static org.mockito.Mockito.when;
 public class DataSetParentLinkManagerShould {
 
     @Mock
-    private ObjectStore<DataSetDataElementLinkModel> dataSetDataElementStore;
+    private ObjectWithoutUidStore<DataSetDataElementLinkModel> dataSetDataElementStore;
 
     @Mock
     private DataSet dataSet1;
@@ -74,10 +75,10 @@ public class DataSetParentLinkManagerShould {
     @Test
     public void store_data_set_data_element_links() throws Exception {
         linkManager.saveDataSetDataElementLinks(Lists.newArrayList(dataSet1, dataSet2));
-        verify(dataSetDataElementStore).insert(expectedLink(decc1, dataSet1));
-        verify(dataSetDataElementStore).insert(expectedLink(decc2, dataSet1));
-        verify(dataSetDataElementStore).insert(expectedLink(decc2, dataSet2));
-        verify(dataSetDataElementStore).insert(expectedLink(decc3, dataSet2));
+        verify(dataSetDataElementStore).updateOrInsertWhere(expectedLink(decc1, dataSet1));
+        verify(dataSetDataElementStore).updateOrInsertWhere(expectedLink(decc2, dataSet1));
+        verify(dataSetDataElementStore).updateOrInsertWhere(expectedLink(decc2, dataSet2));
+        verify(dataSetDataElementStore).updateOrInsertWhere(expectedLink(decc3, dataSet2));
     }
 
     private DataSetDataElementLinkModel expectedLink(DataElementUids decc, DataSet dataSet) {

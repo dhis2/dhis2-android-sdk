@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class PeriodStore {
-    public static ObjectStore<PeriodModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectStore(databaseAdapter, PeriodModel.TABLE,
-                PeriodModel.Columns.all());
+    public static ObjectWithoutUidStore<PeriodModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodModel.TABLE,
+                PeriodModel.Columns.all(), PeriodModel.Columns.whereUpdate());
     }
 }

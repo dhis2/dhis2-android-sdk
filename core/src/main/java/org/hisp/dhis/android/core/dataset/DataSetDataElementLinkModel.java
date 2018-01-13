@@ -39,12 +39,13 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.LinkModelFactory;
 import org.hisp.dhis.android.core.common.StatementBinder;
+import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class DataSetDataElementLinkModel extends BaseModel implements StatementBinder {
+public abstract class DataSetDataElementLinkModel extends BaseModel implements UpdateWhereStatementBinder {
     public static final String TABLE = "DataSetDataElementLink";
 
     public static class Columns extends BaseModel.Columns {
@@ -54,6 +55,10 @@ public abstract class DataSetDataElementLinkModel extends BaseModel implements S
         public static String[] all() {
             return Utils.appendInNewArray(BaseModel.Columns.all(),
                     DATA_SET, DATA_ELEMENT);
+        }
+
+        public static String[] whereUpdate() {
+            return new String[]{DATA_SET, DATA_ELEMENT};
         }
     }
 
@@ -96,6 +101,12 @@ public abstract class DataSetDataElementLinkModel extends BaseModel implements S
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         sqLiteBind(sqLiteStatement, 1, dataSet());
         sqLiteBind(sqLiteStatement, 2, dataElement());
+    }
+
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 3, dataSet());
+        sqLiteBind(sqLiteStatement, 4, dataElement());
     }
 
     @AutoValue.Builder

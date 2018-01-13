@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class DataSetDataElementLinkStore {
-    public static ObjectStore<DataSetDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectStore(databaseAdapter, DataSetDataElementLinkModel.TABLE,
-                DataSetDataElementLinkModel.Columns.all());
+    public static ObjectWithoutUidStore<DataSetDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, DataSetDataElementLinkModel.TABLE,
+                DataSetDataElementLinkModel.Columns.all(), DataSetDataElementLinkModel.Columns.whereUpdate());
     }
 }

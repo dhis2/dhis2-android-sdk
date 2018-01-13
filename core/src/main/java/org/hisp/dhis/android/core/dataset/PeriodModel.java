@@ -40,7 +40,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.PeriodType;
-import org.hisp.dhis.android.core.common.StatementBinder;
+import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -50,7 +50,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class PeriodModel extends BaseModel implements StatementBinder {
+public abstract class PeriodModel extends BaseModel implements UpdateWhereStatementBinder {
 
     public static final String TABLE = "Period";
 
@@ -62,6 +62,10 @@ public abstract class PeriodModel extends BaseModel implements StatementBinder {
         public static String[] all() {
             return Utils.appendInNewArray(BaseModel.Columns.all(),
                     PERIOD_TYPE, START_DATE, END_DATE);
+        }
+
+        public static String[] whereUpdate() {
+            return new String[]{PERIOD_TYPE, START_DATE, END_DATE};
         }
     }
 
@@ -104,6 +108,13 @@ public abstract class PeriodModel extends BaseModel implements StatementBinder {
         sqLiteBind(sqLiteStatement, 1, periodType());
         sqLiteBind(sqLiteStatement, 2, startDate());
         sqLiteBind(sqLiteStatement, 3, endDate());
+    }
+
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 4, periodType());
+        sqLiteBind(sqLiteStatement, 5, startDate());
+        sqLiteBind(sqLiteStatement, 6, endDate());
     }
 
     @AutoValue.Builder

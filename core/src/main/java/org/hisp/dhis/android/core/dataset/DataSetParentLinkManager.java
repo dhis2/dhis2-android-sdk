@@ -56,8 +56,7 @@ class DataSetParentLinkManager {
             this.dataSetDataElementStore.insert(
                     DataSetDataElementLinkModel.create(
                             dataSet.uid(),
-                            dataSetDataElement.dataElement().uid(),
-                            dataSetDataElement.categoryComboUid()
+                            dataSetDataElement.dataElement().uid()
                     ));
         }
     }

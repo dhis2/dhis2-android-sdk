@@ -50,11 +50,10 @@ public abstract class DataSetDataElementLinkModel extends BaseModel implements S
     public static class Columns extends BaseModel.Columns {
         public static final String DATA_SET = "dataSet";
         public static final String DATA_ELEMENT = "dataElement";
-        public static final String CATEGORY_COMBO = "categoryCombo";
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseModel.Columns.all(),
-                    DATA_SET, DATA_ELEMENT, CATEGORY_COMBO);
+                    DATA_SET, DATA_ELEMENT);
         }
     }
 
@@ -71,11 +70,10 @@ public abstract class DataSetDataElementLinkModel extends BaseModel implements S
     };
 
     public static DataSetDataElementLinkModel create(
-            String dataSetUid, String dataElementUid, String categoryComboUid) {
+            String dataSetUid, String dataElementUid) {
         return DataSetDataElementLinkModel.builder()
                 .dataSet(dataSetUid)
                 .dataElement(dataElementUid)
-                .categoryCombo(categoryComboUid)
                 .build();
     }
 
@@ -91,10 +89,6 @@ public abstract class DataSetDataElementLinkModel extends BaseModel implements S
     @ColumnName(Columns.DATA_ELEMENT)
     public abstract String dataElement();
 
-    @Nullable
-    @ColumnName(Columns.CATEGORY_COMBO)
-    public abstract String categoryCombo();
-
     @NonNull
     public abstract ContentValues toContentValues();
 
@@ -102,7 +96,6 @@ public abstract class DataSetDataElementLinkModel extends BaseModel implements S
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         sqLiteBind(sqLiteStatement, 1, dataSet());
         sqLiteBind(sqLiteStatement, 2, dataElement());
-        sqLiteBind(sqLiteStatement, 3, categoryCombo());
     }
 
     @AutoValue.Builder
@@ -110,8 +103,6 @@ public abstract class DataSetDataElementLinkModel extends BaseModel implements S
         public abstract Builder dataSet(String dataSet);
 
         public abstract Builder dataElement(String dataElement);
-
-        public abstract Builder categoryCombo(String categoryCombo);
 
         public abstract DataSetDataElementLinkModel build();
     }

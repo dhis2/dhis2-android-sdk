@@ -941,19 +941,14 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             SQLStatementBuilder.createModelTable(DataSetDataElementLinkModel.TABLE,
                     DataSetDataElementLinkModel.Columns.DATA_SET + " TEXT NOT NULL," +
                             DataSetDataElementLinkModel.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
-                            DataSetDataElementLinkModel.Columns.CATEGORY_COMBO + " TEXT NOT NULL," +
                             " FOREIGN KEY (" + DataSetDataElementLinkModel.Columns.DATA_SET + ") " +
                             " REFERENCES " + DataSetModel.TABLE + " (" + DataSetModel.Columns.UID + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
                             " FOREIGN KEY (" + DataSetDataElementLinkModel.Columns.DATA_ELEMENT + ") " +
                             " REFERENCES " + DataElementModel.TABLE + " (" + DataElementModel.Columns.UID + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-                            " FOREIGN KEY (" + DataSetDataElementLinkModel.Columns.CATEGORY_COMBO + ") " +
-                            " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")" +
-                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
                             " UNIQUE (" + DataSetDataElementLinkModel.Columns.DATA_SET + ", " +
-                            DataSetDataElementLinkModel.Columns.DATA_ELEMENT + ", " +
-                            DataSetDataElementLinkModel.Columns.CATEGORY_COMBO + ")"
+                            DataSetDataElementLinkModel.Columns.DATA_ELEMENT + ")"
             );
 
     /**

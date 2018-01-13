@@ -30,10 +30,8 @@ package org.hisp.dhis.android.core.dataset;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.common.NameableModelAbstractShould;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.PeriodType;
 import org.hisp.dhis.android.core.dataset.DataSetModel.Columns;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
@@ -54,7 +52,6 @@ import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DESCRIPTI
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DISPLAY_DESCRIPTION;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DISPLAY_NAME;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DISPLAY_SHORT_NAME;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.IS_DEFAULT;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.NAME;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.SHORT_NAME;
@@ -95,9 +92,7 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel
     protected DataSet buildPojo() {
         return DataSet.create(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME,
                 DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, PeriodType.Monthly,
-                CategoryCombo.create("cc_uid", CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED,
-                        IS_DEFAULT,
-                        new ArrayList<Category>(), new ArrayList<CategoryOptionCombo>()),
+                ObjectWithUid.create("cc_uid"),
                 false, 1, 10, 100, false,
                 0, false, false,
                 false, false, false,

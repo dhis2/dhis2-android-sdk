@@ -46,20 +46,19 @@ import static com.google.common.truth.Truth.assertThat;
 public class DataSetDataElementLinkModelShould extends LinkModelAbstractShould<DataSetDataElementLinkModel> {
 
     public DataSetDataElementLinkModelShould() {
-        super(DataSetDataElementLinkModel.Columns.all(), 3, DataSetDataElementLinkModel.Factory);
+        super(DataSetDataElementLinkModel.Columns.all(), 2, DataSetDataElementLinkModel.Factory);
     }
 
     @Override
     protected DataSetDataElementLinkModel buildModel() {
-        return DataSetDataElementLinkModel.create(
-                "data_set_uid", "data_element_uid",
-                "category_combo_uid");
+        return DataSetDataElementLinkModel.create("data_set_uid",
+                "data_element_uid");
     }
 
     @Override
     protected Object[] getModelAsObjectArray() {
         return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
-                model.dataSet(), model.dataElement(), model.categoryCombo());
+                model.dataSet(), model.dataElement());
     }
 
     @Test
@@ -68,6 +67,5 @@ public class DataSetDataElementLinkModelShould extends LinkModelAbstractShould<D
 
         assertThat(columnsList.contains(Columns.DATA_SET)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.DATA_ELEMENT)).isEqualTo(true);
-        assertThat(columnsList.contains(Columns.CATEGORY_COMBO)).isEqualTo(true);
     }
 }

@@ -68,7 +68,7 @@ public abstract class DataElementModel extends BaseNameableObjectModel implement
         public static String[] all() {
             return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(),
                     VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_TYPE, FORM_NAME, NUMBER_TYPE,
-                    DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET);
+                    DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET, CATEGORY_COMBO);
         }
     }
 
@@ -107,6 +107,7 @@ public abstract class DataElementModel extends BaseNameableObjectModel implement
                     .dimension(dataElement.dimension())
                     .displayFormName(dataElement.displayFormName())
                     .optionSet(optionSet != null ? optionSet.uid() : null)
+                    .categoryCombo(dataElement.categoryComboUid())
                     .build();
         }
     };
@@ -197,5 +198,6 @@ public abstract class DataElementModel extends BaseNameableObjectModel implement
         sqLiteBind(sqLiteStatement, 17, dimension());
         sqLiteBind(sqLiteStatement, 18, displayFormName());
         sqLiteBind(sqLiteStatement, 19, optionSet());
+        sqLiteBind(sqLiteStatement, 20, categoryCombo());
     }
 }

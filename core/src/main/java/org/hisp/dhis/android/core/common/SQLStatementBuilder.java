@@ -68,6 +68,10 @@ public class SQLStatementBuilder {
         return commaSeparatedArrayValues(array);
     }
 
+    private String andSeparatedColumnEqualInterrogationMark(String[] cols) {
+        return commaSeparatedColumnEqualInterrogationMark(cols)
+                .replace(",", " AND ");
+    }
 
     public String insert() {
         return "INSERT INTO " + tableName + " (" + commaSeparatedColumns() + ") " +
@@ -85,8 +89,11 @@ public class SQLStatementBuilder {
     }
 
     public String updateWhere() {
+        // TODO refactor to only generate for object without uids store.
+        String whereClause = updateWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
+                andSeparatedColumnEqualInterrogationMark(updateWhereColumns);
         return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
-                " WHERE " + commaSeparatedColumnEqualInterrogationMark(updateWhereColumns) + ";";
+                " WHERE " + whereClause + ";";
     }
 
     private static String createTableWrapper(String tableName, String[] columnsWithAttributes) {

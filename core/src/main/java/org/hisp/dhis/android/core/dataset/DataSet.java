@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.PeriodType;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -77,7 +78,7 @@ public abstract class DataSet extends BaseNameableObject {
     public static final Field<DataSet, Boolean> deleted = Field.create(DELETED);
 
     public static final Field<DataSet, PeriodType> periodType = Field.create(PERIOD_TYPE);
-    public static final NestedField<DataSet, CategoryCombo> categoryCombo = NestedField.create(CATEGORY_COMBO);
+    public static final NestedField<DataSet, ObjectWithUid> categoryCombo = NestedField.create(CATEGORY_COMBO);
     public static final Field<DataSet, Boolean> mobile = Field.create(MOBILE);
     public static final Field<DataSet, Integer> version = Field.create(VERSION);
     public static final Field<DataSet, Integer> expiryDays = Field.create(EXPIRY_DAYS);
@@ -95,7 +96,7 @@ public abstract class DataSet extends BaseNameableObject {
 
     public static final Fields<DataSet> allFields = Fields.<DataSet>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, deleted,
-            periodType, categoryCombo.with(CategoryCombo.uid), mobile, version, expiryDays, timelyDays, notifyCompletingUser,
+            periodType, categoryCombo.with(ObjectWithUid.uid), mobile, version, expiryDays, timelyDays, notifyCompletingUser,
             openFuturePeriods, fieldCombinationRequired, validCompleteOnly, noValueRequiresComment,
             skipOffline, dataElementDecoration, renderAsTabs, renderHorizontally,
             dataSetElements.with(DataElementUids.allFields)).build();
@@ -106,7 +107,7 @@ public abstract class DataSet extends BaseNameableObject {
 
     @Nullable
     @JsonProperty(CATEGORY_COMBO)
-    public abstract CategoryCombo categoryCombo();
+    public abstract ObjectWithUid categoryCombo();
 
     public String categoryComboUid() {
         return categoryCombo() != null ? categoryCombo().uid() :
@@ -182,7 +183,7 @@ public abstract class DataSet extends BaseNameableObject {
             @JsonProperty(DESCRIPTION) String description,
             @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
             @JsonProperty(PERIOD_TYPE) PeriodType periodType,
-            @JsonProperty(CATEGORY_COMBO) CategoryCombo categoryCombo,
+            @JsonProperty(CATEGORY_COMBO) ObjectWithUid categoryCombo,
             @JsonProperty(MOBILE) Boolean mobile,
             @JsonProperty(VERSION) Integer version,
             @JsonProperty(EXPIRY_DAYS) Integer expiryDays,

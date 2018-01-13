@@ -52,13 +52,13 @@ public class DataSetParentLinkManagerShould {
     @Mock
     private DataSet dataSet2;
 
-    private DataElementCategoryCombo decc1 = DataElementCategoryCombo.create(
+    private DataElementUids decc1 = DataElementUids.create(
             ObjectWithUid.create("de1"), ObjectWithUid.create("cc1"));
 
-    private DataElementCategoryCombo decc2 = DataElementCategoryCombo.create(
+    private DataElementUids decc2 = DataElementUids.create(
             ObjectWithUid.create("de2"), ObjectWithUid.create("cc2"));
 
-    private DataElementCategoryCombo decc3 = DataElementCategoryCombo.create(
+    private DataElementUids decc3 = DataElementUids.create(
             ObjectWithUid.create("de3"), ObjectWithUid.create("cc3"));
 
     private DataSetParentLinkManager linkManager;
@@ -83,7 +83,7 @@ public class DataSetParentLinkManagerShould {
         verify(dataSetDataElementStore).insert(expectedLink(decc3, dataSet2));
     }
 
-    private DataSetDataElementLinkModel expectedLink(DataElementCategoryCombo decc, DataSet dataSet) {
+    private DataSetDataElementLinkModel expectedLink(DataElementUids decc, DataSet dataSet) {
         return DataSetDataElementLinkModel.builder()
                 .dataSet(dataSet.uid()).dataElement(decc.dataElement().uid())
                 .categoryCombo(decc.categoryComboUid()).build();

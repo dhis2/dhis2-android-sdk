@@ -29,50 +29,33 @@
 package org.hisp.dhis.android.core.dataset;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
 @AutoValue
-public abstract class DataElementCategoryCombo {
+public abstract class DataElementUids {
     private final static String DATA_ELEMENT = "dataElement";
-    private final static String CATEGORY_COMBO = "categoryCombo";
 
-    public static final NestedField<DataElementCategoryCombo, ObjectWithUid> dataElement =
+    public static final NestedField<DataElementUids, ObjectWithUid> dataElement =
             NestedField.create(DATA_ELEMENT);
-    public static final NestedField<DataElementCategoryCombo, ObjectWithUid> categoryCombo =
-            NestedField.create(CATEGORY_COMBO);
 
-    public static final Fields<DataElementCategoryCombo> allFields =
-            Fields.<DataElementCategoryCombo>builder().fields(
-            dataElement.with(ObjectWithUid.uid),
-            categoryCombo.with(ObjectWithUid.uid)).build();
+    public static final Fields<DataElementUids> allFields =
+            Fields.<DataElementUids>builder().fields(dataElement.with(ObjectWithUid.uid)).build();
 
     @NonNull
     @JsonProperty(DATA_ELEMENT)
     public abstract ObjectWithUid dataElement();
 
-    @Nullable
-    @JsonProperty(CATEGORY_COMBO)
-    public abstract ObjectWithUid categoryCombo();
-
-    public String categoryComboUid() {
-        return categoryCombo() != null ? categoryCombo().uid() :
-                CategoryComboModel.DEFAULT_UID;
-    }
-
     @JsonCreator
-    public static DataElementCategoryCombo create(
-            @JsonProperty(DATA_ELEMENT) ObjectWithUid dataElement,
-            @JsonProperty(CATEGORY_COMBO) ObjectWithUid categoryCombo) {
+    public static DataElementUids create(
+            @JsonProperty(DATA_ELEMENT) ObjectWithUid dataElement) {
 
-        return new AutoValue_DataElementCategoryCombo(dataElement, categoryCombo);
+        return new AutoValue_DataElementUids(dataElement);
     }
 }

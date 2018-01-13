@@ -91,14 +91,14 @@ public abstract class DataSet extends BaseNameableObject {
     public static final Field<DataSet, Boolean> dataElementDecoration = Field.create(DATA_ELEMENT_DECORATION);
     public static final Field<DataSet, Boolean> renderAsTabs = Field.create(RENDER_AS_TABS);
     public static final Field<DataSet, Boolean> renderHorizontally = Field.create(RENDER_HORIZONTALLY);
-    public static final NestedField<DataSet, DataElementCategoryCombo> dataSetElements = NestedField.create(DATA_SET_ELEMENTS);
+    public static final NestedField<DataSet, DataElementUids> dataSetElements = NestedField.create(DATA_SET_ELEMENTS);
 
     public static final Fields<DataSet> allFields = Fields.<DataSet>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, deleted,
             periodType, categoryCombo.with(CategoryCombo.uid), mobile, version, expiryDays, timelyDays, notifyCompletingUser,
             openFuturePeriods, fieldCombinationRequired, validCompleteOnly, noValueRequiresComment,
             skipOffline, dataElementDecoration, renderAsTabs, renderHorizontally,
-            dataSetElements.with(DataElementCategoryCombo.allFields)).build();
+            dataSetElements.with(DataElementUids.allFields)).build();
 
     @Nullable
     @JsonProperty(PERIOD_TYPE)
@@ -167,7 +167,7 @@ public abstract class DataSet extends BaseNameableObject {
 
     @Nullable
     @JsonProperty(DATA_SET_ELEMENTS)
-    public abstract List<DataElementCategoryCombo> dataSetElements();
+    public abstract List<DataElementUids> dataSetElements();
 
     @JsonCreator
     public static DataSet create(
@@ -196,7 +196,7 @@ public abstract class DataSet extends BaseNameableObject {
             @JsonProperty(DATA_ELEMENT_DECORATION) Boolean dataElementDecoration,
             @JsonProperty(RENDER_AS_TABS) Boolean renderAsTabs,
             @JsonProperty(RENDER_HORIZONTALLY) Boolean renderHorizontally,
-            @JsonProperty(DATA_SET_ELEMENTS) List<DataElementCategoryCombo> dataSetElements,
+            @JsonProperty(DATA_SET_ELEMENTS) List<DataElementUids> dataSetElements,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_DataSet(uid, code, name,

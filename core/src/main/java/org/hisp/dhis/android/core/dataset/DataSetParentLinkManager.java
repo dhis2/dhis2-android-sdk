@@ -52,7 +52,7 @@ class DataSetParentLinkManager {
     }
 
     private void saveDataSetDataElementLink(DataSet dataSet) {
-        for (DataElementCategoryCombo dataSetDataElement : dataSet.dataSetElements()) {
+        for (DataElementUids dataSetDataElement : dataSet.dataSetElements()) {
             this.dataSetDataElementStore.insert(
                     DataSetDataElementLinkModel.create(
                             dataSet.uid(),

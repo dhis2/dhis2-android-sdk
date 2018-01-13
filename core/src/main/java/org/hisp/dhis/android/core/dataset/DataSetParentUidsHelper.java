@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserRole;
@@ -79,32 +77,11 @@ class DataSetParentUidsHelper {
         }
     }
 
-    static Set<String> getCategoryComboUids(List<DataSet> dataSets) {
-        Set<String> uids = new HashSet<>();
-        for (DataSet dataSet : dataSets) {
-            uids.add(dataSet.categoryComboUid());
-            for (DataElementCategoryCombo dataSetElement : dataSet.dataSetElements()) {
-                uids.add(dataSetElement.categoryComboUid());
-            }
-        }
-        return uids;
-    }
-
     static Set<String> getDataElementUids(List<DataSet> dataSets) {
         Set<String> uids = new HashSet<>();
         for (DataSet dataSet : dataSets) {
-            for (DataElementCategoryCombo dataSetElement : dataSet.dataSetElements()) {
+            for (DataElementUids dataSetElement : dataSet.dataSetElements()) {
                 uids.add(dataSetElement.dataElement().uid());
-            }
-        }
-        return uids;
-    }
-
-    static Set<String> getCategoryUids(List<CategoryCombo> categoryCombos) {
-        Set<String> uids = new HashSet<>();
-        for (CategoryCombo cc : categoryCombos) {
-            for (Category c : cc.categories()) {
-                uids.add(c.uid());
             }
         }
         return uids;

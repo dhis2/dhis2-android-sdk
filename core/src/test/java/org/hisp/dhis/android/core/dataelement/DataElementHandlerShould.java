@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.GenericHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.junit.Before;
@@ -56,7 +56,7 @@ public class DataElementHandlerShould {
     private DataElement dataElement;
 
     @Mock
-    private CategoryCombo categoryCombo;
+    private ObjectWithUid categoryCombo;
 
     @Mock
     private OptionSet optionSet;

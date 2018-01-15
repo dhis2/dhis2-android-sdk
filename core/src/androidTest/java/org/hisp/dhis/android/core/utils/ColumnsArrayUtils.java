@@ -26,48 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.utils;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 
-import org.junit.After;
-import org.junit.Before;
+/**
+ * A collection of convenience functions/abstractions to be used by the tests.
+ */
+public class ColumnsArrayUtils {
 
-import java.io.IOException;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public abstract class AbsStoreTestCase {
-    private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
-    private String dbName = null;
-
-    @Before
-    public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
-                , dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+    private static Object[] getModelAsObjectArray(BaseModel m) {
+        return new Object[] {
+                m.id()
+        };
     }
 
-    @After
-    public void tearDown() throws IOException {
-        assertThat(sqLiteDatabase).isNotNull();
-        sqLiteDatabase.close();
+    public static Object[] getIdentifiableModelAsObjectArray(BaseIdentifiableObjectModel m) {
+        return Utils.appendInNewArray(getModelAsObjectArray(m),
+                m.uid(), m.code(), m.name(), m.displayName(),
+                m.createdStr(), m.lastUpdatedStr()
+        );
     }
 
-    protected SQLiteDatabase database() {
-        return sqLiteDatabase;
+    public static Object[] getNameableModelAsObjectArray(BaseNameableObjectModel m) {
+        return Utils.appendInNewArray(getIdentifiableModelAsObjectArray(m),
+                m.shortName(), m.displayShortName(),
+                m.description(), m.displayDescription()
+        );
     }
 
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
-    }
-
-    protected Cursor getCursor(String table, String[] columns) {
-        return sqLiteDatabase.query(table, columns,
-                null, null, null, null, null);
+    public static String[] getColumnsWithId(String[] columns) {
+        return Utils.appendInNewArray(new String[] {BaseModel.Columns.ID},
+                columns
+        );
     }
 }

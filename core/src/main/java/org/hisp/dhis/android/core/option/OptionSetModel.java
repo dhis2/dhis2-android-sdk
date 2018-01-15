@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.option;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -38,21 +39,42 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
+import org.hisp.dhis.android.core.utils.Utils;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class OptionSetModel extends BaseIdentifiableObjectModel {
+public abstract class OptionSetModel extends BaseIdentifiableObjectModel implements StatementBinder {
     public static final String TABLE = "OptionSet";
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String VERSION = "version";
         public static final String VALUE_TYPE = "valueType";
+
+        public static String[] all() {
+            return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(),
+                    VERSION, VALUE_TYPE);
+        }
     }
 
     public static OptionSetModel create(Cursor cursor) {
         return AutoValue_OptionSetModel.createFromCursor(cursor);
+    }
+
+    public static OptionSetModel create(OptionSet optionSet) {
+        return OptionSetModel.builder()
+                .uid(optionSet.uid())
+                .code(optionSet.code())
+                .name(optionSet.name())
+                .displayName(optionSet.displayName())
+                .created(optionSet.created())
+                .lastUpdated(optionSet.lastUpdated())
+                .version(optionSet.version())
+                .valueType(optionSet.valueType())
+                .build();
     }
 
     public static Builder builder() {
@@ -79,5 +101,12 @@ public abstract class OptionSetModel extends BaseIdentifiableObjectModel {
         public abstract Builder valueType(@Nullable ValueType valueType);
 
         public abstract OptionSetModel build();
+    }
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 7, version());
+        sqLiteBind(sqLiteStatement, 8, valueType());
     }
 }

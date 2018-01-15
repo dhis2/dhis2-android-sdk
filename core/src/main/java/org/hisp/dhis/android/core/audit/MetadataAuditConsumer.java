@@ -2,9 +2,6 @@ package org.hisp.dhis.android.core.audit;
 
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -12,9 +9,6 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.audit.model.MetadataAudit;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -27,23 +21,23 @@ public class MetadataAuditConsumer {
     private Channel channel;
     private String queueName;
 
-    private MetadataAuditHandler metadataAuditHandler;
+    private MetadataAuditListener metadataAuditListener;
 
-    public MetadataAuditConsumer(MetadataAuditConnection metadataAuditConnection) throws Exception {
+    public MetadataAuditConsumer(MetadataAuditConnection metadataAuditConnection) {
 
         this.metadataAuditConnection = metadataAuditConnection;
-
-        connectToMessageBroker();
     }
 
-    public void setMetadataAuditHandler(MetadataAuditHandler metadataAuditHandler)
-            throws IOException {
-        this.metadataAuditHandler = metadataAuditHandler;
+    public void setMetadataAuditListener(MetadataAuditListener metadataAuditListener) {
+        this.metadataAuditListener = metadataAuditListener;
+    }
 
+    public void start() throws Exception {
+        connectToMessageBroker();
         createConsumer();
     }
 
-    public void close() throws IOException {
+    public void stop() throws Exception {
         connection.close();
     }
 
@@ -77,12 +71,17 @@ public class MetadataAuditConsumer {
                     AMQP.BasicProperties properties, byte[] body) throws IOException {
                 String message = new String(body, "UTF-8");
 
-                if (metadataAuditHandler != null) {
+                if (metadataAuditListener != null) {
                     try {
-                        metadataAuditHandler.handle(
-                                parseMetadataAudit(envelope.getRoutingKey(), message));
+                        Class<?> klass = MetadataClassFactory.getByName(
+                                envelope.getRoutingKey().split(Pattern.quote("."))[1]);
+
+                        MetadataAuditParser metadataAuditParser = new MetadataAuditParser();
+                        MetadataAudit metadataAudit = metadataAuditParser.parse(message, klass);
+
+                        metadataAuditListener.onMetadataChanged(klass, metadataAudit);
                     } catch (Exception e) {
-                        metadataAuditHandler.error(e);
+                        metadataAuditListener.onError(e);
                         Log.e(this.getClass().getSimpleName(), e.getMessage());
                     }
                 }
@@ -92,28 +91,9 @@ public class MetadataAuditConsumer {
         channel.basicConsume(queueName, true, consumer);
     }
 
-    private MetadataAudit parseMetadataAudit(String routingKey, String body)
-            throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper()
-                .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    public interface MetadataAuditListener {
+        void onMetadataChanged(Class<?> klass, MetadataAudit metadataAudit);
 
-        JavaType type = getType(routingKey.split(Pattern.quote("."))[1], objectMapper);
-
-        return objectMapper.readValue(body, type);
-    }
-
-    private JavaType getType(String className, ObjectMapper objectMapper) {
-
-        Class<?> klass = MetadataClassFactory.getByName(className);
-
-        return objectMapper.getTypeFactory()
-                .constructParametricType(MetadataAudit.class, klass);
-    }
-
-    public interface MetadataAuditHandler {
-        void handle(MetadataAudit metadataAudit);
-
-        void error(Throwable throwable);
+        void onError(Throwable throwable);
     }
 }

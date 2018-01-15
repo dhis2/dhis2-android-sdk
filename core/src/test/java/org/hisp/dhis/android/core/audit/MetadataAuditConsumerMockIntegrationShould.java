@@ -5,7 +5,6 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 import org.hamcrest.CoreMatchers;
-import org.hisp.dhis.android.core.audit.model.MetadataAudit;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.junit.After;
 import org.junit.Before;
@@ -14,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
@@ -68,29 +66,32 @@ public class MetadataAuditConsumerMockIntegrationShould {
         embeddedAmqpBroker.start(String.valueOf(metadataAuditConnection.port()));
 
         consumer = new MetadataAuditConsumer(metadataAuditConnection);
+        consumer.start();
+
         mockPublisher = new MetadataAuditMockPublisher(metadataAuditConnection,
                 new ResourcesFileReader());
+        mockPublisher.start();
     }
 
     @After
-    public void tearDown() throws IOException {
-        consumer.close();
-        mockPublisher.close();
+    public void tearDown() throws Exception {
+        consumer.stop();
+        mockPublisher.stop();
         embeddedAmqpBroker.stop();
 
     }
 
     @Test
     public void return_result_according_to_parameter_test() throws Exception {
-        consumer.setMetadataAuditHandler(new MetadataAuditConsumer.MetadataAuditHandler() {
+        consumer.setMetadataAuditListener(new MetadataAuditConsumer.MetadataAuditListener() {
             @Override
-            public void handle(MetadataAudit metadataAudit) {
+            public void onMetadataChanged(Class<?> klass, MetadataAudit metadataAudit) {
                 result = metadataAudit.getClass();
                 lock.countDown();
             }
 
             @Override
-            public void error(Throwable throwable) {
+            public void onError(Throwable throwable) {
                 result = throwable.getClass();
                 lock.countDown();
             }

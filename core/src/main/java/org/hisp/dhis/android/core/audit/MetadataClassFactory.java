@@ -6,7 +6,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class MetadataClassFactory {
+final class MetadataClassFactory {
     private static final Map<String, Class<?>> metadataClassMap = createMap();
 
     private static Map<String, Class<?>> createMap() {

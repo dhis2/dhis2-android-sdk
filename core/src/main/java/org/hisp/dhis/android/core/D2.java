@@ -34,6 +34,11 @@ import android.support.annotation.VisibleForTesting;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.audit.MetadataAuditConnection;
+import org.hisp.dhis.android.core.audit.MetadataAuditConsumer;
+import org.hisp.dhis.android.core.audit.MetadataAuditHandlerFactory;
+import org.hisp.dhis.android.core.audit.MetadataAuditListener;
+import org.hisp.dhis.android.core.audit.MetadataSyncedListener;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
@@ -126,6 +131,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
@@ -161,7 +167,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-// ToDo: handle corner cases when user initially has been signed in, but later was locked (or
+// ToDo: onMetadataChanged corner cases when user initially has been signed in, but later was
+// locked (or
 // password has changed)
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public final class D2 {
@@ -236,12 +243,16 @@ public final class D2 {
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
     private final OrganisationUnitHandler organisationUnitHandler;
-
+    private final MetadataAuditConnection metadataAuditConnection;
+    private MetadataAuditConsumer metadataAuditConsumer;
+    private MetadataAuditListener metadataAuditListener;
 
     @VisibleForTesting
-    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter) {
+    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
+            MetadataAuditConnection metadataAuditConnection) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
+        this.metadataAuditConnection = metadataAuditConnection;
 
         // services
         this.userService = retrofit.create(UserService.class);
@@ -368,7 +379,20 @@ public final class D2 {
         categoryComboHandler = new CategoryComboHandler(categoryComboStore,
                 categoryComboOptionCategoryLinkStore,
                 categoryCategoryComboLinkStore, optionComboHandler);
+
+        TrackedEntityHandler trackedEntityHandler = new TrackedEntityHandler(trackedEntityStore);
+
+        if (metadataAuditConnection != null) {
+            MetadataAuditHandlerFactory metadataAuditHandlerFactory =
+                    new MetadataAuditHandlerFactory(trackedEntityHandler);
+
+            this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
+
+            this.metadataAuditConsumer = new MetadataAuditConsumer(metadataAuditConnection);
+            this.metadataAuditConsumer.setMetadataAuditListener(metadataAuditListener);
+        }
     }
+
 
     @NonNull
     public Retrofit retrofit() {
@@ -503,10 +527,21 @@ public final class D2 {
         return new EventPostCall(eventService, eventStore, trackedEntityDataValueStore);
     }
 
+    public void startListeningSyncedMetadata(MetadataSyncedListener metadataSyncedListener)
+            throws Exception {
+        metadataAuditListener.setMetadataSyncedListener(metadataSyncedListener);
+        metadataAuditConsumer.start();
+    }
+
+    public void stopListeningSyncedMetadata() throws Exception {
+        metadataAuditConsumer.stop();
+    }
+
     public static class Builder {
         private ConfigurationModel configuration;
         private DatabaseAdapter databaseAdapter;
         private OkHttpClient okHttpClient;
+        private MetadataAuditConnection metadataAuditConnection;
 
         public Builder() {
             // empty constructor
@@ -527,6 +562,12 @@ public final class D2 {
         @NonNull
         public Builder okHttpClient(@NonNull OkHttpClient okHttpClient) {
             this.okHttpClient = okHttpClient;
+            return this;
+        }
+
+        @NonNull
+        public Builder metadataAuditConnection(MetadataAuditConnection metadataAuditConnection) {
+            this.metadataAuditConnection = metadataAuditConnection;
             return this;
         }
 
@@ -556,7 +597,9 @@ public final class D2 {
                     .validateEagerly(true)
                     .build();
 
-            return new D2(retrofit, databaseAdapter);
+            return new D2(retrofit, databaseAdapter, metadataAuditConnection);
         }
+
+
     }
 }

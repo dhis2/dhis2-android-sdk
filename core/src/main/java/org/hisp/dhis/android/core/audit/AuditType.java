@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.audit.model;
+package org.hisp.dhis.android.core.audit;
 
 public enum AuditType {
     CREATE("create"), UPDATE("update"), DELETE("delete");

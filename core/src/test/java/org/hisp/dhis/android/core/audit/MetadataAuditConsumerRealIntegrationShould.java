@@ -6,11 +6,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
-import org.hisp.dhis.android.core.audit.model.MetadataAudit;
 import org.junit.After;
 import org.junit.Before;
 
-import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 public class MetadataAuditConsumerRealIntegrationShould {
@@ -31,11 +29,13 @@ public class MetadataAuditConsumerRealIntegrationShould {
                         .setPassword("guest2")
                         .setPort(5672)
                         .build());
+
+        consumer.start();
     }
 
     @After
-    public void tearDown() throws IOException {
-        consumer.close();
+    public void tearDown() throws Exception {
+        consumer.stop();
     }
 
     //The goal of this test is research how messages are received from rabbitmq
@@ -43,15 +43,15 @@ public class MetadataAuditConsumerRealIntegrationShould {
     //in dhis2 server and manual metadata change.MetadataAudit.java
     //@Test
     public void return_metadata_change_message() throws Exception {
-        consumer.setMetadataAuditHandler(new MetadataAuditConsumer.MetadataAuditHandler() {
+        consumer.setMetadataAuditListener(new MetadataAuditConsumer.MetadataAuditListener() {
             @Override
-            public void handle(MetadataAudit metadataAudit) {
+            public void onMetadataChanged(Class<?> klass, MetadataAudit metadataAudit) {
                 metadataAuditInfo = metadataAudit;
                 lock.countDown();
             }
 
             @Override
-            public void error(Throwable throwable) {
+            public void onError(Throwable throwable) {
                 fail(throwable.getMessage());
                 lock.countDown();
             }

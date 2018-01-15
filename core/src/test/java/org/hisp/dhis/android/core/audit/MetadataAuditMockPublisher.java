@@ -6,8 +6,6 @@ import com.rabbitmq.client.ConnectionFactory;
 
 import org.hisp.dhis.android.core.data.file.IFileReader;
 
-import java.io.IOException;
-
 public class MetadataAuditMockPublisher {
     private static final String EXCHANGE_NAME = "dhis2";
 
@@ -18,15 +16,16 @@ public class MetadataAuditMockPublisher {
     private Channel channel;
 
     public MetadataAuditMockPublisher(MetadataAuditConnection metadataAuditConnection,
-            IFileReader fileReader)
-            throws Exception {
+            IFileReader fileReader) {
         this.metadataAuditConnection = metadataAuditConnection;
         this.fileReader = fileReader;
+    }
 
+    public void start() throws Exception {
         connectToMessageBroker();
     }
 
-    public void close() throws IOException {
+    public void stop() throws Exception {
         connection.close();
     }
 

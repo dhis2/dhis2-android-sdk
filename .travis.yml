@@ -17,8 +17,8 @@ android:
   - extra-android-support
 env:
   global:
-  - secure: WbGInHX+bL8MPaUOZUYAaPsVqjxCag3nhoI7cnIhsYaw4/YENJ7mGPd1QZM7QxmsBxCjwLzrBfLg/r9ziX2sJ6J8OHuVeILPY0xrb2wBvgKI9AFfIHHWXGXaypSsKsFnqhTMIyPF6RRngu0rI+DqtljnLBBbA3SmIcvV1+9WeHQ=
-  - secure: VRooEJvYGrxAcApgfwPb/QyGXrMBFeSQgslFeS5g+E7T9hKggixetV8qI3vTceMCh3PGPMSfWhxmFa9JQaSLj2lnCGy0lAt5RYUDiQgVLmN25o8U3qMUZUglk+5Ba3hWgzFjb5XIj2QCvjDax2G00PyU7ycONWMsNnWJ9Ws80Ag=
+  - secure: DFhca9ZcFpfnotvD+wjzZIJz0Fa/vv6fIfcaMOpRXNd/I1Xk5Rslb5q5Xzs/wrWkqaOVXvWPH0Nsm23vxuuuMlKdT1YuiAGZLcSeuwmtM21Q2xlVHLBWg5/T/3lVBIDdaW+XD1XM8TfbaZL8rtsjbbXQoZyiPZIGN2Nj9PmnDxs=
+  - secure: RAMZy2zxizEnH7Tl0qeBGruJr66kpFvFXh5z/6KX+YhXW1phU9J2BccdttiD/sWU7Y4v2mEnrGWv4iO58L8Icqqe78dsHKUs8af1FTU+pk2T9wntwbCf/L9F8q5FaHsTfUTsM0kH4ROiwsPNGybKBeXracboV3QyBHJFR5f91bw=
 
 branches:
   only:

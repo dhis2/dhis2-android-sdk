@@ -80,7 +80,7 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
     }
 
     @Override
-    public boolean delete(@NonNull String uid) {
+    public int delete(@NonNull String uid) {
 
         isNull(uid);
 
@@ -97,18 +97,17 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
 
         bindUpdate(oldCategoryOption, newCategoryOption);
 
-        return execute(updateStatement);
+        return wasExecuted(execute(updateStatement));
     }
 
     private boolean wasExecuted(int numberOfRows) {
         return numberOfRows >= 1;
     }
 
-    private boolean execute(@NonNull SQLiteStatement statement) {
+    private int execute(@NonNull SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryModel.TABLE, statement);
         statement.clearBindings();
-
-        return wasExecuted(rowsAffected);
+        return rowsAffected;
     }
 
     private long executeInsert() {

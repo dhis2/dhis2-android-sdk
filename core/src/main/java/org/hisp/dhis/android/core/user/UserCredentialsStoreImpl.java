@@ -205,7 +205,6 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
         return userCredentials;
     }
 
-    @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
         return cursor.getCount()>0;

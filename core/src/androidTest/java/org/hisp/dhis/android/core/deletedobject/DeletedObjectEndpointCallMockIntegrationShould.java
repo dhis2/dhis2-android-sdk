@@ -54,7 +54,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.DeletableObjectStore;
 import org.hisp.dhis.android.core.common.MockedCalls;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
@@ -204,18 +204,18 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     @Test
     @MediumTest
     public void delete_the_given_deleted_Relationship_types() throws Exception {
-        RelationshipTypeStoreImpl userStore = new RelationshipTypeStoreImpl(databaseAdapter());
+        RelationshipTypeStoreImpl relationshipTypeStore = new RelationshipTypeStoreImpl(databaseAdapter());
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(
                 commonMetadataWithMultipleObjectsJsonFiles);
         d2.syncMetaData().call();
-        verifyIfIsPersisted("V2kkHafqs82", userStore);
-        verifyIfIsPersisted("V2kkHafqs8G", userStore);
+        verifyIfIsPersisted("V2kkHafqs82", relationshipTypeStore);
+        verifyIfIsPersisted("V2kkHafqs8G", relationshipTypeStore);
 
         dhis2MockServer.enqueueMockedResponsesFromArrayFiles(metadataJsonWithDeletedObjects);
         d2.syncMetaData().call();
 
-        verifyIfIsDeleted("V2kkHafqs82", userStore);
-        verifyIfIsDeleted("V2kkHafqs8G", userStore);
+        verifyIfIsDeleted("V2kkHafqs82", relationshipTypeStore);
+        verifyIfIsDeleted("V2kkHafqs8G", relationshipTypeStore);
     }
 
     @Test
@@ -629,12 +629,12 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsDeleted("zINGRka3g9N", programRuleVariableStore);
     }
 
-    private void verifyIfIsPersisted(String uid, DeletableStore store) {
+    private void verifyIfIsPersisted(String uid, DeletableObjectStore store) {
         Boolean isPersisted = store.exists(uid);
         assertThat(isPersisted, is(true));
     }
 
-    private void verifyIfIsDeleted(String uid, DeletableStore store) {
+    private void verifyIfIsDeleted(String uid, DeletableObjectStore store) {
         Boolean isPersisted = store.exists(uid);
         assertThat(isPersisted, is(false));
     }

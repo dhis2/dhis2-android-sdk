@@ -317,7 +317,6 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         return databaseAdapter.delete(EnrollmentModel.TABLE);
     }
 
-    @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
         return cursor.getCount()>0;

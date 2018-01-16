@@ -31,12 +31,12 @@ package org.hisp.dhis.android.core.program;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.DeletableObjectStore;
 import org.hisp.dhis.android.core.common.FormType;
 
 import java.util.Date;
 
-public interface ProgramStageStore extends DeletableStore {
+public interface ProgramStageStore extends DeletableObjectStore {
     long insert(
             @NonNull String uid, @Nullable String code, @NonNull String name, @NonNull String displayName,
             @NonNull Date created, @NonNull Date lastUpdated, @Nullable String executionDateLabel,
@@ -61,6 +61,4 @@ public interface ProgramStageStore extends DeletableStore {
                @NonNull Integer minDaysFromStart, @NonNull Integer standardInterval,
                @NonNull String program, @NonNull String whereProgramStageUid
     );
-
-    int delete(@NonNull String uid);
 }

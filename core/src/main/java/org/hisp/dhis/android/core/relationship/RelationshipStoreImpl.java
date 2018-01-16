@@ -81,7 +81,6 @@ public class RelationshipStoreImpl implements RelationshipStore {
         return databaseAdapter.delete(RelationshipModel.TABLE);
     }
 
-    @Override
     public Boolean exists(String id) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, id);
         return cursor.getCount()>0;

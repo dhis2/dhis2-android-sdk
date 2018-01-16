@@ -112,7 +112,6 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
         return databaseAdapter.delete(ConfigurationModel.CONFIGURATION, null, null);
     }
 
-    @Override
     public Boolean exists(String id) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, id);
         return cursor.getCount()>0;

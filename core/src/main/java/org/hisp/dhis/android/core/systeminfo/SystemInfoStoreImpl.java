@@ -136,7 +136,6 @@ public class SystemInfoStoreImpl implements SystemInfoStore {
         return databaseAdapter.delete(SystemInfoModel.TABLE);
     }
 
-    @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, uId);
         return cursor.getCount()>0;

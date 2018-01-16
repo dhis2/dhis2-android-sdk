@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.option;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.DeletableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.Date;
 
-public interface OptionSetStore extends DeletableStore {
+public interface OptionSetStore extends DeletableObjectStore {
     long insert(
             @NonNull String uid, @NonNull String code, @NonNull String name,
             @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
@@ -46,9 +46,5 @@ public interface OptionSetStore extends DeletableStore {
             @NonNull String uid, @NonNull String code, @NonNull String name,
             @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
             @NonNull Integer version, @NonNull ValueType valueType, @NonNull String whereUid
-    );
-
-    int delete(
-            @NonNull String uid
     );
 }

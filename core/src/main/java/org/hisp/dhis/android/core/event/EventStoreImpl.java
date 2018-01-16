@@ -379,7 +379,6 @@ public class EventStoreImpl implements EventStore {
         return databaseAdapter.delete(EventModel.TABLE);
     }
 
-    @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
         return cursor.getCount()>0;

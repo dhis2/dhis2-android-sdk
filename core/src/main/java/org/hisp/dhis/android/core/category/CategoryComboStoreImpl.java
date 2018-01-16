@@ -82,7 +82,7 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
     }
 
     @Override
-    public boolean delete(@NonNull String uid) {
+    public int delete(@NonNull String uid) {
 
         isNull(uid);
 
@@ -99,14 +99,14 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
 
         bindUpdate(oldCombo, newCombo);
 
-        return execute(updateStatement);
+        return wasExecuted(execute(updateStatement));
     }
 
-    private boolean execute(SQLiteStatement statement) {
+    private int execute(SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, statement);
         statement.clearBindings();
 
-        return wasExecuted(rowsAffected);
+        return rowsAffected;
     }
 
     private long executeInsert() {

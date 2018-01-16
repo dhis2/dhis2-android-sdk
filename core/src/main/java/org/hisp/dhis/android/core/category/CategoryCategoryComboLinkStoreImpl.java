@@ -119,7 +119,6 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
         return databaseAdapter.delete(CategoryCategoryComboLinkModel.TABLE);
     }
 
-    @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
         return cursor.getCount() > 0;

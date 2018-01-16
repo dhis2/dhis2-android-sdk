@@ -31,11 +31,11 @@ package org.hisp.dhis.android.core.relationship;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.DeletableObjectStore;
 
 import java.util.Date;
 
-public interface RelationshipTypeStore extends DeletableStore {
+public interface RelationshipTypeStore extends DeletableObjectStore {
 
     long insert(
             @NonNull String uid,
@@ -58,6 +58,4 @@ public interface RelationshipTypeStore extends DeletableStore {
             @NonNull String bIsToA,
             @NonNull String whereRelationshipTypeUid
     );
-
-    int delete(@NonNull String uid);
 }

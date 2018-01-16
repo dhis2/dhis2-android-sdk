@@ -1,6 +1,12 @@
 package org.hisp.dhis.android.core.deleteobject;
 
+import static junit.framework.Assert.assertTrue;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -10,11 +16,13 @@ import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryStore;
-import org.hisp.dhis.android.core.constant.ConstantStore;
+import org.hisp.dhis.android.core.common.DeletableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.deletedobject.DeletedObject;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandler;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandlerFactory;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetStore;
@@ -52,6 +60,7 @@ import org.hisp.dhis.android.core.user.UserStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 public class DeleteObjectHandlerShould {
 
@@ -98,30 +107,30 @@ public class DeleteObjectHandlerShould {
     @Mock
     private RelationshipTypeStore relationshipTypeStore;
 
+    @Mock
+    DatabaseAdapter mDatabaseAdapter = mock(DatabaseAdapter.class, Mockito.RETURNS_DEEP_STUBS);
+    @Mock
+    DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
+
     private DeletedObjectHandler deletedObjectHandler;
 
     @Before
     public void setUp() throws Exception {
-
-
         MockitoAnnotations.initMocks(this);
-        deletedObjectHandler = new DeletedObjectHandler(userStore,
-                categoryStore, categoryComboStore, categoryOptionComboStore,
-                programStore, organisationUnitStore, optionSetStore, trackedEntityStore,
-                categoryOptionStore, dataElementStore, optionStore, programIndicatorStore, programRuleStore,
-                programRuleActionStore, programRuleVariableStore, programStageStore, programStageDataElementStore,
-                programStageSectionStore, programTrackedEntityAttributeStore, trackedEntityAttributeStore,
-                relationshipTypeStore);
+        deletedObjectHandler = new DeletedObjectHandler(deletedObjectHandlerFactory);
     }
 
     @Test
     public void handle_deleted_relationship_type() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(RelationshipType.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = RelationshipType.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
+
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(relationshipTypeStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(relationshipTypeStore).delete(deletedObject.uid());
@@ -130,11 +139,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_tracked_entity_attribute() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(TrackedEntityAttribute.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = TrackedEntityAttribute.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(trackedEntityAttributeStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(trackedEntityAttributeStore).delete(deletedObject.uid());
@@ -144,11 +155,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_program_tracked_entity_attribute() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(ProgramTrackedEntityAttribute.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = ProgramTrackedEntityAttribute.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(programTrackedEntityAttributeStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(programTrackedEntityAttributeStore).delete(deletedObject.uid());
@@ -158,11 +171,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_program_stage_section() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(ProgramStageSection.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = ProgramStageSection.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(programStageSectionStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(programStageSectionStore).delete(deletedObject.uid());
@@ -171,11 +186,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_program_stage_data_element() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(ProgramStageDataElement.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = ProgramStageDataElement.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(programStageDataElementStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(programStageDataElementStore).delete(deletedObject.uid());
@@ -184,11 +201,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_program_stage() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(ProgramStage.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = ProgramStage.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(programStageStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(programStageStore).delete(deletedObject.uid());
@@ -197,11 +216,12 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_program_rule_variable() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(ProgramRuleVariable.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = ProgramRuleVariable.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(programRuleVariableStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
 
         //then
         verify(programRuleVariableStore).delete(deletedObject.uid());
@@ -210,11 +230,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_program_rule_action() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(ProgramRuleAction.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = ProgramRuleAction.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(programRuleActionStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(programRuleActionStore).delete(deletedObject.uid());
@@ -223,11 +245,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_program_rule() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(ProgramRule.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = ProgramRule.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(programRuleStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(programRuleStore).delete(deletedObject.uid());
@@ -236,11 +260,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_program_indicator() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(ProgramIndicator.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = ProgramIndicator.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(programIndicatorStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(programIndicatorStore).delete(deletedObject.uid());
@@ -249,11 +275,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_option() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(Option.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = Option.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(optionStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(optionStore).delete(deletedObject.uid());
@@ -262,11 +290,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_data_element() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(DataElement.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = DataElement.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(dataElementStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(dataElementStore).delete(deletedObject.uid());
@@ -275,11 +305,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_tracked_entity_store() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(TrackedEntity.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = TrackedEntity.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(trackedEntityStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(trackedEntityStore).delete(deletedObject.uid());
@@ -288,11 +320,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_option_set() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(OptionSet.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = OptionSet.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(optionSetStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(optionSetStore).delete(deletedObject.uid());
@@ -301,11 +335,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_organisation_units() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(OrganisationUnit.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = OrganisationUnit.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(organisationUnitStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(organisationUnitStore).delete(deletedObject.uid());
@@ -314,11 +350,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_program() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(Program.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = Program.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(programStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(programStore).delete(deletedObject.uid());
@@ -327,11 +365,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_user() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(User.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = User.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(userStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(userStore).delete(deletedObject.uid());
@@ -340,11 +380,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_category_combo() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(CategoryCombo.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = CategoryCombo.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(categoryComboStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(categoryComboStore).delete(deletedObject.uid());
@@ -353,11 +395,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_category_option_combo() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(CategoryOptionCombo.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = CategoryOptionCombo.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(categoryOptionComboStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(categoryOptionComboStore).delete(deletedObject.uid());
@@ -366,11 +410,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_category_option() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(CategoryOption.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = CategoryOption.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(categoryOptionStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(categoryOptionStore).delete(deletedObject.uid());
@@ -379,11 +425,13 @@ public class DeleteObjectHandlerShould {
     @Test
     public void handle_deleted_category() {
         //given
-        DeletedObject deletedObject = givenADeletedObjectByClass(Category.class.getSimpleName());
-        ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
+        String klass = Category.class.getSimpleName();
+        DeletedObject deletedObject = givenADeletedObjectByClass(klass);
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        when(deletedObjectHandlerFactory.getByKlass(klass)).thenReturn(categoryStore);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
+
 
         //then
         verify(categoryStore).delete(deletedObject.uid());
@@ -397,7 +445,7 @@ public class DeleteObjectHandlerShould {
         ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObject.klass());
 
         //when
-        deletedObjectHandler.handle(deletedObject.uid(), type);
+        deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
 
         //then
         verify(programStageDataElementStore).delete(deletedObject.uid());

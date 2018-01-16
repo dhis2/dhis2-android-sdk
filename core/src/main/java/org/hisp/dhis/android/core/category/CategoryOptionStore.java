@@ -3,20 +3,16 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.DeletableObjectStore;
 
 import java.util.List;
 
-public interface CategoryOptionStore extends DeletableStore {
+public interface CategoryOptionStore extends DeletableObjectStore {
 
     long insert(@NonNull CategoryOption categoryOption);
-
-    boolean delete(@NonNull String uid);
 
     boolean update(@NonNull CategoryOption oldCategoryOption,
             @NonNull CategoryOption newCategoryOption);
 
     List<CategoryOption> queryAll();
-
-    Boolean exists(String categoryOptionUid);
 }

@@ -115,7 +115,6 @@ public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
         return databaseAdapter.delete(UserRoleProgramLinkModel.TABLE);
     }
 
-    @Override
     public Boolean exists(String id) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, id);
         return cursor.getCount()>0;

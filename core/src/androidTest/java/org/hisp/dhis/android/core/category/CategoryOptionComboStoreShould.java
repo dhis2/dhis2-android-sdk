@@ -77,7 +77,7 @@ public class CategoryOptionComboStoreShould extends AbsStoreTestCase {
     }
 
     private void whenDeleteCategoryOptionComboInserted(){
-        wasDeleted = store.delete(newCategoryOptionCombo.uid());
+        wasDeleted = store.delete(newCategoryOptionCombo.uid())>0;
     }
 
     private void thenAssertLastInsertedIDIsOne(){

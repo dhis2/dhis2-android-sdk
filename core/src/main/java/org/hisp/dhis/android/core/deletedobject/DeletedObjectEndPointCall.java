@@ -72,7 +72,7 @@ public class DeletedObjectEndPointCall implements Call<Response<Payload<DeletedO
 
             for (int i = 0; i < size; i++) {
                 DeletedObject deletedObject = deletedObjects.get(i);
-                deletedObjectHandler.handle(deletedObject.uid(), type);
+                deletedObjectHandler.handle(deletedObject.uid(), deletedObject.klass());
             }
 
             resourceHandler.handleResource(type, serverDate);
@@ -82,7 +82,8 @@ public class DeletedObjectEndPointCall implements Call<Response<Payload<DeletedO
 
     private Fields<DeletedObject> getSingleFields() {
         return Fields.<DeletedObject>builder().fields(
-                DeletedObject.uid
+                DeletedObject.uid,
+                DeletedObject.klass
         ).build();
     }
 }

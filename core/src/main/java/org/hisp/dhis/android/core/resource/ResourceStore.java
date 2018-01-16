@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.resource;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.DeletableObjectStore;
 
 import java.util.Date;
 
-public interface ResourceStore extends DeletableStore {
+public interface ResourceStore extends DeletableObjectStore {
     long insert(@NonNull String resourceType, @Nullable Date lastSynced);
 
     int update(

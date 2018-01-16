@@ -31,11 +31,11 @@ package org.hisp.dhis.android.core.program;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.DeletableObjectStore;
 
 import java.util.Date;
 
-public interface ProgramIndicatorStore extends DeletableStore {
+public interface ProgramIndicatorStore extends DeletableObjectStore {
     long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
                 @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
                 @Nullable String shortName, @Nullable String displayShortName,
@@ -52,6 +52,4 @@ public interface ProgramIndicatorStore extends DeletableStore {
                @Nullable String dimensionItem, @Nullable String filter,
                @Nullable Integer decimals, @Nullable String program, @NonNull String whereProgramIndicatorUid
     );
-
-    int delete(String uid);
 }

@@ -70,6 +70,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandler;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandlerFactory;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectService;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
@@ -375,13 +376,9 @@ public final class D2 {
                 categoryComboOptionCategoryLinkStore,
                 categoryCategoryComboLinkStore, optionComboHandler);
 
-        deletedObjectHandler = new DeletedObjectHandler(userStore,
-                categoryStore, categoryComboStore, categoryOptionComboStore,
-                programStore, organisationUnitStore, optionSetStore, trackedEntityStore,
-                categoryOptionStore, dataElementStore, optionStore, programIndicatorStore, programRuleStore,
-                programRuleActionStore, programRuleVariableStore, programStageStore, programStageDataElementStore,
-                programStageSectionStore, programTrackedEntityAttributeStore, trackedEntityAttributeStore,
-                relationshipStore);
+        DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(databaseAdapter);
+
+        deletedObjectHandler = new DeletedObjectHandler(deletedObjectHandlerFactory);
     }
 
     @NonNull

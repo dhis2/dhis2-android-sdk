@@ -31,11 +31,11 @@ package org.hisp.dhis.android.core.program;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.DeletableObjectStore;
 
 import java.util.Date;
 
-public interface ProgramRuleVariableStore extends DeletableStore {
+public interface ProgramRuleVariableStore extends DeletableObjectStore {
     long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
                 @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
                 @Nullable Boolean useCodeForOptionSet, @NonNull String program,
@@ -53,6 +53,4 @@ public interface ProgramRuleVariableStore extends DeletableStore {
             @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType,
             @NonNull String whereProgramRuleVariableUid
     );
-
-    int delete(String uid);
 }

@@ -40,15 +40,6 @@ import java.util.List;
 
 public class MetadataCallMocklIntegrationShould extends AbsStoreTestCase {
 
-    final static String[] commonMetadataJsonFiles = new String[]{
-            SYSTEM_INFO,
-            DELETED_OBJECT_EMPTY, USER,
-            DELETED_OBJECT_EMPTY, ORGANISATION_UNITS,
-            DELETED_OBJECT_EMPTY, SIMPLE_CATEGORIES,
-            DELETED_OBJECT_EMPTY, CATEGORY_COMBOS,
-            DELETED_OBJECT_EMPTY, PROGRAMS,
-            DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
-            DELETED_OBJECT_EMPTY, OPTION_SETS};
 
 
     private Dhis2MockServer dhis2MockServer;
@@ -65,10 +56,10 @@ public class MetadataCallMocklIntegrationShould extends AbsStoreTestCase {
     }
 
 
-    //@Test
-    //@MediumTest
+    @Test
+    @MediumTest
     public void not_delete_nothing_when_the_deletable_object_list_is_empty() throws Exception {
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataJsonFiles);
+        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
         d2.syncMetaData().call();
 
         verifyDownloadedUsers(NORMAL_USER);

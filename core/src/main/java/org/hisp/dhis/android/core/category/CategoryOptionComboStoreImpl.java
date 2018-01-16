@@ -90,7 +90,7 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
     }
 
     @Override
-    public boolean delete(@NonNull String uid) {
+    public int delete(@NonNull String uid) {
 
         isNull(uid);
 
@@ -107,7 +107,7 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
 
         bindUpdate(oldEntity, newEntity);
 
-        return execute(updateStatement);
+        return wasExecuted(execute(updateStatement));
     }
 
     private void validate(@NonNull CategoryOptionCombo optionCombo) {
@@ -149,11 +149,10 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
         return numberOfRows >= 1;
     }
 
-    private boolean execute(SQLiteStatement statement) {
+    private int execute(SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryOptionComboModel.TABLE, statement);
         statement.clearBindings();
-
-        return wasExecuted(rowsAffected);
+        return rowsAffected;
     }
 
     private long executeInsert() {

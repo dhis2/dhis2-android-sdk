@@ -19,7 +19,6 @@ public class MetadataAuditRealIntegrationShould extends AbsStoreTestCase {
     private final CountDownLatch lock = new CountDownLatch(1);
 
     private D2 d2;
-    private MetadataSyncedListener metadataSyncedListener;
     private SyncedMetadata syncedMetadataFromServer;
 
     @Before
@@ -28,7 +27,7 @@ public class MetadataAuditRealIntegrationShould extends AbsStoreTestCase {
 
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter(),
                 MetadataAuditConnection.builder()
-                        .setHost("192.168.1.37")
+                        .setHost("192.168.1.42")
                         .setVirtualHost("/")
                         .setUsername("guest2")
                         .setPassword("guest2")

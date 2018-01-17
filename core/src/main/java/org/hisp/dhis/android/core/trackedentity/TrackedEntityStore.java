@@ -34,6 +34,7 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
+import java.util.List;
 
 public interface TrackedEntityStore extends DeletableStore {
 
@@ -51,4 +52,5 @@ public interface TrackedEntityStore extends DeletableStore {
 
     int delete(@NonNull String uid);
 
+    List<TrackedEntity> queryAll();
 }

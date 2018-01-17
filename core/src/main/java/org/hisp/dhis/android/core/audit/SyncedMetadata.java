@@ -6,7 +6,7 @@ import com.google.auto.value.AutoValue;
 public abstract class SyncedMetadata {
     public abstract String uid();
 
-    public abstract String Klass();
+    public abstract String klass();
 
     public abstract AuditType type();
 
@@ -18,7 +18,7 @@ public abstract class SyncedMetadata {
     abstract static class Builder {
         public abstract SyncedMetadata.Builder uid(String value);
 
-        public abstract SyncedMetadata.Builder Klass(String value);
+        public abstract SyncedMetadata.Builder klass(String value);
 
         public abstract SyncedMetadata.Builder type(AuditType value);
 

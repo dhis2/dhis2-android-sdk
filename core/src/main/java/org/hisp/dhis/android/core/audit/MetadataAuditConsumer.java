@@ -76,8 +76,9 @@ public class MetadataAuditConsumer {
                         Class<?> klass = MetadataClassFactory.getByName(
                                 envelope.getRoutingKey().split(Pattern.quote("."))[1]);
 
-                        MetadataAuditParser metadataAuditParser = new MetadataAuditParser();
-                        MetadataAudit metadataAudit = metadataAuditParser.parse(message, klass);
+                        GenericClassParser genericClassParser = new GenericClassParser();
+                        MetadataAudit metadataAudit = genericClassParser.parse(message,
+                                MetadataAudit.class, klass);
 
                         metadataAuditListener.onMetadataChanged(klass, metadataAudit);
                     } catch (Exception e) {

@@ -5,7 +5,7 @@ import android.util.Log;
 public class MetadataAuditListener implements MetadataAuditConsumer.MetadataAuditListener {
 
     private MetadataSyncedListener metadataSyncedListener;
-    private MetadataAuditHandlerFactory metadataAuditHandlerFactory;
+    private final MetadataAuditHandlerFactory metadataAuditHandlerFactory;
 
     public MetadataAuditListener(MetadataAuditHandlerFactory metadataAuditHandlerFactory) {
         this.metadataAuditHandlerFactory = metadataAuditHandlerFactory;
@@ -41,7 +41,7 @@ public class MetadataAuditListener implements MetadataAuditConsumer.MetadataAudi
 
             metadataSyncedListener.onSynced(SyncedMetadata.builder()
                     .uid(metadataAudit.getUid())
-                    .Klass(klass.getName())
+                    .klass(klass.getName())
                     .type(metadataAudit.getType())
                     .build());
         }

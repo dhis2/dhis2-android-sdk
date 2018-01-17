@@ -79,22 +79,27 @@ public class Dhis2MockServer {
     }
 
     public void enqueueMockResponse(String fileName) throws IOException {
-        MockResponse response = createMockResponse(fileName);
+        MockResponse response = createMockResponse(fileName, OK_CODE);
+        server.enqueue(response);
+    }
+
+    public void enqueueMockResponse(String fileName, int code) throws IOException {
+        MockResponse response = createMockResponse(fileName, code);
         server.enqueue(response);
     }
 
     @NonNull
-    private MockResponse createMockResponse(String fileName) throws IOException {
+    private MockResponse createMockResponse(String fileName, int code) throws IOException {
         String body = fileReader.getStringFromFile(fileName);
         MockResponse response = new MockResponse();
-        response.setResponseCode(OK_CODE);
+        response.setResponseCode(code);
         response.setBody(body);
         return response;
     }
 
     public void enqueueMockResponse(String fileName, Date dateHeader)
             throws IOException {
-        MockResponse response = createMockResponse(fileName);
+        MockResponse response = createMockResponse(fileName, OK_CODE);
 
         DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
         rfc1123.setLenient(false);

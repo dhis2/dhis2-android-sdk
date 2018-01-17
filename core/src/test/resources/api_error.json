@@ -1,0 +1,6 @@
+{
+  "httpStatus": "Conflict",
+  "httpStatusCode": 409,
+  "status": "ERROR",
+  "message": "API error example"
+}

@@ -60,6 +60,7 @@ import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionStore;
@@ -295,7 +296,7 @@ public class MetadataCallShould {
     @Mock
     private CategoryComboHandler mockCategoryComboHandler;
 
-
+    private OptionSetFactory optionSetFactory;
     private TrackedEntityFactory trackedEntityFactory;
 
     // object to test
@@ -359,23 +360,23 @@ public class MetadataCallShould {
         categoryService = retrofit.create(CategoryService.class);
         comboService = retrofit.create(CategoryComboService.class);
 
+        optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
         trackedEntityFactory = new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
 
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService,
-                programService, organisationUnitService, optionSetService,
+                programService, organisationUnitService,
                 systemInfoStore, resourceStore, userStore,
                 userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
                 organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore,
-                optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
+                programRuleStore, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                trackedEntityFactory);
+                optionSetFactory, trackedEntityFactory);
 
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
         when(userCall.execute()).thenReturn(Response.success(user));
@@ -394,6 +395,7 @@ public class MetadataCallShould {
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
+        dhis2MockServer.enqueueMockResponse("option_sets.json");
 
         Response response = metadataCall.call();
         // assert that last successful response is returned
@@ -409,6 +411,7 @@ public class MetadataCallShould {
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
+        dhis2MockServer.enqueueMockResponse("option_sets.json");
 
         final int expectedTransactions = 1;
         when(systemInfoCall.execute()).thenReturn(errorResponse);
@@ -428,6 +431,7 @@ public class MetadataCallShould {
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
+        dhis2MockServer.enqueueMockResponse("option_sets.json");
 
         final int expectedTransactions = 2;
         when(userCall.execute()).thenReturn(errorResponse);
@@ -448,6 +452,7 @@ public class MetadataCallShould {
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
+        dhis2MockServer.enqueueMockResponse("option_sets.json");
 
         final int expectedTransactions = 4;
         when(organisationUnitCall.execute()).thenReturn(errorResponse);
@@ -468,6 +473,7 @@ public class MetadataCallShould {
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
+        dhis2MockServer.enqueueMockResponse("option_sets.json");
 
         final int expectedTransactions = 6;
         when(programCall.execute()).thenReturn(errorResponse);
@@ -504,14 +510,14 @@ public class MetadataCallShould {
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
+        dhis2MockServer.enqueueMockResponse("api_error.json", HttpURLConnection.HTTP_CONFLICT);
 
         final int expectedTransactions = 8;
         when(optionSetCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
-        assertThat(response).isEqualTo(errorResponse);
-        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
+        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CONFLICT);
         verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
         verify(transaction, times(expectedTransactions)).end();
         verify(transaction, atMost(expectedTransactions - 1)).setSuccessful();

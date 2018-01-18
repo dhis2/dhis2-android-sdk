@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
 import org.hisp.dhis.android.core.option.OptionHandler;
+import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetStore;
@@ -229,11 +230,16 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
 
+        OptionSetFactory optionSetFactory =
+                new OptionSetFactory(d2.retrofit(), databaseAdapter(),
+                        new ResourceHandler(resourceStore));
+
         programCall = new ProgramCall(
                 programService, databaseAdapter(), resourceStore, uids, programStore, new Date(),
                 trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
-                programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
+                programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
+                programRuleActionStore,
+                programRuleStore, optionSetFactory, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore
         );
     }

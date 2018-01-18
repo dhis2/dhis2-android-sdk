@@ -29,6 +29,8 @@ public class MetadataAuditConsumerMockIntegrationShould {
                         "audit/trackedEntity_create.json"},
                 {MetadataAudit.class, "metadata.relationshipType.create.ApToHMl1NnE",
                         "audit/relationshipType_create.json"},
+                {MetadataAudit.class, "metadata.optionSet.create.qy1kWnfUk8b",
+                        "audit/optionSet_create.json"}
         });
     }
 

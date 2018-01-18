@@ -83,7 +83,7 @@ import org.hisp.dhis.android.core.event.EventService;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
-import org.hisp.dhis.android.core.option.OptionSetService;
+import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.option.OptionStore;
@@ -180,7 +180,6 @@ public final class D2 {
     private final ProgramService programService;
     private final OrganisationUnitService organisationUnitService;
     private final TrackedEntityInstanceService trackedEntityInstanceService;
-    private final OptionSetService optionSetService;
     private final EventService eventService;
     private final CategoryService categoryService;
     private final CategoryComboService comboService;
@@ -244,6 +243,7 @@ public final class D2 {
     private MetadataAuditConsumer metadataAuditConsumer;
     private MetadataAuditListener metadataAuditListener;
 
+    private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
 
     @VisibleForTesting
@@ -256,7 +256,6 @@ public final class D2 {
         this.systemInfoService = retrofit.create(SystemInfoService.class);
         this.programService = retrofit.create(ProgramService.class);
         this.organisationUnitService = retrofit.create(OrganisationUnitService.class);
-        this.optionSetService = retrofit.create(OptionSetService.class);
         this.trackedEntityInstanceService = retrofit.create(TrackedEntityInstanceService.class);
         this.eventService = retrofit.create(EventService.class);
         this.categoryService = retrofit.create(CategoryService.class);
@@ -377,13 +376,15 @@ public final class D2 {
                 categoryCategoryComboLinkStore, optionComboHandler);
 
         //factories
+        optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
+
         trackedEntityFactory =
                 new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
 
 
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
-                    new MetadataAuditHandlerFactory(trackedEntityFactory);
+                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 
@@ -484,20 +485,17 @@ public final class D2 {
     public Call<Response> syncMetaData() {
         return new MetadataCall(
                 databaseAdapter, systemInfoService, userService, programService,
-                organisationUnitService, optionSetService, systemInfoStore, resourceStore,
-                userStore,
+                organisationUnitService, systemInfoStore, resourceStore, userStore,
                 userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
                 organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, optionStore,
-                optionSetStore, dataElementStore, programStageDataElementStore,
-                programStageSectionStore,
-                programStageStore, relationshipStore,
-                organisationUnitProgramLinkStore, categoryQuery,
-                categoryService, categoryHandler, categoryComboQuery, comboService,
-                categoryComboHandler, trackedEntityFactory);
+                programRuleStore, dataElementStore, programStageDataElementStore,
+                programStageSectionStore, programStageStore, relationshipStore,
+                organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
+                categoryComboQuery, comboService, categoryComboHandler,
+                optionSetFactory, trackedEntityFactory);
     }
 
     @NonNull

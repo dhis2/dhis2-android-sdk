@@ -27,6 +27,19 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.calls.Call;
@@ -39,7 +52,8 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetStore;
+import org.hisp.dhis.android.core.option.OptionSetFactory;
+import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
@@ -70,19 +84,6 @@ import java.util.Set;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class ProgramCallShould {
@@ -121,7 +122,7 @@ public class ProgramCallShould {
     private OptionStore optionStore;
 
     @Mock
-    private OptionSetStore optionSetStore;
+    private OptionSetHandler optionSetHandler;
 
     @Mock
     private DataElementStore dataElementStore;
@@ -176,6 +177,8 @@ public class ProgramCallShould {
     // the call we are testing
     private Call<Response<Payload<Program>>> programSyncCall;
 
+    @Mock
+    private OptionSetFactory optionSetFactory;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -186,13 +189,16 @@ public class ProgramCallShould {
         uids.add("test_program_uid");
         uids.add("test_program1_uid");
 
+
         programSyncCall = new ProgramCall(programService, databaseAdapter,
                 resourceStore, uids, programStore, serverDate, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
-                optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
+                optionSetFactory, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore
         );
+
+        when(optionSetFactory.getHandler()).thenReturn(optionSetHandler);
 
         when(program.uid()).thenReturn("test_program_uid");
 
@@ -223,8 +229,7 @@ public class ProgramCallShould {
         when(programService.getPrograms(
                 fieldsCaptor.capture(), lastUpdatedFilter.capture(), idInFilter.capture(), anyBoolean())
         ).thenReturn(programCall);
-
-
+        
         programSyncCall.call();
 
         assertThat(fieldsCaptor.getValue().fields()).contains(

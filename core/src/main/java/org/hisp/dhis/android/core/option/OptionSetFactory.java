@@ -13,13 +13,16 @@ public class OptionSetFactory {
     private final OptionSetService optionSetService;
     private final ResourceHandler resourceHandler;
     private final OptionSetHandler optionSetHandler;
+    private final OptionHandler optionHandler;
+    private final OptionStore optionStore;
 
     public OptionSetFactory(
             Retrofit retrofit, DatabaseAdapter databaseAdapter, ResourceHandler resourceHandler) {
         this.databaseAdapter = databaseAdapter;
         this.optionSetService = retrofit.create(OptionSetService.class);
         this.resourceHandler = resourceHandler;
-        OptionHandler optionHandler = new OptionHandler(new OptionStoreImpl(databaseAdapter));
+        this.optionStore = new OptionStoreImpl(databaseAdapter);
+        this.optionHandler = new OptionHandler(optionStore);
         this.optionSetHandler =
                 new OptionSetHandler(new OptionSetStoreImpl(databaseAdapter), optionHandler);
     }
@@ -29,7 +32,15 @@ public class OptionSetFactory {
                 resourceHandler, optionSetUids, serverDate);
     }
 
-    public OptionSetHandler getHandler() {
+    public OptionSetHandler getOptionSetHandler() {
         return optionSetHandler;
+    }
+
+    public OptionHandler getOptionHandler() {
+        return optionHandler;
+    }
+
+    public OptionStore getOptionStore() {
+        return optionStore;
     }
 }

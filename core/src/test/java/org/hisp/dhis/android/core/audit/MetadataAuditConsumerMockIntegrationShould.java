@@ -30,7 +30,9 @@ public class MetadataAuditConsumerMockIntegrationShould {
                 {MetadataAudit.class, "metadata.relationshipType.create.ApToHMl1NnE",
                         "audit/relationshipType_create.json"},
                 {MetadataAudit.class, "metadata.optionSet.create.qy1kWnfUk8b",
-                        "audit/optionSet_create.json"}
+                        "audit/optionSet_create.json"},
+                {MetadataAudit.class, "metadata.option.create.eHqt440U096",
+                        "audit/option_create.json"}
         });
     }
 

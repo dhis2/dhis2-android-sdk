@@ -31,7 +31,7 @@ public class OptionSetMetadataAuditHandler implements MetadataAuditHandler {
                 optionSet = optionSet.toBuilder().deleted(true).build();
             }
 
-            optionSetFactory.getHandler().handleOptionSet(optionSet);
+            optionSetFactory.getOptionSetHandler().handleOptionSet(optionSet);
         }
     }
 }

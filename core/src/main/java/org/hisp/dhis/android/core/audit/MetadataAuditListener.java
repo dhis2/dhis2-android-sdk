@@ -39,11 +39,7 @@ public class MetadataAuditListener implements MetadataAuditConsumer.MetadataAudi
     private void notifySyncedToMetadataSyncedListener(Class<?> klass, MetadataAudit metadataAudit) {
         if (metadataSyncedListener != null) {
 
-            metadataSyncedListener.onSynced(SyncedMetadata.builder()
-                    .uid(metadataAudit.getUid())
-                    .klass(klass.getName())
-                    .type(metadataAudit.getType())
-                    .build());
+            metadataSyncedListener.onSynced(SyncedMetadataMapper.map(klass, metadataAudit));
         }
     }
 

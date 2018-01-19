@@ -3,6 +3,8 @@ package org.hisp.dhis.android.core.audit;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.hisp.dhis.android.core.option.Option;
+import org.hisp.dhis.android.core.option.OptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetMetadataAuditHandler;
@@ -35,7 +37,9 @@ public class MetadataAuditHandlerFactoryShould {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {TrackedEntityMetadataAuditHandler.class, TrackedEntity.class},
-                {OptionSetMetadataAuditHandler.class, OptionSet.class}});
+                {OptionSetMetadataAuditHandler.class, OptionSet.class},
+                {OptionMetadataAuditHandler.class, Option.class}
+        });
     }
 
     private final Class<?> metadataAuditHandlerExpected;

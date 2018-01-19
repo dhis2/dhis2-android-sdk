@@ -35,7 +35,6 @@ public class TrackedEntityChangeOnServerShould extends AbsStoreTestCase {
 
     private TrackedEntityStore trackedEntityStore;
     private MetadataAuditListener metadataAuditListener;
-    private SyncedMetadata syncedMetadataResult;
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
@@ -73,7 +72,6 @@ public class TrackedEntityChangeOnServerShould extends AbsStoreTestCase {
         metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
             @Override
             public void onSynced(SyncedMetadata syncedMetadata) {
-                syncedMetadataResult = syncedMetadata;
             }
 
             @Override
@@ -84,12 +82,8 @@ public class TrackedEntityChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(TrackedEntity.class, metadataAudit);
 
-        assertThat(syncedMetadataResult.klass(), is(TrackedEntity.class.getName()));
-        assertThat(syncedMetadataResult.type(), is(metadataAudit.getType()));
-        assertThat(syncedMetadataResult.uid(), is(metadataAudit.getUid()));
         assertThat(trackedEntityStore.queryAll().get(0), is(metadataAudit.getValue()));
     }
-
 
     @Test
     public void update_tracked_entity_if_audit_type_is_update() throws Exception {
@@ -105,7 +99,6 @@ public class TrackedEntityChangeOnServerShould extends AbsStoreTestCase {
         metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
             @Override
             public void onSynced(SyncedMetadata syncedMetadata) {
-                syncedMetadataResult = syncedMetadata;
             }
 
             @Override
@@ -116,9 +109,6 @@ public class TrackedEntityChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(TrackedEntity.class, metadataAudit);
 
-        assertThat(syncedMetadataResult.klass(), is(TrackedEntity.class.getName()));
-        assertThat(syncedMetadataResult.type(), is(metadataAudit.getType()));
-        assertThat(syncedMetadataResult.uid(), is(metadataAudit.getUid()));
         assertThat(trackedEntityStore.queryAll().get(0), is(parseTrackedEntities(
                 filename).items().get(0)));
     }
@@ -133,7 +123,6 @@ public class TrackedEntityChangeOnServerShould extends AbsStoreTestCase {
         metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
             @Override
             public void onSynced(SyncedMetadata syncedMetadata) {
-                syncedMetadataResult = syncedMetadata;
             }
 
             @Override
@@ -144,11 +133,7 @@ public class TrackedEntityChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(TrackedEntity.class, metadataAudit);
 
-        assertThat(syncedMetadataResult.klass(), is(TrackedEntity.class.getName()));
-        assertThat(syncedMetadataResult.type(), is(metadataAudit.getType()));
-        assertThat(syncedMetadataResult.uid(), is(metadataAudit.getUid()));
         assertThat(trackedEntityStore.queryAll().size(), is(0));
-
     }
 
     private MetadataAudit<TrackedEntity> givenAMetadataAudit(String fileName) throws IOException {

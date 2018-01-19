@@ -101,7 +101,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 programStageSectionProgramIndicatorLinkStore);
 
         DataElementHandler dataElementHandler =
-                new DataElementHandler(dataElementStore, optionSetFactory.getHandler());
+                new DataElementHandler(dataElementStore, optionSetFactory.getOptionSetHandler());
 
         ProgramStageDataElementHandler programStageDataElementHandler = new ProgramStageDataElementHandler(
                 programStageDataElementStore, dataElementHandler

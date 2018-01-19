@@ -198,7 +198,7 @@ public class ProgramCallShould {
                 programStageSectionStore, programStageStore, relationshipStore
         );
 
-        when(optionSetFactory.getHandler()).thenReturn(optionSetHandler);
+        when(optionSetFactory.getOptionSetHandler()).thenReturn(optionSetHandler);
 
         when(program.uid()).thenReturn("test_program_uid");
 
@@ -229,7 +229,7 @@ public class ProgramCallShould {
         when(programService.getPrograms(
                 fieldsCaptor.capture(), lastUpdatedFilter.capture(), idInFilter.capture(), anyBoolean())
         ).thenReturn(programCall);
-        
+
         programSyncCall.call();
 
         assertThat(fieldsCaptor.getValue().fields()).contains(

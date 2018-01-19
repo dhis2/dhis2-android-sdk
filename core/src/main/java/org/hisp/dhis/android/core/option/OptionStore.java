@@ -51,4 +51,6 @@ public interface OptionStore extends DeletableStore {
     int delete(@NonNull String uid);
 
     List<Option> queryByOptionSet(String uid);
+
+    Option queryByUid(String uid);
 }

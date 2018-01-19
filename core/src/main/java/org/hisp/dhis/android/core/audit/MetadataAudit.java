@@ -20,6 +20,17 @@ public class MetadataAudit<T> {
 
     private T value;
 
+    public MetadataAudit(int id, String createdBy, String klass, String uid, String code,
+            AuditType type, T value) {
+        this.id = id;
+        this.createdBy = createdBy;
+        this.klass = klass;
+        this.uid = uid;
+        this.code = code;
+        this.type = type;
+        this.value = value;
+    }
+
     public int getId() {
         return id;
     }
@@ -64,5 +75,9 @@ public class MetadataAudit<T> {
                 ", type=" + type +
                 ", value='" + value + '\'' +
                 '}';
+    }
+
+    private MetadataAudit() {
+        // This constructor is intentionally empty. Nothing special is needed here.
     }
 }

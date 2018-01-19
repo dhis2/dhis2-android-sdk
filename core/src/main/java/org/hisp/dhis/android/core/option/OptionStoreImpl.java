@@ -63,16 +63,13 @@ public class OptionStoreImpl implements OptionStore {
                     OptionModel.Columns.LAST_UPDATED + ", " +
                     OptionModel.Columns.OPTION_SET;
 
-    private static final String QUERY_STATEMENT =
-            "SELECT " +
-                    OptionModel.Columns.UID + ", " +
-                    OptionModel.Columns.CODE + ", " +
-                    OptionModel.Columns.NAME + ", " +
-                    OptionModel.Columns.DISPLAY_NAME + ", " +
-                    OptionModel.Columns.CREATED + ", " +
-                    OptionModel.Columns.LAST_UPDATED + ", " +
-                    OptionModel.Columns.OPTION_SET + " FROM " + OptionModel.TABLE +
+    private static final String QUERY_BY_OPTION_SET_STATEMENT =
+            "SELECT " + FIELDS + " FROM " + OptionModel.TABLE +
                     " WHERE " + OptionModel.Columns.OPTION_SET + " =?;";
+
+    private static final String QUERY_BY_UID_STATEMENT =
+            "SELECT " + FIELDS + " FROM " + OptionModel.TABLE +
+                    " WHERE " + OptionModel.Columns.UID + " =?;";
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + OptionModel.TABLE + " (" +
             FIELDS + ")" +
@@ -161,11 +158,27 @@ public class OptionStoreImpl implements OptionStore {
 
     @Override
     public List<Option> queryByOptionSet(String optionSetUid) {
-        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT, optionSetUid);
+        Cursor cursor = databaseAdapter.query(QUERY_BY_OPTION_SET_STATEMENT, optionSetUid);
 
         Map<String, List<Option>> optionMap = mapFromCursor(cursor);
 
         return optionMap.get(optionSetUid);
+    }
+
+    @Override
+    public Option queryByUid(String uid) {
+        Option option = null;
+
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID_STATEMENT, uid);
+
+        if (cursor.getCount() > 0) {
+            Map<String, List<Option>> optionMap = mapFromCursor(cursor);
+
+            Map.Entry<String, List<Option>> entry = optionMap.entrySet().iterator().next();
+            option = entry.getValue().get(0);
+        }
+
+        return option;
     }
 
     private void bindArguments(@NonNull SQLiteStatement sqliteStatement,

@@ -44,26 +44,34 @@ final class RuleFunctionCountIfValue extends RuleFunction {
         RuleVariableValue ruleVariableValue = valueMap.get(variableName);
         Integer count = 0;
 
-        if (ruleVariableValue != null && valueToCompare != null && !valueToCompare.isEmpty()) {
-            if (ruleVariableValue.value() != null) {
-                if (ruleVariableValue.candidates() != null
-                        && ruleVariableValue.candidates().size() > 0) {
-
-                    for (String candidateValue : ruleVariableValue.candidates()) {
-                        if (candidateValue != null && candidateValue.equals(valueToCompare)) {
-                            count++;
-                        }
-                    }
-                } else {
-                    String value = ruleVariableValue.value().replace("'", "");
-
-                    if (valueToCompare.equals(value)) {
-                        return 1;
-                    }
-                }
+        if (ruleVariableValue != null && valueToCompare != null && !valueToCompare.isEmpty()
+                && ruleVariableValue.value() != null) {
+            if (ruleVariableValue.candidates().size() > 0) {
+                count = countCandidates(ruleVariableValue, valueToCompare);
+            } else {
+                count = countValue(ruleVariableValue, valueToCompare);
             }
         }
         return count;
     }
 
+    private static int countCandidates(RuleVariableValue ruleVariableValue, String valueToCompare) {
+        int count = 0;
+        for (String candidateValue : ruleVariableValue.candidates()) {
+            if (candidateValue != null && candidateValue.equals(valueToCompare)) {
+                count++;
+             }
+         }
+         return count;
+     }
+
+     private static int countValue(RuleVariableValue ruleVariableValue,
+            String valueToCompare) {
+        String value = ruleVariableValue.value().replace("'", "");
+
+        if (valueToCompare.equals(value)) {
+            return 1;
+        }
+        return 0;
+    }
 }

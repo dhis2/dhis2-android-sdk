@@ -27,9 +27,12 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetHandler;
+import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,13 +40,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Date;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,13 +47,16 @@ import static org.mockito.Mockito.when;
 public class DataElementHandlerShould {
 
     @Mock
-    private DataElementStore dataElementStore;
+    private IdentifiableObjectStore<DataElementModel> dataSetStore;
 
     @Mock
-    private OptionSetHandler optionSetHandler;
+    private GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
 
     @Mock
     private DataElement dataElement;
+
+    @Mock
+    private ObjectWithUid categoryCombo;
 
     @Mock
     private OptionSet optionSet;
@@ -68,109 +67,21 @@ public class DataElementHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        dataElementHandler = new DataElementHandler(dataElementStore, optionSetHandler);
+        dataElementHandler = new DataElementHandler(dataSetStore, optionSetHandler);
         when(dataElement.uid()).thenReturn("test_data_element_uid");
         when(dataElement.optionSet()).thenReturn(optionSet);
+        when(dataElement.categoryCombo()).thenReturn(categoryCombo);
     }
 
     @Test
-    public void do_nothing_when_passing_in_null() throws Exception {
-        dataElementHandler.handleDataElement(null);
-
-        // verify that delete, update and insert is never called
-        verify(dataElementStore, never()).delete(anyString());
-
-        verify(dataElementStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                any(ValueType.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString());
-
-        verify(dataElementStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                any(ValueType.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString());
-
-        // verify that option set handler is never called
-        verify(optionSetHandler, never()).handleOptionSet(any(OptionSet.class));
+    public void call_option_set_handler() throws Exception {
+        dataElementHandler.handle(dataElement);
+        verify(optionSetHandler).handle(optionSet);
     }
 
     @Test
-    public void invoke_delete_data_element_when_handle_data_element_set_as_deleted() throws Exception {
-        when(dataElement.deleted()).thenReturn(Boolean.TRUE);
-
-        dataElementHandler.handleDataElement(dataElement);
-
-        // verify that delete is called once
-        verify(dataElementStore, times(1)).delete(dataElement.uid());
-
-
-        // verify that update and insert is never called
-        verify(dataElementStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                any(ValueType.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString());
-
-        verify(dataElementStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                any(ValueType.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString());
-
-        // verify that option set handler is called once
-        verify(optionSetHandler, times(1)).handleOptionSet(any(OptionSet.class));
-    }
-
-    @Test
-    public void invoke_only_update_when_handle_data_element_inserted() throws Exception {
-        when(dataElementStore.update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                any(ValueType.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(1);
-
-        dataElementHandler.handleDataElement(dataElement);
-
-        verify(dataElementStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                any(ValueType.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString());
-
-        // verify that delete or insert is never called
-        verify(dataElementStore, never()).delete(anyString());
-
-        verify(dataElementStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                any(ValueType.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString());
-
-        // verify that option set handler is called once
-        verify(optionSetHandler, times(1)).handleOptionSet(any(OptionSet.class));
-
-    }
-
-    @Test
-    public void invoke_update_and_insert_when_handle_data_element_not_updatable() throws Exception {
-        when(dataElementStore.update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                any(ValueType.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(0);
-
-        dataElementHandler.handleDataElement(dataElement);
-
-        // verify that insert is called once
-        verify(dataElementStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                any(ValueType.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString());
-
-        // verify that update is called once since we update before we insert
-        verify(dataElementStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                any(ValueType.class), anyBoolean(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString());
-
-        // verify that delete is never called
-        verify(dataElementStore, never()).delete(anyString());
-
-        // verify that option set handler is called once
-        verify(optionSetHandler, times(1)).handleOptionSet(any(OptionSet.class));
+    public void extend_generic_handler_impl() {
+        GenericHandlerImpl<DataElement, DataElementModel> genericHandler = new DataElementHandler(
+                null,null);
     }
 }

@@ -28,54 +28,27 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.MatrixCursor;
-
-import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
 import org.junit.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class ModelAbstractShould<M extends BaseModel, P> {
+public abstract class ModelAbstractShould<M extends BaseModel, P> extends LinkModelAbstractShould<M> {
 
     protected final M model;
     protected final P pojo;
-    protected final String[] columns;
-    protected final int columnsLength;
     protected final ModelFactory<M, P> modelFactory;
 
     public ModelAbstractShould(String[] columns, int columnsLength, ModelFactory<M, P> modelFactory) {
+        super(columns, columnsLength, modelFactory);
         this.model = buildModel();
         this.pojo = buildPojo();
-        this.columns = columns;
-        this.columnsLength = columnsLength;
         this.modelFactory = modelFactory;
     }
 
-    protected abstract M buildModel();
-
     protected abstract P buildPojo();
-
-    protected abstract Object[] getModelAsObjectArray();
-
-    @Test
-    public void create_model_from_cursor() {
-        MatrixCursor cursor = new MatrixCursor(ColumnsArrayUtils.getColumnsWithId(columns));
-        cursor.addRow(getModelAsObjectArray());
-        cursor.moveToFirst();
-
-        M modelFromDB = modelFactory.fromCursor(cursor);
-        cursor.close();
-
-        assertThat(modelFromDB).isEqualTo(model);
-    }
 
     @Test
     public void create_model_from_pojo() {
         assertThat(modelFactory.fromPojo(pojo)).isEqualTo(model);
-    }
-
-    @Test
-    public void have_correct_number_of_columns() {
-        assertThat(columns.length).isEqualTo(columnsLength);
     }
 }

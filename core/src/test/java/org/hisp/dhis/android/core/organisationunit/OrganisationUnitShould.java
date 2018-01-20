@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
@@ -57,94 +58,11 @@ public class OrganisationUnitShould {
     @Test
     public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
+        InputStream jsonStream = this.getClass().getClassLoader()
+                .getResourceAsStream("organisationunit/organisation_unit.json");
 
-        OrganisationUnit organisationUnit = objectMapper.readValue("{\n" +
-                        "\n" +
-                        "    \"code\": \"OU_1126\",\n" +
-                        "    \"lastUpdated\": \"2014-11-25T09:37:54.154\",\n" +
-                        "    \"id\": \"FLjwMPWLrL2\",\n" +
-                        "    \"level\": 4,\n" +
-                        "    \"created\": \"2012-02-17T15:54:39.987\",\n" +
-                        "    \"name\": \"Baomahun CHC\",\n" +
-                        "    \"shortName\": \"Baomahun CHC\",\n" +
-                        "    \"displayName\": \"Baomahun CHC\",\n" +
-                        "    \"displayShortName\": \"Baomahun CHC\",\n" +
-                        "    \"externalAccess\": false,\n" +
-                        "    \"path\": \"/ImspTQPwCqd/O6uvpzGd5pu/npWGUj37qDe/FLjwMPWLrL2\",\n" +
-                        "    \"featureType\": \"POINT\",\n" +
-                        "    \"openingDate\": \"1970-01-01T00:00:00.000\",\n" +
-                        "    \"closedDate\": \"1971-01-01T00:00:00.000\",\n" +
-                        "    \"dimensionItem\": \"FLjwMPWLrL2\",\n" +
-                        "    \"coordinates\": \"[-11.6677,8.4165]\",\n" +
-                        "    \"dimensionItemType\": \"ORGANISATION_UNIT\",\n" +
-                        "    \"parent\": {\n" +
-                        "        \"id\": \"npWGUj37qDe\"\n" +
-                        "    },\n" +
-                        "    \"access\": {\n" +
-                        "        \"read\": true,\n" +
-                        "        \"updateWithSection\": true,\n" +
-                        "        \"externalize\": false,\n" +
-                        "        \"delete\": true,\n" +
-                        "        \"write\": true,\n" +
-                        "        \"manage\": false\n" +
-                        "    },\n" +
-                        "    \"children\": [ ],\n" +
-                        "    \"ancestors\": [\n" +
-                        "        {\n" +
-                        "            \"id\": \"ImspTQPwCqd\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": \"O6uvpzGd5pu\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": \"npWGUj37qDe\"\n" +
-                        "        }\n" +
-                        "    ],\n" +
-                        "    \"organisationUnitGroups\": [\n" +
-                        "        {\n" +
-                        "            \"id\": \"GGghZsfu7qV\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": \"CXw2yu5fodb\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": \"oRVt7g429ZO\"\n" +
-                        "        }\n" +
-                        "    ],\n" +
-                        "    \"userGroupAccesses\": [ ],\n" +
-                        "    \"attributeValues\": [ ],\n" +
-                        "    \"users\": [ ],\n" +
-                        "    \"dataSets\": [\n" +
-                        "        {\n" +
-                        "            \"id\": \"EDzMBk0RRji\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": \"VTdjfLXXmoi\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": \"aLpVgfXiz0f\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": \"N4fIX1HL3TQ\"\n" +
-                        "        }\n" +
-                        "    ],\n" +
-                        "    \"programs\": [\n" +
-                        "        {\n" +
-                        "            \"id\": \"uy2gU8kT1jF\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": \"q04UBOqq3rp\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": \"VBqh0ynB2wv\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": \"eBAyeGv0exc\"\n" +
-                        "        }\n" +
-                        "    ]\n" +
-                        "\n" +
-                        "}",
-                OrganisationUnit.class);
+        OrganisationUnit organisationUnit = objectMapper.readValue(jsonStream, OrganisationUnit.class);
+
 
         assertThat(organisationUnit.uid()).isEqualTo("FLjwMPWLrL2");
 
@@ -172,5 +90,11 @@ public class OrganisationUnitShould {
         assertThat(organisationUnit.programs().get(1).uid()).isEqualTo("q04UBOqq3rp");
         assertThat(organisationUnit.programs().get(2).uid()).isEqualTo("VBqh0ynB2wv");
         assertThat(organisationUnit.programs().get(3).uid()).isEqualTo("eBAyeGv0exc");
+
+        // checking dataSets
+        assertThat(organisationUnit.dataSets().get(0).uid()).isEqualTo("EDzMBk0RRji");
+        assertThat(organisationUnit.dataSets().get(1).uid()).isEqualTo("VTdjfLXXmoi");
+        assertThat(organisationUnit.dataSets().get(2).uid()).isEqualTo("aLpVgfXiz0f");
+        assertThat(organisationUnit.dataSets().get(3).uid()).isEqualTo("N4fIX1HL3TQ");
     }
 }

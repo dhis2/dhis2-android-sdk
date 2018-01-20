@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
-
-public interface ModelFactory<M extends Model, P> {
-    public M fromCursor(Cursor cursor);
+public interface ModelFactory<M extends Model, P> extends LinkModelFactory<M> {
     public M fromPojo(P p);
 }

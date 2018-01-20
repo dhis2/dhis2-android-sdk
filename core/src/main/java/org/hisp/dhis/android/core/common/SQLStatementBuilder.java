@@ -35,10 +35,12 @@ import java.util.Arrays;
 public class SQLStatementBuilder {
     public final String tableName;
     public final String[] columns;
+    public final String[] updateWhereColumns;
 
-    public SQLStatementBuilder(String tableName, String[] columns) {
+    public SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
         this.tableName = tableName;
         this.columns = columns;
+        this.updateWhereColumns = updateWhereColumns;
     }
 
     private String commaSeparatedColumns() {
@@ -58,14 +60,18 @@ public class SQLStatementBuilder {
         return commaSeparatedArrayValues(array);
     }
 
-    private String commaSeparatedColumnEqualInterrogationMark() {
-        String[] array = new String[columns.length];
-        for (int i = 0; i < columns.length; i++) {
-            array[i] = columns[i] + "=?";
+    private String commaSeparatedColumnEqualInterrogationMark(String[] cols) {
+        String[] array = new String[cols.length];
+        for (int i = 0; i < cols.length; i++) {
+            array[i] = cols[i] + "=?";
         }
         return commaSeparatedArrayValues(array);
     }
 
+    private String andSeparatedColumnEqualInterrogationMark(String[] cols) {
+        return commaSeparatedColumnEqualInterrogationMark(cols)
+                .replace(",", " AND ");
+    }
 
     public String insert() {
         return "INSERT INTO " + tableName + " (" + commaSeparatedColumns() + ") " +
@@ -78,8 +84,16 @@ public class SQLStatementBuilder {
     }
 
     public String update() {
-        return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark() +
+        return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
                 " WHERE " + BaseIdentifiableObjectModel.Columns.UID + "=?;";
+    }
+
+    public String updateWhere() {
+        // TODO refactor to only generate for object without uids store.
+        String whereClause = updateWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
+                andSeparatedColumnEqualInterrogationMark(updateWhereColumns);
+        return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
+                " WHERE " + whereClause + ";";
     }
 
     private static String createTableWrapper(String tableName, String[] columnsWithAttributes) {

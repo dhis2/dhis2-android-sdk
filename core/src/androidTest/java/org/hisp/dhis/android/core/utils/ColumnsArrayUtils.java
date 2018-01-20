@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
  */
 public class ColumnsArrayUtils {
 
-    private static Object[] getModelAsObjectArray(BaseModel m) {
+    public static Object[] getModelAsObjectArray(BaseModel m) {
         return new Object[] {
                 m.id()
         };

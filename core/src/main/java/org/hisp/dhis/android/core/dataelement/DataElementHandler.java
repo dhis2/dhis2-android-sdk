@@ -27,68 +27,34 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.option.OptionSetHandler;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetModel;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+public class DataElementHandler extends GenericHandlerImpl<DataElement, DataElementModel> {
+    private final GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
 
-public class DataElementHandler {
-    private final DataElementStore dataElementStore;
-    private final OptionSetHandler optionSetHandler;
-
-    public DataElementHandler(DataElementStore dataElementStore,
-                              OptionSetHandler optionSetHandler) {
-        this.dataElementStore = dataElementStore;
+    DataElementHandler(IdentifiableObjectStore<DataElementModel> dataSetStore,
+                       GenericHandler<OptionSet, OptionSetModel> optionSetHandler) {
+        super(dataSetStore);
         this.optionSetHandler = optionSetHandler;
     }
 
-    public void handleDataElement(DataElement dataElement) {
-        if (dataElement == null) {
-            return;
-        }
-        deleteOrPersistDataElement(dataElement);
+    @Override
+    protected DataElementModel pojoToModel(DataElement dataElement) {
+        return DataElementModel.Factory.fromPojo(dataElement);
     }
 
-    /**
-     * Deletes or persists data elements and applies changes to database.
-     * This method has a nested call to deleteOrPersistOptionSets
-     *
-     * @param dataElement
-     */
-    private void deleteOrPersistDataElement(DataElement dataElement) {
-        if (isDeleted(dataElement)) {
-            dataElementStore.delete(dataElement.uid());
-        } else {
-            String optionSetUid = null;
+    public static DataElementHandler create(DatabaseAdapter databaseAdapter,
+                                            GenericHandler<OptionSet, OptionSetModel> optionSetHandler) {
+        return new DataElementHandler(DataElementStore.create(databaseAdapter), optionSetHandler);
+    }
 
-            if (dataElement.optionSet() != null) {
-                optionSetUid = dataElement.optionSet().uid();
-            }
-            String categoryCombo = null;
-
-            if (dataElement.categoryCombo() != null) {
-                categoryCombo = dataElement.categoryCombo().uid();
-            }
-
-            int updatedRow = dataElementStore.update(dataElement.uid(), dataElement.code(), dataElement.name(),
-                    dataElement.displayName(), dataElement.created(), dataElement.lastUpdated(),
-                    dataElement.shortName(), dataElement.displayShortName(), dataElement.description(),
-                    dataElement.displayDescription(), dataElement.valueType(),
-                    dataElement.zeroIsSignificant(), dataElement.aggregationType(), dataElement.formName(),
-                    dataElement.numberType(), dataElement.domainType(), dataElement.dimension(),
-                    dataElement.displayFormName(), optionSetUid, categoryCombo, dataElement.uid());
-
-            if (updatedRow <= 0) {
-                dataElementStore.insert(dataElement.uid(), dataElement.code(), dataElement.name(),
-                        dataElement.displayName(), dataElement.created(), dataElement.lastUpdated(),
-                        dataElement.shortName(), dataElement.displayShortName(), dataElement.description(),
-                        dataElement.displayDescription(), dataElement.valueType(),
-                        dataElement.zeroIsSignificant(), dataElement.aggregationType(), dataElement.formName(),
-                        dataElement.numberType(), dataElement.domainType(), dataElement.dimension(),
-                        dataElement.displayFormName(), optionSetUid, categoryCombo);
-            }
-        }
-
-        optionSetHandler.handleOptionSet(dataElement.optionSet());
-
+    @Override
+    protected void afterObjectPersisted(DataElement dateElement) {
+        optionSetHandler.handle(dateElement.optionSet());
     }
 }

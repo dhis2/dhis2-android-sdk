@@ -43,10 +43,11 @@ public class SQLStatementBuilderShould {
 
     @Before
     public void setUp() throws IOException {
-        this.builder = new SQLStatementBuilder("Test_Table", new String[]{
+        String[] columns = new String[]{
                 "Test_Column_Name1",
                 "Test_Column_Name2"
-        });
+        };
+        this.builder = new SQLStatementBuilder("Test_Table", columns, columns);
     }
 
     @Test

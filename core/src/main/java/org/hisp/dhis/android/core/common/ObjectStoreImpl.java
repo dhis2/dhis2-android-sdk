@@ -57,4 +57,18 @@ public class ObjectStoreImpl<M extends Model & StatementBinder> implements Objec
             throw new RuntimeException("Nothing was inserted.");
         }
     }
+
+    @Override
+    public final int delete() {
+        return databaseAdapter.delete(builder.tableName);
+    }
+
+    protected void executeUpdateDelete(SQLiteStatement statement) throws RuntimeException {
+        int numberOfAffectedRows = databaseAdapter.executeUpdateDelete(builder.tableName, statement);
+        statement.clearBindings();
+
+        if (numberOfAffectedRows != 1) {
+            throw new RuntimeException("Unexpected number of affected rows: " + numberOfAffectedRows);
+        }
+    }
 }

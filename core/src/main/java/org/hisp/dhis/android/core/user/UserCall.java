@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -140,12 +141,15 @@ public final class UserCall implements Call<Response<User>> {
                         UserCredentials.created,
                         UserCredentials.lastUpdated,
                         UserCredentials.username,
-                        UserCredentials.userRoles.with(UserRole.uid, UserRole.programs.with(Program.uid))
+                        UserCredentials.userRoles.with(UserRole.uid,
+                                UserRole.programs.with(Program.uid),
+                                UserRole.dataSets.with(DataSet.uid))
                 ),
                 User.organisationUnits.with(
                         OrganisationUnit.uid,
                         OrganisationUnit.path,
-                        OrganisationUnit.programs.with(Program.uid)
+                        OrganisationUnit.programs.with(Program.uid),
+                        OrganisationUnit.dataSets.with(DataSet.uid)
                 ),
                 User.teiSearchOrganisationUnits.with(OrganisationUnit.uid)
         ).build();

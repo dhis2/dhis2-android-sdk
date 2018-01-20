@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
-public interface ObjectStore<M extends Model & StatementBinder> {
+public interface ObjectStore<M extends Model & StatementBinder> extends DeletableStore {
 
     public void insert(@NonNull M m) throws RuntimeException;
 }

@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.program.Program;
 
 import java.util.Date;
@@ -49,6 +50,7 @@ import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 public abstract class UserRole extends BaseIdentifiableObject {
 
     private static final String PROGRAMS = "programs";
+    private static final String DATA_SETS = "dataSets";
 
     public static final Field<UserRole, String> uid = Field.create(UID);
     public static final Field<UserRole, String> code = Field.create(CODE);
@@ -58,10 +60,15 @@ public abstract class UserRole extends BaseIdentifiableObject {
     public static final Field<UserRole, String> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<UserRole, Boolean> deleted = Field.create(DELETED);
     public static final NestedField<UserRole, Program> programs = NestedField.create(PROGRAMS);
+    public static final NestedField<UserRole, DataSet> dataSets = NestedField.create(DATA_SETS);
 
     @Nullable
     @JsonProperty(PROGRAMS)
     public abstract List<Program> programs();
+
+    @Nullable
+    @JsonProperty(DATA_SETS)
+    public abstract List<DataSet> dataSets();
 
     @JsonCreator
     public static UserRole create(
@@ -72,10 +79,10 @@ public abstract class UserRole extends BaseIdentifiableObject {
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
             @JsonProperty(PROGRAMS) List<Program> programs,
+            @JsonProperty(DATA_SETS) List<DataSet> dataSets,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_UserRole(uid, code, name, displayName, created, lastUpdated, deleted,
-                safeUnmodifiableList(programs)
-        );
+                safeUnmodifiableList(programs), safeUnmodifiableList(dataSets));
     }
 }

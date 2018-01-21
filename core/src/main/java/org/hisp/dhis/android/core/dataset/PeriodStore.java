@@ -32,7 +32,11 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+@SuppressWarnings("PMD")
 public class PeriodStore {
+
+    private PeriodStore() {}
+
     public static ObjectWithoutUidStore<PeriodModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodModel.TABLE,
                 PeriodModel.Columns.all(), PeriodModel.Columns.whereUpdate());

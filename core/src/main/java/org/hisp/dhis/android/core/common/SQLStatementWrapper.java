@@ -32,12 +32,15 @@ import android.database.sqlite.SQLiteStatement;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class SQLStatementWrapper {
     public final SQLiteStatement insert;
     public final SQLiteStatement update;
     public final SQLiteStatement updateWhere;
     public final SQLiteStatement deleteById;
 
+    @SuppressFBWarnings
     public SQLStatementWrapper(SQLStatementBuilder builder, DatabaseAdapter databaseAdapter) {
         this.insert = databaseAdapter.compileStatement(builder.insert());
         this.update = databaseAdapter.compileStatement(builder.update());

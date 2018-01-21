@@ -33,7 +33,7 @@ public interface GenericHandler<
         P extends BaseIdentifiableObject,
         M extends BaseIdentifiableObjectModel & StatementBinder> {
 
-    public void handle(P p);
+    void handle(P p);
 
-    public void handleMany(Collection<P> pCollection);
+    void handleMany(Collection<P> pCollection);
 }

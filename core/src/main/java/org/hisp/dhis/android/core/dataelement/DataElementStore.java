@@ -32,7 +32,11 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+@SuppressWarnings("PMD")
 public class DataElementStore {
+
+    private DataElementStore() {}
+
     public static IdentifiableObjectStore<DataElementModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter,
                 DataElementModel.TABLE, DataElementModel.Columns.all());

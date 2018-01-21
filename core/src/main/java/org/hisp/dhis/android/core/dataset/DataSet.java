@@ -95,7 +95,8 @@ public abstract class DataSet extends BaseNameableObject {
 
     public static final Fields<DataSet> allFields = Fields.<DataSet>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, deleted,
-            periodType, categoryCombo.with(ObjectWithUid.uid), mobile, version, expiryDays, timelyDays, notifyCompletingUser,
+            periodType, categoryCombo.with(ObjectWithUid.uid), mobile, version,
+            expiryDays, timelyDays, notifyCompletingUser,
             openFuturePeriods, fieldCombinationRequired, validCompleteOnly, noValueRequiresComment,
             skipOffline, dataElementDecoration, renderAsTabs, renderHorizontally,
             dataSetElements.with(DataElementUids.allFields)).build();
@@ -108,6 +109,7 @@ public abstract class DataSet extends BaseNameableObject {
     @JsonProperty(CATEGORY_COMBO)
     public abstract ObjectWithUid categoryCombo();
 
+    @SuppressWarnings("PMD")
     public String categoryComboUid() {
         return categoryCombo() != null ? categoryCombo().uid() :
                 CategoryComboModel.DEFAULT_UID;

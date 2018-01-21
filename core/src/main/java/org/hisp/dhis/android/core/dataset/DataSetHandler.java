@@ -39,7 +39,7 @@ public class DataSetHandler extends GenericHandlerImpl<DataSet, DataSetModel> {
 
     @Override
     protected DataSetModel pojoToModel(DataSet dataSet) {
-        return DataSetModel.Factory.fromPojo(dataSet);
+        return DataSetModel.factory.fromPojo(dataSet);
     }
 
     public static DataSetHandler create(DatabaseAdapter databaseAdapter) {

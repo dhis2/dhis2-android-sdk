@@ -50,6 +50,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
+@SuppressWarnings("PMD")
 public abstract class PeriodModel extends BaseModel implements UpdateWhereStatementBinder {
 
     public static final String TABLE = "Period";

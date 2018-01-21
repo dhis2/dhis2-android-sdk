@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.utils.Utils;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
+@SuppressWarnings("PMD")
 public abstract class DataElementModel extends BaseNameableObjectModel implements StatementBinder {
 
     public static final String TABLE = "DataElement";
@@ -76,7 +77,7 @@ public abstract class DataElementModel extends BaseNameableObjectModel implement
         return AutoValue_DataElementModel.createFromCursor(cursor);
     }
 
-    public static ModelFactory<DataElementModel, DataElement> Factory
+    public static final ModelFactory<DataElementModel, DataElement> factory
             = new ModelFactory<DataElementModel, DataElement>() {
 
         @Override
@@ -85,6 +86,7 @@ public abstract class DataElementModel extends BaseNameableObjectModel implement
         }
 
         @Override
+        @SuppressWarnings("PMD")
         public DataElementModel fromPojo(DataElement dataElement) {
             OptionSet optionSet = dataElement.optionSet();
             return DataElementModel.builder()

@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings("PMD")
 public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectModel implements NameableObject {
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {

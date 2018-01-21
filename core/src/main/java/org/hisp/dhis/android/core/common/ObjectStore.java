@@ -32,5 +32,5 @@ import android.support.annotation.NonNull;
 
 public interface ObjectStore<M extends Model & StatementBinder> extends DeletableStore {
 
-    public void insert(@NonNull M m) throws RuntimeException;
+    void insert(@NonNull M m) throws RuntimeException;
 }

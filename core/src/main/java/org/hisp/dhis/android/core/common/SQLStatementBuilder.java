@@ -32,11 +32,15 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Arrays;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class SQLStatementBuilder {
     public final String tableName;
     public final String[] columns;
     public final String[] updateWhereColumns;
 
+    @SuppressFBWarnings
+    @SuppressWarnings("PMD")
     public SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
         this.tableName = tableName;
         this.columns = columns;
@@ -47,6 +51,7 @@ public class SQLStatementBuilder {
         return commaSeparatedArrayValues(columns);
     }
 
+    @SuppressWarnings("PMD")
     private static String commaSeparatedArrayValues(String[] values) {
         String withBrackets = Arrays.toString(values);
         return withBrackets.substring(1, withBrackets.length() - 1);
@@ -60,6 +65,7 @@ public class SQLStatementBuilder {
         return commaSeparatedArrayValues(array);
     }
 
+    @SuppressWarnings("PMD")
     private String commaSeparatedColumnEqualInterrogationMark(String[] cols) {
         String[] array = new String[cols.length];
         for (int i = 0; i < cols.length; i++) {
@@ -68,6 +74,7 @@ public class SQLStatementBuilder {
         return commaSeparatedArrayValues(array);
     }
 
+    @SuppressWarnings("PMD")
     private String andSeparatedColumnEqualInterrogationMark(String[] cols) {
         return commaSeparatedColumnEqualInterrogationMark(cols)
                 .replace(",", " AND ");
@@ -95,7 +102,7 @@ public class SQLStatementBuilder {
         return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
                 " WHERE " + whereClause + ";";
     }
-
+    @SuppressWarnings("PMD")
     private static String createTableWrapper(String tableName, String[] columnsWithAttributes) {
         return "CREATE TABLE " + tableName + " (" +
                 commaSeparatedArrayValues(columnsWithAttributes) + ");";
@@ -105,6 +112,7 @@ public class SQLStatementBuilder {
         return new String[]{BaseModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT"};
     }
 
+    @SuppressWarnings("PMD")
     private static String[] identifiableColumns() {
         return Utils.appendInNewArray(idColumn(),
                 BaseIdentifiableObjectModel.Columns.UID + " TEXT NOT NULL UNIQUE",

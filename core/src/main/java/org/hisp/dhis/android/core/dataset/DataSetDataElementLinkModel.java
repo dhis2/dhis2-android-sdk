@@ -38,7 +38,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.LinkModelFactory;
-import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -48,6 +47,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 public abstract class DataSetDataElementLinkModel extends BaseModel implements UpdateWhereStatementBinder {
     public static final String TABLE = "DataSetDataElementLink";
 
+    @SuppressWarnings("PMD")
     public static class Columns extends BaseModel.Columns {
         public static final String DATA_SET = "dataSet";
         public static final String DATA_ELEMENT = "dataElement";
@@ -66,7 +66,7 @@ public abstract class DataSetDataElementLinkModel extends BaseModel implements U
         return AutoValue_DataSetDataElementLinkModel.createFromCursor(cursor);
     }
 
-    public static LinkModelFactory<DataSetDataElementLinkModel> Factory
+    public static final LinkModelFactory<DataSetDataElementLinkModel> factory
             = new LinkModelFactory<DataSetDataElementLinkModel>() {
         @Override
         public DataSetDataElementLinkModel fromCursor(Cursor cursor) {

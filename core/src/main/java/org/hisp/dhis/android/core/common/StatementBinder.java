@@ -32,5 +32,5 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 public interface StatementBinder {
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement);
+    void bindToStatement(@NonNull SQLiteStatement sqLiteStatement);
 }

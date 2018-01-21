@@ -29,5 +29,5 @@
 package org.hisp.dhis.android.core.common;
 
 public interface ModelFactory<M extends Model, P> extends LinkModelFactory<M> {
-    public M fromPojo(P p);
+    M fromPojo(P p);
 }

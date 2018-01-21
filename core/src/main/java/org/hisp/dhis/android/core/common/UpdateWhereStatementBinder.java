@@ -32,5 +32,5 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 public interface UpdateWhereStatementBinder extends StatementBinder {
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement);
+    void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement);
 }

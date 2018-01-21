@@ -40,13 +40,13 @@ import retrofit2.Response;
 
 public abstract class GenericEndpointCallImpl<P extends BaseIdentifiableObject>
         implements Call<Response<Payload<P>>> {
-    private GenericCallData data;
-    private GenericHandler<P, ?> handler;
+    private final GenericCallData data;
+    private final GenericHandler<P, ?> handler;
     private boolean isExecuted;
 
-    private ResourceModel.Type resourceType;
-    private Set<String> uids;
-    private Integer limit;
+    private final ResourceModel.Type resourceType;
+    private final Set<String> uids;
+    private final Integer limit;
 
     public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, ?> handler,
                                    ResourceModel.Type resourceType, Set<String> uids,

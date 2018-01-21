@@ -33,9 +33,9 @@ import android.support.annotation.NonNull;
 public interface IdentifiableObjectStore<M extends BaseIdentifiableObjectModel & StatementBinder>
         extends ObjectStore<M> {
 
-    public void delete(@NonNull String uid) throws RuntimeException;
+    void delete(@NonNull String uid) throws RuntimeException;
 
-    public void update(@NonNull M m) throws RuntimeException;
+    void update(@NonNull M m) throws RuntimeException;
 
-    public void updateOrInsert(@NonNull M m) throws RuntimeException;
+    void updateOrInsert(@NonNull M m) throws RuntimeException;
 }

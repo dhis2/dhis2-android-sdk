@@ -42,6 +42,7 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings("PMD")
 public abstract class BaseIdentifiableObjectModel extends BaseModel implements IdentifiableObject {
 
     public static class Columns extends BaseModel.Columns {
@@ -53,7 +54,8 @@ public abstract class BaseIdentifiableObjectModel extends BaseModel implements I
         public static final String LAST_UPDATED = "lastUpdated";
 
         public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED);
+            return Utils.appendInNewArray(BaseModel.Columns.all(), UID, CODE, NAME, DISPLAY_NAME,
+                    CREATED, LAST_UPDATED);
         }
     }
 

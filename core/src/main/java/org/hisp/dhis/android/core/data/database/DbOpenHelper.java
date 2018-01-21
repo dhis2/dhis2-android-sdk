@@ -383,9 +383,10 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             DataElementModel.Columns.DIMENSION + " TEXT," +
             DataElementModel.Columns.DISPLAY_FORM_NAME + " TEXT," +
             DataElementModel.Columns.OPTION_SET + " TEXT," +
-            DataElementModel.Columns.CATEGORY_COMBO + " TEXT," +" FOREIGN KEY ( " + DataElementModel.Columns.OPTION_SET + ")" +
-            " REFERENCES " + OptionSetModel.TABLE + " (" + OptionSetModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
+            DataElementModel.Columns.CATEGORY_COMBO + " TEXT," +" FOREIGN KEY ( "
+                    + DataElementModel.Columns.OPTION_SET + ")" +
+                    " REFERENCES " + OptionSetModel.TABLE + " (" + OptionSetModel.Columns.UID + ")" +
+                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
             );
 
     private static final String CREATE_PROGRAM_STAGE_DATA_ELEMENT_TABLE = "CREATE TABLE " +

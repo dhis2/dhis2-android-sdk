@@ -69,10 +69,10 @@ public class DataSetParentCall extends TransactionalCall {
     }
 
     public interface Factory {
-        public Call<Response> create(User user, GenericCallData data);
+        Call<Response> create(User user, GenericCallData data);
     }
 
-    public static Factory FACTORY = new Factory() {
+    public static final Factory FACTORY = new Factory() {
         @Override
         public Call<Response> create(User user, GenericCallData data) {
             return new DataSetParentCall(user, data,

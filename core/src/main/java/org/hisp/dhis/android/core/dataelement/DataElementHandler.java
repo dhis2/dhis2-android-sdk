@@ -45,7 +45,7 @@ public class DataElementHandler extends GenericHandlerImpl<DataElement, DataElem
 
     @Override
     protected DataElementModel pojoToModel(DataElement dataElement) {
-        return DataElementModel.Factory.fromPojo(dataElement);
+        return DataElementModel.factory.fromPojo(dataElement);
     }
 
     public static DataElementHandler create(DatabaseAdapter databaseAdapter,

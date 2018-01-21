@@ -32,7 +32,11 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+@SuppressWarnings("PMD")
 public class OptionSetStore {
+
+    private OptionSetStore() {}
+
     public static IdentifiableObjectStore<OptionSetModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter,
                 OptionSetModel.TABLE, OptionSetModel.Columns.all());

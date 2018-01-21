@@ -33,13 +33,14 @@ import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
+@SuppressWarnings("PMD")
 public abstract class BaseModel implements Model {
 
     public static class Columns {
         public static final String ID = BaseColumns._ID;
 
         public static String[] all() {
-            return new String[] { };
+            return new String[] {};
         }
     }
 

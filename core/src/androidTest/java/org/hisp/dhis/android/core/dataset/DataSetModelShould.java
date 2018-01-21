@@ -62,7 +62,7 @@ import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.fillNamea
 public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel, DataSet> {
 
     public DataSetModelShould() {
-        super(DataSetModel.Columns.all(), 25, DataSetModel.Factory);
+        super(DataSetModel.Columns.all(), 25, DataSetModel.factory);
     }
 
     @Override

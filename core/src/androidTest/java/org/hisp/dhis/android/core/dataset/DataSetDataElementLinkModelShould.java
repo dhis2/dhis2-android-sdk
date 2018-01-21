@@ -46,7 +46,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class DataSetDataElementLinkModelShould extends LinkModelAbstractShould<DataSetDataElementLinkModel> {
 
     public DataSetDataElementLinkModelShould() {
-        super(DataSetDataElementLinkModel.Columns.all(), 2, DataSetDataElementLinkModel.Factory);
+        super(DataSetDataElementLinkModel.Columns.all(), 2, DataSetDataElementLinkModel.factory);
     }
 
     @Override

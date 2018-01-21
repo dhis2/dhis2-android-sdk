@@ -34,7 +34,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -129,6 +128,7 @@ public abstract class DataElement extends BaseNameableObject {
     @JsonProperty(CATEGORY_COMBO)
     public abstract ObjectWithUid categoryCombo();
 
+    @SuppressWarnings("PMD")
     public String categoryComboUid() {
         return categoryCombo() != null ? categoryCombo().uid() :
                 CategoryComboModel.DEFAULT_UID;

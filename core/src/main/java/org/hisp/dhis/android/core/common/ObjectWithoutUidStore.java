@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
 
 public interface ObjectWithoutUidStore<M extends Model & UpdateWhereStatementBinder> extends ObjectStore<M> {
 
-    public void updateWhere(@NonNull M m) throws RuntimeException;
+    void updateWhere(@NonNull M m) throws RuntimeException;
 
-    public void updateOrInsertWhere(@NonNull M m) throws RuntimeException;
+    void updateOrInsertWhere(@NonNull M m) throws RuntimeException;
 }

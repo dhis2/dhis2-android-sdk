@@ -14,6 +14,8 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 public abstract class CategoryComboModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "CategoryCombo";
 
+    public static final String DEFAULT_UID = "p0KPaWEg3cf";
+
     @Nullable
     @ColumnName(Columns.IS_DEFAULT)
     public abstract Boolean isDefault();

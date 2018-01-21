@@ -27,40 +27,30 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class OptionSetHandler {
-    private final OptionSetStore optionSetStore;
+public class OptionSetHandler extends GenericHandlerImpl<OptionSet, OptionSetModel> {
     private final OptionHandler optionHandler;
 
-    public OptionSetHandler(OptionSetStore optionSetStore, OptionHandler optionHandler) {
-        this.optionSetStore = optionSetStore;
+    OptionSetHandler(IdentifiableObjectStore<OptionSetModel> optionSetStore, OptionHandler optionHandler) {
+        super(optionSetStore);
         this.optionHandler = optionHandler;
     }
 
-    public void handleOptionSet(OptionSet optionSet) {
-        if (optionSet == null) {
-            return;
-        }
-
-        deleteOrPersistOptionSet(optionSet);
+    public static OptionSetHandler create(DatabaseAdapter databaseAdapter) {
+        return new OptionSetHandler(OptionSetStore.create(databaseAdapter),
+                new OptionHandler(new OptionStoreImpl(databaseAdapter)));
     }
 
+    @Override
+    protected OptionSetModel pojoToModel(OptionSet optionSet) {
+        return OptionSetModel.create(optionSet);
+    }
 
-    private void deleteOrPersistOptionSet(OptionSet optionSet) {
-        if (isDeleted(optionSet)) {
-            optionSetStore.delete(optionSet.uid());
-        } else {
-            int updatedRow = optionSetStore.update(optionSet.uid(), optionSet.code(), optionSet.name(),
-                    optionSet.displayName(), optionSet.created(), optionSet.lastUpdated(), optionSet.version(),
-                    optionSet.valueType(), optionSet.uid());
-
-            if (updatedRow <= 0) {
-                optionSetStore.insert(optionSet.uid(), optionSet.code(), optionSet.name(), optionSet.displayName(),
-                        optionSet.created(), optionSet.lastUpdated(), optionSet.version(), optionSet.valueType());
-            }
-        }
-
+    @Override
+    protected void afterObjectPersisted(OptionSet optionSet) {
         optionHandler.handleOptions(optionSet.options());
     }
 }

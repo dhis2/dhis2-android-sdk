@@ -28,8 +28,7 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import static com.google.common.truth.Truth.assertThat;
-
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 
@@ -37,6 +36,8 @@ import org.junit.After;
 import org.junit.Before;
 
 import java.io.IOException;
+
+import static com.google.common.truth.Truth.assertThat;
 
 public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
@@ -63,5 +64,10 @@ public abstract class AbsStoreTestCase {
 
     protected DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
+    }
+
+    protected Cursor getCursor(String table, String[] columns) {
+        return sqLiteDatabase.query(table, columns,
+                null, null, null, null, null);
     }
 }

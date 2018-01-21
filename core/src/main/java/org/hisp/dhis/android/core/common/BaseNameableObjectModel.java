@@ -28,10 +28,17 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
+@SuppressWarnings("PMD")
 public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectModel implements NameableObject {
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
@@ -39,6 +46,11 @@ public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectMode
         public static final String DISPLAY_SHORT_NAME = "displayShortName";
         public static final String DESCRIPTION = "description";
         public static final String DISPLAY_DESCRIPTION = "displayDescription";
+
+        public static String[] all() {
+            return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(),
+                    SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION);
+        }
     }
 
     @Nullable
@@ -61,7 +73,16 @@ public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectMode
     @ColumnName(Columns.DISPLAY_DESCRIPTION)
     public abstract String displayDescription();
 
-    protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObjectModel.Builder<T> {
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 7, shortName());
+        sqLiteBind(sqLiteStatement, 8, displayShortName());
+        sqLiteBind(sqLiteStatement, 9, description());
+        sqLiteBind(sqLiteStatement, 10, displayDescription());
+    }
+
+    public static abstract class Builder<T extends Builder> extends BaseIdentifiableObjectModel.Builder<T> {
         public abstract T shortName(@Nullable String shortName);
 
         public abstract T displayShortName(@Nullable String displayShortName);

@@ -35,10 +35,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
@@ -47,7 +50,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -204,20 +206,20 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                 .build();
 
         OptionSetService optionSetService = retrofit.create(OptionSetService.class);
-        OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter());
-        OptionStore optionStore = new OptionStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
         Set<String> uids = new HashSet<>();
         uids.add("POc7DkGU3QU");
 
+        // TODO fix
+        GenericCallData data = GenericCallData.create(databaseAdapter(),
+                new ResourceHandler(resourceStore), retrofit);
 
-        optionSetCall = new OptionSetCall(
-                optionSetService, optionSetStore, databaseAdapter(), resourceStore, uids, new Date(),
-                optionStore);
+        GenericHandler<OptionSet, OptionSetModel> optionSetHandler = OptionSetHandler.create(databaseAdapter());
+
+        optionSetCall = new OptionSetCall(data, optionSetService, optionSetHandler, uids);
 
     }
-
 
     @Test
     public void persist_option_set_with_options_in_data_base_when_call() throws Exception {

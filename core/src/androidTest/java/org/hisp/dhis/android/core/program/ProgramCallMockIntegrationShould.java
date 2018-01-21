@@ -35,26 +35,22 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
-import org.hisp.dhis.android.core.option.OptionHandler;
+import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.option.OptionSetModel;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
-import org.hisp.dhis.android.core.option.OptionStore;
-import org.hisp.dhis.android.core.option.OptionStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
@@ -167,14 +163,10 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         ProgramRuleStore programRuleStore = new ProgramRuleStoreImpl(databaseAdapter());
         ProgramRuleHandler programRuleHandler = new ProgramRuleHandler(programRuleStore, programRuleActionHandler);
 
-        OptionStore optionStore = new OptionStoreImpl(databaseAdapter());
-        OptionHandler optionHandler = new OptionHandler(optionStore);
-
-        OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter());
-        OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
-
-        DataElementStore dataElementStore = new DataElementStoreImpl(databaseAdapter());
-        DataElementHandler dataElementHandler = new DataElementHandler(dataElementStore, optionSetHandler);
+        GenericHandler<OptionSet, OptionSetModel> optionSetHandler =
+                OptionSetHandler.create(databaseAdapter());
+        GenericHandler<DataElement, DataElementModel> dataElementHandler =
+                DataElementHandler.create(databaseAdapter(), optionSetHandler);
         ProgramStageDataElementStore programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter());
 
@@ -232,8 +224,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 programService, databaseAdapter(), resourceStore, uids, programStore, new Date(),
                 trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
                 programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore
+                programRuleStore, programStageDataElementStore,
+                programStageSectionStore, programStageStore, relationshipStore, dataElementHandler
         );
     }
 

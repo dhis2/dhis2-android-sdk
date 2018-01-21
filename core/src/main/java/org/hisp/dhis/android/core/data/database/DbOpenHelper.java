@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns
-        .ORGANISATION_UNIT_SCOPE;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
@@ -39,15 +36,18 @@ import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkModel;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkModel;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CategoryModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
+import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.option.OptionModel;
@@ -86,13 +86,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
+import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE;
+
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
-    static int VERSION = 2;
+    static int VERSION = 3;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -371,33 +373,21 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     ");";
 
     private static final String CREATE_DATA_ELEMENT_TABLE =
-            "CREATE TABLE " + DataElementModel.TABLE + " (" +
-                    DataElementModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    DataElementModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-                    DataElementModel.Columns.CODE + " TEXT," +
-                    DataElementModel.Columns.NAME + " TEXT," +
-                    DataElementModel.Columns.DISPLAY_NAME + " TEXT," +
-                    DataElementModel.Columns.CREATED + " TEXT," +
-                    DataElementModel.Columns.LAST_UPDATED + " TEXT," +
-                    DataElementModel.Columns.SHORT_NAME + " TEXT," +
-                    DataElementModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-                    DataElementModel.Columns.DESCRIPTION + " TEXT," +
-                    DataElementModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
-                    DataElementModel.Columns.VALUE_TYPE + " TEXT," +
-                    DataElementModel.Columns.ZERO_IS_SIGNIFICANT + " INTEGER," +
-                    DataElementModel.Columns.AGGREGATION_TYPE + " TEXT," +
-                    DataElementModel.Columns.FORM_NAME + " TEXT," +
-                    DataElementModel.Columns.NUMBER_TYPE + " TEXT," +
-                    DataElementModel.Columns.DOMAIN_TYPE + " TEXT," +
-                    DataElementModel.Columns.DIMENSION + " TEXT," +
-                    DataElementModel.Columns.DISPLAY_FORM_NAME + " TEXT," +
-                    DataElementModel.Columns.OPTION_SET + " TEXT," +
-                    DataElementModel.Columns.CATEGORY_COMBO + " TEXT," +
-                    " FOREIGN KEY ( " + DataElementModel.Columns.OPTION_SET + ")" +
-                    " REFERENCES " + OptionSetModel.TABLE + " (" + OptionSetModel.Columns.UID + ")"
-                    +
-                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-                    ");";
+            SQLStatementBuilder.createNameableModelTable(DataElementModel.TABLE,
+            DataElementModel.Columns.VALUE_TYPE + " TEXT," +
+            DataElementModel.Columns.ZERO_IS_SIGNIFICANT + " INTEGER," +
+            DataElementModel.Columns.AGGREGATION_TYPE + " TEXT," +
+            DataElementModel.Columns.FORM_NAME + " TEXT," +
+            DataElementModel.Columns.NUMBER_TYPE + " TEXT," +
+            DataElementModel.Columns.DOMAIN_TYPE + " TEXT," +
+            DataElementModel.Columns.DIMENSION + " TEXT," +
+            DataElementModel.Columns.DISPLAY_FORM_NAME + " TEXT," +
+            DataElementModel.Columns.OPTION_SET + " TEXT," +
+            DataElementModel.Columns.CATEGORY_COMBO + " TEXT," +" FOREIGN KEY ( "
+                    + DataElementModel.Columns.OPTION_SET + ")" +
+                    " REFERENCES " + OptionSetModel.TABLE + " (" + OptionSetModel.Columns.UID + ")" +
+                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
+            );
 
     private static final String CREATE_PROGRAM_STAGE_DATA_ELEMENT_TABLE = "CREATE TABLE " +
             ProgramStageDataElementModel.TABLE + " (" +
@@ -926,6 +916,42 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_INDICATOR + ")" +
                     ");";
 
+    private static final String CREATE_DATA_SET_TABLE =
+            SQLStatementBuilder.createNameableModelTable(DataSetModel.TABLE,
+                    DataSetModel.Columns.PERIOD_TYPE + " TEXT," +
+                            DataSetModel.Columns.CATEGORY_COMBO + " TEXT NOT NULL," +
+                            DataSetModel.Columns.MOBILE + " INTEGER," +
+                            DataSetModel.Columns.VERSION + " INTEGER," +
+                            DataSetModel.Columns.EXPIRY_DAYS + " INTEGER," +
+                            DataSetModel.Columns.TIMELY_DAYS + " INTEGER," +
+                            DataSetModel.Columns.NOTIFY_COMPLETING_USER + " INTEGER," +
+                            DataSetModel.Columns.OPEN_FUTURE_PERIODS + " INTEGER," +
+                            DataSetModel.Columns.FIELD_COMBINATION_REQUIRED + " INTEGER," +
+                            DataSetModel.Columns.VALID_COMPLETE_ONLY + " INTEGER," +
+                            DataSetModel.Columns.NO_VALUE_REQUIRES_COMMENT + " INTEGER," +
+                            DataSetModel.Columns.SKIP_OFFLINE + " INTEGER," +
+                            DataSetModel.Columns.DATA_ELEMENT_DECORATION + " INTEGER," +
+                            DataSetModel.Columns.RENDER_AS_TABS + " INTEGER," +
+                            DataSetModel.Columns.RENDER_HORIZONTALLY + " INTEGER," +
+                            " FOREIGN KEY ( " + DataSetModel.Columns.CATEGORY_COMBO + ")" +
+                            " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
+            );
+
+    private static final String CREATE_DATA_SET_DATA_ELEMENT_LINK_TABLE =
+            SQLStatementBuilder.createModelTable(DataSetDataElementLinkModel.TABLE,
+                    DataSetDataElementLinkModel.Columns.DATA_SET + " TEXT NOT NULL," +
+                            DataSetDataElementLinkModel.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
+                            " FOREIGN KEY (" + DataSetDataElementLinkModel.Columns.DATA_SET + ") " +
+                            " REFERENCES " + DataSetModel.TABLE + " (" + DataSetModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " FOREIGN KEY (" + DataSetDataElementLinkModel.Columns.DATA_ELEMENT + ") " +
+                            " REFERENCES " + DataElementModel.TABLE + " (" + DataElementModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " UNIQUE (" + DataSetDataElementLinkModel.Columns.DATA_SET + ", " +
+                            DataSetDataElementLinkModel.Columns.DATA_ELEMENT + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -978,6 +1004,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_CATEGORY_CATEGORY_COMBO_LINK_TABLE);
         database.execSQL(CREATE_CATEGORY_OPTION_COMBO_TABLE);
         database.execSQL(CREATE_CATEGORY_OPTION_COMBO_CATEGORY_LINK_TABLE);
+        database.execSQL(CREATE_DATA_SET_TABLE);
+        database.execSQL(CREATE_DATA_SET_DATA_ELEMENT_LINK_TABLE);
         return database;
     }
 

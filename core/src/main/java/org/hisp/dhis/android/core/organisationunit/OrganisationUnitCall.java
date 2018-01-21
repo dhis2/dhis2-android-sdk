@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -145,7 +146,8 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                 OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
                 OrganisationUnit.closedDate, OrganisationUnit.level, OrganisationUnit.deleted,
                 OrganisationUnit.parent.with(OrganisationUnit.uid),
-                OrganisationUnit.programs.with(Program.uid)
+                OrganisationUnit.programs.with(Program.uid),
+                OrganisationUnit.dataSets.with(DataSet.uid)
         ).build();
         return organisationUnitService.getOrganisationUnits(uid, fields, lastUpdatedFilter, true, false).execute();
     }

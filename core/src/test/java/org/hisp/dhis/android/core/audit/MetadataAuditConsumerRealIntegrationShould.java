@@ -8,6 +8,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -23,7 +24,7 @@ public class MetadataAuditConsumerRealIntegrationShould {
     public void setUp() throws Exception {
         consumer = new MetadataAuditConsumer(
                 MetadataAuditConnection.builder()
-                        .setHost("192.168.1.42")
+                        .setHost("192.168.0.112")
                         .setVirtualHost("/")
                         .setUsername("guest2")
                         .setPassword("guest2")

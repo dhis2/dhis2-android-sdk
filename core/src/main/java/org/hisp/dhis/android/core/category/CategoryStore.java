@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
 
+import java.util.List;
+
 public interface CategoryStore extends DeletableStore {
 
     long insert(@NonNull Category element);
@@ -11,4 +13,8 @@ public interface CategoryStore extends DeletableStore {
     boolean delete(@NonNull Category element);
 
     boolean update(@NonNull Category oldElement, @NonNull Category newElement);
+
+    Category queryByUid(String uid);
+
+    List<Category> queryAll();
 }

@@ -19,11 +19,11 @@ public class CategoryOptionHandler {
         if (isDeleted(categoryOption)) {
             store.delete(categoryOption);
         } else {
-
-            boolean updated = store.update(categoryOption, categoryOption);
-
-            if (!updated) {
+            CategoryOption oldCategoryOption = store.queryByUid(categoryOption.uid());
+            if(oldCategoryOption==null){
                 store.insert(categoryOption);
+            }else {
+                store.update(oldCategoryOption, categoryOption);
             }
         }
     }

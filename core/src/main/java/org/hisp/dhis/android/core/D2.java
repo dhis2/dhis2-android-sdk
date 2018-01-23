@@ -53,6 +53,7 @@ import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryComboStore;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
@@ -245,6 +246,7 @@ public final class D2 {
 
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
+    private final CategoryFactory categoryFactory;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
@@ -381,10 +383,12 @@ public final class D2 {
         trackedEntityFactory =
                 new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
 
+        this.categoryFactory = new CategoryFactory(retrofit(), databaseAdapter, resourceHandler, categoryQuery);
+
 
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
-                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory);
+                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory, categoryFactory);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 
@@ -493,9 +497,9 @@ public final class D2 {
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore,
-                organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
+                organisationUnitProgramLinkStore,
                 categoryComboQuery, comboService, categoryComboHandler,
-                optionSetFactory, trackedEntityFactory);
+                optionSetFactory, trackedEntityFactory, categoryFactory);
     }
 
     @NonNull

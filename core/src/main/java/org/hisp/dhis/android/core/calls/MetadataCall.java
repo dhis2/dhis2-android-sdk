@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
+import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
@@ -122,15 +123,13 @@ public class MetadataCall implements Call<Response> {
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
-    private final CategoryQuery categoryQuery;
     private final CategoryComboQuery categoryComboQuery;
-    private final CategoryService categoryService;
     private final CategoryComboService categoryComboService;
-    private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
 
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
+    private final CategoryFactory categoryFactory;
 
     private boolean isExecuted;
 
@@ -164,14 +163,12 @@ public class MetadataCall implements Call<Response> {
             @NonNull ProgramStageStore programStageStore,
             @NonNull RelationshipTypeStore relationshipStore,
             @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
-            @NonNull CategoryQuery categoryQuery,
-            @NonNull CategoryService categoryService,
-            @NonNull CategoryHandler categoryHandler,
             @NonNull CategoryComboQuery categoryComboQuery,
             @NonNull CategoryComboService categoryComboService,
             @NonNull CategoryComboHandler categoryComboHandler,
             @NonNull OptionSetFactory optionSetFactory,
-            @NonNull TrackedEntityFactory trackedEntityFactory) {
+            @NonNull TrackedEntityFactory trackedEntityFactory,
+            @NonNull CategoryFactory categoryFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -200,15 +197,13 @@ public class MetadataCall implements Call<Response> {
         this.programStageStore = programStageStore;
         this.relationshipStore = relationshipStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
-        this.categoryQuery = categoryQuery;
-        this.categoryService = categoryService;
-        this.categoryHandler = categoryHandler;
         this.categoryComboQuery = categoryComboQuery;
         this.categoryComboService = categoryComboService;
         this.categoryComboHandler = categoryComboHandler;
 
         this.optionSetFactory = optionSetFactory;
         this.trackedEntityFactory = trackedEntityFactory;
+        this.categoryFactory = categoryFactory;
     }
 
     @Override
@@ -437,10 +432,8 @@ public class MetadataCall implements Call<Response> {
     }
 
     private Response<Payload<Category>> downloadCategories(Date serverDate) throws Exception {
-        ResponseValidator<Category> validator = new ResponseValidator<>();
-        return new CategoryEndpointCall(categoryQuery, categoryService, validator,
-                categoryHandler,
-                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
+        CategoryQuery categoryQuery = CategoryQuery.defaultQuery();
+        return categoryFactory.newEndPointCall(categoryQuery, serverDate).call();
     }
 
     private Response<Payload<CategoryCombo>> downloadCategoryCombos(Date serverDate)

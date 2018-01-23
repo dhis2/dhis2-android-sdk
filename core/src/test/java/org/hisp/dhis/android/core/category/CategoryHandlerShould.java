@@ -55,21 +55,21 @@ public class CategoryHandlerShould {
 
         mCategoryHandler.handle(newCategory);
 
-        verify(mockCategoryStore).update(newCategory, newCategory);
         verify(mockCategoryStore).insert(newCategory);
 
     }
 
     @Test
     public void handle_updated_category() {
-        Category updatedCategory = givenACategory();
+        Category oldCategory = givenACategory();
 
         when(mockCategoryStore.update(any(Category.class), any(Category.class))).thenReturn(true);
 
-        mCategoryHandler.handle(updatedCategory);
+        when(mockCategoryStore.queryByUid(oldCategory.uid())).thenReturn(oldCategory);
 
-        verify(mockCategoryStore).update(updatedCategory, updatedCategory);
-        verifyZeroInteractions(mockCategoryStore);
+        mCategoryHandler.handle(oldCategory);
+
+        verify(mockCategoryStore).update(oldCategory, oldCategory);
 
     }
 

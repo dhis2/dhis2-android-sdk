@@ -43,7 +43,6 @@ public class CategoryOptionHandlerShould {
 
         categoryOptionHandler.handle(newOption);
 
-        verify(mockCategoryOptionStore).update(newOption, newOption);
         verify(mockCategoryOptionStore).insert(newOption);
 
     }
@@ -55,10 +54,11 @@ public class CategoryOptionHandlerShould {
         when(mockCategoryOptionStore.update(any(CategoryOption.class),
                 any(CategoryOption.class))).thenReturn(true);
 
+        when(mockCategoryOptionStore.queryByUid(updatedOption.uid())).thenReturn(updatedOption);
+
         categoryOptionHandler.handle(updatedOption);
 
         verify(mockCategoryOptionStore).update(updatedOption, updatedOption);
-        verifyZeroInteractions(mockCategoryOptionStore);
 
     }
 

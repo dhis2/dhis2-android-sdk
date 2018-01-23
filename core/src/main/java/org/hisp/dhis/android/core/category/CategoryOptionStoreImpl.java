@@ -14,6 +14,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 public class CategoryOptionStoreImpl implements CategoryOptionStore {
@@ -23,14 +24,24 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
     protected final SQLiteStatement updateStatement;
     protected final SQLiteStatement deleteStatement;
 
+    private static final String QUERY_BY_UID_STATEMENT = "SELECT " +
+            CategoryOptionModel.Columns.UID + "," +
+            CategoryOptionModel.Columns.CODE + "," +
+            CategoryOptionModel.Columns.NAME + "," +
+            CategoryOptionModel.Columns.DISPLAY_NAME + "," +
+            CategoryOptionModel.Columns.CREATED + "," +
+            CategoryOptionModel.Columns.LAST_UPDATED +
+            "  FROM " + CategoryOptionModel.TABLE +
+            " WHERE "+CategoryOptionModel.Columns.UID+" =?;";
+
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryOptionModel.TABLE + " (" +
-                    CategoryModel.Columns.UID + ", " +
-                    CategoryModel.Columns.CODE + ", " +
-                    CategoryModel.Columns.NAME + ", " +
-                    CategoryModel.Columns.DISPLAY_NAME + ", " +
-                    CategoryModel.Columns.CREATED + ", " +
-                    CategoryModel.Columns.LAST_UPDATED + ") " +
+                    CategoryOptionModel.Columns.UID + ", " +
+                    CategoryOptionModel.Columns.CODE + ", " +
+                    CategoryOptionModel.Columns.NAME + ", " +
+                    CategoryOptionModel.Columns.DISPLAY_NAME + ", " +
+                    CategoryOptionModel.Columns.CREATED + ", " +
+                    CategoryOptionModel.Columns.LAST_UPDATED + ") " +
                     "VALUES(?, ?, ?, ?, ?, ?);";
 
     private static final String EQUAL_QUESTION_MARK = "=?";
@@ -38,13 +49,13 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
             " WHERE " + CategoryModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ";";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + CategoryOptionModel.TABLE + " SET " +
-            CategoryModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ", " +
-            CategoryModel.Columns.CODE + " " + EQUAL_QUESTION_MARK + ", " +
-            CategoryModel.Columns.NAME + " " + EQUAL_QUESTION_MARK + ", " +
-            CategoryModel.Columns.DISPLAY_NAME + " " + EQUAL_QUESTION_MARK + ", " +
-            CategoryModel.Columns.CREATED + " " + EQUAL_QUESTION_MARK + ", " +
-            CategoryModel.Columns.LAST_UPDATED + " " + EQUAL_QUESTION_MARK + " WHERE " +
-            CategoryModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ";";
+            CategoryOptionModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryOptionModel.Columns.CODE + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryOptionModel.Columns.NAME + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryOptionModel.Columns.DISPLAY_NAME + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryOptionModel.Columns.CREATED + " " + EQUAL_QUESTION_MARK + ", " +
+            CategoryOptionModel.Columns.LAST_UPDATED + " " + EQUAL_QUESTION_MARK + " WHERE " +
+            CategoryOptionModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ";";
 
     private static final String FIELDS = CategoryOptionModel.TABLE +"."+ CategoryOptionModel.Columns.UID + "," +
             CategoryOptionModel.TABLE +"."+ CategoryOptionModel.Columns.CODE + "," +
@@ -193,5 +204,20 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
     public int delete() {
         return databaseAdapter.delete(CategoryOptionModel.TABLE);
     }
+
+    @Override
+    public CategoryOption queryByUid(String uid) {
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID_STATEMENT, uid);
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+        }else {
+            return null;
+        }
+
+        return mapCategoryOptionFromCursor(cursor);
+    }
+
+
 }
 

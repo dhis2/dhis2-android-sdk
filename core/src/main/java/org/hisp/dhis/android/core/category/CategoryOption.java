@@ -73,6 +73,9 @@ public abstract class CategoryOption extends BaseNameableObject {
     @JsonProperty(END_DATE)
     public abstract Date endDate();
 
+
+    abstract CategoryOption.Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_CategoryOption.Builder();
     }

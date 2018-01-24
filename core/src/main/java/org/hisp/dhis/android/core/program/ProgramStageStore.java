@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.FormType;
 
 import java.util.Date;
+import java.util.List;
 
 public interface ProgramStageStore extends DeletableStore {
     long insert(
@@ -63,4 +64,6 @@ public interface ProgramStageStore extends DeletableStore {
     );
 
     int delete(@NonNull String uid);
+
+    List<ProgramStage> queryByProgramUid(String uid);
 }

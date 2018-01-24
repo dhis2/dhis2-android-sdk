@@ -21,6 +21,7 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
+import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.junit.After;
@@ -31,12 +32,12 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 
-public class ProgramChangeOnServerShould extends AbsStoreTestCase {
+public class ProgramStageChangeOnServerShould extends AbsStoreTestCase {
 
     @Mock
     private MetadataAuditHandlerFactory metadataAuditHandlerFactory;
 
-    private ProgramStore programStore;
+    private ProgramStageStore programStageStore;
     private MetadataAuditListener metadataAuditListener;
 
     private Dhis2MockServer dhis2MockServer;
@@ -56,11 +57,11 @@ public class ProgramChangeOnServerShould extends AbsStoreTestCase {
                 resourceHandler);
 
         when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
-                new ProgramMetadataAuditHandler(
+                new ProgramStageMetadataAuditHandler(
                         new ProgramFactory(d2.retrofit(), databaseAdapter(),
                                 optionSetFactory.getOptionSetHandler(), resourceHandler)));
 
-        programStore = new ProgramStoreImpl(databaseAdapter());
+        programStageStore = new ProgramStageStoreImpl(databaseAdapter());
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
     }
 
@@ -73,11 +74,9 @@ public class ProgramChangeOnServerShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void create_program_in_database_if_audit_type_is_create() throws Exception {
-        givenAMetadataInDatabase();
-
-        MetadataAudit<Program> metadataAudit =
-                givenAMetadataAudit("audit/program_create.json");
+    public void ignore_program_stage_if_audit_type_is_create() throws Exception {
+        MetadataAudit<ProgramStage> metadataAudit =
+                givenAMetadataAudit("audit/programStage_create.json");
 
         metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
             @Override
@@ -90,26 +89,21 @@ public class ProgramChangeOnServerShould extends AbsStoreTestCase {
             }
         });
 
-        metadataAuditListener.onMetadataChanged(Program.class, metadataAudit);
+        metadataAuditListener.onMetadataChanged(Option.class, metadataAudit);
 
-        Program createdProgram =
-                new ProgramStoreImpl(databaseAdapter()).queryByUid(metadataAudit.getUid());
-
-        Program expectedProgram = metadataAudit.getValue();
-
-        verifyProgram(createdProgram, expectedProgram);
+        assertThat(programStageStore.queryByUid(metadataAudit.getUid()), is(nullValue()));
     }
 
     @Test
-    public void update_program_if_audit_type_is_update() throws Exception {
+    public void update_program_stage_if_audit_type_is_update() throws Exception {
         givenAMetadataInDatabase();
 
         String filename = "programs_antenatal_care_visit_edited.json";
 
-        MetadataAudit<Program> metadataAudit =
-                givenAMetadataAudit("audit/program_update.json");
-
         dhis2MockServer.enqueueMockResponse(filename);
+
+        MetadataAudit<ProgramStage> metadataAudit =
+                givenAMetadataAudit("audit/programStage_update.json");
 
         metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
             @Override
@@ -122,22 +116,22 @@ public class ProgramChangeOnServerShould extends AbsStoreTestCase {
             }
         });
 
-        metadataAuditListener.onMetadataChanged(Program.class, metadataAudit);
+        metadataAuditListener.onMetadataChanged(ProgramStage.class, metadataAudit);
 
-        Program editedProgram =
-                new ProgramStoreImpl(databaseAdapter()).queryByUid(metadataAudit.getUid());
+        ProgramStage editedProgramStage =
+                new ProgramStageStoreImpl(databaseAdapter()).queryByUid(metadataAudit.getUid());
 
-        Program expectedProgram = getExpectedProgram(filename);
+        ProgramStage expectedProgramStage = getExpectedProgramStage(filename);
 
-        verifyProgram(editedProgram, expectedProgram);
+        verifyProgramStage(editedProgramStage, expectedProgramStage);
     }
 
     @Test
-    public void delete_program_in_database_if_audit_type_is_delete() throws Exception {
+    public void delete_program_stage_in_database_if_audit_type_is_delete() throws Exception {
         givenAMetadataInDatabase();
 
-        MetadataAudit<Program> metadataAudit =
-                givenAMetadataAudit("audit/program_delete.json");
+        MetadataAudit<ProgramStage> metadataAudit =
+                givenAMetadataAudit("audit/programStage_delete.json");
 
         metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
             @Override
@@ -152,17 +146,17 @@ public class ProgramChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(Program.class, metadataAudit);
 
-        assertThat(programStore.queryByUid(metadataAudit.getUid()), is(nullValue()));
+        assertThat(programStageStore.queryByUid(metadataAudit.getUid()), is(nullValue()));
     }
 
-    private MetadataAudit<Program> givenAMetadataAudit(String fileName) throws IOException {
+    private MetadataAudit<ProgramStage> givenAMetadataAudit(String fileName) throws IOException {
         AssetsFileReader assetsFileReader = new AssetsFileReader();
 
         String json = assetsFileReader.getStringFromFile(fileName);
 
         GenericClassParser parser = new GenericClassParser();
 
-        return parser.parse(json, MetadataAudit.class, Program.class);
+        return parser.parse(json, MetadataAudit.class, ProgramStage.class);
     }
 
     private void givenAMetadataInDatabase() throws Exception {
@@ -177,34 +171,31 @@ public class ProgramChangeOnServerShould extends AbsStoreTestCase {
         d2.syncMetaData().call();
     }
 
-    private Program getExpectedProgram(String fileName) throws IOException {
+    private ProgramStage getExpectedProgramStage(String fileName) throws IOException {
         String json = new AssetsFileReader().getStringFromFile(fileName);
 
         GenericClassParser parser = new GenericClassParser();
 
         Payload<Program> payloadExpected = parser.parse(json, Payload.class, Program.class);
 
-        return payloadExpected.items().get(0);
+        return payloadExpected.items().get(0).programStages().get(0);
     }
 
-    private void verifyProgram(Program createdProgram, Program expectedProgram) {
+    private void verifyProgramStage(ProgramStage createdProgramStage,
+            ProgramStage expectedProgramStage) {
+        assertThat(removeChildrenFromProgramStage(createdProgramStage),
+                is(removeChildrenFromProgramStage(expectedProgramStage)));
+    }
+
+    private ProgramStage removeChildrenFromProgramStage(ProgramStage programStage) {
         //compare without children because there are other tests (call, handler)
         //that verify the tree is saved in database
-        assertThat(removeChildrenFromProgram(createdProgram),
-                is(removeChildrenFromProgram(expectedProgram)));
-    }
+        programStage = programStage.toBuilder()
+                .program(null)
+                .programStageDataElements(null)
+                .programStageSections(null)
+                .build();
 
-    private Program removeChildrenFromProgram(Program program) {
-        program = program.toBuilder()
-                .categoryCombo(null)
-                .programStages(null)
-                .programIndicators(null)
-                .programRules(null)
-                .programRuleVariables(null)
-                .programTrackedEntityAttributes(null)
-                .relationshipType(null)
-                .trackedEntity(null).build();
-
-        return program;
+        return programStage;
     }
 }

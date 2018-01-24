@@ -2,10 +2,10 @@
   "createdAt": "2018-01-21T12:20:19.840",
   "createdBy": "admin",
   "klass": "org.hisp.dhis.program.ProgramStage",
-  "uid": "hKuTxVbPcci",
+  "uid": "A03MvHHogjR",
   "type": "DELETE",
   "value": {
-    "name": "CtLttUVOkea",
+    "name": "Birth",
     "created": "2018-01-21T12:20:19.795",
     "lastUpdated": "2018-01-21T12:20:19.795",
     "externalAccess": false,
@@ -17,7 +17,7 @@
       "displayName": "John Traore",
       "id": "xE7jOejl9FI"
     },
-    "displayName": "CtLttUVOkea",
+    "displayName": "Birth",
     "lastUpdatedBy": {
       "id": "xE7jOejl9FI",
       "name": "John Traore"
@@ -43,6 +43,20 @@
         "id": "b7JRZv7Pnyh"
       }
     ],
+    "programStageDataElements": [
+      {
+        "lastUpdated": "2016-01-15T18:13:49.600",
+        "created": "2015-03-31T09:53:05.015",
+        "externalAccess": false,
+        "id": "LBNxoXdMnkv"
+      },
+      {
+        "lastUpdated": "2016-01-15T18:13:49.612",
+        "created": "2015-08-07T14:46:19.073",
+        "externalAccess": false,
+        "id": "yYMGxXpfl0Z"
+      }
+    ],
     "autoGenerateEvent": true,
     "validCompleteOnly": false,
     "displayGenerateEventBox": true,
@@ -55,7 +69,7 @@
     "openAfterEnrollment": false,
     "hideDueDate": false,
     "formType": "DEFAULT",
-    "id": "hKuTxVbPcci",
+    "id": "A03MvHHogjR",
     "repeatable": false
   }
 }

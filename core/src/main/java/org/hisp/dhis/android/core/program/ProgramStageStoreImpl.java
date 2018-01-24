@@ -80,9 +80,9 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
                     ProgramStageModel.Columns.STANDARD_INTERVAL + ", " +
                     ProgramStageModel.Columns.PROGRAM;
 
-    private static final String QUERY_BY_PROGRAM_STATEMENT =
+    private static final String QUERY_BY_UID_STATEMENT =
             "SELECT " + FIELDS + " FROM " + ProgramStageModel.TABLE + " WHERE " +
-                    ProgramStageModel.Columns.PROGRAM + "=?";
+                    ProgramStageModel.Columns.UID + "=?";
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramStageModel.TABLE + " (" +
             FIELDS
@@ -221,12 +221,20 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
     }
 
     @Override
-    public List<ProgramStage> queryByProgramUid(String uid) {
-        Cursor cursor = databaseAdapter.query(QUERY_BY_PROGRAM_STATEMENT, uid);
+    public ProgramStage queryByUid(String uid) {
+        ProgramStage programStage = null;
 
-        Map<String, List<ProgramStage>> programMap = mapFromCursor(cursor);
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID_STATEMENT, uid);
 
-        return programMap.get(uid);
+        if (cursor.getCount() > 0) {
+            Map<String, List<ProgramStage>> programStageMap = mapFromCursor(cursor);
+
+            Map.Entry<String, List<ProgramStage>> entry =
+                    programStageMap.entrySet().iterator().next();
+            programStage = entry.getValue().get(0);
+        }
+
+        return programStage;
     }
 
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid,
@@ -331,6 +339,7 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
                             .minDaysFromStart(minDaysFromStart)
                             .captureCoordinates(captureCoordinates)
                             .standardInterval(standardInterval)
+                            .program(program)
                             .build());
 
                 } while (cursor.moveToNext());

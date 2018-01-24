@@ -177,6 +177,9 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS)
     public abstract List<ProgramStageDataElement> programStageDataElements();
 
+    @Nullable
+    public abstract String program();
+
     abstract ProgramStage.Builder toBuilder();
 
     static ProgramStage.Builder builder() {
@@ -248,6 +251,9 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
         @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS)
         public abstract ProgramStage.Builder programStageDataElements(
                 @Nullable List<ProgramStageDataElement> programStageDataElements);
+
+        public abstract ProgramStage.Builder program(
+                @Nullable String program);
 
         public abstract ProgramStage build();
     }

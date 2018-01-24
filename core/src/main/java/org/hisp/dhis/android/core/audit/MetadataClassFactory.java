@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.audit;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 
@@ -19,6 +20,7 @@ final class MetadataClassFactory {
         myMap.put("optionSet", OptionSet.class);
         myMap.put("option", Option.class);
         myMap.put("program", Program.class);
+        myMap.put("programStage", ProgramStage.class);
         return myMap;
     }
 

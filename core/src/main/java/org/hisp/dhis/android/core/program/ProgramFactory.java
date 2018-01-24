@@ -26,6 +26,8 @@ public class ProgramFactory {
     private final ProgramService programService;
     private final ResourceHandler resourceHandler;
     private final ProgramHandler programHandler;
+    private final ProgramStageStore programStageStore;
+    private final ProgramStageHandler programStageHandler;
 
     private final List<DeletableStore> deletableStores;
 
@@ -50,7 +52,7 @@ public class ProgramFactory {
         ProgramStageSectionStore programStageSectionStore = new ProgramStageSectionStoreImpl(
                 databaseAdapter);
 
-        ProgramStageStore programStageStore = new ProgramStageStoreImpl(databaseAdapter);
+        programStageStore = new ProgramStageStoreImpl(databaseAdapter);
 
         ProgramRuleVariableStore programRuleVariableStore = new ProgramRuleVariableStoreImpl(
                 databaseAdapter);
@@ -84,7 +86,7 @@ public class ProgramFactory {
         ProgramStageSectionHandler programStageSectionHandler = new ProgramStageSectionHandler(
                 programStageSectionStore, programStageDataElementHandler, programIndicatorHandler);
 
-        ProgramStageHandler programStageHandler = new ProgramStageHandler(
+        programStageHandler = new ProgramStageHandler(
                 programStageStore, programStageSectionHandler, programStageDataElementHandler);
 
         ProgramRuleVariableHandler programRuleVariableHandler = new ProgramRuleVariableHandler(
@@ -140,5 +142,13 @@ public class ProgramFactory {
 
     public List<DeletableStore> getDeletableStores() {
         return deletableStores;
+    }
+
+    public ProgramStageStore getProgramStageStore() {
+        return programStageStore;
+    }
+
+    public ProgramStageHandler getProgramStageHandler() {
+        return programStageHandler;
     }
 }

@@ -8,6 +8,8 @@ import org.hisp.dhis.android.core.option.OptionSetMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramFactory;
 import org.hisp.dhis.android.core.program.ProgramMetadataAuditHandler;
+import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.ProgramStageMetadataAuditHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityMetadataAuditHandler;
@@ -35,6 +37,8 @@ public class MetadataAuditHandlerFactory {
             return new OptionMetadataAuditHandler(optionSetFactory);
         } else if (klass == Program.class) {
             return new ProgramMetadataAuditHandler(programFactory);
+        } else if (klass == ProgramStage.class) {
+            return new ProgramStageMetadataAuditHandler(programFactory);
         } else {
             throw new IllegalArgumentException("No exists a metadata audit handler for: " + klass);
         }

@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import java.util.List;
-
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
+import java.util.List;
 
 public class ProgramStageHandler {
     private final ProgramStageStore programStageStore;
@@ -50,12 +50,33 @@ public class ProgramStageHandler {
         }
         for (int i = 0, size = programStages.size(); i < size; i++) {
             ProgramStage programStage = programStages.get(i);
-            if (isDeleted(programStage)) {
-                programStageStore.delete(programStage.uid());
-            } else {
-                int updatedRow = programStageStore.update(
-                        programStage.uid(), programStage.code(), programStage.name(),
-                        programStage.displayName(), programStage.created(), programStage.lastUpdated(),
+
+            handle(programUid, programStage);
+        }
+    }
+
+    public void handle(String programUid, ProgramStage programStage) {
+        if (isDeleted(programStage)) {
+            programStageStore.delete(programStage.uid());
+        } else {
+            int updatedRow = programStageStore.update(
+                    programStage.uid(), programStage.code(), programStage.name(),
+                    programStage.displayName(), programStage.created(), programStage.lastUpdated(),
+                    programStage.executionDateLabel(), programStage.allowGenerateNextVisit(),
+                    programStage.validCompleteOnly(), programStage.reportDateToUse(),
+                    programStage.openAfterEnrollment(), programStage.repeatable(),
+                    programStage.captureCoordinates(), programStage.formType(),
+                    programStage.displayGenerateEventBox(),
+                    programStage.generatedByEnrollmentDate(), programStage.autoGenerateEvent(),
+                    programStage.sortOrder(), programStage.hideDueDate(),
+                    programStage.blockEntryForm(), programStage.minDaysFromStart(),
+                    programStage.standardInterval(), programUid, programStage.uid()
+            );
+            if (updatedRow <= 0) {
+                programStageStore.insert(programStage.uid(), programStage.code(),
+                        programStage.name(),
+                        programStage.displayName(), programStage.created(),
+                        programStage.lastUpdated(),
                         programStage.executionDateLabel(), programStage.allowGenerateNextVisit(),
                         programStage.validCompleteOnly(), programStage.reportDateToUse(),
                         programStage.openAfterEnrollment(), programStage.repeatable(),
@@ -64,23 +85,8 @@ public class ProgramStageHandler {
                         programStage.generatedByEnrollmentDate(), programStage.autoGenerateEvent(),
                         programStage.sortOrder(), programStage.hideDueDate(),
                         programStage.blockEntryForm(), programStage.minDaysFromStart(),
-                        programStage.standardInterval(), programUid, programStage.uid()
-                );
-                if (updatedRow <= 0) {
-                    programStageStore.insert(programStage.uid(), programStage.code(), programStage.name(),
-                            programStage.displayName(), programStage.created(), programStage.lastUpdated(),
-                            programStage.executionDateLabel(), programStage.allowGenerateNextVisit(),
-                            programStage.validCompleteOnly(), programStage.reportDateToUse(),
-                            programStage.openAfterEnrollment(), programStage.repeatable(),
-                            programStage.captureCoordinates(), programStage.formType(),
-                            programStage.displayGenerateEventBox(),
-                            programStage.generatedByEnrollmentDate(), programStage.autoGenerateEvent(),
-                            programStage.sortOrder(), programStage.hideDueDate(),
-                            programStage.blockEntryForm(), programStage.minDaysFromStart(),
-                            programStage.standardInterval(), programUid);
-                }
+                        programStage.standardInterval(), programUid);
             }
-
 
             // We will first save programStageDataElements which will invoke saving of all data elements
             // and graph below (data elements, option sets, options..)
@@ -92,8 +98,6 @@ public class ProgramStageHandler {
             // based on the dataElement foreign key for the programStageDataElement
             programStageSectionHandler.handleProgramStageSection(programStage.uid(),
                     programStage.programStageSections());
-
-
         }
     }
 }

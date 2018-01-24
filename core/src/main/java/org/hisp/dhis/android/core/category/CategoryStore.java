@@ -12,7 +12,7 @@ public interface CategoryStore extends DeletableStore {
 
     boolean delete(@NonNull Category element);
 
-    boolean update(@NonNull Category oldElement, @NonNull Category newElement);
+    boolean update(@NonNull Category newElement);
 
     Category queryByUid(String uid);
 

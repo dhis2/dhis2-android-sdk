@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.audit.MetadataAuditHandler;
 import org.hisp.dhis.android.core.option.Option;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class CategoryOptionMetadataAuditHandler implements MetadataAuditHandler {
@@ -19,9 +20,9 @@ public class CategoryOptionMetadataAuditHandler implements MetadataAuditHandler 
     }
 
     public void handle(MetadataAudit metadataAudit) throws Exception {
-        // MetadataAudit<Option> of CREATE type is ignored because OptionSetUid is null in payload.
-        // when a option is create on server also send a MetadataAudit<OptionSet> of UPDATE type
-        // then new option will be created by OptionSetMetadataAuditHandler.
+        // MetadataAudit<CategoryOption> of CREATE type is ignored because Category parent is null in payload.
+        // when a categoryOption is create on server also send a MetadataAudit<Category> of UPDATE type
+        // then new categoryOption will be created by CategoryMetadataAuditHandler.
 
         CategoryOption categoryOption = (CategoryOption) metadataAudit.getValue();
 
@@ -34,19 +35,20 @@ public class CategoryOptionMetadataAuditHandler implements MetadataAuditHandler 
 
             if (oldCategoryOption == null) {
                 Log.e(this.getClass().getSimpleName(),
-                        "MetadataAudit Error: "+this.getClass().getSimpleName()+" updated on server but does not exists in "
+                        "MetadataAudit Error: "+ this.getClass().getSimpleName() +" updated on server but does not exists in "
                                 + "local: "
                                 + metadataAudit);
             } else {
                 Set<String> uIds = new HashSet<>();
-                uIds.add(oldCategoryOption.uid());
-                categoryFactory.newEndPointCall(uIds, metadataAudit.getCreatedAt()).call();
+                List<String> parentUIds = categoryFactory.getCategoryOptionLinkStore().queryCategoryUidListFromCategoryOptionUid( oldCategoryOption.uid());
+                uIds.add(categoryFactory.getCategoryStore().queryByUid(parentUIds.get(0)).uid());
+                categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(uIds), metadataAudit.getCreatedAt()).call();
             }
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {
                 categoryOption = categoryOption.toBuilder().deleted(true).build();
 
-                categoryFactory.getCategoryOptionHandler().handle(categoryOption);
+                categoryFactory.getCategoryOptionHandler().handle("", categoryOption);
             }
         }
     }

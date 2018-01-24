@@ -352,7 +352,7 @@ public final class D2 {
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
 
         CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                categoryOptionStore);
+                categoryOptionStore, categoryCategoryOptionLinkStore);
 
         this.eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
 

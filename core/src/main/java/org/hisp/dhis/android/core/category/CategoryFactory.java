@@ -39,8 +39,8 @@ public class CategoryFactory {
         this.resourceHandler = resourceHandler;
         this.categoryStore = new CategoryStoreImpl(databaseAdapter);
         this.categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter);
-        this.categoryOptionHandler = new CategoryOptionHandler(categoryOptionStore);
         this.categoryOptionLinkStore= new CategoryCategoryOptionLinkStoreImpl(databaseAdapter);
+        this.categoryOptionHandler = new CategoryOptionHandler(categoryOptionStore, categoryOptionLinkStore);
         this.categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler, categoryOptionLinkStore);
     }
 

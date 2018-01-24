@@ -13,8 +13,13 @@
       "id": "DkS8tTZCkNE",
       "dataDimensionType": "DISAGGREGATION",
       "displayName": "default",
-      "categoryOptions": [
-      ]
+      "categoryOptions": [{
+        "code": "AGE15-24",
+        "name": "15-24y",
+        "created": "2011-12-24T12:24:24.149",
+        "lastUpdated": "2015-03-11T11:10:12.274",
+        "id": "UOqJW6HPvvL"
+      }]
     }
   ]
 }

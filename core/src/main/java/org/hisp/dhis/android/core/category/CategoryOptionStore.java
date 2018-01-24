@@ -13,8 +13,7 @@ public interface CategoryOptionStore extends DeletableStore {
 
     boolean delete(@NonNull CategoryOption categoryOption);
 
-    boolean update(@NonNull CategoryOption oldCategoryOption,
-            @NonNull CategoryOption newCategoryOption);
+    boolean update(@NonNull CategoryOption newCategoryOption);
 
     List<CategoryOption> queryAll();
 

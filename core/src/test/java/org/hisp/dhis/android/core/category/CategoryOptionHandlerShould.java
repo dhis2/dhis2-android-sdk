@@ -16,6 +16,8 @@ public class CategoryOptionHandlerShould {
 
     @Mock
     private CategoryOptionStore mockCategoryOptionStore;
+    @Mock
+    private CategoryCategoryOptionLinkStore mockCategoryCategoryOptionStore;
 
     private CategoryOptionHandler categoryOptionHandler;
 
@@ -23,14 +25,14 @@ public class CategoryOptionHandlerShould {
     public void setUp() throws Exception {
 
         MockitoAnnotations.initMocks(this);
-        categoryOptionHandler = new CategoryOptionHandler(mockCategoryOptionStore);
+        categoryOptionHandler = new CategoryOptionHandler(mockCategoryOptionStore, mockCategoryCategoryOptionStore);
     }
 
     @Test
     public void handle_deleted_categoryOption() {
         CategoryOption deletedOption = givenADeletedOption();
 
-        categoryOptionHandler.handle(deletedOption);
+        categoryOptionHandler.handle("", deletedOption);
         verify(mockCategoryOptionStore).delete(deletedOption);
     }
 
@@ -38,10 +40,9 @@ public class CategoryOptionHandlerShould {
     public void handle_new_categoryOption() {
         CategoryOption newOption = givenAOption();
 
-        when(mockCategoryOptionStore.update(any(CategoryOption.class),
-                any(CategoryOption.class))).thenReturn(false);
+        when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(false);
 
-        categoryOptionHandler.handle(newOption);
+        categoryOptionHandler.handle(any(String.class), newOption);
 
         verify(mockCategoryOptionStore).insert(newOption);
 
@@ -51,14 +52,11 @@ public class CategoryOptionHandlerShould {
     public void handle_updated_categoryOption() {
         CategoryOption updatedOption = givenAOption();
 
-        when(mockCategoryOptionStore.update(any(CategoryOption.class),
-                any(CategoryOption.class))).thenReturn(true);
+        when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(true);
 
-        when(mockCategoryOptionStore.queryByUid(updatedOption.uid())).thenReturn(updatedOption);
+        categoryOptionHandler.handle(any(String.class), updatedOption);
 
-        categoryOptionHandler.handle(updatedOption);
-
-        verify(mockCategoryOptionStore).update(updatedOption, updatedOption);
+        verify(mockCategoryOptionStore).update(updatedOption);
 
     }
 

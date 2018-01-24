@@ -28,11 +28,11 @@ public class CategoryHandler {
         if (isDeleted(category)) {
             categoryStore.delete(category);
         } else {
-            Category oldCategory = categoryStore.queryByUid(category.uid());
-            if(oldCategory==null){
+
+            boolean updated = categoryStore.update(category);
+
+            if (!updated) {
                 categoryStore.insert(category);
-            }else {
-                categoryStore.update(oldCategory, category);
             }
             handleCategoryOption(category);
         }
@@ -43,21 +43,8 @@ public class CategoryHandler {
         if (categoryOptions != null) {
 
             for (CategoryOption option : categoryOptions) {
-                categoryOptionHandler.handle(option);
-
-                CategoryCategoryOptionLinkModel link = newCategoryOption(category, option);
-
-                categoryCategoryOptionLinkStore.insert(link);
+                categoryOptionHandler.handle(category.uid(), option);
             }
         }
-    }
-
-    private CategoryCategoryOptionLinkModel newCategoryOption(@NonNull Category category,
-            @NonNull CategoryOption option) {
-
-        return CategoryCategoryOptionLinkModel.builder().category(
-                category.uid())
-                .option(option.uid())
-                .build();
     }
 }

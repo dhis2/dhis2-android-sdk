@@ -1,0 +1,17 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 1,
+    "pageSize": 50
+  },
+  "categoryOptions": [
+    {
+        "code": "frefr",
+        "name": "a new cat option",
+        "displayName": "a new cat option",
+        "created": "2018-01-22T18:42:38.004",
+        "lastUpdated": "2018-01-22T18:42:38.004",
+        "id": "N2aIBIcVO3e"
+    }]
+}

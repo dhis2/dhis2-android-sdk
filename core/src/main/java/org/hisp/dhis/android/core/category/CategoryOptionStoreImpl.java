@@ -96,12 +96,11 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
     }
 
     @Override
-    public boolean update(@NonNull CategoryOption oldCategoryOption,
-            @NonNull CategoryOption newCategoryOption) {
+    public boolean update(@NonNull CategoryOption newCategoryOption) {
 
-        validateForUpdate(oldCategoryOption, newCategoryOption);
+        validateForUpdate(newCategoryOption);
 
-        bindUpdate(oldCategoryOption, newCategoryOption);
+        bindUpdate(newCategoryOption);
 
         return execute(updateStatement);
     }
@@ -124,9 +123,7 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
         return lastId;
     }
 
-    private void validateForUpdate(@NonNull CategoryOption oldCategoryOption,
-            @NonNull CategoryOption newCategoryOption) {
-        isNull(oldCategoryOption.uid());
+    private void validateForUpdate(@NonNull CategoryOption newCategoryOption) {
         isNull(newCategoryOption.uid());
     }
 
@@ -140,11 +137,11 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
         sqLiteBind(deleteStatement, whereUidIndex, option.uid());
     }
 
-    private void bindUpdate(@NonNull CategoryOption oldOption, @NonNull CategoryOption newOption) {
+    private void bindUpdate(@NonNull CategoryOption newOption) {
         final int whereUidIndex = 7;
         bind(updateStatement, newOption);
 
-        sqLiteBind(updateStatement, whereUidIndex, oldOption.uid());
+        sqLiteBind(updateStatement, whereUidIndex, newOption.uid());
     }
 
     private void bind(@NonNull SQLiteStatement sqLiteStatement, @NonNull CategoryOption option) {
@@ -217,7 +214,5 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
 
         return mapCategoryOptionFromCursor(cursor);
     }
-
-
 }
 

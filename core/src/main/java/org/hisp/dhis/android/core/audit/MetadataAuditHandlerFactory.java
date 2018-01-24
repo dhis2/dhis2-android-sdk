@@ -3,6 +3,8 @@ package org.hisp.dhis.android.core.audit;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryMetadataAuditHandler;
+import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryOptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -35,6 +37,8 @@ public class MetadataAuditHandlerFactory {
             return new OptionMetadataAuditHandler(optionSetFactory);
         } else if(klass == Category.class) {
             return new CategoryMetadataAuditHandler(categoryFactory);
+        } else if(klass == CategoryOption.class) {
+            return new CategoryOptionMetadataAuditHandler(categoryFactory);
         } else {
             throw new IllegalArgumentException("No exists a metadata audit handler for: " + klass);
         }

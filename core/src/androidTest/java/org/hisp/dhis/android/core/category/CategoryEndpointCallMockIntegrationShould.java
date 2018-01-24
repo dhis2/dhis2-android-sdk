@@ -83,11 +83,12 @@ public class CategoryEndpointCallMockIntegrationShould extends AbsStoreTestCase 
 
         CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
 
-        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                categoryOptionStore);
         CategoryCategoryOptionLinkStore
                 categoryCategoryOptionLinkStore = new CategoryCategoryOptionLinkStoreImpl(
                 databaseAdapter());
+
+        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
+                categoryOptionStore, categoryCategoryOptionLinkStore);
 
         CategoryHandler handler = new CategoryHandler(store, categoryOptionHandler,
                 categoryCategoryOptionLinkStore);

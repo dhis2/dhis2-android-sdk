@@ -21,10 +21,6 @@ public class CategoryMetadataAuditHandler implements MetadataAuditHandler {
     }
 
     public void handle(MetadataAudit metadataAudit) throws Exception {
-        // MetadataAudit<Option> of CREATE type is ignored because OptionSetUid is null in payload.
-        // when a option is create on server also send a MetadataAudit<OptionSet> of UPDATE type
-        // then new option will be created by OptionSetMetadataAuditHandler.
-
         Category category = (Category) metadataAudit.getValue();
 
         if (metadataAudit.getType() == AuditType.UPDATE) {

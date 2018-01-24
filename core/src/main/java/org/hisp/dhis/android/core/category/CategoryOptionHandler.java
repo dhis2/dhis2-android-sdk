@@ -9,22 +9,38 @@ public class CategoryOptionHandler {
 
     @NonNull
     private final CategoryOptionStore store;
+    @NonNull
+    private final CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore;
 
-    public CategoryOptionHandler(@NonNull CategoryOptionStore store) {
+    public CategoryOptionHandler(@NonNull CategoryOptionStore store, @NonNull CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore) {
         this.store = store;
+        this.categoryCategoryOptionLinkStore = categoryCategoryOptionLinkStore;
     }
 
-    public void handle(@NonNull CategoryOption categoryOption) {
+    public void handle(@NonNull String categoryUId, @NonNull CategoryOption categoryOption) {
 
         if (isDeleted(categoryOption)) {
             store.delete(categoryOption);
         } else {
-            CategoryOption oldCategoryOption = store.queryByUid(categoryOption.uid());
-            if(oldCategoryOption==null){
+
+            boolean updated = store.update(categoryOption);
+
+            if (!updated) {
                 store.insert(categoryOption);
-            }else {
-                store.update(oldCategoryOption, categoryOption);
+
+                CategoryCategoryOptionLinkModel link = newCategoryOption(categoryUId, categoryOption);
+
+                categoryCategoryOptionLinkStore.insert(link);
             }
         }
+    }
+
+    private CategoryCategoryOptionLinkModel newCategoryOption(@NonNull String categoryUId,
+            @NonNull CategoryOption option) {
+
+        return CategoryCategoryOptionLinkModel.builder()
+                .category(categoryUId)
+                .option(option.uid())
+                .build();
     }
 }

@@ -39,6 +39,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.option.OptionSet;
 
 import java.util.Date;
 import java.util.List;
@@ -94,7 +95,7 @@ public abstract class CategoryOption extends BaseNameableObject {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+    public static abstract class Builder extends BaseNameableObject.Builder<CategoryOption.Builder> {
 
         @JsonProperty(CATEGORY_OPTION_COMBOS)
         public abstract Builder categoryOptionCombos(

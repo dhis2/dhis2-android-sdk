@@ -33,7 +33,7 @@ public class CategoryHandlerShould {
 
         MockitoAnnotations.initMocks(this);
         CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                mockCategoryOptionStore);
+                mockCategoryOptionStore, mockCategoryCategoryOptionLinkStore);
 
         mCategoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler,
                 mockCategoryCategoryOptionLinkStore);
@@ -51,7 +51,7 @@ public class CategoryHandlerShould {
     public void handle_new_category() {
         Category newCategory = givenACategory();
 
-        when(mockCategoryStore.update(any(Category.class), any(Category.class))).thenReturn(false);
+        when(mockCategoryStore.update(any(Category.class))).thenReturn(false);
 
         mCategoryHandler.handle(newCategory);
 
@@ -63,13 +63,11 @@ public class CategoryHandlerShould {
     public void handle_updated_category() {
         Category oldCategory = givenACategory();
 
-        when(mockCategoryStore.update(any(Category.class), any(Category.class))).thenReturn(true);
-
-        when(mockCategoryStore.queryByUid(oldCategory.uid())).thenReturn(oldCategory);
+        when(mockCategoryStore.update(any(Category.class))).thenReturn(true);
 
         mCategoryHandler.handle(oldCategory);
 
-        verify(mockCategoryStore).update(oldCategory, oldCategory);
+        verify(mockCategoryStore).update(oldCategory);
 
     }
 

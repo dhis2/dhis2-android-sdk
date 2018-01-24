@@ -35,8 +35,7 @@ public class CategoryHandlerShould {
         CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
                 mockCategoryOptionStore, mockCategoryCategoryOptionLinkStore);
 
-        mCategoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler,
-                mockCategoryCategoryOptionLinkStore);
+        mCategoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler);
     }
 
     @Test

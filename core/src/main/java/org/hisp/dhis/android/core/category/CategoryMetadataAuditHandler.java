@@ -1,13 +1,8 @@
 package org.hisp.dhis.android.core.category;
 
-import android.util.Log;
-
 import org.hisp.dhis.android.core.audit.AuditType;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
 import org.hisp.dhis.android.core.audit.MetadataAuditHandler;
-import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetFactory;
 
 import java.util.HashSet;
 import java.util.Set;

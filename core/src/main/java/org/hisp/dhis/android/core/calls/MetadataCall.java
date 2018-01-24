@@ -31,15 +31,12 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryFactory;
-import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryQuery;
-import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -432,8 +429,7 @@ public class MetadataCall implements Call<Response> {
     }
 
     private Response<Payload<Category>> downloadCategories(Date serverDate) throws Exception {
-        CategoryQuery categoryQuery = CategoryQuery.defaultQuery();
-        return categoryFactory.newEndPointCall(categoryQuery, serverDate).call();
+        return categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(), serverDate).call();
     }
 
     private Response<Payload<CategoryCombo>> downloadCategoryCombos(Date serverDate)

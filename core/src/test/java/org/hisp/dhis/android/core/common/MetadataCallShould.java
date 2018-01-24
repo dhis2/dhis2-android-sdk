@@ -43,13 +43,10 @@ import android.database.sqlite.SQLiteStatement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryFactory;
-import org.hisp.dhis.android.core.category.CategoryHandler;
-import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
@@ -63,8 +60,6 @@ import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetService;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
@@ -86,7 +81,6 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
@@ -153,14 +147,8 @@ public class MetadataCallShould {
     @Mock
     private SystemInfo systemInfo;
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<Category>> categoryInfo;
-
     @Mock
     private SystemInfoService systemInfoService;
-
-    @Mock
-    private SystemInfoHandler systemInfoHandler;
 
     @Mock
     private SystemInfoStore systemInfoStore;
@@ -213,12 +201,6 @@ public class MetadataCallShould {
 
     @Mock
     private ProgramRuleStore programRuleStore;
-
-    @Mock
-    private OptionStore optionStore;
-
-    @Mock
-    private OptionSetStore optionSetStore;
 
     @Mock
     private DataElementStore dataElementStore;
@@ -282,14 +264,6 @@ public class MetadataCallShould {
 
     @Mock
     private TrackedEntity trackedEntity;
-
-    @Mock
-    private CategoryQuery categoryQuery;
-
-    private CategoryService categoryService;
-
-    @Mock
-    private CategoryHandler categoryHandler;
 
 
     private CategoryComboService comboService;
@@ -359,12 +333,11 @@ public class MetadataCallShould {
                 .build();
 
 
-        categoryService = retrofit.create(CategoryService.class);
         comboService = retrofit.create(CategoryComboService.class);
 
         optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
         trackedEntityFactory = new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
-        categoryFactory = new CategoryFactory(retrofit, databaseAdapter, resourceHandler, CategoryQuery.defaultQuery());
+        categoryFactory = new CategoryFactory(retrofit, databaseAdapter, resourceHandler);
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService,
                 programService, organisationUnitService,

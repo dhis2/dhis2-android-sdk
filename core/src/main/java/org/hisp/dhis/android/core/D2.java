@@ -54,17 +54,13 @@ import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryComboStore;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryFactory;
-import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
-import org.hisp.dhis.android.core.category.CategoryOptionHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
-import org.hisp.dhis.android.core.category.CategoryQuery;
-import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -182,11 +178,9 @@ public final class D2 {
     private final OrganisationUnitService organisationUnitService;
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final EventService eventService;
-    private final CategoryService categoryService;
     private final CategoryComboService comboService;
 
     // Queries
-    private final CategoryQuery categoryQuery = CategoryQuery.defaultQuery();
     private final CategoryComboQuery categoryComboQuery = CategoryComboQuery.defaultQuery();
 
     // stores
@@ -238,7 +232,6 @@ public final class D2 {
     private final EventHandler eventHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
-    private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
     private final OrganisationUnitHandler organisationUnitHandler;
     private MetadataAuditConsumer metadataAuditConsumer;
@@ -260,7 +253,6 @@ public final class D2 {
         this.organisationUnitService = retrofit.create(OrganisationUnitService.class);
         this.trackedEntityInstanceService = retrofit.create(TrackedEntityInstanceService.class);
         this.eventService = retrofit.create(EventService.class);
-        this.categoryService = retrofit.create(CategoryService.class);
         this.comboService = retrofit.create(CategoryComboService.class);
 
         // stores
@@ -351,9 +343,6 @@ public final class D2 {
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
 
-        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                categoryOptionStore, categoryCategoryOptionLinkStore);
-
         this.eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
 
         TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler =
@@ -366,9 +355,6 @@ public final class D2 {
                         trackedEntityInstanceStore,
                         trackedEntityAttributeValueHandler,
                         enrollmentHandler);
-
-        categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler,
-                categoryCategoryOptionLinkStore);
 
         CategoryOptionComboHandler optionComboHandler = new CategoryOptionComboHandler(
                 categoryOptionComboStore);
@@ -383,7 +369,7 @@ public final class D2 {
         trackedEntityFactory =
                 new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
 
-        this.categoryFactory = new CategoryFactory(retrofit(), databaseAdapter, resourceHandler, categoryQuery);
+        this.categoryFactory = new CategoryFactory(retrofit(), databaseAdapter, resourceHandler);
 
 
         if (metadataAuditConnection != null) {

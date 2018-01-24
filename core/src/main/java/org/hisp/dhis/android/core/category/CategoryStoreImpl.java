@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -18,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings({
+        "PMD.NPathComplexity",
+})
 public class CategoryStoreImpl implements CategoryStore {
 
     private static final String QUERY_BY_UID_STATEMENT = "SELECT " +
@@ -207,38 +209,39 @@ public class CategoryStoreImpl implements CategoryStore {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
-                    String uid = cursor.getString(0) == null ? null : cursor.getString(
-                            0);
-                    String code = cursor.getString(1) == null ? null : cursor.getString(
-                            1);
-                    String name = cursor.getString(2) == null ? null : cursor.getString(
-                            2);
-                    String displayName = cursor.getString(3) == null ? null : cursor.getString(
-                            3);
-                    Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-                    Date lastUpdated = cursor.getString(5) == null ? null : parse(
-                            cursor.getString(5));
-
-                    String dataDimensionType = cursor.getString(6) == null ? null : cursor.getString(
-                            6);
-
-                    categoryMap.put(uid, Category.builder()
-                            .uid(uid)
-                            .code(code)
-                            .name(name)
-                            .displayName(displayName)
-                            .created(created)
-                            .lastUpdated(lastUpdated)
-                            .dataDimensionType(dataDimensionType)
-                            .build());
-
+                    mapCategory(cursor, categoryMap);
                 } while (cursor.moveToNext());
             }
-
         } finally {
             cursor.close();
         }
         return categoryMap;
+    }
+
+    private void mapCategory(Cursor cursor, Map<String, Category> categoryMap) {
+        String uid = cursor.getString(0) == null ? null : cursor.getString(
+                0);
+        String code = cursor.getString(1) == null ? null : cursor.getString(
+                1);
+        String name = cursor.getString(2) == null ? null : cursor.getString(
+                2);
+        String displayName = cursor.getString(3) == null ? null : cursor.getString(
+                3);
+        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
+        Date lastUpdated = cursor.getString(5) == null ? null : parse(
+                cursor.getString(5));
+        String dataDimensionType = cursor.getString(6) == null ? null : cursor.getString(
+                6);
+
+        categoryMap.put(uid, Category.builder()
+                .uid(uid)
+                .code(code)
+                .name(name)
+                .displayName(displayName)
+                .created(created)
+                .lastUpdated(lastUpdated)
+                .dataDimensionType(dataDimensionType)
+                .build());
     }
 
     @NonNull

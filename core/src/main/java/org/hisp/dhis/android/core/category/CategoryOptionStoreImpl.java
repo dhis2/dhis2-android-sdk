@@ -14,7 +14,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 
 public class CategoryOptionStoreImpl implements CategoryOptionStore {

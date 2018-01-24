@@ -21,7 +21,6 @@ public class MetadataAuditListener implements MetadataAuditConsumer.MetadataAudi
 
             notifySyncedToMetadataSyncedListener(klass, metadataAudit);
         } catch (Exception e) {
-            e.printStackTrace();
             Log.e(this.getClass().getSimpleName(), e.getMessage(), e);
             notifyErrorToMetadataSyncedListener(e);
         }

@@ -139,12 +139,7 @@ public class HandlerFactory {
     public static CategoryHandler createCategoryHandler(DatabaseAdapter databaseAdapter) {
         CategoryStore categoryStore = new CategoryStoreImpl(databaseAdapter);
         CategoryOptionHandler categoryOptionHandler = createCategoryOptionHandler(databaseAdapter);
-        CategoryCategoryOptionLinkStore
-                categoryCategoryOptionLinkStore = new CategoryCategoryOptionLinkStoreImpl(
-                databaseAdapter);
-
-        CategoryHandler categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler,
-                categoryCategoryOptionLinkStore);
+        CategoryHandler categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler);
 
         return categoryHandler;
     }

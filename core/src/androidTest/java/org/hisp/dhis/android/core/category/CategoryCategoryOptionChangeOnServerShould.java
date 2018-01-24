@@ -55,8 +55,7 @@ public class CategoryCategoryOptionChangeOnServerShould extends AbsStoreTestCase
         MockitoAnnotations.initMocks(this);
 
         categoryFactory = new CategoryFactory(d2.retrofit(),
-                databaseAdapter(), HandlerFactory.createResourceHandler(databaseAdapter()),
-                CategoryQuery.defaultQuery());
+                databaseAdapter(), HandlerFactory.createResourceHandler(databaseAdapter()));
 
         when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
                 new CategoryOptionMetadataAuditHandler(categoryFactory));

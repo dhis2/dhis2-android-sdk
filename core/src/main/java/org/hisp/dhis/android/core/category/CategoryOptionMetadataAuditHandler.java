@@ -5,7 +5,6 @@ import android.util.Log;
 import org.hisp.dhis.android.core.audit.AuditType;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
 import org.hisp.dhis.android.core.audit.MetadataAuditHandler;
-import org.hisp.dhis.android.core.option.Option;
 
 import java.util.HashSet;
 import java.util.List;
@@ -35,14 +34,17 @@ public class CategoryOptionMetadataAuditHandler implements MetadataAuditHandler 
 
             if (oldCategoryOption == null) {
                 Log.e(this.getClass().getSimpleName(),
-                        "MetadataAudit Error: "+ this.getClass().getSimpleName() +" updated on server but does not exists in "
-                                + "local: "
+                        "MetadataAudit Error: "+ this.getClass().getSimpleName()
+                                +" updated on server but does not exists in local: "
                                 + metadataAudit);
             } else {
                 Set<String> uIds = new HashSet<>();
-                List<String> parentUIds = categoryFactory.getCategoryOptionLinkStore().queryCategoryUidListFromCategoryOptionUid( oldCategoryOption.uid());
+                List<String> parentUIds = categoryFactory.getCategoryOptionLinkStore().
+                        queryCategoryUidListFromCategoryOptionUid(oldCategoryOption.uid());
                 uIds.add(categoryFactory.getCategoryStore().queryByUid(parentUIds.get(0)).uid());
-                categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(uIds), metadataAudit.getCreatedAt()).call();
+
+                categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(uIds),
+                        metadataAudit.getCreatedAt()).call();
             }
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {

@@ -12,15 +12,12 @@ public class CategoryHandler {
     @VisibleForTesting
     private final CategoryStore categoryStore;
     private final CategoryOptionHandler categoryOptionHandler;
-    private final CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore;
 
     public CategoryHandler(
             @NonNull CategoryStore categoryStore,
-            @NonNull CategoryOptionHandler categoryOptionHandler,
-            @NonNull CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore) {
+            @NonNull CategoryOptionHandler categoryOptionHandler) {
         this.categoryStore = categoryStore;
         this.categoryOptionHandler = categoryOptionHandler;
-        this.categoryCategoryOptionLinkStore = categoryCategoryOptionLinkStore;
     }
 
     public void handle(Category category) {

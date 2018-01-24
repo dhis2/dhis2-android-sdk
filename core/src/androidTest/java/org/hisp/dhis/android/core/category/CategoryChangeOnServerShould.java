@@ -52,7 +52,7 @@ public class CategoryChangeOnServerShould extends AbsStoreTestCase {
         when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
                 new CategoryMetadataAuditHandler(
                         new CategoryFactory(d2.retrofit(), databaseAdapter(),
-                                HandlerFactory.createResourceHandler(databaseAdapter()), CategoryQuery.defaultQuery())));
+                                HandlerFactory.createResourceHandler(databaseAdapter()))));
 
         categoryStore = new CategoryStoreImpl(databaseAdapter());
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);

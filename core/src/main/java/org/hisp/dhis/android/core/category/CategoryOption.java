@@ -39,7 +39,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.option.OptionSet;
 
 import java.util.Date;
 import java.util.List;

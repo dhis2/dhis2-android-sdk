@@ -12,7 +12,8 @@ public class CategoryOptionHandler {
     @NonNull
     private final CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore;
 
-    public CategoryOptionHandler(@NonNull CategoryOptionStore store, @NonNull CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore) {
+    public CategoryOptionHandler(@NonNull CategoryOptionStore store,
+            @NonNull CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore) {
         this.store = store;
         this.categoryCategoryOptionLinkStore = categoryCategoryOptionLinkStore;
     }

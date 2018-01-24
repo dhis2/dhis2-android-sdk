@@ -46,8 +46,6 @@ import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStoreImpl;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
@@ -59,10 +57,6 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreI
 import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
-import org.hisp.dhis.android.core.category.CategoryOptionStore;
-import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
-import org.hisp.dhis.android.core.category.CategoryStore;
-import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
@@ -220,11 +214,8 @@ public final class D2 {
 
     private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
-    private final CategoryOptionStore categoryOptionStore;
-    private final CategoryStore categoryStore;
     private final CategoryComboStore categoryComboStore;
     private final CategoryCategoryComboLinkStore categoryCategoryComboLinkStore;
-    private final CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore;
     private final CategoryOptionComboCategoryLinkStore categoryComboOptionCategoryLinkStore;
 
     //Handlers
@@ -321,10 +312,6 @@ public final class D2 {
         this.organisationUnitProgramLinkStore =
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
 
-        this.categoryStore = new CategoryStoreImpl(databaseAdapter);
-        this.categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
-        this.categoryCategoryOptionLinkStore = new CategoryCategoryOptionLinkStoreImpl(
-                databaseAdapter());
         this.categoryComboOptionCategoryLinkStore
                 = new CategoryOptionComboCategoryLinkStoreImpl(databaseAdapter);
         this.categoryComboStore = new CategoryComboStoreImpl(databaseAdapter());
@@ -460,9 +447,9 @@ public final class D2 {
         deletableStoreList.add(trackedEntityAttributeValueStore);
         deletableStoreList.add(organisationUnitProgramLinkStore);
         deletableStoreList.add(eventStore);
-        deletableStoreList.add(categoryStore);
-        deletableStoreList.add(categoryOptionStore);
-        deletableStoreList.add(categoryCategoryOptionLinkStore);
+        deletableStoreList.add(categoryFactory.getCategoryStore());
+        deletableStoreList.add(categoryFactory.getCategoryOptionStore());
+        deletableStoreList.add(categoryFactory.getCategoryOptionLinkStore());
         deletableStoreList.add(categoryComboOptionCategoryLinkStore);
         deletableStoreList.add(categoryComboStore);
         deletableStoreList.add(categoryCategoryComboLinkStore);

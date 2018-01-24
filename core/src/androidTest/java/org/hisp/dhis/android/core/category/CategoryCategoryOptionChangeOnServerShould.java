@@ -8,6 +8,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import android.support.test.filters.MediumTest;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.audit.GenericClassParser;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
@@ -75,6 +77,7 @@ public class CategoryCategoryOptionChangeOnServerShould extends AbsStoreTestCase
     }
 
     @Test
+    @MediumTest
     public void ignore_category_option_if_audit_type_is_create() throws Exception {
         MetadataAudit<CategoryOption> metadataAudit =
                 givenAMetadataAudit("audit/category_option_create.json");
@@ -95,6 +98,7 @@ public class CategoryCategoryOptionChangeOnServerShould extends AbsStoreTestCase
     }
 
     @Test
+    @MediumTest
     public void update_category_option_if_audit_type_is_update() throws Exception {
         String filename = "audit/categories.json";
 
@@ -122,25 +126,8 @@ public class CategoryCategoryOptionChangeOnServerShould extends AbsStoreTestCase
                 is(getCategoryOptionExpected(metadataAudit.getUid())));
     }
 
-
-    private CategoryOption getCategoryOptionExpected(String uid) throws IOException {
-        String json = new AssetsFileReader().getStringFromFile("audit/categories.json");
-
-        GenericClassParser parser = new GenericClassParser();
-
-        Payload<Category> payloadExpected = parser.parse(json, Payload.class, Category.class);
-
-        for (Category category : payloadExpected.items()) {
-            for (CategoryOption option : category.categoryOptions()) {
-                if (option.uid().equals(uid)) {
-                    return option;
-                }
-            }
-        }
-
-        return null;
-    }
     @Test
+    @MediumTest
     public void delete_category_option_in_database_if_audit_type_is_delete() throws Exception {
         givenAExistedCategoryOptionPreviously();
 
@@ -161,6 +148,24 @@ public class CategoryCategoryOptionChangeOnServerShould extends AbsStoreTestCase
         metadataAuditListener.onMetadataChanged(Category.class, metadataAudit);
 
         assertThat(categoryOptionStore.queryAll().size(), is(0));
+    }
+
+    private CategoryOption getCategoryOptionExpected(String uid) throws IOException {
+        String json = new AssetsFileReader().getStringFromFile("audit/categories.json");
+
+        GenericClassParser parser = new GenericClassParser();
+
+        Payload<Category> payloadExpected = parser.parse(json, Payload.class, Category.class);
+
+        for (Category category : payloadExpected.items()) {
+            for (CategoryOption option : category.categoryOptions()) {
+                if (option.uid().equals(uid)) {
+                    return option;
+                }
+            }
+        }
+
+        return null;
     }
 
     private MetadataAudit<CategoryOption> givenAMetadataAudit(String fileName) throws IOException {
@@ -187,32 +192,5 @@ public class CategoryCategoryOptionChangeOnServerShould extends AbsStoreTestCase
                 .build();
 
         categoryFactory.getCategoryHandler().handle(category);
-    }
-
-    private Payload<CategoryOption> parseEntities(String fileName) throws IOException {
-        String json = new AssetsFileReader().getStringFromFile(fileName);
-
-        GenericClassParser parser = new GenericClassParser();
-
-        return parser.parse(json, Payload.class, CategoryOption.class);
-    }
-
-    private Category getCategory(String uid) {
-        Category category = categoryStore.queryByUid(uid);
-
-        List<String> categoryOptionUIdList = new CategoryCategoryOptionLinkStoreImpl(databaseAdapter()).queryCategoryOptionUidListFromCategoryUid(uid);
-        List<CategoryOption> categoryOptions = new ArrayList<>();
-        for(String categoryOptionUid:categoryOptionUIdList){
-            CategoryOption categoryOption = new CategoryOptionStoreImpl(databaseAdapter()).queryByUid(categoryOptionUid);
-            categoryOptions.add(categoryOption);
-        }
-
-        category = category.toBuilder().categoryOptions(categoryOptions)
-                //todo persist shortname/displayshortname/description in database
-                .shortName("new cat 001dis")
-                .displayShortName("new cat 001dis")
-                .build();
-
-        return category;
     }
 }

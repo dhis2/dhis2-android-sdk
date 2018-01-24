@@ -7,6 +7,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import android.support.test.filters.MediumTest;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.audit.GenericClassParser;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
@@ -67,6 +69,7 @@ public class CategoryChangeOnServerShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void create_category_in_database_if_audit_type_is_create() throws Exception {
         MetadataAudit<Category> metadataAudit =
                 givenAMetadataAudit("audit/category_create.json");
@@ -87,6 +90,7 @@ public class CategoryChangeOnServerShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_category_if_audit_type_is_update() throws Exception {
         String filename = "audit/categories.json";
 
@@ -115,6 +119,7 @@ public class CategoryChangeOnServerShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_category_in_database_if_audit_type_is_delete() throws Exception {
         givenAExistedCategoryPreviously();
 

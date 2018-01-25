@@ -13,7 +13,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class CategoryComboStoreImpl implements CategoryComboStore {
@@ -22,6 +24,17 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
     protected final SQLiteStatement insertStatement;
     protected final SQLiteStatement updateStatement;
     protected final SQLiteStatement deleteStatement;
+
+    private static final String QUERY_BY_UID_STATEMENT = "SELECT " +
+            CategoryComboModel.Columns.UID + "," +
+            CategoryComboModel.Columns.CODE + "," +
+            CategoryComboModel.Columns.NAME + "," +
+            CategoryComboModel.Columns.DISPLAY_NAME + "," +
+            CategoryComboModel.Columns.CREATED + "," +
+            CategoryComboModel.Columns.LAST_UPDATED + "," +
+            CategoryComboModel.Columns.IS_DEFAULT+ "," +
+            "  FROM " + CategoryComboModel.TABLE +
+            " WHERE "+CategoryComboModel.Columns.UID+" =?;";
 
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryComboModel.TABLE + " (" +
@@ -167,6 +180,15 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         return mapCategoryCombosFromCursor(cursor);
     }
 
+    @Override
+    public CategoryCombo queryByUid(String uid) {
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID_STATEMENT, uid);
+
+        Map<String, CategoryCombo> categoryMap = mapFromCursor(cursor);
+
+        return categoryMap.get(uid);
+    }
+
     private List<CategoryCombo> mapCategoryCombosFromCursor(Cursor cursor) {
         List<CategoryCombo> categoryCombos = new ArrayList<>(cursor.getCount());
 
@@ -203,6 +225,49 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
                 uid, code, name, displayName, created, lastUpdated, isDefault, null, null);
 
         return categoryCombo;
+    }
+
+    private Map<String, CategoryCombo> mapFromCursor(Cursor cursor) {
+
+        Map<String, CategoryCombo> categoryMap = new HashMap<>();
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    mapCategory(cursor, categoryMap);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+        return categoryMap;
+    }
+
+    private void mapCategory(Cursor cursor, Map<String, CategoryCombo> categoryMap) {
+        String uid = cursor.getString(0) == null ? null : cursor.getString(
+                0);
+        String code = cursor.getString(1) == null ? null : cursor.getString(
+                1);
+        String name = cursor.getString(2) == null ? null : cursor.getString(
+                2);
+        String displayName = cursor.getString(3) == null ? null : cursor.getString(
+                3);
+        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
+        Date lastUpdated = cursor.getString(5) == null ? null : parse(
+                cursor.getString(5));
+        Boolean isBoolean =
+                cursor.getString(6) == null || cursor.getInt(6) == 0 ? Boolean.FALSE
+                        : Boolean.TRUE;
+
+        categoryMap.put(uid, CategoryCombo.builder()
+                .uid(uid)
+                .code(code)
+                .name(name)
+                .displayName(displayName)
+                .created(created)
+                .lastUpdated(lastUpdated)
+                .isDefault(isBoolean)
+                .build());
     }
 
     @Override

@@ -16,4 +16,6 @@ public interface CategoryComboStore extends DeletableStore {
     boolean delete(@NonNull CategoryCombo categoryCombo);
 
     List<CategoryCombo> queryAll();
+
+    CategoryCombo queryByUid(String uid);
 }

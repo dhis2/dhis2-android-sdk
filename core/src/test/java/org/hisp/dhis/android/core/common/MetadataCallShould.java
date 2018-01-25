@@ -43,6 +43,7 @@ import android.database.sqlite.SQLiteStatement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.MetadataCall;
+import org.hisp.dhis.android.core.category.CategoryComboFactory;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
@@ -274,6 +275,7 @@ public class MetadataCallShould {
     private OptionSetFactory optionSetFactory;
     private TrackedEntityFactory trackedEntityFactory;
     private CategoryFactory categoryFactory;
+    private CategoryComboFactory categoryComboFactory;
 
     // object to test
     private MetadataCall metadataCall;
@@ -338,6 +340,7 @@ public class MetadataCallShould {
         optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
         trackedEntityFactory = new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
         categoryFactory = new CategoryFactory(retrofit, databaseAdapter, resourceHandler);
+        categoryComboFactory = new CategoryComboFactory(retrofit, databaseAdapter, resourceHandler);
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService,
                 programService, organisationUnitService,
@@ -350,8 +353,8 @@ public class MetadataCallShould {
                 programRuleStore, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore,
                 organisationUnitProgramLinkStore,
-                CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetFactory, trackedEntityFactory, categoryFactory);
+                optionSetFactory, trackedEntityFactory, categoryFactory,
+                categoryComboFactory);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));

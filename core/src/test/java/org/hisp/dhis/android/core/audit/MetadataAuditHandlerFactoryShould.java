@@ -4,6 +4,9 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboFactory;
+import org.hisp.dhis.android.core.category.CategoryComboMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryOption;
@@ -38,6 +41,9 @@ public class MetadataAuditHandlerFactoryShould {
     @Mock
     private CategoryFactory categoryFactory;
 
+    @Mock
+    private CategoryComboFactory categoryComboFactory;
+
     private MetadataAuditHandlerFactory metadataAuditHandlerFactory;
 
     @Parameterized.Parameters(name = "{index} MetadataAuditHandlerFactory should return: {0} for "
@@ -48,7 +54,8 @@ public class MetadataAuditHandlerFactoryShould {
                 {OptionSetMetadataAuditHandler.class, OptionSet.class},
                 {OptionMetadataAuditHandler.class, Option.class},
                 {CategoryMetadataAuditHandler.class, Category.class},
-                {CategoryOptionMetadataAuditHandler.class, CategoryOption.class}
+                {CategoryOptionMetadataAuditHandler.class, CategoryOption.class},
+                {CategoryComboMetadataAuditHandler.class, CategoryCombo.class}
         });
     }
 
@@ -66,7 +73,7 @@ public class MetadataAuditHandlerFactoryShould {
         MockitoAnnotations.initMocks(this);
 
         metadataAuditHandlerFactory =
-                new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory, categoryFactory);
+                new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory, categoryFactory, categoryComboFactory);
     }
 
     @Test

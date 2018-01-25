@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryComboFactory;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
@@ -120,13 +121,11 @@ public class MetadataCall implements Call<Response> {
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
-    private final CategoryComboQuery categoryComboQuery;
-    private final CategoryComboService categoryComboService;
-    private final CategoryComboHandler categoryComboHandler;
 
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
     private final CategoryFactory categoryFactory;
+    private final CategoryComboFactory categoryComboFactory;
 
     private boolean isExecuted;
 
@@ -160,12 +159,10 @@ public class MetadataCall implements Call<Response> {
             @NonNull ProgramStageStore programStageStore,
             @NonNull RelationshipTypeStore relationshipStore,
             @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
-            @NonNull CategoryComboQuery categoryComboQuery,
-            @NonNull CategoryComboService categoryComboService,
-            @NonNull CategoryComboHandler categoryComboHandler,
             @NonNull OptionSetFactory optionSetFactory,
             @NonNull TrackedEntityFactory trackedEntityFactory,
-            @NonNull CategoryFactory categoryFactory) {
+            @NonNull CategoryFactory categoryFactory,
+            @NonNull CategoryComboFactory categoryComboFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -194,13 +191,11 @@ public class MetadataCall implements Call<Response> {
         this.programStageStore = programStageStore;
         this.relationshipStore = relationshipStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
-        this.categoryComboQuery = categoryComboQuery;
-        this.categoryComboService = categoryComboService;
-        this.categoryComboHandler = categoryComboHandler;
 
         this.optionSetFactory = optionSetFactory;
         this.trackedEntityFactory = trackedEntityFactory;
         this.categoryFactory = categoryFactory;
+        this.categoryComboFactory = categoryComboFactory;
     }
 
     @Override
@@ -257,12 +252,12 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
-            response = downloadCategories(serverDate);
+            response =  categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(), serverDate).call();
 
             if (!response.isSuccessful()) {
                 return response;
             }
-            response = downloadCategoryCombos(serverDate);
+            response =  categoryComboFactory.newEndPointCall(CategoryComboQuery.defaultQuery(), serverDate).call();;
 
             if (!response.isSuccessful()) {
                 return response;
@@ -426,19 +421,5 @@ public class MetadataCall implements Call<Response> {
                 }
             }
         }
-    }
-
-    private Response<Payload<Category>> downloadCategories(Date serverDate) throws Exception {
-        return categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(), serverDate).call();
-    }
-
-    private Response<Payload<CategoryCombo>> downloadCategoryCombos(Date serverDate)
-            throws Exception {
-
-        ResponseValidator<CategoryCombo> comboValidator = new ResponseValidator<>();
-
-        return new CategoryComboEndpointCall(categoryComboQuery, categoryComboService,
-                comboValidator, categoryComboHandler,
-                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
     }
 }

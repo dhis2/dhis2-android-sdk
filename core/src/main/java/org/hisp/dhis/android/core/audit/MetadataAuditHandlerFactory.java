@@ -1,6 +1,9 @@
 package org.hisp.dhis.android.core.audit;
 
 import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboFactory;
+import org.hisp.dhis.android.core.category.CategoryComboMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryOption;
@@ -19,13 +22,15 @@ public class MetadataAuditHandlerFactory {
     private final TrackedEntityFactory trackedEntityFactory;
     private final OptionSetFactory optionSetFactory;
     private final CategoryFactory categoryFactory;
+    private final CategoryComboFactory categoryComboFactory;
 
     public MetadataAuditHandlerFactory(
             TrackedEntityFactory trackedEntityFactory, OptionSetFactory optionSetFactory,
-            CategoryFactory categoryFactory) {
+            CategoryFactory categoryFactory, CategoryComboFactory categoryComboFactory) {
         this.trackedEntityFactory = trackedEntityFactory;
         this.optionSetFactory = optionSetFactory;
         this.categoryFactory = categoryFactory;
+        this.categoryComboFactory = categoryComboFactory;
     }
 
     public MetadataAuditHandler getByClass(Class<?> klass) {
@@ -39,6 +44,8 @@ public class MetadataAuditHandlerFactory {
             return new CategoryMetadataAuditHandler(categoryFactory);
         } else if(klass == CategoryOption.class) {
             return new CategoryOptionMetadataAuditHandler(categoryFactory);
+        } else if(klass == CategoryCombo.class) {
+            return new CategoryComboMetadataAuditHandler(categoryComboFactory);
         } else {
             throw new IllegalArgumentException("No exists a metadata audit handler for: " + klass);
         }

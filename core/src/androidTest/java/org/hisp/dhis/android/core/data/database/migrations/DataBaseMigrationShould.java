@@ -4,41 +4,29 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.ifTableExist;
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.ifValueExist;
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isFieldExist;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.ContactsContract;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.Is;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkModel;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkModel;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CategoryModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventModel;
-import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramModel;
@@ -52,8 +40,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -149,45 +135,98 @@ public class DataBaseMigrationShould {
     }
 
     @Test
-    @MediumTest
     public void have_database_version_3_after_migration_from_1() {
         //given
-        final String finalEventScheme="CREATE TABLE Event (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,enrollment TEXT, created TEXT,lastUpdated TEXT,createdAtClient TEXT,lastUpdatedAtClient TEXT,status TEXT,latitude TEXT,longitude TEXT,program TEXT NOT NULL,programStage TEXT NOT NULL,organisationUnit TEXT NOT NULL,eventDate TEXT,completedDate TEXT,dueDate TEXT,state TEXT, attributeCategoryOptions TEXT, attributeOptionCombo TEXT, trackedEntityInstance TEXT, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE, FOREIGN KEY (programStage) REFERENCES ProgramStage (uid) ON DELETE CASCADE,FOREIGN KEY (enrollment) REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE)";
-        final String finalTrackedEntityDataValueScheme="CREATE TABLE TrackedEntityDataValue (_id INTEGER PRIMARY KEY AUTOINCREMENT,event TEXT NOT NULL,dataElement TEXT NOT NULL,storedBy TEXT,value TEXT,created TEXT,lastUpdated TEXT,providedElsewhere INTEGER, FOREIGN KEY (dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE,  FOREIGN KEY (event) REFERENCES Event (uid) ON DELETE CASCADE)";
+        final String finalEventScheme =
+                "CREATE TABLE Event (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL "
+                        + "UNIQUE,enrollment TEXT, created TEXT,lastUpdated TEXT,createdAtClient "
+                        + "TEXT,lastUpdatedAtClient TEXT,status TEXT,latitude TEXT,longitude "
+                        + "TEXT,program TEXT NOT NULL,programStage TEXT NOT NULL,organisationUnit"
+                        + " TEXT NOT NULL,eventDate TEXT,completedDate TEXT,dueDate TEXT,state "
+                        + "TEXT, attributeCategoryOptions TEXT, attributeOptionCombo TEXT, "
+                        + "trackedEntityInstance TEXT, FOREIGN KEY (program) REFERENCES Program "
+                        + "(uid) ON DELETE CASCADE, FOREIGN KEY (programStage) REFERENCES "
+                        + "ProgramStage (uid) ON DELETE CASCADE,FOREIGN KEY (enrollment) "
+                        + "REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY "
+                        + "DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit "
+                        + "(uid) ON DELETE CASCADE)";
+        final String finalTrackedEntityDataValueScheme =
+                "CREATE TABLE TrackedEntityDataValue (_id INTEGER PRIMARY KEY AUTOINCREMENT,event"
+                        + " TEXT NOT NULL,dataElement TEXT NOT NULL,storedBy TEXT,value TEXT,"
+                        + "created TEXT,lastUpdated TEXT,providedElsewhere INTEGER, FOREIGN KEY "
+                        + "(dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE,  FOREIGN"
+                        + " KEY (event) REFERENCES Event (uid) ON DELETE CASCADE)";
         initCoreDataBase(dbName, 1, realMigrationDir, databaseSqlVersion1);
         //when
         initCoreDataBase(dbName, 3, realMigrationDir, "");
 
         //then
         assertTrue(getSqlTableScheme(databaseAdapter, "Event").equals(finalEventScheme));
-        assertTrue(getSqlTableScheme(databaseAdapter, "TrackedEntityDataValue").equals(finalTrackedEntityDataValueScheme));
+        assertTrue(getSqlTableScheme(databaseAdapter, "TrackedEntityDataValue").equals(
+                finalTrackedEntityDataValueScheme));
     }
+
     @Test
-    @MediumTest
     public void have_database_version_3_after_migration_from_2() {
         //given
-        final String finalEventScheme="CREATE TABLE Event (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,enrollment TEXT, created TEXT,lastUpdated TEXT,createdAtClient TEXT,lastUpdatedAtClient TEXT,status TEXT,latitude TEXT,longitude TEXT,program TEXT NOT NULL,programStage TEXT NOT NULL,organisationUnit TEXT NOT NULL,eventDate TEXT,completedDate TEXT,dueDate TEXT,state TEXT, attributeCategoryOptions TEXT, attributeOptionCombo TEXT, trackedEntityInstance TEXT, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE, FOREIGN KEY (programStage) REFERENCES ProgramStage (uid) ON DELETE CASCADE,FOREIGN KEY (enrollment) REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE)";
-        final String finalTrackedEntityDataValueScheme="CREATE TABLE TrackedEntityDataValue (_id INTEGER PRIMARY KEY AUTOINCREMENT,event TEXT NOT NULL,dataElement TEXT NOT NULL,storedBy TEXT,value TEXT,created TEXT,lastUpdated TEXT,providedElsewhere INTEGER, FOREIGN KEY (dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE,  FOREIGN KEY (event) REFERENCES Event (uid) ON DELETE CASCADE)";
+        final String finalEventScheme =
+                "CREATE TABLE Event (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL "
+                        + "UNIQUE,enrollment TEXT, created TEXT,lastUpdated TEXT,createdAtClient "
+                        + "TEXT,lastUpdatedAtClient TEXT,status TEXT,latitude TEXT,longitude "
+                        + "TEXT,program TEXT NOT NULL,programStage TEXT NOT NULL,organisationUnit"
+                        + " TEXT NOT NULL,eventDate TEXT,completedDate TEXT,dueDate TEXT,state "
+                        + "TEXT, attributeCategoryOptions TEXT, attributeOptionCombo TEXT, "
+                        + "trackedEntityInstance TEXT, FOREIGN KEY (program) REFERENCES Program "
+                        + "(uid) ON DELETE CASCADE, FOREIGN KEY (programStage) REFERENCES "
+                        + "ProgramStage (uid) ON DELETE CASCADE,FOREIGN KEY (enrollment) "
+                        + "REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY "
+                        + "DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit "
+                        + "(uid) ON DELETE CASCADE)";
+        final String finalTrackedEntityDataValueScheme =
+                "CREATE TABLE TrackedEntityDataValue (_id INTEGER PRIMARY KEY AUTOINCREMENT,event"
+                        + " TEXT NOT NULL,dataElement TEXT NOT NULL,storedBy TEXT,value TEXT,"
+                        + "created TEXT,lastUpdated TEXT,providedElsewhere INTEGER, FOREIGN KEY "
+                        + "(dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE,  FOREIGN"
+                        + " KEY (event) REFERENCES Event (uid) ON DELETE CASCADE)";
         initCoreDataBase(dbName, 2, realMigrationDir, databaseSqlVersion2);
         //when
         initCoreDataBase(dbName, 3, realMigrationDir, "");
         //then
         assertTrue(getSqlTableScheme(databaseAdapter, "Event").equals(finalEventScheme));
-        assertTrue(getSqlTableScheme(databaseAdapter, "TrackedEntityDataValue").equals(finalTrackedEntityDataValueScheme));
+        assertTrue(getSqlTableScheme(databaseAdapter, "TrackedEntityDataValue").equals(
+                finalTrackedEntityDataValueScheme));
     }
 
     @Test
-    @MediumTest
     public void have_database_version_3_after_migration_from_database_with_content()
             throws IOException {
         //given
-        final String finalEventScheme="CREATE TABLE Event (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,enrollment TEXT, created TEXT,lastUpdated TEXT,createdAtClient TEXT,lastUpdatedAtClient TEXT,status TEXT,latitude TEXT,longitude TEXT,program TEXT NOT NULL,programStage TEXT NOT NULL,organisationUnit TEXT NOT NULL,eventDate TEXT,completedDate TEXT,dueDate TEXT,state TEXT, attributeCategoryOptions TEXT, attributeOptionCombo TEXT, trackedEntityInstance TEXT, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE, FOREIGN KEY (programStage) REFERENCES ProgramStage (uid) ON DELETE CASCADE,FOREIGN KEY (enrollment) REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE)";
-        final String finalTrackedEntityDataValueScheme="CREATE TABLE TrackedEntityDataValue (_id INTEGER PRIMARY KEY AUTOINCREMENT,event TEXT NOT NULL,dataElement TEXT NOT NULL,storedBy TEXT,value TEXT,created TEXT,lastUpdated TEXT,providedElsewhere INTEGER, FOREIGN KEY (dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE,  FOREIGN KEY (event) REFERENCES Event (uid) ON DELETE CASCADE)";
+        final String finalEventScheme =
+                "CREATE TABLE Event (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL "
+                        + "UNIQUE,enrollment TEXT, created TEXT,lastUpdated TEXT,createdAtClient "
+                        + "TEXT,lastUpdatedAtClient TEXT,status TEXT,latitude TEXT,longitude "
+                        + "TEXT,program TEXT NOT NULL,programStage TEXT NOT NULL,organisationUnit"
+                        + " TEXT NOT NULL,eventDate TEXT,completedDate TEXT,dueDate TEXT,state "
+                        + "TEXT, attributeCategoryOptions TEXT, attributeOptionCombo TEXT, "
+                        + "trackedEntityInstance TEXT, FOREIGN KEY (program) REFERENCES Program "
+                        + "(uid) ON DELETE CASCADE, FOREIGN KEY (programStage) REFERENCES "
+                        + "ProgramStage (uid) ON DELETE CASCADE,FOREIGN KEY (enrollment) "
+                        + "REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY "
+                        + "DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit "
+                        + "(uid) ON DELETE CASCADE)";
+        final String finalTrackedEntityDataValueScheme =
+                "CREATE TABLE TrackedEntityDataValue (_id INTEGER PRIMARY KEY AUTOINCREMENT,event"
+                        + " TEXT NOT NULL,dataElement TEXT NOT NULL,storedBy TEXT,value TEXT,"
+                        + "created TEXT,lastUpdated TEXT,providedElsewhere INTEGER, FOREIGN KEY "
+                        + "(dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE,  FOREIGN"
+                        + " KEY (event) REFERENCES Event (uid) ON DELETE CASCADE)";
         initCoreDataBase(dbName, 2, realMigrationDir, databaseSqlVersion2_with_data);
         EventStore eventStore = new EventStoreImpl(databaseAdapter);
         List<Event> eventList = eventStore.queryAll();
-        TrackedEntityDataValueStore trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter);
-        Map<String, List<TrackedEntityDataValue>> listOfTrackedEntityDataValues = trackedEntityDataValueStore.queryTrackedEntityDataValues();
+        TrackedEntityDataValueStore trackedEntityDataValueStore =
+                new TrackedEntityDataValueStoreImpl(databaseAdapter);
+        Map<String, List<TrackedEntityDataValue>> listOfTrackedEntityDataValues =
+                trackedEntityDataValueStore.queryTrackedEntityDataValues();
 
         //when
         initCoreDataBase(dbName, 3, realMigrationDir, "");
@@ -198,12 +237,15 @@ public class DataBaseMigrationShould {
         assertTrue(eventList.equals(eventStore.queryAll()));
         assertTrue(eventList.size() == 50);
 
-        assertTrue(listOfTrackedEntityDataValues.equals(trackedEntityDataValueStore.queryTrackedEntityDataValues()));
+        assertTrue(listOfTrackedEntityDataValues.equals(
+                trackedEntityDataValueStore.queryTrackedEntityDataValues()));
         assertTrue(listOfTrackedEntityDataValues.size() == 50);
-        assertTrue(listOfTrackedEntityDataValues.get(eventList.get(0).uid()).equals(listOfTrackedEntityDataValues.get(eventList.get(0).uid())));
+        assertTrue(listOfTrackedEntityDataValues.get(eventList.get(0).uid()).equals(
+                listOfTrackedEntityDataValues.get(eventList.get(0).uid())));
 
         assertTrue(getSqlTableScheme(databaseAdapter, "Event").equals(finalEventScheme));
-        assertTrue(getSqlTableScheme(databaseAdapter, "TrackedEntityDataValue").equals(finalTrackedEntityDataValueScheme));
+        assertTrue(getSqlTableScheme(databaseAdapter, "TrackedEntityDataValue").equals(
+                finalTrackedEntityDataValueScheme));
 
     }
 
@@ -221,7 +263,8 @@ public class DataBaseMigrationShould {
     }
 
     @Test
-    public void not_have_category_table_after_downgrade_with_real_sql_database() throws IOException {
+    public void not_have_category_table_after_downgrade_with_real_sql_database() throws
+            IOException {
         initCoreDataBase(dbName, 2, realMigrationDir, "");
         initCoreDataBase(dbName, 1, realMigrationDir, "");
         //TODO remove Category and CategoryOption tables in 2.yaml drop migration
@@ -291,10 +334,10 @@ public class DataBaseMigrationShould {
     }
 
 
-
     private String getSqlTableScheme(DatabaseAdapter databaseAdapter, String table) {
         String scheme;
-        Cursor cursor = databaseAdapter.query("SELECT sql FROM sqlite_master WHERE type='table' and name='"+table+"';");
+        Cursor cursor = databaseAdapter.query(
+                "SELECT sql FROM sqlite_master WHERE type='table' and name='" + table + "';");
         cursor.moveToFirst();
         scheme = cursor.getString(0);
         cursor.close();

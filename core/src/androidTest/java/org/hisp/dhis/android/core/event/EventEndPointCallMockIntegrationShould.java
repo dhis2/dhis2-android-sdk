@@ -109,7 +109,6 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    @MediumTest
     public void rollback_transaction_when_insert_a_event_with_wrong_foreign_key()
             throws Exception {
         givenAMetadataInDatabase();
@@ -148,7 +147,8 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void verifyNumberOfDownloadedTrackedEntityDataValue(int num) {
-        TrackedEntityDataValueStoreImpl eventStore = new TrackedEntityDataValueStoreImpl(d2.databaseAdapter());
+        TrackedEntityDataValueStoreImpl eventStore = new TrackedEntityDataValueStoreImpl(
+                d2.databaseAdapter());
 
         int numPersisted = eventStore.countAll();
 

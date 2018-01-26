@@ -27,7 +27,7 @@ final class RuleFunctionZpvc extends RuleFunction {
 
         if (arguments == null) {
             throw new IllegalArgumentException("One argument is expected");
-        } else if (arguments.size() == 0) {
+        } else if (arguments.isEmpty()) {
             throw new IllegalArgumentException("Al most one argument was expected, " +
                     arguments.size() + " were supplied");
         }

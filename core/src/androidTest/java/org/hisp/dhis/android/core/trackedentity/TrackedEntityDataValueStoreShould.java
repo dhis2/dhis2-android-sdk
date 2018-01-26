@@ -138,19 +138,19 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         ContentValues dataElement1 = CreateDataElementUtils.create(1L, DATA_ELEMENT_1, null);
         ContentValues dataElement2 = CreateDataElementUtils.create(2L, DATA_ELEMENT_2, null);
 
-        long trackedEntityId = database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
-        long relationshipTypeId = database().insert(RelationshipTypeModel.TABLE, null,
+        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(RelationshipTypeModel.TABLE, null,
                 relationshipType);
-        long programId = database().insert(ProgramModel.TABLE, null, program);
-        long orgUnitId = database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
-        long programStageId = database().insert(ProgramStageModel.TABLE, null, programStage);
-        long dataElement1Id = database().insert(DataElementModel.TABLE, null, dataElement1);
-        long dataElement2Id = database().insert(DataElementModel.TABLE, null, dataElement2);
-        long trackedEntityInstanceId = database().insert(TrackedEntityInstanceModel.TABLE, null,
+        database().insert(ProgramModel.TABLE, null, program);
+        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(ProgramStageModel.TABLE, null, programStage);
+        database().insert(DataElementModel.TABLE, null, dataElement1);
+        database().insert(DataElementModel.TABLE, null, dataElement2);
+        database().insert(TrackedEntityInstanceModel.TABLE, null,
                 trackedEntityInstance);
-        long enrollmentId = database().insert(EnrollmentModel.TABLE, null, enrollment);
-        long event1Id = database().insert(EventModel.TABLE, null, event1);
-        long event2Id = database().insert(EventModel.TABLE, null, event2);
+        database().insert(EnrollmentModel.TABLE, null, enrollment);
+        database().insert(EventModel.TABLE, null, event1);
+        database().insert(EventModel.TABLE, null, event2);
     }
 
     @Test
@@ -172,73 +172,6 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
                 dateString,
                 dateString,
                 DATA_ELEMENT_1,
-                STORED_BY,
-                VALUE,
-                toInteger(PROVIDED_ELSEWHERE)
-        ).isExhausted();
-    }
-
-    @Test
-    public void insert_deferrable_tracked_entity_data_value_in_data_base_when_insert() {
-        final String deferredEvent = "deferredEvent";
-        database().beginTransaction();
-        long rowId = trackedEntityDataValueStore.insert(
-                deferredEvent,
-                date,
-                date,
-                DATA_ELEMENT_1,
-                STORED_BY,
-                VALUE,
-                PROVIDED_ELSEWHERE
-        );
-        ContentValues event = CreateEventUtils.create(deferredEvent, PROGRAM, PROGRAM_STAGE,
-                ORGANISATION_UNIT, null);
-        long eventId = database().insert(EventModel.TABLE, null, event);
-
-        database().setTransactionSuccessful();
-        database().endTransaction();
-
-        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE, PROJECTION, null, null,
-                null, null, null);
-        assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor).hasRow(
-                deferredEvent,
-                dateString,
-                dateString,
-                DATA_ELEMENT_1,
-                STORED_BY,
-                VALUE,
-                toInteger(PROVIDED_ELSEWHERE)
-        ).isExhausted();
-    }
-
-    @Test
-    public void insert_tracked_entity_data_value_in_data_base_with_deferrable_data_element_when_inserte() {
-        final String deferredDataElement = "deferredDataElement";
-        database().beginTransaction();
-        long rowId = trackedEntityDataValueStore.insert(
-                EVENT_1,
-                date,
-                date,
-                deferredDataElement,
-                STORED_BY,
-                VALUE,
-                PROVIDED_ELSEWHERE
-        );
-        ContentValues dataElement = CreateDataElementUtils.create(3L, deferredDataElement, null);
-        database().insert(DataElementModel.TABLE, null, dataElement);
-
-        database().setTransactionSuccessful();
-        database().endTransaction();
-
-        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE, PROJECTION, null, null,
-                null, null, null);
-        assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor).hasRow(
-                EVENT_1,
-                dateString,
-                dateString,
-                deferredDataElement,
                 STORED_BY,
                 VALUE,
                 toInteger(PROVIDED_ELSEWHERE)

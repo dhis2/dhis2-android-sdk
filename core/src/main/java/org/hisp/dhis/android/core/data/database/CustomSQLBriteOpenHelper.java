@@ -43,7 +43,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     private static BriteDatabase briteDatabase;
 
 
-    /**
+    /*
      * Create a helper object to create, open, and/or manage a database.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -60,7 +60,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Create a helper object to create, open, and/or manage a database.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -78,7 +78,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Create a helper object to create, open, and/or manage a testing database.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -93,7 +93,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         this.isOnTestMode = false;
     }
 
-    /**
+    /*
      * Create a helper object to create, open, and/or manage a testing database.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -143,7 +143,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         }
     }
 
-    /**
+    /*
      * Create a {@link BriteDatabase} instance.N
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -164,7 +164,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Create a {@link BriteDatabase} instance.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -187,7 +187,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Create a {@link BriteDatabase} instance.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -210,7 +210,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         return briteDatabase;
     }
 
-    /**
+    /*
      * Create a {@link BriteDatabase} instance for testing.
      * This method always returns very quickly.  The database is not actually
      * created or opened until one of {@link #getWritableDatabase} or
@@ -291,7 +291,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Parse migration file
      * <p>
      * It used to upgrade database to newer version

@@ -23,8 +23,6 @@ final class RuleFunctionHasValue extends RuleFunction {
     public String evaluate(@Nonnull List<String> arguments,
             Map<String, RuleVariableValue> valueMap) {
 
-        boolean hasValue = false;
-
         if (valueMap == null) {
             throw new IllegalArgumentException("valueMap is expected");
         }
@@ -38,6 +36,8 @@ final class RuleFunctionHasValue extends RuleFunction {
 
         // ToDo: make sure that argument names are actually argument names and not values.
         String variableName = arguments.get(0).replace("'", "");
+
+        boolean hasValue = false;
 
         if (valueMap.get(variableName) != null) {
             hasValue = valueMap.get(variableName).value() != null;

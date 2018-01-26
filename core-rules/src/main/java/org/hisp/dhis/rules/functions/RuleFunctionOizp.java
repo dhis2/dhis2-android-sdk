@@ -31,7 +31,7 @@ final class RuleFunctionOizp extends RuleFunction {
                     arguments.size() + " were supplied");
         }
 
-        return String.valueOf((toDouble(arguments.get(0), -1) >= 0d) ? 1d : 0d);
+        return String.valueOf(toDouble(arguments.get(0), -1) >= 0d ? 1d : 0d);
     }
 
     private static double toDouble(@Nullable final String str, final double defaultValue) {

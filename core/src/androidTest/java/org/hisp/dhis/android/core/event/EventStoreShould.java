@@ -28,6 +28,11 @@
 
 package org.hisp.dhis.android.core.event;
 
+import static com.google.common.truth.Truth.assertThat;
+
+import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
+import static org.junit.Assert.assertTrue;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
@@ -66,10 +71,6 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class EventStoreShould extends AbsStoreTestCase {
@@ -202,71 +203,6 @@ public class EventStoreShould extends AbsStoreTestCase {
                 PROGRAM,
                 PROGRAM_STAGE,
                 ORGANISATION_UNIT,
-                dateString, // eventDate
-                dateString, // completedDate
-                dateString, // dueDate
-                STATE,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
-                ATTRIBUTE_OPTION_COMBO_UID,
-                TRACKED_ENTITY_INSTANCE
-        ).isExhausted();
-    }
-
-    @Test
-    public void persist_deferrable_event_in_data_base_after_insert() {
-        final String deferredProgram = "deferredProgram";
-        final String deferredProgramStage = "deferredProgramStage";
-        final String deferredOrganisationUnit = "deferredOrganisationUnit";
-
-        ContentValues program = CreateProgramUtils.create(11L, deferredProgram,
-                RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(11L, deferredOrganisationUnit);
-        ContentValues programStage = CreateProgramStageUtils.create(11L, deferredProgramStage, PROGRAM);
-        database().beginTransaction();
-        long rowId = eventStore.insert(
-                EVENT_UID,
-                ENROLLMENT_UID,
-                date, // created
-                date, // lastUpdated
-                CREATED_AT_CLIENT,
-                LAST_UPDATED_AT_CLIENT,
-                STATUS,
-                LATITUDE,
-                LONGITUDE,
-                deferredProgram,
-                deferredProgramStage,
-                deferredOrganisationUnit,
-                date, // eventDate
-                date, // completedDate
-                date, // dueDate
-                STATE,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
-                ATTRIBUTE_OPTION_COMBO_UID,
-                TRACKED_ENTITY_INSTANCE
-        );
-
-
-        database().insert(ProgramModel.TABLE, null, program);
-        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
-        database().insert(ProgramStageModel.TABLE, null, programStage);
-        database().setTransactionSuccessful();
-        database().endTransaction();
-
-        Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
-        assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor).hasRow(
-                EVENT_UID,
-                ENROLLMENT_UID,
-                dateString, // created
-                dateString, // lastUpdated
-                CREATED_AT_CLIENT,
-                LAST_UPDATED_AT_CLIENT,
-                STATUS,
-                LATITUDE,
-                LONGITUDE,
-                deferredProgram,
-                deferredProgramStage,
-                deferredOrganisationUnit,
                 dateString, // eventDate
                 dateString, // completedDate
                 dateString, // dueDate

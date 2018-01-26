@@ -151,11 +151,11 @@ public class CategoryStoreImpl implements CategoryStore {
         sqLiteBind(deleteStatement, whereUidIndex, category.uid());
     }
 
-    private void bindUpdate(@NonNull Category newCategory) {
+    private void bindUpdate(@NonNull Category category) {
         final int whereUidIndex = 8;
-        bind(updateStatement, newCategory);
+        bind(updateStatement, category);
 
-        sqLiteBind(updateStatement, whereUidIndex, newCategory.uid());
+        sqLiteBind(updateStatement, whereUidIndex, category.uid());
     }
 
     private void bind(@NonNull SQLiteStatement sqLiteStatement, @NonNull Category category) {

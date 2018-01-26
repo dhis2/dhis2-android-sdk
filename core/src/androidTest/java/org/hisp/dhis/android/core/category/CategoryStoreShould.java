@@ -106,7 +106,7 @@ public class CategoryStoreShould extends AbsStoreTestCase {
     }
 
     private void whenUpdateCategory() {
-        wasUpdated = store.update(newCategoryModified);
+        wasUpdated = store.update(newCategory);
     }
 
     private void thenAssertLastInsertedIDIsOne() {

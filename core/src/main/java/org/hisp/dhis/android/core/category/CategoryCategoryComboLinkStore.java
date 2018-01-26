@@ -11,4 +11,8 @@ public interface CategoryCategoryComboLinkStore extends DeletableStore {
     long insert(@NonNull CategoryCategoryComboLinkModel element);
 
     List<CategoryCategoryComboLink> queryAll();
+
+    List<CategoryCategoryComboLink> queryByCategoryComboUId(String categoryComboUId);
+
+    List<CategoryCategoryComboLink> queryByCategoryUId(String categoryUId);
 }

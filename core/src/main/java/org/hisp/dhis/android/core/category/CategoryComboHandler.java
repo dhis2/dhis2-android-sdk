@@ -39,7 +39,7 @@ public class CategoryComboHandler {
             store.delete(combo);
         } else {
 
-            boolean updated = store.update(combo, combo);
+            boolean updated = store.update(combo);
 
             if (!updated) {
                 store.insert(combo);

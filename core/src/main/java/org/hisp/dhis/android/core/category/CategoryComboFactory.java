@@ -52,10 +52,6 @@ public class CategoryComboFactory {
         return databaseAdapter;
     }
 
-    public CategoryComboService getCategoryComboService() {
-        return categoryComboService;
-    }
-
     public CategoryComboStore getCategoryComboStore() {
         return categoryComboStore;
     }
@@ -64,19 +60,11 @@ public class CategoryComboFactory {
         return categoryComboOptionLinkStore;
     }
 
-    public CategoryOptionComboStore getCategoryOptionComboStore() {
-        return categoryOptionComboStore;
-    }
-
     public CategoryOptionComboCategoryLinkStoreImpl getCategoryComboOptionCategoryLinkStore() {
         return categoryComboOptionCategoryLinkStore;
     }
 
     public CategoryComboHandler getCategoryComboHandler() {
         return categoryComboHandler;
-    }
-
-    public CategoryOptionComboHandler getCategoryOptionComboHandler() {
-        return categoryOptionComboHandler;
     }
 }

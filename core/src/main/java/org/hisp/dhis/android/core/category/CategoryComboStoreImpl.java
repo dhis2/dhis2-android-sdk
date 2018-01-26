@@ -32,7 +32,7 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
             CategoryComboModel.Columns.DISPLAY_NAME + "," +
             CategoryComboModel.Columns.CREATED + "," +
             CategoryComboModel.Columns.LAST_UPDATED + "," +
-            CategoryComboModel.Columns.IS_DEFAULT+ "," +
+            CategoryComboModel.Columns.IS_DEFAULT+ " " +
             "  FROM " + CategoryComboModel.TABLE +
             " WHERE "+CategoryComboModel.Columns.UID+" =?;";
 
@@ -100,12 +100,11 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
     }
 
     @Override
-    public boolean update(@NonNull CategoryCombo oldCombo,
-            @NonNull CategoryCombo newCombo) {
+    public boolean update(@NonNull CategoryCombo categoryCombo) {
 
-        validateForUpdate(oldCombo, newCombo);
+        isNull(categoryCombo);
 
-        bindUpdate(oldCombo, newCombo);
+        bindUpdate(categoryCombo);
 
         return execute(updateStatement);
     }
@@ -124,12 +123,6 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         return lastId;
     }
 
-    private void validateForUpdate(@NonNull CategoryCombo oldCombo,
-            @NonNull CategoryCombo newCombo) {
-        isNull(oldCombo.uid());
-        isNull(newCombo.uid());
-    }
-
     private void validate(@NonNull CategoryCombo category) {
         isNull(category.uid());
     }
@@ -140,11 +133,11 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         sqLiteBind(deleteStatement, uidIndex, combo.uid());
     }
 
-    private void bindUpdate(@NonNull CategoryCombo oldCombo, @NonNull CategoryCombo newCombo) {
+    private void bindUpdate(@NonNull CategoryCombo categoryCombo) {
         final int whereUidIndex = 7;
-        bind(updateStatement, newCombo);
+        bind(updateStatement, categoryCombo);
 
-        sqLiteBind(updateStatement, whereUidIndex, oldCombo.uid());
+        sqLiteBind(updateStatement, whereUidIndex, categoryCombo.uid());
     }
 
     private void bind(SQLiteStatement sqLiteStatement, @NonNull CategoryCombo categoryCombo) {

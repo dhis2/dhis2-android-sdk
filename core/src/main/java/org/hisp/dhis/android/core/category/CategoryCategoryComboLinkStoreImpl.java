@@ -27,21 +27,28 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
             CategoryCategoryComboLinkModel.TABLE + "." + CategoryCategoryComboLinkModel.Columns.CATEGORY + "," +
                     CategoryCategoryComboLinkModel.TABLE + "." + CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO;
 
+    private static final String QUERY_CATEGORY_COMBO_LINKS_BY_CATEGORY_COMBO = "SELECT " + FIELDS + " FROM "
+            + CategoryCategoryComboLinkModel.TABLE
+            + " WHERE "+ CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO+"=?;";
+
+    private static final String QUERY_CATEGORY_COMBO_LINKS_BY_CATEGORY = "SELECT " + FIELDS + " FROM "
+            + CategoryCategoryComboLinkModel.TABLE
+            + " WHERE "+ CategoryCategoryComboLinkModel.Columns.CATEGORY+"=?;";
+
     private static final String QUERY_ALL_CATEGORY_COMBO_LINKS = "SELECT " +
             FIELDS + " FROM " + CategoryCategoryComboLinkModel.TABLE;
 
     public CategoryCategoryComboLinkStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
-
     }
 
     @Override
-    public long insert(CategoryCategoryComboLinkModel entity) {
+    public long insert(CategoryCategoryComboLinkModel categoryCategoryComboLinkModel) {
 
-        validate(entity);
+        validate(categoryCategoryComboLinkModel);
 
-        bind(insertStatement, entity);
+        bind(insertStatement, categoryCategoryComboLinkModel);
 
         return executeInsert();
     }
@@ -56,8 +63,8 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
         sqLiteBind(sqLiteStatement, 2, link.combo());
     }
 
-    private int executeInsert() {
-        int lastId = databaseAdapter.executeUpdateDelete(CategoryCategoryComboLinkModel.TABLE,
+    private long executeInsert() {
+        long lastId = databaseAdapter.executeInsert(CategoryCategoryComboLinkModel.TABLE,
                 insertStatement);
         insertStatement.clearBindings();
 
@@ -67,6 +74,20 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
     @Override
     public List<CategoryCategoryComboLink> queryAll() {
         Cursor cursor = databaseAdapter.query(QUERY_ALL_CATEGORY_COMBO_LINKS);
+
+        return mapCategoryCategoryComboLinksFromCursor(cursor);
+    }
+
+    @Override
+    public List<CategoryCategoryComboLink> queryByCategoryComboUId(String categoryComboUId) {
+        Cursor cursor = databaseAdapter.query(QUERY_CATEGORY_COMBO_LINKS_BY_CATEGORY_COMBO, categoryComboUId);
+
+        return mapCategoryCategoryComboLinksFromCursor(cursor);
+    }
+
+    @Override
+    public List<CategoryCategoryComboLink> queryByCategoryUId(String categoryUId) {
+        Cursor cursor = databaseAdapter.query(QUERY_CATEGORY_COMBO_LINKS_BY_CATEGORY, categoryUId);
 
         return mapCategoryCategoryComboLinksFromCursor(cursor);
     }

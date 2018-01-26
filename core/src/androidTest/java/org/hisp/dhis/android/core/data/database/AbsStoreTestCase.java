@@ -40,7 +40,7 @@ import java.io.IOException;
 
 public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
-    private DatabaseAdapter databaseAdapter;
+    public static DatabaseAdapter databaseAdapter;
     private String dbName = null;
 
     @Before

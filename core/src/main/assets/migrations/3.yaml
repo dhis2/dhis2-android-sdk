@@ -1,0 +1,14 @@
+up:
+ - PRAGMA foreign_keys=off;
+ - BEGIN TRANSACTION;
+ - ALTER TABLE Event RENAME TO EventOld;
+ - CREATE TABLE Event (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,enrollment TEXT, created TEXT,lastUpdated TEXT,createdAtClient TEXT,lastUpdatedAtClient TEXT,status TEXT,latitude TEXT,longitude TEXT,program TEXT NOT NULL,programStage TEXT NOT NULL,organisationUnit TEXT NOT NULL,eventDate TEXT,completedDate TEXT,dueDate TEXT,state TEXT, attributeCategoryOptions TEXT, attributeOptionCombo TEXT, trackedEntityInstance TEXT, FOREIGN KEY (program) REFERENCES Program (uid) ON DELETE CASCADE, FOREIGN KEY (programStage) REFERENCES ProgramStage (uid) ON DELETE CASCADE,FOREIGN KEY (enrollment) REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE);
+ - INSERT INTO Event (uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient, status, latitude, longitude, program, programStage, organisationUnit, eventDate, completedDate, dueDate, state, attributeCategoryOptions, attributeOptionCombo, trackedEntityInstance) Select uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient, status, latitude, longitude, program, programStage, organisationUnit, eventDate, completedDate, dueDate, state, attributeCategoryOptions, attributeOptionCombo, trackedEntityInstance from EventOld
+ - ALTER TABLE TrackedEntityDataValue RENAME TO TrackedEntityDataValueOld;
+ - CREATE TABLE TrackedEntityDataValue (_id INTEGER PRIMARY KEY AUTOINCREMENT,event TEXT NOT NULL,dataElement TEXT NOT NULL,storedBy TEXT,value TEXT,created TEXT,lastUpdated TEXT,providedElsewhere INTEGER, FOREIGN KEY (dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE,  FOREIGN KEY (event) REFERENCES Event (uid) ON DELETE CASCADE);
+ - INSERT INTO TrackedEntityDataValue (event, dataElement, storedBy, value, created, lastUpdated, providedElsewhere) Select event, dataElement, storedBy, value, created, lastUpdated, providedElsewhere from TrackedEntityDataValueOld
+ - DROP TABLE IF EXISTS TrackedEntityDataValueOld;
+ - DROP TABLE IF EXISTS EventOld;
+ - COMMIT;
+ - PRAGMA foreign_keys=on;
+down:

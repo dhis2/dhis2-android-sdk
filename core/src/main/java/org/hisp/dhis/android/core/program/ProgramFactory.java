@@ -28,6 +28,8 @@ public class ProgramFactory {
     private final ProgramHandler programHandler;
     private final ProgramStageStore programStageStore;
     private final ProgramStageHandler programStageHandler;
+    private final ProgramIndicatorStore programIndicatorStore;
+    private final ProgramIndicatorHandler programIndicatorHandler;
 
     private final List<DeletableStore> deletableStores;
 
@@ -43,7 +45,7 @@ public class ProgramFactory {
         ProgramStageDataElementStore programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter);
 
-        ProgramIndicatorStore programIndicatorStore = new ProgramIndicatorStoreImpl(
+        programIndicatorStore = new ProgramIndicatorStoreImpl(
                 databaseAdapter);
 
         ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore =
@@ -80,7 +82,7 @@ public class ProgramFactory {
                 new ProgramStageDataElementHandler(programStageDataElementStore,
                         dataElementHandler);
 
-        ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(
+        programIndicatorHandler = new ProgramIndicatorHandler(
                 programIndicatorStore, programStageSectionProgramIndicatorLinkStore);
 
         ProgramStageSectionHandler programStageSectionHandler = new ProgramStageSectionHandler(
@@ -150,5 +152,13 @@ public class ProgramFactory {
 
     public ProgramStageHandler getProgramStageHandler() {
         return programStageHandler;
+    }
+
+    public ProgramIndicatorStore getProgramIndicatorStore() {
+        return programIndicatorStore;
+    }
+
+    public ProgramIndicatorHandler getProgramIndicatorHandler() {
+        return programIndicatorHandler;
     }
 }

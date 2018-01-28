@@ -7,6 +7,8 @@ import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramFactory;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.program.ProgramIndicatorMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageMetadataAuditHandler;
@@ -39,6 +41,8 @@ public class MetadataAuditHandlerFactory {
             return new ProgramMetadataAuditHandler(programFactory);
         } else if (klass == ProgramStage.class) {
             return new ProgramStageMetadataAuditHandler(programFactory);
+        } else if (klass == ProgramIndicator.class) {
+            return new ProgramIndicatorMetadataAuditHandler(programFactory);
         } else {
             throw new IllegalArgumentException("No exists a metadata audit handler for: " + klass);
         }

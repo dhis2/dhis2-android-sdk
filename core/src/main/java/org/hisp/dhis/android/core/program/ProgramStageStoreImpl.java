@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -38,6 +37,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ import java.util.Map;
         "PMD.StdCyclomaticComplexity",
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
-public class ProgramStageStoreImpl implements ProgramStageStore {
+public class ProgramStageStoreImpl extends Store implements ProgramStageStore {
     private static final String FIELDS =
             ProgramStageModel.Columns.UID + ", " +
                     ProgramStageModel.Columns.CODE + ", " +
@@ -349,26 +349,6 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
             cursor.close();
         }
         return programStagesMap;
-    }
-
-    @Nullable
-    private String getStringFromCursor(Cursor cursor, int index) {
-        return cursor.getString(index) == null ? null : cursor.getString(index);
-    }
-
-    @Nullable
-    private Date getDateFromCursor(Cursor cursor, int index) {
-        return cursor.getString(index) == null ? null : parse(cursor.getString(index));
-    }
-
-    @Nullable
-    private Boolean getBooleanFromCursor(Cursor cursor, int index) {
-        return cursor.getString(index) == null ? null : cursor.getInt(index) > 0;
-    }
-
-    @Nullable
-    private Integer getIntegerFromCursor(Cursor cursor, int index) {
-        return cursor.getString(index) == null ? null : cursor.getInt(index);
     }
 
     @Nullable

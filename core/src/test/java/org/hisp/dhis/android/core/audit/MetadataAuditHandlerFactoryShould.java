@@ -10,7 +10,11 @@ import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramFactory;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.program.ProgramIndicatorMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramMetadataAuditHandler;
+import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.ProgramStageMetadataAuditHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityMetadataAuditHandler;
@@ -45,7 +49,9 @@ public class MetadataAuditHandlerFactoryShould {
                 {TrackedEntityMetadataAuditHandler.class, TrackedEntity.class},
                 {OptionSetMetadataAuditHandler.class, OptionSet.class},
                 {OptionMetadataAuditHandler.class, Option.class},
-                {ProgramMetadataAuditHandler.class, Program.class}
+                {ProgramMetadataAuditHandler.class, Program.class},
+                {ProgramStageMetadataAuditHandler.class, ProgramStage.class},
+                {ProgramIndicatorMetadataAuditHandler.class, ProgramIndicator.class}
         });
     }
 

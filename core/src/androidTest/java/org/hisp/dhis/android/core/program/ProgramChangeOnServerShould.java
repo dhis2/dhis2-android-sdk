@@ -92,8 +92,7 @@ public class ProgramChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(Program.class, metadataAudit);
 
-        Program createdProgram =
-                new ProgramStoreImpl(databaseAdapter()).queryByUid(metadataAudit.getUid());
+        Program createdProgram = programStore.queryByUid(metadataAudit.getUid());
 
         Program expectedProgram = metadataAudit.getValue();
 
@@ -124,8 +123,7 @@ public class ProgramChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(Program.class, metadataAudit);
 
-        Program editedProgram =
-                new ProgramStoreImpl(databaseAdapter()).queryByUid(metadataAudit.getUid());
+        Program editedProgram = programStore.queryByUid(metadataAudit.getUid());
 
         Program expectedProgram = getExpectedProgram(filename);
 

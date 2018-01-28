@@ -118,8 +118,7 @@ public class ProgramStageChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(ProgramStage.class, metadataAudit);
 
-        ProgramStage editedProgramStage =
-                new ProgramStageStoreImpl(databaseAdapter()).queryByUid(metadataAudit.getUid());
+        ProgramStage editedProgramStage = programStageStore.queryByUid(metadataAudit.getUid());
 
         ProgramStage expectedProgramStage = getExpectedProgramStage(filename);
 

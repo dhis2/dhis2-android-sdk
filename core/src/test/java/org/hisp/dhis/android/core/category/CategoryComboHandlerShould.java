@@ -17,9 +17,6 @@ import java.util.List;
 public class CategoryComboHandlerShould {
 
     @Mock
-    private CategoryOptionComboCategoryLinkStore mockComboOptionLinkStore;
-
-    @Mock
     private CategoryCategoryComboLinkStoreImpl mockComboLinkStore;
 
     @Mock
@@ -37,7 +34,7 @@ public class CategoryComboHandlerShould {
         MockitoAnnotations.initMocks(this);
 
 
-        categoryComboHandler = new CategoryComboHandler(mockComboStore, mockComboOptionLinkStore,
+        categoryComboHandler = new CategoryComboHandler(mockComboStore,
                 mockComboLinkStore, mockOptionComboHandler);
     }
 
@@ -45,12 +42,12 @@ public class CategoryComboHandlerShould {
     public void handle_a_new_category_combo() {
         CategoryCombo combo = givenACategoryCombo();
 
-        when(mockComboStore.update(any(CategoryCombo.class), any(CategoryCombo.class))).thenReturn(
+        when(mockComboStore.update(any(CategoryCombo.class))).thenReturn(
                 false);
 
         categoryComboHandler.handle(combo);
 
-        verify(mockComboStore).update(combo, combo);
+        verify(mockComboStore).update(combo);
         verify(mockComboStore).insert(combo);
 
     }
@@ -67,12 +64,12 @@ public class CategoryComboHandlerShould {
     public void handle_updated_category() {
         CategoryCombo updatedCombo = givenACategoryCombo();
 
-        when(mockComboStore.update(any(CategoryCombo.class), any(CategoryCombo.class))).thenReturn(
+        when(mockComboStore.update(any(CategoryCombo.class))).thenReturn(
                 true);
 
         categoryComboHandler.handle(updatedCombo);
 
-        verify(mockComboStore).update(updatedCombo, updatedCombo);
+        verify(mockComboStore).update(updatedCombo);
         verifyZeroInteractions(mockComboStore);
 
     }

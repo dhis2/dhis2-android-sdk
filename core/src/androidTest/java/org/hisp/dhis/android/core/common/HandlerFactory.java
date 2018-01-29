@@ -151,17 +151,18 @@ public class HandlerFactory {
 
         CategoryOptionComboStore optionComboStore = new CategoryOptionComboStoreImpl(
                 databaseAdapter);
-        CategoryOptionComboHandler optionComboHandler = new CategoryOptionComboHandler(
-                optionComboStore);
-
-        CategoryComboStore store = new CategoryComboStoreImpl(databaseAdapter);
 
         CategoryOptionComboCategoryLinkStore
                 categoryComboOptionLinkCategoryStore = new CategoryOptionComboCategoryLinkStoreImpl(
                 databaseAdapter);
 
+        CategoryOptionComboHandler optionComboHandler = new CategoryOptionComboHandler(
+                optionComboStore, categoryComboOptionLinkCategoryStore);
+
+        CategoryComboStore store = new CategoryComboStoreImpl(databaseAdapter);
+
         CategoryComboHandler categoryComboHandler = new CategoryComboHandler(store,
-                categoryComboOptionLinkCategoryStore, categoryCategoryComboLinkStore,
+                categoryCategoryComboLinkStore,
                 optionComboHandler);
 
         return categoryComboHandler;

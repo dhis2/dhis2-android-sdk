@@ -7,4 +7,6 @@ import org.hisp.dhis.android.core.common.DeletableStore;
 
 public interface CategoryOptionComboCategoryLinkStore extends DeletableStore {
     long insert(@NonNull CategoryOptionComboCategoryLinkModel element);
+
+    int removeCategoryComboOptionRelationsByCategoryOptionCombo(@NonNull String uid);
 }

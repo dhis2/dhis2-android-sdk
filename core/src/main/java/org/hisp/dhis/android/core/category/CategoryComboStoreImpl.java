@@ -131,7 +131,7 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
     }
 
     private void bindUpdate(@NonNull CategoryCombo categoryCombo) {
-        final int whereUidIndex = 7;
+        final int whereUidIndex = 8;
         bind(updateStatement, categoryCombo);
 
         sqLiteBind(updateStatement, whereUidIndex, categoryCombo.uid());
@@ -145,7 +145,6 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         sqLiteBind(sqLiteStatement, 5, categoryCombo.created());
         sqLiteBind(sqLiteStatement, 6, categoryCombo.lastUpdated());
         sqLiteBind(sqLiteStatement, 7, fromBooleanToInt(categoryCombo));
-        sqLiteBind(sqLiteStatement, 8, categoryCombo.uid());
     }
 
     @SuppressWarnings("ConstantConditions")

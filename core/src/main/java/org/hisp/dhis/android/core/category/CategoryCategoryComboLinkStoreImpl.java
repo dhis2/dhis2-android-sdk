@@ -31,9 +31,9 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
             + CategoryCategoryComboLinkModel.TABLE
             + " WHERE "+ CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO+"=?;";
 
-    private static final String QUERY_CATEGORY_COMBO_LINKS_BY_CATEGORY = "SELECT " + FIELDS + " FROM "
+    private static final String QUERY_DELETE_CATEGORY_COMBO_RELATIONS = "DELETE FROM "
             + CategoryCategoryComboLinkModel.TABLE
-            + " WHERE "+ CategoryCategoryComboLinkModel.Columns.CATEGORY+"=?;";
+            + " WHERE "+ CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO+"=?;";
 
     private static final String QUERY_ALL_CATEGORY_COMBO_LINKS = "SELECT " +
             FIELDS + " FROM " + CategoryCategoryComboLinkModel.TABLE;
@@ -86,10 +86,13 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
     }
 
     @Override
-    public List<CategoryCategoryComboLink> queryByCategoryUId(String categoryUId) {
-        Cursor cursor = databaseAdapter.query(QUERY_CATEGORY_COMBO_LINKS_BY_CATEGORY, categoryUId);
+    public int removeCategoryComboRelations(String categoryComboUId) {
 
-        return mapCategoryCategoryComboLinksFromCursor(cursor);
+        isNull(categoryComboUId);
+
+        Cursor cursor = databaseAdapter.query(QUERY_DELETE_CATEGORY_COMBO_RELATIONS, categoryComboUId);
+
+        return cursor.getCount();
     }
 
     private List<CategoryCategoryComboLink> mapCategoryCategoryComboLinksFromCursor(Cursor cursor) {

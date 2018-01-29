@@ -18,20 +18,27 @@ import java.util.List;
 
 public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
 
-    private final DatabaseAdapter databaseAdapter;
+    public final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
+
+    private static final String FIELDS = CategoryOptionComboModel.Columns.UID + "," +
+                    CategoryOptionComboModel.Columns.CODE
+                    + "," +
+                    CategoryOptionComboModel.Columns.NAME
+                    + "," +
+                    CategoryOptionComboModel.Columns.DISPLAY_NAME + "," +
+                    CategoryOptionComboModel.Columns.CREATED
+                    + "," +
+                    CategoryOptionComboModel.Columns.LAST_UPDATED
+                    + "," +
+                    CategoryOptionComboModel.Columns.CATEGORY_COMBO;
+
     private static final String INSERT_STATEMENT =
-            "INSERT INTO " + CategoryOptionComboModel.TABLE + " (" +
-                    CategoryOptionComboModel.Columns.UID + ", " +
-                    CategoryOptionComboModel.Columns.CODE + ", " +
-                    CategoryOptionComboModel.Columns.NAME + ", " +
-                    CategoryOptionComboModel.Columns.DISPLAY_NAME + ", " +
-                    CategoryOptionComboModel.Columns.CREATED + ", " +
-                    CategoryOptionComboModel.Columns.LAST_UPDATED + ", " +
-                    CategoryOptionComboModel.Columns.CATEGORY_COMBO + ") " +
+            "INSERT INTO " + CategoryOptionComboModel.TABLE + " ("
+                    +FIELDS+") " +
                     "VALUES(?, ?, ?, ?, ?, ?, ?);";
 
     private static final String EQUAL_QUESTION_MARK = " =?";
@@ -46,25 +53,20 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
                     CategoryOptionComboModel.Columns.DISPLAY_NAME + EQUAL_QUESTION_MARK + ", "
                     +
                     CategoryOptionComboModel.Columns.CREATED + EQUAL_QUESTION_MARK + ", " +
+                    CategoryOptionComboModel.Columns.LAST_UPDATED + EQUAL_QUESTION_MARK + ", " +
                     CategoryOptionComboModel.Columns.CATEGORY_COMBO + EQUAL_QUESTION_MARK
                     + " WHERE " +
                     CategoryOptionComboModel.Columns.UID + EQUAL_QUESTION_MARK + ";";
 
-    private static final String FIELDS =
-            CategoryOptionComboModel.TABLE + "." + CategoryOptionComboModel.Columns.UID + "," +
-                    CategoryOptionComboModel.TABLE + "." + CategoryOptionComboModel.Columns.CODE
-                    + "," +
-                    CategoryOptionComboModel.TABLE + "." + CategoryOptionComboModel.Columns.NAME
-                    + "," +
-                    CategoryOptionComboModel.TABLE + "."
-                    + CategoryOptionComboModel.Columns.DISPLAY_NAME + "," +
-                    CategoryOptionComboModel.TABLE + "." + CategoryOptionComboModel.Columns.CREATED
-                    + "," +
-                    CategoryOptionComboModel.TABLE + "."
-                    + CategoryOptionComboModel.Columns.LAST_UPDATED;
-
     private static final String QUERY_ALL_CATEGORY_OPTION_COMBOS = "SELECT " +
             FIELDS + " FROM " + CategoryOptionComboModel.TABLE;
+
+    private static final String QUERY_CATEGORY_OPTION_COMBOS_BY_CATEGORY_COMBO_UID = "SELECT " +
+            FIELDS + " FROM " + CategoryOptionComboModel.TABLE +
+            " WHERE "+  CategoryOptionComboModel.Columns.CATEGORY_COMBO +"=?;";
+
+    private static final String REMOVE_CATEGORY_OPTION_RELATIONS = "DELETE FROM "
+            + CategoryOptionComboModel.TABLE + " WHERE "+ CategoryOptionComboModel.Columns.CATEGORY_COMBO + "=?;";
 
     public CategoryOptionComboStoreImpl(DatabaseAdapter databaseAdapter) {
 
@@ -95,12 +97,11 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
     }
 
     @Override
-    public boolean update(@NonNull CategoryOptionCombo oldEntity,
-            @NonNull CategoryOptionCombo newEntity) {
+    public boolean update(@NonNull CategoryOptionCombo entity) {
 
-        validateForUpdate(oldEntity, newEntity);
+        validate(entity);
 
-        bindUpdate(oldEntity, newEntity);
+        bindUpdate(entity);
 
         return execute(updateStatement);
     }
@@ -115,12 +116,11 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
         sqLiteBind(deleteStatement, uidIndex, optionCombo.uid());
     }
 
-    private void bindUpdate(@NonNull CategoryOptionCombo oldOptionCombo,
-            @NonNull CategoryOptionCombo newOptionCombo) {
-        final int whereUidIndex = 7;
-        bind(updateStatement, newOptionCombo);
+    private void bindUpdate(@NonNull CategoryOptionCombo entity) {
+        final int whereUidIndex = 8;
+        bind(updateStatement, entity);
 
-        sqLiteBind(updateStatement, whereUidIndex, oldOptionCombo.uid());
+        sqLiteBind(updateStatement, whereUidIndex, entity.uid());
     }
 
     private void bind(SQLiteStatement sqLiteStatement, @NonNull CategoryOptionCombo newOptionCombo) {
@@ -158,15 +158,23 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
         return lastId;
     }
 
-    private void validateForUpdate(@NonNull CategoryOptionCombo oldEntity,
-            @NonNull CategoryOptionCombo newEntity) {
-        isNull(oldEntity.uid());
-        isNull(newEntity.uid());
-    }
-
     @Override
     public List<CategoryOptionCombo> queryAll() {
         Cursor cursor = databaseAdapter.query(QUERY_ALL_CATEGORY_OPTION_COMBOS);
+
+        return mapCategoryOptionCombosFromCursor(cursor);
+    }
+
+    @Override
+    public int removeCategoryComboRelations(String categoryComboUid){
+        Cursor cursor = databaseAdapter.query(REMOVE_CATEGORY_OPTION_RELATIONS, categoryComboUid);
+
+        return cursor.getCount();
+    }
+
+    @Override
+    public List<CategoryOptionCombo> queryByCategoryComboUId(String categoryComboUid) {
+        Cursor cursor = databaseAdapter.query(QUERY_CATEGORY_OPTION_COMBOS_BY_CATEGORY_COMBO_UID, categoryComboUid);
 
         return mapCategoryOptionCombosFromCursor(cursor);
     }
@@ -211,6 +219,10 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(CategoryOptionComboModel.TABLE);
+    }
+
+    public  DatabaseAdapter getAdapter(){
+        return databaseAdapter;
     }
 
 }

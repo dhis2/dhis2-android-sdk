@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.core.category;
 
-import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -95,9 +94,9 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
                 fail(throwable.getMessage());
             }
         });
-        CategoryCombo categoryCombo = (CategoryCombo) metadataAudit.getValue();
+        CategoryCombo categoryCombo = metadataAudit.getValue();
         metadataAuditListener.onMetadataChanged(CategoryCombo.class, metadataAudit);
-        assertTrue(getCategoryCombo(metadataAudit.getUid()).equals(categoryCombo));
+        assertThat(getOnlyCategoryCombo(getCategoryCombo(metadataAudit.getUid())), is(getOnlyCategoryCombo(categoryCombo)));
     }
 
     @Test
@@ -126,7 +125,21 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(CategoryCombo.class, metadataAudit);
 
-        assertThat(getCategoryCombo(metadataAudit.getUid()), is(getCategoryComboFromJson(filename)));
+        CategoryCombo categoryComboPersistedWithoutDependencies = getOnlyCategoryCombo(getCategoryCombo(metadataAudit.getUid()));
+
+        assertThat(categoryComboPersistedWithoutDependencies,
+                is(getOnlyCategoryCombo(getCategoryComboFromJson(filename))));
+
+        CategoryOptionCombo categoryOptionComboWithoutDependencies =
+                getOnlyCategoryOptionCombo(getCategoryComboFromJson(filename).categoryOptionCombos().get(0));
+        CategoryCombo categoryComboPersisted = getCategoryCombo(metadataAudit.getUid());
+
+        CategoryOptionCombo categoryOptionComboPersistedWithoutDependencies =
+                getOnlyCategoryOptionCombo(categoryComboPersisted.categoryOptionCombos().get(0));
+
+        assertThat(categoryOptionComboPersistedWithoutDependencies,
+                is(categoryOptionComboWithoutDependencies));
+
     }
 
     @Test
@@ -166,6 +179,8 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
     }
 
     private void givenAExistedCategoryPreviously() throws IOException {
+        List <CategoryOption> categoryOptions = new ArrayList<>();
+        categoryOptions.add(CategoryOption.create("as6ygGvUGNg","code","name","displayName", null, null));
         Category category = Category.builder()
                 .uid("gtuVl6NbXQV")
                 .code("COMMODITIES")
@@ -173,6 +188,7 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
                 .created(StoreUtils.parse("2014-03-02T02:14:34.600"))
                 .lastUpdated(StoreUtils.parse("2014-03-05T04:10:47.764"))
                 .displayName("Commodities")
+                .categoryOptions(categoryOptions)
                 .build();
 
       categoryHandler.handle(category);
@@ -194,8 +210,14 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
 
     private Category getCategory(String uid) {
         Category category = new CategoryStoreImpl(databaseAdapter()).queryByUid(uid);
+        CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
+        List<String>categoryOptionUidList = new CategoryCategoryOptionLinkStoreImpl(databaseAdapter()).queryCategoryOptionUidListFromCategoryUid(uid);
+        List<CategoryOption> categoryOptions = new ArrayList<>();
+        for (String categoryOptionUid : categoryOptionUidList) {
+            categoryOptions.add(categoryOptionStore.queryByUid(categoryOptionUid));
+        }
+        return category.toBuilder().categoryOptions(categoryOptions).build();
 
-        return category;
     }
 
     private CategoryCombo getCategoryCombo(String uid) {
@@ -208,7 +230,13 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
         for(CategoryCategoryComboLink categoryCategoryComboLink: categoryOptionUIdList){
             categoryList.add(getCategory(categoryCategoryComboLink.category()));
         }
-        return categoryCombo.toBuilder().categories(categoryList).build();
+
+        List<CategoryOptionCombo> categoryOptionCombos = new CategoryOptionComboStoreImpl(databaseAdapter()).queryByCategoryComboUId(uid);
+        if(categoryOptionCombos.size()==0){
+            categoryOptionCombos = null;
+        }
+
+        return categoryCombo.toBuilder().categories(categoryList).categoryOptionCombos(categoryOptionCombos).build();
     }
 
     private CategoryCombo getCategoryComboFromJson(String filename) throws IOException {
@@ -218,4 +246,15 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
         return categoryCombo.toBuilder().categories(categoryList).build();
     }
 
+
+    private CategoryCombo getOnlyCategoryCombo(CategoryCombo categoryComboFromJson) {
+        return categoryComboFromJson.toBuilder().categories(null).categoryOptionCombos(null).build();
+    }
+
+    private CategoryOptionCombo getOnlyCategoryOptionCombo(CategoryOptionCombo categoryOptionComboFromJson) {
+        return CategoryOptionCombo.create(categoryOptionComboFromJson.uid(),categoryOptionComboFromJson.code(),
+                categoryOptionComboFromJson.name(), categoryOptionComboFromJson.displayName(),
+                categoryOptionComboFromJson.created(), categoryOptionComboFromJson.lastUpdated(),
+                null, null);
+    }
 }

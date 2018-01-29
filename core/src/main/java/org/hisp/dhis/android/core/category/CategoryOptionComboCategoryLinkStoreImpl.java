@@ -4,6 +4,7 @@ package org.hisp.dhis.android.core.category;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
@@ -18,9 +19,10 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
                     CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + ", " +
                     CategoryOptionComboCategoryLinkModel.Columns.CATEGORY + ") " +
                     "VALUES(?, ?);";
+    private static final String REMOVE_CATEGORY_OPTION_RELATIONS = "DELETE FROM "
+            + CategoryOptionComboCategoryLinkModel.TABLE + " WHERE "+ CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + "=?;";
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
-
 
     public CategoryOptionComboCategoryLinkStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
@@ -49,7 +51,7 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
     }
 
     private int executeInsert() {
-        int lastId = databaseAdapter.executeUpdateDelete(CategoryOptionComboCategoryLinkModel.TABLE,
+        int lastId = (int) databaseAdapter.executeInsert(CategoryOptionComboCategoryLinkModel.TABLE,
                 insertStatement);
         insertStatement.clearBindings();
 
@@ -59,6 +61,13 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
     @Override
     public int delete() {
         return databaseAdapter.delete(CategoryOptionComboCategoryLinkModel.TABLE);
+    }
+
+    @Override
+    public int removeCategoryComboOptionRelationsByCategoryOptionCombo(String categoryOptionComboUid){
+        Cursor cursor = databaseAdapter.query(REMOVE_CATEGORY_OPTION_RELATIONS, categoryOptionComboUid);
+
+        return cursor.getCount();
     }
 }
 

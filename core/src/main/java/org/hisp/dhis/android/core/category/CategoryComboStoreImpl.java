@@ -25,27 +25,24 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
     protected final SQLiteStatement updateStatement;
     protected final SQLiteStatement deleteStatement;
 
+    private static final String FIELDS = CategoryComboModel.Columns.UID + ", " +
+            CategoryComboModel.Columns.CODE + ", " +
+            CategoryComboModel.Columns.NAME + ", " +
+            CategoryComboModel.Columns.DISPLAY_NAME + ", " +
+            CategoryComboModel.Columns.CREATED + ", " +
+            CategoryComboModel.Columns.LAST_UPDATED + ", " +
+            CategoryComboModel.Columns.IS_DEFAULT;
+
     private static final String QUERY_BY_UID_STATEMENT = "SELECT " +
-            CategoryComboModel.Columns.UID + "," +
-            CategoryComboModel.Columns.CODE + "," +
-            CategoryComboModel.Columns.NAME + "," +
-            CategoryComboModel.Columns.DISPLAY_NAME + "," +
-            CategoryComboModel.Columns.CREATED + "," +
-            CategoryComboModel.Columns.LAST_UPDATED + "," +
-            CategoryComboModel.Columns.IS_DEFAULT+ " " +
-            "  FROM " + CategoryComboModel.TABLE +
+            FIELDS +
+            " FROM " + CategoryComboModel.TABLE +
             " WHERE "+CategoryComboModel.Columns.UID+" =?;";
 
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryComboModel.TABLE + " (" +
-                    CategoryComboModel.Columns.UID + ", " +
-                    CategoryComboModel.Columns.CODE + ", " +
-                    CategoryComboModel.Columns.NAME + ", " +
-                    CategoryComboModel.Columns.DISPLAY_NAME + ", " +
-                    CategoryComboModel.Columns.CREATED + ", " +
-                    CategoryComboModel.Columns.LAST_UPDATED + ", " +
-                    CategoryComboModel.Columns.IS_DEFAULT + ") " +
+                    FIELDS + ") " +
                     "VALUES(?, ?, ?, ?, ?, ?, ?);";
+
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + CategoryComboModel.TABLE +
             " WHERE " + CategoryComboModel.Columns.UID + " =?;";
@@ -58,16 +55,9 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
             CategoryComboModel.Columns.NAME + " " + EQUAL_QUESTION_MARK + " " +
             CategoryComboModel.Columns.DISPLAY_NAME + " " + EQUAL_QUESTION_MARK + " " +
             CategoryComboModel.Columns.CREATED + " " + EQUAL_QUESTION_MARK + " " +
+            CategoryComboModel.Columns.LAST_UPDATED + " " + EQUAL_QUESTION_MARK + " " +
             CategoryComboModel.Columns.IS_DEFAULT + " =? WHERE " +
             CategoryComboModel.Columns.UID + " =?;";
-
-    private static final String FIELDS = CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.UID + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.CODE + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.NAME + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.DISPLAY_NAME + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.CREATED + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.LAST_UPDATED + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.IS_DEFAULT;
 
     private static final String QUERY_ALL_CATEGORY_COMBOS = "SELECT " +
             FIELDS + " FROM " + CategoryComboModel.TABLE;
@@ -96,7 +86,7 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
 
         bindForDelete(combo);
 
-        return execute(deleteStatement);
+        return executeDelete();
     }
 
     @Override
@@ -106,12 +96,19 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
 
         bindUpdate(categoryCombo);
 
-        return execute(updateStatement);
+        return executeUpdate();
     }
 
-    private boolean execute(SQLiteStatement statement) {
-        int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, statement);
-        statement.clearBindings();
+    private boolean executeDelete() {
+        int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+
+        return wasExecuted(rowsAffected);
+    }
+
+    private boolean executeUpdate() {
+        int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, updateStatement);
+        updateStatement.clearBindings();
 
         return wasExecuted(rowsAffected);
     }
@@ -148,6 +145,7 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         sqLiteBind(sqLiteStatement, 5, categoryCombo.created());
         sqLiteBind(sqLiteStatement, 6, categoryCombo.lastUpdated());
         sqLiteBind(sqLiteStatement, 7, fromBooleanToInt(categoryCombo));
+        sqLiteBind(sqLiteStatement, 8, categoryCombo.uid());
     }
 
     @SuppressWarnings("ConstantConditions")

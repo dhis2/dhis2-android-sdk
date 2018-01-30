@@ -27,6 +27,15 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,15 +46,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class ProgramRuleHandlerShould {
@@ -121,7 +121,8 @@ public class ProgramRuleHandlerShould {
                 any(Date.class), any(Date.class), anyInt(), anyString(), anyString(), anyString());
 
         // verify that program rule action handler is called
-        verify(programRuleActionHandler, times(1)).handleProgramRuleActions(anyListOf(ProgramRuleAction.class));
+        verify(programRuleActionHandler, never()).handleProgramRuleActions(
+                anyListOf(ProgramRuleAction.class));
     }
 
     @Test

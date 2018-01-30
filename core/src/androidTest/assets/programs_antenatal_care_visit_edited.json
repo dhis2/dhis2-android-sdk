@@ -172,10 +172,10 @@
         {
           "lastUpdated": "2017-05-23T00:29:24.535",
           "created": "2016-04-12T15:58:54.797",
-          "name": "Show error for high hemoglobin value",
+          "name": "Show error for high hemoglobin value edited",
           "id": "dahuKlP7jR2",
           "condition": "#{hemoglobin} > 99",
-          "displayName": "Show error for high hemoglobin value",
+          "displayName": "Show error for high hemoglobin value edited",
           "program": {
             "id": "lxAQ7Zs9VYR"
           },

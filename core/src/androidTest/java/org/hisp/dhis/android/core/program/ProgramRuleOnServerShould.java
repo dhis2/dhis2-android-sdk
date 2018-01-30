@@ -31,12 +31,12 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 
-public class ProgramIndicatorChangeOnServerShould extends AbsStoreTestCase {
+public class ProgramRuleOnServerShould extends AbsStoreTestCase {
 
     @Mock
     private MetadataAuditHandlerFactory metadataAuditHandlerFactory;
 
-    private ProgramIndicatorStore programIndicatorStore;
+    private ProgramRuleStore programRuleStore;
     private MetadataAuditListener metadataAuditListener;
 
     private Dhis2MockServer dhis2MockServer;
@@ -56,11 +56,11 @@ public class ProgramIndicatorChangeOnServerShould extends AbsStoreTestCase {
                 resourceHandler);
 
         when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
-                new ProgramIndicatorMetadataAuditHandler(
+                new ProgramRuleMetadataAuditHandler(
                         new ProgramFactory(d2.retrofit(), databaseAdapter(),
                                 optionSetFactory.getOptionSetHandler(), resourceHandler)));
 
-        programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter());
+        programRuleStore = new ProgramRuleStoreImpl(databaseAdapter());
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
     }
 
@@ -73,11 +73,11 @@ public class ProgramIndicatorChangeOnServerShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void create_program_indicator_in_database_if_audit_type_is_create() throws Exception {
+    public void create_program_rule_in_database_if_audit_type_is_create() throws Exception {
         givenAMetadataInDatabase();
 
-        MetadataAudit<ProgramIndicator> metadataAudit =
-                givenAMetadataAudit("audit/programIndicator_create.json");
+        MetadataAudit<ProgramRule> metadataAudit =
+                givenAMetadataAudit("audit/programRule_create.json");
 
         metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
             @Override
@@ -90,24 +90,23 @@ public class ProgramIndicatorChangeOnServerShould extends AbsStoreTestCase {
             }
         });
 
-        metadataAuditListener.onMetadataChanged(ProgramIndicator.class, metadataAudit);
+        metadataAuditListener.onMetadataChanged(ProgramRule.class, metadataAudit);
 
-        ProgramIndicator createdProgramIndicator =
-                programIndicatorStore.queryByUid(metadataAudit.getUid());
+        ProgramRule createdProgramRule = programRuleStore.queryByUid(metadataAudit.getUid());
 
-        ProgramIndicator expectedProgramIndicator = metadataAudit.getValue();
+        ProgramRule expectedProgramRule = metadataAudit.getValue();
 
-        verifyProgramIndicator(createdProgramIndicator, expectedProgramIndicator);
+        verifyProgramRule(createdProgramRule, expectedProgramRule);
     }
 
     @Test
-    public void update_program_indicator_if_audit_type_is_update() throws Exception {
+    public void update_program_rule_if_audit_type_is_update() throws Exception {
         givenAMetadataInDatabase();
 
-        String filename = "programs.json";
+        String filename = "programs_antenatal_care_visit_edited.json";
 
-        MetadataAudit<ProgramIndicator> metadataAudit =
-                givenAMetadataAudit("audit/programIndicator_update.json");
+        MetadataAudit<ProgramRule> metadataAudit =
+                givenAMetadataAudit("audit/programRule_update.json");
 
         dhis2MockServer.enqueueMockResponse(filename);
 
@@ -122,22 +121,21 @@ public class ProgramIndicatorChangeOnServerShould extends AbsStoreTestCase {
             }
         });
 
-        metadataAuditListener.onMetadataChanged(ProgramIndicator.class, metadataAudit);
+        metadataAuditListener.onMetadataChanged(ProgramRule.class, metadataAudit);
 
-        ProgramIndicator editedProgramIndicator =
-                programIndicatorStore.queryByUid(metadataAudit.getUid());
+        ProgramRule editedProgramRule = programRuleStore.queryByUid(metadataAudit.getUid());
 
-        ProgramIndicator expectedProgramIndicator = getExpectedProgramIndicator(filename);
+        ProgramRule expectedProgramRule = getExpectedProgramRule(filename);
 
-        verifyProgramIndicator(editedProgramIndicator, expectedProgramIndicator);
+        verifyProgramRule(expectedProgramRule, editedProgramRule);
     }
 
     @Test
-    public void delete_program_indicator_in_database_if_audit_type_is_delete() throws Exception {
+    public void delete_program_rule_in_database_if_audit_type_is_delete() throws Exception {
         givenAMetadataInDatabase();
 
-        MetadataAudit<ProgramIndicator> metadataAudit =
-                givenAMetadataAudit("audit/program_delete.json");
+        MetadataAudit<ProgramRule> metadataAudit =
+                givenAMetadataAudit("audit/programRule_delete.json");
 
         metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
             @Override
@@ -150,20 +148,19 @@ public class ProgramIndicatorChangeOnServerShould extends AbsStoreTestCase {
             }
         });
 
-        metadataAuditListener.onMetadataChanged(ProgramIndicator.class, metadataAudit);
+        metadataAuditListener.onMetadataChanged(ProgramRule.class, metadataAudit);
 
-        assertThat(programIndicatorStore.queryByUid(metadataAudit.getUid()), is(nullValue()));
+        assertThat(programRuleStore.queryByUid(metadataAudit.getUid()), is(nullValue()));
     }
 
-    private MetadataAudit<ProgramIndicator> givenAMetadataAudit(String fileName)
-            throws IOException {
+    private MetadataAudit<ProgramRule> givenAMetadataAudit(String fileName) throws IOException {
         AssetsFileReader assetsFileReader = new AssetsFileReader();
 
         String json = assetsFileReader.getStringFromFile(fileName);
 
         GenericClassParser parser = new GenericClassParser();
 
-        return parser.parse(json, MetadataAudit.class, ProgramIndicator.class);
+        return parser.parse(json, MetadataAudit.class, ProgramRule.class);
     }
 
     private void givenAMetadataInDatabase() throws Exception {
@@ -178,29 +175,30 @@ public class ProgramIndicatorChangeOnServerShould extends AbsStoreTestCase {
         d2.syncMetaData().call();
     }
 
-    private ProgramIndicator getExpectedProgramIndicator(String fileName) throws IOException {
+    private ProgramRule getExpectedProgramRule(String fileName) throws IOException {
         String json = new AssetsFileReader().getStringFromFile(fileName);
 
         GenericClassParser parser = new GenericClassParser();
 
         Payload<Program> payloadExpected = parser.parse(json, Payload.class, Program.class);
 
-        return payloadExpected.items().get(1).programIndicators().get(0);
+        return payloadExpected.items().get(0).programRules().get(0);
     }
 
-    private void verifyProgramIndicator(
-            ProgramIndicator createdProgramIndicator, ProgramIndicator expectedProgramIndicator) {
+    private void verifyProgramRule(ProgramRule createdProgramRule,
+            ProgramRule expectedProgramRule) {
         //compare without children because there are other tests (call, handler)
         //that verify the tree is saved in database
-        assertThat(removeChildrenFromProgramIndicator(createdProgramIndicator),
-                is(removeChildrenFromProgramIndicator(expectedProgramIndicator)));
+        assertThat(removeChildrenFromProgramRule(createdProgramRule),
+                is(removeChildrenFromProgramRule(expectedProgramRule)));
     }
 
-    private ProgramIndicator removeChildrenFromProgramIndicator(ProgramIndicator programIndicator) {
-        programIndicator = programIndicator.toBuilder()
+    private ProgramRule removeChildrenFromProgramRule(ProgramRule programRule) {
+        programRule = programRule.toBuilder()
                 .program(null)
-                .build();
+                .programRuleActions(null)
+                .programStage(null).build();
 
-        return programIndicator;
+        return programRule;
     }
 }

@@ -30,6 +30,8 @@ public class ProgramFactory {
     private final ProgramStageHandler programStageHandler;
     private final ProgramIndicatorStore programIndicatorStore;
     private final ProgramIndicatorHandler programIndicatorHandler;
+    private final ProgramRuleStore programRuleStore;
+    private final ProgramRuleHandler programRuleHandler;
 
     private final List<DeletableStore> deletableStores;
 
@@ -68,7 +70,7 @@ public class ProgramFactory {
         RelationshipTypeStore relationshipTypeStore = new RelationshipTypeStoreImpl(
                 databaseAdapter);
 
-        ProgramRuleStore programRuleStore = new ProgramRuleStoreImpl(databaseAdapter);
+        programRuleStore = new ProgramRuleStoreImpl(databaseAdapter);
 
         ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore =
                 new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
@@ -97,7 +99,7 @@ public class ProgramFactory {
         ProgramRuleActionHandler programRuleActionHandler = new ProgramRuleActionHandler(
                 programRuleActionStore);
 
-        ProgramRuleHandler programRuleHandler = new ProgramRuleHandler(programRuleStore,
+        programRuleHandler = new ProgramRuleHandler(programRuleStore,
                 programRuleActionHandler);
 
         TrackedEntityAttributeHandler trackedEntityAttributeHandler =
@@ -160,5 +162,13 @@ public class ProgramFactory {
 
     public ProgramIndicatorHandler getProgramIndicatorHandler() {
         return programIndicatorHandler;
+    }
+
+    public ProgramRuleStore getProgramRuleStore() {
+        return programRuleStore;
+    }
+
+    public ProgramRuleHandler getProgramRuleHandler() {
+        return programRuleHandler;
     }
 }

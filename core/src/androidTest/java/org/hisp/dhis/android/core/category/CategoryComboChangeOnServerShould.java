@@ -79,7 +79,7 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
     @Test
     @MediumTest
     public void create_category_combo_in_database_if_audit_type_is_create() throws Exception {
-        givenAExistedCategoryPreviously();
+        givenACategoryComboDependenciesPreviously();
 
         MetadataAudit<CategoryCombo> metadataAudit =
                 givenAMetadataAudit("audit/category_combo_create.json");
@@ -94,8 +94,10 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
                 fail(throwable.getMessage());
             }
         });
-        CategoryCombo categoryCombo = metadataAudit.getValue();
+
         metadataAuditListener.onMetadataChanged(CategoryCombo.class, metadataAudit);
+
+        CategoryCombo categoryCombo = metadataAudit.getValue();
         assertThat(getOnlyCategoryCombo(getCategoryCombo(metadataAudit.getUid())), is(getOnlyCategoryCombo(categoryCombo)));
     }
 
@@ -103,7 +105,6 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
     @MediumTest
     public void update_category_combo_if_audit_type_is_update() throws Exception {
         String filename = "audit/category_combos.json";
-        givenAExistedCategoryPreviously();
 
         givenAExistedCategoryComboPreviously();
 
@@ -125,27 +126,13 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(CategoryCombo.class, metadataAudit);
 
-        CategoryCombo categoryComboPersistedWithoutDependencies = getOnlyCategoryCombo(getCategoryCombo(metadataAudit.getUid()));
-
-        assertThat(categoryComboPersistedWithoutDependencies,
-                is(getOnlyCategoryCombo(getCategoryComboFromJson(filename))));
-
-        CategoryOptionCombo categoryOptionComboWithoutDependencies =
-                getOnlyCategoryOptionCombo(getCategoryComboFromJson(filename).categoryOptionCombos().get(0));
-        CategoryCombo categoryComboPersisted = getCategoryCombo(metadataAudit.getUid());
-
-        CategoryOptionCombo categoryOptionComboPersistedWithoutDependencies =
-                getOnlyCategoryOptionCombo(categoryComboPersisted.categoryOptionCombos().get(0));
-
-        assertThat(categoryOptionComboPersistedWithoutDependencies,
-                is(categoryOptionComboWithoutDependencies));
+        assertUpdate(filename, metadataAudit);
 
     }
 
     @Test
     @MediumTest
     public void delete_category_combo_in_database_if_audit_type_is_delete() throws Exception {
-        givenAExistedCategoryPreviously();
 
         givenAExistedCategoryComboPreviously();
 
@@ -178,9 +165,9 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
         return parser.parse(json, MetadataAudit.class, CategoryCombo.class);
     }
 
-    private void givenAExistedCategoryPreviously() throws IOException {
+    private void givenACategoryComboDependenciesPreviously() throws IOException {
         List <CategoryOption> categoryOptions = new ArrayList<>();
-        categoryOptions.add(CategoryOption.create("as6ygGvUGNg","code","name","displayName", null, null));
+        categoryOptions.add(CategoryOption.builder().uid("as6ygGvUGNg").build());
         Category category = Category.builder()
                 .uid("gtuVl6NbXQV")
                 .code("COMMODITIES")
@@ -195,6 +182,9 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
     }
 
     private void givenAExistedCategoryComboPreviously() throws IOException {
+
+        givenACategoryComboDependenciesPreviously();
+
         MetadataAudit<CategoryCombo> metadataAudit =
                 givenAMetadataAudit("audit/category_combo_create.json");
         metadataAuditListener.onMetadataChanged(CategoryCombo.class, metadataAudit);
@@ -246,7 +236,6 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
         return categoryCombo.toBuilder().categories(categoryList).build();
     }
 
-
     private CategoryCombo getOnlyCategoryCombo(CategoryCombo categoryComboFromJson) {
         return categoryComboFromJson.toBuilder().categories(null).categoryOptionCombos(null).build();
     }
@@ -256,5 +245,25 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
                 categoryOptionComboFromJson.name(), categoryOptionComboFromJson.displayName(),
                 categoryOptionComboFromJson.created(), categoryOptionComboFromJson.lastUpdated(),
                 null, null);
+    }
+
+    private void assertUpdate(String filename, MetadataAudit<CategoryCombo> metadataAudit)
+            throws IOException {
+        CategoryCombo categoryComboPersistedWithoutDependencies = getOnlyCategoryCombo(getCategoryCombo(metadataAudit.getUid()));
+
+        //verify updated Category Combo
+        assertThat(categoryComboPersistedWithoutDependencies,
+                is(getOnlyCategoryCombo(getCategoryComboFromJson(filename))));
+
+        CategoryOptionCombo categoryOptionComboWithoutDependencies =
+                getOnlyCategoryOptionCombo(getCategoryComboFromJson(filename).categoryOptionCombos().get(0));
+        CategoryCombo categoryComboPersisted = getCategoryCombo(metadataAudit.getUid());
+
+        CategoryOptionCombo categoryOptionComboPersistedWithoutDependencies =
+                getOnlyCategoryOptionCombo(categoryComboPersisted.categoryOptionCombos().get(0));
+
+        //verify updated Category Option Combo
+        assertThat(categoryOptionComboPersistedWithoutDependencies,
+                is(categoryOptionComboWithoutDependencies));
     }
 }

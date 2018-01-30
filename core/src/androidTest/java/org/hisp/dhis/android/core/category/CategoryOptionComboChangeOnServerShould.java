@@ -3,7 +3,6 @@ package org.hisp.dhis.android.core.category;
 import static junit.framework.Assert.fail;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -153,7 +152,7 @@ public class CategoryOptionComboChangeOnServerShould extends AbsStoreTestCase {
 
     private void givenAExistedCategoryPreviously() throws IOException {
         List<CategoryOption> categoryOptions = new ArrayList<>();
-        categoryOptions.add(CategoryOption.create("as6ygGvUGNg", null, null, null, null, null));
+        categoryOptions.add(CategoryOption.builder().uid("as6ygGvUGNg").build());
         Category category = Category.builder()
                 .uid("gtuVl6NbXQV")
                 .code("COMMODITIES")
@@ -168,12 +167,12 @@ public class CategoryOptionComboChangeOnServerShould extends AbsStoreTestCase {
         List<Category> categoryList = new ArrayList<>();
         categoryList.add(category);
         List<CategoryOptionCombo> categoryOptionCombos = new ArrayList<>();
-        CategoryCombo categoryCombo = CategoryCombo.create("SO8aY5wDjRJ", null, null, null,
-                null, null, false, null, null);
-        categoryOptionCombos.add(CategoryOptionCombo.create("bRowv6yZOF2",
-                "C", "", "", null, null, categoryCombo, categoryOptions));
+        CategoryCombo categoryCombo = CategoryCombo.builder().uid("SO8aY5wDjRJ").build();
+        categoryOptionCombos.add(CategoryOptionCombo.builder().uid("bRowv6yZOF2")
+                .categoryCombo(categoryCombo).categoryOptions(categoryOptions).build());
         categoryCombo = categoryCombo.toBuilder().categoryOptionCombos(
                 categoryOptionCombos).build();
+
         categoryComboFactory.getCategoryComboHandler().handle(categoryCombo);
     }
 

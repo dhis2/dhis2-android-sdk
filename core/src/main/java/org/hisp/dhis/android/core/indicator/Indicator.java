@@ -49,8 +49,6 @@ public abstract class Indicator extends BaseNameableObject {
     private final static String DENOMINATOR = "denominator";
     private final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
     private final static String URL = "url";
-    private final static String AGGREGATED_EXPORT_CATEGORY_OPTION_COMBO = "aggregatedExportCategoryOptionCombo";
-    private final static String AGGREGATED_EXPORT_ATTRIBUTE_OPTION_COMBO = "aggregatedExportAttributeOptionCombo";
 
     public static final Field<Indicator, String> uid = Field.create(UID);
     public static final Field<Indicator, String> code = Field.create(CODE);
@@ -65,7 +63,7 @@ public abstract class Indicator extends BaseNameableObject {
     public static final Field<Indicator, Boolean> deleted = Field.create(DELETED);
 
     public static final Field<Indicator, Integer> annualized = Field.create(ANNUALIZED);
-   public static final Field<Indicator, String> indicatorType = Field.create(INDICATOR_TYPE);
+    public static final Field<Indicator, String> indicatorType = Field.create(INDICATOR_TYPE);
     public static final Field<Indicator, String> numerator = Field.create(NUMERATOR);
     public static final Field<Indicator, String> numeratorDescription = Field.create(NUMERATOR_DESCRIPTION);
     public static final Field<Indicator, String> denominator = Field.create(DENOMINATOR);

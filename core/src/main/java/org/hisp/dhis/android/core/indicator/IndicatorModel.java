@@ -50,13 +50,13 @@ public abstract class IndicatorModel extends BaseNameableObjectModel implements 
     public static final String TABLE = "Indicator";
 
     public static class Columns extends BaseNameableObjectModel.Columns {
-        private final static String ANNUALIZED = "annualized";
-        private final static String INDICATOR_TYPE = "indicatorType";
-        private final static String NUMERATOR = "numerator";
-        private final static String NUMERATOR_DESCRIPTION = "numeratorDescription";
-        private final static String DENOMINATOR = "denominator";
-        private final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
-        private final static String URL = "url";
+        final static String ANNUALIZED = "annualized";
+        final static String INDICATOR_TYPE = "indicatorType";
+        final static String NUMERATOR = "numerator";
+        final static String NUMERATOR_DESCRIPTION = "numeratorDescription";
+        final static String DENOMINATOR = "denominator";
+        final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
+        final static String URL = "url";
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(),
@@ -90,11 +90,11 @@ public abstract class IndicatorModel extends BaseNameableObjectModel implements 
                     .description(indicator.description())
                     .displayDescription(indicator.displayDescription())
                     .annualized(indicator.annualized())
+                    .indicatorType(indicator.indicatorTypeUid())
                     .numerator(indicator.numerator())
                     .numeratorDescription(indicator.numeratorDescription())
                     .denominator(indicator.denominator())
                     .denominatorDescription(indicator.denominatorDescription())
-                    .url(indicator.url())
                     .url(indicator.url())
                     .build();
         }
@@ -107,6 +107,10 @@ public abstract class IndicatorModel extends BaseNameableObjectModel implements 
     @Nullable
     @ColumnName(Columns.ANNUALIZED)
     public abstract Boolean annualized();
+
+    @Nullable
+    @ColumnName(Columns.INDICATOR_TYPE)
+    public abstract String indicatorType();
 
     @Nullable
     @ColumnName(Columns.NUMERATOR)
@@ -132,16 +136,19 @@ public abstract class IndicatorModel extends BaseNameableObjectModel implements 
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         super.bindToStatement(sqLiteStatement);
         sqLiteBind(sqLiteStatement, 11, annualized());
-        sqLiteBind(sqLiteStatement, 12, numerator());
-        sqLiteBind(sqLiteStatement, 13, numeratorDescription());
-        sqLiteBind(sqLiteStatement, 14, denominator());
-        sqLiteBind(sqLiteStatement, 15, denominatorDescription());
-        sqLiteBind(sqLiteStatement, 16, url());
+        sqLiteBind(sqLiteStatement, 12, indicatorType());
+        sqLiteBind(sqLiteStatement, 13, numerator());
+        sqLiteBind(sqLiteStatement, 14, numeratorDescription());
+        sqLiteBind(sqLiteStatement, 15, denominator());
+        sqLiteBind(sqLiteStatement, 16, denominatorDescription());
+        sqLiteBind(sqLiteStatement, 17, url());
     }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
         public abstract Builder annualized(Boolean annualized);
+
+        public abstract Builder indicatorType(String indicatorType);
 
         public abstract Builder numerator(String numerator);
 

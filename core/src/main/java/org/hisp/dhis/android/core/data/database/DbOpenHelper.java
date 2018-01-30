@@ -961,7 +961,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             " REFERENCES " + DataSetModel.TABLE + " (" + DataSetModel.Columns.UID + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
                             " FOREIGN KEY (" + DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ") " +
-                            " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID + ")" +
+                            " REFERENCES " + OrganisationUnitModel.TABLE + " (" +
+                            OrganisationUnitModel.Columns.UID + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
                             " UNIQUE (" + DataSetOrganisationUnitLinkModel.Columns.DATA_SET + ", " +
                             DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ")"

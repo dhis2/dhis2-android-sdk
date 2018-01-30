@@ -50,13 +50,13 @@ public abstract class IndicatorModel extends BaseNameableObjectModel implements 
     public static final String TABLE = "Indicator";
 
     public static class Columns extends BaseNameableObjectModel.Columns {
-        final static String ANNUALIZED = "annualized";
-        final static String INDICATOR_TYPE = "indicatorType";
-        final static String NUMERATOR = "numerator";
-        final static String NUMERATOR_DESCRIPTION = "numeratorDescription";
-        final static String DENOMINATOR = "denominator";
-        final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
-        final static String URL = "url";
+        public final static String ANNUALIZED = "annualized";
+        public final static String INDICATOR_TYPE = "indicatorType";
+        public final static String NUMERATOR = "numerator";
+        public final static String NUMERATOR_DESCRIPTION = "numeratorDescription";
+        public final static String DENOMINATOR = "denominator";
+        public final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
+        public final static String URL = "url";
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(),

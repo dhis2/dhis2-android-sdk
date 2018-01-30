@@ -52,8 +52,8 @@ import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
-import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorModel;
+import org.hisp.dhis.android.core.indicator.IndicatorTypeModel;
 import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -387,7 +387,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             DataElementModel.Columns.DIMENSION + " TEXT," +
             DataElementModel.Columns.DISPLAY_FORM_NAME + " TEXT," +
             DataElementModel.Columns.OPTION_SET + " TEXT," +
-            DataElementModel.Columns.CATEGORY_COMBO + " TEXT," +" FOREIGN KEY ( "
+            DataElementModel.Columns.CATEGORY_COMBO + " TEXT," + " FOREIGN KEY ( "
                     + DataElementModel.Columns.OPTION_SET + ")" +
                     " REFERENCES " + OptionSetModel.TABLE + " (" + OptionSetModel.Columns.UID + ")" +
                     " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
@@ -971,6 +971,20 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ")"
             );
 
+    private static final String CREATE_INDICATOR_TABLE =
+            SQLStatementBuilder.createNameableModelTable(IndicatorModel.TABLE,
+                    IndicatorModel.Columns.ANNUALIZED + " INTEGER," +
+                            IndicatorModel.Columns.INDICATOR_TYPE + " TEXT," +
+                            IndicatorModel.Columns.NUMERATOR + " TEXT," +
+                            IndicatorModel.Columns.NUMERATOR_DESCRIPTION + " TEXT," +
+                            IndicatorModel.Columns.DENOMINATOR + " TEXT," +
+                            IndicatorModel.Columns.DENOMINATOR_DESCRIPTION + " TEXT," +
+                            IndicatorModel.Columns.URL + " TEXT," +
+                            " FOREIGN KEY ( " + IndicatorModel.Columns.INDICATOR_TYPE + ")" +
+                            " REFERENCES " + IndicatorTypeModel.TABLE + " (" + IndicatorTypeModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
+            );
+
     private static final String CREATE_DATA_SET_INDICATOR_LINK_TABLE =
             SQLStatementBuilder.createModelTable(DataSetIndicatorLinkModel.TABLE,
                     DataSetIndicatorLinkModel.Columns.DATA_SET + " TEXT NOT NULL," +
@@ -1040,6 +1054,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_DATA_SET_TABLE);
         database.execSQL(CREATE_DATA_SET_DATA_ELEMENT_LINK_TABLE);
         database.execSQL(CREATE_DATA_SET_ORGANISATION_UNIT_LINK_TABLE);
+        database.execSQL(CREATE_INDICATOR_TABLE);
         database.execSQL(CREATE_DATA_SET_INDICATOR_LINK_TABLE);
         return database;
     }

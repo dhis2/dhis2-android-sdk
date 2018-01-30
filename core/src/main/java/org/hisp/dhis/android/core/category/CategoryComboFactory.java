@@ -32,7 +32,8 @@ public class CategoryComboFactory {
         this.categoryComboOptionLinkStore = new CategoryCategoryComboLinkStoreImpl(databaseAdapter);
         this.categoryComboOptionCategoryLinkStore = new CategoryOptionComboCategoryLinkStoreImpl(
                 databaseAdapter);
-        this.categoryOptionComboHandler = new CategoryOptionComboHandler(categoryOptionComboStore, categoryComboOptionCategoryLinkStore);
+        this.categoryOptionComboHandler = new CategoryOptionComboHandler(categoryOptionComboStore,
+                categoryComboOptionCategoryLinkStore);
         this.categoryComboHandler = new CategoryComboHandler(categoryComboStore,
                 categoryComboOptionLinkStore,
                 categoryOptionComboHandler);

@@ -24,7 +24,8 @@ public class CategoryComboMetadataAuditHandler implements MetadataAuditHandler {
 
             Set<String> uIds = new HashSet<>();
             uIds.add(metadataAudit.getUid());
-            categoryComboFactory.newEndPointCall(CategoryComboQuery.defaultQuery(uIds), metadataAudit.getCreatedAt()).call();
+            categoryComboFactory.newEndPointCall(CategoryComboQuery.defaultQuery(uIds),
+                    metadataAudit.getCreatedAt()).call();
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {
                 categoryCombo = categoryCombo.toBuilder().deleted(true).build();

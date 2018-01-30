@@ -44,8 +44,6 @@ import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryComboFactory;
 import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -329,7 +327,8 @@ public final class D2 {
 
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
-                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory, categoryFactory, categoryComboFactory);
+                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
+                            categoryFactory, categoryComboFactory);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 

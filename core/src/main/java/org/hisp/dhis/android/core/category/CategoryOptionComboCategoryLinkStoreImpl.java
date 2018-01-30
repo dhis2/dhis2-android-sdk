@@ -22,10 +22,16 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
                     CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + ", " +
                     CategoryOptionComboCategoryLinkModel.Columns.CATEGORY + ") " +
                     "VALUES(?, ?);";
+
     private static final String REMOVE_CATEGORY_OPTION_RELATIONS = "DELETE FROM "
-            + CategoryOptionComboCategoryLinkModel.TABLE + " WHERE "+ CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + "=?;";
-    private static final String QUERY_BY_CATEGORY_OPTION_UID = "SELECT "+ CategoryOptionComboCategoryLinkModel.Columns.CATEGORY +" FROM "
-            + CategoryOptionComboCategoryLinkModel.TABLE + " WHERE "+ CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + "=?;";
+            + CategoryOptionComboCategoryLinkModel.TABLE + " WHERE "
+            + CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + "=?;";
+
+    private static final String QUERY_BY_CATEGORY_OPTION_UID = "SELECT "
+            + CategoryOptionComboCategoryLinkModel.Columns.CATEGORY +" FROM "
+            + CategoryOptionComboCategoryLinkModel.TABLE + " WHERE "
+            + CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + "=?;";
+
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
 
@@ -76,8 +82,8 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
     }
 
     @Override
-    public List<String> queryByOptionComboUId( String uid) {
-        List <String> categoryOptions = null;
+    public List<String> queryByOptionComboUId(String uid) {
+        List<String> categoryOptions = null;
         Cursor cursor = databaseAdapter.query(QUERY_BY_CATEGORY_OPTION_UID, uid);
 
         try {
@@ -92,7 +98,7 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
     }
 
     private List<String> listUidFromCursor(Cursor cursor) {
-        List <String> categoryOptions = new ArrayList<>();
+        List<String> categoryOptions = new ArrayList<>();
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();

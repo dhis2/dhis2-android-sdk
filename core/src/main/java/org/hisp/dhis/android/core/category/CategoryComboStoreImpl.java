@@ -233,6 +233,9 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         return categoryMap;
     }
 
+    @SuppressWarnings({
+            "PMD.NPathComplexity",
+    })
     private void mapCategory(Cursor cursor, Map<String, CategoryCombo> categoryMap) {
         String uid = cursor.getString(0) == null ? null : cursor.getString(
                 0);

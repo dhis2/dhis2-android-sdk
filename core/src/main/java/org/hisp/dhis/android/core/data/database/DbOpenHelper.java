@@ -985,6 +985,12 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
             );
 
+    private static final String CREATE_INDICATOR_TYPE_TABLE =
+            SQLStatementBuilder.createNameableModelTable(IndicatorTypeModel.TABLE,
+                    IndicatorTypeModel.Columns.NUMBER + " INTEGER," +
+                            IndicatorTypeModel.Columns.FACTOR + " INTEGER"
+            );
+
     private static final String CREATE_DATA_SET_INDICATOR_LINK_TABLE =
             SQLStatementBuilder.createModelTable(DataSetIndicatorLinkModel.TABLE,
                     DataSetIndicatorLinkModel.Columns.DATA_SET + " TEXT NOT NULL," +
@@ -1055,6 +1061,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_DATA_SET_DATA_ELEMENT_LINK_TABLE);
         database.execSQL(CREATE_DATA_SET_ORGANISATION_UNIT_LINK_TABLE);
         database.execSQL(CREATE_INDICATOR_TABLE);
+        database.execSQL(CREATE_INDICATOR_TYPE_TABLE);
         database.execSQL(CREATE_DATA_SET_INDICATOR_LINK_TABLE);
         return database;
     }

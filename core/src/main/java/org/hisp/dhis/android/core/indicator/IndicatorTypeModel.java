@@ -51,8 +51,8 @@ public abstract class IndicatorTypeModel extends BaseIdentifiableObjectModel imp
     public static final String TABLE = "IndicatorType";
 
     public static class Columns extends BaseNameableObjectModel.Columns {
-        final static String NUMBER = "number";
-        final static String FACTOR = "factor";
+        public final static String NUMBER = "number";
+        public final static String FACTOR = "factor";
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(),

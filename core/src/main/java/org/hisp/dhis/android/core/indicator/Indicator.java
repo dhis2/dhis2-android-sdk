@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 
@@ -62,8 +63,8 @@ public abstract class Indicator extends BaseNameableObject {
     public static final Field<Indicator, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
     public static final Field<Indicator, Boolean> deleted = Field.create(DELETED);
 
-    public static final Field<Indicator, Integer> annualized = Field.create(ANNUALIZED);
-    public static final Field<Indicator, String> indicatorType = Field.create(INDICATOR_TYPE);
+    public static final Field<Indicator, Boolean> annualized = Field.create(ANNUALIZED);
+    public static final Field<Indicator, ObjectWithUid> indicatorType = Field.create(INDICATOR_TYPE);
     public static final Field<Indicator, String> numerator = Field.create(NUMERATOR);
     public static final Field<Indicator, String> numeratorDescription = Field.create(NUMERATOR_DESCRIPTION);
     public static final Field<Indicator, String> denominator = Field.create(DENOMINATOR);
@@ -77,12 +78,12 @@ public abstract class Indicator extends BaseNameableObject {
 
     @Nullable
     @JsonProperty(ANNUALIZED)
-    public abstract Integer annualized();
+    public abstract Boolean annualized();
 
     /* TODO */
     @Nullable
     @JsonProperty(INDICATOR_TYPE)
-    public abstract String indicatorType();
+    public abstract ObjectWithUid indicatorType();
 
 
     @Nullable
@@ -117,8 +118,8 @@ public abstract class Indicator extends BaseNameableObject {
             @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
             @JsonProperty(DESCRIPTION) String description,
             @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(ANNUALIZED) Integer annualized,
-            @JsonProperty(INDICATOR_TYPE) String indicatorType,
+            @JsonProperty(ANNUALIZED) Boolean annualized,
+            @JsonProperty(INDICATOR_TYPE) ObjectWithUid indicatorType,
             @JsonProperty(NUMERATOR) String numerator,
             @JsonProperty(NUMERATOR_DESCRIPTION) String numeratorDescription,
             @JsonProperty(DENOMINATOR) String denominator,

@@ -51,6 +51,9 @@ import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
+import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.indicator.IndicatorModel;
 import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -968,6 +971,20 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ")"
             );
 
+    private static final String CREATE_DATA_SET_INDICATOR_LINK_TABLE =
+            SQLStatementBuilder.createModelTable(DataSetIndicatorLinkModel.TABLE,
+                    DataSetIndicatorLinkModel.Columns.DATA_SET + " TEXT NOT NULL," +
+                            DataSetIndicatorLinkModel.Columns.INDICATOR + " TEXT NOT NULL," +
+                            " FOREIGN KEY (" + DataSetIndicatorLinkModel.Columns.DATA_SET + ") " +
+                            " REFERENCES " + DataSetModel.TABLE + " (" + DataSetModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " FOREIGN KEY (" + DataSetIndicatorLinkModel.Columns.INDICATOR + ") " +
+                            " REFERENCES " + IndicatorModel.TABLE + " (" + IndicatorModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " UNIQUE (" + DataSetIndicatorLinkModel.Columns.DATA_SET + ", " +
+                            DataSetIndicatorLinkModel.Columns.INDICATOR + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1023,6 +1040,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_DATA_SET_TABLE);
         database.execSQL(CREATE_DATA_SET_DATA_ELEMENT_LINK_TABLE);
         database.execSQL(CREATE_DATA_SET_ORGANISATION_UNIT_LINK_TABLE);
+        database.execSQL(CREATE_DATA_SET_INDICATOR_LINK_TABLE);
         return database;
     }
 

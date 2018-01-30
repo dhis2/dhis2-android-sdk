@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.option.OptionModel;
@@ -952,6 +953,20 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             DataSetDataElementLinkModel.Columns.DATA_ELEMENT + ")"
             );
 
+    private static final String CREATE_DATA_SET_ORGANISATION_UNIT_LINK_TABLE =
+            SQLStatementBuilder.createModelTable(DataSetOrganisationUnitLinkModel.TABLE,
+                    DataSetOrganisationUnitLinkModel.Columns.DATA_SET + " TEXT NOT NULL," +
+                            DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+                            " FOREIGN KEY (" + DataSetOrganisationUnitLinkModel.Columns.DATA_SET + ") " +
+                            " REFERENCES " + DataSetModel.TABLE + " (" + DataSetModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " FOREIGN KEY (" + DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ") " +
+                            " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " UNIQUE (" + DataSetOrganisationUnitLinkModel.Columns.DATA_SET + ", " +
+                            DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1006,6 +1021,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_CATEGORY_OPTION_COMBO_CATEGORY_LINK_TABLE);
         database.execSQL(CREATE_DATA_SET_TABLE);
         database.execSQL(CREATE_DATA_SET_DATA_ELEMENT_LINK_TABLE);
+        database.execSQL(CREATE_DATA_SET_ORGANISATION_UNIT_LINK_TABLE);
         return database;
     }
 

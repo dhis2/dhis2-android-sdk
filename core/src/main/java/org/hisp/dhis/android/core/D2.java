@@ -417,9 +417,7 @@ public final class D2 {
         deletableStoreList.add(categoryFactory.getCategoryStore());
         deletableStoreList.add(categoryFactory.getCategoryOptionStore());
         deletableStoreList.add(categoryFactory.getCategoryOptionLinkStore());
-        deletableStoreList.add(categoryComboFactory.getCategoryComboOptionCategoryLinkStore());
-        deletableStoreList.add(categoryComboFactory.getCategoryComboStore());
-        deletableStoreList.add(categoryComboFactory.getCategoryComboOptionLinkStore());
+        deletableStoreList.addAll(categoryComboFactory.getDeletableStores());
         return new LogOutUserCallable(
                 deletableStoreList
         );

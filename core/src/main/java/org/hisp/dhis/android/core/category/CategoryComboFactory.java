@@ -1,9 +1,12 @@
 package org.hisp.dhis.android.core.category;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Retrofit;
 
@@ -12,14 +15,12 @@ public class CategoryComboFactory {
     private final DatabaseAdapter databaseAdapter;
     private final CategoryComboService categoryComboService;
 
-    private final CategoryComboStore categoryComboStore;
-    private final CategoryCategoryComboLinkStore categoryComboOptionLinkStore;
     private final CategoryOptionComboStore categoryOptionComboStore;
     private final CategoryOptionComboCategoryLinkStoreImpl categoryComboOptionCategoryLinkStore;
 
     private final ResourceHandler resourceHandler;
     private final CategoryComboHandler categoryComboHandler;
-    private final CategoryOptionComboHandler categoryOptionComboHandler;
+    private final List<DeletableStore> deletableStores;
 
     public CategoryComboFactory(
             Retrofit retrofit, DatabaseAdapter databaseAdapter, ResourceHandler resourceHandler) {
@@ -27,16 +28,23 @@ public class CategoryComboFactory {
         this.databaseAdapter = databaseAdapter;
         this.categoryComboService = retrofit.create(CategoryComboService.class);
         this.resourceHandler = resourceHandler;
-        this.categoryComboStore = new CategoryComboStoreImpl(databaseAdapter);
+        CategoryComboStore categoryComboStore = new CategoryComboStoreImpl(databaseAdapter);
         this.categoryOptionComboStore = new CategoryOptionComboStoreImpl(databaseAdapter);
-        this.categoryComboOptionLinkStore = new CategoryCategoryComboLinkStoreImpl(databaseAdapter);
+        CategoryCategoryComboLinkStore categoryComboOptionLinkStore =
+                new CategoryCategoryComboLinkStoreImpl(databaseAdapter);
         this.categoryComboOptionCategoryLinkStore = new CategoryOptionComboCategoryLinkStoreImpl(
                 databaseAdapter);
-        this.categoryOptionComboHandler = new CategoryOptionComboHandler(categoryOptionComboStore,
+        CategoryOptionComboHandler categoryOptionComboHandler =
+                new CategoryOptionComboHandler(categoryOptionComboStore,
                 categoryComboOptionCategoryLinkStore);
         this.categoryComboHandler = new CategoryComboHandler(categoryComboStore,
                 categoryComboOptionLinkStore,
                 categoryOptionComboHandler);
+
+        deletableStores = new ArrayList<>();
+        deletableStores.add(categoryComboOptionCategoryLinkStore);
+        deletableStores.add(categoryComboStore);
+        deletableStores.add(categoryComboOptionLinkStore);
     }
 
     public CategoryComboEndpointCall newEndPointCall(CategoryComboQuery categoryComboQuery,
@@ -53,14 +61,6 @@ public class CategoryComboFactory {
         return databaseAdapter;
     }
 
-    public CategoryComboStore getCategoryComboStore() {
-        return categoryComboStore;
-    }
-
-    public CategoryCategoryComboLinkStore getCategoryComboOptionLinkStore() {
-        return categoryComboOptionLinkStore;
-    }
-
     public CategoryOptionComboCategoryLinkStoreImpl getCategoryComboOptionCategoryLinkStore() {
         return categoryComboOptionCategoryLinkStore;
     }
@@ -69,15 +69,11 @@ public class CategoryComboFactory {
         return categoryComboHandler;
     }
 
-    public CategoryComboService getCategoryComboService() {
-        return categoryComboService;
-    }
-
     public CategoryOptionComboStore getCategoryOptionComboStore() {
         return categoryOptionComboStore;
     }
 
-    public CategoryOptionComboHandler getCategoryOptionComboHandler() {
-        return categoryOptionComboHandler;
+    public List<DeletableStore> getDeletableStores() {
+        return deletableStores;
     }
 }

@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.core.category;
 
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -9,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class CategoryComboStoreImpl implements CategoryComboStore {
+public class CategoryComboStoreImpl extends Store implements CategoryComboStore {
 
     protected final DatabaseAdapter databaseAdapter;
     protected final SQLiteStatement insertStatement;
@@ -203,16 +202,16 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
     private CategoryCombo mapCategoryComboFromCursor(Cursor cursor) {
         CategoryCombo categoryCombo;
 
-        String uid = cursor.getString(0);
-        String code = cursor.getString(1);
-        String name = cursor.getString(2);
-        String displayName = cursor.getString(3);
-        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-        Date lastUpdated = cursor.getString(5) == null ? null : parse(cursor.getString(5));
-        Boolean isDefault = cursor.getInt(6) > 0;
+        String uid = getStringFromCursor(cursor,  0);
+        String code = getStringFromCursor(cursor, 1);
+        String name = getStringFromCursor(cursor, 2);
+        String displayName = getStringFromCursor(cursor, 3);
+        Date created = getDateFromCursor(cursor, 4);
+        Date lastUpdated = getDateFromCursor(cursor, 5);
+        Boolean isDefault = getBooleanFromCursor(cursor, 6);
 
-        categoryCombo = CategoryCombo.create(
-                uid, code, name, displayName, created, lastUpdated, isDefault, null, null);
+        categoryCombo = CategoryCombo.builder().uid(uid).code(code).name(name).displayName(displayName)
+                .created(created).lastUpdated(lastUpdated).isDefault(isDefault).build();
 
         return categoryCombo;
     }
@@ -237,20 +236,13 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
             "PMD.NPathComplexity",
     })
     private void mapCategory(Cursor cursor, Map<String, CategoryCombo> categoryMap) {
-        String uid = cursor.getString(0) == null ? null : cursor.getString(
-                0);
-        String code = cursor.getString(1) == null ? null : cursor.getString(
-                1);
-        String name = cursor.getString(2) == null ? null : cursor.getString(
-                2);
-        String displayName = cursor.getString(3) == null ? null : cursor.getString(
-                3);
-        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-        Date lastUpdated = cursor.getString(5) == null ? null : parse(
-                cursor.getString(5));
-        Boolean isBoolean =
-                cursor.getString(6) == null || cursor.getInt(6) == 0 ? Boolean.FALSE
-                        : Boolean.TRUE;
+        String uid = getStringFromCursor(cursor, 0);
+        String code = getStringFromCursor(cursor, 1);
+        String name = getStringFromCursor(cursor, 2);
+        String displayName = getStringFromCursor(cursor, 3);
+        Date created = getDateFromCursor(cursor, 4);
+        Date lastUpdated = getDateFromCursor(cursor, 5);
+        Boolean isBoolean = getBooleanFromCursor(cursor, 6);
 
         categoryMap.put(uid, CategoryCombo.builder()
                 .uid(uid)

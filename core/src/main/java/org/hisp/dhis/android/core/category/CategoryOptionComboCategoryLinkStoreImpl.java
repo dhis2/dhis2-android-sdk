@@ -8,13 +8,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class CategoryOptionComboCategoryLinkStoreImpl implements
+public class CategoryOptionComboCategoryLinkStoreImpl extends Store implements
         CategoryOptionComboCategoryLinkStore {
 
     private static final String INSERT_STATEMENT =
@@ -103,7 +104,7 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
-                    categoryOptions.add(cursor.getString(0));
+                    categoryOptions.add(getStringFromCursor(cursor, 0));
                 }
                 while (cursor.moveToNext());
             }

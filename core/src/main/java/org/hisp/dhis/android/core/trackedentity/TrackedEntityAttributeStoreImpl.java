@@ -28,17 +28,24 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetStore;
+import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -99,6 +106,8 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + TrackedEntityAttributeModel.TABLE +
             " WHERE " + TrackedEntityAttributeModel.Columns.UID + " =?;";
+    private static final String QUERY_ALL_TRACKED_ENTITY_ATTRIBUTES =
+            "SELECT * FROM " + TrackedEntityAttributeModel.TABLE;
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -212,5 +221,72 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
     @Override
     public int delete() {
         return databaseAdapter.delete(TrackedEntityAttributeModel.TABLE);
+    }
+
+    @Override
+    public List<TrackedEntityAttribute> queryAll() {
+        Cursor cursor = databaseAdapter.query(QUERY_ALL_TRACKED_ENTITY_ATTRIBUTES);
+        return mapTrackedEntityAttributesFromCursor(cursor);
+    }
+
+    private List<TrackedEntityAttribute> mapTrackedEntityAttributesFromCursor(Cursor cursor) {
+        List<TrackedEntityAttribute> trackedEntityAttributes = new ArrayList<>(
+                cursor.getCount());
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+
+                do {
+                    TrackedEntityAttribute trackedEntityAttribute =
+                            mapTrackedEntityAttributeFromCursor(cursor);
+                    trackedEntityAttributes.add(trackedEntityAttribute);
+                }
+                while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return trackedEntityAttributes;
+    }
+
+    private TrackedEntityAttribute mapTrackedEntityAttributeFromCursor(Cursor cursor) {
+        TrackedEntityAttribute trackedEntityAttribute;
+
+        String uid = cursor.getString(1);
+        String code = cursor.getString(2);
+        String name = cursor.getString(3);
+        String displayName = cursor.getString(4);
+        Date created = cursor.getString(5) == null ? null : parse(cursor.getString(5));
+        Date lastUpdated = cursor.getString(6) == null ? null : parse(cursor.getString(6));
+        String shortName = cursor.getString(7);
+        String displayShortName = cursor.getString(8);
+        String description = cursor.getString(9);
+        String displayDescription = cursor.getString(10);
+        String pattern = cursor.getString(11);
+        Integer sortOrderInListNoProgram = cursor.getInt(12);
+        String optionSetUID = cursor.getString(13);
+        ValueType valueType = cursor.getString(14) == null ? null : ValueType.valueOf(
+                cursor.getString(14));
+        String expression = cursor.getString(15);
+        TrackedEntityAttributeSearchScope searchScope = cursor.getString(16)
+                == null ? null : TrackedEntityAttributeSearchScope.valueOf(cursor.getString(16));
+        Boolean programScope = cursor.getLong(17) == 1;
+        Boolean displayInListNoProgram = cursor.getLong(18) == 1;
+        Boolean generated = cursor.getLong(19) == 1;
+        Boolean displayOnVisitSchedule = cursor.getLong(20) == 1;
+        Boolean orgUnitScope = cursor.getLong(21) == 1;
+        Boolean unique = cursor.getLong(22) == 1;
+        Boolean inherit = cursor.getLong(23) == 1;
+
+        OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter);
+        OptionSet optionSet = optionSetUID == null ? null : optionSetStore.queryByUId(optionSetUID);
+
+        trackedEntityAttribute = TrackedEntityAttribute.create(uid, code, name, displayName,
+                created, lastUpdated, shortName, displayShortName, description, displayDescription,
+                pattern, sortOrderInListNoProgram, optionSet, valueType, expression, searchScope,
+                programScope, displayInListNoProgram, generated, displayOnVisitSchedule,
+                orgUnitScope, unique, inherit, false);
+        return trackedEntityAttribute;
     }
 }

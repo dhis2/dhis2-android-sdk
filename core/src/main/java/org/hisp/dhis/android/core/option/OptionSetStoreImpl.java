@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.core.option;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -64,6 +67,9 @@ public class OptionSetStoreImpl implements OptionSetStore {
             OptionSetModel.Columns.UID + " = ?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + OptionSetModel.TABLE +
+            " WHERE " + OptionSetModel.Columns.UID + " =?;";
+
+    private static final String QUERY_UID_STATEMENT = "SELECT FROM " + OptionSetModel.TABLE +
             " WHERE " + OptionSetModel.Columns.UID + " =?;";
 
     private final SQLiteStatement updateStatement;
@@ -122,6 +128,29 @@ public class OptionSetStoreImpl implements OptionSetStore {
         deleteStatement.clearBindings();
 
         return delete;
+    }
+
+    @Override
+    public OptionSet queryByUId(String optionSetUID) {
+        isNull(optionSetUID);
+        Cursor cursor = databaseAdapter.query(QUERY_UID_STATEMENT);
+        return mapOptionSetFromCursor(cursor);
+    }
+
+    private OptionSet mapOptionSetFromCursor(Cursor cursor) {
+        OptionSet optionSet;
+        String uid = cursor.getString(1);
+        String code = cursor.getString(2);
+        String name = cursor.getString(3);
+        String displayName = cursor.getString(4);
+        Date created = cursor.getString(5) == null ? null : parse(cursor.getString(5));
+        Date lastUpdate = cursor.getString(6) == null ? null : parse(cursor.getString(6));
+        Integer version = cursor.getInt(7);
+        ValueType valueType = cursor.getString(8) == null ? null : ValueType.valueOf(
+                cursor.getString(8));
+        optionSet = OptionSet.create(uid, code, name, displayName, created, lastUpdate, version,
+                valueType, new ArrayList<Option>(), false);
+        return optionSet;
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @NonNull String code,

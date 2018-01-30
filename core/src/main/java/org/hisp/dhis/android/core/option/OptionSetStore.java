@@ -52,4 +52,6 @@ public interface OptionSetStore extends DeletableStore {
             @NonNull String uid
     );
 
+
+    OptionSet queryByUId(String optionSetUID);
 }

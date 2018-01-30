@@ -29,20 +29,26 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
 
 class DataSetParentLinkManager {
     private final ObjectWithoutUidStore<DataSetDataElementLinkModel> dataSetDataElementStore;
+    private final ObjectWithoutUidStore<DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitStore;
 
     DataSetParentLinkManager(
-            ObjectWithoutUidStore<DataSetDataElementLinkModel> dataSetDataElementStore) {
+            ObjectWithoutUidStore<DataSetDataElementLinkModel> dataSetDataElementStore,
+            ObjectWithoutUidStore<DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitStore) {
         this.dataSetDataElementStore = dataSetDataElementStore;
+        this.dataSetOrganisationUnitStore = dataSetOrganisationUnitStore;
     }
 
     static DataSetParentLinkManager create(DatabaseAdapter databaseAdapter) {
         return new DataSetParentLinkManager(
-                DataSetDataElementLinkStore.create(databaseAdapter));
+                DataSetDataElementLinkStore.create(databaseAdapter),
+                DataSetOrganisationUnitLinkStore.create(databaseAdapter));
     }
 
     void saveDataSetDataElementLinks(List<DataSet> dataSets) {
@@ -57,6 +63,26 @@ class DataSetParentLinkManager {
                     DataSetDataElementLinkModel.create(
                             dataSet.uid(),
                             dataSetDataElement.dataElement().uid()
+                    ));
+        }
+    }
+
+    void saveDataSetOrganisationUnitLinks(User user) {
+        List<OrganisationUnit> organisationUnits = user.organisationUnits();
+
+        if (organisationUnits != null) {
+            for (OrganisationUnit organisationUnit : organisationUnits) {
+                saveDataSetOrganisationUnitLink(organisationUnit);
+            }
+        }
+    }
+
+    private void saveDataSetOrganisationUnitLink(OrganisationUnit organisationUnit) {
+        for (DataSet dataSet : organisationUnit.dataSets()) {
+            this.dataSetOrganisationUnitStore.updateOrInsertWhere(
+                    DataSetOrganisationUnitLinkModel.create(
+                            dataSet,
+                            organisationUnit
                     ));
         }
     }

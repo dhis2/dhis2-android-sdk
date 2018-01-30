@@ -39,6 +39,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.LinkModelFactory;
 import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -75,10 +76,10 @@ public abstract class DataSetOrganisationUnitLinkModel extends BaseModel impleme
     };
 
     public static DataSetOrganisationUnitLinkModel create(
-            String dataSetUid, String organisationUnitUid) {
+            DataSet dataSet, OrganisationUnit organisationUnit) {
         return DataSetOrganisationUnitLinkModel.builder()
-                .dataSet(dataSetUid)
-                .organisationUnit(organisationUnitUid)
+                .dataSet(dataSet.uid())
+                .organisationUnit(organisationUnit.uid())
                 .build();
     }
 

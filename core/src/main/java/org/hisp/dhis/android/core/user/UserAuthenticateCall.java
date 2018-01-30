@@ -216,7 +216,8 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                     OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
                     user.uid());
 
-            resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDateTime);
+            // TODO: This is introduced to download all descendants
+            // resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDateTime);
         }
     }
 }

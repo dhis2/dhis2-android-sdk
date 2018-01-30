@@ -48,7 +48,6 @@ import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
@@ -56,9 +55,6 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -375,12 +371,15 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                         dateString
                 );
 
-        assertThatCursor(resource)
+        // TODO: UserAuthenticateCall is no longer registering OU download in resource table
+        // because of a bug when downloading descendants. Restore this check when that code is
+        // refactored to implement resource table writting from UserAuthenticateCall
+        /*assertThatCursor(resource)
                 .hasRow(
                         4L,
                         ResourceModel.Type.ORGANISATION_UNIT,
                         dateString
-                ).isExhausted();
+                ).isExhausted();*/
 
     }
 

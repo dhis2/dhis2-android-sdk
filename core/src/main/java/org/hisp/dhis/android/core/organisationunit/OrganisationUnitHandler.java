@@ -33,7 +33,9 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
@@ -50,6 +52,10 @@ public class OrganisationUnitHandler {
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
     }
 
+
+    public void handleOrganisationUnits(OrganisationUnit organisationUnit) {
+    }
+    
     public void handleOrganisationUnits(@NonNull List<OrganisationUnit> organisationUnits,
                                         @Nullable OrganisationUnitModel.Scope scope,
                                         @NonNull String userUid) {
@@ -139,5 +145,8 @@ public class OrganisationUnitHandler {
                 }
             }
         }
+    }
+
+    public void newEndPointCall(Set<String> uIds, Date createdAt) {
     }
 }

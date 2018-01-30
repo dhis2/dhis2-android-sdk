@@ -8,6 +8,9 @@ import org.hisp.dhis.android.core.option.OptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetMetadataAuditHandler;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMetadataAuditHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityMetadataAuditHandler;
@@ -30,6 +33,9 @@ public class MetadataAuditHandlerFactoryShould {
     @Mock
     private OptionSetFactory optionSetFactory;
 
+    @Mock
+    private OrganisationUnitFactory organisationUnitFactory;
+
     private MetadataAuditHandlerFactory metadataAuditHandlerFactory;
 
     @Parameterized.Parameters(name = "{index} MetadataAuditHandlerFactory should return: {0} for "
@@ -38,7 +44,8 @@ public class MetadataAuditHandlerFactoryShould {
         return Arrays.asList(new Object[][]{
                 {TrackedEntityMetadataAuditHandler.class, TrackedEntity.class},
                 {OptionSetMetadataAuditHandler.class, OptionSet.class},
-                {OptionMetadataAuditHandler.class, Option.class}
+                {OptionMetadataAuditHandler.class, Option.class},
+                {OrganisationUnitMetadataAuditHandler.class, OrganisationUnit.class}
         });
     }
 
@@ -56,7 +63,7 @@ public class MetadataAuditHandlerFactoryShould {
         MockitoAnnotations.initMocks(this);
 
         metadataAuditHandlerFactory =
-                new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory);
+                new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory, organisationUnitFactory);
     }
 
     @Test

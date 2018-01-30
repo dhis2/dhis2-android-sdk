@@ -76,10 +76,10 @@ public abstract class DataSetOrganisationUnitLinkModel extends BaseModel impleme
     };
 
     public static DataSetOrganisationUnitLinkModel create(
-            DataSet dataSet, OrganisationUnit organisationUnit) {
+            String dataSetUid, String organisationUnitUid) {
         return DataSetOrganisationUnitLinkModel.builder()
-                .dataSet(dataSet.uid())
-                .organisationUnit(organisationUnit.uid())
+                .dataSet(dataSetUid)
+                .organisationUnit(organisationUnitUid)
                 .build();
     }
 

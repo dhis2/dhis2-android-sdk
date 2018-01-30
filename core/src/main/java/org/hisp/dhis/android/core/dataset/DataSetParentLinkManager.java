@@ -81,8 +81,8 @@ class DataSetParentLinkManager {
         for (DataSet dataSet : organisationUnit.dataSets()) {
             this.dataSetOrganisationUnitStore.updateOrInsertWhere(
                     DataSetOrganisationUnitLinkModel.create(
-                            dataSet,
-                            organisationUnit
+                            dataSet.uid(),
+                            organisationUnit.uid()
                     ));
         }
     }

@@ -122,6 +122,6 @@ public class DataSetParentLinkManagerShould {
     }
 
     private DataSetOrganisationUnitLinkModel orgUnitExpectedLink(OrganisationUnit ou, DataSet dataSet) {
-        return DataSetOrganisationUnitLinkModel.create(dataSet, ou);
+        return DataSetOrganisationUnitLinkModel.create(dataSet.uid(), ou.uid());
     }
 }

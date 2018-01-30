@@ -43,7 +43,6 @@ import java.util.Date;
 @AutoValue
 public abstract class Indicator extends BaseNameableObject {
     private final static String ANNUALIZED = "annualized";
-    private final static String DECIMALS = "decimals";
     private final static String INDICATOR_TYPE = "indicatorType";
     private final static String NUMERATOR = "numerator";
     private final static String NUMERATOR_DESCRIPTION = "numeratorDescription";
@@ -66,28 +65,21 @@ public abstract class Indicator extends BaseNameableObject {
     public static final Field<Indicator, Boolean> deleted = Field.create(DELETED);
 
     public static final Field<Indicator, Integer> annualized = Field.create(ANNUALIZED);
-    public static final Field<Indicator, Integer> decimals = Field.create(DECIMALS);
-    public static final Field<Indicator, String> indicatorType = Field.create(INDICATOR_TYPE);
+   public static final Field<Indicator, String> indicatorType = Field.create(INDICATOR_TYPE);
     public static final Field<Indicator, String> numerator = Field.create(NUMERATOR);
     public static final Field<Indicator, String> numeratorDescription = Field.create(NUMERATOR_DESCRIPTION);
     public static final Field<Indicator, String> denominator = Field.create(DENOMINATOR);
     public static final Field<Indicator, String> denominatorDescription = Field.create(DENOMINATOR_DESCRIPTION);
     public static final Field<Indicator, String> url = Field.create(URL);
-    public static final Field<Indicator, String> aggregatedExportCategoryOptionCombo = Field.create(AGGREGATED_EXPORT_CATEGORY_OPTION_COMBO);
-    public static final Field<Indicator, String> aggregatedExportAttributeOptionCombo = Field.create(AGGREGATED_EXPORT_ATTRIBUTE_OPTION_COMBO);
 
     public static final Fields<Indicator> allFields = Fields.<Indicator>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, deleted,
-            annualized, decimals, indicatorType, numerator, numeratorDescription, denominator,
-            denominatorDescription, url, aggregatedExportCategoryOptionCombo, aggregatedExportAttributeOptionCombo).build();
+            annualized, indicatorType, numerator, numeratorDescription, denominator,
+            denominatorDescription, url).build();
 
     @Nullable
     @JsonProperty(ANNUALIZED)
     public abstract Integer annualized();
-
-    @Nullable
-    @JsonProperty(DECIMALS)
-    public abstract Integer decimals();
 
     /* TODO */
     @Nullable
@@ -115,15 +107,6 @@ public abstract class Indicator extends BaseNameableObject {
     @JsonProperty(URL)
     public abstract String url();
 
-    @Nullable
-    @JsonProperty(AGGREGATED_EXPORT_CATEGORY_OPTION_COMBO)
-    public abstract String aggregatedExportCategoryOptionCombo();
-
-    @Nullable
-    @JsonProperty(AGGREGATED_EXPORT_ATTRIBUTE_OPTION_COMBO)
-    public abstract String aggregatedExportAttributeOptionCombo();
-
-
     @JsonCreator
     public static Indicator create(
             @JsonProperty(UID) String uid,
@@ -137,22 +120,18 @@ public abstract class Indicator extends BaseNameableObject {
             @JsonProperty(DESCRIPTION) String description,
             @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
             @JsonProperty(ANNUALIZED) Integer annualized,
-            @JsonProperty(DECIMALS) Integer decimals,
             @JsonProperty(INDICATOR_TYPE) String indicatorType,
             @JsonProperty(NUMERATOR) String numerator,
             @JsonProperty(NUMERATOR_DESCRIPTION) String numeratorDescription,
             @JsonProperty(DENOMINATOR) String denominator,
             @JsonProperty(DENOMINATOR_DESCRIPTION) String denominatorDescription,
             @JsonProperty(URL) String url,
-            @JsonProperty(AGGREGATED_EXPORT_CATEGORY_OPTION_COMBO) String aggregatedExportCategoryOptionCombo,
-            @JsonProperty(AGGREGATED_EXPORT_ATTRIBUTE_OPTION_COMBO) String aggregatedExportAttributeOptionCombo,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_Indicator(uid, code, name,
                 displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription,
-                annualized, decimals, indicatorType, numerator, numeratorDescription, denominator,
-                denominatorDescription, url, aggregatedExportCategoryOptionCombo,
-                aggregatedExportAttributeOptionCombo);
+                annualized, indicatorType, numerator, numeratorDescription, denominator,
+                denominatorDescription, url);
     }
 }

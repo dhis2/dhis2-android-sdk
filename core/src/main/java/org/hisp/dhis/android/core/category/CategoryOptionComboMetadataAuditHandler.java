@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.category;
 
+import android.util.Log;
+
 import org.hisp.dhis.android.core.audit.AuditType;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
 import org.hisp.dhis.android.core.audit.MetadataAuditHandler;
@@ -22,7 +24,12 @@ public class CategoryOptionComboMetadataAuditHandler implements MetadataAuditHan
             CategoryOptionCombo categoryOptionCombo =
                     categoryComboFactory.getCategoryOptionComboStore().queryByUId(
                             metadataAudit.getUid());
-            if (categoryOptionCombo.categoryCombo() != null) {
+            if (categoryOptionCombo == null) {
+                Log.e(this.getClass().getSimpleName(),
+                        "MetadataAudit Error: "+ this.getClass().getSimpleName()
+                                +" updated on server but does not exists in local: "
+                                + metadataAudit);
+            } else {
                 uIds.add(categoryOptionCombo.categoryCombo().uid());
                 categoryComboFactory.newEndPointCall(CategoryComboQuery.defaultQuery(uIds),
                         metadataAudit.getCreatedAt()).call();

@@ -18,7 +18,7 @@ public interface TrackedEntityAttributeService {
 
     @GET("trackedEntityAttributes")
     Call<Payload<TrackedEntityAttribute>> getTrackedEntityAttributes(
-            @Query(FIELDS) @Which Fields<TrackedEntityAttribute> fields,
-            @Query(FILTER) @Where Filter<TrackedEntityAttribute, String> idFilter,
-            @Query(FILTER) @Where Filter<TrackedEntityAttribute, String> lastUpdated);
+            @NonNull @Query(FIELDS) @Which Fields<TrackedEntityAttribute> fields,
+            @NonNull @Query(FILTER) @Where Filter<TrackedEntityAttribute, String> idFilter,
+            @NonNull @Query(FILTER) @Where Filter<TrackedEntityAttribute, String> lastUpdated);
 }

@@ -35,7 +35,7 @@ public class TrackedEntityAttributeEndPointCall implements
         this.trackedEntityAttributeService = trackedEntityAttributeService;
         this.databaseAdapter = databaseAdapter;
         this.trackedEntityAttributeQuery = trackedEntityAttributeQuery;
-        this.serverDate = serverDate;
+        this.serverDate = new Date(serverDate.getTime());
         this.trackedEntityAttributeHandler = trackedEntityAttributeHandler;
         this.resourceHandler = resourceHandler;
 
@@ -65,8 +65,8 @@ public class TrackedEntityAttributeEndPointCall implements
             isExecuted = true;
         }
 
-        String lastSyncedTrackedEntityAttributes = resourceHandler.getLastUpdated
-                (ResourceModel.Type.TRACKED_ENTITY_ATTRIBUTE);
+        String lastSyncedTrackedEntityAttributes = resourceHandler.getLastUpdated(
+                ResourceModel.Type.TRACKED_ENTITY_ATTRIBUTE);
 
         Response<Payload<TrackedEntityAttribute>> trackedEntityAttributeByUids =
                 trackedEntityAttributeService.getTrackedEntityAttributes(getSingleFields(),

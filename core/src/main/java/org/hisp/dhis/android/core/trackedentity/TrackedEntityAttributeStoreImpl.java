@@ -48,7 +48,8 @@ import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings({
-        "PMD.AvoidDuplicateLiterals"
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.NPathComplexity"
 })
 public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeStore{
     private static final String INSERT_STATEMENT = "INSERT INTO " +

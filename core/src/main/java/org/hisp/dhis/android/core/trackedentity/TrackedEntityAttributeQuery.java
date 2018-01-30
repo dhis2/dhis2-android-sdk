@@ -9,7 +9,7 @@ public class TrackedEntityAttributeQuery {
     private final Set<String> uIds;
 
 
-    public TrackedEntityAttributeQuery(Set<String> uIds, boolean paging) {
+    public TrackedEntityAttributeQuery(Set<String> uIds) {
         this.uIds = uIds;
     }
 
@@ -19,7 +19,6 @@ public class TrackedEntityAttributeQuery {
 
     public static class Builder {
         private Set<String> uIds = new HashSet<>();
-        private boolean paging;
 
         private Builder() {
         }
@@ -33,11 +32,6 @@ public class TrackedEntityAttributeQuery {
             return this;
         }
 
-        public Builder withPaging(boolean paging) {
-            this.paging = paging;
-            return this;
-        }
-
         public TrackedEntityAttributeQuery build() {
             if (uIds != null && uIds.size() > MAX_UIDS) {
                 throw new IllegalArgumentException(
@@ -46,7 +40,7 @@ public class TrackedEntityAttributeQuery {
                                 "Max size is: " + MAX_UIDS);
             }
 
-            return new TrackedEntityAttributeQuery(uIds, paging);
+            return new TrackedEntityAttributeQuery(uIds);
         }
     }
 

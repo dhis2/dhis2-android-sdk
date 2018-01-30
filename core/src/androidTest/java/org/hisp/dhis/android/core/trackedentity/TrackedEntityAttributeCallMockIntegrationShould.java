@@ -31,8 +31,9 @@ public class TrackedEntityAttributeCallMockIntegrationShould extends AbsStoreTes
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
 
-    @MediumTest
+
     @Test
+    @MediumTest
     public void download_TrackedEntityAttributes_according_to_default_query() throws Exception {
         TrackedEntityAttributeEndPointCall trackedEntityAttributeEndPointCall =
                 TrackedEntityAttributeEnPointCallFactory.create(d2.retrofit(), databaseAdapter(),

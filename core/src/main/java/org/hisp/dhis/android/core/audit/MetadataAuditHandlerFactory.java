@@ -7,6 +7,8 @@ import org.hisp.dhis.android.core.category.CategoryComboMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.category.CategoryOptionComboMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionMetadataAuditHandler;
@@ -46,6 +48,8 @@ public class MetadataAuditHandlerFactory {
             return new CategoryOptionMetadataAuditHandler(categoryFactory);
         } else if(klass == CategoryCombo.class) {
             return new CategoryComboMetadataAuditHandler(categoryComboFactory);
+        } else if(klass == CategoryOptionCombo.class) {
+            return new CategoryOptionComboMetadataAuditHandler(categoryComboFactory);
         } else {
             throw new IllegalArgumentException("No exists a metadata audit handler for: " + klass);
         }

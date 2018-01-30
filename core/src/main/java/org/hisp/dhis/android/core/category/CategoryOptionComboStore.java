@@ -17,7 +17,7 @@ public interface CategoryOptionComboStore extends DeletableStore {
 
     List<CategoryOptionCombo> queryAll();
 
-    int removeCategoryComboRelations(String categoryComboUid);
-
     List<CategoryOptionCombo> queryByCategoryComboUId(String uid);
+
+    CategoryOptionCombo queryByUId(String uid);
 }

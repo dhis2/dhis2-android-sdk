@@ -10,6 +10,8 @@ import org.hisp.dhis.android.core.category.CategoryComboMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.category.CategoryOptionComboMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionMetadataAuditHandler;
@@ -55,7 +57,8 @@ public class MetadataAuditHandlerFactoryShould {
                 {OptionMetadataAuditHandler.class, Option.class},
                 {CategoryMetadataAuditHandler.class, Category.class},
                 {CategoryOptionMetadataAuditHandler.class, CategoryOption.class},
-                {CategoryComboMetadataAuditHandler.class, CategoryCombo.class}
+                {CategoryComboMetadataAuditHandler.class, CategoryCombo.class},
+                {CategoryOptionComboMetadataAuditHandler.class, CategoryOptionCombo.class}
         });
     }
 

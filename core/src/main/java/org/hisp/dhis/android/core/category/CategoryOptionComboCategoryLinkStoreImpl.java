@@ -10,6 +10,9 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class CategoryOptionComboCategoryLinkStoreImpl implements
         CategoryOptionComboCategoryLinkStore {
@@ -20,6 +23,8 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
                     CategoryOptionComboCategoryLinkModel.Columns.CATEGORY + ") " +
                     "VALUES(?, ?);";
     private static final String REMOVE_CATEGORY_OPTION_RELATIONS = "DELETE FROM "
+            + CategoryOptionComboCategoryLinkModel.TABLE + " WHERE "+ CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + "=?;";
+    private static final String QUERY_BY_CATEGORY_OPTION_UID = "SELECT "+ CategoryOptionComboCategoryLinkModel.Columns.CATEGORY +" FROM "
             + CategoryOptionComboCategoryLinkModel.TABLE + " WHERE "+ CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + "=?;";
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
@@ -68,6 +73,39 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
         Cursor cursor = databaseAdapter.query(REMOVE_CATEGORY_OPTION_RELATIONS, categoryOptionComboUid);
 
         return cursor.getCount();
+    }
+
+    @Override
+    public List<String> queryByOptionComboUId( String uid) {
+        List <String> categoryOptions = null;
+        Cursor cursor = databaseAdapter.query(QUERY_BY_CATEGORY_OPTION_UID, uid);
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                categoryOptions = listUidFromCursor(cursor);
+            }
+        } finally {
+            cursor.close();
+        }
+        return categoryOptions;
+    }
+
+    private List<String> listUidFromCursor(Cursor cursor) {
+        List <String> categoryOptions = new ArrayList<>();
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    categoryOptions.add(cursor.getString(0));
+                }
+                while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return categoryOptions;
     }
 }
 

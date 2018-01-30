@@ -65,8 +65,9 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
             FIELDS + " FROM " + CategoryOptionComboModel.TABLE +
             " WHERE "+  CategoryOptionComboModel.Columns.CATEGORY_COMBO +"=?;";
 
-    private static final String REMOVE_CATEGORY_OPTION_RELATIONS = "DELETE FROM "
-            + CategoryOptionComboModel.TABLE + " WHERE "+ CategoryOptionComboModel.Columns.CATEGORY_COMBO + "=?;";
+    private static final String QUERY_BY_UID = "SELECT " +
+            FIELDS + " FROM " + CategoryOptionComboModel.TABLE +
+            " WHERE "+  CategoryOptionComboModel.Columns.UID +"=?;";
 
     public CategoryOptionComboStoreImpl(DatabaseAdapter databaseAdapter) {
 
@@ -166,17 +167,25 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
     }
 
     @Override
-    public int removeCategoryComboRelations(String categoryComboUid){
-        Cursor cursor = databaseAdapter.query(REMOVE_CATEGORY_OPTION_RELATIONS, categoryComboUid);
-
-        return cursor.getCount();
-    }
-
-    @Override
     public List<CategoryOptionCombo> queryByCategoryComboUId(String categoryComboUid) {
         Cursor cursor = databaseAdapter.query(QUERY_CATEGORY_OPTION_COMBOS_BY_CATEGORY_COMBO_UID, categoryComboUid);
 
         return mapCategoryOptionCombosFromCursor(cursor);
+    }
+
+    @Override
+    public CategoryOptionCombo queryByUId(String uid) {
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID, uid);
+        CategoryOptionCombo categoryOptionCombo = null;
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                categoryOptionCombo = mapCategoryOptionComboFromCursor(cursor);
+            }
+        } finally {
+            cursor.close();
+        }
+        return categoryOptionCombo;
     }
 
     private List<CategoryOptionCombo> mapCategoryOptionCombosFromCursor(Cursor cursor) {
@@ -209,9 +218,13 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
         String displayName = cursor.getString(3);
         Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
         Date lastUpdated = cursor.getString(5) == null ? null : parse(cursor.getString(5));
+        String categoryComboUid = cursor.getString(6);
+
+        CategoryCombo categoryCombo = CategoryCombo.create(categoryComboUid, null, null,
+                null, null, null, null, null, null);
 
         categoryOptionCombo = CategoryOptionCombo.create(
-                uid, code, name, displayName, created, lastUpdated, null, null);
+                uid, code, name, displayName, created, lastUpdated, categoryCombo, null);
 
         return categoryOptionCombo;
     }

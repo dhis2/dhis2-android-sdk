@@ -67,4 +67,16 @@ public class CategoryComboFactory {
     public CategoryComboHandler getCategoryComboHandler() {
         return categoryComboHandler;
     }
+
+    public CategoryComboService getCategoryComboService() {
+        return categoryComboService;
+    }
+
+    public CategoryOptionComboStore getCategoryOptionComboStore() {
+        return categoryOptionComboStore;
+    }
+
+    public CategoryOptionComboHandler getCategoryOptionComboHandler() {
+        return categoryOptionComboHandler;
+    }
 }

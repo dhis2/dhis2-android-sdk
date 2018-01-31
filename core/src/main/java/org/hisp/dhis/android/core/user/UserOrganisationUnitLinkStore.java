@@ -51,4 +51,5 @@ public interface UserOrganisationUnitLinkStore extends DeletableStore {
 
     int delete();
 
+    String queryUserUIdByOrganisationUnitUId(String organisationUnitUId);
 }

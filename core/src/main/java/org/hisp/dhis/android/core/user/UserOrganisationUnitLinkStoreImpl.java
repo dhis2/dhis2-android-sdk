@@ -31,15 +31,17 @@ package org.hisp.dhis.android.core.user;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
-public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLinkStore {
+public class UserOrganisationUnitLinkStoreImpl extends Store implements UserOrganisationUnitLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             UserOrganisationUnitLinkModel.TABLE + " (" +
             UserOrganisationUnitLinkModel.Columns.USER + ", " +
@@ -60,6 +62,9 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
             " WHERE " + UserOrganisationUnitLinkModel.Columns.USER + " =? AND " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " =? AND " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + " =?;";
+
+    private static final String QUERY_USER_UID_BY_ORGANISATION_UNIT_UID = "SELECT "  + UserOrganisationUnitLinkModel.Columns.USER
+            +"  FROM " + UserOrganisationUnitLinkModel.TABLE + " WHERE " + UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + "=?;";
 
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
@@ -131,6 +136,17 @@ public class UserOrganisationUnitLinkStoreImpl implements UserOrganisationUnitLi
     @Override
     public int delete() {
         return databaseAdapter.delete(UserOrganisationUnitLinkModel.TABLE);
+    }
+
+    @Override
+    public String queryUserUIdByOrganisationUnitUId(String organisationUnitUId) {
+        Cursor cursor = databaseAdapter.query(QUERY_USER_UID_BY_ORGANISATION_UNIT_UID, organisationUnitUId);
+        String userUId = null;
+        if(cursor.getCount()>0){
+            cursor.moveToFirst();
+            userUId = getStringFromCursor(cursor, 0);
+        }
+        return userUId;
     }
 
 }

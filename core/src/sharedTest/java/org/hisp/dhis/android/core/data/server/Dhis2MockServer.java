@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.data.server;
 
-import static okhttp3.internal.Util.UTC;
-
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.file.IFileReader;
@@ -38,14 +36,14 @@ import org.hisp.dhis.android.core.utils.HeaderUtils;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+
+import static okhttp3.internal.Util.UTC;
 
 public class Dhis2MockServer {
     private static final int OK_CODE = 200;
@@ -81,6 +79,36 @@ public class Dhis2MockServer {
     public void enqueueMockResponse(String fileName) throws IOException {
         MockResponse response = createMockResponse(fileName);
         server.enqueue(response);
+    }
+
+    public void enqueueMetadataResponses() throws IOException {
+        this.enqueueMockResponse("system_info.json");
+        this.enqueueMockResponse("user.json");
+        this.enqueueMockResponse("organisationUnits.json");
+        this.enqueueMockResponse("categories.json");
+        this.enqueueMockResponse("category_combos.json");
+        this.enqueueMockResponse("programs.json");
+        this.enqueueMockResponse("tracked_entities.json");
+        this.enqueueMockResponse("option_sets.json");
+        this.enqueueMockResponse("data_sets.json");
+        this.enqueueMockResponse("data_elements.json");
+        this.enqueueMockResponse("indicators.json");
+        this.enqueueMockResponse("indicator_types.json");
+    }
+
+    public void enqueueMetadataWithDescendentsResponses() throws IOException {
+        enqueueMockResponse("system_info.json");
+        enqueueMockResponse("admin/user.json");
+        enqueueMockResponse("admin/organisation_units.json");
+        enqueueMockResponse("categories.json");
+        enqueueMockResponse("category_combos.json");
+        enqueueMockResponse("programs.json");
+        enqueueMockResponse("tracked_entities.json");
+        enqueueMockResponse("option_sets.json");
+        enqueueMockResponse("data_sets.json");
+        enqueueMockResponse("data_elements.json");
+        enqueueMockResponse("indicators.json");
+        enqueueMockResponse("indicator_types.json");
     }
 
     @NonNull

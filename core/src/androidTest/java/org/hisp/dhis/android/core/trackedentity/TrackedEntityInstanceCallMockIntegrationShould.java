@@ -98,16 +98,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
     }
 
     private void givenAMetadataInDatabase() throws Exception {
-        dhis2MockServer.enqueueMockResponse("system_info.json");
-        dhis2MockServer.enqueueMockResponse("user.json");
-        dhis2MockServer.enqueueMockResponse("organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
-        dhis2MockServer.enqueueMockResponse("data_sets.json");
-        dhis2MockServer.enqueueMockResponse("data_elements.json");
+        dhis2MockServer.enqueueMockResponse();
         d2.syncMetaData().call();
     }
 

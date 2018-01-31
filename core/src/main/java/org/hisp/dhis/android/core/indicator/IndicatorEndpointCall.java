@@ -39,19 +39,19 @@ import java.util.Set;
 
 @SuppressWarnings("PMD")
 public class IndicatorEndpointCall extends GenericEndpointCallImpl<Indicator> {
-    private final IndicatorService IndicatorService;
+    private final IndicatorService indicatorService;
 
     private IndicatorEndpointCall(GenericCallData data, IndicatorService IndicatorService,
                                   GenericHandler<Indicator, IndicatorModel> IndicatorHandler,
                                   Set<String> uids) {
         super(data, IndicatorHandler, ResourceModel.Type.INDICATOR, uids, null);
-        this.IndicatorService = IndicatorService;
+        this.indicatorService = IndicatorService;
     }
 
     @Override
     protected retrofit2.Call<Payload<Indicator>> getCall(Set<String> uids, String lastUpdated)
             throws IOException {
-        return IndicatorService.getIndicators(
+        return indicatorService.getIndicators(
                 Indicator.allFields,
                 Indicator.lastUpdated.gt(lastUpdated),
                 Indicator.uid.in(uids),

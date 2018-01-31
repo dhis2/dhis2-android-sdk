@@ -11,6 +11,8 @@ import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramRule;
+import org.hisp.dhis.android.core.program.ProgramRuleAction;
+import org.hisp.dhis.android.core.program.ProgramRuleActionMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramRuleMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageMetadataAuditHandler;
@@ -47,6 +49,8 @@ public class MetadataAuditHandlerFactory {
             return new ProgramIndicatorMetadataAuditHandler(programFactory);
         } else if (klass == ProgramRule.class) {
             return new ProgramRuleMetadataAuditHandler(programFactory);
+        } else if (klass == ProgramRuleAction.class) {
+            return new ProgramRuleActionMetadataAuditHandler(programFactory);
         } else {
             throw new IllegalArgumentException("No exists a metadata audit handler for: " + klass);
         }

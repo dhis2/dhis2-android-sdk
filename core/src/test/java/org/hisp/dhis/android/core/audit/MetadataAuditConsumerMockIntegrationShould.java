@@ -40,7 +40,9 @@ public class MetadataAuditConsumerMockIntegrationShould {
                 {MetadataAudit.class, "metadata.programIndicator.create.bG61Yg5Vx43",
                         "audit/programIndicator_create.json"},
                 {MetadataAudit.class, "metadata.programRule.create.lpAbEkA12h0",
-                        "audit/programRule_create.json"}
+                        "audit/programRule_create.json"},
+                {MetadataAudit.class, "metadata.programRuleAction.create.yCTGPpo27M0",
+                        "audit/programRuleAction_create.json"}
         });
     }
 

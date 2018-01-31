@@ -14,6 +14,8 @@ import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramRule;
+import org.hisp.dhis.android.core.program.ProgramRuleAction;
+import org.hisp.dhis.android.core.program.ProgramRuleActionMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramRuleMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageMetadataAuditHandler;
@@ -54,7 +56,8 @@ public class MetadataAuditHandlerFactoryShould {
                 {ProgramMetadataAuditHandler.class, Program.class},
                 {ProgramStageMetadataAuditHandler.class, ProgramStage.class},
                 {ProgramIndicatorMetadataAuditHandler.class, ProgramIndicator.class},
-                {ProgramRuleMetadataAuditHandler.class, ProgramRule.class}
+                {ProgramRuleMetadataAuditHandler.class, ProgramRule.class},
+                {ProgramRuleActionMetadataAuditHandler.class, ProgramRuleAction.class}
         });
     }
 

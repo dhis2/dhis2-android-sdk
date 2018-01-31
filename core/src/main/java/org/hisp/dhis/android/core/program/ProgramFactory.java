@@ -32,6 +32,8 @@ public class ProgramFactory {
     private final ProgramIndicatorHandler programIndicatorHandler;
     private final ProgramRuleStore programRuleStore;
     private final ProgramRuleHandler programRuleHandler;
+    private final ProgramRuleActionStore programRuleActionStore;
+    private final ProgramRuleActionHandler programRuleActionHandler;
 
     private final List<DeletableStore> deletableStores;
 
@@ -47,8 +49,7 @@ public class ProgramFactory {
         ProgramStageDataElementStore programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter);
 
-        programIndicatorStore = new ProgramIndicatorStoreImpl(
-                databaseAdapter);
+        programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter);
 
         ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore =
                 new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter);
@@ -61,8 +62,7 @@ public class ProgramFactory {
         ProgramRuleVariableStore programRuleVariableStore = new ProgramRuleVariableStoreImpl(
                 databaseAdapter);
 
-        ProgramRuleActionStore programRuleActionStore = new ProgramRuleActionStoreImpl(
-                databaseAdapter);
+        programRuleActionStore = new ProgramRuleActionStoreImpl(databaseAdapter);
 
         TrackedEntityAttributeStore trackedEntityAttributeStore =
                 new TrackedEntityAttributeStoreImpl(databaseAdapter);
@@ -96,11 +96,9 @@ public class ProgramFactory {
         ProgramRuleVariableHandler programRuleVariableHandler = new ProgramRuleVariableHandler(
                 programRuleVariableStore);
 
-        ProgramRuleActionHandler programRuleActionHandler = new ProgramRuleActionHandler(
-                programRuleActionStore);
+        programRuleActionHandler = new ProgramRuleActionHandler(programRuleActionStore);
 
-        programRuleHandler = new ProgramRuleHandler(programRuleStore,
-                programRuleActionHandler);
+        programRuleHandler = new ProgramRuleHandler(programRuleStore, programRuleActionHandler);
 
         TrackedEntityAttributeHandler trackedEntityAttributeHandler =
                 new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
@@ -170,5 +168,13 @@ public class ProgramFactory {
 
     public ProgramRuleHandler getProgramRuleHandler() {
         return programRuleHandler;
+    }
+
+    public ProgramRuleActionStore getProgramRuleActionStore() {
+        return programRuleActionStore;
+    }
+
+    public ProgramRuleActionHandler getProgramRuleActionHandler() {
+        return programRuleActionHandler;
     }
 }

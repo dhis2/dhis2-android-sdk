@@ -2,7 +2,7 @@
   "createdAt": "2018-01-28T17:57:01.688",
   "createdBy": "admin",
   "klass": "org.hisp.dhis.programrule.ProgramRuleAction",
-  "uid": "lcEAODgYu6c",
+  "uid": "UUwZWS8uirn",
   "type": "DELETE",
   "value": {
     "created": "2018-01-28T17:57:01.674",
@@ -40,6 +40,6 @@
       "id": "vANAXwtLwcT"
     },
     "content": "Error example",
-    "id": "yCTGPpo27M0"
+    "id": "UUwZWS8uirn"
   }
 }

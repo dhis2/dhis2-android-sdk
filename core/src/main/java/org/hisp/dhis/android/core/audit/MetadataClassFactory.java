@@ -5,6 +5,7 @@ import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramRule;
+import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
@@ -25,6 +26,7 @@ final class MetadataClassFactory {
         myMap.put("programStage", ProgramStage.class);
         myMap.put("programIndicator", ProgramIndicator.class);
         myMap.put("programRule", ProgramRule.class);
+        myMap.put("programRuleAction", ProgramRuleAction.class);
         return myMap;
     }
 

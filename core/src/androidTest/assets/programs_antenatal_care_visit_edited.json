@@ -185,7 +185,7 @@
               "lastUpdated": "2017-05-23T00:29:24.454",
               "id": "UUwZWS8uirn",
               "programRuleActionType": "SHOWERROR",
-              "content": "The hemoglobin value cannot be above 99",
+              "content": "The hemoglobin value cannot be above 99 edited",
               "dataElement": {
                 "id": "vANAXwtLwcT"
               },

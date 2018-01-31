@@ -70,7 +70,7 @@ public class RelationshipTypeEndPointCall implements Call<Response<Payload<Relat
                         RelationshipType.uid.in(relationshipTypeQuery.getUIds()),
                         RelationshipType.lastUpdated.gt(lastSyncedRelationshipType)).execute();
 
-        if (relationshipTypeByUId.isSuccessful() && relationshipTypeByUId.body() != null) {
+        if (relationshipTypeByUId.isSuccessful() && relationshipTypeByUId.body().items() != null) {
 
             Transaction transaction = databaseAdapter.beginNewTransaction();
 

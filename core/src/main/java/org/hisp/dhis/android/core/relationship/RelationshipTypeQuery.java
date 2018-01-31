@@ -24,6 +24,10 @@ public class RelationshipTypeQuery {
         private Builder() {
         }
 
+        public static Builder create() {
+            return new Builder();
+        }
+
         public Builder withUIds(Set<String> uIds){
             this.uIds=uIds;
             return this;

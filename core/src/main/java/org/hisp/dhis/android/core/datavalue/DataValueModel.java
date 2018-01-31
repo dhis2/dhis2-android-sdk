@@ -38,7 +38,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.ModelFactory;
-import org.hisp.dhis.android.core.common.StatementBinder;
+import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
@@ -47,7 +47,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 @SuppressWarnings("PMD")
-public abstract class DataValueModel extends BaseModel implements StatementBinder {
+public abstract class DataValueModel extends BaseModel implements UpdateWhereStatementBinder {
 
     public static final String TABLE = "DataValue";
 
@@ -67,6 +67,10 @@ public abstract class DataValueModel extends BaseModel implements StatementBinde
             return Utils.appendInNewArray(BaseModel.Columns.all(),
                     DATA_ELEMENT, PERIOD, ORGANISATION_UNIT, CATEGORY_OPTION_COMBO,
                     ATTRIBUTE_OPTION_COMBO, VALUE, STORED_BY, LAST_UPDATED, COMMENT, FOLLOW_UP);
+        }
+
+        public static String[] whereUpdate() {
+            return new String[]{DATA_ELEMENT, PERIOD, ORGANISATION_UNIT};
         }
     }
 

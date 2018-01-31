@@ -28,10 +28,10 @@ public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandle
             //organisationUnitFactory.getOrganisationUnitHandler().newEndPointCall(uIds, metadataAudit.getCreatedAt()).call();
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {
-                // organisationUnit = organisationUnit.toBuilder().deleted(true).build();
+                organisationUnit = organisationUnit.toBuilder().deleted(true).build();
             }
-            organisationUnitFactory.getOrganisationUnitHandler().handleOrganisationUnits(
-                    organisationUnit);
+            organisationUnitFactory.getOrganisationUnitHandler().handleOrganisationUnit(
+                    organisationUnit, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, organisationUnitFactory.getUserStore().getUserUId());
         }
     }
 }

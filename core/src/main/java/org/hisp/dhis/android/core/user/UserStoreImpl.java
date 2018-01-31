@@ -31,37 +31,42 @@ package org.hisp.dhis.android.core.user;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public class UserStoreImpl implements UserStore {
+public class UserStoreImpl extends Store implements UserStore {
+
+    private static final String FIELDS =
+            UserModel.Columns.UID + ", " +
+                    UserModel.Columns.CODE + ", " +
+                    UserModel.Columns.NAME + ", " +
+                    UserModel.Columns.DISPLAY_NAME + ", " +
+                    UserModel.Columns.CREATED + ", " +
+                    UserModel.Columns.LAST_UPDATED + ", " +
+                    UserModel.Columns.BIRTHDAY + ", " +
+                    UserModel.Columns.EDUCATION + ", " +
+                    UserModel.Columns.GENDER + ", " +
+                    UserModel.Columns.JOB_TITLE + ", " +
+                    UserModel.Columns.SURNAME + ", " +
+                    UserModel.Columns.FIRST_NAME + ", " +
+                    UserModel.Columns.INTRODUCTION + ", " +
+                    UserModel.Columns.EMPLOYER + ", " +
+                    UserModel.Columns.INTERESTS + ", " +
+                    UserModel.Columns.LANGUAGES + ", " +
+                    UserModel.Columns.EMAIL + ", " +
+                    UserModel.Columns.PHONE_NUMBER + ", " +
+                    UserModel.Columns.NATIONALITY;
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserModel.TABLE + " (" +
-            UserModel.Columns.UID + ", " +
-            UserModel.Columns.CODE + ", " +
-            UserModel.Columns.NAME + ", " +
-            UserModel.Columns.DISPLAY_NAME + ", " +
-            UserModel.Columns.CREATED + ", " +
-            UserModel.Columns.LAST_UPDATED + ", " +
-            UserModel.Columns.BIRTHDAY + ", " +
-            UserModel.Columns.EDUCATION + ", " +
-            UserModel.Columns.GENDER + ", " +
-            UserModel.Columns.JOB_TITLE + ", " +
-            UserModel.Columns.SURNAME + ", " +
-            UserModel.Columns.FIRST_NAME + ", " +
-            UserModel.Columns.INTRODUCTION + ", " +
-            UserModel.Columns.EMPLOYER + ", " +
-            UserModel.Columns.INTERESTS + ", " +
-            UserModel.Columns.LANGUAGES + ", " +
-            UserModel.Columns.EMAIL + ", " +
-            UserModel.Columns.PHONE_NUMBER + ", " +
-            UserModel.Columns.NATIONALITY +
+            FIELDS +
             ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + UserModel.TABLE + " SET " +
@@ -85,6 +90,9 @@ public class UserStoreImpl implements UserStore {
             UserModel.Columns.PHONE_NUMBER + " =?, " +
             UserModel.Columns.NATIONALITY + " =? " + " WHERE " +
             UserModel.Columns.UID + " =?;";
+
+    private static final String QUERY_USER_UID = "SELECT "+UserModel.Columns.UID+" FROM "
+            + UserModel.TABLE +";";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + UserModel.TABLE +
             " WHERE " + UserModel.Columns.UID + " =?;";
@@ -162,6 +170,18 @@ public class UserStoreImpl implements UserStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(UserModel.TABLE);
+    }
+
+    @Override
+    public String getUserUId() {
+        Cursor cursor = databaseAdapter.query(QUERY_USER_UID);
+        String uid = null;
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            uid = getStringFromCursor(cursor, 0);
+        }
+        cursor.close();
+        return uid;
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,

@@ -260,9 +260,10 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-        List<OrganisationUnit> organisationUnits = Collections.singletonList(OrganisationUnit.create("O6uvpzGd5pu",
-                null, null, null, null, null, null, null, null, null, null, "/ImspTQPwCqd/O6uvpzGd5pu", null, null,
-                null, null, false));
+        List<OrganisationUnit> organisationUnits = Collections.singletonList(OrganisationUnit.builder()
+                .uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu")
+                .deleted(false).build());
+
         UserCredentials userCredentials = UserCredentials.create("credentials_uid", "code", "name", null, null,
                 null, null, null, null);
         //dependencies for the OrganisationUnitCall:

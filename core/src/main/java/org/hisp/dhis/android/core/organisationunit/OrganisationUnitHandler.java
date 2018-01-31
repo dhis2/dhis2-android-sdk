@@ -53,28 +53,36 @@ public class OrganisationUnitHandler {
     }
 
 
-    public void handleOrganisationUnits(OrganisationUnit organisationUnit) {
-    }
-    
-    public void handleOrganisationUnits(@NonNull List<OrganisationUnit> organisationUnits,
-                                        @Nullable OrganisationUnitModel.Scope scope,
-                                        @NonNull String userUid) {
-        if (organisationUnits == null) {
-            return;
-        }
+    public void handleOrganisationUnit(OrganisationUnit organisationUnit,
+            @Nullable OrganisationUnitModel.Scope scope,
+            @NonNull String userUid) {
 
-        int size = organisationUnits.size();
-        for (int i = 0; i < size; i++) {
-            OrganisationUnit organisationUnit = organisationUnits.get(i);
-
-            if (isDeleted(organisationUnit)) {
-                organisationUnitStore.delete(organisationUnit.uid());
-            } else {
-                String parentUid = null;
-                if (organisationUnit.parent() != null) {
-                    parentUid = organisationUnit.parent().uid();
-                }
-                int updatedRow = organisationUnitStore.update(
+        if (isDeleted(organisationUnit)) {
+            organisationUnitStore.delete(organisationUnit.uid());
+        } else {
+            String parentUid = null;
+            if (organisationUnit.parent() != null) {
+                parentUid = organisationUnit.parent().uid();
+            }
+            int updatedRow = organisationUnitStore.update(
+                    organisationUnit.uid(),
+                    organisationUnit.code(),
+                    organisationUnit.name(),
+                    organisationUnit.displayName(),
+                    organisationUnit.created(),
+                    organisationUnit.lastUpdated(),
+                    organisationUnit.shortName(),
+                    organisationUnit.displayShortName(),
+                    organisationUnit.description(),
+                    organisationUnit.displayDescription(),
+                    organisationUnit.path(),
+                    organisationUnit.openingDate(),
+                    organisationUnit.closedDate(),
+                    parentUid,
+                    organisationUnit.level(),
+                    organisationUnit.uid());
+            if (updatedRow <= 0) {
+                organisationUnitStore.insert(
                         organisationUnit.uid(),
                         organisationUnit.code(),
                         organisationUnit.name(),
@@ -89,31 +97,26 @@ public class OrganisationUnitHandler {
                         organisationUnit.openingDate(),
                         organisationUnit.closedDate(),
                         parentUid,
-                        organisationUnit.level(),
-                        organisationUnit.uid());
-                if (updatedRow <= 0) {
-                    organisationUnitStore.insert(
-                            organisationUnit.uid(),
-                            organisationUnit.code(),
-                            organisationUnit.name(),
-                            organisationUnit.displayName(),
-                            organisationUnit.created(),
-                            organisationUnit.lastUpdated(),
-                            organisationUnit.shortName(),
-                            organisationUnit.displayShortName(),
-                            organisationUnit.description(),
-                            organisationUnit.displayDescription(),
-                            organisationUnit.path(),
-                            organisationUnit.openingDate(),
-                            organisationUnit.closedDate(),
-                            parentUid,
-                            organisationUnit.level()
-                    );
-                }
-                addUserOrganisationUnitLink(scope, userUid, organisationUnit);
-
-                addOrganisationUnitProgramLink(organisationUnit);
+                        organisationUnit.level()
+                );
             }
+            addUserOrganisationUnitLink(scope, userUid, organisationUnit);
+
+            addOrganisationUnitProgramLink(organisationUnit);
+        }
+    }
+    
+    public void handleOrganisationUnits(@NonNull List<OrganisationUnit> organisationUnits,
+                                        @Nullable OrganisationUnitModel.Scope scope,
+                                        @NonNull String userUid) {
+        if (organisationUnits == null) {
+            return;
+        }
+
+        int size = organisationUnits.size();
+        for (int i = 0; i < size; i++) {
+            OrganisationUnit organisationUnit = organisationUnits.get(i);
+            handleOrganisationUnit(organisationUnit, scope, userUid);
         }
     }
 

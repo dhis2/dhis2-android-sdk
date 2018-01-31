@@ -264,8 +264,8 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 .uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu")
                 .deleted(false).build());
 
-        UserCredentials userCredentials = UserCredentials.create("credentials_uid", "code", "name", null, null,
-                null, null, null, null);
+        UserCredentials userCredentials = UserCredentials.builder().uid("credentials_uid").code("code")
+                .name("name").build();
         //dependencies for the OrganisationUnitCall:
         OrganisationUnitService organisationUnitService = retrofit.create(OrganisationUnitService.class);
         OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
@@ -276,14 +276,16 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
         // Create a user with the root as assigned organisation unit (for the test):
-        User user = User.create("user_uid", "code", "name", "display_name", new Date(), new Date(), "birthday",
-                "education", "gender", "job_title", "surname", "firstName", "introduction", "employer", "interests",
-                "languages", "email", "phoneNumber", "nationality",
-                userCredentials,
-                organisationUnits,
-                organisationUnits,
-                organisationUnits,
-                false);
+        User user = User.builder()
+                .uid("user_uid").code("code").name("name").displayName("display_name")
+                .created(new Date()).lastUpdated(new Date()).birthday("birthday")
+                .education("education").gender("gender").jobTitle("job_title").surname("surname").firstName("firstName")
+                .introduction("introduction").employer("employer").interests("interests").languages("languages")
+                .email("email").phoneNumber("phoneNumber").nationality("nationality")
+                .userCredentials(userCredentials).organisationUnits(organisationUnits)
+                .teiSearchOrganisationUnits(organisationUnits).dataViewOrganisationUnits(organisationUnits)
+                .deleted(false)
+                .build();
 
         ContentValues userContentValues = new ContentValues();
         userContentValues.put(UserModel.Columns.ID, "user_uid");

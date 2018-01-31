@@ -1,0 +1,31 @@
+{
+  "organisationUnits": [
+    {
+      "code": "test",
+      "lastUpdated": "2018-01-31T00:20:12.425",
+      "id": "URx2Y0qZSCP",
+      "href": "http://localhost:8080/api/27/organisationUnits/URx2Y0qZSCP",
+      "level": 2,
+      "created": "2018-01-31T00:20:11.279",
+      "leaf": true,
+      "name": "test org unit",
+      "shortName": "test org unit short name",
+      "displayName": "test org unit",
+      "description": "test org unit description",
+      "displayShortName": "test org unit short name",
+      "externalAccess": false,
+      "path": "/ImspTQPwCqd/URx2Y0qZSCP",
+      "featureType": "NONE",
+      "openingDate": "2018-01-18T00:00:00.000",
+      "displayDescription": "test org unit description",
+      "dimensionItem": "URx2Y0qZSCP",
+      "closedDate": "2018-02-08T00:00:00.000",
+      "dimensionItemType": "ORGANISATION_UNIT",
+      "parent": {
+        "id": "ImspTQPwCqd"
+      },
+      "programs": [
+      ]
+    }
+  ]
+}

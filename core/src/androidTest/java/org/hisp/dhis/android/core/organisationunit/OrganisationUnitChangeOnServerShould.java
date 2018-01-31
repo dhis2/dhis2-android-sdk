@@ -23,6 +23,10 @@ import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserCredentials;
+import org.hisp.dhis.android.core.user.UserHandler;
+import org.hisp.dhis.android.core.user.UserStore;
+import org.hisp.dhis.android.core.user.UserStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +41,7 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
     private MetadataAuditHandlerFactory metadataAuditHandlerFactory;
 
     private OrganisationUnitStore organisationUnitStore;
+    private UserHandler userHandler;
     private MetadataAuditListener metadataAuditListener;
 
     private Dhis2MockServer dhis2MockServer;
@@ -56,6 +61,8 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
                                 HandlerFactory.createResourceHandler(databaseAdapter()))));
 
         organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
+        UserStore userStore = new UserStoreImpl(databaseAdapter());
+        userHandler = new UserHandler(userStore);
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
     }
 
@@ -90,7 +97,10 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
     }
 
     private void givenAExistedUser() {
-        User.builder()
+        User user = User.builder().uid("user")
+                .userCredentials(UserCredentials.builder().uid("creedentialuid")
+                        .build()).build();
+        userHandler.handleUser(user);
     }
 
 

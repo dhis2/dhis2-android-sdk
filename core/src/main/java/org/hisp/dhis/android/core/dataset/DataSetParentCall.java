@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementEndpointCall;
+import org.hisp.dhis.android.core.indicator.IndicatorEndpointCall;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
@@ -41,6 +42,7 @@ import retrofit2.Response;
 
 import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getAssignedDataSetUids;
 import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getDataElementUids;
+import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getIndicatorUids;
 
 public class DataSetParentCall extends TransactionalCall {
     private final User user;
@@ -62,6 +64,10 @@ public class DataSetParentCall extends TransactionalCall {
         DataElementEndpointCall dataElementEndpointCall =
                 DataElementEndpointCall.create(data, getDataElementUids(dataSets));
         Response<Payload<DataElement>> dataElementResponse = dataElementEndpointCall.call();
+
+        IndicatorEndpointCall indicatorEndpointCall
+                = IndicatorEndpointCall.create(data, getIndicatorUids(dataSets));
+        indicatorEndpointCall.call();
 
         linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);
         linkManager.saveDataSetOrganisationUnitLinks(user);

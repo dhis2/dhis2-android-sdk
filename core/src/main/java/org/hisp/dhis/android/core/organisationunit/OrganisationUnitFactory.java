@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
+import org.hisp.dhis.android.core.user.AuthenticatedUserStoreImpl;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserStore;
@@ -15,8 +17,8 @@ public class OrganisationUnitFactory {
     private final ResourceHandler resourceHandler;
     private final OrganisationUnitStore organisationUnitStore;
     private final OrganisationUnitHandler organisationUnitHandler;
-    private final UserStore userStore;
-
+    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private final AuthenticatedUserStore authenticatedUserStore;
 
     public OrganisationUnitFactory(
             Retrofit retrofit, DatabaseAdapter databaseAdapter, ResourceHandler resourceHandler) {
@@ -27,14 +29,19 @@ public class OrganisationUnitFactory {
         UserOrganisationUnitLinkStore userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
         OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore = new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
         this.organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
-        this.userStore = new UserStoreImpl(databaseAdapter);
+        this.userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
+        this.authenticatedUserStore = new AuthenticatedUserStoreImpl(databaseAdapter);
     }
 
     public OrganisationUnitHandler getOrganisationUnitHandler(){
         return organisationUnitHandler;
     }
 
-    public UserStore getUserStore() {
-        return userStore;
+    public AuthenticatedUserStore getAuthenticatedUserStore() {
+        return authenticatedUserStore;
+    }
+
+    public UserOrganisationUnitLinkStore getUserOrganisationUnitLinkStore(){
+        return userOrganisationUnitLinkStore;
     }
 }

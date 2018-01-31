@@ -182,8 +182,12 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
     @Override
     public OrganisationUnit queryByUid(String uid) {
         Cursor cursor = databaseAdapter.query(QUERY_BY_UID, uid);
-
-        return mapOrgUnitsFromCursor(cursor).get(0);
+        OrganisationUnit organisationUnit = null;
+        List<OrganisationUnit> organisationUnits = mapOrgUnitsFromCursor(cursor);
+        if(organisationUnits.size()>0){
+            organisationUnit = organisationUnits.get(0);
+        }
+        return organisationUnit;
     }
 
     private List<OrganisationUnit> mapOrgUnitsFromCursor(Cursor cursor) {

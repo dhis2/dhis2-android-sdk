@@ -41,5 +41,4 @@ public interface AuthenticatedUserStore extends DeletableStore {
     List<AuthenticatedUserModel> query();
 
     int delete();
-
 }

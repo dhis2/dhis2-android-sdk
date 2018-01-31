@@ -1,10 +1,14 @@
 package org.hisp.dhis.android.core.organisationunit;
 
+import android.util.Log;
+
 import org.hisp.dhis.android.core.audit.AuditType;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
 import org.hisp.dhis.android.core.audit.MetadataAuditHandler;
+import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandler {
@@ -24,14 +28,29 @@ public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandle
 
             Set<String> uIds = new HashSet<>();
             uIds.add(metadataAudit.getUid());
-
+            String userUId = organisationUnitFactory.getUserOrganisationUnitLinkStore()
+                    .queryUserUIdByOrganisationUnitUId(organisationUnit.uid());
+            if (userUId == null) {
+                Log.e(this.getClass().getSimpleName(),
+                        "MetadataAudit Error: Organisation Unit is created on server but organisation unit user does not exists in "
+                                + "local: "
+                                + metadataAudit);
+            }
             //organisationUnitFactory.getOrganisationUnitHandler().newEndPointCall(uIds, metadataAudit.getCreatedAt()).call();
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {
                 organisationUnit = organisationUnit.toBuilder().deleted(true).build();
             }
-            organisationUnitFactory.getOrganisationUnitHandler().handleOrganisationUnit(
-                    organisationUnit, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, organisationUnitFactory.getUserStore().getUserUId());
+            List<AuthenticatedUserModel> authenticatedUserModelList = organisationUnitFactory.getAuthenticatedUserStore().query();
+            if(authenticatedUserModelList.size()==0){
+                Log.e(this.getClass().getSimpleName(),
+                        "MetadataAudit Error: Organisation Unit is created on server but authenticated User does not exists in "
+                                + "local: "
+                                + metadataAudit);
+            }else {
+                organisationUnitFactory.getOrganisationUnitHandler().handleOrganisationUnit(
+                        organisationUnit, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, authenticatedUserModelList.get(0).user());
+            }
         }
     }
 }

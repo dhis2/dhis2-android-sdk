@@ -87,7 +87,7 @@ public abstract class Indicator extends BaseNameableObject {
 
     String indicatorTypeUid() {
         ObjectWithUid type = indicatorType();
-        return type != null ? type.uid() : null;
+        return type == null ? null : type.uid();
     }
 
     @Nullable

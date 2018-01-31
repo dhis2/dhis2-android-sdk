@@ -90,6 +90,10 @@ import org.hisp.dhis.android.core.event.EventService;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.indicator.IndicatorModel;
+import org.hisp.dhis.android.core.indicator.IndicatorStore;
+import org.hisp.dhis.android.core.indicator.IndicatorTypeModel;
+import org.hisp.dhis.android.core.indicator.IndicatorTypeStore;
 import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetService;
@@ -244,6 +248,8 @@ public final class D2 {
     private final IdentifiableObjectStore<DataSetModel> dataSetStore;
     private final ObjectStore<DataSetDataElementLinkModel> dataSetDataElementLinkStore;
     private final ObjectStore<DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitLinkStore;
+    private final IdentifiableObjectStore<IndicatorModel> indicatorStore;
+    private final IdentifiableObjectStore<IndicatorTypeModel> indicatorTypeStore;
 
     //Handlers
     private final UserCredentialsHandler userCredentialsHandler;
@@ -355,6 +361,8 @@ public final class D2 {
         this.dataSetStore = DataSetStore.create(databaseAdapter());
         this.dataSetDataElementLinkStore = DataSetDataElementLinkStore.create(databaseAdapter());
         this.dataSetOrganisationUnitLinkStore = DataSetOrganisationUnitLinkStore.create(databaseAdapter());
+        this.indicatorStore = IndicatorStore.create(databaseAdapter());
+        this.indicatorTypeStore = IndicatorTypeStore.create(databaseAdapter());
 
         //handlers
         userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
@@ -482,6 +490,8 @@ public final class D2 {
         deletableStoreList.add(dataSetStore);
         deletableStoreList.add(dataSetDataElementLinkStore);
         deletableStoreList.add(dataSetOrganisationUnitLinkStore);
+        deletableStoreList.add(indicatorStore);
+        deletableStoreList.add(indicatorTypeStore);
         return new LogOutUserCallable(
                 deletableStoreList
         );

@@ -192,6 +192,8 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("option_sets.json");
         dhis2MockServer.enqueueMockResponse("data_sets.json");
         dhis2MockServer.enqueueMockResponse("data_elements.json");
+        dhis2MockServer.enqueueMockResponse("indicators.json");
+        dhis2MockServer.enqueueMockResponse("indicator_types.json");
         Response response = d2.syncMetaData().call();
 
         assertThat(response.isSuccessful(), is(true));
@@ -208,6 +210,8 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("option_sets.json");
         dhis2MockServer.enqueueMockResponse("data_sets.json");
         dhis2MockServer.enqueueMockResponse("data_elements.json");
+        dhis2MockServer.enqueueMockResponse("indicators.json");
+        dhis2MockServer.enqueueMockResponse("indicator_types.json");
 
         Response response = d2.syncMetaData().call();
 

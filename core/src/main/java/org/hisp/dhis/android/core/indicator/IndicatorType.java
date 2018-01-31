@@ -56,7 +56,7 @@ public abstract class IndicatorType extends BaseIdentifiableObject {
     private static final Field<IndicatorType, Boolean> number = Field.create(NUMBER);
     private static final Field<IndicatorType, Integer> factor = Field.create(FACTOR);
 
-    public static final Fields<IndicatorType> allFields = Fields.<IndicatorType>builder().fields(
+    static final Fields<IndicatorType> allFields = Fields.<IndicatorType>builder().fields(
             uid, code, name, displayName, created, lastUpdated, deleted,
             number, factor).build();
 

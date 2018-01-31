@@ -51,28 +51,29 @@ public abstract class Indicator extends BaseNameableObject {
     private final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
     private final static String URL = "url";
 
-    public static final Field<Indicator, String> uid = Field.create(UID);
-    public static final Field<Indicator, String> code = Field.create(CODE);
-    public static final Field<Indicator, String> name = Field.create(NAME);
-    public static final Field<Indicator, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<Indicator, String> created = Field.create(CREATED);
-    public static final Field<Indicator, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<Indicator, String> shortName = Field.create(SHORT_NAME);
-    public static final Field<Indicator, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    public static final Field<Indicator, String> description = Field.create(DESCRIPTION);
-    public static final Field<Indicator, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    public static final Field<Indicator, Boolean> deleted = Field.create(DELETED);
+    static final Field<Indicator, String> uid = Field.create(UID);
+    private static final Field<Indicator, String> code = Field.create(CODE);
+    private static final Field<Indicator, String> name = Field.create(NAME);
+    private static final Field<Indicator, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<Indicator, String> created = Field.create(CREATED);
+    static final Field<Indicator, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<Indicator, String> shortName = Field.create(SHORT_NAME);
+    private static final Field<Indicator, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+    private static final Field<Indicator, String> description = Field.create(DESCRIPTION);
+    private static final Field<Indicator, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
+    private static final Field<Indicator, Boolean> deleted = Field.create(DELETED);
 
-    public static final Field<Indicator, Boolean> annualized = Field.create(ANNUALIZED);
-    public static final Field<Indicator, ObjectWithUid> indicatorType = Field.create(INDICATOR_TYPE);
-    public static final Field<Indicator, String> numerator = Field.create(NUMERATOR);
-    public static final Field<Indicator, String> numeratorDescription = Field.create(NUMERATOR_DESCRIPTION);
-    public static final Field<Indicator, String> denominator = Field.create(DENOMINATOR);
-    public static final Field<Indicator, String> denominatorDescription = Field.create(DENOMINATOR_DESCRIPTION);
-    public static final Field<Indicator, String> url = Field.create(URL);
+    private static final Field<Indicator, Boolean> annualized = Field.create(ANNUALIZED);
+    private static final Field<Indicator, ObjectWithUid> indicatorType = Field.create(INDICATOR_TYPE);
+    private static final Field<Indicator, String> numerator = Field.create(NUMERATOR);
+    private static final Field<Indicator, String> numeratorDescription = Field.create(NUMERATOR_DESCRIPTION);
+    private static final Field<Indicator, String> denominator = Field.create(DENOMINATOR);
+    private static final Field<Indicator, String> denominatorDescription = Field.create(DENOMINATOR_DESCRIPTION);
+    private static final Field<Indicator, String> url = Field.create(URL);
 
-    public static final Fields<Indicator> allFields = Fields.<Indicator>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, deleted,
+    static final Fields<Indicator> allFields = Fields.<Indicator>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
+            description, displayDescription, deleted,
             annualized, indicatorType, numerator, numeratorDescription, denominator,
             denominatorDescription, url).build();
 

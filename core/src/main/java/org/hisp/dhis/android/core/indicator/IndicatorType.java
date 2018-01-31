@@ -45,12 +45,12 @@ public abstract class IndicatorType extends BaseIdentifiableObject {
     private final static String NUMBER = "number";
     private final static String FACTOR = "factor";
 
-    private static final Field<IndicatorType, String> uid = Field.create(UID);
+    static final Field<IndicatorType, String> uid = Field.create(UID);
     private static final Field<IndicatorType, String> code = Field.create(CODE);
     private static final Field<IndicatorType, String> name = Field.create(NAME);
     private static final Field<IndicatorType, String> displayName = Field.create(DISPLAY_NAME);
     private static final Field<IndicatorType, String> created = Field.create(CREATED);
-    private static final Field<IndicatorType, String> lastUpdated = Field.create(LAST_UPDATED);
+    static final Field<IndicatorType, String> lastUpdated = Field.create(LAST_UPDATED);
     private static final Field<IndicatorType, Boolean> deleted = Field.create(DELETED);
 
     private static final Field<IndicatorType, Boolean> number = Field.create(NUMBER);

@@ -41,11 +41,11 @@ import java.util.Set;
 public class IndicatorEndpointCall extends GenericEndpointCallImpl<Indicator> {
     private final IndicatorService indicatorService;
 
-    private IndicatorEndpointCall(GenericCallData data, IndicatorService IndicatorService,
-                                  GenericHandler<Indicator, IndicatorModel> IndicatorHandler,
+    private IndicatorEndpointCall(GenericCallData data, IndicatorService indicatorService,
+                                  GenericHandler<Indicator, IndicatorModel> indicatorHandler,
                                   Set<String> uids) {
-        super(data, IndicatorHandler, ResourceModel.Type.INDICATOR, uids, null);
-        this.indicatorService = IndicatorService;
+        super(data, indicatorHandler, ResourceModel.Type.INDICATOR, uids, null);
+        this.indicatorService = indicatorService;
     }
 
     @Override

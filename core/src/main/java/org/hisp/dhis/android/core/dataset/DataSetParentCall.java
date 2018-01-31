@@ -63,7 +63,7 @@ public class DataSetParentCall extends TransactionalCall {
                 DataElementEndpointCall.create(data, getDataElementUids(dataSets));
         Response<Payload<DataElement>> dataElementResponse = dataElementEndpointCall.call();
 
-        linkManager.saveDataSetDataElementLinks(dataSets);
+        linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);
         linkManager.saveDataSetOrganisationUnitLinks(user);
 
         return dataElementResponse;

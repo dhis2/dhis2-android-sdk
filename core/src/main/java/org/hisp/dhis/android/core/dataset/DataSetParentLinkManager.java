@@ -27,8 +27,11 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
 
@@ -37,23 +40,28 @@ import java.util.List;
 class DataSetParentLinkManager {
     private final ObjectWithoutUidStore<DataSetDataElementLinkModel> dataSetDataElementStore;
     private final ObjectWithoutUidStore<DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitStore;
+    private final ObjectWithoutUidStore<DataSetIndicatorLinkModel> dataSetIndicatorStore;
 
     DataSetParentLinkManager(
             ObjectWithoutUidStore<DataSetDataElementLinkModel> dataSetDataElementStore,
-            ObjectWithoutUidStore<DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitStore) {
+            ObjectWithoutUidStore<DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitStore,
+            ObjectWithoutUidStore<DataSetIndicatorLinkModel> dataSetIndicatorStore) {
         this.dataSetDataElementStore = dataSetDataElementStore;
         this.dataSetOrganisationUnitStore = dataSetOrganisationUnitStore;
+        this.dataSetIndicatorStore = dataSetIndicatorStore;
     }
 
     static DataSetParentLinkManager create(DatabaseAdapter databaseAdapter) {
         return new DataSetParentLinkManager(
                 DataSetDataElementLinkStore.create(databaseAdapter),
-                DataSetOrganisationUnitLinkStore.create(databaseAdapter));
+                DataSetOrganisationUnitLinkStore.create(databaseAdapter),
+                DataSetIndicatorLinkStore.create(databaseAdapter));
     }
 
-    void saveDataSetDataElementLinks(List<DataSet> dataSets) {
+    void saveDataSetDataElementAndIndicatorLinks(List<DataSet> dataSets) {
         for (DataSet dataSet : dataSets) {
             saveDataSetDataElementLink(dataSet);
+            saveDataSetIndicatorLink(dataSet);
         }
     }
 
@@ -65,6 +73,16 @@ class DataSetParentLinkManager {
                     DataSetDataElementLinkModel.create(
                             dataSet.uid(),
                             dataSetDataElement.dataElement().uid()
+                    ));
+        }
+    }
+
+    private void saveDataSetIndicatorLink(DataSet dataSet) {
+        for (ObjectWithUid indicator : dataSet.indicators()) {
+            this.dataSetIndicatorStore.updateOrInsertWhere(
+                    DataSetIndicatorLinkModel.create(
+                            dataSet.uid(),
+                            indicator.uid()
                     ));
         }
     }

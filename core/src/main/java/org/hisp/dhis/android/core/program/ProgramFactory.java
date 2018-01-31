@@ -34,6 +34,8 @@ public class ProgramFactory {
     private final ProgramRuleHandler programRuleHandler;
     private final ProgramRuleActionStore programRuleActionStore;
     private final ProgramRuleActionHandler programRuleActionHandler;
+    private final ProgramRuleVariableStore programRuleVariableStore;
+    private final ProgramRuleVariableHandler programRuleVariableHandler;
 
     private final List<DeletableStore> deletableStores;
 
@@ -59,7 +61,7 @@ public class ProgramFactory {
 
         programStageStore = new ProgramStageStoreImpl(databaseAdapter);
 
-        ProgramRuleVariableStore programRuleVariableStore = new ProgramRuleVariableStoreImpl(
+        programRuleVariableStore = new ProgramRuleVariableStoreImpl(
                 databaseAdapter);
 
         programRuleActionStore = new ProgramRuleActionStoreImpl(databaseAdapter);
@@ -93,7 +95,7 @@ public class ProgramFactory {
         programStageHandler = new ProgramStageHandler(
                 programStageStore, programStageSectionHandler, programStageDataElementHandler);
 
-        ProgramRuleVariableHandler programRuleVariableHandler = new ProgramRuleVariableHandler(
+        programRuleVariableHandler = new ProgramRuleVariableHandler(
                 programRuleVariableStore);
 
         programRuleActionHandler = new ProgramRuleActionHandler(programRuleActionStore);
@@ -176,5 +178,13 @@ public class ProgramFactory {
 
     public ProgramRuleActionHandler getProgramRuleActionHandler() {
         return programRuleActionHandler;
+    }
+
+    public ProgramRuleVariableStore getProgramRuleVariableStore() {
+        return programRuleVariableStore;
+    }
+
+    public ProgramRuleVariableHandler getProgramRuleVariableHandler() {
+        return programRuleVariableHandler;
     }
 }

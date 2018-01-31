@@ -14,12 +14,19 @@ import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramRuleActionMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramRuleMetadataAuditHandler;
+import org.hisp.dhis.android.core.program.ProgramRuleVariable;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageMetadataAuditHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityMetadataAuditHandler;
 
+@SuppressWarnings({
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity"
+})
 public class MetadataAuditHandlerFactory {
 
     private final TrackedEntityFactory trackedEntityFactory;
@@ -51,6 +58,8 @@ public class MetadataAuditHandlerFactory {
             return new ProgramRuleMetadataAuditHandler(programFactory);
         } else if (klass == ProgramRuleAction.class) {
             return new ProgramRuleActionMetadataAuditHandler(programFactory);
+        } else if (klass == ProgramRuleVariable.class) {
+            return new ProgramRuleVariableMetadataAuditHandler(programFactory);
         } else {
             throw new IllegalArgumentException("No exists a metadata audit handler for: " + klass);
         }

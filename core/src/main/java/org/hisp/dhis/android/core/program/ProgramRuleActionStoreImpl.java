@@ -48,7 +48,13 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings({
-        "PMD.AvoidDuplicateLiterals"
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.NPathComplexity",
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity",
+        "PMD.AvoidInstantiatingObjectsInLoops",
+        "PMD.ExcessiveMethodLength"
 })
 public class ProgramRuleActionStoreImpl extends Store implements ProgramRuleActionStore {
 

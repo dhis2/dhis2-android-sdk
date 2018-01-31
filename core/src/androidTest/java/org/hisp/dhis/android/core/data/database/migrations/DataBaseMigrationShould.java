@@ -48,7 +48,7 @@ public class DataBaseMigrationShould {
     public static final String exampleMigrationsDir = "migrations/example_migrations";
     public static final String databaseSqlVersion1 = "db_version_1.sql";
     public static final String databaseSqlVersion2 = "db_version_2.sql";
-    public static final String databaseSqlVersion3 = "db_version_3.sql";
+    public static final String databaseSqlVersion4 = "db_version_4.sql";
     static String dbName= null;
     private SQLiteDatabase databaseInMemory;
 
@@ -128,7 +128,7 @@ public class DataBaseMigrationShould {
 
     @Test
     public void have_categoryCombo_columns_after_create_version_2_or_newer() throws IOException {
-        buildD2(initCoreDataBase(dbName, 3, realMigrationDir, databaseSqlVersion3));
+        buildD2(initCoreDataBase(dbName, 4, realMigrationDir, databaseSqlVersion4));
         assertVersion2MigrationChanges(d2.databaseAdapter());
     }
     @Test

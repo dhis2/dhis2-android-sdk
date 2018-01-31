@@ -77,6 +77,8 @@ import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
@@ -241,6 +243,7 @@ public final class D2 {
 
     private final IdentifiableObjectStore<DataSetModel> dataSetStore;
     private final ObjectStore<DataSetDataElementLinkModel> dataSetDataElementLinkStore;
+    private final ObjectStore<DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitLinkStore;
 
     //Handlers
     private final UserCredentialsHandler userCredentialsHandler;
@@ -351,6 +354,7 @@ public final class D2 {
 
         this.dataSetStore = DataSetStore.create(databaseAdapter());
         this.dataSetDataElementLinkStore = DataSetDataElementLinkStore.create(databaseAdapter());
+        this.dataSetOrganisationUnitLinkStore = DataSetOrganisationUnitLinkStore.create(databaseAdapter());
 
         //handlers
         userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
@@ -477,6 +481,7 @@ public final class D2 {
         deletableStoreList.add(categoryCategoryComboLinkStore);
         deletableStoreList.add(dataSetStore);
         deletableStoreList.add(dataSetDataElementLinkStore);
+        deletableStoreList.add(dataSetOrganisationUnitLinkStore);
         return new LogOutUserCallable(
                 deletableStoreList
         );

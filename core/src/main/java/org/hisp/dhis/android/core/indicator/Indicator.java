@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import java.util.Date;
 
 @AutoValue
-public abstract class Indicator extends BaseNameableObject {
+abstract class Indicator extends BaseNameableObject {
     private final static String ANNUALIZED = "annualized";
     private final static String INDICATOR_TYPE = "indicatorType";
     private final static String NUMERATOR = "numerator";
@@ -79,40 +79,39 @@ public abstract class Indicator extends BaseNameableObject {
 
     @Nullable
     @JsonProperty(ANNUALIZED)
-    public abstract Boolean annualized();
+    abstract Boolean annualized();
 
-    /* TODO */
     @Nullable
     @JsonProperty(INDICATOR_TYPE)
-    public abstract ObjectWithUid indicatorType();
+    abstract ObjectWithUid indicatorType();
 
-    public String indicatorTypeUid() {
-        return indicatorType() != null ? indicatorType().uid() : null;
+    String indicatorTypeUid() {
+        ObjectWithUid type = indicatorType();
+        return type != null ? type.uid() : null;
     }
-
 
     @Nullable
     @JsonProperty(NUMERATOR)
-    public abstract String numerator();
+    abstract String numerator();
 
     @Nullable
     @JsonProperty(NUMERATOR_DESCRIPTION)
-    public abstract String numeratorDescription();
+    abstract String numeratorDescription();
 
     @Nullable
     @JsonProperty(DENOMINATOR)
-    public abstract String denominator();
+    abstract String denominator();
 
     @Nullable
     @JsonProperty(DENOMINATOR_DESCRIPTION)
-    public abstract String denominatorDescription();
+    abstract String denominatorDescription();
 
     @Nullable
     @JsonProperty(URL)
-    public abstract String url();
+    abstract String url();
 
     @JsonCreator
-    public static Indicator create(
+    static Indicator create(
             @JsonProperty(UID) String uid,
             @JsonProperty(CODE) String code,
             @JsonProperty(NAME) String name,

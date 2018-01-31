@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserRole;
@@ -98,6 +99,17 @@ final class DataSetParentUidsHelper {
         for (DataSet dataSet : dataSets) {
             for (ObjectWithUid indicator : dataSet.indicators()) {
                 uids.add(indicator.uid());
+            }
+        }
+        return uids;
+    }
+
+    static Set<String> getIndicatorTypeUids(List<Indicator> indicators) {
+        Set<String> uids = new HashSet<>();
+        for (Indicator indicator : indicators) {
+            ObjectWithUid type = indicator.indicatorType();
+            if (type != null) {
+                uids.add(type.uid());
             }
         }
         return uids;

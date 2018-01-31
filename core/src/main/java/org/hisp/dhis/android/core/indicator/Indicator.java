@@ -83,7 +83,7 @@ public abstract class Indicator extends BaseNameableObject {
 
     @Nullable
     @JsonProperty(INDICATOR_TYPE)
-    abstract ObjectWithUid indicatorType();
+    public abstract ObjectWithUid indicatorType();
 
     String indicatorTypeUid() {
         ObjectWithUid type = indicatorType();

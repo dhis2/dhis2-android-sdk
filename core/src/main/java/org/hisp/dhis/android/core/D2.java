@@ -489,17 +489,16 @@ public final class D2 {
     public Call<Response> syncMetaData() {
         return new MetadataCall(
                 databaseAdapter, systemInfoService, userService, programService,
-                organisationUnitService, systemInfoStore, resourceStore, userStore,
+                systemInfoStore, resourceStore, userStore,
                 userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
-                organisationUnitStore,
-                userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
+                programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore,
-                organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
+                categoryQuery, categoryService, categoryHandler,
                 categoryComboQuery, comboService, categoryComboHandler,
-                optionSetFactory, trackedEntityFactory);
+                optionSetFactory, trackedEntityFactory, organisationUnitFactory);
     }
 
     @NonNull

@@ -149,7 +149,4 @@ public class OrganisationUnitHandler {
             }
         }
     }
-
-    public void newEndPointCall(Set<String> uIds, Date createdAt) {
-    }
 }

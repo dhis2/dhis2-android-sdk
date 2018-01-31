@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -274,7 +275,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore =
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         // Create a user with the root as assigned organisation unit (for the test):
         User user = User.builder()
                 .uid("user_uid").code("code").name("name").displayName("display_name")
@@ -328,10 +329,11 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         program8.put(ProgramModel.Columns.UID, "ur1Edk5Oe2n");
         database().insert(ProgramModel.TABLE, null, program8);
 
+        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, databaseAdapter(),
-                organisationUnitStore, resourceStore, new Date(), userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore);
+                resourceHandler, new Date(), organisationUnitHandler, "");
     }
+
 
     @Test
     @MediumTest

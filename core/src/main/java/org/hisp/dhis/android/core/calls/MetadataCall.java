@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -85,6 +86,7 @@ import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserService;
 import org.hisp.dhis.android.core.user.UserStore;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -99,15 +101,12 @@ public class MetadataCall implements Call<Response> {
     private final SystemInfoService systemInfoService;
     private final UserService userService;
     private final ProgramService programService;
-    private final OrganisationUnitService organisationUnitService;
     private final SystemInfoStore systemInfoStore;
     private final ResourceStore resourceStore;
     private final UserStore userStore;
     private final UserCredentialsStore userCredentialsStore;
     private final UserRoleStore userRoleStore;
     private final UserRoleProgramLinkStore userRoleProgramLinkStore;
-    private final OrganisationUnitStore organisationUnitStore;
-    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final ProgramStore programStore;
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
@@ -131,24 +130,20 @@ public class MetadataCall implements Call<Response> {
 
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
+    private final OrganisationUnitFactory organisationUnitFactory;
 
     private boolean isExecuted;
-
-    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
             @NonNull SystemInfoService systemInfoService,
             @NonNull UserService userService,
             @NonNull ProgramService programService,
-            @NonNull OrganisationUnitService organisationUnitService,
             @NonNull SystemInfoStore systemInfoStore,
             @NonNull ResourceStore resourceStore,
             @NonNull UserStore userStore,
             @NonNull UserCredentialsStore userCredentialsStore,
             @NonNull UserRoleStore userRoleStore,
             @NonNull UserRoleProgramLinkStore userRoleProgramLinkStore,
-            @NonNull OrganisationUnitStore organisationUnitStore,
-            @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             @NonNull ProgramStore programStore,
             @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
             @NonNull ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
@@ -163,7 +158,6 @@ public class MetadataCall implements Call<Response> {
             @NonNull ProgramStageSectionStore programStageSectionStore,
             @NonNull ProgramStageStore programStageStore,
             @NonNull RelationshipTypeStore relationshipStore,
-            @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
             @NonNull CategoryQuery categoryQuery,
             @NonNull CategoryService categoryService,
             @NonNull CategoryHandler categoryHandler,
@@ -171,20 +165,18 @@ public class MetadataCall implements Call<Response> {
             @NonNull CategoryComboService categoryComboService,
             @NonNull CategoryComboHandler categoryComboHandler,
             @NonNull OptionSetFactory optionSetFactory,
-            @NonNull TrackedEntityFactory trackedEntityFactory) {
+            @NonNull TrackedEntityFactory trackedEntityFactory,
+            @NonNull OrganisationUnitFactory organisationUnitFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
         this.programService = programService;
-        this.organisationUnitService = organisationUnitService;
         this.systemInfoStore = systemInfoStore;
         this.resourceStore = resourceStore;
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.userRoleStore = userRoleStore;
         this.userRoleProgramLinkStore = userRoleProgramLinkStore;
-        this.organisationUnitStore = organisationUnitStore;
-        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.programStore = programStore;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
@@ -199,7 +191,6 @@ public class MetadataCall implements Call<Response> {
         this.programStageSectionStore = programStageSectionStore;
         this.programStageStore = programStageStore;
         this.relationshipStore = relationshipStore;
-        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
         this.categoryQuery = categoryQuery;
         this.categoryService = categoryService;
         this.categoryHandler = categoryHandler;
@@ -209,6 +200,7 @@ public class MetadataCall implements Call<Response> {
 
         this.optionSetFactory = optionSetFactory;
         this.trackedEntityFactory = trackedEntityFactory;
+        this.organisationUnitFactory = organisationUnitFactory;
     }
 
     @Override
@@ -258,11 +250,7 @@ public class MetadataCall implements Call<Response> {
             }
 
             User user = (User) response.body();
-
-            response = new OrganisationUnitCall(
-                    user, organisationUnitService, databaseAdapter, organisationUnitStore,
-                    resourceStore, serverDate, userOrganisationUnitLinkStore,
-                    organisationUnitProgramLinkStore).call();
+            response = organisationUnitFactory.newEndPointCall(serverDate, user, "").call();
 
             if (!response.isSuccessful()) {
                 return response;

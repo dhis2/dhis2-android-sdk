@@ -56,10 +56,9 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     private final User user;
     private final OrganisationUnitService organisationUnitService;
     private final DatabaseAdapter database;
-    private final OrganisationUnitStore organisationUnitStore;
-    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
-    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
-    private final ResourceStore resourceStore;
+    private final OrganisationUnitHandler organisationUnitHandler;
+    private final ResourceHandler resourceHandler;
+    private final String uid;
 
     private final Date serverDate;
     private boolean isExecuted;
@@ -67,19 +66,17 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     public OrganisationUnitCall(@NonNull User user,
                                 @NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull DatabaseAdapter database,
-                                @NonNull OrganisationUnitStore organisationUnitStore,
-                                @NonNull ResourceStore resourceStore,
+                                @NonNull ResourceHandler resourceHandler,
                                 @NonNull Date serverDate,
-                                @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                                @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore) {
+                                @NonNull OrganisationUnitHandler organisationUnitHandler,
+                                @NonNull String uid) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
         this.database = database;
-        this.organisationUnitStore = organisationUnitStore;
-        this.resourceStore = resourceStore;
+        this.resourceHandler = resourceHandler;
         this.serverDate = new Date(serverDate.getTime());
-        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
+        this.organisationUnitHandler = organisationUnitHandler;
+        this.uid = uid;
     }
 
     @Override
@@ -98,37 +95,46 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             isExecuted = true;
         }
         Response<Payload<OrganisationUnit>> response = null;
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
-        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore);
-
-        Transaction transaction = database.beginNewTransaction();
+        //Transaction transaction = database.beginNewTransaction();
         try {
-            Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
-            Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
-                    resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
-            );
-            // Call OrganisationUnitService for each tree root & try to handleTrackedEntity sub-tree:
-            for (String uid : rootOrgUnitUids) {
-                response = getOrganisationUnit(uid, lastUpdatedFilter);
-                if (response.isSuccessful()) {
-                    organisationUnitHandler.handleOrganisationUnits(
-                            response.body().items(),
-                            OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
-                            user.uid()
-                    );
-                } else {
-                    break; //stop early unsuccessful:
+                Filter<OrganisationUnit, String> lastUpdatedFilter =
+                        OrganisationUnit.lastUpdated.gt(
+                                resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
+                        );
+                // Call OrganisationUnitService for each tree root & try to handleTrackedEntity sub-tree:
+
+                if(uid.isEmpty()) {
+                    Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
+                    for (String uid : rootOrgUnitUids) {
+                        response = getOrganisationUnitByUId(uid, lastUpdatedFilter);
+                        if(!response.isSuccessful()){
+                            break;//stop early unsuccessful:
+                        }
+                    }
+                }else{
+                    response = getOrganisationUnitByUId(uid, lastUpdatedFilter);
                 }
-            }
             if (response != null && response.isSuccessful()) {
                 resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDate);
-                transaction.setSuccessful();
+                //transaction.setSuccessful();
             }
         } finally {
-            transaction.end();
+            //transaction.end();
+        }
+        return response;
+    }
+
+    private Response<Payload<OrganisationUnit>> getOrganisationUnitByUId(
+            @NonNull String uid,
+            @Nullable Filter<OrganisationUnit, String> lastUpdatedFilter) throws IOException {
+        Response<Payload<OrganisationUnit>>  response = getOrganisationUnit(uid, lastUpdatedFilter);
+        if (response.isSuccessful()) {
+            organisationUnitHandler.handleOrganisationUnits(
+                    response.body().items(),
+                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
+                    user.uid()
+            );
         }
         return response;
     }

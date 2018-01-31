@@ -6,10 +6,9 @@ import org.hisp.dhis.android.core.audit.AuditType;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
 import org.hisp.dhis.android.core.audit.MetadataAuditHandler;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
+import org.hisp.dhis.android.core.user.User;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandler {
 
@@ -26,17 +25,24 @@ public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandle
             //metadataAudit of UPDATE type does not return payload
             //It's necessary sync by metadata call
 
-            Set<String> uIds = new HashSet<>();
-            uIds.add(metadataAudit.getUid());
             String userUId = organisationUnitFactory.getUserOrganisationUnitLinkStore()
-                    .queryUserUIdByOrganisationUnitUId(organisationUnit.uid());
-            if (userUId == null) {
+                    .queryUserUIdByOrganisationUnitUId(metadataAudit.getUid());
+            if(userUId==null){
                 Log.e(this.getClass().getSimpleName(),
-                        "MetadataAudit Error: Organisation Unit is created on server but organisation unit user does not exists in "
+                        "MetadataAudit Error: Organisation Unit is updated on server but organisation unit user does not exists in "
                                 + "local: "
                                 + metadataAudit);
+                return;
             }
-            //organisationUnitFactory.getOrganisationUnitHandler().newEndPointCall(uIds, metadataAudit.getCreatedAt()).call();
+            User user = organisationUnitFactory.getUserStore().queryByUId(userUId);
+            if (user == null) {
+                Log.e(this.getClass().getSimpleName(),
+                        "MetadataAudit Error: Organisation Unit is updated on server but organisation unit user does not exists in "
+                                + "local: "
+                                + metadataAudit);
+                return;
+            }
+            organisationUnitFactory.newEndPointCall(metadataAudit.getCreatedAt(), user, metadataAudit.getUid()).call();
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {
                 organisationUnit = organisationUnit.toBuilder().deleted(true).build();

@@ -236,7 +236,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
                 .shortName(shortName).displayShortName(displayShortName)
                 .description(description). displayDescription(displayDescription)
                 .path(path).openingDate(openingDate).closedDate(closedDate)
-                .level(level).deleted(false).build();
+                .level(level).build();
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid,

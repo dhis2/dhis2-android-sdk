@@ -58,5 +58,5 @@ public interface UserStore extends DeletableStore{
 
     int delete();
 
-    String getUserUId();
+    User queryByUId(String userUId);
 }

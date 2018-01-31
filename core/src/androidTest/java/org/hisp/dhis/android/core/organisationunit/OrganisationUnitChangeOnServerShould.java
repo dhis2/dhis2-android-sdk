@@ -22,9 +22,6 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
-import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
-import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStoreImpl;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
@@ -108,7 +105,7 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(OrganisationUnit.class, metadataAudit);
 
-        assertThat(getOrganisationUnit(organisationUnitStore.queryByUid(metadataAudit.getUid())), is(metadataAudit.getValue()));
+        assertThat(getOrganisationUnitWithParent(organisationUnitStore.queryByUid(metadataAudit.getUid())), is(metadataAudit.getValue()));
     }
 
     @Test
@@ -138,10 +135,12 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
     public void update_option_set_if_audit_type_is_update() throws Exception {
         String filename = "audit/organisation_units.json";
 
+        givenMetadataDependencies();
+
         givenAExistedOrganisationUnitPreviously();
 
         MetadataAudit<OrganisationUnit> metadataAudit =
-                givenAMetadataAudit("audit/organisation_unit_create.json");
+                givenAMetadataAudit("audit/organisation_unit_update.json");
 
         dhis2MockServer.enqueueMockResponse(filename);
 
@@ -158,10 +157,16 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(OrganisationUnit.class, metadataAudit);
 
-        assertThat(getOptionSet(metadataAudit.getUid()), is(parseExpected(
-                filename).items().get(0)));
+        assertThat(getOrganisationUnitWithParent(getOrganisationUnit(metadataAudit.getUid())), is(getOrganisationUnitWithParent(parseExpected(
+                filename).items().get(0))));
     }
 
+
+    private void givenAExistedOrganisationUnitPreviously() throws IOException {
+        MetadataAudit<OrganisationUnit> metadataAudit =
+                givenAMetadataAudit("audit/organisation_unit_create.json");
+        metadataAuditListener.onMetadataChanged(OrganisationUnit.class, metadataAudit);
+    }
 
     private void givenMetadataDependencies() {
         givenAExistedUser();
@@ -178,7 +183,7 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
                 OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, "xE7jOejl9FI");
     }
 
-    private OrganisationUnit getOrganisationUnit(OrganisationUnit organisationUnit) {
+    private OrganisationUnit getOrganisationUnitWithParent(OrganisationUnit organisationUnit) {
         OrganisationUnit organisationUnitParent = organisationUnitStore.queryByUid("ImspTQPwCqd");
         if(organisationUnitParent!=null) {
             organisationUnitParent = organisationUnitParent.toBuilder().deleted(null).level(
@@ -196,7 +201,7 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
         authenticatedUserStore.insert("xE7jOejl9FI", "");
     }
 
-    private OrganisationUnit getOptionSet(String uid) {
+    private OrganisationUnit getOrganisationUnit(String uid) {
         OrganisationUnit organisationUnit = organisationUnitStore.queryByUid(uid);
 
         return organisationUnit;
@@ -209,12 +214,6 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
         GenericClassParser parser = new GenericClassParser();
 
         return parser.parse(json, MetadataAudit.class, OrganisationUnit.class);
-    }
-
-    private void givenAExistedOrganisationUnitPreviously() throws IOException {
-        MetadataAudit<OrganisationUnit> metadataAudit =
-                givenAMetadataAudit("audit/organisation_unit_create.json");
-        metadataAuditListener.onMetadataChanged(OrganisationUnit.class, metadataAudit);
     }
 
     private Payload<OrganisationUnit> parseExpected(String fileName) throws IOException {

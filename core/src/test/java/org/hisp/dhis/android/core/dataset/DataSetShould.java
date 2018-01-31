@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.PeriodType;
 import org.junit.Test;
 
@@ -74,5 +75,6 @@ public class DataSetShould extends BaseObjectShould implements ObjectShould {
         assertThat(dataSet.openFuturePeriods()).isEqualTo(0);
         assertThat(dataSet.expiryDays()).isEqualTo(0);
         assertThat(dataSet.categoryComboUid()).isEqualTo("O4VaNks6tta");
+        assertThat(dataSet.indicators().get(0)).isEqualTo(ObjectWithUid.create("OEWO2PpiUKx"));
     }
 }

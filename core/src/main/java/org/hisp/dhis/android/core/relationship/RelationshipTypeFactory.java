@@ -14,6 +14,7 @@ public class RelationshipTypeFactory {
     private final RelationshipTypeService relationshipTypeService;
     private final ResourceHandler resourceHandler;
     private final RelationshipTypeHandler relationshipTypeHandler;
+    private final RelationshipTypeStore relationshipTypeStore;
 
     public RelationshipTypeFactory(
             DatabaseAdapter databaseAdapter,
@@ -23,7 +24,8 @@ public class RelationshipTypeFactory {
         this.databaseAdapter = databaseAdapter;
         this.relationshipTypeService = retrofit.create(RelationshipTypeService.class);
         this.resourceHandler = resourceHandler;
-        this.relationshipTypeHandler = new RelationshipTypeHandler(relationshipTypeStore);
+        this.relationshipTypeStore = relationshipTypeStore;
+        this.relationshipTypeHandler = new RelationshipTypeHandler(this.relationshipTypeStore);
 
     }
 
@@ -38,5 +40,9 @@ public class RelationshipTypeFactory {
 
     public RelationshipTypeHandler getRelationshipTypeHandler() {
         return relationshipTypeHandler;
+    }
+
+    public RelationshipTypeStore getRelationshipTypeStore() {
+        return relationshipTypeStore;
     }
 }

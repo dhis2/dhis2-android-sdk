@@ -28,16 +28,20 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -70,6 +74,9 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
     private static final String DELETE_STATEMENT = "DELETE FROM " + RelationshipTypeModel.TABLE +
             " WHERE " +
             RelationshipTypeModel.Columns.UID + " =?;";
+
+    private static final String QUERY_ALL_RELATIONSHIP_TYPES =
+            "SELECT * FROM " + RelationshipTypeModel.TABLE;
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -135,6 +142,42 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
         return ret;
     }
 
+    @Override
+    public List<RelationshipType> queryAll() {
+        Cursor cursor = databaseAdapter.query(QUERY_ALL_RELATIONSHIP_TYPES);
+        return mapRelationshipTypesFromCursor(cursor);
+    }
+
+    private List<RelationshipType> mapRelationshipTypesFromCursor(Cursor cursor) {
+        List<RelationshipType> relationshipTypes = new ArrayList<>(cursor.getCount());
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    RelationshipType relationshipType = mapRelationshipTypeFromCursor(cursor);
+                    relationshipTypes.add(relationshipType);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+        return relationshipTypes;
+    }
+
+    private RelationshipType mapRelationshipTypeFromCursor(Cursor cursor) {
+        String uid = cursor.getString(1);
+        String code = cursor.getString(2);
+        String name = cursor.getString(3);
+        String displayName = cursor.getString(4);
+        Date created = cursor.getString(5) == null ? null : parse(cursor.getString(5));
+        Date lastUpdate = cursor.getString(6) == null ? null : parse(cursor.getString(6));
+        String aIsToB = cursor.getString(8);
+        String bIsToA = cursor.getString(7);
+        return RelationshipType.builder().uid(uid).code(code).name(name).displayName(
+                displayName).created(created).lastUpdated(lastUpdate).aIsToB(aIsToB).bIsToA(
+                bIsToA).build();
+    }
+
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,
                                @NonNull String uid,
                                @Nullable String code,
@@ -158,4 +201,6 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
     public int delete() {
         return databaseAdapter.delete(RelationshipTypeModel.TABLE);
     }
+
+
 }

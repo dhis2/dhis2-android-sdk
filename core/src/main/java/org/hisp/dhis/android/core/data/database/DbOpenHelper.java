@@ -90,7 +90,7 @@ import java.nio.charset.Charset;
 import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE;
 
 @SuppressWarnings({
-        "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports"
+        "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveImports", "PMD.ExcessiveClassLength"
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 

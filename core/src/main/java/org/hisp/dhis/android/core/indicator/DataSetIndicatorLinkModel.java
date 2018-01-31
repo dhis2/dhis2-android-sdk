@@ -45,7 +45,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class DataSetIndicatorLinkModel extends BaseModel implements UpdateWhereStatementBinder {
-    public static final String TABLE = "DataSetIndicatorLinkModel";
+    public static final String TABLE = "DataSetIndicatorLink";
 
     @SuppressWarnings("PMD")
     public static class Columns extends BaseModel.Columns {

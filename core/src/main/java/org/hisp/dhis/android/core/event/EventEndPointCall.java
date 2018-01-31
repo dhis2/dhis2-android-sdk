@@ -1,6 +1,8 @@
 package org.hisp.dhis.android.core.event;
 
+import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -91,26 +93,30 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
         }
 
         if (eventsByLastUpdated.isSuccessful() && eventsByLastUpdated.body().items() != null) {
-            Transaction transaction = databaseAdapter.beginNewTransaction();
-            try {
-                List<Event> events = eventsByLastUpdated.body().items();
-
-                int size = events.size();
-
-                if (eventQuery.getPageLimit() > 0) {
-                    size = eventQuery.getPageLimit();
-                }
-
-                for (int i = 0; i < size; i++) {
-                    Event event = events.get(i);
-                    eventHandler.handle(event);
-                }
-
-                resourceHandler.handleResource(ResourceModel.Type.EVENT, serverDate);
-                transaction.setSuccessful();
-            } finally {
-                transaction.end();
+            List<Event> events = eventsByLastUpdated.body().items();
+            int size = events.size();
+            if (eventQuery.getPageLimit() > 0) {
+                size = eventQuery.getPageLimit();
             }
+            for (int i = 0; i < size; i++) {
+                Transaction transaction = databaseAdapter.beginNewTransaction();
+                Event event = events.get(i);
+                try {
+                    eventHandler.handle(event);
+                    transaction.setSuccessful();
+                }catch (SQLiteConstraintException sql){
+                    // This catch is necessary to ignore events with bad foreign keys exception
+                    // More info: If the foreign key have the flag
+                    // DEFERRABLE INITIALLY DEFERRED this exception will be throw in transaction.end()
+                    // And the rollback will be executed only when the database is closed.
+                    // It is a reported as unfixed bug: https://issuetracker.google.com/issues/37001653
+                    Log.d(this.getClass().getSimpleName(), sql.getMessage());
+                } finally {
+                    transaction.end();
+                }
+            }
+            resourceHandler.handleResource(ResourceModel.Type.EVENT, serverDate);
+
         }
         return eventsByLastUpdated;
     }

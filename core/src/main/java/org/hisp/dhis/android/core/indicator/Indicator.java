@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import java.util.Date;
 
 @AutoValue
-abstract class Indicator extends BaseNameableObject {
+public abstract class Indicator extends BaseNameableObject {
     private final static String ANNUALIZED = "annualized";
     private final static String INDICATOR_TYPE = "indicatorType";
     private final static String NUMERATOR = "numerator";

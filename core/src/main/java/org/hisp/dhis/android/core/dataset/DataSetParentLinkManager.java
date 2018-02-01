@@ -69,7 +69,7 @@ class DataSetParentLinkManager {
         List<DataElementUids> dataSetElements = dataSet.dataSetElements();
         assert dataSetElements != null;
         for (DataElementUids dataSetDataElement : dataSetElements) {
-            this.dataSetDataElementStore.updateOrInsertWhere(
+            dataSetDataElementStore.updateOrInsertWhere(
                     DataSetDataElementLinkModel.create(
                             dataSet.uid(),
                             dataSetDataElement.dataElement().uid()
@@ -78,8 +78,10 @@ class DataSetParentLinkManager {
     }
 
     private void saveDataSetIndicatorLink(DataSet dataSet) {
-        for (ObjectWithUid indicator : dataSet.indicators()) {
-            this.dataSetIndicatorStore.updateOrInsertWhere(
+        List<ObjectWithUid> indicators = dataSet.indicators();
+        assert indicators != null;
+        for (ObjectWithUid indicator : indicators) {
+            dataSetIndicatorStore.updateOrInsertWhere(
                     DataSetIndicatorLinkModel.create(
                             dataSet.uid(),
                             indicator.uid()
@@ -101,7 +103,7 @@ class DataSetParentLinkManager {
         List<DataSet> dataSets = organisationUnit.dataSets();
         assert dataSets != null;
         for (DataSet dataSet : dataSets) {
-            this.dataSetOrganisationUnitStore.updateOrInsertWhere(
+            dataSetOrganisationUnitStore.updateOrInsertWhere(
                     DataSetOrganisationUnitLinkModel.create(
                             dataSet.uid(),
                             organisationUnit.uid()

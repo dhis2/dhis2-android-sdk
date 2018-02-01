@@ -61,6 +61,7 @@ public abstract class DataValueModel extends BaseModel implements UpdateWhereSta
         public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
         public static final String VALUE = "value";
         public static final String STORED_BY = "storedBy";
+        public static final String CREATED = "created";
         public static final String LAST_UPDATED = "lastUpdated";
         public static final String COMMENT = "comment";
         public static final String FOLLOW_UP = "followUp";
@@ -68,7 +69,7 @@ public abstract class DataValueModel extends BaseModel implements UpdateWhereSta
         public static String[] all() {
             return Utils.appendInNewArray(BaseModel.Columns.all(),
                     DATA_ELEMENT, PERIOD, ORGANISATION_UNIT, CATEGORY_OPTION_COMBO,
-                    ATTRIBUTE_OPTION_COMBO, VALUE, STORED_BY, LAST_UPDATED, COMMENT, FOLLOW_UP);
+                    ATTRIBUTE_OPTION_COMBO, VALUE, STORED_BY, CREATED, LAST_UPDATED, COMMENT, FOLLOW_UP);
         }
 
         public static String[] whereUpdate() {
@@ -97,6 +98,7 @@ public abstract class DataValueModel extends BaseModel implements UpdateWhereSta
                     .attributeOptionCombo(dataValue.attributeOptionCombo())
                     .value(dataValue.value())
                     .storedBy(dataValue.storedBy())
+                    .created(dataValue.created())
                     .lastUpdated(dataValue.lastUpdated())
                     .comment(dataValue.comment())
                     .followUp(dataValue.followUp())
@@ -137,6 +139,11 @@ public abstract class DataValueModel extends BaseModel implements UpdateWhereSta
     public abstract String storedBy();
 
     @Nullable
+    @ColumnName(Columns.CREATED)
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date created();
+
+    @Nullable
     @ColumnName(Columns.LAST_UPDATED)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
@@ -158,16 +165,17 @@ public abstract class DataValueModel extends BaseModel implements UpdateWhereSta
         sqLiteBind(sqLiteStatement, 5, attributeOptionCombo());
         sqLiteBind(sqLiteStatement, 6, value());
         sqLiteBind(sqLiteStatement, 7, storedBy());
-        sqLiteBind(sqLiteStatement, 8, lastUpdated());
-        sqLiteBind(sqLiteStatement, 9, comment());
-        sqLiteBind(sqLiteStatement, 10, followUp());
+        sqLiteBind(sqLiteStatement, 8, created());
+        sqLiteBind(sqLiteStatement, 9, lastUpdated());
+        sqLiteBind(sqLiteStatement, 10, comment());
+        sqLiteBind(sqLiteStatement, 11, followUp());
     }
 
     @Override
     public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 11, dataElement());
-        sqLiteBind(sqLiteStatement, 12, period());
-        sqLiteBind(sqLiteStatement, 13, organisationUnit());
+        sqLiteBind(sqLiteStatement, 12, dataElement());
+        sqLiteBind(sqLiteStatement, 13, period());
+        sqLiteBind(sqLiteStatement, 14, organisationUnit());
     }
 
     @AutoValue.Builder
@@ -185,6 +193,8 @@ public abstract class DataValueModel extends BaseModel implements UpdateWhereSta
         public abstract Builder value(String value);
 
         public abstract Builder storedBy(String storedBy);
+
+        public abstract Builder created(Date created);
 
         public abstract Builder lastUpdated(Date lastUpdated);
 

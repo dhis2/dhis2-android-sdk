@@ -48,6 +48,7 @@ public abstract class DataValue {
     protected static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
     protected static final String VALUE = "value";
     protected static final String STORED_BY = "storedBy";
+    protected static final String CREATED = "created";
     protected static final String LAST_UPDATED = "lastUpdated";
     protected static final String COMMENT = "comment";
     protected static final String FOLLOW_UP = "followUp";
@@ -60,6 +61,7 @@ public abstract class DataValue {
     private static final Field<DataValue, String> attributeOptionCombo = Field.create(ATTRIBUTE_OPTION_COMBO);
     private static final Field<DataValue, String> value = Field.create(VALUE);
     private static final Field<DataValue, String> storedBy = Field.create(STORED_BY);
+    private static final Field<DataValue, String> created = Field.create(CREATED);
     private static final Field<DataValue, String> lastUpdated = Field.create(LAST_UPDATED);
     private static final Field<DataValue, String> comment = Field.create(COMMENT);
     private static final Field<DataValue, String> followUp = Field.create(FOLLOW_UP);
@@ -67,7 +69,7 @@ public abstract class DataValue {
 
     static final Fields<DataValue> allFields = Fields.<DataValue>builder().fields(
             dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo,
-            value, storedBy, lastUpdated, comment, followUp, deleted).build();
+            value, storedBy, created, lastUpdated, comment, followUp, deleted).build();
 
     @Nullable
     @JsonProperty(DATA_ELEMENT)
@@ -98,6 +100,10 @@ public abstract class DataValue {
     public abstract String storedBy();
 
     @Nullable
+    @JsonProperty(CREATED)
+    public abstract Date created();
+
+    @Nullable
     @JsonProperty(LAST_UPDATED)
     public abstract Date lastUpdated();
 
@@ -122,12 +128,13 @@ public abstract class DataValue {
             @JsonProperty(ATTRIBUTE_OPTION_COMBO) String attributeOptionCombo,
             @JsonProperty(VALUE) String value,
             @JsonProperty(STORED_BY) String storedBy,
+            @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
             @JsonProperty(COMMENT) String comment,
             @JsonProperty(FOLLOW_UP) Boolean followUp,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_DataValue(dataElement, period, organisationUnit, categoryOptionCombo,
-                attributeOptionCombo, value, storedBy, lastUpdated, comment, followUp, deleted);
+                attributeOptionCombo, value, storedBy, created, lastUpdated, comment, followUp, deleted);
     }
 }

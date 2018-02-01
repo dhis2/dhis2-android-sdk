@@ -41,6 +41,8 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
+import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.CREATED;
+import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.CREATED_STR;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DELETED;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.LAST_UPDATED_STR;
@@ -58,13 +60,13 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel, Da
     private static final boolean FOLLOW_UP = false;
 
     public DataValueModelShould() {
-        super(DataValueModel.Columns.all(), 10, DataValueModel.factory);
+        super(DataValueModel.Columns.all(), 11, DataValueModel.factory);
     }
 
     @Override
     protected DataValue buildPojo() {
         return DataValue.create(DATA_ELEMENT, PERIOD, ORGANISATION_UNIT, CATEGORY_OPTION_COMBO,
-                ATTRIBUTE_OPTION_COMBO, VALUE, STORED_BY, LAST_UPDATED, COMMENT, FOLLOW_UP, DELETED);
+                ATTRIBUTE_OPTION_COMBO, VALUE, STORED_BY, CREATED, LAST_UPDATED, COMMENT, FOLLOW_UP, DELETED);
     }
 
     @Override
@@ -78,6 +80,7 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel, Da
                 .attributeOptionCombo(ATTRIBUTE_OPTION_COMBO)
                 .value(VALUE)
                 .storedBy(STORED_BY)
+                .created(CREATED)
                 .lastUpdated(LAST_UPDATED)
                 .comment(COMMENT)
                 .followUp(FOLLOW_UP);
@@ -89,7 +92,8 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel, Da
         return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
                 model.dataElement(), model.period(), model.organisationUnit(),
                 model.categoryOptionCombo(), model.attributeOptionCombo(), model.value(),
-                model.storedBy(), LAST_UPDATED_STR, model.comment(), toInteger(model.followUp()));
+                model.storedBy(), CREATED_STR, LAST_UPDATED_STR, model.comment(),
+                toInteger(model.followUp()));
     }
 
     @Test
@@ -103,6 +107,7 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel, Da
         assertThat(columnsList.contains(DataValueModel.Columns.ATTRIBUTE_OPTION_COMBO)).isEqualTo(true);
         assertThat(columnsList.contains(DataValueModel.Columns.VALUE)).isEqualTo(true);
         assertThat(columnsList.contains(DataValueModel.Columns.STORED_BY)).isEqualTo(true);
+        assertThat(columnsList.contains(DataValueModel.Columns.CREATED)).isEqualTo(true);
         assertThat(columnsList.contains(DataValueModel.Columns.LAST_UPDATED)).isEqualTo(true);
         assertThat(columnsList.contains(DataValueModel.Columns.COMMENT)).isEqualTo(true);
         assertThat(columnsList.contains(DataValueModel.Columns.FOLLOW_UP)).isEqualTo(true);

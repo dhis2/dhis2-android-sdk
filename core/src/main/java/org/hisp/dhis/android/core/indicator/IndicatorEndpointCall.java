@@ -37,12 +37,11 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.io.IOException;
 import java.util.Set;
 
-@SuppressWarnings("PMD")
 public class IndicatorEndpointCall extends GenericEndpointCallImpl<Indicator> {
     private final IndicatorService indicatorService;
 
     private IndicatorEndpointCall(GenericCallData data, IndicatorService indicatorService,
-                                  GenericHandler<Indicator, IndicatorModel> indicatorHandler,
+                                  GenericHandler<Indicator> indicatorHandler,
                                   Set<String> uids) {
         super(data, indicatorHandler, ResourceModel.Type.INDICATOR, uids, null);
         this.indicatorService = indicatorService;

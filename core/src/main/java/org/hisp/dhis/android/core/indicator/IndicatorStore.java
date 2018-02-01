@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-@SuppressWarnings("PMD")
 public class IndicatorStore {
 
     private IndicatorStore() {}

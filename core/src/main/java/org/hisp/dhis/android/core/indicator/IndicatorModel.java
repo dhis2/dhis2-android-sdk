@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.utils.Utils;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-@SuppressWarnings("PMD")
 public abstract class IndicatorModel extends BaseNameableObjectModel implements StatementBinder {
 
     public static final String TABLE = "Indicator";

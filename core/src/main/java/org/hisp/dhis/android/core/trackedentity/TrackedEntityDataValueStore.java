@@ -54,4 +54,6 @@ public interface TrackedEntityDataValueStore extends DeletableStore {
     Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues();
 
     Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(Boolean singleEvents);
+
+    int countAll();
 }

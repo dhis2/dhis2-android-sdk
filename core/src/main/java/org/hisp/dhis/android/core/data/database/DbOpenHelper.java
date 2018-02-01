@@ -714,10 +714,10 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             " FOREIGN KEY (" + TrackedEntityDataValueModel.Columns.DATA_ELEMENT + ")" +
             " REFERENCES " + DataElementModel.TABLE +
             " (" + DataElementModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
+            " ON DELETE CASCADE, " +
             " FOREIGN KEY (" + TrackedEntityDataValueModel.Columns.EVENT + ")" +
             " REFERENCES " + EventModel.TABLE + " (" + EventModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+            " ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_VALUE_TABLE = "CREATE TABLE " +
@@ -764,11 +764,11 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             " FOREIGN KEY (" + EventModel.Columns.PROGRAM + ")" +
             " REFERENCES " + ProgramModel.TABLE +
             " (" + ProgramModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+            " ON DELETE CASCADE," +
             " FOREIGN KEY (" + EventModel.Columns.PROGRAM_STAGE + ")" +
             " REFERENCES " + ProgramStageModel.TABLE +
             " (" + ProgramStageModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+            " ON DELETE CASCADE," +
             "FOREIGN KEY (" + EventModel.Columns.ENROLLMENT_UID + ")" +
             " REFERENCES " + EnrollmentModel.TABLE +
             " (" + EnrollmentModel.Columns.UID + ")" +

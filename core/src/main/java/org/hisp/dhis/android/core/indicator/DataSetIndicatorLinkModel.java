@@ -47,7 +47,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 public abstract class DataSetIndicatorLinkModel extends BaseModel implements UpdateWhereStatementBinder {
     public static final String TABLE = "DataSetIndicatorLink";
 
-    public static class Columns extends BaseModel.Columns {
+    public abstract static class Columns extends BaseModel.Columns {
         public static final String DATA_SET = "dataSet";
         public static final String INDICATOR = "indicator";
 
@@ -56,7 +56,7 @@ public abstract class DataSetIndicatorLinkModel extends BaseModel implements Upd
                     DATA_SET, INDICATOR);
         }
 
-        public static String[] whereUpdate() {
+        static String[] whereUpdate() {
             return new String[]{DATA_SET, INDICATOR};
         }
     }

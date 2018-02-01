@@ -48,7 +48,7 @@ public abstract class IndicatorModel extends BaseNameableObjectModel implements 
 
     public static final String TABLE = "Indicator";
 
-    public static class Columns extends BaseNameableObjectModel.Columns {
+    public abstract static class Columns extends BaseNameableObjectModel.Columns {
         public final static String ANNUALIZED = "annualized";
         public final static String INDICATOR_TYPE = "indicatorType";
         public final static String NUMERATOR = "numerator";

@@ -49,7 +49,7 @@ public abstract class IndicatorTypeModel extends BaseIdentifiableObjectModel imp
 
     public static final String TABLE = "IndicatorType";
 
-    public static class Columns extends BaseNameableObjectModel.Columns {
+    public abstract static class Columns extends BaseNameableObjectModel.Columns {
         public final static String NUMBER = "number";
         public final static String FACTOR = "factor";
 

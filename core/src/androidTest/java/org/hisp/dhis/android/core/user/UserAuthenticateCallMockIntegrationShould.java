@@ -359,6 +359,15 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                         dateString
                 ).isExhausted();
 
+        // TODO: UserAuthenticateCall is no longer registering OU download in resource table
+        // because of a bug when downloading descendants. Restore this check when that code is
+        // refactored to implement resource table writting from UserAuthenticateCall
+        /*assertThatCursor(resource)
+                .hasRow(
+                        4L,
+                        ResourceModel.Type.ORGANISATION_UNIT,
+                        dateString
+                ).isExhausted();*/
     }
 
     @Test

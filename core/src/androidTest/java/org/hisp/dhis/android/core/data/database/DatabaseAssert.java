@@ -124,8 +124,8 @@ public final class DatabaseAssert {
     private void verifyIfTableExists(String table, boolean expected) {
         boolean isExist = false;
         Cursor res = databaseAdapter.query("PRAGMA table_info(" + table + ")");
-        int value = res.getColumnIndex("name");
-        if (value != -1) {
+        int count = res.getCount();
+        if (count > 0) {
             isExist = true;
         }
         assertThat(isExist, is(expected));

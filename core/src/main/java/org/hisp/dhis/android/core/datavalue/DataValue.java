@@ -43,7 +43,7 @@ import java.util.Date;
 public abstract class DataValue {
     protected static final String DATA_ELEMENT = "dataElement";
     protected static final String PERIOD = "period";
-    protected static final String ORGANISATION_UNIT = "organisationUnit";
+    protected static final String ORGANISATION_UNIT = "orgUnit";
     protected static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
     protected static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
     protected static final String VALUE = "value";

@@ -32,6 +32,7 @@ import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.text.ParseException;
 import java.util.Date;
 
 public abstract class BaseIdentifiableObject implements IdentifiableObject {
@@ -39,7 +40,7 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
     within models which extend BaseIdentifiableObject */
     public static final SafeDateFormat DATE_FORMAT = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
-    protected static final String UID = "id";
+    public static final String UID = "id";
     protected static final String CODE = "code";
     protected static final String NAME = "name";
     protected static final String DISPLAY_NAME = "displayName";
@@ -79,6 +80,10 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
     @Nullable
     @JsonProperty(DELETED)
     public abstract Boolean deleted();
+
+    public static Date parseDate(String dateStr) throws ParseException {
+        return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+    }
 
     protected static abstract class Builder<T extends Builder> {
 

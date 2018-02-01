@@ -31,13 +31,14 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionStore;
@@ -124,9 +125,6 @@ public class ProgramCallShould {
     private OptionSetStore optionSetStore;
 
     @Mock
-    private DataElementStore dataElementStore;
-
-    @Mock
     private ProgramStageDataElementStore programStageDataElementStore;
 
     @Mock
@@ -171,6 +169,9 @@ public class ProgramCallShould {
     @Mock
     private Date serverDate;
 
+    @Mock
+    private GenericHandler<DataElement, DataElementModel> dataElementHandler;
+
     private Set<String> uids;
 
     // the call we are testing
@@ -190,8 +191,8 @@ public class ProgramCallShould {
                 resourceStore, uids, programStore, serverDate, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
-                optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore
+                programStageDataElementStore, programStageSectionStore, programStageStore,
+                relationshipStore, dataElementHandler
         );
 
         when(program.uid()).thenReturn("test_program_uid");
@@ -258,20 +259,7 @@ public class ProgramCallShould {
                                 ProgramStageDataElement.programStage.with(
                                         ProgramStage.uid
                                 ),
-                                ProgramStageDataElement.dataElement.with(
-                                        DataElement.uid, DataElement.code, DataElement.name, DataElement.displayName,
-                                        DataElement.created, DataElement.lastUpdated, DataElement.shortName,
-                                        DataElement.displayShortName, DataElement.description,
-                                        DataElement.displayDescription, DataElement.aggregationType,
-                                        DataElement.deleted, DataElement.dimension, DataElement.displayFormName,
-                                        DataElement.domainType, DataElement.formName, DataElement.numberType,
-                                        DataElement.valueType, DataElement.zeroIsSignificant,
-                                        DataElement.optionSet.with(
-                                                OptionSet.uid, OptionSet.version
-                                        ),
-                                        DataElement.categoryCombo.with(CategoryCombo.uid)
-
-                                )
+                                ProgramStageDataElement.dataElement.with(DataElement.allFields)
                         ),
                         ProgramStage.programStageSections.with(
                                 ProgramStageSection.uid, ProgramStageSection.code, ProgramStageSection.name,

@@ -9,6 +9,8 @@ up:
  - INSERT INTO TrackedEntityDataValue (event, dataElement, storedBy, value, created, lastUpdated, providedElsewhere) Select event, dataElement, storedBy, value, created, lastUpdated, providedElsewhere from TrackedEntityDataValueOld
  - DROP TABLE IF EXISTS TrackedEntityDataValueOld;
  - DROP TABLE IF EXISTS EventOld;
+ - CREATE TABLE DataSet (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, periodType TEXT,categoryCombo TEXT NOT NULL,mobile INTEGER,version INTEGER,expiryDays INTEGER,timelyDays INTEGER,notifyCompletingUser INTEGER,openFuturePeriods INTEGER,fieldCombinationRequired INTEGER,validCompleteOnly INTEGER,noValueRequiresComment INTEGER,skipOffline INTEGER,dataElementDecoration INTEGER,renderAsTabs INTEGER,renderHorizontally INTEGER, FOREIGN KEY ( categoryCombo) REFERENCES CategoryCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+ - CREATE TABLE DataSetDataElementLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataSet TEXT NOT NULL,dataElement TEXT NOT NULL, FOREIGN KEY (dataSet)  REFERENCES DataSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (dataElement)  REFERENCES DataElement (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (dataSet, dataElement));
  - COMMIT;
  - PRAGMA foreign_keys=on;
 down:

@@ -19,7 +19,7 @@ import java.util.Map;
 
 import io.reactivex.schedulers.Schedulers;
 
-/**
+/*
  * A helper class to manage database migrations and seeding using
  * an application's raw asset files.
  * <p>
@@ -127,7 +127,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         }
     }
 
-    /**
+    /*
      * Upgrade database to latest new version
      */
     @Override
@@ -231,7 +231,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         return briteDatabase;
     }
 
-    /**
+    /*
      * Downgrade database to previous old version
      */
     @Override
@@ -248,7 +248,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Load and parse all required database migrations.
      */
     public List<Map<String, List<String>>> parse(int oldVersion, int newVersion, boolean up)
@@ -278,7 +278,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Load and parse initial database migrations.
      * <p>
      * It used it creating initial database
@@ -319,7 +319,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Apply up migration scripts and seed database with provided seeds
      */
     private void up(SQLiteDatabase database, Map<String, List<String>> scripts) {
@@ -353,7 +353,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         }
     }
 
-    /**
+    /*
      * Apply up migration scripts and seed database with provided seeds
      */
     private void up(SQLiteDatabase database, List<Map<String, List<String>>> scripts) {
@@ -373,7 +373,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     }
 
 
-    /**
+    /*
      * Apply down migration scripts
      */
     private void down(SQLiteDatabase database, Map<String, List<String>> scripts) {
@@ -397,7 +397,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
         }
     }
 
-    /**
+    /*
      * Apply down migration scripts
      */
     private void down(SQLiteDatabase database, List<Map<String, List<String>>> scripts) {

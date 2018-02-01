@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
@@ -39,12 +39,12 @@ import org.hisp.dhis.android.core.data.api.Field;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_SystemInfo.Builder.class)
 public abstract class SystemInfo {
     private static final String SERVER_DATE_TIME = "serverDate";
     private static final String DATE_FORMAT = "dateFormat";
     private static final String VERSION = "version";
     private static final String CONTEXT_PATH = "contextPath";
+
 
     public static final Field<SystemInfo, String> serverDateTime = Field.create(SERVER_DATE_TIME);
     public static final Field<SystemInfo, String> dateFormat = Field.create(DATE_FORMAT);
@@ -67,21 +67,13 @@ public abstract class SystemInfo {
     @JsonProperty(CONTEXT_PATH)
     public abstract String contextPath();
 
-    @AutoValue.Builder
-    public static abstract class Builder {
+    @JsonCreator
+    public static SystemInfo create(
+            @JsonProperty(SERVER_DATE_TIME) Date serverDate,
+            @JsonProperty(DATE_FORMAT) String dateFormat,
+            @JsonProperty(VERSION) String version,
+            @JsonProperty(CONTEXT_PATH) String contextPath) {
 
-        @JsonProperty(SERVER_DATE_TIME)
-        public abstract Builder serverDate(@Nullable Date serverDate);
-
-        @JsonProperty(DATE_FORMAT)
-        public abstract Builder dateFormat(@Nullable String dateFormat);
-
-        @JsonProperty(VERSION)
-        public abstract Builder version(@Nullable String version);
-
-        @JsonProperty(CONTEXT_PATH)
-        public abstract Builder contextPath(@Nullable String contextPath);
-
-        public abstract SystemInfo build();
+        return new AutoValue_SystemInfo(serverDate, dateFormat, version, contextPath);
     }
 }

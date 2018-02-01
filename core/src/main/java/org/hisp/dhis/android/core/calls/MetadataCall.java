@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
@@ -43,11 +45,13 @@ import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.dataset.DataSetParentCall;
+import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
+import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetService;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
@@ -72,7 +76,6 @@ import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
@@ -96,6 +99,7 @@ import java.util.List;
 import java.util.Set;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
  "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
@@ -124,64 +128,68 @@ public class MetadataCall implements Call<Response> {
             programStageSectionProgramIndicatorLinkStore;
     private final ProgramRuleActionStore programRuleActionStore;
     private final ProgramRuleStore programRuleStore;
-    private final OptionStore optionStore;
-    private final OptionSetStore optionSetStore;
-    private final DataElementStore dataElementStore;
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
+    private final GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
+    private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
+
+    private final Retrofit retrofit;
     private final CategoryQuery categoryQuery;
     private final CategoryComboQuery categoryComboQuery;
     private final CategoryService categoryService;
     private final CategoryComboService categoryComboService;
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
+    private final DataSetParentCall.Factory dataSetParentCallFactory;
 
     private boolean isExecuted;
 
     private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
-            @NonNull SystemInfoService systemInfoService,
-            @NonNull UserService userService,
-            @NonNull ProgramService programService,
-            @NonNull OrganisationUnitService organisationUnitService,
-            @NonNull TrackedEntityService trackedEntityService,
-            @NonNull OptionSetService optionSetService,
-            @NonNull SystemInfoStore systemInfoStore,
-            @NonNull ResourceStore resourceStore,
-            @NonNull UserStore userStore,
-            @NonNull UserCredentialsStore userCredentialsStore,
-            @NonNull UserRoleStore userRoleStore,
-            @NonNull UserRoleProgramLinkStore userRoleProgramLinkStore,
-            @NonNull OrganisationUnitStore organisationUnitStore,
-            @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-            @NonNull ProgramStore programStore,
-            @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
-            @NonNull ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
-            @NonNull ProgramRuleVariableStore programRuleVariableStore,
-            @NonNull ProgramIndicatorStore programIndicatorStore,
-            @NonNull ProgramStageSectionProgramIndicatorLinkStore
-                    programStageSectionProgramIndicatorLinkStore,
-            @NonNull ProgramRuleActionStore programRuleActionStore,
-            @NonNull ProgramRuleStore programRuleStore,
-            @NonNull OptionStore optionStore,
-            @NonNull OptionSetStore optionSetStore,
-            @NonNull DataElementStore dataElementStore,
-            @NonNull ProgramStageDataElementStore programStageDataElementStore,
-            @NonNull ProgramStageSectionStore programStageSectionStore,
-            @NonNull ProgramStageStore programStageStore,
-            @NonNull RelationshipTypeStore relationshipStore,
-            @NonNull TrackedEntityStore trackedEntityStore,
-            @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
-            @NonNull CategoryQuery categoryQuery,
-            @NonNull CategoryService categoryService,
-            @NonNull CategoryHandler categoryHandler,
-            @NonNull CategoryComboQuery categoryComboQuery,
-            @NonNull CategoryComboService categoryComboService,
-            @NonNull CategoryComboHandler categoryComboHandler) {
+                        @NonNull SystemInfoService systemInfoService,
+                        @NonNull UserService userService,
+                        @NonNull ProgramService programService,
+                        @NonNull OrganisationUnitService organisationUnitService,
+                        @NonNull TrackedEntityService trackedEntityService,
+                        @NonNull OptionSetService optionSetService,
+                        @NonNull SystemInfoStore systemInfoStore,
+                        @NonNull ResourceStore resourceStore,
+                        @NonNull UserStore userStore,
+                        @NonNull UserCredentialsStore userCredentialsStore,
+                        @NonNull UserRoleStore userRoleStore,
+                        @NonNull UserRoleProgramLinkStore userRoleProgramLinkStore,
+                        @NonNull OrganisationUnitStore organisationUnitStore,
+                        @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
+                        @NonNull ProgramStore programStore,
+                        @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
+                        @NonNull ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
+                        @NonNull ProgramRuleVariableStore programRuleVariableStore,
+                        @NonNull ProgramIndicatorStore programIndicatorStore,
+                        @NonNull ProgramStageSectionProgramIndicatorLinkStore
+                                programStageSectionProgramIndicatorLinkStore,
+                        @NonNull ProgramRuleActionStore programRuleActionStore,
+                        @NonNull ProgramRuleStore programRuleStore,
+                        @NonNull ProgramStageDataElementStore programStageDataElementStore,
+                        @NonNull ProgramStageSectionStore programStageSectionStore,
+                        @NonNull ProgramStageStore programStageStore,
+                        @NonNull RelationshipTypeStore relationshipStore,
+                        @NonNull TrackedEntityStore trackedEntityStore,
+                        @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
+                        @NonNull CategoryQuery categoryQuery,
+                        @NonNull CategoryService categoryService,
+                        @NonNull CategoryHandler categoryHandler,
+                        @NonNull CategoryComboQuery categoryComboQuery,
+                        @NonNull CategoryComboService categoryComboService,
+                        @NonNull CategoryComboHandler categoryComboHandler,
+                        @NonNull GenericHandler<OptionSet, OptionSetModel> optionSetHandler,
+                        @NonNull GenericHandler<DataElement, DataElementModel> dataElementHandler,
+                        @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
+                        @NonNull Retrofit retrofit
+                        ) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -206,9 +214,6 @@ public class MetadataCall implements Call<Response> {
                 programStageSectionProgramIndicatorLinkStore;
         this.programRuleActionStore = programRuleActionStore;
         this.programRuleStore = programRuleStore;
-        this.optionStore = optionStore;
-        this.optionSetStore = optionSetStore;
-        this.dataElementStore = dataElementStore;
         this.programStageDataElementStore = programStageDataElementStore;
         this.programStageSectionStore = programStageSectionStore;
         this.programStageStore = programStageStore;
@@ -221,6 +226,11 @@ public class MetadataCall implements Call<Response> {
         this.categoryComboQuery = categoryComboQuery;
         this.categoryComboService = categoryComboService;
         this.categoryComboHandler = categoryComboHandler;
+        this.optionSetHandler = optionSetHandler;
+        this.dataElementHandler = dataElementHandler;
+        this.dataSetParentCallFactory = dataSetParentCallFactory;
+
+        this.retrofit = retrofit;
     }
 
     @Override
@@ -251,8 +261,8 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
-            SystemInfo systemInfo = (SystemInfo) response.body();
-            Date serverDate = systemInfo.serverDate();
+            GenericCallData data = GenericCallData.create(databaseAdapter,
+                    new ResourceHandler(resourceStore), retrofit);
 
             response = new UserCall(
                     userService,
@@ -261,7 +271,7 @@ public class MetadataCall implements Call<Response> {
                     userCredentialsStore,
                     userRoleStore,
                     resourceStore,
-                    serverDate,
+                    data.serverDate(),
                     userRoleProgramLinkStore
             ).call();
             if (!response.isSuccessful()) {
@@ -271,17 +281,17 @@ public class MetadataCall implements Call<Response> {
             User user = (User) response.body();
             response = new OrganisationUnitCall(
                     user, organisationUnitService, databaseAdapter, organisationUnitStore,
-                    resourceStore, serverDate, userOrganisationUnitLinkStore,
+                    resourceStore, data.serverDate(), userOrganisationUnitLinkStore,
                     organisationUnitProgramLinkStore).call();
             if (!response.isSuccessful()) {
                 return response;
             }
-            response = downloadCategories(serverDate);
+            response = downloadCategories(data.serverDate());
 
             if (!response.isSuccessful()) {
                 return response;
             }
-            response = downloadCategoryCombos(serverDate);
+            response = downloadCategoryCombos(data.serverDate());
 
             if (!response.isSuccessful()) {
                 return response;
@@ -290,14 +300,15 @@ public class MetadataCall implements Call<Response> {
             Set<String> programUids = getAssignedProgramUids(user);
             response = new ProgramCall(
                     programService, databaseAdapter, resourceStore, programUids, programStore,
-                    serverDate,
+                    data.serverDate(),
                     trackedEntityAttributeStore, programTrackedEntityAttributeStore,
                     programRuleVariableStore,
                     programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
                     programRuleActionStore,
-                    programRuleStore, optionStore, optionSetStore, dataElementStore,
+                    programRuleStore,
                     programStageDataElementStore,
-                    programStageSectionStore, programStageStore, relationshipStore
+                    programStageSectionStore, programStageStore, relationshipStore,
+                    dataElementHandler
             ).call();
             if (!response.isSuccessful()) {
                 return response;
@@ -307,7 +318,7 @@ public class MetadataCall implements Call<Response> {
             Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
             response = new TrackedEntityCall(
                     trackedEntityUids, databaseAdapter, trackedEntityStore,
-                    resourceStore, trackedEntityService, serverDate
+                    resourceStore, trackedEntityService, data.serverDate()
             ).call();
             if (!response.isSuccessful()) {
                 return response;
@@ -315,9 +326,12 @@ public class MetadataCall implements Call<Response> {
 
             Set<String> optionSetUids = getAssignedOptionSetUids(programs);
             response = new OptionSetCall(
-                    optionSetService, optionSetStore, databaseAdapter, resourceStore,
-                    optionSetUids, serverDate, optionStore
-            ).call();
+                    data, optionSetService, optionSetHandler, optionSetUids).call();
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            response = dataSetParentCallFactory.create(user, data).call();
             if (!response.isSuccessful()) {
                 return response;
             }

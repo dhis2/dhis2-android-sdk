@@ -63,7 +63,7 @@ public class OrganisationUnitTreeShould {
                     uids[i],
                     null, null, null, null, null, null, null, null, null, null,
                     paths[i],
-                    null, null, null, null, false
+                    null, null, null, null,null, false
             ));
         }
         Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
@@ -84,7 +84,7 @@ public class OrganisationUnitTreeShould {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "RootOrgUnit/Level11",
-                null, null, null, null, false));
+                null, null, null, null, null, false));
 
         Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
@@ -102,7 +102,7 @@ public class OrganisationUnitTreeShould {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "//RootOrgUnit//Level11//",
-                null, null, null, null, false));
+                null, null, null, null, null, false));
 
         Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
@@ -120,7 +120,7 @@ public class OrganisationUnitTreeShould {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 null, //<--passing null path
-                null, null, null, null, false));
+                null, null, null, null, null, false));
 
         OrganisationUnitTree.findRoots(orgUnits);
     }
@@ -138,7 +138,7 @@ public class OrganisationUnitTreeShould {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "", //<--passing empty path
-                null, null, null, null, false));
+                null, null, null, null, null, false));
 
         OrganisationUnitTree.findRoots(orgUnits);
     }
@@ -150,8 +150,7 @@ public class OrganisationUnitTreeShould {
                 uids[0],
                 null, null, null, null, null, null, null, null, null, null,
                 "/RootOrgUnit//Level11/",
-                null, null, null, null, false));
-        OrganisationUnitTree.findRoots(orgUnits);
+                null, null, null, null, null, false));
     }
     @Test
     public void findRoots_shouldReturnRootUids_NullList() {

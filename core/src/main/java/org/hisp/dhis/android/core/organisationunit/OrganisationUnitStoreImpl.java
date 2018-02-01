@@ -234,7 +234,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
                 uid, code, name, displayName, created, lastUpdated, shortName,
                 displayShortName,
                 description, displayDescription, null, path, openingDate,
-                closedDate, level, null, false);
+                closedDate, level, null, null, false);
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid,

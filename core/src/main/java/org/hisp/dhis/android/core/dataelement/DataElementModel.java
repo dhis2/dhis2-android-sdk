@@ -43,13 +43,11 @@ import org.hisp.dhis.android.core.common.ModelFactory;
 import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
-import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-@SuppressWarnings("PMD")
 public abstract class DataElementModel extends BaseNameableObjectModel implements StatementBinder {
 
     public static final String TABLE = "DataElement";
@@ -65,6 +63,8 @@ public abstract class DataElementModel extends BaseNameableObjectModel implement
         public static final String DISPLAY_FORM_NAME = "displayFormName";
         public static final String OPTION_SET = "optionSet";
         public static final String CATEGORY_COMBO = "categoryCombo";
+
+        private Columns() {}
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(),
@@ -86,9 +86,7 @@ public abstract class DataElementModel extends BaseNameableObjectModel implement
         }
 
         @Override
-        @SuppressWarnings("PMD")
         public DataElementModel fromPojo(DataElement dataElement) {
-            OptionSet optionSet = dataElement.optionSet();
             return DataElementModel.builder()
                     .uid(dataElement.uid())
                     .code(dataElement.code())
@@ -108,7 +106,7 @@ public abstract class DataElementModel extends BaseNameableObjectModel implement
                     .domainType(dataElement.domainType())
                     .dimension(dataElement.dimension())
                     .displayFormName(dataElement.displayFormName())
-                    .optionSet(optionSet != null ? optionSet.uid() : null)
+                    .optionSet(dataElement.optionSetUid())
                     .categoryCombo(dataElement.categoryComboUid())
                     .build();
         }

@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.GenericHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +49,7 @@ public class DataElementHandlerShould {
     private IdentifiableObjectStore<DataElementModel> dataSetStore;
 
     @Mock
-    private GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
+    private GenericHandler<OptionSet> optionSetHandler;
 
     @Mock
     private DataElement dataElement;

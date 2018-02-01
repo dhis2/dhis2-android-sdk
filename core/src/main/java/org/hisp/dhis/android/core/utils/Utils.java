@@ -90,6 +90,7 @@ public final class Utils {
         }
     }
 
+    @SafeVarargs
     public static <T> T[] appendInNewArray(T[] first, T... rest) {
         int totalLength = first.length + rest.length;
 

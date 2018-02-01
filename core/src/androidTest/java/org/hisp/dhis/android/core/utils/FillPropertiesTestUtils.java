@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.utils;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 
 import java.text.ParseException;
@@ -52,11 +51,6 @@ public class FillPropertiesTestUtils {
     public static final String DESCRIPTION = "test_description";
     public static final String DISPLAY_DESCRIPTION = "test_display_description";
 
-    public static final Date START_DATE = parseDate("2012-10-20T18:20:27.132");
-    public static final Date END_DATE = parseDate("2017-12-20T15:08:27.882");
-
-    public static final Boolean IS_DEFAULT = false;
-
     public static final boolean DELETED = false;
 
     private static Date parseDate(String dateStr) {
@@ -67,13 +61,7 @@ public class FillPropertiesTestUtils {
         }
     }
 
-    private static void fillModelProperties(BaseModel.Builder builder) {
-        /*builder
-                .id(2L);*/
-    }
-
     public static void fillIdentifiableModelProperties(BaseIdentifiableObjectModel.Builder builder) {
-        fillModelProperties(builder);
         builder
                 .uid(UID)
                 .code(CODE)

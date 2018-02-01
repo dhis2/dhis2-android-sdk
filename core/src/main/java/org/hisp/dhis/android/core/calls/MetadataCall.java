@@ -46,11 +46,9 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
-import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
@@ -133,8 +131,8 @@ public class MetadataCall implements Call<Response> {
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
-    private final GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
-    private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
+    private final GenericHandler<OptionSet> optionSetHandler;
+    private final GenericHandler<DataElement> dataElementHandler;
 
     private final Retrofit retrofit;
     private final CategoryQuery categoryQuery;
@@ -185,8 +183,8 @@ public class MetadataCall implements Call<Response> {
                         @NonNull CategoryComboQuery categoryComboQuery,
                         @NonNull CategoryComboService categoryComboService,
                         @NonNull CategoryComboHandler categoryComboHandler,
-                        @NonNull GenericHandler<OptionSet, OptionSetModel> optionSetHandler,
-                        @NonNull GenericHandler<DataElement, DataElementModel> dataElementHandler,
+                        @NonNull GenericHandler<OptionSet> optionSetHandler,
+                        @NonNull GenericHandler<DataElement> dataElementHandler,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
                         @NonNull Retrofit retrofit
                         ) {

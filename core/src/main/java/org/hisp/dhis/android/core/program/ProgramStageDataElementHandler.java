@@ -31,7 +31,6 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
 
 import java.util.List;
 
@@ -39,10 +38,10 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class ProgramStageDataElementHandler {
     private final ProgramStageDataElementStore programStageDataElementStore;
-    private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
+    private final GenericHandler<DataElement> dataElementHandler;
 
     ProgramStageDataElementHandler(ProgramStageDataElementStore programStageDataElementStore,
-                                   GenericHandler<DataElement, DataElementModel> dataElementHandler) {
+                                   GenericHandler<DataElement> dataElementHandler) {
         this.programStageDataElementStore = programStageDataElementStore;
         this.dataElementHandler = dataElementHandler;
     }

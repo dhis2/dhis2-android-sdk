@@ -42,7 +42,7 @@ public class OptionSetCall extends GenericEndpointCallImpl<OptionSet> {
     private final OptionSetService optionSetService;
 
     public OptionSetCall(GenericCallData data, OptionSetService optionSetService,
-                       GenericHandler<OptionSet, OptionSetModel> optionSetHandler, Set<String> uids) {
+                         GenericHandler<OptionSet> optionSetHandler, Set<String> uids) {
         super(data, optionSetHandler, ResourceModel.Type.OPTION_SET, uids, 64);
         this.optionSetService = optionSetService;
     }

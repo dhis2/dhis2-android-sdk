@@ -33,7 +33,7 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public abstract class GenericHandlerImpl<
         P extends BaseIdentifiableObject,
-        M extends BaseIdentifiableObjectModel & StatementBinder> implements GenericHandler<P, M> {
+        M extends BaseIdentifiableObjectModel & StatementBinder> implements GenericHandler<P> {
 
     private final IdentifiableObjectStore<M> store;
 
@@ -58,8 +58,9 @@ public abstract class GenericHandlerImpl<
 
     private void deleteOrPersist(P p) {
         M m = pojoToModel(p);
-        if (isDeleted(p) && m.uid() != null) {
-            store.delete(m.uid());
+        String modelUid = m.uid();
+        if (isDeleted(p) && modelUid != null) {
+            store.delete(modelUid);
         } else {
             store.updateOrInsert(m);
         }
@@ -67,8 +68,12 @@ public abstract class GenericHandlerImpl<
         this.afterObjectPersisted(p);
     }
 
-    @SuppressWarnings("PMD")
-    protected void afterObjectPersisted(P p) {}
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    protected void afterObjectPersisted(P p) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
+    }
 
     protected abstract M pojoToModel(P p);
 }

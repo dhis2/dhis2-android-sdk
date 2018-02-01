@@ -63,8 +63,10 @@ public class UserOrganisationUnitLinkStoreImpl extends Store implements UserOrga
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " =? AND " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + " =?;";
 
-    private static final String QUERY_USER_UID_BY_ORGANISATION_UNIT_UID = "SELECT "  + UserOrganisationUnitLinkModel.Columns.USER
-            +"  FROM " + UserOrganisationUnitLinkModel.TABLE + " WHERE " + UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + "=?;";
+    private static final String QUERY_USER_UID_BY_ORGANISATION_UNIT_UID = "SELECT "  +
+            UserOrganisationUnitLinkModel.Columns.USER
+            +"  FROM " + UserOrganisationUnitLinkModel.TABLE + " WHERE " +
+            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + "=?;";
 
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;

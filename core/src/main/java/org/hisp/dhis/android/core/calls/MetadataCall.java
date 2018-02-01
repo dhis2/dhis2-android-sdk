@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
@@ -46,11 +47,7 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramCall;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
@@ -79,14 +76,12 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRole;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserService;
 import org.hisp.dhis.android.core.user.UserStore;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -250,7 +245,7 @@ public class MetadataCall implements Call<Response> {
             }
 
             User user = (User) response.body();
-            response = organisationUnitFactory.newEndPointCall(serverDate, user, "").call();
+            response = getOrganisationUnits(serverDate, user);
 
             if (!response.isSuccessful()) {
                 return response;
@@ -304,6 +299,12 @@ public class MetadataCall implements Call<Response> {
         } finally {
             transaction.end();
         }
+    }
+    @VisibleForTesting
+    public Response getOrganisationUnits(Date serverDate, User user) throws Exception {
+        Response response;
+        response = organisationUnitFactory.newEndPointCall(serverDate, user, "").call();
+        return response;
     }
 
     /// Utilty methods:

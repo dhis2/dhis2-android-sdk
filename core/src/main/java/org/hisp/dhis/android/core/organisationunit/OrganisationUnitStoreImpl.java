@@ -64,7 +64,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
                     OrganisationUnitModel.Columns.OPENING_DATE + ", " +
                     OrganisationUnitModel.Columns.CLOSED_DATE + ", " +
                     OrganisationUnitModel.Columns.LEVEL + ", " +
-                    OrganisationUnitModel.Columns.PARENT ;
+                    OrganisationUnitModel.Columns.PARENT;
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + OrganisationUnitModel.TABLE + " (" + FIELDS+ ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -184,7 +184,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
         Cursor cursor = databaseAdapter.query(QUERY_BY_UID, uid);
         OrganisationUnit organisationUnit = null;
         List<OrganisationUnit> organisationUnits = mapOrgUnitsFromCursor(cursor);
-        if(organisationUnits.size()>0){
+        if(organisationUnits.size()==1){
             organisationUnit = organisationUnits.get(0);
         }
         return organisationUnit;
@@ -234,7 +234,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
         return OrganisationUnit.builder().uid(uid).code(code).name(name)
                 .displayName(displayName).created(created).lastUpdated(lastUpdated)
                 .shortName(shortName).displayShortName(displayShortName)
-                .description(description). displayDescription(displayDescription)
+                .description(description).displayDescription(displayDescription)
                 .path(path).openingDate(openingDate).closedDate(closedDate)
                 .level(level).build();
     }

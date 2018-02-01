@@ -29,7 +29,8 @@ public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandle
                     .queryUserUIdByOrganisationUnitUId(metadataAudit.getUid());
             if(userUId==null){
                 Log.e(this.getClass().getSimpleName(),
-                        "MetadataAudit Error: Organisation Unit is updated on server but organisation unit user does not exists in "
+                        "MetadataAudit Error: Organisation Unit is updated "
+                                + "on server but organisation unit user does not exists in "
                                 + "local: "
                                 + metadataAudit);
                 return;
@@ -37,25 +38,31 @@ public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandle
             User user = organisationUnitFactory.getUserStore().queryByUId(userUId);
             if (user == null) {
                 Log.e(this.getClass().getSimpleName(),
-                        "MetadataAudit Error: Organisation Unit is updated on server but organisation unit user does not exists in "
+                        "MetadataAudit Error: Organisation Unit is updated "
+                                + "on server but organisation unit user does not exists in "
                                 + "local: "
                                 + metadataAudit);
                 return;
             }
-            organisationUnitFactory.newEndPointCall(metadataAudit.getCreatedAt(), user, metadataAudit.getUid()).call();
+            organisationUnitFactory.newEndPointCall(metadataAudit.getCreatedAt(), user,
+
+                    metadataAudit.getUid()).call();
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {
                 organisationUnit = organisationUnit.toBuilder().deleted(true).build();
             }
-            List<AuthenticatedUserModel> authenticatedUserModelList = organisationUnitFactory.getAuthenticatedUserStore().query();
-            if(authenticatedUserModelList.size()==0){
+            List<AuthenticatedUserModel> authenticatedUserModelList = organisationUnitFactory
+                    .getAuthenticatedUserStore().query();
+            if(authenticatedUserModelList.isEmpty()){
                 Log.e(this.getClass().getSimpleName(),
-                        "MetadataAudit Error: Organisation Unit is created on server but authenticated User does not exists in "
+                        "MetadataAudit Error: Organisation Unit is created "
+                                + "on server but authenticated User does not exists in "
                                 + "local: "
                                 + metadataAudit);
             }else {
                 organisationUnitFactory.getOrganisationUnitHandler().handleOrganisationUnit(
-                        organisationUnit, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, authenticatedUserModelList.get(0).user());
+                        organisationUnit, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
+                        authenticatedUserModelList.get(0).user());
             }
         }
     }

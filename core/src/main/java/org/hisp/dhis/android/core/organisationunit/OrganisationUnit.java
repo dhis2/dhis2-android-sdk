@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
@@ -45,6 +46,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_OrganisationUnit.Builder.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class OrganisationUnit extends BaseNameableObject {
     private static final String PARENT = "parent";
     private static final String PATH = "path";

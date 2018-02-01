@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
@@ -40,10 +39,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-import java.util.Date;
 import java.util.List;
-
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_User.Builder.class)

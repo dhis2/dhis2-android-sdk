@@ -43,7 +43,6 @@ import android.database.sqlite.SQLiteStatement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
@@ -62,12 +61,9 @@ import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetService;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
@@ -85,7 +81,6 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
@@ -94,7 +89,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRole;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleStore;
@@ -152,14 +146,8 @@ public class MetadataCallShould {
     @Mock
     private SystemInfo systemInfo;
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<Category>> categoryInfo;
-
     @Mock
     private SystemInfoService systemInfoService;
-
-    @Mock
-    private SystemInfoHandler systemInfoHandler;
 
     @Mock
     private SystemInfoStore systemInfoStore;
@@ -178,12 +166,6 @@ public class MetadataCallShould {
 
     @Mock
     private UserRoleProgramLinkStore userRoleProgramLinkStore;
-
-    @Mock
-    private OrganisationUnitStore organisationUnitStore;
-
-    @Mock
-    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
 
     @Mock
     private UserStore userStore;
@@ -214,12 +196,6 @@ public class MetadataCallShould {
     private ProgramRuleStore programRuleStore;
 
     @Mock
-    private OptionStore optionStore;
-
-    @Mock
-    private OptionSetStore optionSetStore;
-
-    @Mock
     private DataElementStore dataElementStore;
 
     @Mock
@@ -233,9 +209,6 @@ public class MetadataCallShould {
 
     @Mock
     private RelationshipTypeStore relationshipStore;
-
-    @Mock
-    private OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
     @Mock
     private UserService userService;
@@ -298,6 +271,7 @@ public class MetadataCallShould {
 
     private OptionSetFactory optionSetFactory;
     private TrackedEntityFactory trackedEntityFactory;
+    private OrganisationUnitFactory organisationUnitFactory;
 
     // object to test
     private MetadataCall metadataCall;
@@ -362,27 +336,27 @@ public class MetadataCallShould {
 
         optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
         trackedEntityFactory = new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
+        organisationUnitFactory = new OrganisationUnitFactory(retrofit, databaseAdapter, resourceHandler);
 
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService,
-                programService, organisationUnitService,
-                systemInfoStore, resourceStore, userStore,
+                programService, systemInfoStore, resourceStore, userStore,
                 userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
-                organisationUnitStore,
-                userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
-                programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
+                programStore, trackedEntityAttributeStore,
+                programTrackedEntityAttributeStore, programRuleVariableStore,
+                programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore,
-                organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
+                categoryQuery, categoryService, categoryHandler,
                 CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetFactory, trackedEntityFactory);
+                optionSetFactory, trackedEntityFactory, organisationUnitFactory);
 
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
         when(userCall.execute()).thenReturn(Response.success(user));
-        when(organisationUnitCall.execute()).thenReturn(Response.success(organisationUnitPayload));
         when(programCall.execute()).thenReturn(Response.success(programPayload));
         when(optionSetCall.execute()).thenReturn(Response.success(optionSetPayload));
+        when(organisationUnitCall.execute()).thenReturn(Response.success(organisationUnitPayload));
     }
 
     @After
@@ -392,6 +366,7 @@ public class MetadataCallShould {
 
     @Test
     public void returns_category_combo_payload_when_execute_metadata_call() throws Exception {
+        dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
@@ -408,6 +383,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_system_info_call_fail() throws Exception {
+        dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
@@ -428,6 +404,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_user_call_fail() throws Exception {
+        dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
@@ -449,18 +426,17 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_organisation_unit_call_fail() throws Exception {
-        dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
+        dhis2MockServer.enqueueMockResponse("api_error.json",
+                HttpURLConnection.HTTP_CONFLICT);
 
         final int expectedTransactions = 4;
+
         when(organisationUnitCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
-        assertThat(response).isEqualTo(errorResponse);
-        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
+        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CONFLICT);
+
         verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
         verify(transaction, times(expectedTransactions)).end();
         verify(transaction, atMost(expectedTransactions
@@ -470,6 +446,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_program_call_fail() throws Exception {
+        dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
@@ -490,6 +467,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_tracked_entity_call_fail() throws Exception {
+        dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("api_error.json", HttpURLConnection.HTTP_CONFLICT);
@@ -507,6 +485,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_option_set_fail() throws Exception {
+        dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");

@@ -90,9 +90,7 @@ import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
@@ -179,7 +177,6 @@ public final class D2 {
     private final UserService userService;
     private final SystemInfoService systemInfoService;
     private final ProgramService programService;
-    private final OrganisationUnitService organisationUnitService;
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final EventService eventService;
     private final CategoryService categoryService;
@@ -192,7 +189,6 @@ public final class D2 {
     // stores
     private final UserStore userStore;
     private final UserCredentialsStore userCredentialsStore;
-    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitStore organisationUnitStore;
     private final ResourceStore resourceStore;
@@ -223,8 +219,6 @@ public final class D2 {
 
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
-
-    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
     private final CategoryOptionStore categoryOptionStore;
     private final CategoryStore categoryStore;
@@ -257,7 +251,6 @@ public final class D2 {
         this.userService = retrofit.create(UserService.class);
         this.systemInfoService = retrofit.create(SystemInfoService.class);
         this.programService = retrofit.create(ProgramService.class);
-        this.organisationUnitService = retrofit.create(OrganisationUnitService.class);
         this.trackedEntityInstanceService = retrofit.create(TrackedEntityInstanceService.class);
         this.eventService = retrofit.create(EventService.class);
         this.categoryService = retrofit.create(CategoryService.class);
@@ -269,8 +262,6 @@ public final class D2 {
                 new UserStoreImpl(databaseAdapter);
         this.userCredentialsStore =
                 new UserCredentialsStoreImpl(databaseAdapter);
-        this.userOrganisationUnitLinkStore =
-                new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
         this.authenticatedUserStore =
                 new AuthenticatedUserStoreImpl(databaseAdapter);
         this.organisationUnitStore =
@@ -326,8 +317,6 @@ public final class D2 {
                 new TrackedEntityDataValueStoreImpl(databaseAdapter);
         this.trackedEntityAttributeValueStore =
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter);
-        this.organisationUnitProgramLinkStore =
-                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
 
         this.categoryStore = new CategoryStoreImpl(databaseAdapter);
         this.categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
@@ -344,6 +333,14 @@ public final class D2 {
         //handlers
         userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
         resourceHandler = new ResourceHandler(resourceStore);
+
+        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore =
+                new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
+        OrganisationUnitStoreImpl organisationUnitStore =
+                new OrganisationUnitStoreImpl(databaseAdapter);
+        OrganisationUnitProgramLinkStoreImpl organisationUnitProgramLinkStore =
+                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
+                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
 
         organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
                 userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
@@ -445,9 +442,7 @@ public final class D2 {
         List<DeletableStore> deletableStoreList = new ArrayList<>();
         deletableStoreList.add(userStore);
         deletableStoreList.add(userCredentialsStore);
-        deletableStoreList.add(userOrganisationUnitLinkStore);
         deletableStoreList.add(authenticatedUserStore);
-        deletableStoreList.add(organisationUnitStore);
         deletableStoreList.add(resourceStore);
         deletableStoreList.add(systemInfoStore);
         deletableStoreList.add(userRoleStore);
@@ -472,7 +467,6 @@ public final class D2 {
         deletableStoreList.add(enrollmentStore);
         deletableStoreList.add(trackedEntityDataValueStore);
         deletableStoreList.add(trackedEntityAttributeValueStore);
-        deletableStoreList.add(organisationUnitProgramLinkStore);
         deletableStoreList.add(eventStore);
         deletableStoreList.add(categoryStore);
         deletableStoreList.add(categoryOptionStore);
@@ -480,6 +474,7 @@ public final class D2 {
         deletableStoreList.add(categoryComboOptionCategoryLinkStore);
         deletableStoreList.add(categoryComboStore);
         deletableStoreList.add(categoryCategoryComboLinkStore);
+        deletableStoreList.addAll(organisationUnitFactory.getDeletableStores());
         return new LogOutUserCallable(
                 deletableStoreList
         );

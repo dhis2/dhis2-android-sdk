@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
@@ -193,11 +194,11 @@ public class OrganisationUnitCallUnitShould {
 
 
         when(database.beginNewTransaction()).thenReturn(transaction);
-
+        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
+                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
-                organisationUnitStore,
-                resourceStore,
-                serverDate, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
+                resourceHandler, serverDate, organisationUnitHandler, "");
 
         //Return only one organisationUnit.
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));

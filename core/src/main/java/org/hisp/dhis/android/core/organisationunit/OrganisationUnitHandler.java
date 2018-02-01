@@ -33,9 +33,7 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 

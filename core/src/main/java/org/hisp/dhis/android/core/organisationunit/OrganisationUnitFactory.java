@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.organisationunit;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
@@ -10,7 +11,9 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserStore;
 import org.hisp.dhis.android.core.user.UserStoreImpl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Retrofit;
 
@@ -24,7 +27,7 @@ public class OrganisationUnitFactory {
     private final OrganisationUnitHandler organisationUnitHandler;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final AuthenticatedUserStore authenticatedUserStore;
-    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
+    private final List<DeletableStore> deletableStores;
 
     public OrganisationUnitFactory(
             Retrofit retrofit, DatabaseAdapter databaseAdapter, ResourceHandler resourceHandler) {
@@ -32,13 +35,19 @@ public class OrganisationUnitFactory {
         this.organisationUnitService = retrofit.create(OrganisationUnitService.class);
         this.resourceHandler = resourceHandler;
         this.organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter);
-        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
-        OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore = new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
-        this.organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
+        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore =
+                new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
+        OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore =
+                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
+        this.organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
+                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
         this.userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
         this.authenticatedUserStore = new AuthenticatedUserStoreImpl(databaseAdapter);
-        this.organisationUnitProgramLinkStore = new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
         this.userStore = new UserStoreImpl(databaseAdapter);
+        deletableStores = new ArrayList<>();
+        deletableStores.add(organisationUnitStore);
+        deletableStores.add(userOrganisationUnitLinkStore);
+        deletableStores.add(organisationUnitProgramLinkStore);
     }
 
     public OrganisationUnitHandler getOrganisationUnitHandler(){
@@ -62,5 +71,17 @@ public class OrganisationUnitFactory {
 
     public UserStore getUserStore() {
         return userStore;
+    }
+
+    public List<DeletableStore> getDeletableStores() {
+        return deletableStores;
+    }
+
+    public ResourceHandler getResourceHandler() {
+        return resourceHandler;
+    }
+
+    public OrganisationUnitStore getOrganisationUnitStore() {
+        return organisationUnitStore;
     }
 }

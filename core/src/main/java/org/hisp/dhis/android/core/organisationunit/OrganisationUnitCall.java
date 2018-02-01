@@ -39,9 +39,7 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
 import java.io.IOException;
 import java.util.Date;
@@ -96,31 +94,34 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         }
         Response<Payload<OrganisationUnit>> response = null;
 
-        //Transaction transaction = database.beginNewTransaction();
+        Transaction transaction = database.beginNewTransaction();
         try {
-                Filter<OrganisationUnit, String> lastUpdatedFilter =
-                        OrganisationUnit.lastUpdated.gt(
-                                resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
-                        );
-                // Call OrganisationUnitService for each tree root & try to handleTrackedEntity sub-tree:
+            Filter<OrganisationUnit, String> lastUpdatedFilter =
+                    OrganisationUnit.lastUpdated.gt(
+                            resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
+                    );
+            // Call OrganisationUnitService for each tree root & try to handleTrackedEntity
+            // sub-tree:
 
-                if(uid.isEmpty()) {
-                    Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
-                    for (String uid : rootOrgUnitUids) {
-                        response = getOrganisationUnitByUId(uid, lastUpdatedFilter);
-                        if(!response.isSuccessful()){
-                            break;//stop early unsuccessful:
-                        }
-                    }
-                }else{
+
+            if (uid.isEmpty()) {
+                Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
+                for (String uid : rootOrgUnitUids) {
                     response = getOrganisationUnitByUId(uid, lastUpdatedFilter);
+                    if (!response.isSuccessful()) {
+                        //stop early unsuccessful
+                        break;
+                    }
                 }
+            } else {
+                response = getOrganisationUnitByUId(uid, lastUpdatedFilter);
+            }
             if (response != null && response.isSuccessful()) {
                 resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDate);
-                //transaction.setSuccessful();
+                transaction.setSuccessful();
             }
         } finally {
-            //transaction.end();
+            transaction.end();
         }
         return response;
     }

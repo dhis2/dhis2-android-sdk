@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class IndicatorStore {
+public final class IndicatorStore {
 
     private IndicatorStore() {}
 

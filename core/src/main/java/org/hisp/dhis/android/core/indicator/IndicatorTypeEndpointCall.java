@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.io.IOException;
 import java.util.Set;
 
-public class IndicatorTypeEndpointCall extends GenericEndpointCallImpl<IndicatorType> {
+public final class IndicatorTypeEndpointCall extends GenericEndpointCallImpl<IndicatorType> {
     private final IndicatorTypeService indicatorTypeService;
 
     private IndicatorTypeEndpointCall(GenericCallData data, IndicatorTypeService indicatorTypeService,

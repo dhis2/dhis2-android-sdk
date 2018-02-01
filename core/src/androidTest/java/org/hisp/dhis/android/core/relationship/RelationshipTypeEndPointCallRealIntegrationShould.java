@@ -28,9 +28,8 @@ public class RelationshipTypeEndPointCallRealIntegrationShould extends AbsStoreT
         Truth.assertThat(response.isSuccessful()).isTrue();
 
         RelationshipTypeFactory relationshipTypeFactory = new RelationshipTypeFactory(
-                databaseAdapter(), d2.retrofit(),
-                HandlerFactory.createResourceHandler(databaseAdapter()),
-                new RelationshipTypeStoreImpl(databaseAdapter()));
+                d2.retrofit(), databaseAdapter(),
+                HandlerFactory.createResourceHandler(databaseAdapter()));
         response = relationshipTypeFactory.newEndPointCall(new HashSet<>(
                 Arrays.asList("V2kkHafqs8G", "o51cUNONthg")), new Date()).call();
         Truth.assertThat(response.isSuccessful()).isTrue();

@@ -33,13 +33,7 @@ public class RelationshipTypeEndPointCallShould {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private RelationshipTypeStore relationshipTypeStore;
-
-    @Mock
     private ResourceHandler resourceHandler;
-
-    @Mock
-    private RelationshipTypeHandler relationshipTypeHandler;
 
     Dhis2MockServer dhis2MockServer;
     Retrofit retrofit;
@@ -86,14 +80,12 @@ public class RelationshipTypeEndPointCallShould {
 
     private RelationshipTypeEndPointCall givenARelationShipTypeEndPointCall(int uidsSize) {
         Set<String> uIds = new HashSet<>();
-        RelationshipTypeService relationshipTypeService = retrofit.create(
-                RelationshipTypeService.class);
 
         for (int i = 0; i < uidsSize; i++) {
             uIds.add("uid" + i);
         }
-        RelationshipTypeFactory relationshipTypeFactory = new RelationshipTypeFactory(
-                databaseAdapter, retrofit, resourceHandler, relationshipTypeStore);
+        RelationshipTypeFactory relationshipTypeFactory = new RelationshipTypeFactory(retrofit,
+                databaseAdapter, resourceHandler);
 
         return relationshipTypeFactory.newEndPointCall(uIds, new Date());
     }

@@ -17,14 +17,13 @@ public class RelationshipTypeFactory {
     private final RelationshipTypeStore relationshipTypeStore;
 
     public RelationshipTypeFactory(
-            DatabaseAdapter databaseAdapter,
             Retrofit retrofit,
-            ResourceHandler resourceHandler,
-            RelationshipTypeStore relationshipTypeStore) {
+            DatabaseAdapter databaseAdapter,
+            ResourceHandler resourceHandler) {
         this.databaseAdapter = databaseAdapter;
         this.relationshipTypeService = retrofit.create(RelationshipTypeService.class);
         this.resourceHandler = resourceHandler;
-        this.relationshipTypeStore = relationshipTypeStore;
+        this.relationshipTypeStore = new RelationshipTypeStoreImpl(databaseAdapter);
         this.relationshipTypeHandler = new RelationshipTypeHandler(this.relationshipTypeStore);
 
     }

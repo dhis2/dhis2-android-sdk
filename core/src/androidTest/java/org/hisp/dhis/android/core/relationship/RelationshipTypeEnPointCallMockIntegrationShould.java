@@ -36,9 +36,8 @@ public class RelationshipTypeEnPointCallMockIntegrationShould extends AbsStoreTe
     @MediumTest
     public void download_RelationShipTypes_according_to_default_query() throws Exception {
         RelationshipTypeFactory relationshipTypeFactory = new RelationshipTypeFactory(
-                databaseAdapter(), d2.retrofit(),
-                HandlerFactory.createResourceHandler(databaseAdapter()),
-                new RelationshipTypeStoreImpl(databaseAdapter()));
+                d2.retrofit(), databaseAdapter(),
+                HandlerFactory.createResourceHandler(databaseAdapter()));
 
         dhis2MockServer.enqueueMockResponse("relationship_types.json");
 
@@ -58,9 +57,8 @@ public class RelationshipTypeEnPointCallMockIntegrationShould extends AbsStoreTe
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         relationshipTypeFactory = new RelationshipTypeFactory(
-                databaseAdapter(), d2.retrofit(),
-                HandlerFactory.createResourceHandler(databaseAdapter()),
-                new RelationshipTypeStoreImpl(databaseAdapter()));
+                d2.retrofit(), databaseAdapter(),
+                HandlerFactory.createResourceHandler(databaseAdapter()));
     }
 
     @Override

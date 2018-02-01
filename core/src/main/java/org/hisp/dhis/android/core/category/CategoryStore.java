@@ -6,9 +6,9 @@ import org.hisp.dhis.android.core.common.DeletableStore;
 
 public interface CategoryStore extends DeletableStore {
 
-    long insert(@NonNull Category element);
+    long insert(@NonNull Category category);
 
-    boolean delete(@NonNull Category element);
+    boolean delete(@NonNull Category category);
 
-    boolean update(@NonNull Category oldElement, @NonNull Category newElement);
+    boolean update(@NonNull Category category);
 }

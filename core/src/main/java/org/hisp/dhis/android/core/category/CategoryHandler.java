@@ -28,7 +28,7 @@ public class CategoryHandler {
             categoryStore.delete(category);
         } else {
 
-            boolean updated = categoryStore.update(category, category);
+            boolean updated = categoryStore.update(category);
 
             if (!updated) {
                 categoryStore.insert(category);

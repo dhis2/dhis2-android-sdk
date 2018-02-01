@@ -14,6 +14,7 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,11 +45,14 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
         Truth.assertThat(response.isSuccessful()).isTrue();
 
         EventEndPointCall eventEndPointCall = EventCallFactory.create(
-                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+                d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
-        eventEndPointCall.call();
+        response = eventEndPointCall.call();
+        Truth.assertThat(response.isSuccessful()).isTrue();
 
-        verifyDownloadedEvents(50);
+        //TODO: we should create dependant server data verifications in other test suite
+       /* verifyNumberOfDownloadedEvents(49);
+        verifyNumberOfDownloadedTrackedEntityDataValue(335);*/
     }
 
 
@@ -83,11 +87,19 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
         return false;
     }
 
-    private void verifyDownloadedEvents(int numEvents) {
+    private void verifyNumberOfDownloadedEvents(int numEvents) {
         EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
 
         List<Event> downloadedEvents = eventStore.querySingleEvents();
 
         assertThat(downloadedEvents.size(), is(numEvents));
+    }
+
+    private void verifyNumberOfDownloadedTrackedEntityDataValue(int num) {
+        TrackedEntityDataValueStoreImpl eventStore = new TrackedEntityDataValueStoreImpl(d2.databaseAdapter());
+
+        int numPersisted = eventStore.countAll();
+
+        assertThat(numPersisted, is(num));
     }
 }

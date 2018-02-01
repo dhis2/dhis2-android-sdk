@@ -65,36 +65,37 @@ public abstract class DataSet extends BaseNameableObject {
     private final static String DATA_SET_ELEMENTS = "dataSetElements";
 
     public static final Field<DataSet, String> uid = Field.create(UID);
-    public static final Field<DataSet, String> code = Field.create(CODE);
-    public static final Field<DataSet, String> name = Field.create(NAME);
-    public static final Field<DataSet, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<DataSet, String> created = Field.create(CREATED);
-    public static final Field<DataSet, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<DataSet, String> shortName = Field.create(SHORT_NAME);
-    public static final Field<DataSet, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    public static final Field<DataSet, String> description = Field.create(DESCRIPTION);
-    public static final Field<DataSet, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    public static final Field<DataSet, Boolean> deleted = Field.create(DELETED);
+    private static final Field<DataSet, String> code = Field.create(CODE);
+    private static final Field<DataSet, String> name = Field.create(NAME);
+    private static final Field<DataSet, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<DataSet, String> created = Field.create(CREATED);
+    static final Field<DataSet, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<DataSet, String> shortName = Field.create(SHORT_NAME);
+    private static final Field<DataSet, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+    private static final Field<DataSet, String> description = Field.create(DESCRIPTION);
+    private static final Field<DataSet, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
+    private static final Field<DataSet, Boolean> deleted = Field.create(DELETED);
 
-    public static final Field<DataSet, PeriodType> periodType = Field.create(PERIOD_TYPE);
-    public static final NestedField<DataSet, ObjectWithUid> categoryCombo = NestedField.create(CATEGORY_COMBO);
-    public static final Field<DataSet, Boolean> mobile = Field.create(MOBILE);
-    public static final Field<DataSet, Integer> version = Field.create(VERSION);
-    public static final Field<DataSet, Integer> expiryDays = Field.create(EXPIRY_DAYS);
-    public static final Field<DataSet, Integer> timelyDays = Field.create(TIMELY_DAYS);
-    public static final Field<DataSet, Boolean> notifyCompletingUser = Field.create(NOTIFY_COMPLETING_USER);
-    public static final Field<DataSet, Integer> openFuturePeriods = Field.create(OPEN_FUTURE_PERIODS);
-    public static final Field<DataSet, Boolean> fieldCombinationRequired = Field.create(FIELD_COMBINATION_REQUIRED);
-    public static final Field<DataSet, Boolean> validCompleteOnly = Field.create(VALID_COMPLETE_ONLY);
-    public static final Field<DataSet, Boolean> noValueRequiresComment = Field.create(NO_VALUE_REQUIRES_COMMENT);
-    public static final Field<DataSet, Boolean> skipOffline = Field.create(SKIP_OFFLINE);
-    public static final Field<DataSet, Boolean> dataElementDecoration = Field.create(DATA_ELEMENT_DECORATION);
-    public static final Field<DataSet, Boolean> renderAsTabs = Field.create(RENDER_AS_TABS);
-    public static final Field<DataSet, Boolean> renderHorizontally = Field.create(RENDER_HORIZONTALLY);
-    public static final NestedField<DataSet, DataElementUids> dataSetElements = NestedField.create(DATA_SET_ELEMENTS);
+    private static final Field<DataSet, PeriodType> periodType = Field.create(PERIOD_TYPE);
+    private static final NestedField<DataSet, ObjectWithUid> categoryCombo = NestedField.create(CATEGORY_COMBO);
+    private static final Field<DataSet, Boolean> mobile = Field.create(MOBILE);
+    private static final Field<DataSet, Integer> version = Field.create(VERSION);
+    private static final Field<DataSet, Integer> expiryDays = Field.create(EXPIRY_DAYS);
+    private static final Field<DataSet, Integer> timelyDays = Field.create(TIMELY_DAYS);
+    private static final Field<DataSet, Boolean> notifyCompletingUser = Field.create(NOTIFY_COMPLETING_USER);
+    private static final Field<DataSet, Integer> openFuturePeriods = Field.create(OPEN_FUTURE_PERIODS);
+    private static final Field<DataSet, Boolean> fieldCombinationRequired = Field.create(FIELD_COMBINATION_REQUIRED);
+    private static final Field<DataSet, Boolean> validCompleteOnly = Field.create(VALID_COMPLETE_ONLY);
+    private static final Field<DataSet, Boolean> noValueRequiresComment = Field.create(NO_VALUE_REQUIRES_COMMENT);
+    private static final Field<DataSet, Boolean> skipOffline = Field.create(SKIP_OFFLINE);
+    private static final Field<DataSet, Boolean> dataElementDecoration = Field.create(DATA_ELEMENT_DECORATION);
+    private static final Field<DataSet, Boolean> renderAsTabs = Field.create(RENDER_AS_TABS);
+    private static final Field<DataSet, Boolean> renderHorizontally = Field.create(RENDER_HORIZONTALLY);
+    private static final NestedField<DataSet, DataElementUids> dataSetElements = NestedField.create(DATA_SET_ELEMENTS);
 
-    public static final Fields<DataSet> allFields = Fields.<DataSet>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, deleted,
+    static final Fields<DataSet> allFields = Fields.<DataSet>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
+            description, displayDescription, deleted,
             periodType, categoryCombo.with(ObjectWithUid.uid), mobile, version,
             expiryDays, timelyDays, notifyCompletingUser,
             openFuturePeriods, fieldCombinationRequired, validCompleteOnly, noValueRequiresComment,

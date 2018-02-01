@@ -34,6 +34,7 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
+import java.util.List;
 
 public interface RelationshipTypeStore extends DeletableStore {
 
@@ -60,4 +61,6 @@ public interface RelationshipTypeStore extends DeletableStore {
     );
 
     int delete(@NonNull String uid);
+
+    List<RelationshipType> queryAll();
 }

@@ -34,13 +34,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 
 import java.util.Date;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 @AutoValue
-public abstract class RelationshipType extends BaseIdentifiableObject {
+public abstract class RelationshipType extends BaseNameableObject {
     private static final String B_TO_A = "bIsToA";
     private static final String A_TO_B = "aIsToB";
 
@@ -62,8 +64,13 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
     @JsonProperty(A_TO_B)
     public abstract String aIsToB();
 
+    public static Builder builder() {
+        return new AutoValue_RelationshipType.Builder();
+    }
+    @SuppressFBWarnings("UPM_UNCALLED_PRIVATE_METHOD")
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     @JsonCreator
-    public static RelationshipType create(
+    private static RelationshipType create(
             @JsonProperty(UID) String uid,
             @JsonProperty(CODE) String code,
             @JsonProperty(NAME) String name,
@@ -74,15 +81,26 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
             @JsonProperty(A_TO_B) String aIsToB,
             @JsonProperty(DELETED) Boolean deleted) {
 
-        return new AutoValue_RelationshipType(
-                uid,
-                code,
-                name,
-                displayName,
-                created,
-                lastUpdated,
-                deleted,
-                bIsToA,
-                aIsToB);
+        return builder().uid(uid).code(code).name(name).displayName(displayName).created(
+                created).lastUpdated(lastUpdated).deleted(deleted).bIsToA(bIsToA).aIsToB(
+                aIsToB).build();
+    }
+
+
+    @AutoValue.Builder
+    public static abstract class Builder extends
+            BaseNameableObject.Builder<RelationshipType.Builder> {
+
+        @JsonProperty(B_TO_A)
+        public abstract Builder bIsToA(String bIsToA);
+
+        @JsonProperty(A_TO_B)
+        public abstract Builder aIsToB(String aIsToB);
+
+        abstract RelationshipType autoBuild();
+
+        public RelationshipType build() {
+            return autoBuild();
+        }
     }
 }

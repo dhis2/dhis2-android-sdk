@@ -51,13 +51,13 @@ public final class DatabaseAssert {
     }
 
     public DatabaseAssert ifTableExist(String table) {
-        boolean isExist = false;
-        Cursor res = databaseAdapter.query("PRAGMA table_info(" + table + ")");
-        int value = res.getColumnIndex("name");
-        if (value != -1) {
-            isExist = true;
-        }
-        assertThat(isExist, is(true));
+        verifyIfTableExists(table, true);
+
+        return this;
+    }
+
+    public DatabaseAssert ifTableNotExist(String table) {
+        verifyIfTableExists(table, false);
 
         return this;
     }
@@ -119,5 +119,15 @@ public final class DatabaseAssert {
         }
 
         return count;
+    }
+
+    private void verifyIfTableExists(String table, boolean expected) {
+        boolean isExist = false;
+        Cursor res = databaseAdapter.query("PRAGMA table_info(" + table + ")");
+        int value = res.getColumnIndex("name");
+        if (value != -1) {
+            isExist = true;
+        }
+        assertThat(isExist, is(expected));
     }
 }

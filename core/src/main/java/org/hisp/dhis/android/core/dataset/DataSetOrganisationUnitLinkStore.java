@@ -26,20 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.dataset;
 
-import android.database.sqlite.SQLiteStatement;
-
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class SQLStatementWrapper {
-    public final SQLiteStatement insert;
-    public final SQLiteStatement update;
-    final SQLiteStatement deleteById;
+@SuppressWarnings("PMD")
+public class DataSetOrganisationUnitLinkStore {
 
-    SQLStatementWrapper(SQLStatementBuilder builder, DatabaseAdapter databaseAdapter) {
-        this.insert = databaseAdapter.compileStatement(builder.insert());
-        this.update = databaseAdapter.compileStatement(builder.update());
-        this.deleteById = databaseAdapter.compileStatement(builder.deleteById());
+    private DataSetOrganisationUnitLinkStore() {}
+
+    public static ObjectWithoutUidStore<DataSetOrganisationUnitLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, DataSetOrganisationUnitLinkModel.TABLE,
+                DataSetOrganisationUnitLinkModel.Columns.all(), DataSetOrganisationUnitLinkModel.Columns.whereUpdate());
     }
 }

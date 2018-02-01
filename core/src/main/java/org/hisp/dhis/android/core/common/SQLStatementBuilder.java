@@ -35,13 +35,13 @@ import java.util.Arrays;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class SQLStatementBuilder {
-    public final String tableName;
+    final String tableName;
     public final String[] columns;
-    public final String[] updateWhereColumns;
+    private final String[] updateWhereColumns;
 
     @SuppressFBWarnings
     @SuppressWarnings("PMD")
-    public SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
+    SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
         this.tableName = tableName;
         this.columns = columns;
         this.updateWhereColumns = updateWhereColumns;
@@ -85,7 +85,7 @@ public class SQLStatementBuilder {
                 "VALUES (" + commaSeparatedInterrogationMarks() + ");";
     }
 
-    public String deleteById() {
+    String deleteById() {
         return "DELETE FROM " + tableName +
                 " WHERE " + BaseIdentifiableObjectModel.Columns.UID + "=?;";
     }
@@ -95,7 +95,7 @@ public class SQLStatementBuilder {
                 " WHERE " + BaseIdentifiableObjectModel.Columns.UID + "=?;";
     }
 
-    public String updateWhere() {
+    String updateWhere() {
         // TODO refactor to only generate for object without uids store.
         String whereClause = updateWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
                 andSeparatedColumnEqualInterrogationMark(updateWhereColumns);
@@ -137,7 +137,7 @@ public class SQLStatementBuilder {
         return createTableWrapper(tableName, Utils.appendInNewArray(idColumn(), columnsWithAttributes));
     }
 
-    public static String createIdentifiableModelTable(String tableName, String... columnsWithAttributes) {
+    static String createIdentifiableModelTable(String tableName, String... columnsWithAttributes) {
         return createTableWrapper(tableName, Utils.appendInNewArray(identifiableColumns(), columnsWithAttributes));
     }
 

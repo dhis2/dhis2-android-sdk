@@ -26,20 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.dataset;
 
-import android.database.sqlite.SQLiteStatement;
+import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.LinkModelAbstractShould;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel.Columns;
+import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
+import org.hisp.dhis.android.core.utils.Utils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class SQLStatementWrapper {
-    public final SQLiteStatement insert;
-    public final SQLiteStatement update;
-    final SQLiteStatement deleteById;
+import java.util.Arrays;
+import java.util.List;
 
-    SQLStatementWrapper(SQLStatementBuilder builder, DatabaseAdapter databaseAdapter) {
-        this.insert = databaseAdapter.compileStatement(builder.insert());
-        this.update = databaseAdapter.compileStatement(builder.update());
-        this.deleteById = databaseAdapter.compileStatement(builder.deleteById());
+import static com.google.common.truth.Truth.assertThat;
+
+@RunWith(AndroidJUnit4.class)
+public class DataSetOrganisationUnitLinkModelShould extends
+        LinkModelAbstractShould<DataSetOrganisationUnitLinkModel> {
+
+    public DataSetOrganisationUnitLinkModelShould() {
+        super(Columns.all(), 2, DataSetOrganisationUnitLinkModel.factory);
+    }
+
+    @Override
+    protected DataSetOrganisationUnitLinkModel buildModel() {
+        return DataSetOrganisationUnitLinkModel.create("data_set_uid",
+                "organisation_unit_uid");
+    }
+
+    @Override
+    protected Object[] getModelAsObjectArray() {
+        return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
+                model.dataSet(), model.organisationUnit());
+    }
+
+    @Test
+    public void have_data_set_organisation_unit_model_columns() {
+        List<String> columnsList = Arrays.asList(Columns.all());
+
+        assertThat(columnsList.contains(Columns.DATA_SET)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.ORGANISATION_UNIT)).isEqualTo(true);
     }
 }

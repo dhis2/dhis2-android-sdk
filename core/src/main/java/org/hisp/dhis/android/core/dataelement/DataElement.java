@@ -59,31 +59,32 @@ public abstract class DataElement extends BaseNameableObject {
     private final static String CATEGORY_COMBO = "categoryCombo";
 
     public static final Field<DataElement, String> uid = Field.create(UID);
-    public static final Field<DataElement, String> code = Field.create(CODE);
-    public static final Field<DataElement, String> name = Field.create(NAME);
-    public static final Field<DataElement, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<DataElement, String> created = Field.create(CREATED);
-    public static final Field<DataElement, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<DataElement, String> shortName = Field.create(SHORT_NAME);
-    public static final Field<DataElement, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    public static final Field<DataElement, String> description = Field.create(DESCRIPTION);
-    public static final Field<DataElement, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    public static final Field<DataElement, Boolean> deleted = Field.create(DELETED);
+    private static final Field<DataElement, String> code = Field.create(CODE);
+    private static final Field<DataElement, String> name = Field.create(NAME);
+    private static final Field<DataElement, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<DataElement, String> created = Field.create(CREATED);
+    static final Field<DataElement, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<DataElement, String> shortName = Field.create(SHORT_NAME);
+    private static final Field<DataElement, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+    private static final Field<DataElement, String> description = Field.create(DESCRIPTION);
+    private static final Field<DataElement, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
+    private static final Field<DataElement, Boolean> deleted = Field.create(DELETED);
 
-    public static final Field<DataElement, ValueType> valueType = Field.create(VALUE_TYPE);
-    public static final Field<DataElement, Boolean> zeroIsSignificant = Field.create(ZERO_IS_SIGNIFICANT);
-    public static final Field<DataElement, String> aggregationType = Field.create(AGGREGATION_TYPE);
-    public static final Field<DataElement, String> formName = Field.create(FORM_NAME);
-    public static final Field<DataElement, String> numberType = Field.create(NUMBER_TYPE);
-    public static final Field<DataElement, String> domainType = Field.create(DOMAIN_TYPE);
-    public static final Field<DataElement, String> dimension = Field.create(DIMENSION);
-    public static final Field<DataElement, String> displayFormName = Field.create(DISPLAY_FORM_NAME);
-    public static final NestedField<DataElement, OptionSet> optionSet = NestedField.create(OPTION_SET);
-    public static final NestedField<DataElement, ObjectWithUid> categoryCombo =
+    private static final Field<DataElement, ValueType> valueType = Field.create(VALUE_TYPE);
+    private static final Field<DataElement, Boolean> zeroIsSignificant = Field.create(ZERO_IS_SIGNIFICANT);
+    private static final Field<DataElement, String> aggregationType = Field.create(AGGREGATION_TYPE);
+    private static final Field<DataElement, String> formName = Field.create(FORM_NAME);
+    private static final Field<DataElement, String> numberType = Field.create(NUMBER_TYPE);
+    private static final Field<DataElement, String> domainType = Field.create(DOMAIN_TYPE);
+    private static final Field<DataElement, String> dimension = Field.create(DIMENSION);
+    private static final Field<DataElement, String> displayFormName = Field.create(DISPLAY_FORM_NAME);
+    private static final NestedField<DataElement, OptionSet> optionSet = NestedField.create(OPTION_SET);
+    private static final NestedField<DataElement, ObjectWithUid> categoryCombo =
             NestedField.create(CATEGORY_COMBO);
 
     public static final Fields<DataElement> allFields = Fields.<DataElement>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, deleted,
+            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
+            description, displayDescription, deleted,
             valueType, zeroIsSignificant, aggregationType, formName, numberType, domainType, dimension, displayFormName,
             optionSet.with(OptionSet.uid, OptionSet.version),
             categoryCombo.with(ObjectWithUid.uid)).build();

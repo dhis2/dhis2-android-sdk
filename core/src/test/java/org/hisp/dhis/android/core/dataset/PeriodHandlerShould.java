@@ -27,43 +27,64 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.text.ParseException;
 import java.util.Date;
-import java.util.List;
 
-public class PeriodHandler {
-    public static final String START_DATE_STR = "2017-01-01T00:00:00.000";
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
-    private final ObjectWithoutUidStore<PeriodModel> store;
-    private final PeriodGenerator generator;
+@RunWith(JUnit4.class)
+public class PeriodHandlerShould {
+
+    @Mock
+    private ObjectWithoutUidStore<PeriodModel> store;
+
+    @Mock
+    private PeriodGenerator generator;
+
+    @Mock
+    private PeriodModel p1;
+
+    @Mock
+    private PeriodModel p2;
+
+    // object to test
+    private PeriodHandler periodHandler;
 
     private Date startDate;
 
-    PeriodHandler(ObjectWithoutUidStore<PeriodModel> store, PeriodGenerator generator) {
-        this.store = store;
-        this.generator = generator;
-
-        try {
-            this.startDate = BaseIdentifiableObject.DATE_FORMAT.parse(START_DATE_STR);
-        } catch (ParseException e) {
-            this.startDate = new Date();
-        }
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        startDate = BaseIdentifiableObject.DATE_FORMAT.parse(PeriodHandler.START_DATE_STR);
+        periodHandler = new PeriodHandler(store, generator);
+        when(generator.generatePeriods(startDate)).thenReturn(Lists.newArrayList(p1, p2));
     }
 
-    void generateAndPersist() {
-        List<PeriodModel> periods = generator.generatePeriods(startDate);
-        for (PeriodModel p : periods) {
-            store.updateOrInsertWhere(p);
-        }
+    @Test
+    public void call_generator_to_generate_periods() throws Exception {
+        periodHandler.generateAndPersist();
+
+        verify(generator).generatePeriods(startDate);
+        verifyNoMoreInteractions(generator);
     }
 
-    public static PeriodHandler create(DatabaseAdapter databaseAdapter) {
-        return new PeriodHandler(
-                PeriodStore.create(databaseAdapter),
-                new MockPeriodGenerator());
+    @Test
+    public void call_store_to_persist_periods() throws Exception {
+        periodHandler.generateAndPersist();
+
+        verify(store).updateOrInsertWhere(p1);
+        verify(store).updateOrInsertWhere(p2);
+        verifyNoMoreInteractions(store);
     }
 }

@@ -447,9 +447,7 @@ public final class D2 {
         deletableStoreList.add(trackedEntityAttributeValueStore);
         deletableStoreList.add(organisationUnitProgramLinkStore);
         deletableStoreList.add(eventStore);
-        deletableStoreList.add(categoryFactory.getCategoryStore());
-        deletableStoreList.add(categoryFactory.getCategoryOptionStore());
-        deletableStoreList.add(categoryFactory.getCategoryOptionLinkStore());
+        deletableStoreList.addAll(categoryFactory.getDeletableStores());
         deletableStoreList.add(categoryComboOptionCategoryLinkStore);
         deletableStoreList.add(categoryComboStore);
         deletableStoreList.add(categoryCategoryComboLinkStore);

@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.core.category;
 
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -9,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import java.util.Map;
 @SuppressWarnings({
         "PMD.NPathComplexity",
 })
-public class CategoryStoreImpl implements CategoryStore {
+public class CategoryStoreImpl extends Store implements CategoryStore {
 
     private static final String QUERY_BY_UID_STATEMENT = "SELECT " +
             CategoryModel.Columns.UID + "," +
@@ -219,19 +218,13 @@ public class CategoryStoreImpl implements CategoryStore {
     }
 
     private void mapCategory(Cursor cursor, Map<String, Category> categoryMap) {
-        String uid = cursor.getString(0) == null ? null : cursor.getString(
-                0);
-        String code = cursor.getString(1) == null ? null : cursor.getString(
-                1);
-        String name = cursor.getString(2) == null ? null : cursor.getString(
-                2);
-        String displayName = cursor.getString(3) == null ? null : cursor.getString(
-                3);
-        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-        Date lastUpdated = cursor.getString(5) == null ? null : parse(
-                cursor.getString(5));
-        String dataDimensionType = cursor.getString(6) == null ? null : cursor.getString(
-                6);
+        String uid = getStringFromCursor(cursor, 0);
+        String code = getStringFromCursor(cursor, 1);
+        String name = getStringFromCursor(cursor, 2);
+        String displayName = getStringFromCursor(cursor, 3);
+        Date created = getDateFromCursor(cursor, 4);
+        Date lastUpdated =  getDateFromCursor(cursor, 5);
+        String dataDimensionType = getStringFromCursor(cursor, 6);
 
         categoryMap.put(uid, Category.builder()
                 .uid(uid)
@@ -246,14 +239,13 @@ public class CategoryStoreImpl implements CategoryStore {
 
     @NonNull
     private Category mapCategoryFromCursor(Cursor cursor) {
-        String uid = cursor.getString(0);
-        String code = cursor.getString(1);
-        String name = cursor.getString(2);
-        String displayName = cursor.getString(3);
-        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-        Date lastUpdated = cursor.getString(5) == null ? null : parse(
-                cursor.getString(5));
-        String dataDimensionType = cursor.getString(6);
+        String uid = getStringFromCursor(cursor, 0);
+        String code = getStringFromCursor(cursor, 1);
+        String name = getStringFromCursor(cursor, 2);
+        String displayName = getStringFromCursor(cursor, 3);
+        Date created = getDateFromCursor(cursor, 4);
+        Date lastUpdated = getDateFromCursor(cursor, 5);
+        String dataDimensionType = getStringFromCursor(cursor, 6);
 
         return Category.builder()
                 .uid(uid)

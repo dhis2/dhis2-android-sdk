@@ -1,9 +1,12 @@
 package org.hisp.dhis.android.core.category;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Retrofit;
 
@@ -17,6 +20,7 @@ public class CategoryFactory {
     private final CategoryOptionStore categoryOptionStore;
     private final CategoryCategoryOptionLinkStore categoryOptionLinkStore;
     private final ResponseValidator<Category> validator;
+    private final List<DeletableStore> deletableStoreList;
 
     public CategoryFactory(
             Retrofit retrofit, DatabaseAdapter databaseAdapter, ResourceHandler resourceHandler) {
@@ -29,6 +33,10 @@ public class CategoryFactory {
         this.categoryOptionLinkStore= new CategoryCategoryOptionLinkStoreImpl(databaseAdapter);
         this.categoryOptionHandler = new CategoryOptionHandler(categoryOptionStore, categoryOptionLinkStore);
         this.categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler);
+        this.deletableStoreList = new ArrayList<>();
+        this.deletableStoreList.add(categoryStore);
+        this.deletableStoreList.add(categoryOptionStore);
+        this.deletableStoreList.add(categoryOptionLinkStore);
     }
 
     public CategoryEndpointCall newEndPointCall(CategoryQuery categoryQuery, Date serverDate) throws Exception {
@@ -58,5 +66,9 @@ public class CategoryFactory {
 
     public CategoryCategoryOptionLinkStore getCategoryOptionLinkStore() {
         return categoryOptionLinkStore;
+    }
+
+    public List<DeletableStore> getDeletableStores() {
+        return deletableStoreList;
     }
 }

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -39,7 +38,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.PeriodType;
 import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
@@ -55,17 +53,16 @@ public abstract class PeriodModel extends BaseModel implements UpdateWhereStatem
     public static final String TABLE = "Period";
 
     public static class Columns extends BaseModel.Columns {
-        /* TODO Add period Id support */
         public static final String PERIOD_ID = "periodId";
-        static final String PERIOD_TYPE = "periodType";
-        static final String START_DATE = "startDate";
-        static final String END_DATE = "endDate";
+        public static final String PERIOD_TYPE = "periodType";
+        public static final String START_DATE = "startDate";
+        public static final String END_DATE = "endDate";
 
         private Columns() {}
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseModel.Columns.all(),
-                    PERIOD_TYPE, START_DATE, END_DATE);
+                    PERIOD_ID, PERIOD_TYPE, START_DATE, END_DATE);
         }
 
         static String[] whereUpdate() {
@@ -77,17 +74,13 @@ public abstract class PeriodModel extends BaseModel implements UpdateWhereStatem
         return AutoValue_PeriodModel.createFromCursor(cursor);
     }
 
-    public static PeriodModel create(Period period) {
-        return PeriodModel.builder()
-                .periodType(period.periodType())
-                .startDate(period.startDate())
-                .endDate(period.endDate())
-                .build();
+    public static Builder builder() {
+        return new $AutoValue_PeriodModel.Builder();
     }
 
-    public static Builder builder() {
-        return new $$AutoValue_PeriodModel.Builder();
-    }
+    @Nullable
+    @ColumnName(Columns.PERIOD_ID)
+    public abstract String periodId();
 
     @Nullable
     @ColumnName(Columns.PERIOD_TYPE)
@@ -104,25 +97,23 @@ public abstract class PeriodModel extends BaseModel implements UpdateWhereStatem
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date endDate();
 
-    @NonNull
-    public abstract ContentValues toContentValues();
-
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, periodType());
-        sqLiteBind(sqLiteStatement, 2, startDate());
-        sqLiteBind(sqLiteStatement, 3, endDate());
+        sqLiteBind(sqLiteStatement, 1, periodId());
+        sqLiteBind(sqLiteStatement, 2, periodType());
+        sqLiteBind(sqLiteStatement, 3, startDate());
+        sqLiteBind(sqLiteStatement, 4, endDate());
     }
 
     @Override
     public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 4, periodType());
-        sqLiteBind(sqLiteStatement, 5, startDate());
-        sqLiteBind(sqLiteStatement, 6, endDate());
+        sqLiteBind(sqLiteStatement, 5, periodId());
     }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder periodId(String periodId);
+
         public abstract Builder periodType(PeriodType periodType);
 
         public abstract Builder startDate(Date startDate);

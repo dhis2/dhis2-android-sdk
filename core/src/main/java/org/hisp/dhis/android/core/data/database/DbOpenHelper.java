@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.datavalue.DataValueModel;
+import org.hisp.dhis.android.core.dataset.PeriodModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
@@ -1036,6 +1037,15 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             DataValueModel.Columns.ATTRIBUTE_OPTION_COMBO + ")"
             );
 
+    private static final String CREATE_PERIOD_TABLE =
+            SQLStatementBuilder.createModelTable(PeriodModel.TABLE,
+                    PeriodModel.Columns.PERIOD_ID + " TEXT," +
+                            PeriodModel.Columns.PERIOD_TYPE + " TEXT," +
+                            PeriodModel.Columns.START_DATE + " TEXT," +
+                            PeriodModel.Columns.END_DATE + " TEXT," +
+                            " UNIQUE (" + PeriodModel.Columns.PERIOD_ID + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1095,6 +1105,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_INDICATOR_TYPE_TABLE);
         database.execSQL(CREATE_DATA_SET_INDICATOR_LINK_TABLE);
         database.execSQL(CREATE_DATA_VALUE_TABLE);
+        database.execSQL(CREATE_PERIOD_TABLE);
         return database;
     }
 

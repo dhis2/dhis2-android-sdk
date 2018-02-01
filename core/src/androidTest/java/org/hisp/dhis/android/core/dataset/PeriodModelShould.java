@@ -26,10 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.dataset;
 
-public enum PeriodType {
-    Daily, Weekly, WeeklyWednesday, WeeklyThursday, WeeklySaturday, WeeklySunday,
-    Monthly, BiMonthly, Quarterly, SixMonthly, SixMonthlyApril, Yearly, FinancialApril,
-    FinancialJuly, FinancialOct
+import android.database.MatrixCursor;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.text.ParseException;
+import java.util.Date;
+
+import static com.google.common.truth.Truth.assertThat;
+
+@RunWith(AndroidJUnit4.class)
+public class PeriodModelShould {
+
+    @Test
+    public void create_model_when_created_from_database_cursor() throws ParseException {
+        String periodId = "2018W1";
+        String periodType = "Weekly";
+
+        String startDateStr = "2018-01-01T00:00:00.000";
+        Date startDate = BaseIdentifiableObject.DATE_FORMAT.parse(startDateStr);
+        String endDateStr = "2018-01-07T23:59:59.999";
+        Date endDate = BaseIdentifiableObject.DATE_FORMAT.parse(endDateStr);
+
+        MatrixCursor cursor = new MatrixCursor(PeriodModel.Columns.all());
+        cursor.addRow(new Object[]{
+                periodId,
+                periodType,
+                startDateStr,
+                endDateStr
+        });
+        cursor.moveToFirst();
+
+        PeriodModel model = PeriodModel.create(cursor);
+        cursor.close();
+
+        assertThat(model.periodId()).isEqualTo(periodId);
+        assertThat(model.periodType()).isEqualTo(PeriodType.Weekly);
+        assertThat(model.startDate()).isEqualTo(startDate);
+        assertThat(model.endDate()).isEqualTo(endDate);
+    }
 }

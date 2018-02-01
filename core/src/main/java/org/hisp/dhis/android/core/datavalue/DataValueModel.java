@@ -160,6 +160,13 @@ public abstract class DataValueModel extends BaseModel implements UpdateWhereSta
         sqLiteBind(sqLiteStatement, 10, followUp());
     }
 
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 11, dataElement());
+        sqLiteBind(sqLiteStatement, 12, period());
+        sqLiteBind(sqLiteStatement, 13, organisationUnit());
+    }
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder dataElement(String dataElement);

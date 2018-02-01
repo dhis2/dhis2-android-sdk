@@ -38,7 +38,7 @@ public abstract class ModelAbstractShould<M extends BaseModel, P> extends LinkMo
     private final P pojo;
     private final ModelFactory<M, P> modelFactory;
 
-    ModelAbstractShould(String[] columns, int columnsLength, ModelFactory<M, P> modelFactory) {
+    public ModelAbstractShould(String[] columns, int columnsLength, ModelFactory<M, P> modelFactory) {
         super(columns, columnsLength, modelFactory);
         this.model = buildModel();
         this.pojo = buildPojo();

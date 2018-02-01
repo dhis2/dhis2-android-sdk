@@ -115,6 +115,7 @@ import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeFactory;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -245,6 +246,7 @@ public final class D2 {
 
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
+    private final RelationshipTypeFactory relationshipTypeFactory;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
@@ -381,10 +383,11 @@ public final class D2 {
         trackedEntityFactory =
                 new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
 
-
+        relationshipTypeFactory =
+                new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
-                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory);
+                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory, relationshipTypeFactory);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 

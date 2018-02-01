@@ -54,6 +54,7 @@ public class DataSetParentCall extends TransactionalCall {
     private final IndicatorTypeEndpointCall.Factory indicatorTypeCallFactory;
     private final DataValueEndpointCall.Factory dataValueCallFactory;
     private final List<OrganisationUnit> organisationUnits;
+    private final PeriodHandler periodHandler;
 
     private DataSetParentCall(User user, GenericCallData data, DataSetParentLinkManager linkManager,
                               DataSetEndpointCall.Factory dataSetCallFactory,
@@ -61,7 +62,8 @@ public class DataSetParentCall extends TransactionalCall {
                               IndicatorEndpointCall.Factory indicatorCallFactory,
                               IndicatorTypeEndpointCall.Factory indicatorTypeCallFactory,
                               DataValueEndpointCall.Factory dataValueCallFactory,
-                              List<OrganisationUnit> organisationUnits) {
+                              List<OrganisationUnit> organisationUnits,
+                              PeriodHandler periodHandler) {
         super(data);
         this.user = user;
         this.linkManager = linkManager;
@@ -71,6 +73,7 @@ public class DataSetParentCall extends TransactionalCall {
         this.indicatorTypeCallFactory = indicatorTypeCallFactory;
         this.dataValueCallFactory = dataValueCallFactory;
         this.organisationUnits = organisationUnits;
+        this.periodHandler = periodHandler;
     }
 
     @Override
@@ -100,6 +103,8 @@ public class DataSetParentCall extends TransactionalCall {
         linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);
         linkManager.saveDataSetOrganisationUnitLinks(organisationUnits);
 
+        periodHandler.generateAndPersist();
+
         return dataElementResponse;
     }
 
@@ -117,7 +122,8 @@ public class DataSetParentCall extends TransactionalCall {
                     IndicatorEndpointCall.FACTORY,
                     IndicatorTypeEndpointCall.FACTORY,
                     DataValueEndpointCall.FACTORY,
-                    organisationUnits);
+                    organisationUnits,
+                    PeriodHandler.create(data.databaseAdapter()));
         }
     };
 }

@@ -1,0 +1,60 @@
+{
+  "dataSet": "BfMAe6Itzgt",
+  "completeDate": "2011-01-11T00:00:00.000+0000",
+  "period": "201712",
+  "orgUnit": "DiszpKrYNg8",
+  "dataValues": [
+    {
+      "dataElement": "s46m5MS0hxu",
+      "period": "201712",
+      "orgUnit": "DiszpKrYNg8",
+      "categoryOptionCombo": "Prlt0C1RF0s",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "value": "12",
+      "storedBy": "bodata1",
+      "created": "2011-01-11T00:00:00.000+0000",
+      "lastUpdated": "2011-01-11T00:00:00.000+0000",
+      "comment": "",
+      "followUp": false
+    },
+    {
+      "dataElement": "d5xTg3WR3DP",
+      "period": "201712",
+      "orgUnit": "DiszpKrYNg8",
+      "categoryOptionCombo": "hEFKSsPV5et",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "value": "12",
+      "storedBy": "bodata1",
+      "created": "2011-01-11T00:00:00.000+0000",
+      "lastUpdated": "2011-01-11T00:00:00.000+0000",
+      "comment": "",
+      "followUp": false
+    },
+    {
+      "dataElement": "d5xTg3WR3DP",
+      "period": "201712",
+      "orgUnit": "DiszpKrYNg8",
+      "categoryOptionCombo": "psbwp3CQEhs",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "value": "14",
+      "storedBy": "bodata1",
+      "created": "2011-01-11T00:00:00.000+0000",
+      "lastUpdated": "2011-01-11T00:00:00.000+0000",
+      "comment": "",
+      "followUp": false
+    },
+    {
+      "dataElement": "UOlfIjgN8X6",
+      "period": "201712",
+      "orgUnit": "DiszpKrYNg8",
+      "categoryOptionCombo": "Prlt0C1RF0s",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "value": "7",
+      "storedBy": "bodata1",
+      "created": "2011-01-11T00:00:00.000+0000",
+      "lastUpdated": "2011-01-11T00:00:00.000+0000",
+      "comment": "",
+      "followUp": false
+    }
+  ]
+}

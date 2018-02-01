@@ -30,18 +30,17 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 
-import java.util.Date;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_RelationshipType.Builder.class)
 public abstract class RelationshipType extends BaseNameableObject {
     private static final String B_TO_A = "bIsToA";
     private static final String A_TO_B = "aIsToB";
@@ -68,24 +67,8 @@ public abstract class RelationshipType extends BaseNameableObject {
         return new AutoValue_RelationshipType.Builder();
     }
     @SuppressFBWarnings("UPM_UNCALLED_PRIVATE_METHOD")
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
-    @JsonCreator
-    private static RelationshipType create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(B_TO_A) String bIsToA,
-            @JsonProperty(A_TO_B) String aIsToB,
-            @JsonProperty(DELETED) Boolean deleted) {
 
-        return builder().uid(uid).code(code).name(name).displayName(displayName).created(
-                created).lastUpdated(lastUpdated).deleted(deleted).bIsToA(bIsToA).aIsToB(
-                aIsToB).build();
-    }
-
+    abstract RelationshipType.Builder toBuilder();
 
     @AutoValue.Builder
     public static abstract class Builder extends
@@ -97,10 +80,7 @@ public abstract class RelationshipType extends BaseNameableObject {
         @JsonProperty(A_TO_B)
         public abstract Builder aIsToB(String aIsToB);
 
-        abstract RelationshipType autoBuild();
-
-        public RelationshipType build() {
-            return autoBuild();
-        }
+        public abstract RelationshipType build();
     }
+
 }

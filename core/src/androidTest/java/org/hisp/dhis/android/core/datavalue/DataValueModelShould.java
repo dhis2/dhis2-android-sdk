@@ -30,20 +30,23 @@ package org.hisp.dhis.android.core.datavalue;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ModelAbstractShould;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
 import org.hisp.dhis.android.core.utils.Utils;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Date;
+import java.util.Arrays;
+import java.util.List;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DELETED;
+import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.LAST_UPDATED;
+import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.LAST_UPDATED_STR;
 
 @RunWith(AndroidJUnit4.class)
 public class DataValueModelShould extends ModelAbstractShould<DataValueModel, DataValue> {
-    private static final long ID = 2L;
     private static final String DATA_ELEMENT = "dataElement";
     private static final String PERIOD = "period";
     private static final String ORGANISATION_UNIT = "organisationUnit";
@@ -54,26 +57,20 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel, Da
     private static final String COMMENT = "comment";
     private static final boolean FOLLOW_UP = false;
 
-    private final Date date;
-    private final String dateString;
-
     public DataValueModelShould() {
-        super(DataValueModel.Columns.all(), 11, DataValueModel.factory);
-        this.date = new Date();
-        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+        super(DataValueModel.Columns.all(), 10, DataValueModel.factory);
     }
 
     @Override
     protected DataValue buildPojo() {
         return DataValue.create(DATA_ELEMENT, PERIOD, ORGANISATION_UNIT, CATEGORY_OPTION_COMBO,
-                ATTRIBUTE_OPTION_COMBO, VALUE, STORED_BY, date, COMMENT, FOLLOW_UP, DELETED);
+                ATTRIBUTE_OPTION_COMBO, VALUE, STORED_BY, LAST_UPDATED, COMMENT, FOLLOW_UP, DELETED);
     }
 
     @Override
     protected DataValueModel buildModel() {
         DataValueModel.Builder dataValueModelBuilder = DataValueModel.builder();
         dataValueModelBuilder
-                .id(ID)
                 .dataElement(DATA_ELEMENT)
                 .period(PERIOD)
                 .organisationUnit(ORGANISATION_UNIT)
@@ -81,7 +78,7 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel, Da
                 .attributeOptionCombo(ATTRIBUTE_OPTION_COMBO)
                 .value(VALUE)
                 .storedBy(STORED_BY)
-                .lastUpdated(date)
+                .lastUpdated(LAST_UPDATED)
                 .comment(COMMENT)
                 .followUp(FOLLOW_UP);
         return dataValueModelBuilder.build();
@@ -92,6 +89,22 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel, Da
         return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
                 model.dataElement(), model.period(), model.organisationUnit(),
                 model.categoryOptionCombo(), model.attributeOptionCombo(), model.value(),
-                model.storedBy(), model.lastUpdated(), model.comment(), toInteger(model.followUp()));
+                model.storedBy(), LAST_UPDATED_STR, model.comment(), toInteger(model.followUp()));
+    }
+
+    @Test
+    public void have_data_value_columns() {
+        List<String> columnsList = Arrays.asList(DataValueModel.Columns.all());
+
+        assertThat(columnsList.contains(DataValueModel.Columns.DATA_ELEMENT)).isEqualTo(true);
+        assertThat(columnsList.contains(DataValueModel.Columns.PERIOD)).isEqualTo(true);
+        assertThat(columnsList.contains(DataValueModel.Columns.ORGANISATION_UNIT)).isEqualTo(true);
+        assertThat(columnsList.contains(DataValueModel.Columns.CATEGORY_OPTION_COMBO)).isEqualTo(true);
+        assertThat(columnsList.contains(DataValueModel.Columns.ATTRIBUTE_OPTION_COMBO)).isEqualTo(true);
+        assertThat(columnsList.contains(DataValueModel.Columns.VALUE)).isEqualTo(true);
+        assertThat(columnsList.contains(DataValueModel.Columns.STORED_BY)).isEqualTo(true);
+        assertThat(columnsList.contains(DataValueModel.Columns.LAST_UPDATED)).isEqualTo(true);
+        assertThat(columnsList.contains(DataValueModel.Columns.COMMENT)).isEqualTo(true);
+        assertThat(columnsList.contains(DataValueModel.Columns.FOLLOW_UP)).isEqualTo(true);
     }
 }

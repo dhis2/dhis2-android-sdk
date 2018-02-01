@@ -51,11 +51,11 @@ public class CategoryHandlerShould {
     public void handle_new_category() {
         Category newCategory = givenACategory();
 
-        when(mockCategoryStore.update(any(Category.class), any(Category.class))).thenReturn(false);
+        when(mockCategoryStore.update(any(Category.class))).thenReturn(false);
 
         mCategoryHandler.handle(newCategory);
 
-        verify(mockCategoryStore).update(newCategory, newCategory);
+        verify(mockCategoryStore).update(newCategory);
         verify(mockCategoryStore).insert(newCategory);
 
     }
@@ -64,11 +64,11 @@ public class CategoryHandlerShould {
     public void handle_updated_category() {
         Category updatedCategory = givenACategory();
 
-        when(mockCategoryStore.update(any(Category.class), any(Category.class))).thenReturn(true);
+        when(mockCategoryStore.update(any(Category.class))).thenReturn(true);
 
         mCategoryHandler.handle(updatedCategory);
 
-        verify(mockCategoryStore).update(updatedCategory, updatedCategory);
+        verify(mockCategoryStore).update(updatedCategory);
         verifyZeroInteractions(mockCategoryStore);
 
     }

@@ -26,4 +26,9 @@ public class Store {
     protected Integer getIntegerFromCursor(Cursor cursor, int index) {
         return cursor.getString(index) == null ? null : cursor.getInt(index);
     }
+
+    @Nullable
+    protected ValueType getValueTypeFromCursor(Cursor cursor, int index) {
+        return cursor.getString(index) == null ? null : ValueType.valueOf(cursor.getString(index));
+    }
 }

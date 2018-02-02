@@ -173,9 +173,16 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
         Date lastUpdate = cursor.getString(6) == null ? null : parse(cursor.getString(6));
         String aIsToB = cursor.getString(8);
         String bIsToA = cursor.getString(7);
-        return RelationshipType.builder().uid(uid).code(code).name(name).displayName(
-                displayName).created(created).lastUpdated(lastUpdate).aIsToB(aIsToB).bIsToA(
-                bIsToA).build();
+
+        return RelationshipType.builder()
+                .uid(uid)
+                .code(code)
+                .name(name)
+                .displayName(displayName)
+                .created(created)
+                .lastUpdated(lastUpdate)
+                .aIsToB(aIsToB)
+                .bIsToA(bIsToA).build();
     }
 
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,

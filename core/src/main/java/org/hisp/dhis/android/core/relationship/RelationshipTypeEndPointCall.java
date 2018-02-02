@@ -13,7 +13,6 @@ import java.util.List;
 
 import retrofit2.Response;
 
-
 public class RelationshipTypeEndPointCall implements Call<Response<Payload<RelationshipType>>> {
     private final RelationshipTypeService relationshipTypeService;
     private final DatabaseAdapter databaseAdapter;
@@ -66,7 +65,7 @@ public class RelationshipTypeEndPointCall implements Call<Response<Payload<Relat
                 ResourceModel.Type.RELATIONSHIP_TYPE);
 
         Response<Payload<RelationshipType>> relationshipTypeByUId =
-                relationshipTypeService.getRelationshipTypes(getSingleFields(),
+                relationshipTypeService.getRelationshipTypes(getFields(),
                         RelationshipType.uid.in(relationshipTypeQuery.getUIds()),
                         RelationshipType.lastUpdated.gt(lastSyncedRelationshipType)).execute();
 
@@ -89,10 +88,11 @@ public class RelationshipTypeEndPointCall implements Call<Response<Payload<Relat
         return relationshipTypeByUId;
     }
 
-    private Fields<RelationshipType> getSingleFields() {
-        return Fields.<RelationshipType>builder().fields(RelationshipType.created,
-                RelationshipType.lastUpdated, RelationshipType.name, RelationshipType.uid,
-                RelationshipType.displayName, RelationshipType.bIsToA, RelationshipType.aIsToB,
-                RelationshipType.deleted).build();
+    private Fields<RelationshipType> getFields() {
+        return Fields.<RelationshipType>builder().fields(RelationshipType.uid,
+                RelationshipType.code,
+                RelationshipType.name, RelationshipType.displayName, RelationshipType.created,
+                RelationshipType.lastUpdated, RelationshipType.deleted, RelationshipType.bIsToA,
+                RelationshipType.aIsToB).build();
     }
 }

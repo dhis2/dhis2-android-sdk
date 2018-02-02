@@ -5,8 +5,6 @@ import android.util.Log;
 import org.hisp.dhis.android.core.audit.AuditType;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
 import org.hisp.dhis.android.core.audit.MetadataAuditHandler;
-import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.option.OptionSetFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +25,8 @@ public class TrackedEntityAttributeMetadataAuditHandler implements MetadataAudit
             //metadataAudit of UPDATE type does not return payload
             //It's necessary sync by metadata parent call
 
-            TrackedEntityAttribute trackedEntityAttributeInDb = trackedEntityAttributeFactory.getTrackedEntityAttributeStore().queryByUid(
+            TrackedEntityAttribute trackedEntityAttributeInDb = trackedEntityAttributeFactory
+                    .getTrackedEntityAttributeStore().queryByUid(
                     metadataAudit.getUid());
 
             if (trackedEntityAttributeInDb == null) {
@@ -40,7 +39,8 @@ public class TrackedEntityAttributeMetadataAuditHandler implements MetadataAudit
                 Set<String> uIds = new HashSet<>();
                 uIds.add(trackedEntityAttributeInDb.optionSet().uid());
                 TrackedEntityAttributeQuery trackedEntityAttributeQuery = new TrackedEntityAttributeQuery(uIds);
-                trackedEntityAttributeFactory.newEndPointCall(trackedEntityAttributeQuery, metadataAudit.getCreatedAt()).call();
+                trackedEntityAttributeFactory.newEndPointCall(trackedEntityAttributeQuery,
+                        metadataAudit.getCreatedAt()).call();
 
             }
         } else {
@@ -48,7 +48,8 @@ public class TrackedEntityAttributeMetadataAuditHandler implements MetadataAudit
                 trackedEntityAttribute = trackedEntityAttribute.toBuilder().deleted(true).build();
             }
 
-            trackedEntityAttributeFactory.getTrackedEntityAttributeHandler().handleTrackedEntityAttribute(trackedEntityAttribute);
+            trackedEntityAttributeFactory.getTrackedEntityAttributeHandler()
+                    .handleTrackedEntityAttribute(trackedEntityAttribute);
         }
     }
 }

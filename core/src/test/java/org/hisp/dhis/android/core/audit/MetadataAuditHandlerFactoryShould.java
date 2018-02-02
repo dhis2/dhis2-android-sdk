@@ -10,6 +10,7 @@ import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetMetadataAuditHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeMetadataAuditHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityMetadataAuditHandler;
@@ -28,6 +29,9 @@ public class MetadataAuditHandlerFactoryShould {
 
     @Mock
     private TrackedEntityFactory trackedEntityFactory;
+
+    @Mock
+    private TrackedEntityAttributeFactory trackedEntityAttributeFactory;
 
     @Mock
     private OptionSetFactory optionSetFactory;
@@ -59,7 +63,7 @@ public class MetadataAuditHandlerFactoryShould {
         MockitoAnnotations.initMocks(this);
 
         metadataAuditHandlerFactory =
-                new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory);
+                new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory, trackedEntityAttributeFactory);
     }
 
     @Test

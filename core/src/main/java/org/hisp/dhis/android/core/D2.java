@@ -465,7 +465,7 @@ public final class D2 {
         deletableStoreList.add(programStageDataElementStore);
         deletableStoreList.add(programStageSectionStore);
         deletableStoreList.add(programStageStore);
-        deletableStoreList.add(relationshipStore);
+        deletableStoreList.addAll(relationshipTypeFactory.getDeletableStores());
         deletableStoreList.add(trackedEntityStore);
         deletableStoreList.add(trackedEntityInstanceStore);
         deletableStoreList.add(enrollmentStore);

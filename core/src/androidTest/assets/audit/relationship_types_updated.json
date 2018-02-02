@@ -9,12 +9,11 @@
     {
       "created": "2018-02-02T00:20:45.587",
       "lastUpdated": "2018-02-02T00:20:45.587",
-      "code": "code",
-      "name": "relationship type test",
+      "name": "relationship type test updated",
       "id": "IRN58ULaA4x",
       "displayName": "relationship type test",
-      "aIsToB": "name",
-      "bIsToA": "surname"
+      "bIsToA": "name",
+      "aIsToB": "surname"
     }
   ]
 }

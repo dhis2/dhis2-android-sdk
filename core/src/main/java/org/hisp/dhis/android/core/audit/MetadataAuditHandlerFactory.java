@@ -19,7 +19,8 @@ public class MetadataAuditHandlerFactory {
     private final RelationshipTypeFactory relationshipTypeFactory;
 
     public MetadataAuditHandlerFactory(
-            TrackedEntityFactory trackedEntityFactory, OptionSetFactory optionSetFactory, RelationshipTypeFactory relationshipTypeFactory) {
+            TrackedEntityFactory trackedEntityFactory, OptionSetFactory optionSetFactory,
+            RelationshipTypeFactory relationshipTypeFactory) {
         this.trackedEntityFactory = trackedEntityFactory;
         this.optionSetFactory = optionSetFactory;
         this.relationshipTypeFactory = relationshipTypeFactory;

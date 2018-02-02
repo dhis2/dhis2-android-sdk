@@ -70,9 +70,10 @@ public class RelationshipTypeChangeOnServerShould extends AbsStoreTestCase {
 
     @Test
     public void create_relation_ship_types_in_database_if_audit_type_is_create() throws Exception {
+        String filename = "audit/relationship_types.json";
+
         MetadataAudit<RelationshipType> metadataAudit =
                 givenAMetadataAudit("audit/relationship_type_create.json");
-
         metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
             @Override
             public void onSynced(SyncedMetadata syncedMetadata) {
@@ -85,13 +86,14 @@ public class RelationshipTypeChangeOnServerShould extends AbsStoreTestCase {
         });
 
         metadataAuditListener.onMetadataChanged(RelationshipType.class, metadataAudit);
-
-        assertThat(relationshipTypeStore.queryByUid(metadataAudit.getUid()), is(nullValue()));
+        RelationshipType expected= parseExpected(
+                filename).items().get(0);
+        assertThat(relationshipTypeStore.queryByUid(metadataAudit.getUid()), is(expected));
     }
 
     @Test
     public void update_relationship_type_set_if_audit_type_is_update() throws Exception {
-        String filename = "audit/relationship_types.json";
+        String filename = "audit/relationship_types_updated.json";
 
         givenAExistedRelationshipTypePreviously();
 
@@ -113,8 +115,10 @@ public class RelationshipTypeChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(RelationshipType.class, metadataAudit);
 
+        RelationshipType expected= parseExpected(
+                filename).items().get(0);
         assertThat(getRelationshipTypeFromDatabase(metadataAudit.getUid()),
-                is(getRelationshipTypeExpected(metadataAudit.getUid())));
+                is(expected));
     }
 
     @Test
@@ -152,32 +156,18 @@ public class RelationshipTypeChangeOnServerShould extends AbsStoreTestCase {
     }
 
     private void givenAExistedRelationshipTypePreviously() throws IOException {
-        //OptionSet optionSet = OptionSet.builder()
-        //        .uid("VQ2lai3OfVG")
-        //        .valueType(ValueType.TEXT)
-        //        .version(0)
-        //        .build();
-//
-        //optionSet = optionSet.toBuilder()
-        //        .options(Arrays.asList(Option.builder()
-        //                .optionSet(optionSet)
-        //                .uid("Y1ILwhy5VDY")
-        //                .displayName("Example").build())).build();
-//
-        //optionSetFactory.getOptionSetHandler().handleOptionSet(optionSet);
+        MetadataAudit<RelationshipType> metadataAudit =
+                givenAMetadataAudit("audit/relationship_type_create.json");
+
+        metadataAuditListener.onMetadataChanged(RelationshipType.class, metadataAudit);
     }
 
-    private RelationshipType getRelationshipTypeExpected(String uid) throws IOException {
-        String json = new AssetsFileReader().getStringFromFile("audit/relationshipTypes.json");
+    private Payload<RelationshipType> parseExpected(String fileName) throws IOException {
+        String json = new AssetsFileReader().getStringFromFile(fileName);
 
         GenericClassParser parser = new GenericClassParser();
 
-        Payload<RelationshipType> payloadExpected = parser.parse(json, Payload.class, RelationshipType.class);
-
-        for (RelationshipType relationshipType : payloadExpected.items()) {
-        }
-
-        return null;
+        return parser.parse(json, Payload.class, RelationshipType.class);
     }
 
     private RelationshipType getRelationshipTypeFromDatabase(String uid) {

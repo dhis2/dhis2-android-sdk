@@ -32,21 +32,6 @@ public class RelationshipTypeEnPointCallMockIntegrationShould extends AbsStoreTe
     private D2 d2;
     private RelationshipTypeFactory relationshipTypeFactory;
 
-    @Test
-    @MediumTest
-    public void download_RelationShipTypes_according_to_default_query() throws Exception {
-        RelationshipTypeFactory relationshipTypeFactory = new RelationshipTypeFactory(
-                d2.retrofit(), databaseAdapter(),
-                HandlerFactory.createResourceHandler(databaseAdapter()));
-
-        dhis2MockServer.enqueueMockResponse("relationship_types.json");
-
-        relationshipTypeFactory.newEndPointCall(new HashSet<>(
-                Arrays.asList("V2kkHafqs8G", "o51cUNONthg")), new Date()).call();
-        verifyDownloadedRelationshipTypes("relationship_types.json");
-    }
-
-
     @Override
     @Before
     public void setUp() throws IOException {
@@ -66,6 +51,20 @@ public class RelationshipTypeEnPointCallMockIntegrationShould extends AbsStoreTe
     public void tearDown() throws IOException {
         super.tearDown();
         dhis2MockServer.shutdown();
+    }
+
+    @Test
+    @MediumTest
+    public void download_RelationShipTypes_according_to_default_query() throws Exception {
+        RelationshipTypeFactory relationshipTypeFactory = new RelationshipTypeFactory(
+                d2.retrofit(), databaseAdapter(),
+                HandlerFactory.createResourceHandler(databaseAdapter()));
+
+        dhis2MockServer.enqueueMockResponse("relationship_types.json");
+
+        relationshipTypeFactory.newEndPointCall(new HashSet<>(
+                Arrays.asList("V2kkHafqs8G", "o51cUNONthg")), new Date()).call();
+        verifyDownloadedRelationshipTypes("relationship_types.json");
     }
 
 

@@ -32,7 +32,7 @@ public class MetadataAuditHandlerFactory {
             return new OptionSetMetadataAuditHandler(optionSetFactory);
         } else if (klass == Option.class) {
             return new OptionMetadataAuditHandler(optionSetFactory);
-        } else if (klass == Option.class) {
+        } else if (klass == RelationshipType.class) {
             return new RelationshipTypeMetadataAuditHandler(relationshipTypeFactory);
         } else {
             throw new IllegalArgumentException("No exists a metadata audit handler for: " + klass);

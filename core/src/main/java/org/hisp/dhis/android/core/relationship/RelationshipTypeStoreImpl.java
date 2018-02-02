@@ -78,6 +78,10 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
     private static final String QUERY_ALL_RELATIONSHIP_TYPES =
             "SELECT * FROM " + RelationshipTypeModel.TABLE;
 
+    private static final String QUERY_BY_UID =
+            "SELECT * FROM " + RelationshipTypeModel.TABLE
+            +" WHERE "+ RelationshipTypeModel.Columns.UID +"=?;";
+
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
@@ -146,6 +150,12 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
     public List<RelationshipType> queryAll() {
         Cursor cursor = databaseAdapter.query(QUERY_ALL_RELATIONSHIP_TYPES);
         return mapRelationshipTypesFromCursor(cursor);
+    }
+
+    @Override
+    public RelationshipType queryByUid(String uid) {
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID, uid);
+        return mapRelationshipTypeFromCursor(cursor);
     }
 
     private List<RelationshipType> mapRelationshipTypesFromCursor(Cursor cursor) {

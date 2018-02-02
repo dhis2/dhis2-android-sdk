@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutIdHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class DataValueHandler extends ObjectWithoutIdHandlerImpl<DataValue, DataValueModel> {
+public class DataValueHandler extends ObjectWithoutUidHandlerImpl<DataValue, DataValueModel> {
 
     DataValueHandler(ObjectWithoutUidStore<DataValueModel> dataValueStore) {
         super(dataValueStore);

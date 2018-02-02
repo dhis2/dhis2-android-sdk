@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutIdHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -37,7 +37,7 @@ public class DataValueHandlerShould {
 
     @Test
     public void extend_object_without_id_handler_impl() {
-        ObjectWithoutIdHandlerImpl<DataValue, DataValueModel> objectWithoutIdHandler =
+        ObjectWithoutUidHandlerImpl<DataValue, DataValueModel> objectWithoutUidHandler =
                 new DataValueHandler(null);
     }
 }

@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.common;
 
-public abstract class ObjectWithoutIdHandlerImpl<
+public abstract class ObjectWithoutUidHandlerImpl<
         P, M extends BaseModel & UpdateWhereStatementBinder> extends GenericHandlerBaseImpl<P, M> {
 
     private final ObjectWithoutUidStore<M> store;
 
-    public ObjectWithoutIdHandlerImpl(ObjectWithoutUidStore<M> store) {
+    public ObjectWithoutUidHandlerImpl(ObjectWithoutUidStore<M> store) {
         this.store = store;
     }
 

@@ -63,6 +63,7 @@ public abstract class ResourceModel extends BaseModel {
         TRACKED_ENTITY_INSTANCE,
         CATEGORY,
         CATEGORY_COMBO,
+        RELATIONSHIP_TYPE,
         TRACKED_ENTITY_ATTRIBUTE
     }
 

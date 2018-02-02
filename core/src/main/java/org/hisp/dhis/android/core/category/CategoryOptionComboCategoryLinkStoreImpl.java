@@ -103,7 +103,7 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
     public List<CategoryOptionComboCategoryLinkModel> queryAll() {
         Cursor cursor = databaseAdapter.query(QUERY_ALL_CATEGORY_OPTION_COMBO_LINKS);
 
-        return mapCategoryOptionComboCategoryLinksModelsFromCursor(cursor);
+        return mapFromCursor(cursor);
     }
 
     private void validate(@NonNull CategoryOptionComboCategoryLinkModel link) {
@@ -137,7 +137,7 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
     }
 
     private List<CategoryOptionComboCategoryLinkModel>
-    mapCategoryOptionComboCategoryLinksModelsFromCursor(
+    mapFromCursor(
             Cursor cursor) {
         List<CategoryOptionComboCategoryLinkModel> categoryOptionComboCategoryLinks =
                 new ArrayList<>(

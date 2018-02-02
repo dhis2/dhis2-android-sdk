@@ -1,6 +1,6 @@
 package org.hisp.dhis.android.core.category;
 
-import static org.hisp.dhis.android.core.common.CategoryOptionMockFactory.generatedCategoryOption;
+import static org.hisp.dhis.android.core.common.CategoryOptionMother.generatedCategoryOption;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -41,6 +41,9 @@ public class CategoryOptionComboCategoryLinkStoreShould extends AbsStoreTestCase
     @Test
     @MediumTest
     public void insert_a_category_option_combo_link_category() throws Exception {
+
+        giveAllTheCategoryOptionComboCategoryLinkDependencies();
+
         whenInsertNewCategoryOptionComboCategoryLink();
 
         thenAssertNewCategoryOptionComboLinkWasInserted();
@@ -49,6 +52,9 @@ public class CategoryOptionComboCategoryLinkStoreShould extends AbsStoreTestCase
     @Test
     @MediumTest
     public void delete_a_category_option_combo_category_link() {
+
+        giveAllTheCategoryOptionComboCategoryLinkDependencies();
+
         whenInsertNewCategoryOptionComboCategoryLink();
 
         thenAssertNewCategoryOptionComboLinkWasInserted();
@@ -61,6 +67,9 @@ public class CategoryOptionComboCategoryLinkStoreShould extends AbsStoreTestCase
     @Test
     @MediumTest
     public void delete_all_category_option_combo_category_link_from_db() {
+
+        giveAllTheCategoryOptionComboCategoryLinkDependencies();
+
         whenInsertNewCategoryOptionComboCategoryLink();
 
         thenAssertNewCategoryOptionComboLinkWasInserted();
@@ -73,6 +82,9 @@ public class CategoryOptionComboCategoryLinkStoreShould extends AbsStoreTestCase
     @Test
     @MediumTest
     public void update_a_category_option_combo_category_link() {
+
+        giveAllTheCategoryOptionComboCategoryLinkDependencies();
+
         whenInsertNewCategoryOptionComboCategoryLink();
 
         thenAssertNewCategoryOptionComboLinkWasInserted();
@@ -86,6 +98,9 @@ public class CategoryOptionComboCategoryLinkStoreShould extends AbsStoreTestCase
     @Test
     @MediumTest
     public void query_all_category_option_combo_category_link() {
+
+        giveAllTheCategoryOptionComboCategoryLinkDependencies();
+
         whenInsertNewCategoryOptionComboCategoryLink();
 
         thenAssertNewCategoryOptionComboLinkWasInserted();
@@ -114,14 +129,18 @@ public class CategoryOptionComboCategoryLinkStoreShould extends AbsStoreTestCase
     }
 
     private void whenInsertNewCategoryOptionComboCategoryLink() {
-        givenACategoryOption();
-        givenACategoryOptionCombo();
-        givenACategoryOptionComboCategoryLink();
 
         whenInsertNewCategoryOption(newCategoryOption);
+
         whenInsertNewCategoryOptionCombo();
 
         lastInsertedID = store.insert(newCategoryOptionComboCategoryLink);
+    }
+
+    private void giveAllTheCategoryOptionComboCategoryLinkDependencies() {
+        givenACategoryOption();
+        givenACategoryOptionCombo();
+        givenACategoryOptionComboCategoryLink();
     }
 
     private void whenInsertNewCategoryOptionCombo() {

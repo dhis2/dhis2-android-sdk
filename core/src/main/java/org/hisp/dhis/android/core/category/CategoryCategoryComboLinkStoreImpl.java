@@ -94,7 +94,7 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
     public List<CategoryCategoryComboLink> queryAll() {
         Cursor cursor = databaseAdapter.query(QUERY_ALL_CATEGORY_COMBO_LINKS);
 
-        return mapCategoryCategoryComboLinksFromCursor(cursor);
+        return mapFromCursor(cursor);
     }
 
     private void validate(@NonNull CategoryCategoryComboLinkModel link) {
@@ -116,7 +116,7 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
         return lastId;
     }
 
-    private List<CategoryCategoryComboLink> mapCategoryCategoryComboLinksFromCursor(Cursor cursor) {
+    private List<CategoryCategoryComboLink> mapFromCursor(Cursor cursor) {
         List<CategoryCategoryComboLink> categoryCategoryComboLinks = new ArrayList<>(
                 cursor.getCount());
 

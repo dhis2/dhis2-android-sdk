@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.core.category;
 
-import static org.hisp.dhis.android.core.common.CategoryMockFactory.generateCategory;
-import static org.hisp.dhis.android.core.common.CategoryOptionMockFactory.generatedCategoryOption;
+import static org.hisp.dhis.android.core.common.CategoryMother.generateCategory;
+import static org.hisp.dhis.android.core.common.CategoryOptionMother.generatedCategoryOption;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -42,6 +42,8 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
     @MediumTest
     public void insert_a_category_option_link() throws Exception {
 
+        givenAllTheCategoryOptionLinkDependencies();
+
         whenInsertNewCategoryOptionLink();
 
         thenAssertThatNewCategoryOptionLinkWasInserted();
@@ -49,6 +51,8 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
     @Test
     public void delete_a_category_option_link() {
+
+        givenAllTheCategoryOptionLinkDependencies();
 
         whenInsertNewCategoryOptionLink();
 
@@ -63,6 +67,8 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
     @Test
     public void delete_all_elements_on_category_option_link_table() {
 
+        givenAllTheCategoryOptionLinkDependencies();
+
         whenInsertNewCategoryOptionLink();
 
         thenAssertThatNewCategoryOptionLinkWasInserted();
@@ -74,6 +80,8 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
     @Test
     public void update_a_category_option_link() {
+
+        givenAllTheCategoryOptionLinkDependencies();
 
         whenInsertNewCategoryOptionLink();
 
@@ -87,6 +95,8 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
     @Test
     public void query_all_category_options_link(){
+
+        givenAllTheCategoryOptionLinkDependencies();
 
         whenInsertNewCategoryOptionLink();
 
@@ -139,14 +149,18 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void whenInsertNewCategoryOptionLink() {
-        givenACategory();
-        givenACategoryOption(DEFAULT_CATEGORY_OPTION_UID);
-        givenACategoryOptionLinkModel();
 
         whenInsertNewCategory();
+
         whenInsertNewOption();
 
         lastInsertedID = store.insert(newCategoryCategoryOptionLinkModel);
+    }
+
+    private void givenAllTheCategoryOptionLinkDependencies() {
+        givenACategory();
+        givenACategoryOption(DEFAULT_CATEGORY_OPTION_UID);
+        givenACategoryOptionLinkModel();
     }
 
     private void whenInsertNewCategory() {

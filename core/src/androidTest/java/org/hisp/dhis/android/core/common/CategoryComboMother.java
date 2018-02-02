@@ -9,7 +9,7 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class CategoryComboMockFactory {
+public class CategoryComboMother {
 
     public static CategoryCombo generateCategoryCombo(@NonNull String uid) {
         Date today = new Date();

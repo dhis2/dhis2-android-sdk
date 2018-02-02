@@ -1,6 +1,6 @@
 package org.hisp.dhis.android.core.category;
 
-import static org.hisp.dhis.android.core.common.CategoryComboMockFactory.generateCategoryCombo;
+import static org.hisp.dhis.android.core.common.CategoryComboMother.generateCategoryCombo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -38,6 +38,8 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     @MediumTest
     public void insert_a_category_combo() throws Exception {
 
+        givenACategoryCombo();
+
         whenInsertNewCategoryCombo();
 
         thenAssertCategoryComboWasInserted();
@@ -46,6 +48,8 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     @Test
     @MediumTest
     public void insert_and_delete_a_category_combo() throws Exception {
+
+        givenACategoryCombo();
 
         whenInsertNewCategoryCombo();
 
@@ -62,6 +66,8 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     @MediumTest
     public void update_a_category_combo() {
 
+        givenACategoryCombo();
+
         whenInsertNewCategoryCombo();
 
         whenUpdateACategoryCombo();
@@ -73,6 +79,8 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     @Test
     @MediumTest
     public void delete_all_categories_combos_from_db() {
+
+        givenACategoryCombo();
 
         whenInsertNewCategoryCombo();
 
@@ -88,6 +96,8 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     @MediumTest
     public void query_all_category_combos(){
 
+        givenACategoryCombo();
+
         whenInsertNewCategoryCombo();
 
         thenAssertCategoryComboWasInserted();
@@ -101,8 +111,6 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     }
 
     private void whenInsertNewCategoryCombo() {
-
-        givenACategoryCombo();
 
         lastInsertedId = store.insert(newCategoryCombo);
     }

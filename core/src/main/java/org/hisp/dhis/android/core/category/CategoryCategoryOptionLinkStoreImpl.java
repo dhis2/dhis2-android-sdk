@@ -95,7 +95,7 @@ public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOpti
     public List<CategoryCategoryOptionLinkModel> queryAll() {
         Cursor cursor = databaseAdapter.query(QUERY_ALL_CATEGORY_OPTION_LINKS);
 
-        return mapCategoryCategoryOptionLinkModelsFromCursor(cursor);
+        return mapFromCursor(cursor);
     }
 
     private void validate(@NonNull CategoryCategoryOptionLinkModel link) {
@@ -144,7 +144,7 @@ public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOpti
         return wasExecuted(rowsAffected);
     }
 
-    private List<CategoryCategoryOptionLinkModel> mapCategoryCategoryOptionLinkModelsFromCursor(
+    private List<CategoryCategoryOptionLinkModel> mapFromCursor(
             Cursor cursor) {
         List<CategoryCategoryOptionLinkModel> categoryCategoryOptionLinks = new ArrayList<>(
                 cursor.getCount());

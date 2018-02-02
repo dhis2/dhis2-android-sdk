@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.category;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
-import static org.hisp.dhis.android.core.common.CategoryComboMockFactory.generateCategoryCombo;
+import static org.hisp.dhis.android.core.common.CategoryComboMother.generateCategoryCombo;
 import static org.junit.Assert.assertEquals;
 
 import android.support.annotation.NonNull;
@@ -11,7 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.CategoryMockFactory;
+import org.hisp.dhis.android.core.common.CategoryMother;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,14 +45,26 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     @MediumTest
     public void insert_a_category_combo_link() throws Exception {
 
+        givenAllTheCategoryComboLinkDependencies();
+
         whenInsertNewCategoryComboLink();
 
         thenAssertTheNewCategoryComboLinkWasInserted();
     }
 
+    private void givenAllTheCategoryComboLinkDependencies() {
+        givenACategory();
+
+        givenACategoryCombo();
+
+        givenACategoryComboLinkModel();
+    }
+
     @Test
     @MediumTest
     public void delete_a_category_combo_link() throws Exception {
+
+        givenAllTheCategoryComboLinkDependencies();
 
         whenInsertNewCategoryComboLink();
 
@@ -64,6 +76,8 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     @Test
     @MediumTest
     public void update_a_category_combo_link() throws Exception {
+
+        givenAllTheCategoryComboLinkDependencies();
 
         whenInsertNewCategoryComboLink();
 
@@ -77,6 +91,8 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     @MediumTest
     public void delete_all_elements_on_category_combos_link_table() {
 
+        givenAllTheCategoryComboLinkDependencies();
+
         whenInsertNewCategoryComboLink();
 
         thenAssertTheNewCategoryComboLinkWasInserted();
@@ -89,6 +105,8 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     @Test
     @MediumTest
     public void query_all_category_combos_link() {
+
+        givenAllTheCategoryComboLinkDependencies();
 
         whenInsertNewCategoryComboLink();
 
@@ -118,7 +136,7 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void whenUpdateANewCategoryComboLink() {
-        Category category = CategoryMockFactory.generateCategory(UPDATED_CATEGORY_UID);
+        Category category = CategoryMother.generateCategory(UPDATED_CATEGORY_UID);
         CategoryStoreImpl categoryStore = new CategoryStoreImpl(databaseAdapter());
         categoryStore.insert(category);
 
@@ -136,7 +154,7 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     private Category generateCategory() {
-        return CategoryMockFactory.generateCategory(DEFAULT_CATEGORY_UID);
+        return CategoryMother.generateCategory(DEFAULT_CATEGORY_UID);
     }
 
     private void givenACategoryCombo() {
@@ -161,10 +179,6 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void whenInsertNewCategoryComboLink() {
-        givenACategory();
-        givenACategoryCombo();
-        givenACategoryComboLinkModel();
-
         whenInsertNewCategory();
         whenInsertNewCategoryCombo();
 

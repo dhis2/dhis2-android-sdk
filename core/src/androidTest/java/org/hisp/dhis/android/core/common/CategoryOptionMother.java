@@ -5,7 +5,7 @@ import org.hisp.dhis.android.core.category.CategoryOption;
 
 import java.util.Date;
 
-public final class CategoryOptionMockFactory {
+public final class CategoryOptionMother {
 
     public static CategoryOption generatedCategoryOption(String uid){
         return CategoryOption.builder()

@@ -53,8 +53,15 @@ public final class DataSetEndpointCall extends GenericEndpointCallImpl<DataSet> 
                 DataSet.uid.in(uids), Boolean.FALSE);
     }
 
-    public static DataSetEndpointCall create(GenericCallData data, Set<String> uids) {
-        return new DataSetEndpointCall(data, data.retrofit().create(DataSetService.class),
-                DataSetHandler.create(data.databaseAdapter()), uids);
+    public interface Factory {
+        DataSetEndpointCall create(GenericCallData data, Set<String> uids);
     }
+
+    static final DataSetEndpointCall.Factory FACTORY = new DataSetEndpointCall.Factory() {
+        @Override
+        public DataSetEndpointCall create(GenericCallData data, Set<String> uids) {
+            return new DataSetEndpointCall(data, data.retrofit().create(DataSetService.class),
+                    DataSetHandler.create(data.databaseAdapter()), uids);
+        }
+    };
 }

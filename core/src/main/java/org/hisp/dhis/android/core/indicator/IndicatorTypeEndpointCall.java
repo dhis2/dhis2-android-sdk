@@ -57,8 +57,15 @@ public final class IndicatorTypeEndpointCall extends GenericEndpointCallImpl<Ind
                 Boolean.FALSE);
     }
 
-    public static IndicatorTypeEndpointCall create(GenericCallData data, Set<String> uids) {
-        return new IndicatorTypeEndpointCall(data, data.retrofit().create(IndicatorTypeService.class),
-                IndicatorTypeHandler.create(data.databaseAdapter()), uids);
+    public interface Factory {
+        IndicatorTypeEndpointCall create(GenericCallData data, Set<String> uids);
     }
+
+    public static final IndicatorTypeEndpointCall.Factory FACTORY = new IndicatorTypeEndpointCall.Factory() {
+        @Override
+        public IndicatorTypeEndpointCall create(GenericCallData data, Set<String> uids) {
+            return new IndicatorTypeEndpointCall(data, data.retrofit().create(IndicatorTypeService.class),
+                    IndicatorTypeHandler.create(data.databaseAdapter()), uids);
+        }
+    };
 }

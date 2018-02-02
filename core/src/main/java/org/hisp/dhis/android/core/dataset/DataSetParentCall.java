@@ -51,34 +51,46 @@ import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getIndi
 public class DataSetParentCall extends TransactionalCall {
     private final User user;
     private final DataSetParentLinkManager linkManager;
+    private final DataSetEndpointCall.Factory dataSetCallFactory;
+    private final DataElementEndpointCall.Factory dataElementCallFactory;
+    private final IndicatorEndpointCall.Factory indicatorCallFactory;
+    private final IndicatorTypeEndpointCall.Factory indicatorTypeCallFactory;
     private final List<OrganisationUnit> organisationUnits;
 
     private DataSetParentCall(User user, GenericCallData data, DataSetParentLinkManager linkManager,
+                              DataSetEndpointCall.Factory dataSetCallFactory,
+                              DataElementEndpointCall.Factory dataElementCallFactory,
+                              IndicatorEndpointCall.Factory indicatorCallFactory,
+                              IndicatorTypeEndpointCall.Factory indicatorTypeCallFactory,
                               List<OrganisationUnit> organisationUnits) {
         super(data);
         this.user = user;
         this.linkManager = linkManager;
+        this.dataSetCallFactory = dataSetCallFactory;
+        this.dataElementCallFactory = dataElementCallFactory;
+        this.indicatorCallFactory = indicatorCallFactory;
+        this.indicatorTypeCallFactory = indicatorTypeCallFactory;
         this.organisationUnits = organisationUnits;
     }
 
     @Override
     public Response callBody() throws Exception {
         DataSetEndpointCall dataSetEndpointCall
-                = DataSetEndpointCall.create(data, getAssignedDataSetUids(user));
+                = dataSetCallFactory.create(data, getAssignedDataSetUids(user));
         Response<Payload<DataSet>> dataSetResponse = dataSetEndpointCall.call();
 
         List<DataSet> dataSets = dataSetResponse.body().items();
         DataElementEndpointCall dataElementEndpointCall =
-                DataElementEndpointCall.create(data, getDataElementUids(dataSets));
+                dataElementCallFactory.create(data, getDataElementUids(dataSets));
         Response<Payload<DataElement>> dataElementResponse = dataElementEndpointCall.call();
 
         IndicatorEndpointCall indicatorEndpointCall
-                = IndicatorEndpointCall.create(data, getIndicatorUids(dataSets));
+                = indicatorCallFactory.create(data, getIndicatorUids(dataSets));
         Response<Payload<Indicator>> indicatorResponse = indicatorEndpointCall.call();
 
         List<Indicator> indicators = indicatorResponse.body().items();
         IndicatorTypeEndpointCall indicatorTypeEndpointCall
-                = IndicatorTypeEndpointCall.create(data, getIndicatorTypeUids(indicators));
+                = indicatorTypeCallFactory.create(data, getIndicatorTypeUids(indicators));
         indicatorTypeEndpointCall.call();
 
         linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);
@@ -94,7 +106,12 @@ public class DataSetParentCall extends TransactionalCall {
     public static final Factory FACTORY = new Factory() {
         @Override
         public Call<Response> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits) {
-            return new DataSetParentCall(user, data, DataSetParentLinkManager.create(data.databaseAdapter()),
+            return new DataSetParentCall(user, data,
+                    DataSetParentLinkManager.create(data.databaseAdapter()),
+                    DataSetEndpointCall.FACTORY,
+                    DataElementEndpointCall.FACTORY,
+                    IndicatorEndpointCall.FACTORY,
+                    IndicatorTypeEndpointCall.FACTORY,
                     organisationUnits);
         }
     };

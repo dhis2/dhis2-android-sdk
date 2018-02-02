@@ -32,6 +32,9 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.dataset.DataSetEndpointCall;
+import org.hisp.dhis.android.core.dataset.DataSetHandler;
+import org.hisp.dhis.android.core.dataset.DataSetService;
 import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
@@ -54,9 +57,16 @@ public final class DataElementEndpointCall extends GenericEndpointCallImpl<DataE
                 DataElement.uid.in(uids), Boolean.FALSE);
     }
 
-    public static DataElementEndpointCall create(GenericCallData data, Set<String> uids) {
-        return new DataElementEndpointCall(data, data.retrofit().create(DataElementService.class),
-                DataElementHandler.create(data.databaseAdapter(),
-                        OptionSetHandler.create(data.databaseAdapter())), uids);
+    public interface Factory {
+        DataElementEndpointCall create(GenericCallData data, Set<String> uids);
     }
+
+    public static final DataElementEndpointCall.Factory FACTORY = new DataElementEndpointCall.Factory() {
+        @Override
+        public DataElementEndpointCall create(GenericCallData data, Set<String> uids) {
+            return new DataElementEndpointCall(data, data.retrofit().create(DataElementService.class),
+                    DataElementHandler.create(data.databaseAdapter(),
+                            OptionSetHandler.create(data.databaseAdapter())), uids);
+        }
+    };
 }

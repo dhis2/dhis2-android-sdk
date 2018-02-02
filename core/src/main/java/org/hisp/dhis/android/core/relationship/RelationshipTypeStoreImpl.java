@@ -47,36 +47,39 @@ import java.util.List;
         "PMD.AvoidDuplicateLiterals"
 })
 public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
+    private static final String FIELDS =
+            RelationshipTypeModel.Columns.UID + ", " +
+                    RelationshipTypeModel.Columns.CODE + ", " +
+                    RelationshipTypeModel.Columns.NAME + ", " +
+                    RelationshipTypeModel.Columns.DISPLAY_NAME + ", " +
+                    RelationshipTypeModel.Columns.CREATED + ", " +
+                    RelationshipTypeModel.Columns.LAST_UPDATED + ", " +
+                    RelationshipTypeModel.Columns.A_IS_TO_B + ", " +
+                    RelationshipTypeModel.Columns.B_IS_TO_A;
+
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             RelationshipTypeModel.TABLE + " (" +
-            RelationshipTypeModel.Columns.UID + ", " +
-            RelationshipTypeModel.Columns.CODE + ", " +
-            RelationshipTypeModel.Columns.NAME + ", " +
-            RelationshipTypeModel.Columns.DISPLAY_NAME + ", " +
-            RelationshipTypeModel.Columns.CREATED + ", " +
-            RelationshipTypeModel.Columns.LAST_UPDATED + ", " +
-            RelationshipTypeModel.Columns.A_IS_TO_B + ", " +
-            RelationshipTypeModel.Columns.B_IS_TO_A + ") " +
-            "VALUES (" + "?, ?, ?, ?, ?, ?, ?, ?" + ");";
+            FIELDS + ") VALUES (" + "?, ?, ?, ?, ?, ?, ?, ?" + ");";
 
-    private static final String UPDATE_STATEMENT = "UPDATE " + RelationshipTypeModel.TABLE + " SET " +
-            RelationshipTypeModel.Columns.UID + " =?, " +
-            RelationshipTypeModel.Columns.CODE + " =?, " +
-            RelationshipTypeModel.Columns.NAME + " =?, " +
-            RelationshipTypeModel.Columns.DISPLAY_NAME + " =?, " +
-            RelationshipTypeModel.Columns.CREATED + " =?, " +
-            RelationshipTypeModel.Columns.LAST_UPDATED + " =?, " +
-            RelationshipTypeModel.Columns.A_IS_TO_B + " =?, " +
-            RelationshipTypeModel.Columns.B_IS_TO_A + " =? " +
-            " WHERE " +
-            RelationshipTypeModel.Columns.UID + " =?;";
+    private static final String UPDATE_STATEMENT =
+            "UPDATE " + RelationshipTypeModel.TABLE + " SET " +
+                    RelationshipTypeModel.Columns.UID + " =?, " +
+                    RelationshipTypeModel.Columns.CODE + " =?, " +
+                    RelationshipTypeModel.Columns.NAME + " =?, " +
+                    RelationshipTypeModel.Columns.DISPLAY_NAME + " =?, " +
+                    RelationshipTypeModel.Columns.CREATED + " =?, " +
+                    RelationshipTypeModel.Columns.LAST_UPDATED + " =?, " +
+                    RelationshipTypeModel.Columns.A_IS_TO_B + " =?, " +
+                    RelationshipTypeModel.Columns.B_IS_TO_A + " =? " +
+                    " WHERE " +
+                    RelationshipTypeModel.Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + RelationshipTypeModel.TABLE +
             " WHERE " +
             RelationshipTypeModel.Columns.UID + " =?;";
 
     private static final String QUERY_ALL_RELATIONSHIP_TYPES =
-            "SELECT * FROM " + RelationshipTypeModel.TABLE;
+            "SELECT " + FIELDS + " FROM " + RelationshipTypeModel.TABLE;
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -93,17 +96,18 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
 
     @Override
     public long insert(@NonNull String uid,
-                       @Nullable String code,
-                       @NonNull String name,
-                       @Nullable String displayName,
-                       @Nullable Date created,
-                       @Nullable Date lastUpdated,
-                       @NonNull String aIsToB,
-                       @NonNull String bIsToA) {
+            @Nullable String code,
+            @NonNull String name,
+            @Nullable String displayName,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @NonNull String aIsToB,
+            @NonNull String bIsToA) {
         isNull(uid);
         isNull(aIsToB);
         isNull(bIsToA);
-        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, aIsToB, bIsToA);
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, aIsToB,
+                bIsToA);
 
         long ret = databaseAdapter.executeInsert(RelationshipTypeModel.TABLE, insertStatement);
         insertStatement.clearBindings();
@@ -112,19 +116,20 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
 
     @Override
     public int update(@NonNull String uid,
-                      @Nullable String code,
-                      @Nullable String name,
-                      @Nullable String displayName,
-                      @Nullable Date created,
-                      @Nullable Date lastUpdated,
-                      @NonNull String aIsToB,
-                      @NonNull String bIsToA,
-                      @NonNull String whereUid) {
+            @Nullable String code,
+            @Nullable String name,
+            @Nullable String displayName,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @NonNull String aIsToB,
+            @NonNull String bIsToA,
+            @NonNull String whereUid) {
         isNull(uid);
         isNull(aIsToB);
         isNull(bIsToA);
         isNull(whereUid);
-        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, aIsToB, bIsToA);
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, aIsToB,
+                bIsToA);
         sqLiteBind(updateStatement, 9, whereUid);
 
         int ret = updateStatement.executeUpdateDelete();
@@ -165,13 +170,14 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
     }
 
     private RelationshipType mapRelationshipTypeFromCursor(Cursor cursor) {
-        String uid = cursor.getString(1);
-        String code = cursor.getString(2);
-        String name = cursor.getString(3);
-        String displayName = cursor.getString(4);
-        Date created = cursor.getString(5) == null ? null : parse(cursor.getString(5));
-        Date lastUpdate = cursor.getString(6) == null ? null : parse(cursor.getString(6));
-        String aIsToB = cursor.getString(8);
+
+        String uid = cursor.getString(0);
+        String code = cursor.getString(1);
+        String name = cursor.getString(2);
+        String displayName = cursor.getString(3);
+        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
+        Date lastUpdate = cursor.getString(5) == null ? null : parse(cursor.getString(5));
+        String aIsToB = cursor.getString(6);
         String bIsToA = cursor.getString(7);
 
         return RelationshipType.builder()
@@ -186,14 +192,15 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
     }
 
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,
-                               @NonNull String uid,
-                               @Nullable String code,
-                               @Nullable String name,
-                               @Nullable String displayName,
-                               @Nullable Date created,
-                               @Nullable Date lastUpdated,
-                               @NonNull String aIsToB,
-                               @NonNull String bIsToA) {
+            @NonNull String uid,
+            @Nullable String code,
+            @Nullable String name,
+            @Nullable String displayName,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @NonNull String aIsToB,
+            @NonNull String bIsToA) {
+
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);

@@ -32,28 +32,28 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.io.IOException;
 import java.util.Set;
 
-public final class IndicatorEndpointCall extends GenericEndpointCallImpl<Indicator> {
+public final class IndicatorEndpointCall extends GenericEndpointCallImpl<Indicator, UidsQuery> {
     private final IndicatorService indicatorService;
 
     private IndicatorEndpointCall(GenericCallData data, IndicatorService indicatorService,
-                                  GenericHandler<Indicator> indicatorHandler,
-                                  Set<String> uids) {
-        super(data, indicatorHandler, ResourceModel.Type.INDICATOR, uids, null);
+                                  GenericHandler<Indicator> indicatorHandler, UidsQuery uidsQuery) {
+        super(data, indicatorHandler, ResourceModel.Type.INDICATOR, uidsQuery);
         this.indicatorService = indicatorService;
     }
 
     @Override
-    protected retrofit2.Call<Payload<Indicator>> getCall(Set<String> uids, String lastUpdated)
+    protected retrofit2.Call<Payload<Indicator>> getCall(UidsQuery query, String lastUpdated)
             throws IOException {
         return indicatorService.getIndicators(
                 Indicator.allFields,
                 Indicator.lastUpdated.gt(lastUpdated),
-                Indicator.uid.in(uids),
+                Indicator.uid.in(query.uids()),
                 Boolean.FALSE);
     }
 
@@ -65,7 +65,7 @@ public final class IndicatorEndpointCall extends GenericEndpointCallImpl<Indicat
         @Override
         public IndicatorEndpointCall create(GenericCallData data, Set<String> uids) {
             return new IndicatorEndpointCall(data, data.retrofit().create(IndicatorService.class),
-                    IndicatorHandler.create(data.databaseAdapter()), uids);
+                    IndicatorHandler.create(data.databaseAdapter()), UidsQuery.create(uids, null));
         }
     };
 }

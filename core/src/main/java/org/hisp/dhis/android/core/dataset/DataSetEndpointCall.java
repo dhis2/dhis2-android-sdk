@@ -32,25 +32,27 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.io.IOException;
 import java.util.Set;
 
-public final class DataSetEndpointCall extends GenericEndpointCallImpl<DataSet> {
+import retrofit2.Call;
+
+public final class DataSetEndpointCall extends GenericEndpointCallImpl<DataSet, UidsQuery> {
     private final DataSetService dataSetService;
 
     private DataSetEndpointCall(GenericCallData data, DataSetService dataSetService,
-                                GenericHandler<DataSet> dataSetHandler, Set<String> uids) {
-        super(data, dataSetHandler, ResourceModel.Type.DATA_SET, uids, 64);
+                                GenericHandler<DataSet> dataSetHandler, UidsQuery uidsQuery) {
+        super(data, dataSetHandler, ResourceModel.Type.DATA_SET, uidsQuery);
         this.dataSetService = dataSetService;
     }
 
     @Override
-    protected retrofit2.Call<Payload<DataSet>> getCall(Set<String> uids, String lastUpdated)
-            throws IOException {
+    protected Call<Payload<DataSet>> getCall(UidsQuery query, String lastUpdated) throws IOException {
         return dataSetService.getDataSets(DataSet.allFields, DataSet.lastUpdated.gt(lastUpdated),
-                DataSet.uid.in(uids), Boolean.FALSE);
+                DataSet.uid.in(query.uids()), Boolean.FALSE);
     }
 
     public interface Factory {
@@ -61,7 +63,7 @@ public final class DataSetEndpointCall extends GenericEndpointCallImpl<DataSet> 
         @Override
         public DataSetEndpointCall create(GenericCallData data, Set<String> uids) {
             return new DataSetEndpointCall(data, data.retrofit().create(DataSetService.class),
-                    DataSetHandler.create(data.databaseAdapter()), uids);
+                    DataSetHandler.create(data.databaseAdapter()),  UidsQuery.create(uids, 64));
         }
     };
 }

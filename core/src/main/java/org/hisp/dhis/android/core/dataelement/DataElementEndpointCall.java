@@ -32,29 +32,28 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.dataset.DataSetEndpointCall;
-import org.hisp.dhis.android.core.dataset.DataSetHandler;
-import org.hisp.dhis.android.core.dataset.DataSetService;
+import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.io.IOException;
 import java.util.Set;
 
-public final class DataElementEndpointCall extends GenericEndpointCallImpl<DataElement> {
+import retrofit2.Call;
+
+public final class DataElementEndpointCall extends GenericEndpointCallImpl<DataElement, UidsQuery> {
     private final DataElementService dataElementService;
 
     private DataElementEndpointCall(GenericCallData data, DataElementService dataElementService,
-                                   GenericHandler<DataElement> dataElementHandler, Set<String> uids) {
-        super(data, dataElementHandler, ResourceModel.Type.DATA_ELEMENT, uids, null);
+                                   GenericHandler<DataElement> dataElementHandler, UidsQuery query) {
+        super(data, dataElementHandler, ResourceModel.Type.DATA_ELEMENT,query);
         this.dataElementService = dataElementService;
     }
 
     @Override
-    protected retrofit2.Call<Payload<DataElement>> getCall(Set<String> uids, String lastUpdated)
-            throws IOException {
+    protected Call<Payload<DataElement>> getCall(UidsQuery query, String lastUpdated) throws IOException {
         return dataElementService.getDataElements(DataElement.allFields, DataElement.lastUpdated.gt(lastUpdated),
-                DataElement.uid.in(uids), Boolean.FALSE);
+                DataElement.uid.in(query.uids()), Boolean.FALSE);
     }
 
     public interface Factory {
@@ -65,8 +64,8 @@ public final class DataElementEndpointCall extends GenericEndpointCallImpl<DataE
         @Override
         public DataElementEndpointCall create(GenericCallData data, Set<String> uids) {
             return new DataElementEndpointCall(data, data.retrofit().create(DataElementService.class),
-                    DataElementHandler.create(data.databaseAdapter(),
-                            OptionSetHandler.create(data.databaseAdapter())), uids);
+                    DataElementHandler.create(data.databaseAdapter(), OptionSetHandler.create(data.databaseAdapter())),
+                    UidsQuery.create(uids, null));
         }
     };
 }

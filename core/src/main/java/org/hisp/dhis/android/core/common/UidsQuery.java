@@ -15,7 +15,7 @@ public abstract class UidsQuery extends BaseQuery {
         return limit() == null || uids().size() <= limit();
     }
 
-    public static UidsQuery create(Set<String> uids, Set<String> limit) {
+    public static UidsQuery create(Set<String> uids, Integer limit) {
         return new AutoValue_UidsQuery(uids, limit);
     }
 

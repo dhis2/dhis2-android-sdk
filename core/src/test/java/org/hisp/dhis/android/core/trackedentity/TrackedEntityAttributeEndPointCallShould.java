@@ -103,8 +103,9 @@ public class TrackedEntityAttributeEndPointCallShould {
 
         TrackedEntityAttributeEndPointCall trackedEntityAttributeEndPointCall =
                 new TrackedEntityAttributeEndPointCall(trackedEntityAttributeService,
-                        databaseAdapter, trackedEntityAttributeQuery, new Date(),
-                        trackedEntityAttributeHandler, resourceHandler);
+                        trackedEntityAttributeQuery,
+                        trackedEntityAttributeHandler,
+                        resourceHandler, databaseAdapter, new Date());
 
         return trackedEntityAttributeEndPointCall;
     }

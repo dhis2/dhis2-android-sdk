@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -37,6 +36,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -51,32 +51,33 @@ import java.util.List;
         "PMD.AvoidDuplicateLiterals",
         "PMD.NPathComplexity"
 })
-public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeStore{
-    private static final String INSERT_STATEMENT = "INSERT INTO " +
-            TrackedEntityAttributeModel.TABLE + " (" +
+public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEntityAttributeStore{
+    private static final String FIELDS =
             TrackedEntityAttributeModel.Columns.UID + ", " +
-            TrackedEntityAttributeModel.Columns.CODE + ", " +
-            TrackedEntityAttributeModel.Columns.NAME + ", " +
-            TrackedEntityAttributeModel.Columns.DISPLAY_NAME + ", " +
-            TrackedEntityAttributeModel.Columns.CREATED + ", " +
-            TrackedEntityAttributeModel.Columns.LAST_UPDATED + ", " +
-            TrackedEntityAttributeModel.Columns.SHORT_NAME + ", " +
-            TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME + ", " +
-            TrackedEntityAttributeModel.Columns.DESCRIPTION + ", " +
-            TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + ", " +
-            TrackedEntityAttributeModel.Columns.PATTERN + ", " +
-            TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM + ", " +
-            TrackedEntityAttributeModel.Columns.OPTION_SET + ", " +
-            TrackedEntityAttributeModel.Columns.VALUE_TYPE + ", " +
-            TrackedEntityAttributeModel.Columns.EXPRESSION + ", " +
-            TrackedEntityAttributeModel.Columns.SEARCH_SCOPE + ", " +
-            TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE + ", " +
-            TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM + ", " +
-            TrackedEntityAttributeModel.Columns.GENERATED + ", " +
-            TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE + ", " +
-            TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE + ", " +
-            TrackedEntityAttributeModel.Columns.UNIQUE + ", " +
-            TrackedEntityAttributeModel.Columns.INHERIT +
+                    TrackedEntityAttributeModel.Columns.CODE + ", " +
+                    TrackedEntityAttributeModel.Columns.NAME + ", " +
+                    TrackedEntityAttributeModel.Columns.DISPLAY_NAME + ", " +
+                    TrackedEntityAttributeModel.Columns.CREATED + ", " +
+                    TrackedEntityAttributeModel.Columns.LAST_UPDATED + ", " +
+                    TrackedEntityAttributeModel.Columns.SHORT_NAME + ", " +
+                    TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME + ", " +
+                    TrackedEntityAttributeModel.Columns.DESCRIPTION + ", " +
+                    TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + ", " +
+                    TrackedEntityAttributeModel.Columns.PATTERN + ", " +
+                    TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM + ", " +
+                    TrackedEntityAttributeModel.Columns.OPTION_SET + ", " +
+                    TrackedEntityAttributeModel.Columns.VALUE_TYPE + ", " +
+                    TrackedEntityAttributeModel.Columns.EXPRESSION + ", " +
+                    TrackedEntityAttributeModel.Columns.SEARCH_SCOPE + ", " +
+                    TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE + ", " +
+                    TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM + ", " +
+                    TrackedEntityAttributeModel.Columns.GENERATED + ", " +
+                    TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE + ", " +
+                    TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE + ", " +
+                    TrackedEntityAttributeModel.Columns.UNIQUE + ", " +
+                    TrackedEntityAttributeModel.Columns.INHERIT;
+    private static final String INSERT_STATEMENT = "INSERT INTO " +
+            TrackedEntityAttributeModel.TABLE + " (" + FIELDS +
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityAttributeModel.TABLE + " SET " +
@@ -107,8 +108,9 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + TrackedEntityAttributeModel.TABLE +
             " WHERE " + TrackedEntityAttributeModel.Columns.UID + " =?;";
+
     private static final String QUERY_ALL_TRACKED_ENTITY_ATTRIBUTES =
-            "SELECT * FROM " + TrackedEntityAttributeModel.TABLE;
+            "SELECT "+FIELDS+" FROM " + TrackedEntityAttributeModel.TABLE;
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -254,40 +256,45 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
     private TrackedEntityAttribute mapTrackedEntityAttributeFromCursor(Cursor cursor) {
         TrackedEntityAttribute trackedEntityAttribute;
 
-        String uid = cursor.getString(1);
-        String code = cursor.getString(2);
-        String name = cursor.getString(3);
-        String displayName = cursor.getString(4);
-        Date created = cursor.getString(5) == null ? null : parse(cursor.getString(5));
-        Date lastUpdated = cursor.getString(6) == null ? null : parse(cursor.getString(6));
-        String shortName = cursor.getString(7);
-        String displayShortName = cursor.getString(8);
-        String description = cursor.getString(9);
-        String displayDescription = cursor.getString(10);
-        String pattern = cursor.getString(11);
-        Integer sortOrderInListNoProgram = cursor.getInt(12);
-        String optionSetUID = cursor.getString(13);
-        ValueType valueType = cursor.getString(14) == null ? null : ValueType.valueOf(
-                cursor.getString(14));
-        String expression = cursor.getString(15);
-        TrackedEntityAttributeSearchScope searchScope = cursor.getString(16)
-                == null ? null : TrackedEntityAttributeSearchScope.valueOf(cursor.getString(16));
-        Boolean programScope = cursor.getLong(17) == 1;
-        Boolean displayInListNoProgram = cursor.getLong(18) == 1;
-        Boolean generated = cursor.getLong(19) == 1;
-        Boolean displayOnVisitSchedule = cursor.getLong(20) == 1;
-        Boolean orgUnitScope = cursor.getLong(21) == 1;
-        Boolean unique = cursor.getLong(22) == 1;
-        Boolean inherit = cursor.getLong(23) == 1;
+        String uid = getStringFromCursor(cursor, 0);
+        String code = getStringFromCursor(cursor, 1);
+        String name =getStringFromCursor(cursor, 2);
+        String displayName = getStringFromCursor(cursor, 3);
+        Date created = getDateFromCursor(cursor, 4);
+        Date lastUpdated = getDateFromCursor(cursor, 5);
+        String shortName = getStringFromCursor(cursor, 6);
+        String displayShortName = getStringFromCursor(cursor, 7);
+        String description = getStringFromCursor(cursor, 8);
+        String displayDescription = getStringFromCursor(cursor, 9);
+        String pattern = getStringFromCursor(cursor, 10);
+        Integer sortOrderInListNoProgram = getIntegerFromCursor(cursor, 11);
+        String optionSetUID = getStringFromCursor(cursor, 12);
+        ValueType valueType = getValueTypeFromCursor(cursor, 13);
+        String expression = getStringFromCursor(cursor, 14);
+        TrackedEntityAttributeSearchScope searchScope = getTrackedEntityAttributeSearchScopeFromCursor(cursor, 15);
+        Boolean programScope = getBooleanFromCursor(cursor, 16);
+        Boolean displayInListNoProgram = getBooleanFromCursor(cursor, 17);
+        Boolean generated = getBooleanFromCursor(cursor, 18);
+        Boolean displayOnVisitSchedule = getBooleanFromCursor(cursor, 19);
+        Boolean orgUnitScope = getBooleanFromCursor(cursor, 20);
+        Boolean unique = getBooleanFromCursor(cursor, 21);
+        Boolean inherit = getBooleanFromCursor(cursor, 22);
 
         OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter);
         OptionSet optionSet = optionSetUID == null ? null : optionSetStore.queryByUId(optionSetUID);
 
-        trackedEntityAttribute = TrackedEntityAttribute.create(uid, code, name, displayName,
-                created, lastUpdated, shortName, displayShortName, description, displayDescription,
-                pattern, sortOrderInListNoProgram, optionSet, valueType, expression, searchScope,
-                programScope, displayInListNoProgram, generated, displayOnVisitSchedule,
-                orgUnitScope, unique, inherit, false);
+        trackedEntityAttribute = TrackedEntityAttribute.builder().uid(uid).code(code)
+                .displayName(displayName).created(created).lastUpdated(lastUpdated).name(name)
+                .shortName(shortName).displayShortName(displayShortName).description(description)
+                .displayDescription(displayDescription)
+                .pattern(pattern).sortOrderInListNoProgram(sortOrderInListNoProgram)
+                .optionSet(optionSet).valueType(valueType)
+                .expression(expression).searchScope(searchScope).programScope(programScope)
+                .displayInListNoProgram(displayInListNoProgram).generated(generated)
+                .displayOnVisitSchedule(displayOnVisitSchedule).orgUnitScope(orgUnitScope)
+                .unique(unique).inherit(inherit).deleted(false)
+                .build();
+
         return trackedEntityAttribute;
     }
 }

@@ -28,9 +28,6 @@ import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
@@ -73,18 +70,6 @@ public class HandlerFactory {
                 new TrackedEntityAttributeValueHandler(entityAttributeValueStore);
 
         return trackedEntityAttributeValueHandler;
-    }
-
-    public static TrackedEntityAttributeHandler createTrackedEntityAttributeHandler(
-            DatabaseAdapter databaseAdapter) {
-
-        TrackedEntityAttributeStore trackedEntityAttributeStore =
-                new TrackedEntityAttributeStoreImpl(databaseAdapter);
-
-        TrackedEntityAttributeHandler trackedEntityAttributeHandler =
-                new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
-
-        return trackedEntityAttributeHandler;
     }
 
     public static EnrollmentHandler createEnrollmentHandler(

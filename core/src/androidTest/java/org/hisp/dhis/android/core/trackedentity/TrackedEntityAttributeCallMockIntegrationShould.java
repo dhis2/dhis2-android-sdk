@@ -12,18 +12,21 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TrackedEntityAttributeEnPointCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class TrackedEntityAttributeCallMockIntegrationShould extends AbsStoreTestCase {
@@ -35,17 +38,18 @@ public class TrackedEntityAttributeCallMockIntegrationShould extends AbsStoreTes
     @Test
     @MediumTest
     public void download_TrackedEntityAttributes_according_to_default_query() throws Exception {
-        TrackedEntityAttributeEndPointCall trackedEntityAttributeEndPointCall =
-                TrackedEntityAttributeEnPointCallFactory.create(d2.retrofit(), databaseAdapter(),
-                        new HashSet<>(Arrays.asList("VqEFza8wbwA", "spFvx9FndA4", "gHGyrwKPzej")));
+
+        TrackedEntityAttributeFactory  trackedEntityAttributeFactory =
+                new TrackedEntityAttributeFactory(d2.retrofit(), databaseAdapter(),
+                        new ResourceHandler(new ResourceStoreImpl(databaseAdapter())));
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_attributes.json");
-
-        trackedEntityAttributeEndPointCall.call();
+        Set<String> uIds =  new HashSet<>(Arrays.asList("VqEFza8wbwA", "spFvx9FndA4", "gHGyrwKPzej"));
+        TrackedEntityAttributeQuery trackedEntityAttributeQuery = new TrackedEntityAttributeQuery(uIds);
+        trackedEntityAttributeFactory.newEndPointCall(trackedEntityAttributeQuery, new Date()).call();
 
         verifyDownloadedTrackedEntityAttributes("tracked_entity_attributes.json");
     }
-
 
     @Override
     @Before

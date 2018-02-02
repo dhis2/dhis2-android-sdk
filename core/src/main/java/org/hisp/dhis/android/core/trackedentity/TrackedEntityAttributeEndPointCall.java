@@ -28,10 +28,11 @@ public class TrackedEntityAttributeEndPointCall implements
 
     public TrackedEntityAttributeEndPointCall(
             @NonNull TrackedEntityAttributeService trackedEntityAttributeService,
-            @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull TrackedEntityAttributeQuery trackedEntityAttributeQuery, Date serverDate,
+            @NonNull TrackedEntityAttributeQuery trackedEntityAttributeQuery,
             @NonNull TrackedEntityAttributeHandler trackedEntityAttributeHandler,
-            @NonNull ResourceHandler resourceHandler) {
+            @NonNull ResourceHandler resourceHandler,
+            @NonNull DatabaseAdapter databaseAdapter,
+            Date serverDate) {
         this.trackedEntityAttributeService = trackedEntityAttributeService;
         this.databaseAdapter = databaseAdapter;
         this.trackedEntityAttributeQuery = trackedEntityAttributeQuery;
@@ -46,7 +47,6 @@ public class TrackedEntityAttributeEndPointCall implements
                             + trackedEntityAttributeQuery.getUIds().size() + ". " +
                             "Max size is: " + MAX_UIDS);
         }
-
     }
 
     @Override

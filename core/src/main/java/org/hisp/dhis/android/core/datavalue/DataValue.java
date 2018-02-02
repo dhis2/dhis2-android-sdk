@@ -41,18 +41,18 @@ import java.util.Date;
 
 @AutoValue
 public abstract class DataValue {
-    protected static final String DATA_ELEMENT = "dataElement";
-    protected static final String PERIOD = "period";
-    protected static final String ORGANISATION_UNIT = "orgUnit";
-    protected static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
-    protected static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
-    protected static final String VALUE = "value";
-    protected static final String STORED_BY = "storedBy";
-    protected static final String CREATED = "created";
-    protected static final String LAST_UPDATED = "lastUpdated";
-    protected static final String COMMENT = "comment";
-    protected static final String FOLLOW_UP = "followUp";
-    protected static final String DELETED = "deleted";
+    private static final String DATA_ELEMENT = "dataElement";
+    private static final String PERIOD = "period";
+    private static final String ORGANISATION_UNIT = "orgUnit";
+    private static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
+    private static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+    private static final String VALUE = "value";
+    private static final String STORED_BY = "storedBy";
+    private static final String CREATED = "created";
+    private static final String LAST_UPDATED = "lastUpdated";
+    private static final String COMMENT = "comment";
+    private static final String FOLLOW_UP = "followUp";
+    private static final String DELETED = "deleted";
 
     private static final Field<DataValue, String> dataElement = Field.create(DATA_ELEMENT);
     private static final Field<DataValue, String> period = Field.create(PERIOD);

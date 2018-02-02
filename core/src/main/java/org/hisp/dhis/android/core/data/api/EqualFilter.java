@@ -18,7 +18,7 @@ public abstract class EqualFilter<T, K> implements Filter<T, K> {
         if (values == null || values.isEmpty()) {
             return null;
         }
-        return new AutoValue_EqualFilter<>(field, Collections.unmodifiableCollection(values));
+        return new AutoValue_EqualFilter<>(field, "=", Collections.unmodifiableCollection(values));
     }
 
     @Override

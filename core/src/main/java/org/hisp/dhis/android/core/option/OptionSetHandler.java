@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class OptionSetHandler extends GenericHandlerImpl<OptionSet, OptionSetModel> {
+public class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionSetModel> {
     private final OptionHandler optionHandler;
 
     OptionSetHandler(IdentifiableObjectStore<OptionSetModel> optionSetStore, OptionHandler optionHandler) {

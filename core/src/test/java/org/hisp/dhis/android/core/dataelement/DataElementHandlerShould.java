@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -79,8 +79,8 @@ public class DataElementHandlerShould {
     }
 
     @Test
-    public void extend_generic_handler_impl() {
-        GenericHandlerImpl<DataElement, DataElementModel> genericHandler = new DataElementHandler(
+    public void extend_identifiable_handler_impl() {
+        IdentifiableHandlerImpl<DataElement, DataElementModel> genericHandler = new DataElementHandler(
                 null,null);
     }
 }

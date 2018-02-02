@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.common;
 
 import java.util.Collection;
 
-public interface GenericHandler<P extends BaseIdentifiableObject> {
+public interface GenericHandler<P> {
 
     void handle(P p);
 

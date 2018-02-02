@@ -25,23 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutIdHandlerImpl;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-public class DataValueHandler extends ObjectWithoutIdHandlerImpl<DataValue, DataValueModel> {
+public abstract class IdentifiableHandlerImpl<
+        P extends BaseIdentifiableObject,
+        M extends BaseIdentifiableObjectModel & StatementBinder> extends GenericHandlerBaseImpl<P, M> {
 
-    private DataValueHandler(ObjectWithoutUidStore<DataValueModel> dataValueStore) {
-        super(dataValueStore);
+    private final IdentifiableObjectStore<M> store;
+
+    public IdentifiableHandlerImpl(IdentifiableObjectStore<M> store) {
+        this.store = store;
     }
 
-    protected DataValueModel pojoToModel(DataValue dataValue) {
-        return DataValueModel.factory.fromPojo(dataValue);
-    }
+    @Override
+    protected void deleteOrPersist(P p) {
+        M m = pojoToModel(p);
+        String modelUid = m.uid();
+        if (isDeleted(p) && modelUid != null) {
+            store.delete(modelUid);
+        } else {
+            store.updateOrInsert(m);
+        }
 
-    public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataValueHandler(DataValueStore.create(databaseAdapter));
+        this.afterObjectPersisted(p);
     }
 }

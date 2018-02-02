@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -36,7 +36,7 @@ import org.junit.runners.JUnit4;
 public class DataSetHandlerShould {
 
     @Test
-    public void extend_generic_handler_impl() {
-        GenericHandlerImpl<DataSet, DataSetModel> genericHandler = new DataSetHandler(null);
+    public void extend_identifiable_handler_impl() {
+        IdentifiableHandlerImpl<DataSet, DataSetModel> genericHandler = new DataSetHandler(null);
     }
 }

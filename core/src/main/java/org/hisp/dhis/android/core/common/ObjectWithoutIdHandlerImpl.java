@@ -27,53 +27,20 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import java.util.Collection;
+public abstract class ObjectWithoutIdHandlerImpl<
+        P, M extends BaseModel & UpdateWhereStatementBinder> extends GenericHandlerBaseImpl<P, M> {
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+    private final ObjectWithoutUidStore<M> store;
 
-public abstract class GenericHandlerImpl<
-        P extends BaseIdentifiableObject,
-        M extends BaseIdentifiableObjectModel & StatementBinder> implements GenericHandler<P> {
-
-    private final IdentifiableObjectStore<M> store;
-
-    public GenericHandlerImpl(IdentifiableObjectStore<M> store) {
+    public ObjectWithoutIdHandlerImpl(ObjectWithoutUidStore<M> store) {
         this.store = store;
     }
 
     @Override
-    public final void handle(P p) {
-        if (p == null) {
-            return;
-        }
-        deleteOrPersist(p);
-    }
-
-    @Override
-    public final void handleMany(Collection<P> pCollection) {
-        for(P p : pCollection) {
-            handle(p);
-        }
-    }
-
-    private void deleteOrPersist(P p) {
+    protected void deleteOrPersist(P p) {
         M m = pojoToModel(p);
-        String modelUid = m.uid();
-        if (isDeleted(p) && modelUid != null) {
-            store.delete(modelUid);
-        } else {
-            store.updateOrInsert(m);
-        }
-
+        store.updateOrInsertWhere(m);
         this.afterObjectPersisted(p);
     }
 
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void afterObjectPersisted(P p) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
-    }
-
-    protected abstract M pojoToModel(P p);
 }

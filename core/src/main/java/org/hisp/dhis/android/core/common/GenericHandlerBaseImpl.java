@@ -25,23 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutIdHandlerImpl;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import java.util.Collection;
 
-public class DataValueHandler extends ObjectWithoutIdHandlerImpl<DataValue, DataValueModel> {
+public abstract class GenericHandlerBaseImpl<
+        P, M extends BaseModel & StatementBinder> implements GenericHandler<P> {
 
-    private DataValueHandler(ObjectWithoutUidStore<DataValueModel> dataValueStore) {
-        super(dataValueStore);
+    @Override
+    public final void handle(P p) {
+        if (p == null) {
+            return;
+        }
+        deleteOrPersist(p);
     }
 
-    protected DataValueModel pojoToModel(DataValue dataValue) {
-        return DataValueModel.factory.fromPojo(dataValue);
+    @Override
+    public final void handleMany(Collection<P> pCollection) {
+        for(P p : pCollection) {
+            handle(p);
+        }
     }
 
-    public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataValueHandler(DataValueStore.create(databaseAdapter));
+    protected abstract void deleteOrPersist(P p);
+
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    protected void afterObjectPersisted(P p) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
     }
+
+    protected abstract M pojoToModel(P p);
 }

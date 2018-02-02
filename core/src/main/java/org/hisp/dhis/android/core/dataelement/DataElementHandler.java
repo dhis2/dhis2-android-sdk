@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
 
-public class DataElementHandler extends GenericHandlerImpl<DataElement, DataElementModel> {
+public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, DataElementModel> {
     private final GenericHandler<OptionSet> optionSetHandler;
 
     DataElementHandler(IdentifiableObjectStore<DataElementModel> dataSetStore,

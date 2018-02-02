@@ -49,7 +49,6 @@ import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
-import org.hisp.dhis.android.core.dataset.PeriodModel;
 import org.hisp.dhis.android.core.datavalue.DataValueModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel;
@@ -1008,6 +1007,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             DataSetIndicatorLinkModel.Columns.INDICATOR + ")"
             );
 
+    // TODO Add Period as foreign key.
     private static final String CREATE_DATA_VALUE_TABLE =
             SQLStatementBuilder.createModelTable(DataValueModel.TABLE,
                     DataValueModel.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
@@ -1024,15 +1024,12 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             " FOREIGN KEY (" + DataValueModel.Columns.DATA_ELEMENT + ") " +
                             " REFERENCES " + DataElementModel.TABLE + " (" + DataElementModel.Columns.UID + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-                            " FOREIGN KEY (" + DataValueModel.Columns.PERIOD + ") " +
-                            " REFERENCES " + PeriodModel.TABLE + " (" + PeriodModel.Columns.PERIOD_ID + ")" +
-                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
                             " FOREIGN KEY (" + DataValueModel.Columns.ORGANISATION_UNIT + ") " +
                             " REFERENCES " + OrganisationUnitModel.TABLE + " (" +
                             OrganisationUnitModel.Columns.UID + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
                             " UNIQUE (" + DataValueModel.Columns.DATA_ELEMENT + ", " +
-                            DataValueModel.Columns.PERIOD + ", " + DataValueModel.Columns.ORGANISATION_UNIT + ")"
+                            DataValueModel.Columns.ORGANISATION_UNIT + ")"
             );
 
     /**

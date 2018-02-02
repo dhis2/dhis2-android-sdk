@@ -28,20 +28,16 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutIdHandlerImpl;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public class DataValueHandler extends ObjectWithoutIdHandlerImpl<DataValue, DataValueModel> {
+@RunWith(JUnit4.class)
+public class DataValueHandlerShould {
 
-    DataValueHandler(ObjectWithoutUidStore<DataValueModel> dataValueStore) {
-        super(dataValueStore);
-    }
-
-    protected DataValueModel pojoToModel(DataValue dataValue) {
-        return DataValueModel.factory.fromPojo(dataValue);
-    }
-
-    public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataValueHandler(DataValueStore.create(databaseAdapter));
+    @Test
+    public void extend_object_without_id_handler_impl() {
+        ObjectWithoutIdHandlerImpl<DataValue, DataValueModel> objectWithoutIdHandler =
+                new DataValueHandler(null);
     }
 }

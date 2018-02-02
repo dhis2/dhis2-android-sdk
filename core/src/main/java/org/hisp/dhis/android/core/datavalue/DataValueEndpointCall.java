@@ -62,7 +62,7 @@ public final class DataValueEndpointCall extends GenericEndpointCallImpl<DataVal
                                      Set<String> orgUnitUids);
     }
 
-    static final DataValueEndpointCall.Factory FACTORY = new DataValueEndpointCall.Factory() {
+    public static final DataValueEndpointCall.Factory FACTORY = new DataValueEndpointCall.Factory() {
         @Override
         public DataValueEndpointCall create(GenericCallData data, Set<String> dataSetUids, Set<String> periodIds,
                                             Set<String> orgUnitUids) {

@@ -114,4 +114,40 @@ final class DataSetParentUidsHelper {
         }
         return uids;
     }
+
+    static Set<String> getDataSetsUids() {
+        // TODO Return dataSetUids
+        Set<String> uids = new HashSet<>();
+
+        // Mocked periods
+        uids.add("BfMAe6Itzgt");
+        uids.add("lyLU2wR22tC");
+        uids.add("VTdjfLXXmoi");
+        uids.add("TuL8IOPzpHh");
+        return uids;
+    }
+
+    static Set<String> getPeriodsIds() {
+        // TODO Return periods ids
+        Set<String> uids = new HashSet<>();
+
+        // Mocked periods
+        uids.add("201712");
+        return uids;
+    }
+
+    static Set<String> getOrganisationUnitUids(User user) {
+        List<OrganisationUnit> organisationUnits = user.organisationUnits();
+        Set<String> uids = new HashSet<>();
+
+        if (organisationUnits != null) {
+            for (OrganisationUnit organisationUnit : organisationUnits) {
+                String orgUnitUid = organisationUnit.uid();
+                if (orgUnitUid != null) {
+                    uids.add(orgUnitUid);
+                }
+            }
+        }
+        return uids;
+    }
 }

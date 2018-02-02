@@ -345,4 +345,12 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
     public int delete() {
         return databaseAdapter.delete(TrackedEntityDataValueModel.TABLE);
     }
+
+    @Override
+    public int countAll() {
+        String queryStatement = QUERY_TRACKED_ENTITY_DATA_VALUES;
+
+        Cursor cursor = databaseAdapter.query(queryStatement);
+        return cursor.getCount();
+    }
 }

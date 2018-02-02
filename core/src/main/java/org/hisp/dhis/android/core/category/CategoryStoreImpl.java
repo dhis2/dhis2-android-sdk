@@ -69,12 +69,11 @@ public class CategoryStoreImpl implements CategoryStore {
     }
 
     @Override
-    public boolean update(@NonNull Category oldCategory,
-            @NonNull Category newCategory) {
+    public boolean update(@NonNull Category newCategory) {
 
-        validateForUpdate(oldCategory, newCategory);
+        validateForUpdate(newCategory);
 
-        bindUpdate(oldCategory, newCategory);
+        bindUpdate(newCategory);
 
         return execute(updateStatement);
     }
@@ -97,9 +96,7 @@ public class CategoryStoreImpl implements CategoryStore {
         return lastId;
     }
 
-    private void validateForUpdate(@NonNull Category oldCategory,
-            @NonNull Category newCategory) {
-        isNull(oldCategory.uid());
+    private void validateForUpdate(@NonNull Category newCategory) {
         isNull(newCategory.uid());
     }
 
@@ -113,11 +110,11 @@ public class CategoryStoreImpl implements CategoryStore {
         sqLiteBind(deleteStatement, whereUidIndex, category.uid());
     }
 
-    private void bindUpdate(@NonNull Category oldCategory, @NonNull Category newCategory) {
+    private void bindUpdate(@NonNull Category category) {
         final int whereUidIndex = 8;
-        bind(updateStatement, newCategory);
+        bind(updateStatement, category);
 
-        sqLiteBind(updateStatement, whereUidIndex, oldCategory.uid());
+        sqLiteBind(updateStatement, whereUidIndex, category.uid());
     }
 
     private void bind(@NonNull SQLiteStatement sqLiteStatement, @NonNull Category category) {

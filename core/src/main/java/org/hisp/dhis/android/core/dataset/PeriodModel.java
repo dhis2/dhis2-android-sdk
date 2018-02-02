@@ -55,6 +55,8 @@ public abstract class PeriodModel extends BaseModel implements UpdateWhereStatem
     public static final String TABLE = "Period";
 
     public static class Columns extends BaseModel.Columns {
+        /* TODO Add period Id support */
+        public static final String PERIOD_ID = "periodId";
         static final String PERIOD_TYPE = "periodType";
         static final String START_DATE = "startDate";
         static final String END_DATE = "endDate";

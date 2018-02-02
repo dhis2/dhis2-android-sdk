@@ -49,6 +49,8 @@ import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.dataset.PeriodModel;
+import org.hisp.dhis.android.core.datavalue.DataValueModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
@@ -1006,6 +1008,33 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             DataSetIndicatorLinkModel.Columns.INDICATOR + ")"
             );
 
+    private static final String CREATE_DATA_VALUE_TABLE =
+            SQLStatementBuilder.createModelTable(DataValueModel.TABLE,
+                    DataValueModel.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
+                            DataValueModel.Columns.PERIOD + " TEXT NOT NULL," +
+                            DataValueModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+                            DataValueModel.Columns.CATEGORY_OPTION_COMBO + " TEXT," +
+                            DataValueModel.Columns.ATTRIBUTE_OPTION_COMBO + " TEXT," +
+                            DataValueModel.Columns.VALUE + " TEXT," +
+                            DataValueModel.Columns.STORED_BY + " TEXT," +
+                            DataValueModel.Columns.CREATED + " TEXT," +
+                            DataValueModel.Columns.LAST_UPDATED + " TEXT," +
+                            DataValueModel.Columns.COMMENT + " TEXT," +
+                            DataValueModel.Columns.FOLLOW_UP + " INTEGER," +
+                            " FOREIGN KEY (" + DataValueModel.Columns.DATA_ELEMENT + ") " +
+                            " REFERENCES " + DataElementModel.TABLE + " (" + DataElementModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " FOREIGN KEY (" + DataValueModel.Columns.PERIOD + ") " +
+                            " REFERENCES " + PeriodModel.TABLE + " (" + PeriodModel.Columns.PERIOD_ID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " FOREIGN KEY (" + DataValueModel.Columns.ORGANISATION_UNIT + ") " +
+                            " REFERENCES " + OrganisationUnitModel.TABLE + " (" +
+                            OrganisationUnitModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " UNIQUE (" + DataValueModel.Columns.DATA_ELEMENT + ", " +
+                            DataValueModel.Columns.PERIOD + ", " + DataValueModel.Columns.ORGANISATION_UNIT + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1064,6 +1093,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_INDICATOR_TABLE);
         database.execSQL(CREATE_INDICATOR_TYPE_TABLE);
         database.execSQL(CREATE_DATA_SET_INDICATOR_LINK_TABLE);
+        database.execSQL(CREATE_DATA_VALUE_TABLE);
         return database;
     }
 

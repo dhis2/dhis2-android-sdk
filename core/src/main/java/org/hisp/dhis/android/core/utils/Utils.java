@@ -99,4 +99,9 @@ public final class Utils {
         System.arraycopy(rest, 0, result, offset, rest.length);
         return result;
     }
+
+    public static String commaSeparatedArrayValues(String... values) {
+        String withBrackets = Arrays.toString(values);
+        return withBrackets.substring(1, withBrackets.length() - 1);
+    }
 }

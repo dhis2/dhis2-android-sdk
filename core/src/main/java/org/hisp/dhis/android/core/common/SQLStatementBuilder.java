@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.utils.Utils;
 
-import java.util.Arrays;
+import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedArrayValues;
 
 public class SQLStatementBuilder {
     final String tableName;
@@ -47,11 +47,6 @@ public class SQLStatementBuilder {
 
     private String commaSeparatedColumns() {
         return commaSeparatedArrayValues(columns);
-    }
-
-    private static String commaSeparatedArrayValues(String... values) {
-        String withBrackets = Arrays.toString(values);
-        return withBrackets.substring(1, withBrackets.length() - 1);
     }
 
     private String commaSeparatedInterrogationMarks() {

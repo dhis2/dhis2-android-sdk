@@ -9,6 +9,8 @@ import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetMetadataAuditHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeMetadataAuditHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityMetadataAuditHandler;
 import org.junit.Before;
@@ -38,7 +40,8 @@ public class MetadataAuditHandlerFactoryShould {
         return Arrays.asList(new Object[][]{
                 {TrackedEntityMetadataAuditHandler.class, TrackedEntity.class},
                 {OptionSetMetadataAuditHandler.class, OptionSet.class},
-                {OptionMetadataAuditHandler.class, Option.class}
+                {OptionMetadataAuditHandler.class, Option.class},
+                {TrackedEntityAttributeMetadataAuditHandler.class, TrackedEntityAttribute.class}
         });
     }
 

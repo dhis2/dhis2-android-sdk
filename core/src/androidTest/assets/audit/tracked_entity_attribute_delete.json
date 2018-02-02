@@ -1,0 +1,65 @@
+{
+  "createdAt": "2018-02-02T18:45:34.409",
+  "createdBy": "admin",
+  "klass": "org.hisp.dhis.trackedentity.TrackedEntityAttribute",
+  "uid": "bNNXBXTGDVV",
+  "code": "code2",
+  "type": "DELETE",
+  "value": {
+    "code": "code2",
+    "name": "tea test2",
+    "created": "2018-02-02T18:41:45.406",
+    "lastUpdated": "2018-02-02T18:43:24.749",
+    "externalAccess": false,
+    "publicAccess": "rw------",
+    "user": {
+      "name": "John Traore",
+      "created": "2013-04-18T17:15:08.407",
+      "lastUpdated": "2017-06-02T13:04:58.319",
+      "externalAccess": false,
+      "displayName": "John Traore",
+      "id": "xE7jOejl9FI"
+    },
+    "displayName": "tea test2",
+    "lastUpdatedBy": {
+      "id": "xE7jOejl9FI",
+      "name": "John Traore"
+    },
+    "shortName": "test name2",
+    "description": "desceiption",
+    "displayShortName": "test name2",
+    "displayDescription": "desceiption",
+    "dimensionItemType": "PROGRAM_ATTRIBUTE",
+    "aggregationType": "NONE",
+    "valueType": "TEXT",
+    "inherit": false,
+    "optionSet": {
+      "name": "Allergy",
+      "created": "2013-11-29T21:00:25.641",
+      "lastUpdated": "2015-10-14T13:36:00.956",
+      "externalAccess": false,
+      "publicAccess": "rw------",
+      "user": {
+        "name": "John Traore",
+        "created": "2013-04-18T17:15:08.407",
+        "lastUpdated": "2017-06-02T13:04:58.319",
+        "externalAccess": false,
+        "displayName": "John Traore",
+        "id": "xE7jOejl9FI"
+      },
+      "displayName": "Allergy",
+      "id": "Qdm5fPK5Ra9"
+    },
+    "displayOnVisitSchedule": false,
+    "displayInListNoProgram": false,
+    "confidential": false,
+    "unique": false,
+    "generated": false,
+    "pattern": "",
+    "orgunitScope": false,
+    "programScope": false,
+    "optionSetValue": true,
+    "dimensionItem": "bNNXBXTGDVV",
+    "id": "bNNXBXTGDVV"
+  }
+}

@@ -4,6 +4,7 @@ import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ final class MetadataClassFactory {
         myMap.put("relationshipType", RelationshipType.class);
         myMap.put("optionSet", OptionSet.class);
         myMap.put("option", Option.class);
+        myMap.put("trackedEntityAttribute", TrackedEntityAttribute.class);
         return myMap;
     }
 

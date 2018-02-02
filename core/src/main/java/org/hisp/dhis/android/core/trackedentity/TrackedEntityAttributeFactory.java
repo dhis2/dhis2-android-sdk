@@ -47,4 +47,8 @@ public class TrackedEntityAttributeFactory {
     public List<DeletableStore> getDeletableStores() {
         return deletableStores;
     }
+
+    public TrackedEntityAttributeHandler getTrackedEntityAttributeHandler() {
+        return trackedEntityAttributeHandler;
+    }
 }

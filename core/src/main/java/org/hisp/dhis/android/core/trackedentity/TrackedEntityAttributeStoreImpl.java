@@ -111,6 +111,9 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
 
     private static final String QUERY_ALL_TRACKED_ENTITY_ATTRIBUTES =
             "SELECT "+FIELDS+" FROM " + TrackedEntityAttributeModel.TABLE;
+    private static final String QUERY_BY_UID =
+            "SELECT "+FIELDS+" FROM " + TrackedEntityAttributeModel.TABLE
+            + " WHERE "+TrackedEntityAttributeModel.Columns.UID + "=?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -232,6 +235,23 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
         return mapTrackedEntityAttributesFromCursor(cursor);
     }
 
+    @Override
+    public TrackedEntityAttribute queryByUid(String uid) {
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID, uid);
+        TrackedEntityAttribute trackedEntityAttribute = null;
+        try{
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            trackedEntityAttribute =
+                    mapTrackedEntityAttributeFromCursor(cursor);
+
+        }
+        }finally {
+            cursor.close();
+        }
+        return trackedEntityAttribute;
+    }
+
     private List<TrackedEntityAttribute> mapTrackedEntityAttributesFromCursor(Cursor cursor) {
         List<TrackedEntityAttribute> trackedEntityAttributes = new ArrayList<>(
                 cursor.getCount());
@@ -292,7 +312,7 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
                 .expression(expression).searchScope(searchScope).programScope(programScope)
                 .displayInListNoProgram(displayInListNoProgram).generated(generated)
                 .displayOnVisitSchedule(displayOnVisitSchedule).orgUnitScope(orgUnitScope)
-                .unique(unique).inherit(inherit).deleted(false)
+                .unique(unique).inherit(inherit)
                 .build();
 
         return trackedEntityAttribute;

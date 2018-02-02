@@ -28,64 +28,27 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.text.ParseException;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class DataElementShould {
+public class DataElementShould extends BaseObjectShould implements ObjectShould {
 
-    @Test
-    public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(DataElementModel.builder().build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+    public DataElementShould() {
+        super("dataelement/data_element.json");
     }
 
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-        DataElement dataElement = objectMapper.readValue("{" +
-                        "\"code\":\"DE_2005735\"," +
-                        "\"lastUpdated\":\"2014-11-11T21:56:05.560\"," +
-                        "\"id\":\"g9eOBujte1U\"," +
-                        "\"href\":\"https://play.dhis2.org/demo/api/dataElements/g9eOBujte1U\"," +
-                        "\"created\":\"2012-09-20T08:36:46.552\"," +
-                        "\"name\":\"MCH ANC Visit\"," +
-                        "\"shortName\":\"ANC Visit\"," +
-                        "\"aggregationType\":\"AVERAGE\"," +
-                        "\"domainType\":\"TRACKER\"," +
-                        "\"displayName\":\"MCH ANC Visit\"," +
-                        "\"publicAccess\":\"rw------\"," +
-                        "\"displayShortName\":\"ANC Visit\"," +
-                        "\"externalAccess\":false," +
-                        "\"valueType\":\"TEXT\"," +
-                        "\"formName\":\"ANC Visit\"," +
-                        "\"dimensionItem\":\"g9eOBujte1U\"," +
-                        "\"displayFormName\":\"ANC Visit\"," +
-                        "\"zeroIsSignificant\":false," +
-                        "\"url\":\"\"," +
-                        "\"optionSetValue\":true," +
-                        "\"dimensionItemType\":\"DATA_ELEMENT\"," +
-                        "\"optionSet\":{\"id\":\"fUS7fy2HbaI\"}," +
-                        "\"categoryCombo\":{\"id\":\"p0KPaWEg3cf\"}," +
-                        "\"user\":{\"id\":\"GOLswS44mh8\"}," +
-                        "\"dataSetElements\":[]," +
-                        "\"translations\":[],\"userGroupAccesses\":[]," +
-                        "\"dataElementGroups\":[]," +
-                        "\"attributeValues\":[]," +
-                        "\"aggregationLevels\":[]}",
-                DataElement.class);
+        DataElement dataElement = objectMapper.readValue(jsonStream, DataElement.class);
 
         // basic properties
         assertThat(dataElement.uid()).isEqualTo("g9eOBujte1U");

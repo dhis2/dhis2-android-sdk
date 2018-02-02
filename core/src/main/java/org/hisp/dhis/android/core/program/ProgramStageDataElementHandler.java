@@ -29,7 +29,9 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.dataelement.DataElementHandler;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
 
 import java.util.List;
 
@@ -37,10 +39,10 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class ProgramStageDataElementHandler {
     private final ProgramStageDataElementStore programStageDataElementStore;
-    private final DataElementHandler dataElementHandler;
+    private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
 
     ProgramStageDataElementHandler(ProgramStageDataElementStore programStageDataElementStore,
-                                   DataElementHandler dataElementHandler) {
+                                   GenericHandler<DataElement, DataElementModel> dataElementHandler) {
         this.programStageDataElementStore = programStageDataElementStore;
         this.dataElementHandler = dataElementHandler;
     }
@@ -92,7 +94,7 @@ public class ProgramStageDataElementHandler {
                     );
                 }
             }
-            dataElementHandler.handleDataElement(programStageDataElement.dataElement());
+            dataElementHandler.handle(programStageDataElement.dataElement());
         }
     }
 

@@ -39,22 +39,22 @@ import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryComboStore;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryHandler;
-import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionHandler;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryQuery;
@@ -63,12 +63,24 @@ import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementHandler;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
+import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
+import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkStore;
+import org.hisp.dhis.android.core.dataset.DataSetModel;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
+import org.hisp.dhis.android.core.dataset.DataSetParentCall;
+import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -78,9 +90,10 @@ import org.hisp.dhis.android.core.event.EventService;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.option.OptionSetHandler;
+import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
@@ -204,8 +217,8 @@ public final class D2 {
     private final ProgramRuleActionStore programRuleActionStore;
     private final ProgramRuleStore programRuleStore;
     private final OptionStore optionStore;
-    private final OptionSetStore optionSetStore;
-    private final DataElementStore dataElementStore;
+    private final IdentifiableObjectStore<OptionSetModel> optionSetStore;
+    private final IdentifiableObjectStore<DataElementModel> dataElementStore;
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
@@ -228,6 +241,10 @@ public final class D2 {
     private final CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore;
     private final CategoryOptionComboCategoryLinkStore categoryComboOptionCategoryLinkStore;
 
+    private final IdentifiableObjectStore<DataSetModel> dataSetStore;
+    private final ObjectStore<DataSetDataElementLinkModel> dataSetDataElementLinkStore;
+    private final ObjectStore<DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitLinkStore;
+
     //Handlers
     private final UserCredentialsHandler userCredentialsHandler;
     private final EventHandler eventHandler;
@@ -237,6 +254,9 @@ public final class D2 {
     private final CategoryComboHandler categoryComboHandler;
     private final OrganisationUnitHandler organisationUnitHandler;
 
+    // handlers
+    private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
+    private final OptionSetHandler optionSetHandler;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter) {
@@ -256,7 +276,6 @@ public final class D2 {
         this.comboService = retrofit.create(CategoryComboService.class);
 
         // stores
-
         this.userStore =
                 new UserStoreImpl(databaseAdapter);
         this.userCredentialsStore =
@@ -294,9 +313,9 @@ public final class D2 {
         this.optionStore =
                 new OptionStoreImpl(databaseAdapter);
         this.optionSetStore =
-                new OptionSetStoreImpl(databaseAdapter);
+                OptionSetStore.create(databaseAdapter);
         this.dataElementStore =
-                new DataElementStoreImpl(databaseAdapter);
+                DataElementStore.create(databaseAdapter);
         this.programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter);
         this.programStageSectionStore =
@@ -333,6 +352,10 @@ public final class D2 {
         CategoryOptionComboStore categoryOptionComboStore = new CategoryOptionComboStoreImpl(
                 databaseAdapter());
 
+        this.dataSetStore = DataSetStore.create(databaseAdapter());
+        this.dataSetDataElementLinkStore = DataSetDataElementLinkStore.create(databaseAdapter());
+        this.dataSetOrganisationUnitLinkStore = DataSetOrganisationUnitLinkStore.create(databaseAdapter());
+
         //handlers
         userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
         resourceHandler = new ResourceHandler(resourceStore);
@@ -368,6 +391,10 @@ public final class D2 {
         categoryComboHandler = new CategoryComboHandler(categoryComboStore,
                 categoryComboOptionCategoryLinkStore,
                 categoryCategoryComboLinkStore, optionComboHandler);
+
+        // handlers
+        this.optionSetHandler = OptionSetHandler.create(databaseAdapter);
+        this.dataElementHandler = DataElementHandler.create(databaseAdapter, this.optionSetHandler);
     }
 
     @NonNull
@@ -452,6 +479,9 @@ public final class D2 {
         deletableStoreList.add(categoryComboOptionCategoryLinkStore);
         deletableStoreList.add(categoryComboStore);
         deletableStoreList.add(categoryCategoryComboLinkStore);
+        deletableStoreList.add(dataSetStore);
+        deletableStoreList.add(dataSetDataElementLinkStore);
+        deletableStoreList.add(dataSetOrganisationUnitLinkStore);
         return new LogOutUserCallable(
                 deletableStoreList
         );
@@ -460,21 +490,21 @@ public final class D2 {
     @NonNull
     public Call<Response> syncMetaData() {
         return new MetadataCall(
-                databaseAdapter, systemInfoService, userService, programService,
-                organisationUnitService,
-                trackedEntityService, optionSetService, systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
-                organisationUnitStore,
+                databaseAdapter, systemInfoService, userService, programService, organisationUnitService,
+                trackedEntityService, optionSetService,
+                systemInfoStore, resourceStore, userStore,
+                userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, optionStore,
-                optionSetStore, dataElementStore, programStageDataElementStore,
+                programRuleStore,
+                programStageDataElementStore,
                 programStageSectionStore,
                 programStageStore, relationshipStore, trackedEntityStore,
                 organisationUnitProgramLinkStore, categoryQuery,
                 categoryService, categoryHandler, categoryComboQuery, comboService,
-                categoryComboHandler);
+                categoryComboHandler, optionSetHandler, dataElementHandler, DataSetParentCall.FACTORY,
+                retrofit);
     }
 
     @NonNull

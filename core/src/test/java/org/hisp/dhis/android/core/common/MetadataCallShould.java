@@ -27,19 +27,9 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import static junit.framework.Assert.assertTrue;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atMost;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
@@ -56,11 +46,13 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetService;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
@@ -108,6 +100,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -119,6 +112,16 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import static junit.framework.Assert.assertTrue;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atMost;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class MetadataCallShould {
@@ -207,15 +210,6 @@ public class MetadataCallShould {
     private ProgramRuleStore programRuleStore;
 
     @Mock
-    private OptionStore optionStore;
-
-    @Mock
-    private OptionSetStore optionSetStore;
-
-    @Mock
-    private DataElementStore dataElementStore;
-
-    @Mock
     private ProgramStageDataElementStore programStageDataElementStore;
 
     @Mock
@@ -255,9 +249,14 @@ public class MetadataCallShould {
     private User user;
 
     @Mock
+    private DataElement dataElement;
+
+    @Mock
     private UserCredentials userCredentials;
 
     @Mock
+    private UserRole userRole;
+
     private List<UserRole> userRoles;
 
     @Mock
@@ -274,6 +273,9 @@ public class MetadataCallShould {
 
     @Mock
     private Payload<OptionSet> optionSetPayload;
+
+    @Mock
+    private Payload<DataElement> dataElementPayload;
 
     @Mock
     private OptionSet optionSet;
@@ -298,6 +300,22 @@ public class MetadataCallShould {
     @Mock
     private CategoryComboHandler mockCategoryComboHandler;
 
+    @Mock
+    private GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
+
+    @Mock
+    private GenericHandler<DataElement, DataElementModel> dataElementHandler;
+
+    @Mock
+    private DataSetParentCall.Factory dataSetParentCallFactory;
+
+    @Mock
+    private Call<Response> dataSetParentCall;
+
+    private Response<Payload<DataElement>> dataSetParentCallResponse;
+
+
+
     // object to test
     private MetadataCall metadataCall;
 
@@ -308,7 +326,7 @@ public class MetadataCallShould {
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         errorResponse = Response.error(
@@ -331,6 +349,10 @@ public class MetadataCallShould {
         ).thenReturn(optionSetCall);
 
 
+        when(userRole.dataSets()).thenReturn(new ArrayList<DataSet>());
+        userRoles = new ArrayList<>();
+        userRoles.add(userRole);
+
         when(systemInfo.serverDate()).thenReturn(serverDateTime);
         when(userCredentials.userRoles()).thenReturn(userRoles);
         when(organisationUnit.uid()).thenReturn("unit");
@@ -343,8 +365,15 @@ public class MetadataCallShould {
         when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntity));
         when(trackedEntity.uid()).thenReturn("test_tracked_entity_uid");
         when(optionSetPayload.items()).thenReturn(Collections.singletonList(optionSet));
+        when(dataElementPayload.items()).thenReturn(Collections.singletonList(dataElement));
 
         when(resourceStore.getLastUpdated(any(ResourceModel.Type.class))).thenReturn("2017-01-01");
+
+        when(dataSetParentCallFactory.create(any(User.class), any(GenericCallData.class)))
+                .thenReturn(dataSetParentCall);
+        dataSetParentCallResponse = Response.success(dataElementPayload);
+        when(dataSetParentCall.call()).thenReturn(dataSetParentCallResponse);
+
 
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
         Retrofit retrofit = new Retrofit.Builder()
@@ -374,10 +403,11 @@ public class MetadataCallShould {
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
-                optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
+                programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore, trackedEntityStore,
                 organisationUnitProgramLinkStore,categoryQuery, categoryService, categoryHandler,
-                CategoryComboQuery.defaultQuery(), comboService,mockCategoryComboHandler);
+                CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
+                optionSetHandler, dataElementHandler, dataSetParentCallFactory, retrofit);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
@@ -395,13 +425,17 @@ public class MetadataCallShould {
     }
 
     @Test
-    public void returns_category_combo_payload_when_execute_metadata_call() throws Exception {
+    public void return_last_response_successful() throws Exception {
         Response response = metadataCall.call();
-        // assert that last successful response is returned
+        assertTrue(response.isSuccessful());
+    }
 
-        Payload<String> payload = (Payload<String>) response.body();
-
+    @Test
+    public void return_last_response_items_returned() throws Exception {
+        Response response = metadataCall.call();
+        Payload<DataElement> payload = (Payload<DataElement>) response.body();
         assertTrue(!payload.items().isEmpty());
+        assertThat(payload.items().get(0)).isEqualTo(dataElement);
     }
 
     @Test

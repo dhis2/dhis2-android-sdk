@@ -39,7 +39,7 @@ final class RuleFunctionValidatePattern extends RuleFunction {
     /**
      * Function which validate pattern
      *
-     * @param patternString pattern escaped
+     * @param patternString   pattern escaped
      * @param inputToValidate string to be evaluate
      * @return return true if the pattern match or false if the pattern doesn't match
      */

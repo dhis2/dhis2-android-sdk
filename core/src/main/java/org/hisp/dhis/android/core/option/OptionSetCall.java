@@ -28,83 +28,34 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
-import retrofit2.Response;
-
-public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
-    // retrofit service
+public class OptionSetCall extends GenericEndpointCallImpl<OptionSet> {
     private final OptionSetService optionSetService;
 
-    // database adapter and handler
-    private final OptionSetStore optionSetStore;
-    private final OptionStore optionStore;
-    private final DatabaseAdapter databaseAdapter;
-    private final ResourceStore resourceStore;
-    private final Date serverDate;
-    private final Set<String> uids;
-    private boolean isExecuted;
-
-    public OptionSetCall(OptionSetService optionSetService,
-                         OptionSetStore optionSetStore,
-                         DatabaseAdapter databaseAdapter,
-                         ResourceStore resourceStore,
-                         Set<String> uids,
-                         Date serverDate, OptionStore optionStore) {
+    public OptionSetCall(GenericCallData data, OptionSetService optionSetService,
+                       GenericHandler<OptionSet, OptionSetModel> optionSetHandler, Set<String> uids) {
+        super(data, optionSetHandler, ResourceModel.Type.OPTION_SET, uids, 64);
         this.optionSetService = optionSetService;
-        this.optionSetStore = optionSetStore;
-        this.databaseAdapter = databaseAdapter;
-        this.resourceStore = resourceStore;
-        this.uids = uids;
-        this.serverDate = new Date(serverDate.getTime());
-        this.optionStore = optionStore;
-    }
-
-
-    @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
     }
 
     @Override
-    public Response<Payload<OptionSet>> call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalArgumentException("Already executed");
-            }
-
-            isExecuted = true;
-        }
-
-        if (uids.size() > MAX_UIDS) {
-            throw new IllegalArgumentException(
-                    "Can't handle the amount of option sets: " + uids.size() + ". " + "Max size is: " + MAX_UIDS);
-
-        }
-        Response<Payload<OptionSet>> response = getOptionSets(uids);
-
-        if (response != null && response.isSuccessful()) {
-            saveOptionSets(response);
-        }
-        return response;
+    protected retrofit2.Call<Payload<OptionSet>> getCall(Set<String> uids, String lastUpdated)
+            throws IOException {
+        return optionSetService.optionSets(false,
+                getFields(), OptionSet.uid.in(uids));
     }
 
-    private Response<Payload<OptionSet>> getOptionSets(Set<String> uids) throws IOException {
-        Fields<OptionSet> optionSetFields = Fields.<OptionSet>builder().fields(
+    private Fields<OptionSet> getFields() {
+        return Fields.<OptionSet>builder().fields(
                 OptionSet.uid, OptionSet.code, OptionSet.name,
                 OptionSet.displayName, OptionSet.created,
                 OptionSet.lastUpdated, OptionSet.version,
@@ -117,31 +68,5 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
                         )
                 )
         ).build();
-
-        return optionSetService.optionSets(false, optionSetFields, OptionSet.uid.in(uids)).execute();
-    }
-
-    private void saveOptionSets(Response<Payload<OptionSet>> response) {
-        List<OptionSet> optionSets = response.body().items();
-        if (optionSets != null && !optionSets.isEmpty()) {
-            OptionHandler optionHandler = new OptionHandler(optionStore);
-            OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
-            ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-
-            Transaction transaction = databaseAdapter.beginNewTransaction();
-            int size = optionSets.size();
-
-            try {
-                for (int i = 0; i < size; i++) {
-                    OptionSet optionSet = optionSets.get(i);
-                    optionSetHandler.handleOptionSet(optionSet);
-                }
-                resourceHandler.handleResource(ResourceModel.Type.OPTION_SET, serverDate);
-
-                transaction.setSuccessful();
-            } finally {
-                transaction.end();
-            }
-        }
     }
 }

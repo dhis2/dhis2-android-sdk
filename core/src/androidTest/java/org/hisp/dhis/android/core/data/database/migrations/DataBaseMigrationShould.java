@@ -5,17 +5,19 @@ import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.ifTa
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.ifValueExist;
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isFieldExist;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkModel;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkModel;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CategoryModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
@@ -23,8 +25,14 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.event.EventStore;
+import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.junit.After;
 import org.junit.Before;
@@ -32,6 +40,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockWebServer;
@@ -45,9 +55,12 @@ public class DataBaseMigrationShould {
     DbOpenHelper dbOpenHelper;
 
     public static final String realMigrationDir = "migrations/real_migrations";
+    public static final String fakeDataDir = "migrations/fake_data";
     public static final String exampleMigrationsDir = "migrations/example_migrations";
     public static final String databaseSqlVersion1 = "db_version_1.sql";
+    public static final String databaseSqlVersion2_with_data = "db_version_2_with_data.sql";
     public static final String databaseSqlVersion2 = "db_version_2.sql";
+    public static final String databaseSqlVersion4 = "db_version_4.sql";
     static String dbName= null;
     private SQLiteDatabase databaseInMemory;
 
@@ -73,37 +86,6 @@ public class DataBaseMigrationShould {
         }
     }
 
-    public DatabaseAdapter initCoreDataBase(String dbName, int databaseVersion, String testPath, String databaseSqlVersion){
-        if(databaseAdapter == null){
-            dbOpenHelper = new DbOpenHelper(
-                    InstrumentationRegistry.getTargetContext().getApplicationContext()
-                    , dbName, databaseVersion, testPath, databaseSqlVersion);
-            databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-            databaseInMemory = ((SqLiteDatabaseAdapter)databaseAdapter).database();
-        }else if(dbName==null){
-            if(databaseInMemory.getVersion()<databaseVersion){
-                dbOpenHelper.onUpgrade(databaseInMemory, databaseInMemory.getVersion(), databaseVersion);
-                databaseInMemory.setVersion(databaseVersion);
-            } else if (databaseInMemory.getVersion()>databaseVersion) {
-                dbOpenHelper.onDowngrade(databaseInMemory, databaseInMemory.getVersion(), databaseVersion);
-                databaseInMemory.setVersion(databaseVersion);
-            }
-        }
-        return databaseAdapter;
-    }
-
-    private void buildD2(DatabaseAdapter databaseAdapter) {
-        ConfigurationModel config = ConfigurationModel.builder()
-                .serverUrl(mockWebServer.url("/"))
-                .build();
-        d2 = new D2.Builder()
-                .configuration(config)
-                .okHttpClient(new OkHttpClient.Builder()
-                        .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter))
-                        .build())
-                .databaseAdapter(databaseAdapter).build();
-    }
-
     @Test
     public void have_user_table_after_first_migration() throws IOException {
         initCoreDataBase(dbName, 1, exampleMigrationsDir, databaseSqlVersion1);
@@ -126,8 +108,8 @@ public class DataBaseMigrationShould {
     }
 
     @Test
-    public void have_categoryCombo_columns_after_create_version_2() throws IOException {
-        buildD2(initCoreDataBase(dbName, 2, realMigrationDir, databaseSqlVersion2));
+    public void have_categoryCombo_columns_after_create_version_2_or_newer() throws IOException {
+        buildD2(initCoreDataBase(dbName, 4, realMigrationDir, databaseSqlVersion4));
         assertVersion2MigrationChanges(d2.databaseAdapter());
     }
     @Test
@@ -154,6 +136,121 @@ public class DataBaseMigrationShould {
     }
 
     @Test
+    public void have_database_version_3_after_migration_from_1() {
+        //given
+        final String finalEventScheme =
+                "CREATE TABLE Event (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL "
+                        + "UNIQUE,enrollment TEXT, created TEXT,lastUpdated TEXT,createdAtClient "
+                        + "TEXT,lastUpdatedAtClient TEXT,status TEXT,latitude TEXT,longitude "
+                        + "TEXT,program TEXT NOT NULL,programStage TEXT NOT NULL,organisationUnit"
+                        + " TEXT NOT NULL,eventDate TEXT,completedDate TEXT,dueDate TEXT,state "
+                        + "TEXT, attributeCategoryOptions TEXT, attributeOptionCombo TEXT, "
+                        + "trackedEntityInstance TEXT, FOREIGN KEY (program) REFERENCES Program "
+                        + "(uid) ON DELETE CASCADE, FOREIGN KEY (programStage) REFERENCES "
+                        + "ProgramStage (uid) ON DELETE CASCADE,FOREIGN KEY (enrollment) "
+                        + "REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY "
+                        + "DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit "
+                        + "(uid) ON DELETE CASCADE)";
+        final String finalTrackedEntityDataValueScheme =
+                "CREATE TABLE TrackedEntityDataValue (_id INTEGER PRIMARY KEY AUTOINCREMENT,event"
+                        + " TEXT NOT NULL,dataElement TEXT NOT NULL,storedBy TEXT,value TEXT,"
+                        + "created TEXT,lastUpdated TEXT,providedElsewhere INTEGER, FOREIGN KEY "
+                        + "(dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE,  FOREIGN"
+                        + " KEY (event) REFERENCES Event (uid) ON DELETE CASCADE)";
+        initCoreDataBase(dbName, 1, realMigrationDir, databaseSqlVersion1);
+        //when
+        initCoreDataBase(dbName, 3, realMigrationDir, "");
+
+        //then
+        assertTrue(getSqlTableScheme(databaseAdapter, "Event").equals(finalEventScheme));
+        assertTrue(getSqlTableScheme(databaseAdapter, "TrackedEntityDataValue").equals(
+                finalTrackedEntityDataValueScheme));
+    }
+
+    @Test
+    public void have_database_version_3_after_migration_from_2() {
+        //given
+        final String finalEventScheme =
+                "CREATE TABLE Event (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL "
+                        + "UNIQUE,enrollment TEXT, created TEXT,lastUpdated TEXT,createdAtClient "
+                        + "TEXT,lastUpdatedAtClient TEXT,status TEXT,latitude TEXT,longitude "
+                        + "TEXT,program TEXT NOT NULL,programStage TEXT NOT NULL,organisationUnit"
+                        + " TEXT NOT NULL,eventDate TEXT,completedDate TEXT,dueDate TEXT,state "
+                        + "TEXT, attributeCategoryOptions TEXT, attributeOptionCombo TEXT, "
+                        + "trackedEntityInstance TEXT, FOREIGN KEY (program) REFERENCES Program "
+                        + "(uid) ON DELETE CASCADE, FOREIGN KEY (programStage) REFERENCES "
+                        + "ProgramStage (uid) ON DELETE CASCADE,FOREIGN KEY (enrollment) "
+                        + "REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY "
+                        + "DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit "
+                        + "(uid) ON DELETE CASCADE)";
+        final String finalTrackedEntityDataValueScheme =
+                "CREATE TABLE TrackedEntityDataValue (_id INTEGER PRIMARY KEY AUTOINCREMENT,event"
+                        + " TEXT NOT NULL,dataElement TEXT NOT NULL,storedBy TEXT,value TEXT,"
+                        + "created TEXT,lastUpdated TEXT,providedElsewhere INTEGER, FOREIGN KEY "
+                        + "(dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE,  FOREIGN"
+                        + " KEY (event) REFERENCES Event (uid) ON DELETE CASCADE)";
+        initCoreDataBase(dbName, 2, realMigrationDir, databaseSqlVersion2);
+        //when
+        initCoreDataBase(dbName, 3, realMigrationDir, "");
+        //then
+        assertTrue(getSqlTableScheme(databaseAdapter, "Event").equals(finalEventScheme));
+        assertTrue(getSqlTableScheme(databaseAdapter, "TrackedEntityDataValue").equals(
+                finalTrackedEntityDataValueScheme));
+    }
+
+    @Test
+    public void have_database_version_3_after_migration_from_database_with_content()
+            throws IOException {
+        //given
+        final String finalEventScheme =
+                "CREATE TABLE Event (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL "
+                        + "UNIQUE,enrollment TEXT, created TEXT,lastUpdated TEXT,createdAtClient "
+                        + "TEXT,lastUpdatedAtClient TEXT,status TEXT,latitude TEXT,longitude "
+                        + "TEXT,program TEXT NOT NULL,programStage TEXT NOT NULL,organisationUnit"
+                        + " TEXT NOT NULL,eventDate TEXT,completedDate TEXT,dueDate TEXT,state "
+                        + "TEXT, attributeCategoryOptions TEXT, attributeOptionCombo TEXT, "
+                        + "trackedEntityInstance TEXT, FOREIGN KEY (program) REFERENCES Program "
+                        + "(uid) ON DELETE CASCADE, FOREIGN KEY (programStage) REFERENCES "
+                        + "ProgramStage (uid) ON DELETE CASCADE,FOREIGN KEY (enrollment) "
+                        + "REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY "
+                        + "DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit "
+                        + "(uid) ON DELETE CASCADE)";
+        final String finalTrackedEntityDataValueScheme =
+                "CREATE TABLE TrackedEntityDataValue (_id INTEGER PRIMARY KEY AUTOINCREMENT,event"
+                        + " TEXT NOT NULL,dataElement TEXT NOT NULL,storedBy TEXT,value TEXT,"
+                        + "created TEXT,lastUpdated TEXT,providedElsewhere INTEGER, FOREIGN KEY "
+                        + "(dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE,  FOREIGN"
+                        + " KEY (event) REFERENCES Event (uid) ON DELETE CASCADE)";
+        initCoreDataBase(dbName, 2, realMigrationDir, databaseSqlVersion2_with_data);
+        EventStore eventStore = new EventStoreImpl(databaseAdapter);
+        List<Event> eventList = eventStore.queryAll();
+        TrackedEntityDataValueStore trackedEntityDataValueStore =
+                new TrackedEntityDataValueStoreImpl(databaseAdapter);
+        Map<String, List<TrackedEntityDataValue>> listOfTrackedEntityDataValues =
+                trackedEntityDataValueStore.queryTrackedEntityDataValues();
+
+        //when
+        initCoreDataBase(dbName, 3, realMigrationDir, "");
+        eventStore = new EventStoreImpl(databaseAdapter);
+        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter);
+
+        //then
+        assertTrue(eventList.equals(eventStore.queryAll()));
+        assertTrue(eventList.size() == 50);
+
+        assertTrue(listOfTrackedEntityDataValues.equals(
+                trackedEntityDataValueStore.queryTrackedEntityDataValues()));
+        assertTrue(listOfTrackedEntityDataValues.size() == 50);
+        assertTrue(listOfTrackedEntityDataValues.get(eventList.get(0).uid()).equals(
+                listOfTrackedEntityDataValues.get(eventList.get(0).uid())));
+
+        assertTrue(getSqlTableScheme(databaseAdapter, "Event").equals(finalEventScheme));
+        assertTrue(getSqlTableScheme(databaseAdapter, "TrackedEntityDataValue").equals(
+                finalTrackedEntityDataValueScheme));
+
+    }
+
+    @Test
     public void not_have_category_table_after_downgrade_with_database_version_2() throws IOException {
         initCoreDataBase(dbName, 2, realMigrationDir, databaseSqlVersion2);
         initCoreDataBase(dbName, 1, realMigrationDir, "");
@@ -167,7 +264,8 @@ public class DataBaseMigrationShould {
     }
 
     @Test
-    public void not_have_category_table_after_downgrade_with_real_sql_database() throws IOException {
+    public void not_have_category_table_after_downgrade_with_real_sql_database() throws
+            IOException {
         initCoreDataBase(dbName, 2, realMigrationDir, "");
         initCoreDataBase(dbName, 1, realMigrationDir, "");
         //TODO remove Category and CategoryOption tables in 2.yaml drop migration
@@ -188,6 +286,40 @@ public class DataBaseMigrationShould {
         assertThat(ifTableExist("TestTable", databaseAdapter), is(false));
     }
 
+    public DatabaseAdapter initCoreDataBase(String dbName, int databaseVersion, String testPath,
+            String databaseSqlVersion) {
+        if (databaseAdapter == null) {
+            dbOpenHelper = new DbOpenHelper(
+                    InstrumentationRegistry.getTargetContext().getApplicationContext()
+                    , dbName, databaseVersion, testPath, databaseSqlVersion);
+            databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+            databaseInMemory = ((SqLiteDatabaseAdapter) databaseAdapter).database();
+        } else if (dbName == null) {
+            if (databaseInMemory.getVersion() < databaseVersion) {
+                dbOpenHelper.onUpgrade(databaseInMemory, databaseInMemory.getVersion(),
+                        databaseVersion);
+                databaseInMemory.setVersion(databaseVersion);
+            } else if (databaseInMemory.getVersion() > databaseVersion) {
+                dbOpenHelper.onDowngrade(databaseInMemory, databaseInMemory.getVersion(),
+                        databaseVersion);
+                databaseInMemory.setVersion(databaseVersion);
+            }
+        }
+        return databaseAdapter;
+    }
+
+    private void buildD2(DatabaseAdapter databaseAdapter) {
+        ConfigurationModel config = ConfigurationModel.builder()
+                .serverUrl(mockWebServer.url("/"))
+                .build();
+        d2 = new D2.Builder()
+                .configuration(config)
+                .okHttpClient(new OkHttpClient.Builder()
+                        .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter))
+                        .build())
+                .databaseAdapter(databaseAdapter).build();
+    }
+
     private void assertVersion2MigrationChanges(DatabaseAdapter databaseAdapter) {
         assertThat(ifTableExist(CategoryModel.TABLE, databaseAdapter), is(true));
         assertThat(ifTableExist(CategoryComboModel.TABLE, databaseAdapter), is(true));
@@ -201,4 +333,16 @@ public class DataBaseMigrationShould {
         assertThat(isFieldExist(EventModel.TABLE, EventModel.Columns.ATTRIBUTE_OPTION_COMBO, databaseAdapter), is(true));
         assertThat(isFieldExist(EventModel.TABLE, EventModel.Columns.TRACKED_ENTITY_INSTANCE, databaseAdapter), is(true));
     }
+
+
+    private String getSqlTableScheme(DatabaseAdapter databaseAdapter, String table) {
+        String scheme;
+        Cursor cursor = databaseAdapter.query(
+                "SELECT sql FROM sqlite_master WHERE type='table' and name='" + table + "';");
+        cursor.moveToFirst();
+        scheme = cursor.getString(0);
+        cursor.close();
+        return scheme;
+    }
+
 }

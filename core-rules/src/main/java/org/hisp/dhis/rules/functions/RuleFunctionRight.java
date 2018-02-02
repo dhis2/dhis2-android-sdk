@@ -33,7 +33,7 @@ final class RuleFunctionRight extends RuleFunction {
      * Return a substring of the end of a string up to a given length.
      *
      * @param inputString input value.
-     * @param length of the substring.
+     * @param length      of the substring.
      * @return the right substring.
      */
     private static String right(String inputString, int length) {

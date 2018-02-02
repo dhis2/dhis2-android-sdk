@@ -38,9 +38,11 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface DataValueService {
-    @GET("dataValues")
+    @GET("dataValueSets")
     Call<Payload<DataValue>> getDataValues(@Query("fields") @Which Fields<DataValue> fields,
                                            @Query("filter") @Where Filter<DataValue, String> lastUpdated,
-                                           @Query("filter") @Where Filter<DataValue, String> uids,
+                                           @Query("dataSet") @Where Filter<DataValue, String> dataSetUids,
+                                           @Query("period") @Where Filter<DataValue, String> periodIds,
+                                           @Query("orgUnit") @Where Filter<DataValue, String> orgUnitUids,
                                            @Query("paging") Boolean paging);
 }

@@ -4,10 +4,15 @@ import com.google.auto.value.AutoValue;
 
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 @AutoValue
 public abstract class UidsQuery extends BaseQuery {
+
+    @Nullable
     public abstract Set<String> uids();
 
+    @Nullable
     abstract Integer limit();
 
     @Override

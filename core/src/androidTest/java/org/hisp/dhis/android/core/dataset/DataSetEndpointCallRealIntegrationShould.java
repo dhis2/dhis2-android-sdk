@@ -46,7 +46,7 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
         uids.add("Lpw6GcnTrmS");
         uids.add("TuL8IOPzpHh");
 
-        return DataSetEndpointCall.create(data, uids);
+        return DataSetEndpointCall.FACTORY.create(data, uids);
     }
 
     // @Test

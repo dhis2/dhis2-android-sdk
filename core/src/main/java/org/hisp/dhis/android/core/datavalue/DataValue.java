@@ -54,18 +54,22 @@ public abstract class DataValue {
     private static final String FOLLOW_UP = "followUp";
     private static final String DELETED = "deleted";
 
+    private static final String DATA_SET = "dataSet";
+
     private static final Field<DataValue, String> dataElement = Field.create(DATA_ELEMENT);
-    private static final Field<DataValue, String> period = Field.create(PERIOD);
-    private static final Field<DataValue, String> organisationUnit = Field.create(ORGANISATION_UNIT);
+    static final Field<DataValue, String> period = Field.create(PERIOD);
+    static final Field<DataValue, String> organisationUnit = Field.create(ORGANISATION_UNIT);
     private static final Field<DataValue, String> categoryOptionCombo = Field.create(CATEGORY_OPTION_COMBO);
     private static final Field<DataValue, String> attributeOptionCombo = Field.create(ATTRIBUTE_OPTION_COMBO);
     private static final Field<DataValue, String> value = Field.create(VALUE);
     private static final Field<DataValue, String> storedBy = Field.create(STORED_BY);
     private static final Field<DataValue, String> created = Field.create(CREATED);
-    private static final Field<DataValue, String> lastUpdated = Field.create(LAST_UPDATED);
+    static final Field<DataValue, String> lastUpdated = Field.create(LAST_UPDATED);
     private static final Field<DataValue, String> comment = Field.create(COMMENT);
     private static final Field<DataValue, String> followUp = Field.create(FOLLOW_UP);
     private static final Field<DataValue, Boolean> deleted = Field.create(DELETED);
+
+    static final Field<DataValue, String> dataSet = Field.create(DATA_SET);
 
     static final Fields<DataValue> allFields = Fields.<DataValue>builder().fields(
             dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo,

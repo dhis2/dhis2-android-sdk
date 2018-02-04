@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.trackedentity;
 
 import com.google.auto.value.AutoValue;
 
@@ -8,19 +8,20 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @AutoValue
-public abstract class ProgramQuery extends BaseQuery {
+public abstract class TrackedEntityQuery extends BaseQuery {
 
     public abstract Set<String> uids();
 
-    public static ProgramQuery.Builder builder() {
-        return new AutoValue_ProgramQuery.Builder();
+
+    public static TrackedEntityQuery.Builder builder() {
+        return new AutoValue_TrackedEntityQuery.Builder();
     }
 
-    public static ProgramQuery defaultQuery() {
+    public static TrackedEntityQuery defaultQuery() {
         return defaultQueryBuilder().build();
     }
 
-    public static ProgramQuery defaultQuery(Set<String> uids, boolean isTranslationOn,
+    public static TrackedEntityQuery defaultQuery(Set<String> uids,boolean isTranslationOn,
             String translationLocale) {
 
         return defaultQueryBuilder()
@@ -41,11 +42,11 @@ public abstract class ProgramQuery extends BaseQuery {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseQuery.Builder<ProgramQuery.Builder> {
+    public static abstract class Builder extends BaseQuery.Builder<TrackedEntityQuery.Builder> {
 
         public abstract Builder uids(Set<String> uids);
 
-        public abstract ProgramQuery build();
+        public abstract TrackedEntityQuery build();
     }
 
 }

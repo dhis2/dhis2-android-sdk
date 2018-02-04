@@ -68,7 +68,6 @@ import org.mockito.MockitoAnnotations;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 
 import okhttp3.Headers;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -129,6 +128,7 @@ public class TrackedEntityCallUnitShould {
     private Dhis2MockServer dhis2MockServer;
 
     private Retrofit retrofit;
+    private TrackedEntityQuery trackedEntityQuery;
 
     @Before
     public void setUp() throws IOException {
@@ -148,9 +148,12 @@ public class TrackedEntityCallUnitShould {
         when(trackedEntity.description()).thenReturn("description");
         when(trackedEntity.displayDescription()).thenReturn("display_description");
 
-        call = new TrackedEntityCall(Sets.newLinkedHashSet(trackedEntity.uid()), database,
-                trackedEntityStore, resourceStore, service, serverDate, DEFAULT_IS_TRANSLATION_ON,
+        trackedEntityQuery = TrackedEntityQuery.defaultQuery(
+                Sets.newLinkedHashSet(trackedEntity.uid()), DEFAULT_IS_TRANSLATION_ON,
                 DEFAULT_TRANSLATION_LOCALE);
+
+        call = new TrackedEntityCall(database, trackedEntityStore, resourceStore, service,
+                serverDate, trackedEntityQuery);
 
         when(database.beginNewTransaction()).thenReturn(transaction);
         when(service.trackedEntities(
@@ -252,9 +255,8 @@ public class TrackedEntityCallUnitShould {
     @Test
     @SuppressWarnings("unchecked")
     public void not_fail_on_empty_input() throws IOException {
-        TrackedEntityCall call = new TrackedEntityCall(new HashSet<String>(), database,
-                trackedEntityStore, resourceStore, service, serverDate, DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
+        TrackedEntityCall call = new TrackedEntityCall(database,
+                trackedEntityStore, resourceStore, service, serverDate, trackedEntityQuery);
         when(service.trackedEntities(
                 fieldsCaptor.capture(),
                 idFilterCaptor.capture(),
@@ -330,10 +332,8 @@ public class TrackedEntityCallUnitShould {
         TrackedEntityService mockService = retrofit.create(TrackedEntityService.class);
 
         TrackedEntityCall callWithMockWebservice = new TrackedEntityCall(
-                Sets.newLinkedHashSet(trackedEntity.uid()), database,
-                trackedEntityStore, resourceStore, mockService, serverDate,
-                DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
+                database, trackedEntityStore, resourceStore, mockService, serverDate,
+                trackedEntityQuery);
 
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
         callWithMockWebservice.call();

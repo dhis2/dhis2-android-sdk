@@ -137,9 +137,12 @@ public class TrackedEntityCallMockIntegrationShould extends AbsStoreTestCase {
         TrackedEntityStore trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
-        trackedEntityCall = new TrackedEntityCall(
-                uids, databaseAdapter(), trackedEntityStore, resourceStore, service, new Date()
-                ,DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE
+        TrackedEntityQuery trackedEntityQuery = TrackedEntityQuery.defaultQuery(
+                uids, DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+
+        trackedEntityCall = new TrackedEntityCall(databaseAdapter(), trackedEntityStore,
+                resourceStore, service, new Date()
+                , trackedEntityQuery
         );
     }
 
@@ -148,18 +151,22 @@ public class TrackedEntityCallMockIntegrationShould extends AbsStoreTestCase {
     public void have_valid_values_when_call() throws Exception {
         trackedEntityCall.call();
 
-        Cursor cursor = database().query(TrackedEntityModel.TABLE, PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(TrackedEntityModel.TABLE, PROJECTION, null, null, null,
+                null, null);
       /*  Cursor resourceCursor = database().query(ResourceModel.TABLE,
                 RESOURCE_PROJECTION, null, null, null, null, null);
 */
-        assertThatCursor(cursor).hasRow("kIeke8tAQnd", null, "Lab sample", "Lab sample", "2014-04-14T13:54:54.497",
+        assertThatCursor(cursor).hasRow("kIeke8tAQnd", null, "Lab sample", "Lab sample",
+                "2014-04-14T13:54:54.497",
                 "2014-04-14T13:54:54.497", null, null, "Lab sample", "Lab sample");
 
-        assertThatCursor(cursor).hasRow("nEenWmSyUEp", null, "Person", "Person", "2014-08-20T12:28:56.409",
+        assertThatCursor(cursor).hasRow("nEenWmSyUEp", null, "Person", "Person",
+                "2014-08-20T12:28:56.409",
                 "2015-10-14T13:36:53.063", null, null, "Person", "Person").isExhausted();
 
         //TODO: make sure this date is correctly formated:
-        //assertThatCursor(resourceCursor).hasRow(OrganisationUnit.class.getSimpleName(), "2017-02-21T16:44:46.000");
+        //assertThatCursor(resourceCursor).hasRow(OrganisationUnit.class.getSimpleName(),
+        // "2017-02-21T16:44:46.000");
     }
 
     @After

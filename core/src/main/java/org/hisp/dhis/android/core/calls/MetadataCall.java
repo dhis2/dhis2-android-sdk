@@ -82,6 +82,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityQuery;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.core.user.User;
@@ -305,11 +306,11 @@ public class MetadataCall implements Call<Response> {
             }
 
             Set<String> programUids = getAssignedProgramUids(user);
-            ProgramQuery programQuery =  ProgramQuery.defaultQuery(programUids,isTranslationOn,
+            ProgramQuery programQuery = ProgramQuery.defaultQuery(programUids, isTranslationOn,
                     translationLocale);
 
             response = new ProgramCall(
-                    programService, databaseAdapter, resourceStore,  programStore,
+                    programService, databaseAdapter, resourceStore, programStore,
                     serverDate,
                     trackedEntityAttributeStore, programTrackedEntityAttributeStore,
                     programRuleVariableStore,
@@ -325,10 +326,13 @@ public class MetadataCall implements Call<Response> {
 
             List<Program> programs = ((Response<Payload<Program>>) response).body().items();
             Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
+            TrackedEntityQuery trackedEntityQuery = TrackedEntityQuery.defaultQuery(
+                    trackedEntityUids, isTranslationOn,
+                    translationLocale);
+
             response = new TrackedEntityCall(
-                    trackedEntityUids, databaseAdapter, trackedEntityStore,
-                    resourceStore, trackedEntityService, serverDate, isTranslationOn,
-                    translationLocale
+                    databaseAdapter, trackedEntityStore,
+                    resourceStore, trackedEntityService, serverDate, trackedEntityQuery
             ).call();
             if (!response.isSuccessful()) {
                 return response;

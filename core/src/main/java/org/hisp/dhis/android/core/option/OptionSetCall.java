@@ -56,27 +56,23 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     private final DatabaseAdapter databaseAdapter;
     private final ResourceStore resourceStore;
     private final Date serverDate;
-    private final Set<String> uids;
     private boolean isExecuted;
-    private final boolean isTranslationOn;
-    private final String translationLocale;
+    private OptionSetQuery query;
+
 
     public OptionSetCall(OptionSetService optionSetService,
             OptionSetStore optionSetStore,
             DatabaseAdapter databaseAdapter,
             ResourceStore resourceStore,
-            Set<String> uids,
-            Date serverDate, OptionStore optionStore, boolean isTranslationOn,
-            @NonNull String translationLocale) {
+            Date serverDate, OptionStore optionStore,
+            @NonNull OptionSetQuery query) {
         this.optionSetService = optionSetService;
         this.optionSetStore = optionSetStore;
         this.databaseAdapter = databaseAdapter;
         this.resourceStore = resourceStore;
-        this.uids = uids;
         this.serverDate = new Date(serverDate.getTime());
         this.optionStore = optionStore;
-        this.isTranslationOn = isTranslationOn;
-        this.translationLocale = translationLocale;
+        this.query = query;
     }
 
 
@@ -97,13 +93,13 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
             isExecuted = true;
         }
 
-        if (uids.size() > MAX_UIDS) {
+        if (query.uids().size() > MAX_UIDS) {
             throw new IllegalArgumentException(
-                    "Can't handle the amount of option sets: " + uids.size() + ". "
+                    "Can't handle the amount of option sets: " + query.uids().size() + ". "
                             + "Max size is: " + MAX_UIDS);
 
         }
-        Response<Payload<OptionSet>> response = getOptionSets(uids);
+        Response<Payload<OptionSet>> response = getOptionSets(query.uids());
 
         if (response != null && response.isSuccessful()) {
             saveOptionSets(response);
@@ -127,7 +123,7 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
         ).build();
 
         return optionSetService.optionSets(false, optionSetFields, OptionSet.uid.in(uids),
-                isTranslationOn, translationLocale).execute();
+                query.isTranslationOn(), query.translationLocale()).execute();
     }
 
     private void saveOptionSets(Response<Payload<OptionSet>> response) {

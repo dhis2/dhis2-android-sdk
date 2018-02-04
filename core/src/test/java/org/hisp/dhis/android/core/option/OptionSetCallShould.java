@@ -59,10 +59,11 @@ public class OptionSetCallShould {
 
         when(mockDatabase.beginNewTransaction()).thenReturn(mockTransaction);
 
+        OptionSetQuery optionSetQuery = OptionSetQuery.defaultQuery();
+
         optionSetCall = new OptionSetCall(mockService, mockOptionSetStore, mockDatabase,
-                mockResourceStore,
-                new TreeSet<String>(), new Date(), mockOptionStore, DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
+                mockResourceStore, new Date(), mockOptionStore, optionSetQuery
+        );
     }
 
     @After

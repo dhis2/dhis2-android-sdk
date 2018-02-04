@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSetCall;
+import org.hisp.dhis.android.core.option.OptionSetQuery;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionStore;
@@ -325,9 +326,14 @@ public class MetadataCall implements Call<Response> {
             }
 
             Set<String> optionSetUids = getAssignedOptionSetUids(programs);
+            OptionSetQuery optionSetQuery = OptionSetQuery.defaultQuery(optionSetUids,
+                    isTranslationOn, translationLocale);
+
+
             response = new OptionSetCall(
-                    optionSetService, optionSetStore, databaseAdapter, resourceStore,
-                    optionSetUids, serverDate, optionStore, isTranslationOn, translationLocale
+                    optionSetService, optionSetStore,
+                    databaseAdapter, resourceStore,
+                    serverDate, optionStore, optionSetQuery
             ).call();
             if (!response.isSuccessful()) {
                 return response;

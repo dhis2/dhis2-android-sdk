@@ -215,11 +215,11 @@ public class OptionSetCallMockIntegrationShould extends AbsStoreTestCase {
         Set<String> uids = new HashSet<>();
         uids.add("POc7DkGU3QU");
 
+        OptionSetQuery optionSetQuery = OptionSetQuery.defaultQuery();
 
         optionSetCall = new OptionSetCall(
-                optionSetService, optionSetStore, databaseAdapter(), resourceStore, uids,
-                new Date(),
-                optionStore, DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+                optionSetService, optionSetStore, databaseAdapter(), resourceStore,
+                new Date(),optionStore,optionSetQuery);
 
     }
 

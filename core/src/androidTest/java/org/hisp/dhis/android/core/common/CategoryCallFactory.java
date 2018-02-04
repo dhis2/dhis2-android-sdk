@@ -34,7 +34,7 @@ public class CategoryCallFactory {
 
         return new CategoryEndpointCall(categoryQuery,
                 categoryService, categoryResponseValidator, categoryHandler, resourceHandler,
-                databaseAdapter, new Date(), DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+                databaseAdapter, new Date());
 
     }
 }

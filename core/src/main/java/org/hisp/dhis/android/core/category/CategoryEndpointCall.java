@@ -26,16 +26,13 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
     private final DatabaseAdapter databaseAdapter;
     private final Date serverDate;
     private boolean isExecuted;
-    private final boolean isTranslationOn;
-    private final String translationLocale;
 
     public CategoryEndpointCall(CategoryQuery categoryQuery,
             CategoryService categoryService,
             ResponseValidator<Category> responseValidator,
             CategoryHandler handler,
             ResourceHandler resourceHandler,
-            DatabaseAdapter databaseAdapter, Date serverDate, boolean isTranslationOn,
-            @NonNull String translationLocale) {
+            DatabaseAdapter databaseAdapter, Date serverDate) {
         this.categoryQuery = categoryQuery;
         this.categoryService = categoryService;
         this.responseValidator = responseValidator;
@@ -43,8 +40,6 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
         this.resourceHandler = resourceHandler;
         this.databaseAdapter = databaseAdapter;
         this.serverDate = new Date(serverDate.getTime());
-        this.isTranslationOn = isTranslationOn;
-        this.translationLocale = translationLocale;
     }
 
 
@@ -62,8 +57,11 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
 
         Response<Payload<Category>> response = categoryService.getCategory(getFields(),
                 categoryQuery.paging(),
-                categoryQuery.page(), categoryQuery.pageSize(), isTranslationOn,
-                translationLocale).execute();
+                categoryQuery.page(),
+                categoryQuery.pageSize(),
+                categoryQuery.isTranslationOn(),
+                categoryQuery.translationLocale()
+        ).execute();
 
         if (responseValidator.isValid(response)) {
             List<Category> categories = response.body().items();

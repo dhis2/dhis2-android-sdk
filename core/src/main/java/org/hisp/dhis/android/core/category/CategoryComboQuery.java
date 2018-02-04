@@ -12,10 +12,25 @@ public abstract class CategoryComboQuery extends BaseQuery {
     }
 
     public static CategoryComboQuery defaultQuery() {
-        return CategoryComboQuery
-                .builder().paging(false).pageSize(
-                        CategoryComboQuery.DEFAULT_PAGE_SIZE)
-                .page(0).build();
+        return defaultQueryBuilder().build();
+    }
+
+    public static CategoryComboQuery defaultQuery(boolean isTranslationOn,
+            String translationLocale) {
+
+        return defaultQueryBuilder()
+                .isTranslationOn(isTranslationOn)
+                .translationLocale(translationLocale)
+                .build();
+    }
+
+    private static Builder defaultQueryBuilder() {
+        return builder()
+                .paging(false)
+                .pageSize(DEFAULT_PAGE_SIZE)
+                .isTranslationOn(DEFAULT_IS_TRANSLATION_ON)
+                .translationLocale(DEFAULT_TRANSLATION_LOCALE)
+                .page(0);
     }
 
     @AutoValue.Builder

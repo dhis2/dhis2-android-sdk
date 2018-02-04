@@ -57,9 +57,7 @@ public class CategoryEndpointCallShould {
 
         categoryEndpointCall = new CategoryEndpointCall(CategoryQuery.defaultQuery(),
                 mockService, new ResponseValidator<Category>(),
-                mockCategoryHandler, mockResourceHandler, mockDatabase, new Date(),
-                DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
+                mockCategoryHandler, mockResourceHandler, mockDatabase, new Date());
     }
 
     @After

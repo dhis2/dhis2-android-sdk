@@ -182,8 +182,8 @@ public final class D2 {
     private final CategoryComboService comboService;
 
     // Queries
-    private final CategoryQuery categoryQuery = CategoryQuery.defaultQuery();
-    private final CategoryComboQuery categoryComboQuery = CategoryComboQuery.defaultQuery();
+    private final CategoryQuery categoryQuery;
+    private final CategoryComboQuery categoryComboQuery;
 
     // stores
     private final UserStore userStore;
@@ -373,7 +373,16 @@ public final class D2 {
         categoryComboHandler = new CategoryComboHandler(categoryComboStore,
                 categoryComboOptionCategoryLinkStore,
                 categoryCategoryComboLinkStore, optionComboHandler);
+
+        categoryQuery = CategoryQuery
+                .defaultQuery(isTranslationOn,
+                translationLocale);
+
+        categoryComboQuery = CategoryComboQuery
+                .defaultQuery(isTranslationOn,
+                        translationLocale);
     }
+
 
     @NonNull
     public Retrofit retrofit() {

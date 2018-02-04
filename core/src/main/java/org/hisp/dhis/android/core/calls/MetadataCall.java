@@ -464,8 +464,7 @@ public class MetadataCall implements Call<Response> {
         ResponseValidator<Category> validator = new ResponseValidator<>();
         return new CategoryEndpointCall(categoryQuery, categoryService, validator,
                 categoryHandler,
-                new ResourceHandler(resourceStore), databaseAdapter, serverDate, isTranslationOn,
-                translationLocale).call();
+                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
     }
 
     private Response<Payload<CategoryCombo>> downloadCategoryCombos(Date serverDate)

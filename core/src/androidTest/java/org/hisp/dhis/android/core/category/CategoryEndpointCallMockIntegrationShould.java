@@ -77,8 +77,7 @@ public class CategoryEndpointCallMockIntegrationShould extends AbsStoreTestCase 
     }
 
     private CategoryEndpointCall provideCategoryEndpointCall() {
-        CategoryQuery query = CategoryQuery.builder().paging(true).pageSize(
-                CategoryQuery.DEFAULT_PAGE_SIZE).page(1).build();
+        CategoryQuery query = CategoryQuery.defaultQuery();
 
         ResponseValidator<Category> validator = new ResponseValidator<>();
 
@@ -99,8 +98,7 @@ public class CategoryEndpointCallMockIntegrationShould extends AbsStoreTestCase 
         Date serverDate = new Date();
 
         return new CategoryEndpointCall(query, categoryService, validator, handler, resourceHandler,
-                databaseAdapter(), serverDate, DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
+                databaseAdapter(), serverDate);
 
     }
 }

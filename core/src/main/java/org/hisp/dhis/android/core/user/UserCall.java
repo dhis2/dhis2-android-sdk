@@ -61,8 +61,7 @@ public final class UserCall implements Call<Response<User>> {
     // server date time
     private final Date serverDate;
     private boolean isExecuted;
-    private final boolean isTranslationOn;
-    private final String translationLocale;
+    private final UserQuery query;
 
     public UserCall(UserService userService,
             DatabaseAdapter databaseAdapter,
@@ -72,11 +71,8 @@ public final class UserCall implements Call<Response<User>> {
             ResourceStore resourceStore,
             Date serverDate,
             UserRoleProgramLinkStore userRoleProgramLinkStore,
-            boolean isTranslationOn,
-            @NonNull String translationLocale) {
+            @NonNull UserQuery query) {
 
-        this.isTranslationOn = isTranslationOn;
-        this.translationLocale = translationLocale;
         this.userService = userService;
         this.databaseAdapter = databaseAdapter;
         this.userCredentialsStore = userCredentialsStore;
@@ -85,6 +81,7 @@ public final class UserCall implements Call<Response<User>> {
         this.resourceStore = resourceStore;
         this.serverDate = new Date(serverDate.getTime());
         this.userRoleProgramLinkStore = userRoleProgramLinkStore;
+        this.query = query;
     }
 
     @Override
@@ -160,7 +157,8 @@ public final class UserCall implements Call<Response<User>> {
                 ),
                 User.teiSearchOrganisationUnits.with(OrganisationUnit.uid)
         ).build();
-        return userService.getUser(fields, isTranslationOn, translationLocale).execute();
+        return userService.getUser(fields, query.isTranslationOn(),
+                query.translationLocale()).execute();
     }
 
 }

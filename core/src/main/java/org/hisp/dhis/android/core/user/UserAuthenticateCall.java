@@ -64,8 +64,8 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     private final ResourceHandler resourceHandler;
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitHandler organisationUnitHandler;
-    private final boolean isTranslationOn;
-    private final String translationLocale;
+    private final UserQuery query;
+
 
     // username and password of candidate
     private final String username;
@@ -83,19 +83,17 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             @NonNull OrganisationUnitHandler organisationUnitHandler,
             @NonNull String username,
             @NonNull String password,
-            boolean isTranslationOn,
-            @NonNull String translationLocale) {
+            @NonNull UserQuery query) {
 
-        this.isTranslationOn = isTranslationOn;
-        this.translationLocale = translationLocale;
         this.userService = userService;
-
         this.databaseAdapter = databaseAdapter;
         this.userStore = userStore;
         this.userCredentialsHandler = userCredentialsHandler;
         this.resourceHandler = resourceHandler;
         this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitHandler = organisationUnitHandler;
+
+        this.query = query;
 
         // credentials
         this.username = username;
@@ -165,7 +163,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                         OrganisationUnit.level,
                         OrganisationUnit.parent.with(
                                 OrganisationUnit.uid))
-        ).build(), isTranslationOn, translationLocale).execute();
+        ).build(), query.isTranslationOn(), query.translationLocale()).execute();
     }
 
     private void saveUser(Response<User> response) throws Exception {

@@ -137,6 +137,7 @@ public class UserCallShould {
 
     private Dhis2MockServer dhis2MockServer;
     private Retrofit retrofit;
+    private UserQuery userQuery;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -145,11 +146,13 @@ public class UserCallShould {
 
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
         retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
+        userQuery = UserQuery.defaultQuery( DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
+
         userSyncCall = new UserCall(
                 userService, databaseAdapter,
                 userStore, userCredentialsStore, userRoleStore, resourceStore,
-                serverDate, userRoleProgramLinkStore,  DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE
+                serverDate, userRoleProgramLinkStore, userQuery
         );
 
         when(userCredentials.uid()).thenReturn("user_credentials_uid");
@@ -470,8 +473,7 @@ public class UserCallShould {
         return new UserCall(
                 mockUserService, databaseAdapter,
                 userStore, userCredentialsStore, userRoleStore, resourceStore,
-                serverDate, userRoleProgramLinkStore,  DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE
+                serverDate, userRoleProgramLinkStore,userQuery
         );
     }
 }

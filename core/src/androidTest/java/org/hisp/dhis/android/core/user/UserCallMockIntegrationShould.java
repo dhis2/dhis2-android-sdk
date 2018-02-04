@@ -94,6 +94,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     private MockWebServer mockWebServer;
     private UserCall userCall;
     private OrganisationUnitHandler organisationUnitHandler;
+    private UserQuery userQuery;
 
     @Override
     @Before
@@ -241,9 +242,12 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
                 organisationUnitStore, userOrganisationUnitStore, organisationUnitProgramLinkStore
         );
 
+        userQuery = UserQuery.defaultQuery( DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
+
         userCall = new UserCall(userService, databaseAdapter(),
                 userStore, userCredentialsStore, userRoleStore, resourceStore, new Date(),
-                userRoleProgramLinkStore, DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+                userRoleProgramLinkStore, userQuery);
 
         ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
         ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);

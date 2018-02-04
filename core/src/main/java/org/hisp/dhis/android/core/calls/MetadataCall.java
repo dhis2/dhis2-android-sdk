@@ -89,6 +89,7 @@ import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
+import org.hisp.dhis.android.core.user.UserQuery;
 import org.hisp.dhis.android.core.user.UserRole;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleStore;
@@ -267,6 +268,8 @@ public class MetadataCall implements Call<Response> {
             }
             SystemInfo systemInfo = (SystemInfo) response.body();
             Date serverDate = systemInfo.serverDate();
+            UserQuery userQuery = UserQuery.defaultQuery(isTranslationOn,
+                    translationLocale);
 
             response = new UserCall(
                     userService,
@@ -277,9 +280,9 @@ public class MetadataCall implements Call<Response> {
                     resourceStore,
                     serverDate,
                     userRoleProgramLinkStore,
-                    isTranslationOn,
-                    translationLocale
+                    userQuery
             ).call();
+
             if (!response.isSuccessful()) {
                 return response;
             }

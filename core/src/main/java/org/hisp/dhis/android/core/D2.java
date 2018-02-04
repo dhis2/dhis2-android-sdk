@@ -144,6 +144,7 @@ import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
+import org.hisp.dhis.android.core.user.UserQuery;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserRoleStore;
@@ -403,10 +404,11 @@ public final class D2 {
             throw new NullPointerException("password == null");
         }
 
+        UserQuery userQuery = UserQuery.defaultQuery(isTranslationOn,translationLocale);
         return new UserAuthenticateCall(userService, databaseAdapter, userStore,
                 userCredentialsHandler, resourceHandler,
                 authenticatedUserStore, organisationUnitHandler, username, password,
-                isTranslationOn, translationLocale
+                userQuery
         );
     }
 

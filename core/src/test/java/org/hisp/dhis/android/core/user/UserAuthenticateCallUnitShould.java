@@ -150,6 +150,7 @@ public class UserAuthenticateCallUnitShould {
 
     private Dhis2MockServer dhis2MockServer;
     private Retrofit retrofit;
+    private UserQuery userQuery;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -159,11 +160,14 @@ public class UserAuthenticateCallUnitShould {
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
         retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
 
+        userQuery = UserQuery.defaultQuery(DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
+
         userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userStore,
                 userCredentialsHandler, resourceHandler,
                 authenticatedUserStore,
                 organisationUnitHandler, "test_user_name", "test_user_password",
-                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+                userQuery);
 
         when(userCredentials.uid()).thenReturn("test_user_credentials_uid");
         when(userCredentials.code()).thenReturn("test_user_credentials_code");
@@ -394,7 +398,8 @@ public class UserAuthenticateCallUnitShould {
 
         verify(userCredentialsHandler, times(1)).handleUserCredentials(
                 userCredentials, user);
-        verify(organisationUnitHandler, never()).handleOrganisationUnits(anyListOf(OrganisationUnit.class),
+        verify(organisationUnitHandler, never()).handleOrganisationUnits(
+                anyListOf(OrganisationUnit.class),
                 any(OrganisationUnitModel.Scope.class), anyString());
     }
 
@@ -481,14 +486,13 @@ public class UserAuthenticateCallUnitShould {
     private UserAuthenticateCall provideUserAuthenticateCallWithMockWebservice() {
         UserService mockUserService = retrofit.create(UserService.class);
 
-
         return new UserAuthenticateCall(
                 mockUserService,
                 databaseAdapter, userStore,
                 userCredentialsHandler, resourceHandler,
                 authenticatedUserStore,
                 organisationUnitHandler, "test_user_name", "test_user_password",
-                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+                userQuery);
     }
 
 

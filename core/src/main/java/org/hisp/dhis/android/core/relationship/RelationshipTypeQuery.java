@@ -1,40 +1,25 @@
 package org.hisp.dhis.android.core.relationship;
 
-import java.util.HashSet;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseQuery;
 import java.util.Set;
 
-public class RelationshipTypeQuery {
+@AutoValue
+public abstract class RelationshipTypeQuery extends BaseQuery{
 
-    private final Set<String> uIds;
+    public abstract Set<String> uids();
 
-
-    public RelationshipTypeQuery(Set<String> uIds) {
-        this.uIds = uIds;
+    public static RelationshipTypeQuery.Builder builder() {
+        return new AutoValue_RelationshipTypeQuery.Builder();
     }
 
-    public Set<String> getUIds() {
-        return uIds;
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseQuery.Builder<RelationshipTypeQuery.Builder> {
+
+        public abstract Builder uids(Set<String> uids);
+
+        public abstract RelationshipTypeQuery build();
     }
-
-    public static class Builder {
-        private Set<String> uIds=new HashSet<>();
-
-        private Builder() {
-        }
-
-        public static Builder create() {
-            return new Builder();
-        }
-
-        public Builder withUIds(Set<String> uIds){
-            this.uIds=uIds;
-            return this;
-        }
-
-        public RelationshipTypeQuery build(){
-            return new RelationshipTypeQuery(uIds);
-        }
-    }
-
 
 }

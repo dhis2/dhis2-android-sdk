@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core.relationship;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
 
 import android.support.test.filters.MediumTest;
 
@@ -43,7 +45,8 @@ public class RelationshipTypeEnPointCallMockIntegrationShould extends AbsStoreTe
 
         relationshipTypeFactory = new RelationshipTypeFactory(
                 d2.retrofit(), databaseAdapter(),
-                HandlerFactory.createResourceHandler(databaseAdapter()));
+                HandlerFactory.createResourceHandler(databaseAdapter()),
+                DEFAULT_IS_TRANSLATION_ON,DEFAULT_TRANSLATION_LOCALE);
     }
 
     @Override
@@ -60,7 +63,8 @@ public class RelationshipTypeEnPointCallMockIntegrationShould extends AbsStoreTe
 
         RelationshipTypeFactory relationshipTypeFactory = new RelationshipTypeFactory(
                 d2.retrofit(), databaseAdapter(),
-                HandlerFactory.createResourceHandler(databaseAdapter()));
+                HandlerFactory.createResourceHandler(databaseAdapter()),
+                DEFAULT_IS_TRANSLATION_ON,DEFAULT_TRANSLATION_LOCALE);
 
         dhis2MockServer.enqueueMockResponse(filename);
 

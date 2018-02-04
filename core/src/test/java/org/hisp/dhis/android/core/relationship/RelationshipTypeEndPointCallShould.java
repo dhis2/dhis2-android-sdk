@@ -4,6 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hisp.dhis.android.core.calls.Call.MAX_UIDS;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,7 +39,7 @@ public class RelationshipTypeEndPointCallShould {
 
     Dhis2MockServer dhis2MockServer;
     Retrofit retrofit;
-    
+
     @Before
     public void setUp() throws IOException {
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
@@ -86,7 +88,8 @@ public class RelationshipTypeEndPointCallShould {
             uIds.add("uid" + i);
         }
         RelationshipTypeFactory relationshipTypeFactory = new RelationshipTypeFactory(retrofit,
-                databaseAdapter, resourceHandler);
+                databaseAdapter, resourceHandler, DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
 
         return relationshipTypeFactory.newEndPointCall(uIds, new Date());
     }

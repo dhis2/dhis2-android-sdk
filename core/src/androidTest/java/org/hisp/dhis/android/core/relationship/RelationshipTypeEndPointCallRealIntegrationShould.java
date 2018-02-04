@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.relationship;
 
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
+
 import android.support.test.filters.LargeTest;
 
 import com.google.common.truth.Truth;
@@ -37,7 +40,8 @@ public class RelationshipTypeEndPointCallRealIntegrationShould extends AbsStoreT
 
         RelationshipTypeFactory relationshipTypeFactory = new RelationshipTypeFactory(
                 d2.retrofit(), databaseAdapter(),
-                HandlerFactory.createResourceHandler(databaseAdapter()));
+                HandlerFactory.createResourceHandler(databaseAdapter()),
+                DEFAULT_IS_TRANSLATION_ON,DEFAULT_TRANSLATION_LOCALE);
         response = relationshipTypeFactory.newEndPointCall(new HashSet<>(
                 Arrays.asList("V2kkHafqs8G", "o51cUNONthg")), new Date()).call();
         Truth.assertThat(response.isSuccessful()).isTrue();

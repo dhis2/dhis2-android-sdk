@@ -11,7 +11,7 @@ public interface CategoryCategoryOptionLinkStore extends DeletableStore {
 
     long insert(@NonNull CategoryCategoryOptionLinkModel element);
 
-    boolean delete(@NonNull CategoryCategoryOptionLinkModel element);
+    int delete(@NonNull CategoryCategoryOptionLinkModel element);
 
     boolean update(@NonNull CategoryCategoryOptionLinkModel oldCategoryCategoryOptionLinkModel,
             @NonNull CategoryCategoryOptionLinkModel newCategoryCategoryOptionLinkModel);

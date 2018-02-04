@@ -43,7 +43,7 @@ public class CategoryOptionComboHandlerShould {
         CategoryOptionCombo deletedComboOption = givenADeletedOptionCombo();
 
         handler.handle(deletedComboOption);
-        verify(mockStore).delete(deletedComboOption);
+        verify(mockStore).delete(deletedComboOption.uid());
     }
 
     @Test

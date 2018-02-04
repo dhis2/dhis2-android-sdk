@@ -60,7 +60,7 @@ public class CategoryComboHandlerShould {
         CategoryCombo deletedCombo = givenADeletedCategoryCombo();
 
         categoryComboHandler.handle(deletedCombo);
-        verify(mockComboStore).delete(deletedCombo);
+        verify(mockComboStore).delete(deletedCombo.uid());
     }
 
     @Test

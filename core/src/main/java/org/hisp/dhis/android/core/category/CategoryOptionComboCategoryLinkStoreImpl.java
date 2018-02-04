@@ -75,12 +75,15 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
     }
 
     @Override
-    public boolean delete(@NonNull CategoryOptionComboCategoryLinkModel element) {
+    public int delete(@NonNull CategoryOptionComboCategoryLinkModel element) {
         validate(element);
 
         bind(deleteStatement, element);
 
-        return execute(deleteStatement);
+        int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+
+        return rowsAffected;
     }
 
     @Override

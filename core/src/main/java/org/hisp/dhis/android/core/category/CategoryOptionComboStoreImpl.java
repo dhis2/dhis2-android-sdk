@@ -85,13 +85,16 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
     }
 
     @Override
-    public boolean delete(@NonNull CategoryOptionCombo entity) {
+    public int delete(@NonNull String uid) {
 
-        validate(entity);
+        isNull(uid);
 
-        bindForDelete(entity);
+        bindForDelete(uid);
 
-        return execute(deleteStatement);
+        int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryOptionComboModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+
+        return rowsAffected;
     }
 
     @Override
@@ -109,10 +112,10 @@ public class CategoryOptionComboStoreImpl implements CategoryOptionComboStore {
         isNull(optionCombo.uid());
     }
 
-    private void bindForDelete(@NonNull CategoryOptionCombo optionCombo) {
+    private void bindForDelete(@NonNull String uid) {
         final int uidIndex = 1;
 
-        sqLiteBind(deleteStatement, uidIndex, optionCombo.uid());
+        sqLiteBind(deleteStatement, uidIndex, uid);
     }
 
     private void bindUpdate(@NonNull CategoryOptionCombo oldOptionCombo,

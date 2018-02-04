@@ -10,7 +10,7 @@ import java.util.List;
 public interface CategoryCategoryComboLinkStore extends DeletableStore {
     long insert(@NonNull CategoryCategoryComboLinkModel element);
 
-    boolean delete(@NonNull CategoryCategoryComboLinkModel element);
+    int delete(@NonNull CategoryCategoryComboLinkModel element);
 
     boolean update(@NonNull CategoryCategoryComboLinkModel oldCategoryCategoryComboLinkMode,
             @NonNull CategoryCategoryComboLinkModel newCategoryCategoryComboLinkMode);

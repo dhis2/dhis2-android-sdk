@@ -116,7 +116,8 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
     }
 
     private void whenDeleteCategoryComboInserted() {
-        wasDeleted = store.delete(newCategoryCombo);
+        int numberOfRows = store.delete(newCategoryCombo.uid());
+        wasDeleted = numberOfRows >= 1;
     }
 
     private void thenAssertCategoryComboWasInserted() {

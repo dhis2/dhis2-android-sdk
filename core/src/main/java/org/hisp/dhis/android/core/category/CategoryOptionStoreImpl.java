@@ -75,13 +75,16 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
     }
 
     @Override
-    public boolean delete(@NonNull CategoryOption categoryOption) {
+    public int delete(@NonNull String uid) {
 
-        validate(categoryOption);
+        isNull(uid);
 
-        bindForDelete(categoryOption);
+        bindForDelete(uid);
 
-        return execute(deleteStatement);
+        int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+
+        return rowsAffected;
     }
 
     @Override
@@ -123,10 +126,10 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
         isNull(category.uid());
     }
 
-    private void bindForDelete(@NonNull CategoryOption option) {
+    private void bindForDelete(@NonNull String uid) {
         final int whereUidIndex = 1;
 
-        sqLiteBind(deleteStatement, whereUidIndex, option.uid());
+        sqLiteBind(deleteStatement, whereUidIndex, uid);
     }
 
     private void bindUpdate(@NonNull CategoryOption oldOption, @NonNull CategoryOption newOption) {

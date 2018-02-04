@@ -36,7 +36,7 @@ public class CategoryComboHandler {
     public void handle(CategoryCombo categoryCombo) {
 
         if (isDeleted(categoryCombo)) {
-            store.delete(categoryCombo);
+            store.delete(categoryCombo.uid());
         } else {
 
             boolean updated = store.update(categoryCombo, categoryCombo);

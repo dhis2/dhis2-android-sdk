@@ -10,7 +10,7 @@ import java.util.List;
 public interface CategoryOptionComboCategoryLinkStore extends DeletableStore {
     long insert(@NonNull CategoryOptionComboCategoryLinkModel element);
 
-    boolean delete(@NonNull CategoryOptionComboCategoryLinkModel element);
+    int delete(@NonNull CategoryOptionComboCategoryLinkModel element);
 
     boolean update(
             @NonNull CategoryOptionComboCategoryLinkModel oldCategoryOptionComboCategoryLinkModel,

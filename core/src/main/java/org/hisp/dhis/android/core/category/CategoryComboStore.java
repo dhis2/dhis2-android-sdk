@@ -13,7 +13,7 @@ public interface CategoryComboStore extends DeletableStore {
     boolean update(@NonNull CategoryCombo oldCategoryCombo,
             @NonNull CategoryCombo newCategoryCombo);
 
-    boolean delete(@NonNull CategoryCombo categoryCombo);
+    int delete(@NonNull String uid);
 
     List<CategoryCombo> queryAll();
 }

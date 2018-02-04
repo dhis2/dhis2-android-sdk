@@ -31,7 +31,7 @@ public class CategoryOptionHandlerShould {
         CategoryOption deletedOption = givenADeletedOption();
 
         categoryOptionHandler.handle(deletedOption);
-        verify(mockCategoryOptionStore).delete(deletedOption);
+        verify(mockCategoryOptionStore).delete(deletedOption.uid());
     }
 
     @Test

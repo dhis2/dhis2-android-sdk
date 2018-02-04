@@ -26,7 +26,7 @@ public abstract class CategoryComboQuery extends BaseQuery {
 
     private static Builder defaultQueryBuilder() {
         return builder()
-                .paging(false)
+                .isPaging(false)
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .isTranslationOn(DEFAULT_IS_TRANSLATION_ON)
                 .translationLocale(DEFAULT_TRANSLATION_LOCALE)

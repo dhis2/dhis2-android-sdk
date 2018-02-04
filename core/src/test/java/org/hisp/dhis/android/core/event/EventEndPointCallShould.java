@@ -136,8 +136,7 @@ public class EventEndPointCallShould {
                 .build();
 
         return new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
-                eventHandler, serverDate, eventQuery, DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
+                eventHandler, serverDate, eventQuery);
     }
 
     private EventEndPointCall givenAEventCallByPagination() {
@@ -152,8 +151,7 @@ public class EventEndPointCallShould {
 
 
         return new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
-                eventHandler, serverDate, eventQuery, DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
+                eventHandler, serverDate, eventQuery);
 
     }
 
@@ -166,6 +164,8 @@ public class EventEndPointCallShould {
                     .withPage(2)
                     .withPageSize(32)
                     .withPaging(true)
+                    .withTranslationLocale(DEFAULT_TRANSLATION_LOCALE)
+                    .withIsTranslationOn(DEFAULT_IS_TRANSLATION_ON)
                     .withCategoryComboAndCategoryOption(categoryCombo, categoryOption)
                     .build();
         } else {
@@ -173,6 +173,8 @@ public class EventEndPointCallShould {
                     .create()
                     .withPage(2)
                     .withPageSize(32)
+                    .withTranslationLocale(DEFAULT_TRANSLATION_LOCALE)
+                    .withIsTranslationOn(DEFAULT_IS_TRANSLATION_ON)
                     .withPaging(true)
                     .build();
         }
@@ -191,8 +193,7 @@ public class EventEndPointCallShould {
 
 
         return new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
-                eventHandler, serverDate, eventQuery, DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
+                eventHandler, serverDate, eventQuery);
     }
 
     private void thenAssertTranslationParametersAreIncluded() throws InterruptedException {

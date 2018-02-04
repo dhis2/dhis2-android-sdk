@@ -126,7 +126,7 @@ public class SingleDataCall implements Call<Response> {
         //TrackerPrograms: programType = WITH_REGISTRATION
         //Non TrackerPrograms: programType = WITHOUT_REGISTRATION
 
-        int pageSize = EventQuery.Builder.create().build().getPageSize();
+        int pageSize = EventQuery.Builder.create().build().pageSize();
 
         int numPages = (int) Math.ceil((double) eventLimitByOrgUnit / pageSize);
 
@@ -147,17 +147,18 @@ public class SingleDataCall implements Call<Response> {
                         .withOrgUnit(orgUnit.uid())
                         .withPage(page)
                         .withPageLimit(pageLimit)
+                        .withIsTranslationOn(isTranslationOn)
+                        .withTranslationLocale(translationLocale)
                         .build();
 
                 response = new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
-                        eventHandler, serverDate, eventQuery, isTranslationOn,
-                        translationLocale).call();
+                        eventHandler, serverDate, eventQuery).call();
 
                 if (!response.isSuccessful()) {
                     return response;
                 }
 
-                eventsDownloaded = eventsDownloaded + eventQuery.getPageSize();
+                eventsDownloaded = eventsDownloaded + eventQuery.pageSize();
             }
 
         }

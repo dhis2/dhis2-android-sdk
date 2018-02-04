@@ -56,7 +56,7 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
         validateIsNotTryingToExcuteAgain();
 
         Response<Payload<Category>> response = categoryService.getCategory(getFields(),
-                categoryQuery.paging(),
+                categoryQuery.isPaging(),
                 categoryQuery.page(),
                 categoryQuery.pageSize(),
                 categoryQuery.isTranslationOn(),

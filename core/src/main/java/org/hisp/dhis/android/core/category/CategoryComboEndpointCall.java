@@ -62,7 +62,7 @@ public class CategoryComboEndpointCall implements Call<Response<Payload<Category
 
         Response<Payload<CategoryCombo>> response = categoryComboService.getCategoryCombos(
                 getFields(),
-                query.paging(),
+                query.isPaging(),
                 query.page(), query.pageSize(), isTranslationOn, translationLocale)
                 .execute();
 

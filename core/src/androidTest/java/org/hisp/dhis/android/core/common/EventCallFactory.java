@@ -34,8 +34,7 @@ public class EventCallFactory {
 
         return new EventEndPointCall(eventService, databaseAdapter,
                 resourceHandler,
-                eventHandler, new Date(), eventQuery, DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
+                eventHandler, new Date(), eventQuery);
 
     }
 
@@ -68,8 +67,7 @@ public class EventCallFactory {
 
         return new EventEndPointCall(eventService, databaseAdapter,
                 resourceHandler,
-                eventHandler, new Date(), eventQuery, DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
+                eventHandler, new Date(), eventQuery);
 
     }
 }

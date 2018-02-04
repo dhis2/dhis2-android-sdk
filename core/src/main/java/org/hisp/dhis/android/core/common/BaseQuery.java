@@ -11,7 +11,7 @@ public abstract class BaseQuery {
 
     public abstract int pageSize();
 
-    public abstract boolean paging();
+    public abstract boolean isPaging();
 
     public abstract boolean isTranslationOn();
 
@@ -22,7 +22,7 @@ public abstract class BaseQuery {
 
         public abstract T pageSize(int pageSize);
 
-        public abstract T paging(boolean paging);
+        public abstract T isPaging(boolean paging);
 
         public abstract T isTranslationOn(boolean isTranslationOn);
 

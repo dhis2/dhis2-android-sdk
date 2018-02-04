@@ -31,7 +31,7 @@ public abstract class CategoryQuery extends BaseQuery {
 
     private static Builder defaultQueryBuilder() {
         return builder()
-                .paging(false)
+                .isPaging(false)
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .page(1)
                 .isTranslationOn(DEFAULT_IS_TRANSLATION_ON)

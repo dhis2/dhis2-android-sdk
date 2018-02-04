@@ -124,10 +124,12 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
         SystemInfoStore systemInfoStore = new SystemInfoStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
+        SystemInfoQuery systemInfoQuery = SystemInfoQuery.defaultQuery(DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
+
         systeminfoCall = new SystemInfoCall(
                 databaseAdapter(), systemInfoStore, systemInfoService, resourceStore,
-                DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE
+                systemInfoQuery
         );
     }
 

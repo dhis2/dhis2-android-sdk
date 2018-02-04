@@ -47,21 +47,18 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
     private final SystemInfoService systemInfoService;
     private final ResourceStore resourceStore;
     private boolean isExecuted;
-    private final boolean isTranslationOn;
-    private final String translationLocale;
+    private SystemInfoQuery query;
 
     public SystemInfoCall(DatabaseAdapter databaseAdapter,
             SystemInfoStore systemInfoStore,
             SystemInfoService systemInfoService,
-            ResourceStore resourceStore
-            , boolean isTranslationOn,
-            @NonNull String translationLocale) {
+            ResourceStore resourceStore, @NonNull SystemInfoQuery query) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoStore = systemInfoStore;
         this.systemInfoService = systemInfoService;
         this.resourceStore = resourceStore;
-        this.isTranslationOn = isTranslationOn;
-        this.translationLocale = translationLocale;
+        this.query = query;
+
     }
 
     @Override
@@ -86,7 +83,6 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
         if (response.isSuccessful()) {
             insertOrUpdateSystemInfo(response);
         }
-
 
         return response;
     }
@@ -119,7 +115,7 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
                         SystemInfo.version,
                         SystemInfo.contextPath
                 ).build(),
-                isTranslationOn, translationLocale
+                query.isTranslationOn(), query.translationLocale()
         ).execute();
     }
 }

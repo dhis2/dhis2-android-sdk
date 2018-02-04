@@ -14,6 +14,7 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoQuery;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 
@@ -88,12 +89,12 @@ public class SingleDataCall implements Call<Response> {
         Response response = null;
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-
+            SystemInfoQuery systemInfoQuery = SystemInfoQuery.defaultQuery(isTranslationOn,
+                    translationLocale);
             response = new SystemInfoCall(
                     databaseAdapter, systemInfoStore,
                     systemInfoService, resourceStore,
-                    isTranslationOn, translationLocale
-
+                    systemInfoQuery
             ).call();
 
             if (!response.isSuccessful()) {

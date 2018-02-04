@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoQuery;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -88,12 +89,15 @@ public class TrackerDataCall implements Call<Response> {
 
         if (!trackedEntityInstances.isEmpty()) {
             Transaction transaction = databaseAdapter.beginNewTransaction();
+            SystemInfoQuery systemInfoQuery = SystemInfoQuery.defaultQuery(isTranslationOn,
+                    translationLocale);
+
             try {
 
                 response = new SystemInfoCall(
                         databaseAdapter, systemInfoStore,
                         systemInfoService, resourceStore,
-                        isTranslationOn, translationLocale
+                        systemInfoQuery
                 ).call();
 
                 if (!response.isSuccessful()) {

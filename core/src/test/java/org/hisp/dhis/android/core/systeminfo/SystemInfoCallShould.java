@@ -108,6 +108,8 @@ public class SystemInfoCallShould {
 
     private Retrofit retrofit;
 
+    private SystemInfoQuery systemInfoQuery;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
@@ -115,9 +117,13 @@ public class SystemInfoCallShould {
         retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
 
         MockitoAnnotations.initMocks(this);
+
+        systemInfoQuery = SystemInfoQuery.defaultQuery(DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
+
         systemInfoSyncCall = new SystemInfoCall(
                 databaseAdapter, systemInfoStore, systemInfoService, resourceStore,
-                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE
+                systemInfoQuery
         );
 
         when(systemInfo.version()).thenReturn("test.version-SNAPSHOT");
@@ -281,7 +287,7 @@ public class SystemInfoCallShould {
 
         return new SystemInfoCall(
                 databaseAdapter, systemInfoStore, mockService, resourceStore,
-                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE
+                systemInfoQuery
         );
     }
 }

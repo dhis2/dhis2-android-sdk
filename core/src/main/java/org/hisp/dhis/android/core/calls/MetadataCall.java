@@ -54,6 +54,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.OrganizationUnitQuery;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramCall;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
@@ -279,10 +280,12 @@ public class MetadataCall implements Call<Response> {
             }
 
             User user = (User) response.body();
-            response = new OrganisationUnitCall(
-                    user, organisationUnitService, databaseAdapter, organisationUnitStore,
-                    resourceStore, serverDate, userOrganisationUnitLinkStore,
-                    organisationUnitProgramLinkStore, isTranslationOn, translationLocale).call();
+            OrganizationUnitQuery organizationUnitQuery = OrganizationUnitQuery.defaultQuery(user,
+                    isTranslationOn, translationLocale);
+
+            response = new OrganisationUnitCall(organisationUnitService, databaseAdapter,
+                    organisationUnitStore, resourceStore, serverDate, userOrganisationUnitLinkStore,
+                    organisationUnitProgramLinkStore, organizationUnitQuery).call();
             if (!response.isSuccessful()) {
                 return response;
             }

@@ -53,7 +53,6 @@ import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.f
 
 public class OrganisationUnitCall implements Call<Response<Payload<OrganisationUnit>>> {
 
-    private final User user;
     private final OrganisationUnitService organisationUnitService;
     private final DatabaseAdapter database;
     private final OrganisationUnitStore organisationUnitStore;
@@ -62,19 +61,16 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     private final ResourceStore resourceStore;
     private final Date serverDate;
     private boolean isExecuted;
-    private final boolean isTranslationOn;
-    private final String translationLocale;
+    private final OrganizationUnitQuery query;
 
-    public OrganisationUnitCall(@NonNull User user,
-            @NonNull OrganisationUnitService organisationUnitService,
+    public OrganisationUnitCall(@NonNull OrganisationUnitService organisationUnitService,
             @NonNull DatabaseAdapter database,
             @NonNull OrganisationUnitStore organisationUnitStore,
             @NonNull ResourceStore resourceStore,
             @NonNull Date serverDate,
             @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
-            boolean isTranslationOn, @NonNull String translationLocale) {
-        this.user = user;
+            @NonNull OrganizationUnitQuery query) {
         this.organisationUnitService = organisationUnitService;
         this.database = database;
         this.organisationUnitStore = organisationUnitStore;
@@ -82,8 +78,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         this.serverDate = new Date(serverDate.getTime());
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
-        this.isTranslationOn = isTranslationOn;
-        this.translationLocale = translationLocale;
+        this.query = query;
     }
 
     @Override
@@ -110,7 +105,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
 
         Transaction transaction = database.beginNewTransaction();
         try {
-            Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
+            Set<String> rootOrgUnitUids = findRoots(query.user().organisationUnits());
             Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
                     resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
             );
@@ -122,7 +117,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                     organisationUnitHandler.handleOrganisationUnits(
                             response.body().items(),
                             OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
-                            user.uid()
+                            query.user().uid()
                     );
                 } else {
                     break; //stop early unsuccessful:
@@ -155,6 +150,6 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                 OrganisationUnit.programs.with(Program.uid)
         ).build();
         return organisationUnitService.getOrganisationUnits(uid, fields, lastUpdatedFilter, true,
-                false, isTranslationOn, translationLocale).execute();
+                false, query.isTranslationOn(), query.translationLocale()).execute();
     }
 }

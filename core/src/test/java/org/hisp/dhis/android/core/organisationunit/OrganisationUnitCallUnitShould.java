@@ -153,6 +153,9 @@ public class OrganisationUnitCallUnitShould {
 
     private Retrofit retrofit;
 
+    private OrganizationUnitQuery organizationUnitQuery;
+
+
     @Before
     public void setUp() throws IOException {
 
@@ -202,14 +205,16 @@ public class OrganisationUnitCallUnitShould {
         when(user.phoneNumber()).thenReturn("user_phone_number");
         when(user.nationality()).thenReturn("user_nationality");
 
+        organizationUnitQuery = OrganizationUnitQuery.defaultQuery(user);
 
         when(database.beginNewTransaction()).thenReturn(transaction);
 
-        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
+
+        organisationUnitCall = new OrganisationUnitCall(organisationUnitService, database,
                 organisationUnitStore,
                 resourceStore,
                 serverDate, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore,
-                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+                organizationUnitQuery);
 
         //Return only one organisationUnit.
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
@@ -405,7 +410,8 @@ public class OrganisationUnitCallUnitShould {
     }
 
     private void whenCallOrganizationUnitCall() throws Exception {
-        OrganisationUnitCall callWithMockWebservice = provideOrganizationUnitCallWithMockWebservice();
+        OrganisationUnitCall callWithMockWebservice =
+                provideOrganizationUnitCallWithMockWebservice();
 
         dhis2MockServer.enqueueMockResponse("organisationUnits.json");
         callWithMockWebservice.call();
@@ -422,11 +428,8 @@ public class OrganisationUnitCallUnitShould {
     private OrganisationUnitCall provideOrganizationUnitCallWithMockWebservice() {
         OrganisationUnitService mockService = retrofit.create(OrganisationUnitService.class);
 
-        return new OrganisationUnitCall(user, mockService,
-                database,
-                organisationUnitStore,
-                resourceStore,
-                serverDate, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore,
-                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+        return new OrganisationUnitCall(mockService, database, organisationUnitStore,
+                resourceStore, serverDate, userOrganisationUnitLinkStore,
+                organisationUnitProgramLinkStore, organizationUnitQuery);
     }
 }

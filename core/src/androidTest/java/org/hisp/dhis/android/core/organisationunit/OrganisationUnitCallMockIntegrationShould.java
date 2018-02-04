@@ -292,6 +292,8 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 organisationUnits,
                 false);
 
+        OrganizationUnitQuery organizationUnitQuery = OrganizationUnitQuery.defaultQuery(user);
+
         ContentValues userContentValues = new ContentValues();
         userContentValues.put(UserModel.Columns.ID, "user_uid");
         database().insert(UserModel.TABLE, null, userContentValues);
@@ -333,11 +335,10 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         program8.put(ProgramModel.Columns.UID, "ur1Edk5Oe2n");
         database().insert(ProgramModel.TABLE, null, program8);
 
-        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
-                databaseAdapter(),
-                organisationUnitStore, resourceStore, new Date(), userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore, DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
+        organisationUnitCall = new OrganisationUnitCall(organisationUnitService,
+                databaseAdapter(), organisationUnitStore, resourceStore, new Date(),
+                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore,
+                organizationUnitQuery);
     }
 
     @Test

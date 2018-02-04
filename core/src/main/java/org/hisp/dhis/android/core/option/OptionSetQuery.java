@@ -32,7 +32,7 @@ public abstract class OptionSetQuery extends BaseQuery {
     }
 
     private static Builder defaultQueryBuilder() {
-        return builder().uids(new TreeSet<String>())
+        return builder()
                 .uids(new TreeSet<String>())
                 .page(0)
                 .pageSize(DEFAULT_PAGE_SIZE)

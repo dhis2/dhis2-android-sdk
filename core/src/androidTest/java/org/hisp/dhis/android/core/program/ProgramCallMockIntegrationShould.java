@@ -227,6 +227,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         Set<String> uids = new HashSet<>();
         uids.add("uid1");
         uids.add("uids2");
+        ProgramQuery programQuery = ProgramQuery.defaultQuery(uids,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, "nM3u9s5a52V");
         database().insert(CategoryComboModel.TABLE, null, categoryCombo);
@@ -239,15 +241,14 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
 
         programCall = new ProgramCall(
-                programService, databaseAdapter(), resourceStore, uids, programStore, new Date(),
+                programService, databaseAdapter(), resourceStore, programStore, new Date(),
                 trackedEntityAttributeStore, programTrackedEntityAttributeStore,
                 programRuleVariableStore,
                 programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
                 programRuleActionStore,
                 programRuleStore, optionStore, optionSetStore, dataElementStore,
                 programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore,
-                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE
+                programStageSectionStore, programStageStore, relationshipStore, programQuery
 
         );
     }

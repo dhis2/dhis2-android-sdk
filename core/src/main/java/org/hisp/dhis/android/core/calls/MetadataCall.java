@@ -58,6 +58,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganizationUnitQuery;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramCall;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
+import org.hisp.dhis.android.core.program.ProgramQuery;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
@@ -301,8 +302,11 @@ public class MetadataCall implements Call<Response> {
             }
 
             Set<String> programUids = getAssignedProgramUids(user);
+            ProgramQuery programQuery =  ProgramQuery.defaultQuery(programUids,isTranslationOn,
+                    translationLocale);
+
             response = new ProgramCall(
-                    programService, databaseAdapter, resourceStore, programUids, programStore,
+                    programService, databaseAdapter, resourceStore,  programStore,
                     serverDate,
                     trackedEntityAttributeStore, programTrackedEntityAttributeStore,
                     programRuleVariableStore,
@@ -310,8 +314,7 @@ public class MetadataCall implements Call<Response> {
                     programRuleActionStore,
                     programRuleStore, optionStore, optionSetStore, dataElementStore,
                     programStageDataElementStore,
-                    programStageSectionStore, programStageStore, relationshipStore, isTranslationOn,
-                    translationLocale
+                    programStageSectionStore, programStageStore, relationshipStore, programQuery
             ).call();
             if (!response.isSuccessful()) {
                 return response;

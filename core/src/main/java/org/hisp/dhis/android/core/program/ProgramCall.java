@@ -57,7 +57,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import retrofit2.Response;
 
@@ -69,16 +68,13 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
     private final ResourceStore resourceStore;
 
     private boolean isExecuted;
-    private final Set<String> uids;
     private final Date serverDate;
-    private final boolean isTranslationOn;
-    private final String translationLocale;
     private final ProgramHandler programHandler;
+    private final ProgramQuery query;
 
     public ProgramCall(ProgramService programService,
             DatabaseAdapter databaseAdapter,
             ResourceStore resourceStore,
-            Set<String> uids,
             ProgramStore programStore,
             Date serverDate,
             TrackedEntityAttributeStore trackedEntityAttributeStore,
@@ -95,15 +91,13 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
             ProgramStageDataElementStore programStageDataElementStore,
             ProgramStageSectionStore programStageSectionStore,
             ProgramStageStore programStageStore,
-            RelationshipTypeStore relationshipStore, boolean isTranslationOn,
-            @NonNull String translationLocale) {
+            RelationshipTypeStore relationshipStore,
+            @NonNull ProgramQuery query) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;
         this.resourceStore = resourceStore;
-        this.uids = uids;
         this.serverDate = new Date(serverDate.getTime());
-        this.isTranslationOn = isTranslationOn;
-        this.translationLocale = translationLocale;
+        this.query = query;
 
         //TODO: make this an argument to the constructor:
 
@@ -157,16 +151,17 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
             }
             isExecuted = true;
         }
-        if (uids.size() > MAX_UIDS) {
+        if (query.uids().size() > MAX_UIDS) {
             throw new IllegalArgumentException(
-                    "Can't handle the amount of programs: " + uids.size() + ". " +
+                    "Can't handle the amount of programs: " + query.uids().size() + ". " +
                             "Max size is: " + MAX_UIDS);
         }
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         String lastSyncedPrograms = resourceHandler.getLastUpdated(ResourceModel.Type.PROGRAM);
         Response<Payload<Program>> programsByLastUpdated = programService.getPrograms(
                 getFields(), Program.lastUpdated.gt(lastSyncedPrograms),
-                Program.uid.in(uids), Boolean.FALSE, isTranslationOn, translationLocale
+                Program.uid.in(query.uids()), Boolean.FALSE, query.isTranslationOn(),
+                query.translationLocale()
         ).execute();
         if (programsByLastUpdated.isSuccessful()) {
             Transaction transaction = databaseAdapter.beginNewTransaction();

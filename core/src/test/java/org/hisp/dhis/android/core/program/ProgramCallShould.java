@@ -187,6 +187,7 @@ public class ProgramCallShould {
     private Retrofit retrofit;
 
     private Set<String> uids = new HashSet<>();
+    private ProgramQuery programQuery;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -200,14 +201,17 @@ public class ProgramCallShould {
         uids.add("test_program_uid");
         uids.add("test_program1_uid");
 
+        programQuery = ProgramQuery.defaultQuery(uids,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+
         programSyncCall = new ProgramCall(programService, databaseAdapter,
-                resourceStore, uids, programStore, serverDate, trackedEntityAttributeStore,
+                resourceStore, programStore, serverDate, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore,
                 optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore,
-                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE
+                programStageSectionStore, programStageStore, relationshipStore, programQuery
+
         );
 
         when(program.uid()).thenReturn("test_program_uid");
@@ -227,7 +231,7 @@ public class ProgramCallShould {
 
 
         when(programService.getPrograms(any(Fields.class), any(Filter.class), any(Filter.class),
-                anyBoolean(),anyBoolean(),anyString())
+                anyBoolean(), anyBoolean(), anyString())
         ).thenReturn(programCall);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
@@ -246,7 +250,7 @@ public class ProgramCallShould {
 
         when(programService.getPrograms(
                 fieldsCaptor.capture(), lastUpdatedFilter.capture(), idInFilter.capture(),
-                anyBoolean(),anyBoolean(),anyString())
+                anyBoolean(), anyBoolean(), anyString())
         ).thenReturn(programCall);
 
 
@@ -664,17 +668,17 @@ public class ProgramCallShould {
                         + DEFAULT_TRANSLATION_LOCALE));
     }
 
-    private ProgramCall provideProgramCallWithMockWebservice(){
+    private ProgramCall provideProgramCallWithMockWebservice() {
         ProgramService mockService = retrofit.create(ProgramService.class);
 
         return new ProgramCall(mockService, databaseAdapter,
-                resourceStore, uids, programStore, serverDate, trackedEntityAttributeStore,
+                resourceStore,  programStore, serverDate, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore,
                 optionStore, optionSetStore, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore,
-                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE
+                programQuery
         );
     }
 }

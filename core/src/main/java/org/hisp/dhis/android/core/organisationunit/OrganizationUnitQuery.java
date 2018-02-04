@@ -32,7 +32,6 @@ public abstract class OrganizationUnitQuery extends BaseQuery {
 
     private static Builder defaultQueryBuilder() {
         return builder()
-                .user(null)
                 .page(0)
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .isPaging(false)

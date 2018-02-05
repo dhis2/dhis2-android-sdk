@@ -54,4 +54,8 @@ public class DataElementFactory {
     public DataElementStore getDataElementStore() {
         return dataElementStore;
     }
+
+    public DataElementHandler getDataElementHandler() {
+        return dataElementHandler;
+    }
 }

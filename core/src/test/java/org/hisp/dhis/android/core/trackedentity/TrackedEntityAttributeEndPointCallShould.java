@@ -34,16 +34,33 @@ public class TrackedEntityAttributeEndPointCallShould {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private Date serverDate;
-
-    @Mock
     private TrackedEntityAttributeHandler trackedEntityAttributeHandler;
 
     @Mock
     private ResourceHandler resourceHandler;
 
     Dhis2MockServer dhis2MockServer;
+    
     Retrofit retrofit;
+
+    @Before
+    public void setUp() throws IOException {
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(dhis2MockServer.getBaseEndpoint())
+                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
+                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
+                .build();
+
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        dhis2MockServer.shutdown();
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void throws_illegal_argument_exception_if_uids_size_exceeds_the_limit() {
@@ -67,29 +84,11 @@ public class TrackedEntityAttributeEndPointCallShould {
         trackedEntityAttributeEndPointCall.call();
     }
 
-
-    @Before
-    public void setUp() throws IOException {
-        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl(dhis2MockServer.getBaseEndpoint())
-                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
-                .addConverterFactory(FilterConverterFactory.create())
-                .addConverterFactory(FieldsConverterFactory.create())
-                .build();
-
-        MockitoAnnotations.initMocks(this);
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        dhis2MockServer.shutdown();
-    }
-
     private TrackedEntityAttributeEndPointCall givenATrackedEntityAttributeEndPointCallByUIds(
             int uidsSize) {
-        TrackedEntityAttributeService trackedEntityAttributeService=retrofit.create(TrackedEntityAttributeService.class);
+        TrackedEntityAttributeService trackedEntityAttributeService =
+                retrofit.create(TrackedEntityAttributeService.class);
+
         Set<String> uIds = new HashSet<>();
 
         for (int i = 0; i < uidsSize; i++) {

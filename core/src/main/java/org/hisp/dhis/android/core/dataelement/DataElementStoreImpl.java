@@ -33,7 +33,6 @@ import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -72,7 +71,7 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
                     DataElementModel.Columns.DIMENSION + ", " +
                     DataElementModel.Columns.DISPLAY_FORM_NAME + ", " +
                     DataElementModel.Columns.OPTION_SET + ", " +
-                    DataElementModel.Columns.CATEGORY_COMBO ;
+                    DataElementModel.Columns.CATEGORY_COMBO;
 
     private static final String INSERT_STATEMENT = "INSERT INTO "
             + DataElementModel.TABLE + " (" + FIELDS +") " +
@@ -268,18 +267,6 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
         String optionSet = getStringFromCursor(cursor, 18);
         String categoryCombo = getStringFromCursor(cursor, 19);
 
-        OptionSet simpleOptionSet = null;
-        if(simpleOptionSet!=null) {
-            OptionSet.create(optionSet, null, null, numberType, null,
-                    null, null, null, null, false);
-        }
-
-        CategoryCombo simpleCategoryCombo = null;
-
-        if(categoryCombo!=null) {
-            simpleCategoryCombo = CategoryCombo.builder().uid(categoryCombo).build();
-        }
-
         DataElement dataElement = DataElement.builder().uid(uid).code(code).name(name)
                 .displayName(displayName).displayName(displayName)
                 .created(created).lastUpdated(lastUpdated).shortName(shortName)
@@ -287,8 +274,28 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
                 .displayDescription(displayDescription).valueType(valueType)
                 .zeroIsSignificant(zeroIsSignificant).aggregationType(aggregationType)
                 .formName(formName).domainType(domainType).dimension(dimension)
-                .displayFormName(displayFormName).optionSet(simpleOptionSet)
-                .categoryCombo(simpleCategoryCombo).build();
+                .displayFormName(displayFormName)
+                .optionSet(getSimpleOptionSet(optionSet, numberType))
+                .categoryCombo(getSimpleCategoryCombo(categoryCombo))
+                .build();
         return dataElement;
+    }
+
+    private CategoryCombo getSimpleCategoryCombo(String categoryComboUId) {
+        CategoryCombo simplecategoryCombo = null;
+        if(categoryComboUId!=null) {
+            simplecategoryCombo = CategoryCombo.builder().uid(categoryComboUId).build();
+        }
+        return simplecategoryCombo;
+    }
+
+    private OptionSet getSimpleOptionSet(String optionSetUId, String numberType) {
+
+        OptionSet simpleOptionSet = null;
+        if(optionSetUId!=null) {
+            OptionSet.create(optionSetUId, null, null, numberType, null,
+                    null, null, null, null, false);
+        }
+        return simpleOptionSet;
     }
 }

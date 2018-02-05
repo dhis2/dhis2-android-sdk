@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.option.OptionSetCall;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
@@ -126,7 +126,6 @@ public class MetadataCall implements Call<Response> {
     private final ProgramRuleStore programRuleStore;
     private final OptionStore optionStore;
     private final OptionSetStore optionSetStore;
-    private final DataElementStore dataElementStore;
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
@@ -138,6 +137,7 @@ public class MetadataCall implements Call<Response> {
     private final CategoryComboService categoryComboService;
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
+    private final DataElementFactory dataElementFactory;
 
     private boolean isExecuted;
 
@@ -169,7 +169,6 @@ public class MetadataCall implements Call<Response> {
             @NonNull ProgramRuleStore programRuleStore,
             @NonNull OptionStore optionStore,
             @NonNull OptionSetStore optionSetStore,
-            @NonNull DataElementStore dataElementStore,
             @NonNull ProgramStageDataElementStore programStageDataElementStore,
             @NonNull ProgramStageSectionStore programStageSectionStore,
             @NonNull ProgramStageStore programStageStore,
@@ -181,7 +180,8 @@ public class MetadataCall implements Call<Response> {
             @NonNull CategoryHandler categoryHandler,
             @NonNull CategoryComboQuery categoryComboQuery,
             @NonNull CategoryComboService categoryComboService,
-            @NonNull CategoryComboHandler categoryComboHandler) {
+            @NonNull CategoryComboHandler categoryComboHandler,
+            @NonNull DataElementFactory dataElementFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -208,7 +208,6 @@ public class MetadataCall implements Call<Response> {
         this.programRuleStore = programRuleStore;
         this.optionStore = optionStore;
         this.optionSetStore = optionSetStore;
-        this.dataElementStore = dataElementStore;
         this.programStageDataElementStore = programStageDataElementStore;
         this.programStageSectionStore = programStageSectionStore;
         this.programStageStore = programStageStore;
@@ -221,6 +220,7 @@ public class MetadataCall implements Call<Response> {
         this.categoryComboQuery = categoryComboQuery;
         this.categoryComboService = categoryComboService;
         this.categoryComboHandler = categoryComboHandler;
+        this.dataElementFactory = dataElementFactory;
     }
 
     @Override
@@ -295,7 +295,8 @@ public class MetadataCall implements Call<Response> {
                     programRuleVariableStore,
                     programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
                     programRuleActionStore,
-                    programRuleStore, optionStore, optionSetStore, dataElementStore,
+                    programRuleStore, optionStore, optionSetStore,
+                    dataElementFactory.getDataElementStore(),
                     programStageDataElementStore,
                     programStageSectionStore, programStageStore, relationshipStore
             ).call();

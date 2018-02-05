@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.core.dataelement;
 
-import static org.hisp.dhis.android.core.calls.Call.MAX_UIDS;
-
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionHandler;
@@ -18,12 +16,11 @@ import java.util.List;
 
 import retrofit2.Retrofit;
 
-class DataElementFactory {
+public class DataElementFactory {
     private final DatabaseAdapter databaseAdapter;
     private final DataElementService dataElementService;
     private final ResourceHandler resourceHandler;
     private final DataElementStore dataElementStore;
-    private final OptionSetHandler optionSetHandler;
     private final DataElementHandler dataElementHandler;
     private final List<DeletableStore> deletableStores;
 
@@ -37,7 +34,7 @@ class DataElementFactory {
         OptionStore optionStore = new OptionStoreImpl(databaseAdapter);
         OptionHandler optionHandler = new OptionHandler(optionStore);
 
-        optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
+        OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
         this.dataElementHandler = new DataElementHandler(dataElementStore, optionSetHandler);
         deletableStores = new ArrayList<>();
         deletableStores.add(dataElementStore);
@@ -50,19 +47,11 @@ class DataElementFactory {
                 dataElementHandler, resourceHandler, databaseAdapter, serverDate);
     }
 
-    public DataElementStore getDataElementStore() {
-        return dataElementStore;
-    }
-
-    public OptionSetHandler getOptionSetHandler() {
-        return optionSetHandler;
-    }
-
-    public DataElementHandler getDataElementHandler() {
-        return dataElementHandler;
-    }
-
     public List<DeletableStore> getDeletableStores() {
         return deletableStores;
+    }
+
+    public DataElementStore getDataElementStore() {
+        return dataElementStore;
     }
 }

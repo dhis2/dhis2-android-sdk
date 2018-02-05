@@ -67,8 +67,7 @@ import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -205,7 +204,7 @@ public final class D2 {
     private final ProgramRuleStore programRuleStore;
     private final OptionStore optionStore;
     private final OptionSetStore optionSetStore;
-    private final DataElementStore dataElementStore;
+    private final DataElementFactory dataElementFactory;
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
@@ -295,8 +294,6 @@ public final class D2 {
                 new OptionStoreImpl(databaseAdapter);
         this.optionSetStore =
                 new OptionSetStoreImpl(databaseAdapter);
-        this.dataElementStore =
-                new DataElementStoreImpl(databaseAdapter);
         this.programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter);
         this.programStageSectionStore =
@@ -368,6 +365,11 @@ public final class D2 {
         categoryComboHandler = new CategoryComboHandler(categoryComboStore,
                 categoryComboOptionCategoryLinkStore,
                 categoryCategoryComboLinkStore, optionComboHandler);
+
+        //factories
+
+        this.dataElementFactory =
+                new DataElementFactory(retrofit, databaseAdapter, resourceHandler);
     }
 
     @NonNull
@@ -434,7 +436,7 @@ public final class D2 {
         deletableStoreList.add(programRuleStore);
         deletableStoreList.add(optionStore);
         deletableStoreList.add(optionSetStore);
-        deletableStoreList.add(dataElementStore);
+        deletableStoreList.addAll(dataElementFactory.getDeletableStores());
         deletableStoreList.add(programStageDataElementStore);
         deletableStoreList.add(programStageSectionStore);
         deletableStoreList.add(programStageStore);
@@ -469,12 +471,12 @@ public final class D2 {
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore, optionStore,
-                optionSetStore, dataElementStore, programStageDataElementStore,
+                optionSetStore, programStageDataElementStore,
                 programStageSectionStore,
                 programStageStore, relationshipStore, trackedEntityStore,
                 organisationUnitProgramLinkStore, categoryQuery,
                 categoryService, categoryHandler, categoryComboQuery, comboService,
-                categoryComboHandler);
+                categoryComboHandler, dataElementFactory);
     }
 
     @NonNull

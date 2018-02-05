@@ -13,7 +13,7 @@ public interface CategoryCategoryOptionLinkStore extends DeletableStore {
 
     int delete(@NonNull CategoryCategoryOptionLinkModel element);
 
-    boolean update(@NonNull CategoryCategoryOptionLinkModel oldCategoryCategoryOptionLinkModel,
+    int update(@NonNull CategoryCategoryOptionLinkModel oldCategoryCategoryOptionLinkModel,
             @NonNull CategoryCategoryOptionLinkModel newCategoryCategoryOptionLinkModel);
 
     List<CategoryCategoryOptionLinkModel> queryAll();

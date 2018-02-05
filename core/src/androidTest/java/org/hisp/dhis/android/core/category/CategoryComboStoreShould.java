@@ -21,11 +21,11 @@ import java.util.List;
 public class CategoryComboStoreShould extends AbsStoreTestCase {
 
     private static final String DEFAULT_CATEGORY_COMBO_UID = "DEFAULT_CATEGORY_COMBO_UID";
-    private static final String UPDATED_CATEGORY_COMBO_UID = "UPDATED_CATEGORY_COMBO_UID";
     private CategoryComboStore store;
     private CategoryCombo newCategoryCombo;
     private long lastInsertedId;
     private boolean wasDeleted;
+    private CategoryCombo updatedCategoryCombo;
 
     @Override
     @Before
@@ -134,16 +134,14 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
 
     private void thenAssertThatCategoryComboWasUpdated() {
         List<CategoryCombo> list = store.queryAll();
-        assertEquals(list.get(0).uid(), UPDATED_CATEGORY_COMBO_UID);
+        assertEquals(list.get(0), updatedCategoryCombo);
     }
 
     private void whenUpdateACategoryCombo() {
 
-        CategoryCombo updatedCategoryCombo = generateCategoryCombo(UPDATED_CATEGORY_COMBO_UID);
+         updatedCategoryCombo = generateCategoryCombo(DEFAULT_CATEGORY_COMBO_UID);
 
-        CategoryCombo oldCategoryCombo = newCategoryCombo;
-
-        store.update(oldCategoryCombo, updatedCategoryCombo);
+        store.update(updatedCategoryCombo);
     }
 
     private void whenDeleteAllCategoriesCombosFromDB() {

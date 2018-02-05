@@ -65,30 +65,24 @@ public class CategoryStoreImpl implements CategoryStore {
 
         bindForDelete(uid);
 
-        int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryModel.TABLE, deleteStatement);
-        deleteStatement.clearBindings();
-        return rowsAffected;
+        return execute(deleteStatement);
     }
 
     @Override
-    public boolean update(@NonNull Category newCategory) {
+    public int update(@NonNull Category newCategory) {
 
-        validateForUpdate(newCategory);
+        validate(newCategory);
 
         bindUpdate(newCategory);
 
         return execute(updateStatement);
     }
 
-    private boolean wasExecuted(int numberOfRows) {
-        return numberOfRows >= 1;
-    }
-
-    private boolean execute(@NonNull SQLiteStatement statement) {
+    private int execute(@NonNull SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryModel.TABLE, statement);
         statement.clearBindings();
 
-        return wasExecuted(rowsAffected);
+        return rowsAffected;
     }
 
     private long executeInsert() {
@@ -96,10 +90,6 @@ public class CategoryStoreImpl implements CategoryStore {
         insertStatement.clearBindings();
 
         return lastId;
-    }
-
-    private void validateForUpdate(@NonNull Category newCategory) {
-        isNull(newCategory.uid());
     }
 
     private void validate(@NonNull Category category) {

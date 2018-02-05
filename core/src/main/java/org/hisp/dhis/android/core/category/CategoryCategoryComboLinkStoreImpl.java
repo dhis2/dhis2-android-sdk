@@ -76,13 +76,11 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
 
         bind(deleteStatement, entity);
 
-        int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, deleteStatement);
-        deleteStatement.clearBindings();
-        return rowsAffected;
+        return execute(deleteStatement);
     }
 
     @Override
-    public boolean update(@NonNull CategoryCategoryComboLinkModel oldCategoryCategoryComboLinkMode,
+    public int update(@NonNull CategoryCategoryComboLinkModel oldCategoryCategoryComboLinkMode,
             @NonNull CategoryCategoryComboLinkModel newCategoryCategoryComboLinkMode) {
 
         validateForUpdate(oldCategoryCategoryComboLinkMode, newCategoryCategoryComboLinkMode);
@@ -152,15 +150,11 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
         return categoryCategoryComboLink;
     }
 
-    private boolean wasExecuted(int numberOfRows) {
-        return numberOfRows >= 1;
-    }
-
-    private boolean execute(SQLiteStatement statement) {
+    private int execute(SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, statement);
         statement.clearBindings();
 
-        return wasExecuted(rowsAffected);
+        return rowsAffected;
     }
 
     private void validateForUpdate(

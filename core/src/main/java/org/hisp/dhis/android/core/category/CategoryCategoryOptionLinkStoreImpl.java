@@ -77,14 +77,11 @@ public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOpti
 
         bind(deleteStatement, categoryOptionLinkModel);
 
-        int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, deleteStatement);
-        deleteStatement.clearBindings();
-
-        return rowsAffected;
+        return execute(deleteStatement);
     }
 
     @Override
-    public boolean update(
+    public int update(
             @NonNull CategoryCategoryOptionLinkModel oldCategoryCategoryOptionLinkModel,
             @NonNull CategoryCategoryOptionLinkModel newCategoryCategoryOptionLinkModel) {
 
@@ -136,15 +133,11 @@ public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOpti
         return lastId;
     }
 
-    private boolean wasExecuted(int numberOfRows) {
-        return numberOfRows >= 1;
-    }
-
-    private boolean execute(SQLiteStatement statement) {
+    private int execute(SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, statement);
         statement.clearBindings();
 
-        return wasExecuted(rowsAffected);
+        return rowsAffected;
     }
 
     private List<CategoryCategoryOptionLinkModel> mapFromCursor(

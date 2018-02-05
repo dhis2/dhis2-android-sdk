@@ -3,10 +3,8 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 public class CategoryComboMother {
@@ -20,7 +18,6 @@ public class CategoryComboMother {
                 .name("Births")
                 .displayName("Births")
                 .isDefault(false)
-                .categories(new ArrayList<Category>())
                 .build();
     }
 }

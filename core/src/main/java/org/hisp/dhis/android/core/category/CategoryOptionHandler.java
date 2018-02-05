@@ -20,7 +20,8 @@ public class CategoryOptionHandler {
             store.delete(categoryOption.uid());
         } else {
 
-            boolean updated = store.update(categoryOption, categoryOption);
+            int numberOfRows = store.update(categoryOption);
+            boolean updated = numberOfRows >= 1;
 
             if (!updated) {
                 store.insert(categoryOption);

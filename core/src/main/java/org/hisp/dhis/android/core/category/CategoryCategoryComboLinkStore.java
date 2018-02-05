@@ -12,7 +12,7 @@ public interface CategoryCategoryComboLinkStore extends DeletableStore {
 
     int delete(@NonNull CategoryCategoryComboLinkModel element);
 
-    boolean update(@NonNull CategoryCategoryComboLinkModel oldCategoryCategoryComboLinkMode,
+    int update(@NonNull CategoryCategoryComboLinkModel oldCategoryCategoryComboLinkMode,
             @NonNull CategoryCategoryComboLinkModel newCategoryCategoryComboLinkMode);
 
     List<CategoryCategoryComboLink> queryAll();

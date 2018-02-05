@@ -10,5 +10,5 @@ public interface CategoryStore extends DeletableStore {
 
     int delete(@NonNull String uid);
 
-    boolean update(@NonNull Category category);
+    int update(@NonNull Category category);
 }

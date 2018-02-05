@@ -20,7 +20,8 @@ public class CategoryOptionComboHandler {
             store.delete(entity.uid());
         } else {
 
-            boolean updated = store.update(entity, entity);
+            int rowsAffected = store.update(entity);
+            boolean updated =rowsAffected >= 1;
 
             if (!updated) {
                 store.insert(entity);

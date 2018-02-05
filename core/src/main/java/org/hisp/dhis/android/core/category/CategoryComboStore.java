@@ -10,8 +10,7 @@ import java.util.List;
 public interface CategoryComboStore extends DeletableStore {
     long insert(@NonNull CategoryCombo categoryCombo);
 
-    boolean update(@NonNull CategoryCombo oldCategoryCombo,
-            @NonNull CategoryCombo newCategoryCombo);
+    int update(@NonNull CategoryCombo oldCategoryCombo);
 
     int delete(@NonNull String uid);
 

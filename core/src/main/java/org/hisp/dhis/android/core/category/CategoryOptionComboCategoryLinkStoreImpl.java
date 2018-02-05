@@ -80,14 +80,11 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
 
         bind(deleteStatement, element);
 
-        int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, deleteStatement);
-        deleteStatement.clearBindings();
-
-        return rowsAffected;
+        return execute(deleteStatement);
     }
 
     @Override
-    public boolean update(
+    public int update(
             @NonNull CategoryOptionComboCategoryLinkModel oldCategoryOptionComboCategoryLinkModel,
             @NonNull CategoryOptionComboCategoryLinkModel newCategoryOptionComboCategoryLinkModel) {
 
@@ -128,15 +125,11 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
         return lastId;
     }
 
-    private boolean execute(SQLiteStatement statement) {
+    private int execute(SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, statement);
         statement.clearBindings();
 
-        return wasExecuted(rowsAffected);
-    }
-
-    private boolean wasExecuted(int numberOfRows) {
-        return numberOfRows >= 1;
+        return rowsAffected;
     }
 
     private List<CategoryOptionComboCategoryLinkModel>

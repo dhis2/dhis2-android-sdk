@@ -38,8 +38,8 @@ public class CategoryComboHandler {
         if (isDeleted(categoryCombo)) {
             store.delete(categoryCombo.uid());
         } else {
-
-            boolean updated = store.update(categoryCombo, categoryCombo);
+            int rowsAffected = store.update(categoryCombo);
+            boolean updated = rowsAffected >= 1;
 
             if (!updated) {
                 store.insert(categoryCombo);

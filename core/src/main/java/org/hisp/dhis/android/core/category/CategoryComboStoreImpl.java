@@ -83,29 +83,25 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
 
         bindForDelete(uid);
 
-        int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, deleteStatement);
-        deleteStatement.clearBindings();
-
-        return rowsAffected;
+        return execute(deleteStatement);
 
     }
 
     @Override
-    public boolean update(@NonNull CategoryCombo oldCombo,
-            @NonNull CategoryCombo newCombo) {
+    public int update(@NonNull CategoryCombo categoryCombo) {
 
-        validateForUpdate(oldCombo, newCombo);
+        validate(categoryCombo);
 
-        bindUpdate(oldCombo, newCombo);
+        bindUpdate(categoryCombo);
 
         return execute(updateStatement);
     }
 
-    private boolean execute(SQLiteStatement statement) {
+    private int execute(SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, statement);
         statement.clearBindings();
 
-        return wasExecuted(rowsAffected);
+        return rowsAffected;
     }
 
     private long executeInsert() {
@@ -113,12 +109,6 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         insertStatement.clearBindings();
 
         return lastId;
-    }
-
-    private void validateForUpdate(@NonNull CategoryCombo oldCombo,
-            @NonNull CategoryCombo newCombo) {
-        isNull(oldCombo.uid());
-        isNull(newCombo.uid());
     }
 
     private void validate(@NonNull CategoryCombo category) {
@@ -131,11 +121,11 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         sqLiteBind(deleteStatement, uidIndex, uid);
     }
 
-    private void bindUpdate(@NonNull CategoryCombo oldCombo, @NonNull CategoryCombo newCombo) {
+    private void bindUpdate(@NonNull CategoryCombo categoryCombo) {
         final int whereUidIndex = 7;
-        bind(updateStatement, newCombo);
+        bind(updateStatement, categoryCombo);
 
-        sqLiteBind(updateStatement, whereUidIndex, oldCombo.uid());
+        sqLiteBind(updateStatement, whereUidIndex, categoryCombo.uid());
     }
 
     private void bind(SQLiteStatement sqLiteStatement, @NonNull CategoryCombo categoryCombo) {
@@ -158,10 +148,6 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         }
 
         return categoryCombo.isDefault() ? 1 : 0;
-    }
-
-    private boolean wasExecuted(int numberOfRows) {
-        return numberOfRows >= 1;
     }
 
     @Override

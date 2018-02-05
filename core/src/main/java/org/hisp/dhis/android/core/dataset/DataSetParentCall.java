@@ -45,13 +45,6 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getAssignedDataSetUids;
-import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getDataElementUids;
-import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getIndicatorTypeUids;
-import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getIndicatorUids;
-import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getOrganisationUnitUids;
-import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getPeriodsIds;
-
 public class DataSetParentCall extends TransactionalCall {
     private final User user;
     private final DataSetParentLinkManager linkManager;
@@ -82,26 +75,26 @@ public class DataSetParentCall extends TransactionalCall {
 
     @Override
     public Response callBody() throws Exception {
-        Set<String> dataSetUids = getAssignedDataSetUids(user);
+        Set<String> dataSetUids = DataSetParentUidsHelper.getAssignedDataSetUids(user);
         DataSetEndpointCall dataSetEndpointCall = dataSetCallFactory.create(data, dataSetUids);
         Response<Payload<DataSet>> dataSetResponse = dataSetEndpointCall.call();
 
         List<DataSet> dataSets = dataSetResponse.body().items();
         DataElementEndpointCall dataElementEndpointCall =
-                dataElementCallFactory.create(data, getDataElementUids(dataSets));
+                dataElementCallFactory.create(data, DataSetParentUidsHelper.getDataElementUids(dataSets));
         Response<Payload<DataElement>> dataElementResponse = dataElementEndpointCall.call();
 
         IndicatorEndpointCall indicatorEndpointCall
-                = indicatorCallFactory.create(data, getIndicatorUids(dataSets));
+                = indicatorCallFactory.create(data, DataSetParentUidsHelper.getIndicatorUids(dataSets));
         Response<Payload<Indicator>> indicatorResponse = indicatorEndpointCall.call();
 
         List<Indicator> indicators = indicatorResponse.body().items();
         IndicatorTypeEndpointCall indicatorTypeEndpointCall
-                = indicatorTypeCallFactory.create(data, getIndicatorTypeUids(indicators));
+                = indicatorTypeCallFactory.create(data, DataSetParentUidsHelper.getIndicatorTypeUids(indicators));
         indicatorTypeEndpointCall.call();
 
         DataValueEndpointCall dataValueEndpointCall = dataValueCallFactory.create(data, dataSetUids,
-                getPeriodsIds(), getOrganisationUnitUids(user));
+                DataSetParentUidsHelper.getPeriodsIds(), DataSetParentUidsHelper.getOrganisationUnitUids(user));
         dataValueEndpointCall.call();
 
         linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);

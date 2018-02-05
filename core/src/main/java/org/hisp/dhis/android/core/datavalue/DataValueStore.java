@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class DataValueStore {
+public final class DataValueStore {
 
     private DataValueStore() {}
 

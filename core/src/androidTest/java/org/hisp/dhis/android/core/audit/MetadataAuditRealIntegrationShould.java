@@ -47,6 +47,7 @@ public class MetadataAuditRealIntegrationShould extends AbsStoreTestCase {
     //@Test
     public void notify_metadata_synced_in_local_when_a_change_occurs_on_the_server()
             throws Exception {
+        d2.logIn(RealServerMother.user, RealServerMother.password).call();
         d2.startListeningSyncedMetadata(
                 new MetadataSyncedListener() {
                     @Override

@@ -24,13 +24,15 @@ public class TrackedEntityAttributeFactory {
         this.trackedEntityAttributeService = retrofit.create(TrackedEntityAttributeService.class);
         this.resourceHandler = resourceHandler;
         this.trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl(databaseAdapter);
-        this.trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
+        this.trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(
+                trackedEntityAttributeStore);
         this.deletableStores = new ArrayList<>();
         this.deletableStores.add(trackedEntityAttributeStore);
     }
 
     public TrackedEntityAttributeEndPointCall newEndPointCall(
-            TrackedEntityAttributeQuery trackedEntityAttributeQuery, Date serverDate) throws Exception {
+            TrackedEntityAttributeQuery trackedEntityAttributeQuery, Date serverDate)
+            throws Exception {
         return new TrackedEntityAttributeEndPointCall(trackedEntityAttributeService,
                 trackedEntityAttributeQuery,
                 trackedEntityAttributeHandler, resourceHandler, databaseAdapter, serverDate);

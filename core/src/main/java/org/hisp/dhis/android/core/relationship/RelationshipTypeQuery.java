@@ -17,7 +17,7 @@ public class RelationshipTypeQuery {
     }
 
     public static class Builder {
-        private Set<String> uIds=new HashSet<>();
+        private Set<String> uIds = new HashSet<>();
 
         private Builder() {
         }
@@ -26,12 +26,12 @@ public class RelationshipTypeQuery {
             return new Builder();
         }
 
-        public Builder withUIds(Set<String> uIds){
-            this.uIds=uIds;
+        public Builder withUIds(Set<String> uIds) {
+            this.uIds = uIds;
             return this;
         }
 
-        public RelationshipTypeQuery build(){
+        public RelationshipTypeQuery build() {
             return new RelationshipTypeQuery(uIds);
         }
     }

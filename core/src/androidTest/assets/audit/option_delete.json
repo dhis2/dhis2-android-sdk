@@ -1,0 +1,29 @@
+{
+  "createdAt": "2018-01-18T11:21:57.040",
+  "createdBy": "admin",
+  "klass": "org.hisp.dhis.option.Option",
+  "uid": "Y1ILwhy5VDY",
+  "code": "op1",
+  "type": "DELETE",
+  "value": {
+    "code": "op1",
+    "name": "Option 1 a",
+    "created": "2018-01-18T11:15:36.466",
+    "lastUpdated": "2018-01-18T11:19:28.101",
+    "externalAccess": false,
+    "user": {
+      "name": "John Traore",
+      "created": "2013-04-18T17:15:08.407",
+      "lastUpdated": "2017-06-02T13:04:58.319",
+      "externalAccess": false,
+      "displayName": "John Traore",
+      "id": "xE7jOejl9FI"
+    },
+    "displayName": "Option 1 a",
+    "lastUpdatedBy": {
+      "id": "xE7jOejl9FI",
+      "name": "John Traore"
+    },
+    "id": "Y1ILwhy5VDY"
+  }
+}

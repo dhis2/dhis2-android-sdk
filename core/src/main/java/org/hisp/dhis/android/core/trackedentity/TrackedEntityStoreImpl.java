@@ -28,21 +28,33 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.NPathComplexity",
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity",
+        "PMD.AvoidInstantiatingObjectsInLoops"
+})
 public class TrackedEntityStoreImpl implements TrackedEntityStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + TrackedEntityModel.TABLE + " (" +
-            TrackedEntityModel.Columns.UID + ", " +
+    private static final String FIELDS = TrackedEntityModel.Columns.UID + ", " +
             TrackedEntityModel.Columns.CODE + ", " +
             TrackedEntityModel.Columns.NAME + ", " +
             TrackedEntityModel.Columns.DISPLAY_NAME + ", " +
@@ -51,8 +63,14 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
             TrackedEntityModel.Columns.SHORT_NAME + ", " +
             TrackedEntityModel.Columns.DISPLAY_SHORT_NAME + ", " +
             TrackedEntityModel.Columns.DESCRIPTION + ", " +
-            TrackedEntityModel.Columns.DISPLAY_DESCRIPTION +
-            ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            TrackedEntityModel.Columns.DISPLAY_DESCRIPTION;
+
+    private static final String QUERY_STATEMENT = "SELECT " +
+            FIELDS + " FROM " + TrackedEntityModel.TABLE;
+
+    private static final String INSERT_STATEMENT =
+            "INSERT INTO " + TrackedEntityModel.TABLE + " (" + FIELDS + ") " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityModel.TABLE + " SET " +
             TrackedEntityModel.Columns.UID + "=?, " +
@@ -87,10 +105,10 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
 
     @Override
     public long insert(@NonNull String uid, @Nullable String code, @Nullable String name,
-                       @Nullable String displayName, @Nullable Date created,
-                       @Nullable Date lastUpdated, @Nullable String shortName,
-                       @Nullable String displayShortName, @Nullable String description,
-                       @Nullable String displayDescription
+            @Nullable String displayName, @Nullable Date created,
+            @Nullable Date lastUpdated, @Nullable String shortName,
+            @Nullable String displayShortName, @Nullable String description,
+            @Nullable String displayDescription
     ) {
         isNull(uid);
         sqLiteBind(insertStatement, 1, uid);
@@ -112,9 +130,10 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
 
     @Override
     public int update(@NonNull String uid, @Nullable String code, @Nullable String name,
-                      @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
-                      @Nullable String shortName, @Nullable String displayShortName, @Nullable String description,
-                      @Nullable String displayDescription, @NonNull String whereUid
+            @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
+            @Nullable String shortName, @Nullable String displayShortName,
+            @Nullable String description,
+            @Nullable String displayDescription, @NonNull String whereUid
     ) {
         isNull(uid);
         isNull(whereUid);
@@ -145,7 +164,70 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
     }
 
     @Override
+    public List<TrackedEntity> queryAll() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
+
+        Map<String, TrackedEntity> trackedEntityInstanceMap = mapFromCursor(cursor);
+
+        return new ArrayList<>(trackedEntityInstanceMap.values());
+    }
+
+    @Override
     public int delete() {
         return databaseAdapter.delete(TrackedEntityModel.TABLE);
+    }
+
+    private Map<String, TrackedEntity> mapFromCursor(Cursor cursor) {
+
+        Map<String, TrackedEntity> trackedEntityMap = new HashMap<>();
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    String uid = cursor.getString(0) == null ? null : cursor.getString(
+                            0);
+                    String code = cursor.getString(1) == null ? null : cursor.getString(
+                            1);
+                    String name = cursor.getString(2) == null ? null : cursor.getString(
+                            2);
+                    String displayName = cursor.getString(3) == null ? null : cursor.getString(
+                            3);
+                    Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
+                    Date lastUpdated = cursor.getString(5) == null ? null : parse(
+                            cursor.getString(5));
+
+                    String shorName = cursor.getString(6) == null ? null : cursor.getString(
+                            6);
+
+                    String displayShorName = cursor.getString(7) == null ? null : cursor.getString(
+                            7);
+
+                    String description = cursor.getString(8) == null ? null : cursor.getString(
+                            8);
+
+                    String displayDescription = cursor.getString(9) == null ? null
+                            : cursor.getString(
+                                    9);
+
+                    trackedEntityMap.put(uid, TrackedEntity.builder()
+                            .uid(uid)
+                            .code(code)
+                            .name(name)
+                            .displayName(displayName)
+                            .created(created)
+                            .lastUpdated(lastUpdated)
+                            .shortName(shorName)
+                            .displayShortName(displayShorName)
+                            .description(description)
+                            .displayDescription(displayDescription)
+                            .build());
+
+                } while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return trackedEntityMap;
     }
 }

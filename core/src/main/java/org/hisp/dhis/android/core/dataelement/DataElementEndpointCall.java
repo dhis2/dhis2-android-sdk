@@ -46,7 +46,7 @@ public final class DataElementEndpointCall extends GenericEndpointCallImpl<DataE
 
     private DataElementEndpointCall(GenericCallData data, DataElementService dataElementService,
                                    GenericHandler<DataElement> dataElementHandler, UidsQuery query) {
-        super(data, dataElementHandler, ResourceModel.Type.DATA_ELEMENT,query);
+        super(data, dataElementHandler, ResourceModel.Type.DATA_ELEMENT, query);
         this.dataElementService = dataElementService;
     }
 

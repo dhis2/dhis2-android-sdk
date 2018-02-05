@@ -368,14 +368,15 @@ public class MetadataCallShould {
                 databaseAdapter, systemInfoService, userService,
                 programService, organisationUnitService,
                 systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
+                userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
+                organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore, dataElementStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore,
-                organisationUnitProgramLinkStore,categoryQuery, categoryService, categoryHandler,
-                CategoryComboQuery.defaultQuery(), comboService,mockCategoryComboHandler,
+                organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
+                CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
                 optionSetFactory, trackedEntityFactory, trackedEntityAttributeFactory);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);

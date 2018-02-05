@@ -73,7 +73,7 @@ public abstract class OptionSet extends BaseIdentifiableObject {
 
     abstract OptionSet.Builder toBuilder();
 
-    static OptionSet.Builder builder() {
+    public static OptionSet.Builder builder() {
         return new AutoValue_OptionSet.Builder();
     }
 

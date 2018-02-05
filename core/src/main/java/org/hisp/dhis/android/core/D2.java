@@ -377,7 +377,8 @@ public final class D2 {
         trackedEntityFactory =
                 new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
 
-        trackedEntityAttributeFactory = new TrackedEntityAttributeFactory(retrofit, databaseAdapter, resourceHandler);
+        trackedEntityAttributeFactory = new TrackedEntityAttributeFactory(retrofit, databaseAdapter,
+                resourceHandler);
 
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
@@ -484,17 +485,14 @@ public final class D2 {
                 databaseAdapter, systemInfoService, userService, programService,
                 organisationUnitService, systemInfoStore, resourceStore, userStore,
                 userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
-                organisationUnitStore,
-                userOrganisationUnitLinkStore, programStore,
+                organisationUnitStore, userOrganisationUnitLinkStore, programStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, optionStore,
-                optionSetStore, dataElementStore, programStageDataElementStore,
-                programStageSectionStore,
-                programStageStore, relationshipStore, trackedEntityStore,
-                organisationUnitProgramLinkStore, categoryQuery,
-                categoryService, categoryHandler, categoryComboQuery, comboService,
-                categoryComboHandler, trackedEntityAttributeFactory);
+                programRuleStore, dataElementStore, programStageDataElementStore,
+                programStageSectionStore, programStageStore, relationshipStore,
+                organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
+                categoryComboQuery, comboService, categoryComboHandler, optionSetFactory,
+                trackedEntityFactory, trackedEntityAttributeFactory);
     }
 
     @NonNull

@@ -1,4 +1,5 @@
 package org.hisp.dhis.android.core.common;
+
 import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 
 import android.database.Cursor;

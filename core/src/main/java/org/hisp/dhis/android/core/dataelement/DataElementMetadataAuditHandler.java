@@ -3,7 +3,6 @@ package org.hisp.dhis.android.core.dataelement;
 import org.hisp.dhis.android.core.audit.AuditType;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
 import org.hisp.dhis.android.core.audit.MetadataAuditHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 
 import java.util.HashSet;
 import java.util.Set;

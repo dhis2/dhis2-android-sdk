@@ -1013,8 +1013,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     DataValueModel.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
                             DataValueModel.Columns.PERIOD + " TEXT NOT NULL," +
                             DataValueModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
-                            DataValueModel.Columns.CATEGORY_OPTION_COMBO + " TEXT," +
-                            DataValueModel.Columns.ATTRIBUTE_OPTION_COMBO + " TEXT," +
+                            DataValueModel.Columns.CATEGORY_OPTION_COMBO + " TEXT NOT NULL," +
+                            DataValueModel.Columns.ATTRIBUTE_OPTION_COMBO + " TEXT NOT NULL," +
                             DataValueModel.Columns.VALUE + " TEXT," +
                             DataValueModel.Columns.STORED_BY + " TEXT," +
                             DataValueModel.Columns.CREATED + " TEXT," +
@@ -1028,8 +1028,12 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             " REFERENCES " + OrganisationUnitModel.TABLE + " (" +
                             OrganisationUnitModel.Columns.UID + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-                            " UNIQUE (" + DataValueModel.Columns.DATA_ELEMENT + ", " +
-                            DataValueModel.Columns.ORGANISATION_UNIT + ")"
+                            " UNIQUE (" +
+                            DataValueModel.Columns.DATA_ELEMENT + ", " +
+                            DataValueModel.Columns.PERIOD + ", " +
+                            DataValueModel.Columns.ORGANISATION_UNIT + ", " +
+                            DataValueModel.Columns.CATEGORY_OPTION_COMBO + ", " +
+                            DataValueModel.Columns.ATTRIBUTE_OPTION_COMBO + ")"
             );
 
     /**

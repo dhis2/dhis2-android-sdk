@@ -11,12 +11,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.HandlerFactory;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,23 +32,7 @@ public class TrackedEntityAttributeCallMockIntegrationShould extends AbsStoreTes
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
-
-
-    @Test
-    @MediumTest
-    public void download_TrackedEntityAttributes_according_to_default_query() throws Exception {
-
-        TrackedEntityAttributeFactory  trackedEntityAttributeFactory =
-                new TrackedEntityAttributeFactory(d2.retrofit(), databaseAdapter(),
-                        new ResourceHandler(new ResourceStoreImpl(databaseAdapter())));
-
-        dhis2MockServer.enqueueMockResponse("tracked_entity_attributes.json");
-        Set<String> uIds =  new HashSet<>(Arrays.asList("VqEFza8wbwA", "spFvx9FndA4", "gHGyrwKPzej"));
-        TrackedEntityAttributeQuery trackedEntityAttributeQuery = new TrackedEntityAttributeQuery(uIds);
-        trackedEntityAttributeFactory.newEndPointCall(trackedEntityAttributeQuery, new Date()).call();
-
-        verifyDownloadedTrackedEntityAttributes("tracked_entity_attributes.json");
-    }
+    private TrackedEntityAttributeFactory trackedEntityAttributeFactory;
 
     @Override
     @Before
@@ -59,6 +42,10 @@ public class TrackedEntityAttributeCallMockIntegrationShould extends AbsStoreTes
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+
+        trackedEntityAttributeFactory =
+                new TrackedEntityAttributeFactory(d2.retrofit(), databaseAdapter(),
+                        HandlerFactory.createResourceHandler(databaseAdapter()));
     }
 
     @Override
@@ -67,6 +54,24 @@ public class TrackedEntityAttributeCallMockIntegrationShould extends AbsStoreTes
         super.tearDown();
 
         dhis2MockServer.shutdown();
+    }
+
+    @Test
+    @MediumTest
+    public void download_TrackedEntityAttributes_according_to_default_query() throws Exception {
+
+        dhis2MockServer.enqueueMockResponse("tracked_entity_attributes.json");
+
+        Set<String> uIds =
+                new HashSet<>(Arrays.asList("VqEFza8wbwA", "spFvx9FndA4", "gHGyrwKPzej"));
+
+        TrackedEntityAttributeQuery trackedEntityAttributeQuery =
+                new TrackedEntityAttributeQuery(uIds);
+
+        trackedEntityAttributeFactory.newEndPointCall(trackedEntityAttributeQuery, new Date())
+                .call();
+
+        verifyDownloadedTrackedEntityAttributes("tracked_entity_attributes.json");
     }
 
     private void verifyDownloadedTrackedEntityAttributes(String file) throws IOException {
@@ -83,10 +88,10 @@ public class TrackedEntityAttributeCallMockIntegrationShould extends AbsStoreTes
 
     private List<TrackedEntityAttribute> getDownloadedTrackedEntityAttributes() {
         TrackedEntityAttributeStore trackedEntityAttributeStore =
-                new TrackedEntityAttributeStoreImpl(databaseAdapter());
+                trackedEntityAttributeFactory.getTrackedEntityAttributeStore();
+
         List<TrackedEntityAttribute> downloadedTrackedEntityAttributes =
                 trackedEntityAttributeStore.queryAll();
-
 
         return downloadedTrackedEntityAttributes;
     }

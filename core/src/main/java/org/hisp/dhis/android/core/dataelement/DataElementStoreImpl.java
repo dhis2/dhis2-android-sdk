@@ -273,9 +273,9 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
                 .displayShortName(displayShortName).description(description)
                 .displayDescription(displayDescription).valueType(valueType)
                 .zeroIsSignificant(zeroIsSignificant).aggregationType(aggregationType)
-                .formName(formName).domainType(domainType).dimension(dimension)
-                .displayFormName(displayFormName)
-                .optionSet(getSimpleOptionSet(optionSet, numberType))
+                .formName(formName).numberType(numberType).domainType(domainType)
+                .dimension(dimension).displayFormName(displayFormName)
+                .optionSet(getSimpleOptionSet(optionSet))
                 .categoryCombo(getSimpleCategoryCombo(categoryCombo))
                 .build();
         return dataElement;
@@ -289,12 +289,11 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
         return simplecategoryCombo;
     }
 
-    private OptionSet getSimpleOptionSet(String optionSetUId, String numberType) {
+    private OptionSet getSimpleOptionSet(String optionSetUId) {
 
         OptionSet simpleOptionSet = null;
         if(optionSetUId!=null) {
-            OptionSet.create(optionSetUId, null, null, numberType, null,
-                    null, null, null, null, false);
+            OptionSet.builder().uid(optionSetUId).build();
         }
         return simpleOptionSet;
     }

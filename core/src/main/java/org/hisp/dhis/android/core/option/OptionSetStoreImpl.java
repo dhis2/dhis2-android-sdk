@@ -79,11 +79,12 @@ public class OptionSetStoreImpl implements OptionSetStore {
     }
 
     @Override
-    public long insert(@NonNull String uid, @NonNull String code, @NonNull String name, @NonNull String displayName,
-                       @NonNull Date created, @NonNull Date lastUpdated, @NonNull Integer version,
-                       @NonNull ValueType valueType) {
+    public long insert(@NonNull String uid, @NonNull String code, @NonNull String name,
+            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+            @NonNull Integer version, @NonNull ValueType valueType) {
         isNull(uid);
-        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, version, valueType);
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, version,
+                valueType);
 
         // execute and clear bindings
         Long insert = databaseAdapter.executeInsert(OptionSetModel.TABLE, insertStatement);
@@ -95,12 +96,13 @@ public class OptionSetStoreImpl implements OptionSetStore {
 
     @Override
     public int update(@NonNull String uid, @NonNull String code, @NonNull String name,
-                      @NonNull String displayName, @NonNull Date created,
-                      @NonNull Date lastUpdated, @NonNull Integer version, @NonNull ValueType valueType,
-                      @NonNull String whereUid) {
+            @NonNull String displayName, @NonNull Date created,
+            @NonNull Date lastUpdated, @NonNull Integer version, @NonNull ValueType valueType,
+            @NonNull String whereUid) {
         isNull(uid);
         isNull(whereUid);
-        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, version, valueType);
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, version,
+                valueType);
 
         // bind the where clause
         sqLiteBind(updateStatement, 9, whereUid);
@@ -124,9 +126,10 @@ public class OptionSetStoreImpl implements OptionSetStore {
         return delete;
     }
 
-    private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @NonNull String code,
-                               @NonNull String name, @NonNull String displayName, @NonNull Date created,
-                               @NonNull Date lastUpdated, @NonNull Integer version, @NonNull ValueType valueType) {
+    private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid,
+            @NonNull String code,
+            @NonNull String name, @NonNull String displayName, @NonNull Date created,
+            @NonNull Date lastUpdated, @NonNull Integer version, @NonNull ValueType valueType) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);

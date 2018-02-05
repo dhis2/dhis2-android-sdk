@@ -66,6 +66,7 @@ import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
@@ -82,6 +83,8 @@ import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
+import org.hisp.dhis.android.core.datavalue.DataValueModel;
+import org.hisp.dhis.android.core.datavalue.DataValueStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -257,6 +260,7 @@ public final class D2 {
     private final IdentifiableObjectStore<IndicatorModel> indicatorStore;
     private final IdentifiableObjectStore<IndicatorTypeModel> indicatorTypeStore;
     private final ObjectStore<DataSetIndicatorLinkModel> dataSetIndicatorLinkStore;
+    private final ObjectWithoutUidStore<DataValueModel> dataValueStore;
 
     //Handlers
     private final UserCredentialsHandler userCredentialsHandler;
@@ -369,6 +373,7 @@ public final class D2 {
         this.indicatorStore = IndicatorStore.create(databaseAdapter());
         this.indicatorTypeStore = IndicatorTypeStore.create(databaseAdapter());
         this.dataSetIndicatorLinkStore = DataSetIndicatorLinkStore.create(databaseAdapter());
+        this.dataValueStore = DataValueStore.create(databaseAdapter());
 
         //handlers
         userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
@@ -499,6 +504,7 @@ public final class D2 {
         deletableStoreList.add(indicatorStore);
         deletableStoreList.add(indicatorTypeStore);
         deletableStoreList.add(dataSetIndicatorLinkStore);
+        deletableStoreList.add(dataValueStore);
         return new LogOutUserCallable(
                 deletableStoreList
         );

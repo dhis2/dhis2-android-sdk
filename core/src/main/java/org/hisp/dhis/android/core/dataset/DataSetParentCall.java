@@ -41,12 +41,12 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Response;
 
 import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getAssignedDataSetUids;
 import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getDataElementUids;
-import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getDataSetsUids;
 import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getIndicatorTypeUids;
 import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getIndicatorUids;
 import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getOrganisationUnitUids;
@@ -82,8 +82,8 @@ public class DataSetParentCall extends TransactionalCall {
 
     @Override
     public Response callBody() throws Exception {
-        DataSetEndpointCall dataSetEndpointCall
-                = dataSetCallFactory.create(data, getAssignedDataSetUids(user));
+        Set<String> dataSetUids = getAssignedDataSetUids(user);
+        DataSetEndpointCall dataSetEndpointCall = dataSetCallFactory.create(data, dataSetUids);
         Response<Payload<DataSet>> dataSetResponse = dataSetEndpointCall.call();
 
         List<DataSet> dataSets = dataSetResponse.body().items();
@@ -100,7 +100,7 @@ public class DataSetParentCall extends TransactionalCall {
                 = indicatorTypeCallFactory.create(data, getIndicatorTypeUids(indicators));
         indicatorTypeEndpointCall.call();
 
-        DataValueEndpointCall dataValueEndpointCall = dataValueCallFactory.create(data, getDataSetsUids(),
+        DataValueEndpointCall dataValueEndpointCall = dataValueCallFactory.create(data, dataSetUids,
                 getPeriodsIds(), getOrganisationUnitUids(user));
         dataValueEndpointCall.call();
 

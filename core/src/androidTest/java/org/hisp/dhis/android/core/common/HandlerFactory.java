@@ -34,9 +34,12 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 
 public class HandlerFactory {
 

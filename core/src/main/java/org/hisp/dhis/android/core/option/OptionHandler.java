@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import java.util.List;
-
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
+import java.util.List;
 
 public class OptionHandler {
     private final OptionStore optionStore;
@@ -52,16 +52,21 @@ public class OptionHandler {
         for (int i = 0; i < size; i++) {
             Option option = options.get(i);
 
-            if (isDeleted(option)) {
-                optionStore.delete(option.uid());
-            } else {
-                int updatedRow = optionStore.update(option.uid(), option.code(), option.name(), option.displayName(),
-                        option.created(), option.lastUpdated(), option.optionSet().uid(), option.uid());
+            handleOption(option);
+        }
+    }
 
-                if (updatedRow <= 0) {
-                    optionStore.insert(option.uid(), option.code(), option.name(), option.displayName(),
-                            option.created(), option.lastUpdated(), option.optionSet().uid());
-                }
+    public void handleOption(Option option) {
+        if (isDeleted(option)) {
+            optionStore.delete(option.uid());
+        } else {
+            int updatedRow = optionStore.update(option.uid(), option.code(), option.name(),
+                    option.displayName(),
+                    option.created(), option.lastUpdated(), option.optionSet().uid(), option.uid());
+
+            if (updatedRow <= 0) {
+                optionStore.insert(option.uid(), option.code(), option.name(), option.displayName(),
+                        option.created(), option.lastUpdated(), option.optionSet().uid());
             }
         }
     }

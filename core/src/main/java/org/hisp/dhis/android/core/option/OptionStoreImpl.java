@@ -28,27 +28,51 @@
 
 package org.hisp.dhis.android.core.option;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.NPathComplexity",
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity",
+        "PMD.AvoidInstantiatingObjectsInLoops"
+})
 public class OptionStoreImpl implements OptionStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + OptionModel.TABLE + " (" +
+    private static final String FIELDS =
             OptionModel.Columns.UID + ", " +
-            OptionModel.Columns.CODE + ", " +
-            OptionModel.Columns.NAME + ", " +
-            OptionModel.Columns.DISPLAY_NAME + ", " +
-            OptionModel.Columns.CREATED + ", " +
-            OptionModel.Columns.LAST_UPDATED + ", " +
-            OptionModel.Columns.OPTION_SET + ")" +
+                    OptionModel.Columns.CODE + ", " +
+                    OptionModel.Columns.NAME + ", " +
+                    OptionModel.Columns.DISPLAY_NAME + ", " +
+                    OptionModel.Columns.CREATED + ", " +
+                    OptionModel.Columns.LAST_UPDATED + ", " +
+                    OptionModel.Columns.OPTION_SET;
+
+    private static final String QUERY_BY_OPTION_SET_STATEMENT =
+            "SELECT " + FIELDS + " FROM " + OptionModel.TABLE +
+                    " WHERE " + OptionModel.Columns.OPTION_SET + " =?;";
+
+    private static final String QUERY_BY_UID_STATEMENT =
+            "SELECT " + FIELDS + " FROM " + OptionModel.TABLE +
+                    " WHERE " + OptionModel.Columns.UID + " =?;";
+
+    private static final String INSERT_STATEMENT = "INSERT INTO " + OptionModel.TABLE + " (" +
+            FIELDS + ")" +
             "VALUES (?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + OptionModel.TABLE + " SET " +
@@ -79,15 +103,16 @@ public class OptionStoreImpl implements OptionStore {
 
     @Override
     public long insert(@NonNull String uid,
-                       @NonNull String code,
-                       @NonNull String name,
-                       @NonNull String displayName,
-                       @NonNull Date created,
-                       @NonNull Date lastUpdated,
-                       @NonNull String optionSet) {
+            @NonNull String code,
+            @NonNull String name,
+            @NonNull String displayName,
+            @NonNull Date created,
+            @NonNull Date lastUpdated,
+            @NonNull String optionSet) {
         isNull(uid);
         isNull(optionSet);
-        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, optionSet);
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated,
+                optionSet);
 
         // execute and clear bindings
         Long insert = databaseAdapter.executeInsert(OptionModel.TABLE, insertStatement);
@@ -98,17 +123,18 @@ public class OptionStoreImpl implements OptionStore {
 
     @Override
     public int update(@NonNull String uid,
-                      @NonNull String code,
-                      @NonNull String name,
-                      @NonNull String displayName,
-                      @NonNull Date created,
-                      @NonNull Date lastUpdated,
-                      @NonNull String optionSet,
-                      @NonNull String whereOptionUid) {
+            @NonNull String code,
+            @NonNull String name,
+            @NonNull String displayName,
+            @NonNull Date created,
+            @NonNull Date lastUpdated,
+            @NonNull String optionSet,
+            @NonNull String whereOptionUid) {
         isNull(uid);
         isNull(optionSet);
         isNull(whereOptionUid);
-        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, optionSet);
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated,
+                optionSet);
 
         // bind the where argument
         sqLiteBind(updateStatement, 8, whereOptionUid);
@@ -130,14 +156,39 @@ public class OptionStoreImpl implements OptionStore {
         return delete;
     }
 
+    @Override
+    public List<Option> queryByOptionSet(String optionSetUid) {
+        Cursor cursor = databaseAdapter.query(QUERY_BY_OPTION_SET_STATEMENT, optionSetUid);
+
+        Map<String, List<Option>> optionMap = mapFromCursor(cursor);
+
+        return optionMap.get(optionSetUid);
+    }
+
+    @Override
+    public Option queryByUid(String uid) {
+        Option option = null;
+
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID_STATEMENT, uid);
+
+        if (cursor.getCount() > 0) {
+            Map<String, List<Option>> optionMap = mapFromCursor(cursor);
+
+            Map.Entry<String, List<Option>> entry = optionMap.entrySet().iterator().next();
+            option = entry.getValue().get(0);
+        }
+
+        return option;
+    }
+
     private void bindArguments(@NonNull SQLiteStatement sqliteStatement,
-                               @NonNull String uid,
-                               @NonNull String code,
-                               @NonNull String name,
-                               @NonNull String displayName,
-                               @NonNull Date created,
-                               @NonNull Date lastUpdated,
-                               @NonNull String optionSet) {
+            @NonNull String uid,
+            @NonNull String code,
+            @NonNull String name,
+            @NonNull String displayName,
+            @NonNull Date created,
+            @NonNull Date lastUpdated,
+            @NonNull String optionSet) {
         sqLiteBind(sqliteStatement, 1, uid);
         sqLiteBind(sqliteStatement, 2, code);
         sqLiteBind(sqliteStatement, 3, name);
@@ -150,5 +201,52 @@ public class OptionStoreImpl implements OptionStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(OptionModel.TABLE);
+    }
+
+    private Map<String, List<Option>> mapFromCursor(Cursor cursor) {
+        Map<String, List<Option>> optionMap = new HashMap<>(cursor.getCount());
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    String uid = cursor.getString(0) == null ? null : cursor.getString(
+                            0);
+                    String code = cursor.getString(1) == null ? null : cursor.getString(
+                            1);
+                    String name = cursor.getString(2) == null ? null : cursor.getString(
+                            2);
+                    String displayName = cursor.getString(3) == null ? null : cursor.getString(
+                            3);
+                    Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
+                    Date lastUpdated = cursor.getString(5) == null ? null : parse(
+                            cursor.getString(5));
+
+                    String optionSet = cursor.getString(6) == null ? null : cursor.getString(
+                            6);
+
+                    if (optionMap.get(optionSet) == null) {
+                        optionMap.put(optionSet, new ArrayList<Option>());
+                    }
+
+                    optionMap.get(optionSet).add(Option.builder()
+                            .uid(uid)
+                            .code(code)
+                            .name(name)
+                            .displayName(displayName)
+                            .created(created)
+                            .lastUpdated(lastUpdated)
+                            .optionSet(OptionSet
+                                    .builder()
+                                    .uid(optionSet)
+                                    .build())
+                            .build());
+
+                } while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return optionMap;
     }
 }

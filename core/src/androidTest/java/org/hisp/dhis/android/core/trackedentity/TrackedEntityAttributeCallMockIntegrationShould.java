@@ -15,7 +15,7 @@ import org.hisp.dhis.android.core.common.HandlerFactory;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

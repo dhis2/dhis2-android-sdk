@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.junit.Before;
@@ -76,10 +77,10 @@ public class TrackedEntityCallUnitShould {
     private DatabaseAdapter database;
 
     @Mock
-    private TrackedEntityStore trackedEntityStore;
+    private TrackedEntityHandler trackedEntityHandler;
 
     @Mock
-    private ResourceStore resourceStore;
+    private ResourceHandler resourceHandler;
 
     @Mock
     private Transaction transaction;
@@ -135,7 +136,7 @@ public class TrackedEntityCallUnitShould {
         when(trackedEntity.displayDescription()).thenReturn("display_description");
 
         call = new TrackedEntityCall(Sets.newLinkedHashSet(trackedEntity.uid()), database,
-                trackedEntityStore, resourceStore, service, serverDate);
+                trackedEntityHandler, resourceHandler, service, serverDate);
 
         when(database.beginNewTransaction()).thenReturn(transaction);
         when(service.trackedEntities(
@@ -171,7 +172,8 @@ public class TrackedEntityCallUnitShould {
     @SuppressWarnings("unchecked")
     public void invoke_server_with_correct_parameters_after_call_with_last_updated() throws Exception {
         String date = "2014-11-25T09:37:53.358";
-        when(resourceStore.getLastUpdated(eq(ResourceModel.Type.TRACKED_ENTITY))).thenReturn(date);
+        when(resourceHandler.getLastUpdated(eq(ResourceModel.Type.TRACKED_ENTITY))).thenReturn(
+                date);
         when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
 
         call.call();
@@ -216,12 +218,13 @@ public class TrackedEntityCallUnitShould {
         verify(database, times(1)).beginNewTransaction();
         verify(transaction, times(1)).setSuccessful();
         verify(transaction, times(1)).end();
-        verify(trackedEntityStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString());
+        verify(trackedEntityHandler, times(1)).handleTrackedEntity(
+                any(TrackedEntity.class));
         //TODO: after implementing the SystemInfoCall, tests..etc modify this to actually check the date:
-        //Right now it only checks if: (Date) null is an instance of Date.class, not a terribly useful:
-        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
+        //Right now it only checks if: (Date) null is an instance of Date.class, not a terribly
+        // useful:
+        verify(resourceHandler, times(1)).handleResource(
+                any(ResourceModel.Type.class), any(Date.class));
     }
 
 
@@ -229,7 +232,7 @@ public class TrackedEntityCallUnitShould {
     @SuppressWarnings("unchecked")
     public void not_fail_on_empty_input() throws IOException {
         TrackedEntityCall call = new TrackedEntityCall(new HashSet<String>(), database,
-                trackedEntityStore, resourceStore, service, serverDate);
+                trackedEntityHandler, resourceHandler, service, serverDate);
         when(service.trackedEntities(
                 fieldsCaptor.capture(),
                 idFilterCaptor.capture(),

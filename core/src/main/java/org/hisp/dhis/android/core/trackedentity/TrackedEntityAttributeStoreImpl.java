@@ -290,7 +290,9 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
         Boolean unique = getBooleanFromCursor(cursor, 21);
         Boolean inherit = getBooleanFromCursor(cursor, 22);
 
-        OptionSet optionSet = optionSetUID == null ? null : createOptionSetUid(optionSetUID);
+        OptionSet optionSet = optionSetUID == null ? null : OptionSet.builder()
+                .uid(optionSetUID)
+                .build();
 
         trackedEntityAttribute = TrackedEntityAttribute.builder()
                 .uid(uid)
@@ -320,12 +322,5 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
                 .build();
 
         return trackedEntityAttribute;
-    }
-
-    @NonNull
-    private OptionSet createOptionSetUid(String optionSetUID) {
-        //TODO: refactor when we will create builder
-        return OptionSet.create(optionSetUID, null, null, null, null,
-                null, null, null, null, null);
     }
 }

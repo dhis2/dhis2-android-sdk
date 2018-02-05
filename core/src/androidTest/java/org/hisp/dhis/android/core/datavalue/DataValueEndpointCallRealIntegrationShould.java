@@ -13,10 +13,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.dataSetUids;
+import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.orgUnitUids;
+import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.periodIds;
 
 @RunWith(AndroidJUnit4.class)
 public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase {
@@ -39,17 +40,6 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
         ResourceHandler resourceHandler =
                 new ResourceHandler(new ResourceStoreImpl(databaseAdapter()));
         GenericCallData data = GenericCallData.create(databaseAdapter(), resourceHandler, d2.retrofit());
-
-        Set<String> dataSetUids = new HashSet<>();
-        dataSetUids.add("BfMAe6Itzgt");
-        dataSetUids.add("TuL8IOPzpHh");
-
-        Set<String> periodIds = new HashSet<>();
-        periodIds.add("201712");
-        periodIds.add("2017");
-
-        Set<String> orgUnitUids = new HashSet<>();
-        orgUnitUids.add("DiszpKrYNg8");
 
         return DataValueEndpointCall.FACTORY.create(data, dataSetUids, periodIds, orgUnitUids);
     }

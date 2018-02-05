@@ -60,7 +60,8 @@ public class OptionSetHandler {
                         optionSet.created(), optionSet.lastUpdated(), optionSet.version(), optionSet.valueType());
             }
         }
-
-        optionHandler.handleOptions(optionSet.options());
+        if(optionSet.options()!=null) {
+            optionHandler.handleOptions(optionSet.options());
+        }
     }
 }

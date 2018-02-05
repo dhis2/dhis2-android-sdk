@@ -22,7 +22,7 @@ public class DataElementEndPointCall implements
     private final DatabaseAdapter databaseAdapter;
     private final DataElementQuery dataElementQuery;
     private final Date serverDate;
-    private final DataElementHandler trackedEntityAttributeHandler;
+    private final DataElementHandler dataElementHandler;
     private final ResourceHandler resourceHandler;
 
     private boolean isExecuted;
@@ -38,7 +38,7 @@ public class DataElementEndPointCall implements
         this.databaseAdapter = databaseAdapter;
         this.dataElementQuery = dataElementQuery;
         this.serverDate = new Date(serverDate.getTime());
-        this.trackedEntityAttributeHandler = trackedEntityAttributeHandler;
+        this.dataElementHandler = trackedEntityAttributeHandler;
         this.resourceHandler = resourceHandler;
 
         if (dataElementQuery.getUIds() != null
@@ -85,7 +85,7 @@ public class DataElementEndPointCall implements
                         dataElementByUids.body().items();
 
                 for (DataElement dataElement : dataElements) {
-                    trackedEntityAttributeHandler.handleDataElement(
+                    dataElementHandler.handleDataElement(
                             dataElement);
                 }
                 resourceHandler.handleResource(ResourceModel.Type.DATA_ELEMENT,

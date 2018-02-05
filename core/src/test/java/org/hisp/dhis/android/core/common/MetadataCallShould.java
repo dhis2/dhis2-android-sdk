@@ -86,6 +86,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
@@ -187,7 +188,7 @@ public class MetadataCallShould {
     private ProgramStore programStore;
 
     @Mock
-    private TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private TrackedEntityAttributeFactory trackedEntityAttributeFactory;
 
     @Mock
     private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
@@ -372,14 +373,14 @@ public class MetadataCallShould {
                 programService, organisationUnitService, trackedEntityService, optionSetService,
                 systemInfoStore, resourceStore, userStore,
                 userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
-                userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
+                userOrganisationUnitLinkStore, programStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
                 optionStore, optionSetStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore, trackedEntityStore,
                 organisationUnitProgramLinkStore,categoryQuery, categoryService, categoryHandler,
                 CategoryComboQuery.defaultQuery(), comboService,mockCategoryComboHandler,
-                dataElementFactory);
+                trackedEntityAttributeFactory, dataElementFactory);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 

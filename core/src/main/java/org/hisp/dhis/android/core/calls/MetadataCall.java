@@ -76,7 +76,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
@@ -116,7 +116,6 @@ public class MetadataCall implements Call<Response> {
     private final OrganisationUnitStore organisationUnitStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final ProgramStore programStore;
-    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramIndicatorStore programIndicatorStore;
@@ -138,6 +137,7 @@ public class MetadataCall implements Call<Response> {
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
     private final DataElementFactory dataElementFactory;
+    private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
 
     private boolean isExecuted;
 
@@ -159,7 +159,6 @@ public class MetadataCall implements Call<Response> {
             @NonNull OrganisationUnitStore organisationUnitStore,
             @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             @NonNull ProgramStore programStore,
-            @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
             @NonNull ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
             @NonNull ProgramRuleVariableStore programRuleVariableStore,
             @NonNull ProgramIndicatorStore programIndicatorStore,
@@ -181,6 +180,7 @@ public class MetadataCall implements Call<Response> {
             @NonNull CategoryComboQuery categoryComboQuery,
             @NonNull CategoryComboService categoryComboService,
             @NonNull CategoryComboHandler categoryComboHandler,
+            @NonNull TrackedEntityAttributeFactory trackedEntityAttributeFactory,
             @NonNull DataElementFactory dataElementFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
@@ -198,7 +198,6 @@ public class MetadataCall implements Call<Response> {
         this.organisationUnitStore = organisationUnitStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.programStore = programStore;
-        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
         this.programRuleVariableStore = programRuleVariableStore;
         this.programIndicatorStore = programIndicatorStore;
@@ -221,6 +220,7 @@ public class MetadataCall implements Call<Response> {
         this.categoryComboService = categoryComboService;
         this.categoryComboHandler = categoryComboHandler;
         this.dataElementFactory = dataElementFactory;
+        this.trackedEntityAttributeFactory = trackedEntityAttributeFactory;
     }
 
     @Override
@@ -291,7 +291,7 @@ public class MetadataCall implements Call<Response> {
             response = new ProgramCall(
                     programService, databaseAdapter, resourceStore, programUids, programStore,
                     serverDate,
-                    trackedEntityAttributeStore, programTrackedEntityAttributeStore,
+                    trackedEntityAttributeFactory.getTrackedEntityAttributeStore(), programTrackedEntityAttributeStore,
                     programRuleVariableStore,
                     programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
                     programRuleActionStore,

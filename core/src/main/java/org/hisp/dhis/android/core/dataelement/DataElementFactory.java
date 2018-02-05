@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.dataelement;
 
+import static org.hisp.dhis.android.core.calls.Call.MAX_UIDS;
+
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionHandler;
@@ -42,7 +44,7 @@ class DataElementFactory {
 
     }
 
-    public DataElementEndPointCall newEndPointCall(DataElementQuery dataElementQuery, Date serverDate) throws Exception{
+    public DataElementEndPointCall newEndPointCall(DataElementQuery dataElementQuery, Date serverDate){
         return new DataElementEndPointCall(dataElementService,
                 dataElementQuery,
                 dataElementHandler, resourceHandler, databaseAdapter, serverDate);

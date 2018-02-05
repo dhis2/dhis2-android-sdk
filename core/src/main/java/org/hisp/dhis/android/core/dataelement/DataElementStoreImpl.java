@@ -261,22 +261,23 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
         Boolean zeroIsSignificant = getBooleanFromCursor(cursor, 11);
         String aggregationType = getStringFromCursor(cursor, 12);
         String formName = getStringFromCursor(cursor, 13);
-        String domainType = getStringFromCursor(cursor, 14);
-        String dimension = getStringFromCursor(cursor, 15);
-        String displayFormName = getStringFromCursor(cursor, 16);
-        String optionSet = getStringFromCursor(cursor, 17);
-        String categoryCombo = getStringFromCursor(cursor, 18);
+        String numberType = getStringFromCursor(cursor, 14);
+        String domainType = getStringFromCursor(cursor, 15);
+        String dimension = getStringFromCursor(cursor, 16);
+        String displayFormName = getStringFromCursor(cursor, 17);
+        String optionSet = getStringFromCursor(cursor, 18);
+        String categoryCombo = getStringFromCursor(cursor, 19);
 
         OptionSet simpleOptionSet = null;
         if(simpleOptionSet!=null) {
-            OptionSet.create(optionSet, "", "", "", null,
+            OptionSet.create(optionSet, null, null, numberType, null,
                     null, null, null, null, false);
         }
 
         CategoryCombo simpleCategoryCombo = null;
 
         if(categoryCombo!=null) {
-            CategoryCombo.builder().uid(categoryCombo).build();
+            simpleCategoryCombo = CategoryCombo.builder().uid(categoryCombo).build();
         }
 
         DataElement dataElement = DataElement.builder().uid(uid).code(code).name(name)

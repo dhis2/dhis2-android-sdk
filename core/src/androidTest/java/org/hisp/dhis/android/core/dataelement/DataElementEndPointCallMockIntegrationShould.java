@@ -9,6 +9,30 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
+import org.hisp.dhis.android.core.category.CategoryComboStore;
+import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryEndpointCall;
+import org.hisp.dhis.android.core.category.CategoryHandler;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStore;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
+import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
+import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionHandler;
+import org.hisp.dhis.android.core.category.CategoryOptionStore;
+import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryQuery;
+import org.hisp.dhis.android.core.category.CategoryService;
+import org.hisp.dhis.android.core.category.CategoryStore;
+import org.hisp.dhis.android.core.category.CategoryStoreImpl;
+import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.HandlerFactory;
@@ -16,11 +40,15 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -31,6 +59,10 @@ public class DataElementEndPointCallMockIntegrationShould extends AbsStoreTestCa
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
     private DataElementFactory dataElementFactory;
+    private CategoryComboStore categoryComboStore;
+    private CategoryComboHandler categoryComboHandler;
+    private CategoryHandler categoryHandler;
+
 
     @Override
     @Before
@@ -61,22 +93,30 @@ public class DataElementEndPointCallMockIntegrationShould extends AbsStoreTestCa
         dhis2MockServer.enqueueMockResponse(filename);
 
         DataElementQuery dataElementQuery = new DataElementQuery(new HashSet<>(
-                Arrays.asList("FTRrcoaog83", "P3jJH5Tu5VC", "FQ2o8UBlcrS")));
+                Arrays.asList("FTRrcoaog83", "P+-3jJH5Tu5VC", "FQ2o8UBlcrS")));
 
         dataElementFactory.newEndPointCall(dataElementQuery, new Date()).call();
 
-        verifyDownloadedRelationshipTypes(filename);
+        verifyDownloadedDataElements(filename);
     }
 
-
-    private void verifyDownloadedRelationshipTypes(String fileName) throws IOException {
+    private void verifyDownloadedDataElements(String fileName) throws IOException {
         Payload<DataElement> DataElementPayload = parseDataElementResponse(fileName);
 
         List<DataElement> downloadedDataElement =
                 dataElementFactory.getDataElementStore().queryAll();
 
+        downloadedDataElement = ignoreCategoryCombo(downloadedDataElement);
         assertThat(downloadedDataElement.size(), is(DataElementPayload.items().size()));
-        assertThat(downloadedDataElement, is(DataElementPayload.items()));
+        assertThat(downloadedDataElement, is(ignoreCategoryCombo(DataElementPayload.items())));
+    }
+
+    private List<DataElement> ignoreCategoryCombo(List<DataElement> downloadedDataElement) {
+        List<DataElement> dataElements = new ArrayList<>();
+        for(DataElement dataElement:downloadedDataElement){
+            dataElements.add(dataElement.toBuilder().categoryCombo(null).build());
+        }
+        return dataElements;
     }
 
     private Payload<DataElement> parseDataElementResponse(String fileName)

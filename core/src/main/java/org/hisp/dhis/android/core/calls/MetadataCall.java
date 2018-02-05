@@ -73,8 +73,10 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityCall;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
@@ -109,7 +111,6 @@ public class MetadataCall implements Call<Response> {
     private final OrganisationUnitStore organisationUnitStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final ProgramStore programStore;
-    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramIndicatorStore programIndicatorStore;
@@ -131,6 +132,7 @@ public class MetadataCall implements Call<Response> {
 
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
+    private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
 
     private boolean isExecuted;
 
@@ -150,7 +152,6 @@ public class MetadataCall implements Call<Response> {
             @NonNull OrganisationUnitStore organisationUnitStore,
             @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             @NonNull ProgramStore programStore,
-            @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
             @NonNull ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
             @NonNull ProgramRuleVariableStore programRuleVariableStore,
             @NonNull ProgramIndicatorStore programIndicatorStore,
@@ -171,7 +172,8 @@ public class MetadataCall implements Call<Response> {
             @NonNull CategoryComboService categoryComboService,
             @NonNull CategoryComboHandler categoryComboHandler,
             @NonNull OptionSetFactory optionSetFactory,
-            @NonNull TrackedEntityFactory trackedEntityFactory) {
+            @NonNull TrackedEntityFactory trackedEntityFactory,
+            @NonNull TrackedEntityAttributeFactory trackedEntityAttributeFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -186,7 +188,6 @@ public class MetadataCall implements Call<Response> {
         this.organisationUnitStore = organisationUnitStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.programStore = programStore;
-        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
         this.programRuleVariableStore = programRuleVariableStore;
         this.programIndicatorStore = programIndicatorStore;
@@ -209,6 +210,7 @@ public class MetadataCall implements Call<Response> {
 
         this.optionSetFactory = optionSetFactory;
         this.trackedEntityFactory = trackedEntityFactory;
+        this.trackedEntityAttributeFactory = trackedEntityAttributeFactory;
     }
 
     @Override
@@ -280,7 +282,7 @@ public class MetadataCall implements Call<Response> {
             response = new ProgramCall(
                     programService, databaseAdapter, resourceStore, programUids, programStore,
                     serverDate,
-                    trackedEntityAttributeStore, programTrackedEntityAttributeStore,
+                    trackedEntityAttributeFactory.getTrackedEntityAttributeStore(), programTrackedEntityAttributeStore,
                     programRuleVariableStore,
                     programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
                     programRuleActionStore,

@@ -123,8 +123,7 @@ import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
@@ -166,8 +165,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-// ToDo: onMetadataChanged corner cases when user initially has been signed in, but later was
-// locked (or
+// ToDo: handle corner cases when user initially has been signed in, but later was locked (or
 // password has changed)
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public final class D2 {
@@ -199,7 +197,7 @@ public final class D2 {
     private final UserRoleStore userRoleStore;
     private final UserRoleProgramLinkStore userRoleProgramLinkStore;
     private final ProgramStore programStore;
-    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramIndicatorStore programIndicatorStore;
@@ -283,8 +281,6 @@ public final class D2 {
                 new UserRoleProgramLinkStoreImpl(databaseAdapter);
         this.programStore =
                 new ProgramStoreImpl(databaseAdapter);
-        this.trackedEntityAttributeStore =
-                new TrackedEntityAttributeStoreImpl(databaseAdapter);
         this.programTrackedEntityAttributeStore =
                 new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
         this.programRuleVariableStore =
@@ -381,6 +377,7 @@ public final class D2 {
         trackedEntityFactory =
                 new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
 
+        trackedEntityAttributeFactory = new TrackedEntityAttributeFactory(retrofit, databaseAdapter, resourceHandler);
 
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
@@ -449,7 +446,7 @@ public final class D2 {
         deletableStoreList.add(userRoleStore);
         deletableStoreList.add(userRoleProgramLinkStore);
         deletableStoreList.add(programStore);
-        deletableStoreList.add(trackedEntityAttributeStore);
+        deletableStoreList.addAll(trackedEntityAttributeFactory.getDeletableStores());
         deletableStoreList.add(programTrackedEntityAttributeStore);
         deletableStoreList.add(programRuleVariableStore);
         deletableStoreList.add(programIndicatorStore);
@@ -488,14 +485,16 @@ public final class D2 {
                 organisationUnitService, systemInfoStore, resourceStore, userStore,
                 userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
                 organisationUnitStore,
-                userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
+                userOrganisationUnitLinkStore, programStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, dataElementStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore,
-                organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
-                categoryComboQuery, comboService, categoryComboHandler,
-                optionSetFactory, trackedEntityFactory);
+                programRuleStore, optionStore,
+                optionSetStore, dataElementStore, programStageDataElementStore,
+                programStageSectionStore,
+                programStageStore, relationshipStore, trackedEntityStore,
+                organisationUnitProgramLinkStore, categoryQuery,
+                categoryService, categoryHandler, categoryComboQuery, comboService,
+                categoryComboHandler, trackedEntityAttributeFactory);
     }
 
     @NonNull

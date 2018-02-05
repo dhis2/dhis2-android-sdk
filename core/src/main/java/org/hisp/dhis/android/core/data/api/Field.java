@@ -47,10 +47,6 @@ public abstract class Field<Parent, Child> implements Property<Parent, Child> {
         return InFilter.create(this, values);
     }
 
-    public Filter<Parent, Child> equal(Collection<String> values) {
-        return EqualFilter.create(this, values);
-    }
-
     public static <T, K> Field<T, K> create(@NonNull String name) {
         return new AutoValue_Field<>(name);
     }

@@ -37,6 +37,8 @@ import java.util.Set;
 
 import retrofit2.Call;
 
+import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedArrayValuesFromSet;
+
 public final class DataValueEndpointCall extends GenericEndpointCallImpl<DataValue, DataValueQuery> {
     private final DataValueService dataValueService;
 
@@ -51,9 +53,9 @@ public final class DataValueEndpointCall extends GenericEndpointCallImpl<DataVal
         return dataValueService.getDataValues(
                 DataValue.allFields,
                 DataValue.lastUpdated.gt(lastUpdated),
-                DataValue.dataSet.equal(query.dataSetUids()),
-                DataValue.period.equal(query.periodIds()),
-                DataValue.organisationUnit.equal(query.orgUnitUids()),
+                commaSeparatedArrayValuesFromSet(query.dataSetUids()),
+                commaSeparatedArrayValuesFromSet(query.periodIds()),
+                commaSeparatedArrayValuesFromSet(query.orgUnitUids()),
                 Boolean.FALSE);
     }
 

@@ -68,8 +68,6 @@ public class DataElementChangeOnServerShould extends AbsStoreTestCase {
     public void create_data_element_in_database_if_audit_type_is_create() throws Exception {
         String filename = "audit/data_element.json";
 
-        dhis2MockServer.enqueueMockResponse("audit/data_element.json");
-
         MetadataAudit<DataElement> metadataAudit =
                 givenAMetadataAudit("audit/data_element_create.json");
 
@@ -152,9 +150,6 @@ public class DataElementChangeOnServerShould extends AbsStoreTestCase {
     }
 
     private void givenAExistedDataElementPreviously() throws IOException {
-
-        dhis2MockServer.enqueueMockResponse("audit/data_element.json");
-
         MetadataAudit<DataElement> metadataAudit =
                 givenAMetadataAudit("audit/data_element_create.json");
         metadataAuditListener.onMetadataChanged(DataElement.class, metadataAudit);

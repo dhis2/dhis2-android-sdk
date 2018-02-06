@@ -18,17 +18,15 @@ public class DataElementMetadataAuditHandler implements MetadataAuditHandler {
     public void handle(MetadataAudit metadataAudit) throws Exception {
         DataElement dataElement = (DataElement) metadataAudit.getValue();
 
-        if (metadataAudit.getType() == AuditType.UPDATE || metadataAudit.getType() == AuditType.CREATE) {
-            //metadataAudit of UPDATE type does not return payload
-            //metadataAudit of CREATE type for dataelement does not return payload either.
-            //It's necessary sync by metadata call
-
+        if (metadataAudit.getType() == AuditType.UPDATE) {
             Set<String> uIds = new HashSet<>();
             uIds.add(metadataAudit.getUid());
             DataElementQuery dataElementQuery = new DataElementQuery(uIds);
             dataElementFactory.newEndPointCall(dataElementQuery, metadataAudit.getCreatedAt()).call();
-        } else if (metadataAudit.getType() == AuditType.DELETE) {
-            dataElement = dataElement.toBuilder().deleted(true).build();
+        } else {
+            if (metadataAudit.getType() == AuditType.DELETE) {
+                dataElement = dataElement.toBuilder().deleted(true).build();
+            }
             dataElementFactory.getDataElementHandler().handleDataElement(dataElement);
         }
     }

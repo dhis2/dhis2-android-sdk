@@ -104,10 +104,8 @@ public class MetadataCall implements Call<Response> {
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
 
-    private final DataElementFactory dataElementFactory;
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
-    private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
     private final ProgramFactory programFactory;
 
     private boolean isExecuted;
@@ -160,9 +158,7 @@ public class MetadataCall implements Call<Response> {
 
         this.optionSetFactory = optionSetFactory;
         this.trackedEntityFactory = trackedEntityFactory;
-        this.trackedEntityAttributeFactory = trackedEntityAttributeFactory;
         this.programFactory = programFactory;
-        this.dataElementFactory = dataElementFactory;
     }
 
     @Override

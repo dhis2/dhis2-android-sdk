@@ -31,6 +31,10 @@ public class EventHandler {
         }
     }
 
+    private boolean isValid(@NonNull Event event) {
+        return event.eventDate()!=null && event.organisationUnit()!=null;
+    }
+
     public void handle(@NonNull Event event) {
         if (event == null) {
             return;
@@ -38,7 +42,7 @@ public class EventHandler {
 
         if (isDeleted(event)) {
             eventStore.delete(event.uid());
-        } else {
+        } else if (isValid(event)) {
             String latitude = null;
             String longitude = null;
 

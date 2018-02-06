@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
+import org.hisp.dhis.android.core.relationship.RelationshipHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +35,9 @@ public class TrackedEntityInstanceHandlerShould {
     private EnrollmentHandler enrollmentHandler;
 
     @Mock
+    private RelationshipHandler relationshipHandler;
+
+    @Mock
     private TrackedEntityInstance trackedEntityInstance;
 
     @Mock
@@ -50,7 +54,8 @@ public class TrackedEntityInstanceHandlerShould {
         when(trackedEntityInstance.enrollments()).thenReturn(Collections.singletonList(enrollment));
 
         trackedEntityInstanceHandler = new TrackedEntityInstanceHandler(
-                trackedEntityInstanceStore, trackedEntityAttributeValueHandler, enrollmentHandler
+                trackedEntityInstanceStore, trackedEntityAttributeValueHandler, enrollmentHandler,
+                relationshipHandler
         );
 
     }

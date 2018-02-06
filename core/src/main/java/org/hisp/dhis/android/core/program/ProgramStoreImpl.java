@@ -379,18 +379,16 @@ public class ProgramStoreImpl extends Store implements ProgramStore {
                     Boolean displayInFrontPageList = getBooleanFromCursor(cursor, 23);
                     ProgramType programType = getProgramTypeFromCursor(cursor, 24);
 
-                    String relationShipType = getStringFromCursor(cursor, 25);
+                    String relationshipTypeUid = getStringFromCursor(cursor, 25);
 
                     RelationshipType relationshipType = null;
                     Program relatedProgram = null;
                     TrackedEntity trackedEntity = null;
                     CategoryCombo categoryCombo = null;
 
-                    if (relationShipType != null) {
-                        relationshipType = RelationshipType.create(
-                                relationShipType, null, null, null,
-                                null, null, null,
-                                null, null);
+                    if (relationshipTypeUid != null) {
+                        relationshipType = RelationshipType.builder().uid(
+                                relationshipTypeUid).build();
                     }
 
                     String relationshipText = getStringFromCursor(cursor, 26);

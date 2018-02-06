@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetModel;
@@ -120,8 +121,11 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         OptionSetFactory optionSetFactory = new OptionSetFactory(d2.retrofit(), databaseAdapter(),
                 resourceHandler);
 
+        DataElementFactory dataElementFactory = new DataElementFactory(d2.retrofit(),
+                databaseAdapter(), resourceHandler);
+
         ProgramFactory programFactory = new ProgramFactory(d2.retrofit(), databaseAdapter(),
-                optionSetFactory.getOptionSetHandler(), resourceHandler);
+                optionSetFactory.getOptionSetHandler(), dataElementFactory, resourceHandler);
 
         Set<String> uids = new HashSet<>();
         uids.add("uid1");

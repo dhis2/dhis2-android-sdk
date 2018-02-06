@@ -21,6 +21,7 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -56,10 +57,14 @@ public class ProgramStageChangeOnServerShould extends AbsStoreTestCase {
         OptionSetFactory optionSetFactory = new OptionSetFactory(d2.retrofit(), databaseAdapter(),
                 resourceHandler);
 
+        DataElementFactory dataElementFactory = new DataElementFactory(d2.retrofit(),
+                databaseAdapter(), resourceHandler);
+
         when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
                 new ProgramStageMetadataAuditHandler(
                         new ProgramFactory(d2.retrofit(), databaseAdapter(),
-                                optionSetFactory.getOptionSetHandler(), resourceHandler)));
+                                optionSetFactory.getOptionSetHandler(), dataElementFactory,
+                                resourceHandler)));
 
         programStageStore = new ProgramStageStoreImpl(databaseAdapter());
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);

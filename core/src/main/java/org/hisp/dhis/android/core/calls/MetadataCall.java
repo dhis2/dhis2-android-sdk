@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
@@ -103,6 +104,7 @@ public class MetadataCall implements Call<Response> {
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
 
+    private final DataElementFactory dataElementFactory;
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
     private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
@@ -134,7 +136,8 @@ public class MetadataCall implements Call<Response> {
             @NonNull OptionSetFactory optionSetFactory,
             @NonNull TrackedEntityFactory trackedEntityFactory,
             @NonNull TrackedEntityAttributeFactory trackedEntityAttributeFactory,
-            @Nonnull ProgramFactory programFactory) {
+            @Nonnull ProgramFactory programFactory,
+            @NonNull DataElementFactory dataElementFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -159,6 +162,7 @@ public class MetadataCall implements Call<Response> {
         this.trackedEntityFactory = trackedEntityFactory;
         this.trackedEntityAttributeFactory = trackedEntityAttributeFactory;
         this.programFactory = programFactory;
+        this.dataElementFactory = dataElementFactory;
     }
 
     @Override

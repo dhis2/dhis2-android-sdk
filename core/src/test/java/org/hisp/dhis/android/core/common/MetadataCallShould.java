@@ -57,6 +57,7 @@ import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
@@ -219,6 +220,9 @@ public class MetadataCallShould {
     private TrackedEntityAttributeFactory trackedEntityAttributeFactory;
     private ProgramFactory programFactory;
 
+    @Mock
+    private DataElementFactory dataElementFactory;
+
     // object to test
     private MetadataCall metadataCall;
 
@@ -284,7 +288,8 @@ public class MetadataCallShould {
                 userRoleProgramLinkStore, organisationUnitStore, userOrganisationUnitLinkStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetFactory, trackedEntityFactory, trackedEntityAttributeFactory, programFactory);
+                optionSetFactory, trackedEntityFactory, trackedEntityAttributeFactory,
+                programFactory, dataElementFactory);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));

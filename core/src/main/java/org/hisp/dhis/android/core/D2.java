@@ -72,6 +72,7 @@ import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -201,6 +202,7 @@ public final class D2 {
     private final TrackedEntityFactory trackedEntityFactory;
     private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
     private final ProgramFactory programFactory;
+    private final DataElementFactory dataElementFactory;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
@@ -311,6 +313,9 @@ public final class D2 {
         programFactory = new ProgramFactory(retrofit, databaseAdapter,
                 optionSetFactory.getOptionSetHandler(), resourceHandler);
 
+        this.dataElementFactory =
+                new DataElementFactory(retrofit, databaseAdapter, resourceHandler);
+
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
                     new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
@@ -322,7 +327,6 @@ public final class D2 {
             this.metadataAuditConsumer.setMetadataAuditListener(metadataAuditListener);
         }
     }
-
 
     @NonNull
     public Retrofit retrofit() {
@@ -396,6 +400,7 @@ public final class D2 {
         deletableStoreList.addAll(trackedEntityAttributeFactory.getDeletableStores());
         deletableStoreList.addAll(optionSetFactory.getDeletableStores());
         deletableStoreList.addAll(programFactory.getDeletableStores());
+        deletableStoreList.addAll(dataElementFactory.getDeletableStores());
 
         return new LogOutUserCallable(deletableStoreList);
     }
@@ -408,7 +413,7 @@ public final class D2 {
                 userRoleProgramLinkStore, organisationUnitStore, userOrganisationUnitLinkStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 categoryComboQuery, comboService, categoryComboHandler, optionSetFactory,
-                trackedEntityFactory, trackedEntityAttributeFactory, programFactory);
+                trackedEntityFactory, trackedEntityAttributeFactory, programFactory, dataElementFactory);
     }
 
     @NonNull

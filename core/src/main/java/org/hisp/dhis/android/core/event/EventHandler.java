@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
@@ -70,6 +71,8 @@ public class EventHandler {
 
             trackedEntityDataValueHandler.handle(event.uid(),
                     event.trackedEntityDataValues());
+        } else {
+            Log.d(this.getClass().getSimpleName(), event.uid() + " with no org. unit or event date");
         }
     }
 

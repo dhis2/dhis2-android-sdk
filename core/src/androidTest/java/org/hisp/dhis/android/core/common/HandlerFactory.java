@@ -25,10 +25,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.EventHandler;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
-import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipStoreImpl;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -38,12 +36,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 
 public class HandlerFactory {
 
@@ -59,7 +54,6 @@ public class HandlerFactory {
         EnrollmentHandler enrollmentHandler = createEnrollmentHandler(databaseAdapter);
 
         RelationshipHandler relationshipHandler  = new RelationshipHandler(new RelationshipStoreImpl(databaseAdapter),
-               new RelationshipTypeStoreImpl(databaseAdapter),
                new TrackedEntityInstanceStoreImpl(databaseAdapter));
 
         TrackedEntityInstanceHandler trackedEntityInstanceHandler =

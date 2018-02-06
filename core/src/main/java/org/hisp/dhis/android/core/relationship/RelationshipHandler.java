@@ -10,14 +10,11 @@ import java.util.List;
 
 public class RelationshipHandler {
     private final RelationshipStore relationshipStore;
-    private final RelationshipTypeStore relationshipTypeStore;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     public RelationshipHandler(@NonNull RelationshipStore relationshipStore,
-            @NonNull RelationshipTypeStore relationshipTypeStore,
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore) {
         this.relationshipStore = relationshipStore;
-        this.relationshipTypeStore = relationshipTypeStore;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
     }
 

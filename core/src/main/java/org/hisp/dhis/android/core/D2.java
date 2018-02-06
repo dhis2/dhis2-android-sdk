@@ -115,7 +115,6 @@ import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
-import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipStore;
 import org.hisp.dhis.android.core.relationship.RelationshipStoreImpl;
@@ -216,7 +215,6 @@ public final class D2 {
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipTypeStore;
-    private final RelationshipStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
 
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
@@ -320,7 +318,7 @@ public final class D2 {
                 new EnrollmentStoreImpl(databaseAdapter);
         this.eventStore =
                 new EventStoreImpl(databaseAdapter);
-        this.relationshipStore = new RelationshipStoreImpl(databaseAdapter);
+        RelationshipStore relationshipStore = new RelationshipStoreImpl(databaseAdapter);
 
         this.trackedEntityDataValueStore =
                 new TrackedEntityDataValueStoreImpl(databaseAdapter);
@@ -360,7 +358,8 @@ public final class D2 {
                 new TrackedEntityAttributeValueHandler(trackedEntityAttributeValueStore);
 
         EnrollmentHandler enrollmentHandler = new EnrollmentHandler(enrollmentStore, eventHandler);
-        RelationshipHandler relationshipHandler = new RelationshipHandler(relationshipStore, relationshipTypeStore, trackedEntityInstanceStore);
+        RelationshipHandler relationshipHandler = new RelationshipHandler(relationshipStore,
+                trackedEntityInstanceStore);
 
         trackedEntityInstanceHandler =
                 new TrackedEntityInstanceHandler(

@@ -36,11 +36,8 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.option.OptionHandler;
+import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetHandler;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
@@ -84,8 +81,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                        ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore,
                        ProgramRuleActionStore programRuleActionStore,
                        ProgramRuleStore programRuleStore,
-                       OptionStore optionStore,
-                       OptionSetStore optionSetStore,
+            OptionSetFactory optionSetFactory,
                        DataElementStore dataElementStore,
                        ProgramStageDataElementStore programStageDataElementStore,
                        ProgramStageSectionStore programStageSectionStore,
@@ -104,9 +100,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
         ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore);
 
-        OptionHandler optionHandler = new OptionHandler(optionStore);
-        OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
-        DataElementHandler dataElementHandler = new DataElementHandler(dataElementStore, optionSetHandler);
+        DataElementHandler dataElementHandler =
+                new DataElementHandler(dataElementStore, optionSetFactory.getOptionSetHandler());
 
         ProgramStageDataElementHandler programStageDataElementHandler = new ProgramStageDataElementHandler(
                 programStageDataElementStore, dataElementHandler

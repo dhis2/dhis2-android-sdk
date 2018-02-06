@@ -34,27 +34,32 @@ import android.support.annotation.VisibleForTesting;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.audit.MetadataAuditConnection;
+import org.hisp.dhis.android.core.audit.MetadataAuditConsumer;
+import org.hisp.dhis.android.core.audit.MetadataAuditHandlerFactory;
+import org.hisp.dhis.android.core.audit.MetadataAuditListener;
+import org.hisp.dhis.android.core.audit.MetadataSyncedListener;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryComboStore;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryHandler;
-import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionHandler;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryQuery;
@@ -67,8 +72,7 @@ import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -78,7 +82,7 @@ import org.hisp.dhis.android.core.event.EventService;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
-import org.hisp.dhis.android.core.option.OptionSetService;
+import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.option.OptionStore;
@@ -118,19 +122,18 @@ import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
@@ -173,9 +176,7 @@ public final class D2 {
     private final SystemInfoService systemInfoService;
     private final ProgramService programService;
     private final OrganisationUnitService organisationUnitService;
-    private final TrackedEntityService trackedEntityService;
     private final TrackedEntityInstanceService trackedEntityInstanceService;
-    private final OptionSetService optionSetService;
     private final EventService eventService;
     private final CategoryService categoryService;
     private final CategoryComboService comboService;
@@ -195,7 +196,7 @@ public final class D2 {
     private final UserRoleStore userRoleStore;
     private final UserRoleProgramLinkStore userRoleProgramLinkStore;
     private final ProgramStore programStore;
-    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramIndicatorStore programIndicatorStore;
@@ -205,7 +206,6 @@ public final class D2 {
     private final ProgramRuleStore programRuleStore;
     private final OptionStore optionStore;
     private final OptionSetStore optionSetStore;
-    private final DataElementStore dataElementStore;
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
@@ -236,20 +236,23 @@ public final class D2 {
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
     private final OrganisationUnitHandler organisationUnitHandler;
+    private MetadataAuditConsumer metadataAuditConsumer;
+    private MetadataAuditListener metadataAuditListener;
 
+    private final OptionSetFactory optionSetFactory;
+    private final TrackedEntityFactory trackedEntityFactory;
+    private final DataElementFactory dataElementFactory;
 
     @VisibleForTesting
-    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter) {
+    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
+            MetadataAuditConnection metadataAuditConnection) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
-
         // services
         this.userService = retrofit.create(UserService.class);
         this.systemInfoService = retrofit.create(SystemInfoService.class);
         this.programService = retrofit.create(ProgramService.class);
         this.organisationUnitService = retrofit.create(OrganisationUnitService.class);
-        this.trackedEntityService = retrofit.create(TrackedEntityService.class);
-        this.optionSetService = retrofit.create(OptionSetService.class);
         this.trackedEntityInstanceService = retrofit.create(TrackedEntityInstanceService.class);
         this.eventService = retrofit.create(EventService.class);
         this.categoryService = retrofit.create(CategoryService.class);
@@ -277,8 +280,6 @@ public final class D2 {
                 new UserRoleProgramLinkStoreImpl(databaseAdapter);
         this.programStore =
                 new ProgramStoreImpl(databaseAdapter);
-        this.trackedEntityAttributeStore =
-                new TrackedEntityAttributeStoreImpl(databaseAdapter);
         this.programTrackedEntityAttributeStore =
                 new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
         this.programRuleVariableStore =
@@ -295,8 +296,6 @@ public final class D2 {
                 new OptionStoreImpl(databaseAdapter);
         this.optionSetStore =
                 new OptionSetStoreImpl(databaseAdapter);
-        this.dataElementStore =
-                new DataElementStoreImpl(databaseAdapter);
         this.programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter);
         this.programStageSectionStore =
@@ -368,6 +367,28 @@ public final class D2 {
         categoryComboHandler = new CategoryComboHandler(categoryComboStore,
                 categoryComboOptionCategoryLinkStore,
                 categoryCategoryComboLinkStore, optionComboHandler);
+
+        //factories
+        optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
+
+        trackedEntityFactory =
+                new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
+
+        trackedEntityAttributeFactory = new TrackedEntityAttributeFactory(retrofit, databaseAdapter,
+                resourceHandler);
+
+        this.dataElementFactory =
+                new DataElementFactory(retrofit, databaseAdapter, resourceHandler);
+
+        if (metadataAuditConnection != null) {
+            MetadataAuditHandlerFactory metadataAuditHandlerFactory =
+                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory);
+
+            this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
+
+            this.metadataAuditConsumer = new MetadataAuditConsumer(metadataAuditConnection);
+            this.metadataAuditConsumer.setMetadataAuditListener(metadataAuditListener);
+        }
     }
 
     @NonNull
@@ -425,7 +446,7 @@ public final class D2 {
         deletableStoreList.add(userRoleStore);
         deletableStoreList.add(userRoleProgramLinkStore);
         deletableStoreList.add(programStore);
-        deletableStoreList.add(trackedEntityAttributeStore);
+        deletableStoreList.addAll(trackedEntityAttributeFactory.getDeletableStores());
         deletableStoreList.add(programTrackedEntityAttributeStore);
         deletableStoreList.add(programRuleVariableStore);
         deletableStoreList.add(programIndicatorStore);
@@ -434,7 +455,7 @@ public final class D2 {
         deletableStoreList.add(programRuleStore);
         deletableStoreList.add(optionStore);
         deletableStoreList.add(optionSetStore);
-        deletableStoreList.add(dataElementStore);
+        deletableStoreList.addAll(dataElementFactory.getDeletableStores());
         deletableStoreList.add(programStageDataElementStore);
         deletableStoreList.add(programStageSectionStore);
         deletableStoreList.add(programStageStore);
@@ -461,20 +482,16 @@ public final class D2 {
     public Call<Response> syncMetaData() {
         return new MetadataCall(
                 databaseAdapter, systemInfoService, userService, programService,
-                organisationUnitService,
-                trackedEntityService, optionSetService, systemInfoStore, resourceStore, userStore,
+                organisationUnitService, systemInfoStore, resourceStore, userStore,
                 userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
-                organisationUnitStore,
-                userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
+                organisationUnitStore, userOrganisationUnitLinkStore, programStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, optionStore,
-                optionSetStore, dataElementStore, programStageDataElementStore,
-                programStageSectionStore,
-                programStageStore, relationshipStore, trackedEntityStore,
-                organisationUnitProgramLinkStore, categoryQuery,
-                categoryService, categoryHandler, categoryComboQuery, comboService,
-                categoryComboHandler);
+                programRuleStore, programStageDataElementStore,
+                programStageSectionStore, programStageStore, relationshipStore,
+                organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
+                categoryComboQuery, comboService, categoryComboHandler, optionSetFactory,
+                trackedEntityFactory, trackedEntityAttributeFactory, dataElementFactory);
     }
 
     @NonNull
@@ -503,10 +520,21 @@ public final class D2 {
         return new EventPostCall(eventService, eventStore, trackedEntityDataValueStore);
     }
 
+    public void startListeningSyncedMetadata(MetadataSyncedListener metadataSyncedListener)
+            throws Exception {
+        metadataAuditListener.setMetadataSyncedListener(metadataSyncedListener);
+        metadataAuditConsumer.start();
+    }
+
+    public void stopListeningSyncedMetadata() throws Exception {
+        metadataAuditConsumer.stop();
+    }
+
     public static class Builder {
         private ConfigurationModel configuration;
         private DatabaseAdapter databaseAdapter;
         private OkHttpClient okHttpClient;
+        private MetadataAuditConnection metadataAuditConnection;
 
         public Builder() {
             // empty constructor
@@ -527,6 +555,12 @@ public final class D2 {
         @NonNull
         public Builder okHttpClient(@NonNull OkHttpClient okHttpClient) {
             this.okHttpClient = okHttpClient;
+            return this;
+        }
+
+        @NonNull
+        public Builder metadataAuditConnection(MetadataAuditConnection metadataAuditConnection) {
+            this.metadataAuditConnection = metadataAuditConnection;
             return this;
         }
 
@@ -556,7 +590,9 @@ public final class D2 {
                     .validateEagerly(true)
                     .build();
 
-            return new D2(retrofit, databaseAdapter);
+            return new D2(retrofit, databaseAdapter, metadataAuditConnection);
         }
+
+
     }
 }

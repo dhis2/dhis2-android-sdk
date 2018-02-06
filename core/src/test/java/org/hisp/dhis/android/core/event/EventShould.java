@@ -40,12 +40,6 @@ import java.text.ParseException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class EventShould {
-
-    @Test(expected = IllegalStateException.class)
-    public void throw_illegal_state_exception_on_null_uid_field() {
-        EventModel.builder().uid(null).build();
-    }
-
     // ToDo: Consider re-evaluating usage of EqualsVerifier for store models
 //    @Test
 //    public void have_the_equals_method_conform_to_contract() {

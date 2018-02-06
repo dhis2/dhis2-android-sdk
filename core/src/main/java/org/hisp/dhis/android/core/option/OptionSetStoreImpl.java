@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.android.core.option;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
@@ -38,10 +40,19 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.NPathComplexity",
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity",
+        "PMD.AvoidInstantiatingObjectsInLoops"
+})
 public class OptionSetStoreImpl implements OptionSetStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + OptionSetModel.TABLE + " (" +
+    private static final String FIELDS =
             OptionSetModel.Columns.UID + ", " +
             OptionSetModel.Columns.CODE + ", " +
             OptionSetModel.Columns.NAME + ", " +
@@ -49,8 +60,14 @@ public class OptionSetStoreImpl implements OptionSetStore {
             OptionSetModel.Columns.CREATED + ", " +
             OptionSetModel.Columns.LAST_UPDATED + ", " +
             OptionSetModel.Columns.VERSION + ", " +
-            OptionSetModel.Columns.VALUE_TYPE + ") " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+                    OptionSetModel.Columns.VALUE_TYPE;
+
+    private static final String QUERY_STATEMENT =
+            "SELECT " + FIELDS + " FROM " + OptionSetModel.TABLE +
+                    " WHERE " + OptionSetModel.Columns.UID + " =?";
+
+    private static final String INSERT_STATEMENT = "INSERT INTO " + OptionSetModel.TABLE + " (" +
+            FIELDS + ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + OptionSetModel.TABLE + " SET " +
             OptionSetModel.Columns.UID + " =?, " +
@@ -83,7 +100,8 @@ public class OptionSetStoreImpl implements OptionSetStore {
                        @NonNull Date created, @NonNull Date lastUpdated, @NonNull Integer version,
                        @NonNull ValueType valueType) {
         isNull(uid);
-        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, version, valueType);
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, version,
+                valueType);
 
         // execute and clear bindings
         Long insert = databaseAdapter.executeInsert(OptionSetModel.TABLE, insertStatement);
@@ -95,12 +113,13 @@ public class OptionSetStoreImpl implements OptionSetStore {
 
     @Override
     public int update(@NonNull String uid, @NonNull String code, @NonNull String name,
-                      @NonNull String displayName, @NonNull Date created,
-                      @NonNull Date lastUpdated, @NonNull Integer version, @NonNull ValueType valueType,
-                      @NonNull String whereUid) {
+            @NonNull String displayName, @NonNull Date created,
+            @NonNull Date lastUpdated, @NonNull Integer version, @NonNull ValueType valueType,
+            @NonNull String whereUid) {
         isNull(uid);
         isNull(whereUid);
-        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, version, valueType);
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, version,
+                valueType);
 
         // bind the where clause
         sqLiteBind(updateStatement, 9, whereUid);
@@ -124,6 +143,15 @@ public class OptionSetStoreImpl implements OptionSetStore {
         return delete;
     }
 
+    @Override
+    public OptionSet queryByUid(String uid) {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT, uid);
+
+        Map<String, OptionSet> optionSetMap = mapFromCursor(cursor);
+
+        return optionSetMap.get(uid);
+    }
+
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @NonNull String code,
                                @NonNull String name, @NonNull String displayName, @NonNull Date created,
                                @NonNull Date lastUpdated, @NonNull Integer version, @NonNull ValueType valueType) {
@@ -140,5 +168,49 @@ public class OptionSetStoreImpl implements OptionSetStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(OptionSetModel.TABLE);
+    }
+
+    private Map<String, OptionSet> mapFromCursor(Cursor cursor) {
+
+        Map<String, OptionSet> optionSetMap = new HashMap<>();
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    String uid = cursor.getString(0) == null ? null : cursor.getString(
+                            0);
+                    String code = cursor.getString(1) == null ? null : cursor.getString(
+                            1);
+                    String name = cursor.getString(2) == null ? null : cursor.getString(
+                            2);
+                    String displayName = cursor.getString(3) == null ? null : cursor.getString(
+                            3);
+                    Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
+                    Date lastUpdated = cursor.getString(5) == null ? null : parse(
+                            cursor.getString(5));
+
+                    Integer version = cursor.getInt(6);
+
+                    ValueType valueType = cursor.getString(7) == null ? null :
+                            ValueType.valueOf(cursor.getString(7));
+
+                    optionSetMap.put(uid, OptionSet.builder()
+                            .uid(uid)
+                            .code(code)
+                            .name(name)
+                            .displayName(displayName)
+                            .created(created)
+                            .lastUpdated(lastUpdated)
+                            .version(version)
+                            .valueType(valueType)
+                            .build());
+
+                } while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return optionSetMap;
     }
 }

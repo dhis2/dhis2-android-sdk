@@ -46,27 +46,45 @@ public class RelationshipStoreImpl implements RelationshipStore {
             RelationshipModel.Columns.RELATIONSHIP_TYPE + ") " +
             "VALUES(?, ?, ?);";
 
+    private static final String DELETE_STATEMENT = "DELETE FROM " +
+            RelationshipModel.TABLE + " WHERE " +
+            RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + "=?;";
+
     private final SQLiteStatement insertStatement;
+    private final SQLiteStatement deleteStatement;
     private final DatabaseAdapter databaseAdapter;
 
     public RelationshipStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
     @Override
     public long insert(@Nullable String trackedEntityInstanceA,
                        @Nullable String trackedEntityInstanceB,
-                       @NonNull String relationshipType) {
+                       @NonNull String displayName) {
 
-        isNull(relationshipType);
+        isNull(displayName);
         sqLiteBind(insertStatement, 1, trackedEntityInstanceA);
         sqLiteBind(insertStatement, 2, trackedEntityInstanceB);
-        sqLiteBind(insertStatement, 3, relationshipType);
+        sqLiteBind(insertStatement, 3, displayName);
 
         long ret = databaseAdapter.executeInsert(RelationshipModel.TABLE, insertStatement);
         insertStatement.clearBindings();
         return ret;
+    }
+
+    @Override
+    public int removeOldRelations(String uid) {
+        isNull(uid);
+        // bind the where argument
+        sqLiteBind(deleteStatement, 1, uid);
+
+        // execute and clear bindings
+        int delete = databaseAdapter.executeUpdateDelete(RelationshipModel.TABLE, deleteStatement);
+        deleteStatement.clearBindings();
+        return delete;
     }
 
     @Override

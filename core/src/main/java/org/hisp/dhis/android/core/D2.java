@@ -115,6 +115,10 @@ import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.RelationshipStore;
+import org.hisp.dhis.android.core.relationship.RelationshipStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -211,7 +215,8 @@ public final class D2 {
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
-    private final RelationshipTypeStore relationshipStore;
+    private final RelationshipTypeStore relationshipTypeStore;
+    private final RelationshipStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
 
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
@@ -305,7 +310,7 @@ public final class D2 {
                 new ProgramStageSectionStoreImpl(databaseAdapter);
         this.programStageStore =
                 new ProgramStageStoreImpl(databaseAdapter);
-        this.relationshipStore =
+        this.relationshipTypeStore =
                 new RelationshipTypeStoreImpl(databaseAdapter);
         this.trackedEntityStore =
                 new TrackedEntityStoreImpl(databaseAdapter);
@@ -315,6 +320,7 @@ public final class D2 {
                 new EnrollmentStoreImpl(databaseAdapter);
         this.eventStore =
                 new EventStoreImpl(databaseAdapter);
+        this.relationshipStore = new RelationshipStoreImpl(databaseAdapter);
 
         this.trackedEntityDataValueStore =
                 new TrackedEntityDataValueStoreImpl(databaseAdapter);
@@ -354,12 +360,15 @@ public final class D2 {
                 new TrackedEntityAttributeValueHandler(trackedEntityAttributeValueStore);
 
         EnrollmentHandler enrollmentHandler = new EnrollmentHandler(enrollmentStore, eventHandler);
+        RelationshipHandler relationshipHandler = new RelationshipHandler(relationshipStore, relationshipTypeStore, trackedEntityInstanceStore);
 
         trackedEntityInstanceHandler =
                 new TrackedEntityInstanceHandler(
                         trackedEntityInstanceStore,
                         trackedEntityAttributeValueHandler,
-                        enrollmentHandler);
+                        enrollmentHandler,
+                        relationshipHandler);
+
 
         categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler,
                 categoryCategoryOptionLinkStore);
@@ -460,7 +469,7 @@ public final class D2 {
         deletableStoreList.add(programStageDataElementStore);
         deletableStoreList.add(programStageSectionStore);
         deletableStoreList.add(programStageStore);
-        deletableStoreList.add(relationshipStore);
+        deletableStoreList.add(relationshipTypeStore);
         deletableStoreList.add(trackedEntityStore);
         deletableStoreList.add(trackedEntityInstanceStore);
         deletableStoreList.add(enrollmentStore);
@@ -489,7 +498,7 @@ public final class D2 {
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore, dataElementStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore,
+                programStageSectionStore, programStageStore, relationshipTypeStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 categoryComboQuery, comboService, categoryComboHandler, optionSetFactory,
                 trackedEntityFactory, trackedEntityAttributeFactory);

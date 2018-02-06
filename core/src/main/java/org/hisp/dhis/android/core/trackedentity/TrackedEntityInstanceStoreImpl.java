@@ -61,22 +61,24 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             Columns.STATE +
             ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityInstanceModel.TABLE + " SET " +
-            Columns.UID + " =?, " +
-            Columns.CREATED + " =?, " +
-            Columns.LAST_UPDATED + " =?, " +
-            Columns.CREATED_AT_CLIENT + " =? , " +
-            Columns.LAST_UPDATED_AT_CLIENT + " =? , " +
-            Columns.ORGANISATION_UNIT + " =?, " +
-            Columns.TRACKED_ENTITY + " =?, " +
-            Columns.STATE + " =? " +
-            " WHERE " +
-            Columns.UID + " =?;";
+    private static final String UPDATE_STATEMENT =
+            "UPDATE " + TrackedEntityInstanceModel.TABLE + " SET " +
+                    Columns.UID + " =?, " +
+                    Columns.CREATED + " =?, " +
+                    Columns.LAST_UPDATED + " =?, " +
+                    Columns.CREATED_AT_CLIENT + " =? , " +
+                    Columns.LAST_UPDATED_AT_CLIENT + " =? , " +
+                    Columns.ORGANISATION_UNIT + " =?, " +
+                    Columns.TRACKED_ENTITY + " =?, " +
+                    Columns.STATE + " =? " +
+                    " WHERE " +
+                    Columns.UID + " =?;";
 
-    private static final String SET_STATE_STATEMENT = "UPDATE " + TrackedEntityInstanceModel.TABLE + " SET " +
-            Columns.STATE + " =?" +
-            " WHERE " +
-            Columns.UID + " =?;";
+    private static final String SET_STATE_STATEMENT =
+            "UPDATE " + TrackedEntityInstanceModel.TABLE + " SET " +
+                    Columns.STATE + " =?" +
+                    " WHERE " +
+                    Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " +
             TrackedEntityInstanceModel.TABLE +
@@ -101,6 +103,11 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             QUERY_STATEMENT +
                     " WHERE state = 'SYNCED'";
 
+    private static final String CHECK_IF_EXIST_BY_UID_STATMENT = "SELECT " +
+            Columns.UID +
+            " FROM " + TrackedEntityInstanceModel.TABLE + " " +
+            " WHERE " + Columns.UID + "=?;";
+
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
     private final SQLiteStatement setStateStatement;
@@ -120,7 +127,8 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
                        @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
-                       @NonNull String organisationUnit, @NonNull String trackedEntity, @Nullable State state) {
+                       @NonNull String organisationUnit, @NonNull String trackedEntity,
+            @Nullable State state) {
 
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, created);
@@ -158,7 +166,8 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         // bind the where clause
         sqLiteBind(updateStatement, 9, whereTrackedEntityInstanceUid);
 
-        int rowId = databaseAdapter.executeUpdateDelete(TrackedEntityInstanceModel.TABLE, updateStatement);
+        int rowId = databaseAdapter.executeUpdateDelete(TrackedEntityInstanceModel.TABLE,
+                updateStatement);
         updateStatement.clearBindings();
 
         return rowId;
@@ -181,7 +190,8 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         // bind the where argument
         sqLiteBind(setStateStatement, 2, uid);
 
-        int updatedRow = databaseAdapter.executeUpdateDelete(TrackedEntityInstanceModel.TABLE, setStateStatement);
+        int updatedRow = databaseAdapter.executeUpdateDelete(TrackedEntityInstanceModel.TABLE,
+                setStateStatement);
         setStateStatement.clearBindings();
 
         return updatedRow;
@@ -211,6 +221,12 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         Map<String, TrackedEntityInstance> trackedEntityInstanceMap = mapFromCursor(cursor);
 
         return trackedEntityInstanceMap;
+    }
+
+    @Override
+    public boolean exists(String uid) {
+        Cursor cursor = databaseAdapter.query(CHECK_IF_EXIST_BY_UID_STATMENT, uid);
+        return cursor.getCount() > 0;
     }
 
     @NonNull

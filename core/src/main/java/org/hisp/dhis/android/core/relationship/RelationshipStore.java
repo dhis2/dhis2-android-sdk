@@ -41,4 +41,5 @@ public interface RelationshipStore extends DeletableStore {
             @NonNull String relationshipType
     );
 
+    int removeOldRelations(String uid);
 }

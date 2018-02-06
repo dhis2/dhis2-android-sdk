@@ -434,10 +434,6 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + " TEXT NOT NULL," +
                     RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + " TEXT NOT NULL," +
                     RelationshipModel.Columns.RELATIONSHIP_TYPE + " TEXT NOT NULL," +
-                    " FOREIGN KEY (" + RelationshipModel.Columns.RELATIONSHIP_TYPE + ") " +
-                    " REFERENCES " + RelationshipTypeModel.TABLE + " ("
-                    + RelationshipTypeModel.Columns.UID + ")" +
-                    " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
                     " FOREIGN KEY (" + RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + ") " +
                     " REFERENCES " + TrackedEntityInstanceModel.TABLE + " ("
                     + TrackedEntityInstanceModel.Columns.UID + ")" +

@@ -33,6 +33,8 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
 
+import java.util.List;
+
 public interface RelationshipStore extends DeletableStore {
 
     long insert(
@@ -42,4 +44,6 @@ public interface RelationshipStore extends DeletableStore {
     );
 
     int removeOldRelations(String uid);
+
+    List<Relationship> queryRelationsByUid(String uid);
 }

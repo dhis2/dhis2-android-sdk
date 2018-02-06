@@ -56,7 +56,6 @@
       "trackedEntityInstance": "PgmUFEQYZdt",
       "enrollmentDate": "2017-12-12T01:00:00.000",
       "followup": false,
-      "deleted": false,
       "incidentDate": "2017-12-12T07:33:52.993",
       "status": "ACTIVE",
       "events": [
@@ -116,7 +115,6 @@
       "trackedEntityInstance": "PgmUFEQYZdt",
       "enrollmentDate": "2017-01-20T00:00:00.000",
       "followup": false,
-      "deleted": false,
       "incidentDate": "2017-01-20T00:00:00.000",
       "status": "CANCELLED",
       "events": [

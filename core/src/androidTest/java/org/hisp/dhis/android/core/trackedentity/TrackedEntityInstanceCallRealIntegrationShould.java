@@ -48,7 +48,7 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTest
 
     @Test
     @LargeTest
-    public void download_tei_enrollments_and_events_and_relationships() throws Exception {
+    public void download_tei_enrollments_and_events_with_relationships() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(response.isSuccessful()).isTrue();

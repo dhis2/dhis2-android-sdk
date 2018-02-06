@@ -244,9 +244,11 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
                     String organisationUnit = cursor.getString(5) == null ? null : cursor.getString(5);
                     String trackedEntity = cursor.getString(6) == null ? null : cursor.getString(6);
 
-                    trackedEntityInstanceMap.put(uid, TrackedEntityInstance.create(
-                            uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                            organisationUnit, trackedEntity, false, null, null, null));
+                    trackedEntityInstanceMap.put(uid, TrackedEntityInstance.builder()
+                            .uid(uid).created(created).lastUpdated(lastUpdated).createdAtClient(createdAtClient)
+                            .lastUpdatedAtClient(lastUpdatedAtClient).organisationUnit(organisationUnit)
+                            .trackedEntity(trackedEntity).deleted(false)
+                            .build());
 
                 } while (cursor.moveToNext());
             }

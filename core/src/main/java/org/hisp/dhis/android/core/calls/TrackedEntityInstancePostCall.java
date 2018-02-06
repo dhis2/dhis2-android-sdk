@@ -144,12 +144,20 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
                         }
                     }
                     enrollmentsRecreated.add(
-                            Enrollment.create(enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
-                                    enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
-                                    enrollment.organisationUnit(), enrollment.program(), enrollment.dateOfEnrollment(),
-                                    enrollment.dateOfIncident(), enrollment.followUp(), enrollment.enrollmentStatus(),
-                                    enrollment.trackedEntityInstance(), enrollment.coordinate(), enrollment.deleted(),
-                                    eventRecreated));
+                            Enrollment.builder().uid(enrollment.uid()).created(enrollment.created())
+                            .lastUpdated(enrollment.lastUpdated())
+                            .createdAtClient(enrollment.createdAtClient())
+                            .lastUpdatedAtClient(enrollment.lastUpdatedAtClient())
+                            .organisationUnit(enrollment.organisationUnit())
+                            .program(enrollment.program())
+                            .dateOfEnrollment(enrollment.dateOfEnrollment())
+                            .dateOfIncident(enrollment.dateOfIncident())
+                            .followUp(enrollment.followUp())
+                            .enrollmentStatus(enrollment.enrollmentStatus())
+                            .trackedEntityInstance(enrollment.trackedEntityInstance())
+                            .coordinate(enrollment.coordinate())
+                            .deleted(enrollment.deleted())
+                            .events(eventRecreated).build());
 
                 }
             }
@@ -164,12 +172,17 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
             }
             TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(teiUid.getKey());
 
-            trackedEntityInstancesRecreated.add(TrackedEntityInstance.create(trackedEntityInstance.uid(),
-                    trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),
-                    trackedEntityInstance.createdAtClient(), trackedEntityInstance.lastUpdatedAtClient(),
-                    trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntity(),
-                    trackedEntityInstance.deleted(), attributeValues,
-                    relationshipRecreated, enrollmentsRecreated));
+            trackedEntityInstancesRecreated.add(TrackedEntityInstance.builder()
+            .uid(trackedEntityInstance.uid()).created(trackedEntityInstance.created())
+                    .lastUpdated(trackedEntityInstance.lastUpdated())
+                    .createdAtClient(trackedEntityInstance.createdAtClient())
+                    .lastUpdatedAtClient(trackedEntityInstance.lastUpdatedAtClient())
+                    .organisationUnit(trackedEntityInstance.organisationUnit())
+                    .trackedEntity(trackedEntityInstance.trackedEntity())
+                    .deleted(trackedEntityInstance.deleted())
+                    .trackedEntityAttributeValues(trackedEntityInstance.trackedEntityAttributeValues())
+                    .relationships(trackedEntityInstance.relationships())
+                    .enrollments(trackedEntityInstance.enrollments()).build());
 
         }
 

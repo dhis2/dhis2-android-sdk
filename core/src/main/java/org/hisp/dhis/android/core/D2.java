@@ -97,6 +97,7 @@ import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
@@ -136,8 +137,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-// ToDo: onMetadataChanged corner cases when user initially has been signed in, but later was
-// locked (or
+// ToDo: handle corner cases when user initially has been signed in, but later was locked (or
 // password has changed)
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public final class D2 {
@@ -167,6 +167,7 @@ public final class D2 {
     private final SystemInfoStore systemInfoStore;
     private final UserRoleStore userRoleStore;
     private final UserRoleProgramLinkStore userRoleProgramLinkStore;
+
     private final RelationshipTypeStore relationshipStore;
 
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
@@ -198,6 +199,7 @@ public final class D2 {
 
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
+    private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
     private final ProgramFactory programFactory;
 
     @VisibleForTesting
@@ -303,6 +305,9 @@ public final class D2 {
         trackedEntityFactory =
                 new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
 
+        trackedEntityAttributeFactory = new TrackedEntityAttributeFactory(retrofit, databaseAdapter,
+                resourceHandler);
+
         programFactory = new ProgramFactory(retrofit, databaseAdapter,
                 optionSetFactory.getOptionSetHandler(), resourceHandler);
 
@@ -388,6 +393,7 @@ public final class D2 {
         deletableStoreList.add(categoryCategoryComboLinkStore);
 
         deletableStoreList.addAll(trackedEntityFactory.getDeletableStores());
+        deletableStoreList.addAll(trackedEntityAttributeFactory.getDeletableStores());
         deletableStoreList.addAll(optionSetFactory.getDeletableStores());
         deletableStoreList.addAll(programFactory.getDeletableStores());
 
@@ -402,7 +408,7 @@ public final class D2 {
                 userRoleProgramLinkStore, organisationUnitStore, userOrganisationUnitLinkStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 categoryComboQuery, comboService, categoryComboHandler, optionSetFactory,
-                trackedEntityFactory, programFactory);
+                trackedEntityFactory, trackedEntityAttributeFactory, programFactory);
     }
 
     @NonNull

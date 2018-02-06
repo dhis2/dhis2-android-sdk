@@ -74,6 +74,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
@@ -213,6 +214,9 @@ public class MetadataCallShould {
 
     private OptionSetFactory optionSetFactory;
     private TrackedEntityFactory trackedEntityFactory;
+
+    @Mock
+    private TrackedEntityAttributeFactory trackedEntityAttributeFactory;
     private ProgramFactory programFactory;
 
     // object to test
@@ -280,8 +284,9 @@ public class MetadataCallShould {
                 userRoleProgramLinkStore, organisationUnitStore, userOrganisationUnitLinkStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetFactory, trackedEntityFactory, programFactory);
+                optionSetFactory, trackedEntityFactory, trackedEntityAttributeFactory, programFactory);
 
+        when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
         when(userCall.execute()).thenReturn(Response.success(user));
         when(organisationUnitCall.execute()).thenReturn(Response.success(organisationUnitPayload));

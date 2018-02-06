@@ -95,7 +95,7 @@ public class OptionChangeOnServerShould extends AbsStoreTestCase {
     public void update_option_set_if_audit_type_is_update() throws Exception {
         String filename = "option_sets.json";
 
-        givenAExistedOptionPreviously();
+        givenAPreExistingOption();
 
         MetadataAudit<Option> metadataAudit =
                 givenAMetadataAudit("audit/option_update.json");
@@ -121,7 +121,7 @@ public class OptionChangeOnServerShould extends AbsStoreTestCase {
 
     @Test
     public void delete_option_set_in_database_if_audit_type_is_delete() throws Exception {
-        givenAExistedOptionPreviously();
+        givenAPreExistingOption();
 
         MetadataAudit<Option> metadataAudit =
                 givenAMetadataAudit("audit/option_delete.json");
@@ -153,7 +153,7 @@ public class OptionChangeOnServerShould extends AbsStoreTestCase {
         return parser.parse(json, MetadataAudit.class, Option.class);
     }
 
-    private void givenAExistedOptionPreviously() throws IOException {
+    private void givenAPreExistingOption() throws IOException {
         OptionSet optionSet = OptionSet.builder()
                 .uid("VQ2lai3OfVG")
                 .valueType(ValueType.TEXT)

@@ -60,6 +60,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
@@ -104,6 +105,7 @@ public class MetadataCall implements Call<Response> {
 
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
+    private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
     private final ProgramFactory programFactory;
 
     private boolean isExecuted;
@@ -131,8 +133,8 @@ public class MetadataCall implements Call<Response> {
             @NonNull CategoryComboHandler categoryComboHandler,
             @NonNull OptionSetFactory optionSetFactory,
             @NonNull TrackedEntityFactory trackedEntityFactory,
+            @NonNull TrackedEntityAttributeFactory trackedEntityAttributeFactory,
             @Nonnull ProgramFactory programFactory) {
-
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -155,6 +157,7 @@ public class MetadataCall implements Call<Response> {
 
         this.optionSetFactory = optionSetFactory;
         this.trackedEntityFactory = trackedEntityFactory;
+        this.trackedEntityAttributeFactory = trackedEntityAttributeFactory;
         this.programFactory = programFactory;
     }
 

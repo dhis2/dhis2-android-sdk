@@ -275,6 +275,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
     /**
      * Load and parse all required database migrations.
      */
+    @Override
     public List<Map<String, List<String>>> parse(int oldVersion, int newVersion, boolean up)
             throws IOException {
         synchronized (this) {
@@ -308,6 +309,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
      * It used it creating initial database
      * </p>
      */
+    @Override
     public Map<String, List<String>> parse() throws IOException {
         synchronized (this) {
             return this.parse(1);
@@ -323,6 +325,7 @@ public class CustomSQLBriteOpenHelper extends SQLBriteOpenHelper {
      *
      * @param newVersion newer database version
      */
+    @Override
     public Map<String, List<String>> parse(int newVersion) throws IOException {
         synchronized (this) {
             //obtain migration path

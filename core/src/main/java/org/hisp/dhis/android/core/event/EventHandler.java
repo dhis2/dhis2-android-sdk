@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
@@ -31,6 +32,10 @@ public class EventHandler {
         }
     }
 
+    private boolean isValid(@NonNull Event event) {
+        return event.eventDate()!=null && event.organisationUnit()!=null;
+    }
+
     public void handle(@NonNull Event event) {
         if (event == null) {
             return;
@@ -38,7 +43,7 @@ public class EventHandler {
 
         if (isDeleted(event)) {
             eventStore.delete(event.uid());
-        } else {
+        } else if (isValid(event)) {
             String latitude = null;
             String longitude = null;
 
@@ -66,6 +71,8 @@ public class EventHandler {
 
             trackedEntityDataValueHandler.handle(event.uid(),
                     event.trackedEntityDataValues());
+        } else {
+            Log.d(this.getClass().getSimpleName(), event.uid() + " with no org. unit or event date");
         }
     }
 

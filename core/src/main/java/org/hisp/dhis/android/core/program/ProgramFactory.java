@@ -2,9 +2,9 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.dataelement.DataElementHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
 import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
@@ -36,17 +36,20 @@ public class ProgramFactory {
     private final ProgramRuleActionHandler programRuleActionHandler;
     private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramRuleVariableHandler programRuleVariableHandler;
+    private final DataElementFactory dataElementFactory;
 
     private final List<DeletableStore> deletableStores;
 
     public ProgramFactory(
             Retrofit retrofit, DatabaseAdapter databaseAdapter,
-            OptionSetHandler optionSetHandler, ResourceHandler resourceHandler) {
+            OptionSetHandler optionSetHandler, DataElementFactory dataElementFactory,
+            ResourceHandler resourceHandler) {
         this.programService = retrofit.create(ProgramService.class);
+        this.dataElementFactory = dataElementFactory;
         this.databaseAdapter = databaseAdapter;
         this.resourceHandler = resourceHandler;
 
-        DataElementStore dataElementStore = new DataElementStoreImpl(databaseAdapter);
+        DataElementStore dataElementStore = dataElementFactory.getDataElementStore();
 
         ProgramStageDataElementStore programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter);

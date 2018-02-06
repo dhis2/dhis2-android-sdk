@@ -310,11 +310,11 @@ public final class D2 {
         trackedEntityAttributeFactory = new TrackedEntityAttributeFactory(retrofit, databaseAdapter,
                 resourceHandler);
 
-        programFactory = new ProgramFactory(retrofit, databaseAdapter,
-                optionSetFactory.getOptionSetHandler(), resourceHandler);
-
         this.dataElementFactory =
                 new DataElementFactory(retrofit, databaseAdapter, resourceHandler);
+
+        programFactory = new ProgramFactory(retrofit, databaseAdapter,
+                optionSetFactory.getOptionSetHandler(), dataElementFactory, resourceHandler);
 
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =

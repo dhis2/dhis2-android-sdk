@@ -305,18 +305,13 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         List<Enrollment> downloadedEnrollments = new ArrayList<>();
 
         for (Event event : downloadedEventsWithoutValues) {
-            boolean deleted=false;
-            if(event.deleted()!=null && event.deleted())
-            {
-                deleted=true;
-            }
             event = Event.create(
                     event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
                     event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.program(), event.programStage(), event.organisationUnit(),
                     event.eventDate(), event.status(), event.coordinates(),
                     event.completedDate(),
-                    event.dueDate(), deleted, downloadedValues.get(event.uid()),
+                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()),
                     event.attributeCategoryOptions(), event.attributeOptionCombo(),
                     event.trackedEntityInstance());
 

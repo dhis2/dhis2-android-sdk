@@ -173,16 +173,17 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
             TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(teiUid.getKey());
 
             trackedEntityInstancesRecreated.add(TrackedEntityInstance.builder()
-            .uid(trackedEntityInstance.uid()).created(trackedEntityInstance.created())
+            .uid(trackedEntityInstance.uid())
+                    .created(trackedEntityInstance.created())
                     .lastUpdated(trackedEntityInstance.lastUpdated())
                     .createdAtClient(trackedEntityInstance.createdAtClient())
                     .lastUpdatedAtClient(trackedEntityInstance.lastUpdatedAtClient())
                     .organisationUnit(trackedEntityInstance.organisationUnit())
                     .trackedEntity(trackedEntityInstance.trackedEntity())
                     .deleted(trackedEntityInstance.deleted())
-                    .trackedEntityAttributeValues(trackedEntityInstance.trackedEntityAttributeValues())
-                    .relationships(trackedEntityInstance.relationships())
-                    .enrollments(trackedEntityInstance.enrollments()).build());
+                    .trackedEntityAttributeValues(attributeValues)
+                    .relationships(relationshipRecreated)
+                    .enrollments(enrollmentsRecreated).build());
 
         }
 

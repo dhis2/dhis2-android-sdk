@@ -364,7 +364,7 @@ public class EventStoreImpl implements EventStore {
                 uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 program, programStage, organisationUnit, eventDate, eventStatus,
                 coordinates, completedDate,
-                dueDate, null, null, categoryCombo, optionCombo, trackedEntityInstance);
+                dueDate, false, null, categoryCombo, optionCombo, trackedEntityInstance);
 
         return event;
     }

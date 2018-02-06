@@ -36,7 +36,6 @@ public class ProgramFactory {
     private final ProgramRuleActionHandler programRuleActionHandler;
     private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramRuleVariableHandler programRuleVariableHandler;
-    private final DataElementFactory dataElementFactory;
 
     private final List<DeletableStore> deletableStores;
 
@@ -45,7 +44,6 @@ public class ProgramFactory {
             OptionSetHandler optionSetHandler, DataElementFactory dataElementFactory,
             ResourceHandler resourceHandler) {
         this.programService = retrofit.create(ProgramService.class);
-        this.dataElementFactory = dataElementFactory;
         this.databaseAdapter = databaseAdapter;
         this.resourceHandler = resourceHandler;
 

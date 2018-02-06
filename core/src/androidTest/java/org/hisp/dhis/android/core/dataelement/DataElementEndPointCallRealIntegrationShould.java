@@ -21,6 +21,14 @@ import java.util.Set;
 public class DataElementEndPointCallRealIntegrationShould extends AbsStoreTestCase {
     private D2 d2;
 
+    @Override
+    @Before
+    public void setUp() throws IOException {
+        super.setUp();
+
+        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+    }
+
     @Test
     @LargeTest
     public void download_data_element_according_to_default_query() throws Exception {
@@ -31,18 +39,16 @@ public class DataElementEndPointCallRealIntegrationShould extends AbsStoreTestCa
         DataElementFactory dataElementFactory =
                 new DataElementFactory(d2.retrofit(), d2.databaseAdapter(),
                         HandlerFactory.createResourceHandler(databaseAdapter()));
-        Set<String> uIds = new HashSet<>(Arrays.asList("FTRrcoaog83", "P3jJH5Tu5VC", "FQ2o8UBlcrS"));
-        DataElementQuery dataElementQuery = new DataElementQuery(uIds);
+
+        Set<String> uidsSet =
+                new HashSet<>(Arrays.asList("FTRrcoaog83", "P+-3jJH5Tu5VC", "FQ2o8UBlcrS"));
+
+        DataElementQuery dataElementQuery = DataElementQuery.Builder.create()
+                .withUIds(uidsSet)
+                .build();
+
         response = dataElementFactory.newEndPointCall(dataElementQuery,
                 new Date()).call();
         Truth.assertThat(response.isSuccessful()).isTrue();
-    }
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 }

@@ -70,7 +70,7 @@ public class DataElementEndPointCall implements
                 ResourceModel.Type.DATA_ELEMENT);
 
         Response<Payload<DataElement>> dataElementByUids =
-                dataElementService.getDataElements(getSingleFields(),
+                dataElementService.getDataElements(getFields(),
                         DataElement.uid.in(dataElementQuery.getUIds()),
                         DataElement.lastUpdated.gt(
                                 lastSyncedDataElements)).execute();
@@ -99,19 +99,16 @@ public class DataElementEndPointCall implements
     }
 
 
-    private Fields<DataElement> getSingleFields() {
+    private Fields<DataElement> getFields() {
         return Fields.<DataElement>builder().fields(
-                DataElement.uid,
-                DataElement.code, DataElement.name, DataElement.displayName,
+                DataElement.uid, DataElement.code, DataElement.name, DataElement.displayName,
                 DataElement.created, DataElement.lastUpdated, DataElement.shortName,
                 DataElement.displayShortName, DataElement.description,
                 DataElement.displayDescription, DataElement.aggregationType,
                 DataElement.deleted, DataElement.dimension, DataElement.displayFormName,
                 DataElement.domainType, DataElement.formName, DataElement.numberType,
                 DataElement.valueType, DataElement.zeroIsSignificant,
-                DataElement.optionSet.with(
-                        OptionSet.uid, OptionSet.version
-                ),
+                DataElement.optionSet.with(OptionSet.uid, OptionSet.version),
                 DataElement.categoryCombo.with(CategoryCombo.uid)).build();
     }
 }

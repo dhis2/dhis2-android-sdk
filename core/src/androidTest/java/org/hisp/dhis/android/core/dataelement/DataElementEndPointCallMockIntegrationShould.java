@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DataElementEndPointCallMockIntegrationShould extends AbsStoreTestCase {
 
@@ -62,8 +63,12 @@ public class DataElementEndPointCallMockIntegrationShould extends AbsStoreTestCa
 
         dhis2MockServer.enqueueMockResponse(filename);
 
-        DataElementQuery dataElementQuery = new DataElementQuery(new HashSet<>(
-                Arrays.asList("FTRrcoaog83", "P+-3jJH5Tu5VC", "FQ2o8UBlcrS")));
+        Set<String> uidsSet =
+                new HashSet<>(Arrays.asList("FTRrcoaog83", "P+-3jJH5Tu5VC", "FQ2o8UBlcrS"));
+
+        DataElementQuery dataElementQuery = DataElementQuery.Builder.create()
+                .withUIds(uidsSet)
+                .build();
 
         dataElementFactory.newEndPointCall(dataElementQuery, new Date()).call();
 
@@ -71,25 +76,25 @@ public class DataElementEndPointCallMockIntegrationShould extends AbsStoreTestCa
     }
 
     private void verifyDownloadedDataElements(String fileName) throws IOException {
-        Payload<DataElement> DataElementPayload = parseDataElementResponse(fileName);
+        Payload<DataElement> DataElementPayload = parseDataElementsResponse(fileName);
 
-        List<DataElement> downloadedDataElement =
+        List<DataElement> downloadedDataElements =
                 dataElementFactory.getDataElementStore().queryAll();
 
-        downloadedDataElement = ignoreCategoryCombo(downloadedDataElement);
-        assertThat(downloadedDataElement.size(), is(DataElementPayload.items().size()));
-        assertThat(downloadedDataElement, is(ignoreCategoryCombo(DataElementPayload.items())));
+        downloadedDataElements = ignoreCategoryCombo(downloadedDataElements);
+        assertThat(downloadedDataElements.size(), is(DataElementPayload.items().size()));
+        assertThat(downloadedDataElements, is(ignoreCategoryCombo(DataElementPayload.items())));
     }
 
-    private List<DataElement> ignoreCategoryCombo(List<DataElement> downloadedDataElement) {
+    private List<DataElement> ignoreCategoryCombo(List<DataElement> downloadedDataElements) {
         List<DataElement> dataElements = new ArrayList<>();
-        for(DataElement dataElement:downloadedDataElement){
+        for (DataElement dataElement : downloadedDataElements) {
             dataElements.add(dataElement.toBuilder().categoryCombo(null).build());
         }
         return dataElements;
     }
 
-    private Payload<DataElement> parseDataElementResponse(String fileName)
+    private Payload<DataElement> parseDataElementsResponse(String fileName)
             throws IOException {
         String expectedDataElementResponseJson = new AssetsFileReader().getStringFromFile(
                 fileName);

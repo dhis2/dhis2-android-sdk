@@ -49,6 +49,7 @@ public interface UserOrganisationUnitLinkStore extends DeletableStore {
 
     int delete(@NonNull String userUid, @NonNull String organisationUnitUid, @NonNull String organisationUnitScope);
 
+    @Override
     int delete();
 
 }

@@ -344,12 +344,9 @@ public class ProgramRuleActionStoreImpl extends Store implements ProgramRuleActi
 
     @NonNull
     private DataElement createDataElement(String dataElementUid) {
-        return DataElement.create(dataElementUid, null, null, null
-                , null, null, null, null
-                , null, null, null, null
-                , null, null, null, null
-                , null, null, null, null
-                , null);
+        return DataElement.builder()
+                .uid(dataElementUid)
+                .build();
     }
 
     @NonNull
@@ -364,13 +361,17 @@ public class ProgramRuleActionStoreImpl extends Store implements ProgramRuleActi
     private TrackedEntityAttribute createTrackedEntityAttribute(
             String trackedEntityAttributeUid) {
 
-        //TODO: this will refactor when we create TrackedEntityAttribute.Builder
-        return TrackedEntityAttribute.create(trackedEntityAttributeUid, null, null
-                , null, null, null, null, null
-                , null, null, null, 0,
-                null, null, null, null, false
-                , false, false, false, false,
-                false, false, false);
+        return TrackedEntityAttribute.builder()
+                .uid(trackedEntityAttributeUid)
+                .sortOrderInListNoProgram(0)
+                .programScope(false)
+                .displayInListNoProgram(false)
+                .generated(false)
+                .displayOnVisitSchedule(false)
+                .orgUnitScope(false)
+                .unique(false)
+                .inherit(false)
+                .deleted(false).build();
     }
 
     @Nullable

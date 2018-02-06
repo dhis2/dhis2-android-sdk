@@ -61,7 +61,7 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
     @JsonProperty(A_TO_B)
     public abstract String aIsToB();
 
-    public abstract RelationshipType.Builder toBuilder();
+    abstract RelationshipType.Builder toBuilder();
 
     public static Builder builder() {
         return new AutoValue_RelationshipType.Builder();

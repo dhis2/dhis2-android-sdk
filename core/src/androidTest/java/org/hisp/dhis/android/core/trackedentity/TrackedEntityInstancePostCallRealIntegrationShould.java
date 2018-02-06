@@ -3,7 +3,6 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.test.filters.LargeTest;
 import static com.google.common.truth.Truth.assertThat;
 
-import static junit.framework.Assert.assertTrue;
 
 import android.support.test.runner.AndroidJUnit4;
 
@@ -22,6 +21,10 @@ import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.relationship.RelationshipStore;
+import org.hisp.dhis.android.core.relationship.RelationshipStoreImpl;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.Before;
@@ -45,6 +48,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     Exception e;
     CodeGenerator codeGenerator;
 
+    private RelationshipStore relationshipStore;
+    private RelationshipTypeStore relationshipTypeStore;
     private TrackedEntityInstanceStore trackedEntityInstanceStore;
     private EnrollmentStore enrollmentStore;
     private EventStore eventStore;
@@ -76,6 +81,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         d2= D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
 
+        relationshipStore = new RelationshipStoreImpl(databaseAdapter());
+        relationshipTypeStore = new RelationshipTypeStoreImpl(databaseAdapter());
         trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
         enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
         eventStore = new EventStoreImpl(databaseAdapter());
@@ -100,6 +107,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         event1Uid = codeGenerator.generate();
         enrollment1Uid = codeGenerator.generate();
         trackedEntityInstance1Uid = codeGenerator.generate();
+
+        relationshipTypeStore.insert("V2kkHafqs8G", null, "Mother-Child", "Mother-Child", null, null,"Mother", "Child");
     }
 
     @Test
@@ -127,6 +136,23 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         response = call.call();
 
         assertThat(response.isSuccessful()).isTrue();
+
+        trackedEntityInstanceStore.update(
+                trackedEntityInstanceUid, new Date(), new Date(),
+                null, null, orgUnitUid, trackedEntityUid, State.TO_POST, trackedEntityInstanceUid
+        );
+
+        createDummyRelationship(trackedEntityInstanceUid, trackedEntityInstance1Uid);
+
+        call = d2.syncTrackedEntityInstances();
+        response = call.call();
+
+        assertThat(response.isSuccessful()).isTrue();
+    }
+
+    private void createDummyRelationship(String trackedEntityInstanceUid,
+            String trackedEntityInstance1Uid) {
+        relationshipStore.insert(trackedEntityInstanceUid, trackedEntityInstance1Uid, "Mother-Child");
     }
 
 

@@ -90,8 +90,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramFactory;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeFactory;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -169,8 +168,6 @@ public final class D2 {
     private final UserRoleStore userRoleStore;
     private final UserRoleProgramLinkStore userRoleProgramLinkStore;
 
-    private final RelationshipTypeStore relationshipStore;
-
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
@@ -203,6 +200,7 @@ public final class D2 {
     private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
     private final ProgramFactory programFactory;
     private final DataElementFactory dataElementFactory;
+    private final RelationshipTypeFactory relationshipTypeFactory;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
@@ -237,8 +235,6 @@ public final class D2 {
                 new UserRoleStoreImpl(databaseAdapter);
         this.userRoleProgramLinkStore =
                 new UserRoleProgramLinkStoreImpl(databaseAdapter);
-        this.relationshipStore =
-                new RelationshipTypeStoreImpl(databaseAdapter);
         this.trackedEntityInstanceStore =
                 new TrackedEntityInstanceStoreImpl(databaseAdapter);
         this.enrollmentStore =
@@ -316,10 +312,14 @@ public final class D2 {
         programFactory = new ProgramFactory(retrofit, databaseAdapter,
                 optionSetFactory.getOptionSetHandler(), dataElementFactory, resourceHandler);
 
+        relationshipTypeFactory =
+                new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
+
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
                     new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
-                            dataElementFactory, trackedEntityAttributeFactory, programFactory);
+                            dataElementFactory, trackedEntityAttributeFactory, programFactory,
+                            relationshipTypeFactory);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 
@@ -382,7 +382,6 @@ public final class D2 {
         deletableStoreList.add(systemInfoStore);
         deletableStoreList.add(userRoleStore);
         deletableStoreList.add(userRoleProgramLinkStore);
-        deletableStoreList.add(relationshipStore);
         deletableStoreList.add(trackedEntityInstanceStore);
         deletableStoreList.add(enrollmentStore);
         deletableStoreList.add(trackedEntityDataValueStore);
@@ -401,6 +400,7 @@ public final class D2 {
         deletableStoreList.addAll(optionSetFactory.getDeletableStores());
         deletableStoreList.addAll(programFactory.getDeletableStores());
         deletableStoreList.addAll(dataElementFactory.getDeletableStores());
+        deletableStoreList.addAll(relationshipTypeFactory.getDeletableStores());
 
         return new LogOutUserCallable(deletableStoreList);
     }
@@ -413,7 +413,7 @@ public final class D2 {
                 userRoleProgramLinkStore, organisationUnitStore, userOrganisationUnitLinkStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 categoryComboQuery, comboService, categoryComboHandler, optionSetFactory,
-                trackedEntityFactory, programFactory);
+                trackedEntityFactory, programFactory, relationshipTypeFactory);
     }
 
     @NonNull

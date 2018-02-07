@@ -1,9 +1,12 @@
 package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import retrofit2.Retrofit;
@@ -15,6 +18,7 @@ public class RelationshipTypeFactory {
     private final ResourceHandler resourceHandler;
     private final RelationshipTypeHandler relationshipTypeHandler;
     private final RelationshipTypeStore relationshipTypeStore;
+    private final List<DeletableStore> deletableStoreList;
 
     public RelationshipTypeFactory(
             Retrofit retrofit,
@@ -25,7 +29,8 @@ public class RelationshipTypeFactory {
         this.resourceHandler = resourceHandler;
         this.relationshipTypeStore = new RelationshipTypeStoreImpl(databaseAdapter);
         this.relationshipTypeHandler = new RelationshipTypeHandler(this.relationshipTypeStore);
-
+        this.deletableStoreList = new ArrayList<>();
+        deletableStoreList.add(relationshipTypeStore);
     }
 
     public RelationshipTypeEndPointCall newEndPointCall(Set<String> relationshipTypeUIds,
@@ -43,5 +48,9 @@ public class RelationshipTypeFactory {
 
     public RelationshipTypeStore getRelationshipTypeStore() {
         return relationshipTypeStore;
+    }
+
+    public List<DeletableStore> getDeletableStores() {
+        return deletableStoreList;
     }
 }

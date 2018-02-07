@@ -24,6 +24,9 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageMetadataAuditHandler;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeFactory;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeMetadataAuditHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
@@ -58,6 +61,9 @@ public class MetadataAuditHandlerFactoryShould {
     @Mock
     private ProgramFactory programFactory;
 
+    @Mock
+    private RelationshipTypeFactory relationshipTypeFactory;
+
     private MetadataAuditHandlerFactory metadataAuditHandlerFactory;
 
     @Parameterized.Parameters(name = "{index} MetadataAuditHandlerFactory should return: {0} for "
@@ -75,7 +81,8 @@ public class MetadataAuditHandlerFactoryShould {
                 {ProgramIndicatorMetadataAuditHandler.class, ProgramIndicator.class},
                 {ProgramRuleMetadataAuditHandler.class, ProgramRule.class},
                 {ProgramRuleActionMetadataAuditHandler.class, ProgramRuleAction.class},
-                {ProgramRuleVariableMetadataAuditHandler.class, ProgramRuleVariable.class}
+                {ProgramRuleVariableMetadataAuditHandler.class, ProgramRuleVariable.class},
+                {RelationshipTypeMetadataAuditHandler.class, RelationshipType.class}
         });
     }
 
@@ -94,7 +101,8 @@ public class MetadataAuditHandlerFactoryShould {
 
         metadataAuditHandlerFactory =
                 new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
-                        dataElementFactory, trackedEntityAttributeFactory, programFactory);
+                        dataElementFactory, trackedEntityAttributeFactory, programFactory,
+                        relationshipTypeFactory);
     }
 
     @Test

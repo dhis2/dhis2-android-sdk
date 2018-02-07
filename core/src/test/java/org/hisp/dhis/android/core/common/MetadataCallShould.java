@@ -57,8 +57,8 @@ import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetService;
@@ -68,6 +68,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramFactory;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeFactory;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -222,6 +224,7 @@ public class MetadataCallShould {
 
     @Mock
     private DataElementFactory dataElementFactory;
+    private RelationshipTypeFactory relationshipTypeFactory;
 
     // object to test
     private MetadataCall metadataCall;
@@ -283,6 +286,9 @@ public class MetadataCallShould {
         programFactory = new ProgramFactory(retrofit, databaseAdapter, optionSetFactory.
                 getOptionSetHandler(), dataElementFactory, resourceHandler);
 
+        relationshipTypeFactory =
+                new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
+
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService, organisationUnitService,
                 systemInfoStore, resourceStore, userStore, userCredentialsStore, userRoleStore,
@@ -290,7 +296,7 @@ public class MetadataCallShould {
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
                 optionSetFactory, trackedEntityFactory,
-                programFactory);
+                programFactory, relationshipTypeFactory);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));

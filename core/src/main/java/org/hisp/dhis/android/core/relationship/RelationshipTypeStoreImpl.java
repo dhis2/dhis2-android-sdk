@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -37,6 +36,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -46,40 +46,45 @@ import java.util.List;
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
-public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
+public class RelationshipTypeStoreImpl extends Store implements RelationshipTypeStore {
+
     private static final String FIELDS =
             RelationshipTypeModel.Columns.UID + ", " +
-                    RelationshipTypeModel.Columns.CODE + ", " +
-                    RelationshipTypeModel.Columns.NAME + ", " +
-                    RelationshipTypeModel.Columns.DISPLAY_NAME + ", " +
-                    RelationshipTypeModel.Columns.CREATED + ", " +
-                    RelationshipTypeModel.Columns.LAST_UPDATED + ", " +
-                    RelationshipTypeModel.Columns.A_IS_TO_B + ", " +
-                    RelationshipTypeModel.Columns.B_IS_TO_A;
+            RelationshipTypeModel.Columns.CODE + ", " +
+            RelationshipTypeModel.Columns.NAME + ", " +
+            RelationshipTypeModel.Columns.DISPLAY_NAME + ", " +
+            RelationshipTypeModel.Columns.CREATED + ", " +
+            RelationshipTypeModel.Columns.LAST_UPDATED + ", " +
+            RelationshipTypeModel.Columns.A_IS_TO_B + ", " +
+            RelationshipTypeModel.Columns.B_IS_TO_A;
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            RelationshipTypeModel.TABLE + " (" +
-            FIELDS + ") VALUES (" + "?, ?, ?, ?, ?, ?, ?, ?" + ");";
+            RelationshipTypeModel.TABLE + " ("+
+            FIELDS +") " +
+            "VALUES (" + "?, ?, ?, ?, ?, ?, ?, ?" + ");";
 
-    private static final String UPDATE_STATEMENT =
-            "UPDATE " + RelationshipTypeModel.TABLE + " SET " +
-                    RelationshipTypeModel.Columns.UID + " =?, " +
-                    RelationshipTypeModel.Columns.CODE + " =?, " +
-                    RelationshipTypeModel.Columns.NAME + " =?, " +
-                    RelationshipTypeModel.Columns.DISPLAY_NAME + " =?, " +
-                    RelationshipTypeModel.Columns.CREATED + " =?, " +
-                    RelationshipTypeModel.Columns.LAST_UPDATED + " =?, " +
-                    RelationshipTypeModel.Columns.A_IS_TO_B + " =?, " +
-                    RelationshipTypeModel.Columns.B_IS_TO_A + " =? " +
-                    " WHERE " +
-                    RelationshipTypeModel.Columns.UID + " =?;";
+    private static final String UPDATE_STATEMENT = "UPDATE " + RelationshipTypeModel.TABLE + " SET " +
+            RelationshipTypeModel.Columns.UID + " =?, " +
+            RelationshipTypeModel.Columns.CODE + " =?, " +
+            RelationshipTypeModel.Columns.NAME + " =?, " +
+            RelationshipTypeModel.Columns.DISPLAY_NAME + " =?, " +
+            RelationshipTypeModel.Columns.CREATED + " =?, " +
+            RelationshipTypeModel.Columns.LAST_UPDATED + " =?, " +
+            RelationshipTypeModel.Columns.A_IS_TO_B + " =?, " +
+            RelationshipTypeModel.Columns.B_IS_TO_A + " =? " +
+            " WHERE " +
+            RelationshipTypeModel.Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + RelationshipTypeModel.TABLE +
             " WHERE " +
             RelationshipTypeModel.Columns.UID + " =?;";
 
     private static final String QUERY_ALL_RELATIONSHIP_TYPES =
-            "SELECT " + FIELDS + " FROM " + RelationshipTypeModel.TABLE;
+            "SELECT "+ FIELDS +" FROM " + RelationshipTypeModel.TABLE;
+
+    private static final String QUERY_BY_UID =
+            "SELECT "+ FIELDS +" FROM " + RelationshipTypeModel.TABLE
+            +" WHERE "+ RelationshipTypeModel.Columns.UID +"=?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -153,6 +158,21 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
         return mapRelationshipTypesFromCursor(cursor);
     }
 
+    @Override
+    public RelationshipType queryByUid(String uid) {
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID, uid);
+        RelationshipType relationshipType = null;
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                relationshipType = mapRelationshipTypeFromCursor(cursor);
+            }
+        }finally {
+            cursor.close();
+        }
+        return relationshipType;
+    }
+
     private List<RelationshipType> mapRelationshipTypesFromCursor(Cursor cursor) {
         List<RelationshipType> relationshipTypes = new ArrayList<>(cursor.getCount());
         try {
@@ -170,25 +190,17 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
     }
 
     private RelationshipType mapRelationshipTypeFromCursor(Cursor cursor) {
-
-        String uid = cursor.getString(0);
-        String code = cursor.getString(1);
-        String name = cursor.getString(2);
-        String displayName = cursor.getString(3);
-        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-        Date lastUpdate = cursor.getString(5) == null ? null : parse(cursor.getString(5));
-        String aIsToB = cursor.getString(6);
-        String bIsToA = cursor.getString(7);
-
-        return RelationshipType.builder()
-                .uid(uid)
-                .code(code)
-                .name(name)
-                .displayName(displayName)
-                .created(created)
-                .lastUpdated(lastUpdate)
-                .aIsToB(aIsToB)
-                .bIsToA(bIsToA).build();
+        String uid = getStringFromCursor(cursor, 0);
+        String code = getStringFromCursor(cursor, 1);
+        String name = getStringFromCursor(cursor, 2);
+        String displayName = getStringFromCursor(cursor, 3);
+        Date created = getDateFromCursor(cursor, 4);
+        Date lastUpdate = getDateFromCursor(cursor, 5);
+        String aIsToB = getStringFromCursor(cursor, 6);
+        String bIsToA = getStringFromCursor(cursor, 7);
+        return RelationshipType.builder().uid(uid).code(code).name(name).displayName(
+                displayName).created(created).lastUpdated(lastUpdate).aIsToB(aIsToB).bIsToA(
+                bIsToA).build();
     }
 
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,

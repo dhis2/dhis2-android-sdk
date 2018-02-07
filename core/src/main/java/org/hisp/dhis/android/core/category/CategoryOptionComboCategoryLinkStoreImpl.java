@@ -33,7 +33,8 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
             "UPDATE " + CategoryOptionComboCategoryLinkModel.TABLE + " SET " +
                     CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + " =?," +
                     CategoryOptionComboCategoryLinkModel.Columns.CATEGORY + " =? " +
-                    " WHERE " + CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + " =? AND " +
+                    " WHERE " + CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO
+                    + " =? AND " +
                     CategoryOptionComboCategoryLinkModel.Columns.CATEGORY + " =?;";
 
     private static final String FIELDS =
@@ -171,7 +172,8 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
             @NonNull CategoryOptionComboCategoryLinkModel newCategoryOptionComboCategoryLinkModel) {
         bind(updateStatement, newCategoryOptionComboCategoryLinkModel);
 
-        sqLiteBind(updateStatement, 3, oldCategoryOptionComboCategoryLinkModel.categoryOptionCombo());
+        sqLiteBind(updateStatement, 3,
+                oldCategoryOptionComboCategoryLinkModel.categoryOptionCombo());
         sqLiteBind(updateStatement, 4, oldCategoryOptionComboCategoryLinkModel.category());
     }
 }

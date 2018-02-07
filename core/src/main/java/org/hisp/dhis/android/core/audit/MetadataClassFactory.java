@@ -27,7 +27,6 @@ final class MetadataClassFactory {
     private static Map<String, Class<?>> createMap() {
         Map<String, Class<?>> myMap = new HashMap<>();
         myMap.put("trackedEntity", TrackedEntity.class);
-        myMap.put("relationshipType", RelationshipType.class);
         myMap.put("optionSet", OptionSet.class);
         myMap.put("option", Option.class);
         myMap.put("dataElement", DataElement.class);
@@ -38,6 +37,7 @@ final class MetadataClassFactory {
         myMap.put("programRule", ProgramRule.class);
         myMap.put("programRuleAction", ProgramRuleAction.class);
         myMap.put("programRuleVariable", ProgramRuleVariable.class);
+        myMap.put("relationshipType", RelationshipType.class);
         return myMap;
     }
 

@@ -51,9 +51,6 @@ public class OptionHandler {
 
         for (int i = 0; i < size; i++) {
             Option option = options.get(i);
-            if(option.optionSet()==null){
-                continue;
-            }
             handleOption(option);
         }
     }

@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import java.util.List;
-
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
+import java.util.List;
 
 public class ProgramIndicatorHandler {
     private final ProgramIndicatorStore programIndicatorStore;
@@ -65,47 +65,54 @@ public class ProgramIndicatorHandler {
         for (int i = 0; i < size; i++) {
             ProgramIndicator programIndicator = programIndicators.get(i);
 
-            if (isDeleted(programIndicator)) {
-                programIndicatorStore.delete(programIndicator.uid());
-            } else {
-                int updatedRow = programIndicatorStore.update(
+            handle(programStageSectionUid, programIndicator);
+        }
+    }
+
+    public void handle(String programStageSectionUid, ProgramIndicator programIndicator) {
+        if (isDeleted(programIndicator)) {
+            programIndicatorStore.delete(programIndicator.uid());
+        } else {
+            int updatedRow = programIndicatorStore.update(
+                    programIndicator.uid(), programIndicator.code(),
+                    programIndicator.name(), programIndicator.displayName(),
+                    programIndicator.created(),
+                    programIndicator.lastUpdated(), programIndicator.shortName(),
+                    programIndicator.displayShortName(), programIndicator.description(),
+                    programIndicator.displayDescription(), programIndicator.displayInForm(),
+                    programIndicator.expression(), programIndicator.dimensionItem(),
+                    programIndicator.filter(),
+                    programIndicator.decimals(), programIndicator.program().uid(),
+                    programIndicator.uid()
+            );
+
+            if (updatedRow <= 0) {
+                programIndicatorStore.insert(
                         programIndicator.uid(), programIndicator.code(),
-                        programIndicator.name(), programIndicator.displayName(), programIndicator.created(),
-                        programIndicator.lastUpdated(), programIndicator.shortName(),
-                        programIndicator.displayShortName(), programIndicator.description(),
+                        programIndicator.name(), programIndicator.displayName(),
+                        programIndicator.created(), programIndicator.lastUpdated(),
+                        programIndicator.shortName(), programIndicator.displayShortName(),
+                        programIndicator.description(),
                         programIndicator.displayDescription(), programIndicator.displayInForm(),
-                        programIndicator.expression(), programIndicator.dimensionItem(), programIndicator.filter(),
-                        programIndicator.decimals(), programIndicator.program().uid(), programIndicator.uid()
+                        programIndicator.expression(), programIndicator.dimensionItem(),
+                        programIndicator.filter(),
+                        programIndicator.decimals(), programIndicator.program().uid()
                 );
-
-                if (updatedRow <= 0) {
-                    programIndicatorStore.insert(
-                            programIndicator.uid(), programIndicator.code(),
-                            programIndicator.name(), programIndicator.displayName(),
-                            programIndicator.created(), programIndicator.lastUpdated(),
-                            programIndicator.shortName(), programIndicator.displayShortName(),
-                            programIndicator.description(),
-                            programIndicator.displayDescription(), programIndicator.displayInForm(),
-                            programIndicator.expression(), programIndicator.dimensionItem(),
-                            programIndicator.filter(),
-                            programIndicator.decimals(), programIndicator.program().uid()
-                    );
-                }
             }
+        }
 
-            if (programStageSectionUid != null) {
-                // since this is many-to-many relationship we need to update link table
+        if (programStageSectionUid != null) {
+            // since this is many-to-many relationship we need to update link table
 
-                int updatedLink = programStageSectionProgramIndicatorLinkStore.update(
-                        programStageSectionUid, programIndicator.uid(),
+            int updatedLink = programStageSectionProgramIndicatorLinkStore.update(
+                    programStageSectionUid, programIndicator.uid(),
+                    programStageSectionUid, programIndicator.uid()
+            );
+
+            if (updatedLink <= 0) {
+                programStageSectionProgramIndicatorLinkStore.insert(
                         programStageSectionUid, programIndicator.uid()
                 );
-
-                if (updatedLink <= 0) {
-                    programStageSectionProgramIndicatorLinkStore.insert(
-                            programStageSectionUid, programIndicator.uid()
-                    );
-                }
             }
         }
     }

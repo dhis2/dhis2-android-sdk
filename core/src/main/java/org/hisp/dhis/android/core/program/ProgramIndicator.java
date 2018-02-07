@@ -30,17 +30,16 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
-import java.util.Date;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramIndicator.Builder.class)
 public abstract class ProgramIndicator extends BaseNameableObject {
     private static final String DISPLAY_IN_FORM = "displayInForm";
     private static final String EXPRESSION = "expression";
@@ -91,30 +90,43 @@ public abstract class ProgramIndicator extends BaseNameableObject {
     @JsonProperty(PROGRAM)
     public abstract Program program();
 
-    @JsonCreator
-    public static ProgramIndicator create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(DISPLAY_IN_FORM) Boolean displayInForm,
-            @JsonProperty(EXPRESSION) String expression,
-            @JsonProperty(DIMENSION_ITEM) String dimensionItem,
-            @JsonProperty(FILTER) String filter,
-            @JsonProperty(DECIMALS) Integer decimals,
-            @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(PROGRAM) Program program
-    ) {
-        return new AutoValue_ProgramIndicator(
-                uid, code, name, displayName, created, lastUpdated, deleted,
-                shortName, displayShortName, description, displayDescription,
-                displayInForm, expression, dimensionItem, filter, decimals, program);
+    abstract ProgramIndicator.Builder toBuilder();
+
+    static ProgramIndicator.Builder builder() {
+        return new AutoValue_ProgramIndicator.Builder();
     }
 
+    @AutoValue.Builder
+    public static abstract class Builder extends
+            BaseNameableObject.Builder<ProgramIndicator.Builder> {
+
+        private static final String DECIMALS = "decimals";
+        private static final String PROGRAM = "program";
+
+        @JsonProperty(DISPLAY_IN_FORM)
+        public abstract ProgramIndicator.Builder displayInForm(
+                @Nullable Boolean displayInForm);
+
+        @JsonProperty(EXPRESSION)
+        public abstract ProgramIndicator.Builder expression(
+                @Nullable String expression);
+
+        @JsonProperty(DIMENSION_ITEM)
+        public abstract ProgramIndicator.Builder dimensionItem(
+                @Nullable String dimensionItem);
+
+        @JsonProperty(FILTER)
+        public abstract ProgramIndicator.Builder filter(
+                @Nullable String filter);
+
+        @JsonProperty(DECIMALS)
+        public abstract ProgramIndicator.Builder decimals(
+                @Nullable Integer decimals);
+
+        @JsonProperty(PROGRAM)
+        public abstract ProgramIndicator.Builder program(
+                @Nullable Program program);
+
+        public abstract ProgramIndicator build();
+    }
 }

@@ -1,0 +1,61 @@
+{
+  "createdAt": "2018-01-21T12:20:19.840",
+  "createdBy": "admin",
+  "klass": "org.hisp.dhis.program.ProgramStage",
+  "uid": "hKuTxVbPcci",
+  "type": "CREATE",
+  "value": {
+    "name": "CtLttUVOkea",
+    "created": "2018-01-21T12:20:19.795",
+    "lastUpdated": "2018-01-21T12:20:19.795",
+    "externalAccess": false,
+    "user": {
+      "name": "John Traore",
+      "created": "2013-04-18T17:15:08.407",
+      "lastUpdated": "2017-06-02T13:04:58.319",
+      "externalAccess": false,
+      "displayName": "John Traore",
+      "id": "xE7jOejl9FI"
+    },
+    "displayName": "CtLttUVOkea",
+    "lastUpdatedBy": {
+      "id": "xE7jOejl9FI",
+      "name": "John Traore"
+    },
+    "minDaysFromStart": 0,
+    "programStageDataElements": [
+      {
+        "created": "2018-01-21T12:20:19.796",
+        "lastUpdated": "2018-01-21T12:20:19.796",
+        "externalAccess": false,
+        "id": "tIUcmfWiNHR"
+      },
+      {
+        "created": "2018-01-21T12:20:19.800",
+        "lastUpdated": "2018-01-21T12:20:19.800",
+        "externalAccess": false,
+        "id": "L6SECf8BD6U"
+      },
+      {
+        "created": "2018-01-21T12:20:19.801",
+        "lastUpdated": "2018-01-21T12:20:19.801",
+        "externalAccess": false,
+        "id": "b7JRZv7Pnyh"
+      }
+    ],
+    "autoGenerateEvent": true,
+    "validCompleteOnly": false,
+    "displayGenerateEventBox": true,
+    "captureCoordinates": false,
+    "blockEntryForm": false,
+    "preGenerateUID": false,
+    "remindCompleted": false,
+    "generatedByEnrollmentDate": false,
+    "allowGenerateNextVisit": false,
+    "openAfterEnrollment": false,
+    "hideDueDate": false,
+    "formType": "DEFAULT",
+    "id": "hKuTxVbPcci",
+    "repeatable": false
+  }
+}

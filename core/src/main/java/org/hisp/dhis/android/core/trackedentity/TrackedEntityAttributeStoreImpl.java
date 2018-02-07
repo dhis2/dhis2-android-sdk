@@ -340,15 +340,10 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
     }
 
     @Nullable
-    private ValueType getValueTypeFromCursor(Cursor cursor, int index) {
-        return cursor.getString(index) == null ? null :
-                ValueType.valueOf(cursor.getString(index));
-    }
-
-    @Nullable
-    private TrackedEntityAttributeSearchScope
+    protected TrackedEntityAttributeSearchScope
     getTrackedEntityAttributeSearchScopeFromCursor(Cursor cursor, int index) {
         return cursor.getString(index) == null ? null :
                 TrackedEntityAttributeSearchScope.valueOf(cursor.getString(index));
     }
+
 }

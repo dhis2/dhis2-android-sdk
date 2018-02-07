@@ -1,0 +1,56 @@
+{
+  "createdAt": "2018-01-21T12:33:41.805",
+  "createdBy": "admin",
+  "klass": "org.hisp.dhis.program.Program",
+  "uid": "lxAQ7Zs9VYR",
+  "type": "DELETE",
+  "value": {
+    "name": "Antenatal Care Visit 2",
+    "created": "2018-01-21T12:20:20.089",
+    "lastUpdated": "2018-01-21T12:28:03.977",
+    "externalAccess": false,
+    "publicAccess": "rw------",
+    "user": {
+      "name": "John Traore",
+      "created": "2013-04-18T17:15:08.407",
+      "lastUpdated": "2017-06-02T13:04:58.319",
+      "externalAccess": false,
+      "displayName": "John Traore",
+      "id": "xE7jOejl9FI"
+    },
+    "displayName": "Antenatal Care Visit 2",
+    "lastUpdatedBy": {
+      "id": "xE7jOejl9FI",
+      "name": "John Traore"
+    },
+    "shortName": "Antenatal care 2",
+    "description": "de",
+    "displayShortName": "Antenatal care 2",
+    "displayDescription": "de",
+    "version": 2,
+    "programType": "WITHOUT_REGISTRATION",
+    "displayIncidentDate": true,
+    "ignoreOverdueEvents": false,
+    "onlyEnrollOnce": false,
+    "selectEnrollmentDatesInFuture": false,
+    "selectIncidentDatesInFuture": false,
+    "relationshipFromA": false,
+    "categoryCombo": {
+      "name": "default",
+      "created": "2011-12-24T12:24:25.203",
+      "lastUpdated": "2016-04-12T20:37:49.126",
+      "externalAccess": false,
+      "displayName": "default",
+      "id": "p0KPaWEg3cf"
+    },
+    "skipOffline": false,
+    "displayFrontPageList": false,
+    "useFirstStageDuringRegistration": false,
+    "captureCoordinates": false,
+    "expiryDays": 0,
+    "completeEventsExpiryDays": 0,
+    "withoutRegistration": true,
+    "registration": false,
+    "id": "lxAQ7Zs9VYR"
+  }
+}

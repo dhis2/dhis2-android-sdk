@@ -296,10 +296,4 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
         }
         return simpleOptionSet;
     }
-
-    @Nullable
-    private ValueType getValueTypeFromCursor(Cursor cursor, int index) {
-        return cursor.getString(index) == null ? null :
-                ValueType.valueOf(cursor.getString(index));
-    }
 }

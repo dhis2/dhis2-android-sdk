@@ -94,7 +94,7 @@ public class ProgramIndicatorHandler {
             }
 
             if (programStageSectionUid != null) {
-                // since this is many-to-many relationshipType we need to update link table
+                // since this is many-to-many relationship we need to update link table
 
                 int updatedLink = programStageSectionProgramIndicatorLinkStore.update(
                         programStageSectionUid, programIndicator.uid(),

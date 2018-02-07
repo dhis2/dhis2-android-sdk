@@ -76,7 +76,7 @@ public class ProgramModelShould {
 
     private static final ProgramType PROGRAM_TYPE = ProgramType.WITH_REGISTRATION;
     private static final String RELATIONSHIP_TYPE = "relationshipUid";
-    private static final String RELATIONSHIP_TEXT = "test relationshipType";
+    private static final String RELATIONSHIP_TEXT = "test relationship";
     private static final String RELATED_PROGRAM = "ProgramUid";
     private static final String TRACKED_ENTITY = "TrackedEntityUid";
 

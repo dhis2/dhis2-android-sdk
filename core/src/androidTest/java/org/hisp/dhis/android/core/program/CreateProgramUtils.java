@@ -67,7 +67,7 @@ public class CreateProgramUtils {
     private static final Boolean USE_FIRST_STAGE_DURING_REGISTRATION = true;
     private static final Boolean DISPLAY_FRONT_PAGE_LIST = true;
     private static final ProgramType PROGRAM_TYPE = ProgramType.WITH_REGISTRATION;
-    private static final String RELATIONSHIP_TEXT = "test relationshipType";
+    private static final String RELATIONSHIP_TEXT = "test relationship";
     private static final String RELATED_PROGRAM = "RelatedProgramUid";
 
     /**

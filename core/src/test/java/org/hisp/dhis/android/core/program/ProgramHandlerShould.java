@@ -126,7 +126,7 @@ public class ProgramHandlerShould {
         when(program.displayFrontPageList()).thenReturn(true);
         when(program.programType()).thenReturn(ProgramType.WITH_REGISTRATION);
         when(program.relationshipType()).thenReturn(relationshipType);
-        when(program.relationshipText()).thenReturn("test relationshipType");
+        when(program.relationshipText()).thenReturn("test relationship");
         when(program.relatedProgram()).thenReturn(relatedProgram);
         when(program.trackedEntity()).thenReturn(trackedEntity);
 

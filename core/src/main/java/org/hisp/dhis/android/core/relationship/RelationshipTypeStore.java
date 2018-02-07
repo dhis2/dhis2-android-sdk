@@ -63,6 +63,4 @@ public interface RelationshipTypeStore extends DeletableStore {
     int delete(@NonNull String uid);
 
     List<RelationshipType> queryAll();
-
-    String queryByDisplayName(String displayName);
 }

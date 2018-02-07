@@ -81,11 +81,6 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
     private static final String QUERY_ALL_RELATIONSHIP_TYPES =
             "SELECT " + FIELDS + " FROM " + RelationshipTypeModel.TABLE;
 
-    private static final String QUERY_RELATIONSHIP_TYPE_UID_BY_NAME =
-            "SELECT " + RelationshipTypeModel.Columns.UID + " FROM "
-                    + RelationshipTypeModel.TABLE
-                    + " WHERE " + RelationshipTypeModel.Columns.DISPLAY_NAME + "=?";
-
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
@@ -156,18 +151,6 @@ public class RelationshipTypeStoreImpl implements RelationshipTypeStore {
     public List<RelationshipType> queryAll() {
         Cursor cursor = databaseAdapter.query(QUERY_ALL_RELATIONSHIP_TYPES);
         return mapRelationshipTypesFromCursor(cursor);
-    }
-
-    @Override
-    public String queryByDisplayName(String displayName) {
-        Cursor cursor = databaseAdapter.query(QUERY_RELATIONSHIP_TYPE_UID_BY_NAME, displayName);
-        String uid = null;
-        if (cursor.getCount() > 0) {
-            cursor.moveToNext();
-            uid = cursor.getString(0);
-        }
-        cursor.close();
-        return uid;
     }
 
     private List<RelationshipType> mapRelationshipTypesFromCursor(Cursor cursor) {

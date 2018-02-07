@@ -213,6 +213,7 @@ public final class D2 {
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipTypeStore;
+    private final RelationshipStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
 
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
@@ -262,7 +263,6 @@ public final class D2 {
         this.comboService = retrofit.create(CategoryComboService.class);
 
         // stores
-
         this.userStore =
                 new UserStoreImpl(databaseAdapter);
         this.userCredentialsStore =
@@ -307,6 +307,8 @@ public final class D2 {
                 new ProgramStageStoreImpl(databaseAdapter);
         this.relationshipTypeStore =
                 new RelationshipTypeStoreImpl(databaseAdapter);
+        this.relationshipStore =
+                new RelationshipStoreImpl(databaseAdapter);
         this.trackedEntityStore =
                 new TrackedEntityStoreImpl(databaseAdapter);
         this.trackedEntityInstanceStore =
@@ -381,7 +383,6 @@ public final class D2 {
 
         trackedEntityFactory =
                 new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
-
         trackedEntityAttributeFactory = new TrackedEntityAttributeFactory(retrofit, databaseAdapter,
                 resourceHandler);
 
@@ -394,7 +395,6 @@ public final class D2 {
                             trackedEntityAttributeFactory);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
-
             this.metadataAuditConsumer = new MetadataAuditConsumer(metadataAuditConnection);
             this.metadataAuditConsumer.setMetadataAuditListener(metadataAuditListener);
         }
@@ -469,6 +469,7 @@ public final class D2 {
         deletableStoreList.add(programStageSectionStore);
         deletableStoreList.add(programStageStore);
         deletableStoreList.add(relationshipTypeStore);
+        deletableStoreList.add(relationshipStore);
         deletableStoreList.add(trackedEntityStore);
         deletableStoreList.add(trackedEntityInstanceStore);
         deletableStoreList.add(enrollmentStore);

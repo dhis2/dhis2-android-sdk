@@ -36,7 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
 
-// TODO: Tests when relationshipType is fixed to be queried.
+// TODO: Tests when relationship is fixed to be queried.
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Relationship.Builder.class)
 public abstract class Relationship {

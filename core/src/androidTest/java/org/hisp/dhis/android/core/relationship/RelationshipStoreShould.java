@@ -51,7 +51,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class RelationshipStoreShould extends AbsStoreTestCase {
-    // relationshipType attributes:
+    // relationship attributes:
     private static final String TRACKED_ENTITY_INSTANCE_A = "test_tei_a_uid";
     private static final String TRACKED_ENTITY_INSTANCE_B = "test_tei_b_uid";
 
@@ -60,7 +60,7 @@ public class RelationshipStoreShould extends AbsStoreTestCase {
     private static final String RELATIONSHIP_TYPE = "test_relationship_display_name";
     private static final String RELATIONSHIP = "test_relationship_type_uid";
 
-    // relationshipType projection:
+    // relationship projection:
     private static final String[] RELATIONSHIP_PROJECTION = {
             RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A,
             RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B,
@@ -200,6 +200,16 @@ public class RelationshipStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(RelationshipModel.TABLE, RELATIONSHIP_PROJECTION,
                 null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
+    }
+
+    @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
+    public void throw_sqlite_constraint_exception_when_insert_invalid_relationship_type_foreign_key() {
+        store.insert(
+                TRACKED_ENTITY_INSTANCE_A,
+                TRACKED_ENTITY_INSTANCE_B,
+                "wrong" //supply the wrong uid
+        );
     }
 
     @Test(expected = IllegalArgumentException.class)

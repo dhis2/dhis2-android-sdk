@@ -390,7 +390,8 @@ public final class D2 {
 
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
-                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory);
+                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory, dataElementFactory,
+                            trackedEntityAttributeFactory);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 
@@ -493,7 +494,8 @@ public final class D2 {
                 organisationUnitService, systemInfoStore, resourceStore, userStore,
                 userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
                 organisationUnitStore, userOrganisationUnitLinkStore, programStore,
-                programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
+                programTrackedEntityAttributeStore,
+                programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipTypeStore,

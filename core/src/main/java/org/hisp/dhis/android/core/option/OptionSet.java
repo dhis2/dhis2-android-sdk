@@ -71,7 +71,7 @@ public abstract class OptionSet extends BaseIdentifiableObject {
     @JsonProperty(OPTIONS)
     public abstract List<Option> options();
 
-    abstract OptionSet.Builder toBuilder();
+    public abstract OptionSet.Builder toBuilder();
 
     public static OptionSet.Builder builder() {
         return new AutoValue_OptionSet.Builder();

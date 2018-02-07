@@ -34,7 +34,9 @@ public class MetadataAuditConsumerMockIntegrationShould {
                 {MetadataAudit.class, "metadata.option.create.eHqt440U096",
                         "audit/option_create.json"},
                 {MetadataAudit.class, "metadata.dataElement.create.SKPMfGShCt5",
-                        "audit/data_element_create.json"}
+                        "audit/data_element_create.json"},
+                {MetadataAudit.class, "metadata.trackedEntityAttribute.create.bNNXBXTGDVV",
+                        "audit/tracked_entity_attribute_create.json"}
         });
     }
 

@@ -1,0 +1,136 @@
+{
+  "optionSets": [
+    {
+      "lastUpdated": "2015-08-06T14:23:38.789",
+      "created": "2014-06-22T10:59:26.564",
+      "name": "Age category",
+      "id": "VQ2lai3OfVG",
+      "displayName": "Age category",
+      "valueType": "TEXT",
+      "version": 1,
+      "options": [
+        {
+          "lastUpdated": "2014-08-18T12:39:16.000",
+          "code": "0-14 years",
+          "created": "2014-08-18T12:39:16.000",
+          "name": "0-14 years",
+          "id": "Y1ILwhy5VDY",
+          "displayName": "0-14 years",
+          "optionSet": {
+            "id": "VQ2lai3OfVG"
+          }
+        },
+        {
+          "lastUpdated": "2014-08-18T12:39:16.000",
+          "code": "15-19 years",
+          "created": "2014-08-18T12:39:16.000",
+          "name": "15-19 years",
+          "id": "egT1YqFWsVk",
+          "displayName": "15-19 years",
+          "optionSet": {
+            "id": "VQ2lai3OfVG"
+          }
+        },
+        {
+          "lastUpdated": "2014-08-18T12:39:16.000",
+          "code": "20-24 years",
+          "created": "2014-08-18T12:39:16.000",
+          "name": "20-24 years",
+          "id": "WckXGsyYola",
+          "displayName": "20-24 years",
+          "optionSet": {
+            "id": "VQ2lai3OfVG"
+          }
+        },
+        {
+          "lastUpdated": "2014-08-18T12:39:16.000",
+          "code": "25 years and above",
+          "created": "2014-08-18T12:39:16.000",
+          "name": "25 years and above",
+          "id": "EmQGvSlg0GD",
+          "displayName": "25 years and above",
+          "optionSet": {
+            "id": "VQ2lai3OfVG"
+          }
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2015-10-14T13:36:03.722",
+      "created": "2015-02-25T10:47:18.199",
+      "name": "ARV treatment plan",
+      "id": "R3mpvjqJ81H",
+      "displayName": "ARV treatment plan",
+      "valueType": "TEXT",
+      "version": 1,
+      "options": [
+        {
+          "lastUpdated": "2015-10-14T13:35:56.365",
+          "code": "None",
+          "created": "2015-02-25T10:48:01.780",
+          "name": "No ARV medication plan",
+          "id": "ENETOHGjmqb",
+          "displayName": "No ARV medication plan",
+          "optionSet": {
+            "id": "R3mpvjqJ81H"
+          }
+        },
+        {
+          "lastUpdated": "2015-10-14T13:35:56.526",
+          "code": "Ongoing",
+          "created": "2015-02-25T10:48:58.693",
+          "name": "Ongoing ARV treatment",
+          "id": "dNgtjuMPdfI",
+          "displayName": "Ongoing ARV treatment",
+          "optionSet": {
+            "id": "R3mpvjqJ81H"
+          }
+        },
+        {
+          "lastUpdated": "2015-10-14T13:35:56.691",
+          "code": "Initiated",
+          "created": "2015-02-25T10:49:22.792",
+          "name": "ARV medication initiated",
+          "id": "izO4RwIbL0r",
+          "displayName": "ARV medication initiated",
+          "optionSet": {
+            "id": "R3mpvjqJ81H"
+          }
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2015-10-14T13:36:01.187",
+      "created": "2014-06-06T20:38:48.526",
+      "name": "Civil status",
+      "id": "xjA5E9MimMU",
+      "displayName": "Civil status",
+      "valueType": "TEXT",
+      "version": 1,
+      "options": [
+        {
+          "lastUpdated": "2015-10-14T13:35:43.355",
+          "code": "Single or widow",
+          "created": "2014-08-20T12:46:14.000",
+          "name": "Single or widow",
+          "id": "wfkKVdPBzho",
+          "displayName": "Single or widow",
+          "optionSet": {
+            "id": "xjA5E9MimMU"
+          }
+        },
+        {
+          "lastUpdated": "2015-10-14T13:35:43.522",
+          "code": "Married (conjugal cohabitation)",
+          "created": "2014-08-20T12:46:14.000",
+          "name": "Married (conjugal cohabitation)",
+          "id": "Yjte6foKMny",
+          "displayName": "Married (conjugal cohabitation)",
+          "optionSet": {
+            "id": "xjA5E9MimMU"
+          }
+        }
+      ]
+    }
+  ]
+}

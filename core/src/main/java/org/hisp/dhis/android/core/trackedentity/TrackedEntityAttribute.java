@@ -166,7 +166,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<TrackedEntityAttribute.Builder> {
+    public static abstract class Builder extends
+            BaseNameableObject.Builder<TrackedEntityAttribute.Builder> {
 
         @JsonProperty(PATTERN)
         public abstract Builder pattern(@Nullable String pattern);
@@ -181,7 +182,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
         public abstract Builder valueType(@Nullable ValueType valueType);
 
         @JsonProperty(EXPRESSION)
-        public abstract Builder expression(@Nullable  String expression);
+        public abstract Builder expression(@Nullable String expression);
 
         @JsonProperty(SEARCH_SCOPE)
         public abstract Builder searchScope(@Nullable TrackedEntityAttributeSearchScope

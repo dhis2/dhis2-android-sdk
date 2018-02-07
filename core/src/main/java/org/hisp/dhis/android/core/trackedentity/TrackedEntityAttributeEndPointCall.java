@@ -69,7 +69,7 @@ public class TrackedEntityAttributeEndPointCall implements
                 ResourceModel.Type.TRACKED_ENTITY_ATTRIBUTE);
 
         Response<Payload<TrackedEntityAttribute>> trackedEntityAttributeByUids =
-                trackedEntityAttributeService.getTrackedEntityAttributes(getSingleFields(),
+                trackedEntityAttributeService.getTrackedEntityAttributes(getFields(),
                         TrackedEntityAttribute.uid.in(trackedEntityAttributeQuery.getUIds()),
                         TrackedEntityAttribute.lastUpdated.gt(
                                 lastSyncedTrackedEntityAttributes)).execute();
@@ -97,8 +97,7 @@ public class TrackedEntityAttributeEndPointCall implements
         return trackedEntityAttributeByUids;
     }
 
-
-    private Fields<TrackedEntityAttribute> getSingleFields() {
+    private Fields<TrackedEntityAttribute> getFields() {
         return Fields.<TrackedEntityAttribute>builder().fields(TrackedEntityAttribute.code,
                 TrackedEntityAttribute.created, TrackedEntityAttribute.description,
                 TrackedEntityAttribute.displayDescription,

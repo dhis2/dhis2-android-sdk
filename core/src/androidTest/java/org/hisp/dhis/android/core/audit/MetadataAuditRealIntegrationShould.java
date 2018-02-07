@@ -5,6 +5,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.audit.broker.RealBrokerMother;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -26,11 +27,11 @@ public class MetadataAuditRealIntegrationShould extends AbsStoreTestCase {
 
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter(),
                 MetadataAuditConnection.builder()
-                        .setHost("192.168.1.42")
-                        .setVirtualHost("/")
-                        .setUsername("guest2")
-                        .setPassword("guest2")
-                        .setPort(5672)
+                        .setHost(RealBrokerMother.hostIP)
+                        .setVirtualHost(RealBrokerMother.virtualHost)
+                        .setUsername(RealBrokerMother.user)
+                        .setPassword(RealBrokerMother.password)
+                        .setPort(RealBrokerMother.port)
                         .build());
     }
 
@@ -46,6 +47,7 @@ public class MetadataAuditRealIntegrationShould extends AbsStoreTestCase {
     //@Test
     public void notify_metadata_synced_in_local_when_a_change_occurs_on_the_server()
             throws Exception {
+        d2.logIn(RealServerMother.user, RealServerMother.password).call();
         d2.startListeningSyncedMetadata(
                 new MetadataSyncedListener() {
                     @Override

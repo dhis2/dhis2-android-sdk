@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.audit;
 
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
@@ -18,6 +19,7 @@ final class MetadataClassFactory {
         myMap.put("relationshipType", RelationshipType.class);
         myMap.put("optionSet", OptionSet.class);
         myMap.put("option", Option.class);
+        myMap.put("dataElement", DataElement.class);
         myMap.put("trackedEntityAttribute", TrackedEntityAttribute.class);
         return myMap;
     }

@@ -37,7 +37,7 @@ public class RelationshipTypeEndPointCallShould {
 
     Dhis2MockServer dhis2MockServer;
     Retrofit retrofit;
-    
+
     @Before
     public void setUp() throws IOException {
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());

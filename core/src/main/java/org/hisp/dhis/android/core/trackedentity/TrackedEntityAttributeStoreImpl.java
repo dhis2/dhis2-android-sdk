@@ -40,8 +40,6 @@ import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,7 +49,7 @@ import java.util.List;
         "PMD.AvoidDuplicateLiterals",
         "PMD.NPathComplexity"
 })
-public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEntityAttributeStore{
+public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEntityAttributeStore {
     private static final String FIELDS =
             TrackedEntityAttributeModel.Columns.UID + ", " +
                     TrackedEntityAttributeModel.Columns.CODE + ", " +
@@ -80,34 +78,36 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
             TrackedEntityAttributeModel.TABLE + " (" + FIELDS +
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-    private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityAttributeModel.TABLE + " SET " +
-            TrackedEntityAttributeModel.Columns.UID + " =?, " +
-            TrackedEntityAttributeModel.Columns.CODE + " =?, " +
-            TrackedEntityAttributeModel.Columns.NAME + " =?, " +
-            TrackedEntityAttributeModel.Columns.DISPLAY_NAME + " =?, " +
-            TrackedEntityAttributeModel.Columns.CREATED + " =?, " +
-            TrackedEntityAttributeModel.Columns.LAST_UPDATED + " =?, " +
-            TrackedEntityAttributeModel.Columns.SHORT_NAME + " =?, " +
-            TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME + " =?, " +
-            TrackedEntityAttributeModel.Columns.DESCRIPTION + " =?, " +
-            TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + " =?, " +
-            TrackedEntityAttributeModel.Columns.PATTERN + " =?, " +
-            TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM + " =?, " +
-            TrackedEntityAttributeModel.Columns.OPTION_SET + " =?, " +
-            TrackedEntityAttributeModel.Columns.VALUE_TYPE + " =?, " +
-            TrackedEntityAttributeModel.Columns.EXPRESSION + " =?, " +
-            TrackedEntityAttributeModel.Columns.SEARCH_SCOPE + " =?, " +
-            TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE + " =?, " +
-            TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM + " =?, " +
-            TrackedEntityAttributeModel.Columns.GENERATED + " =?, " +
-            TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE + " =?, " +
-            TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE + " =?, " +
-            TrackedEntityAttributeModel.Columns.UNIQUE + " =?, " +
-            TrackedEntityAttributeModel.Columns.INHERIT + " =? " +
-            " WHERE " + TrackedEntityAttributeModel.Columns.UID + " =?;";
+    private static final String UPDATE_STATEMENT =
+            "UPDATE " + TrackedEntityAttributeModel.TABLE + " SET " +
+                    TrackedEntityAttributeModel.Columns.UID + " =?, " +
+                    TrackedEntityAttributeModel.Columns.CODE + " =?, " +
+                    TrackedEntityAttributeModel.Columns.NAME + " =?, " +
+                    TrackedEntityAttributeModel.Columns.DISPLAY_NAME + " =?, " +
+                    TrackedEntityAttributeModel.Columns.CREATED + " =?, " +
+                    TrackedEntityAttributeModel.Columns.LAST_UPDATED + " =?, " +
+                    TrackedEntityAttributeModel.Columns.SHORT_NAME + " =?, " +
+                    TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME + " =?, " +
+                    TrackedEntityAttributeModel.Columns.DESCRIPTION + " =?, " +
+                    TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + " =?, " +
+                    TrackedEntityAttributeModel.Columns.PATTERN + " =?, " +
+                    TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM + " =?, " +
+                    TrackedEntityAttributeModel.Columns.OPTION_SET + " =?, " +
+                    TrackedEntityAttributeModel.Columns.VALUE_TYPE + " =?, " +
+                    TrackedEntityAttributeModel.Columns.EXPRESSION + " =?, " +
+                    TrackedEntityAttributeModel.Columns.SEARCH_SCOPE + " =?, " +
+                    TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE + " =?, " +
+                    TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM + " =?, " +
+                    TrackedEntityAttributeModel.Columns.GENERATED + " =?, " +
+                    TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE + " =?, " +
+                    TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE + " =?, " +
+                    TrackedEntityAttributeModel.Columns.UNIQUE + " =?, " +
+                    TrackedEntityAttributeModel.Columns.INHERIT + " =? " +
+                    " WHERE " + TrackedEntityAttributeModel.Columns.UID + " =?;";
 
-    private static final String DELETE_STATEMENT = "DELETE FROM " + TrackedEntityAttributeModel.TABLE +
-            " WHERE " + TrackedEntityAttributeModel.Columns.UID + " =?;";
+    private static final String DELETE_STATEMENT =
+            "DELETE FROM " + TrackedEntityAttributeModel.TABLE +
+                    " WHERE " + TrackedEntityAttributeModel.Columns.UID + " =?;";
 
     private static final String QUERY_ALL_TRACKED_ENTITY_ATTRIBUTES =
             "SELECT "+FIELDS+" FROM " + TrackedEntityAttributeModel.TABLE;
@@ -130,49 +130,56 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
 
     @Override
     public long insert(@NonNull String uid, @Nullable String code, @Nullable String name,
-                       @Nullable String displayName, @Nullable Date created,
-                       @Nullable Date lastUpdated, @Nullable String shortName,
-                       @Nullable String displayShortName, @Nullable String description,
-                       @Nullable String displayDescription, @Nullable String pattern,
-                       @Nullable Integer sortOrderInListNoProgram, @Nullable String optionSet,
-                       @Nullable ValueType valueType, @Nullable String expression,
-                       @Nullable TrackedEntityAttributeSearchScope searchScope,
-                       @Nullable Boolean programScope, @Nullable Boolean displayInListNoProgram,
-                       @Nullable Boolean generated, @Nullable Boolean displayOnVisitSchedule,
-                       @Nullable Boolean orgUnitScope, @Nullable Boolean unique,
-                       @Nullable Boolean inherit) {
+            @Nullable String displayName, @Nullable Date created,
+            @Nullable Date lastUpdated, @Nullable String shortName,
+            @Nullable String displayShortName, @Nullable String description,
+            @Nullable String displayDescription, @Nullable String pattern,
+            @Nullable Integer sortOrderInListNoProgram, @Nullable String optionSet,
+            @Nullable ValueType valueType, @Nullable String expression,
+            @Nullable TrackedEntityAttributeSearchScope searchScope,
+            @Nullable Boolean programScope, @Nullable Boolean displayInListNoProgram,
+            @Nullable Boolean generated, @Nullable Boolean displayOnVisitSchedule,
+            @Nullable Boolean orgUnitScope, @Nullable Boolean unique,
+            @Nullable Boolean inherit) {
         isNull(uid);
-        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName,
-                displayShortName, description, displayDescription, pattern, sortOrderInListNoProgram, optionSet,
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated,
+                shortName,
+                displayShortName, description, displayDescription, pattern,
+                sortOrderInListNoProgram, optionSet,
                 valueType, expression, searchScope, programScope, displayInListNoProgram,
                 generated, displayOnVisitSchedule, orgUnitScope, unique, inherit);
 
-        Long insert = databaseAdapter.executeInsert(TrackedEntityAttributeModel.TABLE, insertStatement);
+        Long insert = databaseAdapter.executeInsert(TrackedEntityAttributeModel.TABLE,
+                insertStatement);
         insertStatement.clearBindings();
         return insert;
     }
 
     @Override
-    public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @Nullable String displayName,
-                      @NonNull Date created, @NonNull Date lastUpdated, @Nullable String shortName,
-                      @Nullable String displayShortName, @Nullable String description,
-                      @Nullable String displayDescription, @Nullable String pattern,
-                      @Nullable Integer sortOrderInListNoProgram, @Nullable String optionSet,
-                      @NonNull ValueType valueType, @Nullable String expression,
-                      @Nullable TrackedEntityAttributeSearchScope searchScope, @Nullable Boolean programScope,
-                      @Nullable Boolean displayInListNoProgram, @Nullable Boolean generated,
-                      @Nullable Boolean displayOnVisitSchedule, @Nullable Boolean orgUnitScope,
-                      @Nullable Boolean unique, @Nullable Boolean inherit,
-                      @NonNull String whereUid) {
+    public int update(@NonNull String uid, @Nullable String code, @NonNull String name,
+            @Nullable String displayName,
+            @NonNull Date created, @NonNull Date lastUpdated, @Nullable String shortName,
+            @Nullable String displayShortName, @Nullable String description,
+            @Nullable String displayDescription, @Nullable String pattern,
+            @Nullable Integer sortOrderInListNoProgram, @Nullable String optionSet,
+            @NonNull ValueType valueType, @Nullable String expression,
+            @Nullable TrackedEntityAttributeSearchScope searchScope, @Nullable Boolean programScope,
+            @Nullable Boolean displayInListNoProgram, @Nullable Boolean generated,
+            @Nullable Boolean displayOnVisitSchedule, @Nullable Boolean orgUnitScope,
+            @Nullable Boolean unique, @Nullable Boolean inherit,
+            @NonNull String whereUid) {
         isNull(uid);
         isNull(whereUid);
-        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName,
-                displayShortName, description, displayDescription, pattern, sortOrderInListNoProgram, optionSet,
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated,
+                shortName,
+                displayShortName, description, displayDescription, pattern,
+                sortOrderInListNoProgram, optionSet,
                 valueType, expression, searchScope, programScope, displayInListNoProgram,
                 generated, displayOnVisitSchedule, orgUnitScope, unique, inherit);
         sqLiteBind(updateStatement, 24, whereUid);
 
-        int update = databaseAdapter.executeUpdateDelete(TrackedEntityAttributeModel.TABLE, updateStatement);
+        int update = databaseAdapter.executeUpdateDelete(TrackedEntityAttributeModel.TABLE,
+                updateStatement);
         updateStatement.clearBindings();
         return update;
     }
@@ -182,23 +189,25 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
         isNull(uid);
         sqLiteBind(deleteStatement, 1, uid);
 
-        int delete = databaseAdapter.executeUpdateDelete(TrackedEntityAttributeModel.TABLE, deleteStatement);
+        int delete = databaseAdapter.executeUpdateDelete(TrackedEntityAttributeModel.TABLE,
+                deleteStatement);
         deleteStatement.clearBindings();
         return delete;
     }
 
-    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
-                               @NonNull String name, @Nullable String displayName, @NonNull Date created,
-                               @NonNull Date lastUpdated, @Nullable String shortName,
-                               @Nullable String displayShortName, @Nullable String description,
-                               @Nullable String displayDescription, @Nullable String pattern,
-                               @Nullable Integer sortOrderInListNoProgram, @Nullable String optionSet,
-                               @NonNull ValueType valueType, @Nullable String expression,
-                               @Nullable TrackedEntityAttributeSearchScope searchScope,
-                               @Nullable Boolean programScope, @Nullable Boolean displayInListNoProgram,
-                               @Nullable Boolean generated, @Nullable Boolean displayOnVisitSchedule,
-                               @Nullable Boolean orgUnitScope, @Nullable Boolean unique,
-                               @Nullable Boolean inherit) {
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid,
+            @Nullable String code,
+            @NonNull String name, @Nullable String displayName, @NonNull Date created,
+            @NonNull Date lastUpdated, @Nullable String shortName,
+            @Nullable String displayShortName, @Nullable String description,
+            @Nullable String displayDescription, @Nullable String pattern,
+            @Nullable Integer sortOrderInListNoProgram, @Nullable String optionSet,
+            @NonNull ValueType valueType, @Nullable String expression,
+            @Nullable TrackedEntityAttributeSearchScope searchScope,
+            @Nullable Boolean programScope, @Nullable Boolean displayInListNoProgram,
+            @Nullable Boolean generated, @Nullable Boolean displayOnVisitSchedule,
+            @Nullable Boolean orgUnitScope, @Nullable Boolean unique,
+            @Nullable Boolean inherit) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -278,7 +287,7 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
 
         String uid = getStringFromCursor(cursor, 0);
         String code = getStringFromCursor(cursor, 1);
-        String name =getStringFromCursor(cursor, 2);
+        String name = getStringFromCursor(cursor, 2);
         String displayName = getStringFromCursor(cursor, 3);
         Date created = getDateFromCursor(cursor, 4);
         Date lastUpdated = getDateFromCursor(cursor, 5);
@@ -291,7 +300,8 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
         String optionSetUID = getStringFromCursor(cursor, 12);
         ValueType valueType = getValueTypeFromCursor(cursor, 13);
         String expression = getStringFromCursor(cursor, 14);
-        TrackedEntityAttributeSearchScope searchScope = getTrackedEntityAttributeSearchScopeFromCursor(cursor, 15);
+        TrackedEntityAttributeSearchScope searchScope =
+                getTrackedEntityAttributeSearchScopeFromCursor(cursor, 15);
         Boolean programScope = getBooleanFromCursor(cursor, 16);
         Boolean displayInListNoProgram = getBooleanFromCursor(cursor, 17);
         Boolean generated = getBooleanFromCursor(cursor, 18);
@@ -300,19 +310,34 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
         Boolean unique = getBooleanFromCursor(cursor, 21);
         Boolean inherit = getBooleanFromCursor(cursor, 22);
 
-        OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter);
-        OptionSet optionSet = optionSetUID == null ? null : optionSetStore.queryByUid(optionSetUID);
+        OptionSet optionSet = optionSetUID == null ? null : OptionSet.builder()
+                .uid(optionSetUID)
+                .build();
 
-        trackedEntityAttribute = TrackedEntityAttribute.builder().uid(uid).code(code)
-                .displayName(displayName).created(created).lastUpdated(lastUpdated).name(name)
-                .shortName(shortName).displayShortName(displayShortName).description(description)
+        trackedEntityAttribute = TrackedEntityAttribute.builder()
+                .uid(uid)
+                .code(code)
+                .displayName(displayName)
+                .created(created)
+                .lastUpdated(lastUpdated)
+                .name(name)
+                .shortName(shortName)
+                .displayShortName(displayShortName)
+                .description(description)
                 .displayDescription(displayDescription)
-                .pattern(pattern).sortOrderInListNoProgram(sortOrderInListNoProgram)
-                .optionSet(optionSet).valueType(valueType)
-                .expression(expression).searchScope(searchScope).programScope(programScope)
-                .displayInListNoProgram(displayInListNoProgram).generated(generated)
-                .displayOnVisitSchedule(displayOnVisitSchedule).orgUnitScope(orgUnitScope)
-                .unique(unique).inherit(inherit)
+                .pattern(pattern)
+                .sortOrderInListNoProgram(sortOrderInListNoProgram)
+                .optionSet(optionSet)
+                .valueType(valueType)
+                .expression(expression)
+                .searchScope(searchScope)
+                .programScope(programScope)
+                .displayInListNoProgram(displayInListNoProgram)
+                .generated(generated)
+                .displayOnVisitSchedule(displayOnVisitSchedule)
+                .orgUnitScope(orgUnitScope)
+                .unique(unique)
+                .inherit(inherit)
                 .build();
 
         return trackedEntityAttribute;

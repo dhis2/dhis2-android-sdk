@@ -27,16 +27,16 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.option.OptionSetHandler;
-
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
+import org.hisp.dhis.android.core.option.OptionSetHandler;
 
 public class DataElementHandler {
     private final DataElementStore dataElementStore;
     private final OptionSetHandler optionSetHandler;
 
     public DataElementHandler(DataElementStore dataElementStore,
-                              OptionSetHandler optionSetHandler) {
+            OptionSetHandler optionSetHandler) {
         this.dataElementStore = dataElementStore;
         this.optionSetHandler = optionSetHandler;
     }
@@ -51,8 +51,6 @@ public class DataElementHandler {
     /**
      * Deletes or persists data elements and applies changes to database.
      * This method has a nested call to deleteOrPersistOptionSets
-     *
-     * @param dataElement
      */
     private void deleteOrPersistDataElement(DataElement dataElement) {
         if (isDeleted(dataElement)) {
@@ -69,26 +67,30 @@ public class DataElementHandler {
                 categoryCombo = dataElement.categoryCombo().uid();
             }
 
-            int updatedRow = dataElementStore.update(dataElement.uid(), dataElement.code(), dataElement.name(),
+            int updatedRow = dataElementStore.update(dataElement.uid(), dataElement.code(),
+                    dataElement.name(),
                     dataElement.displayName(), dataElement.created(), dataElement.lastUpdated(),
-                    dataElement.shortName(), dataElement.displayShortName(), dataElement.description(),
+                    dataElement.shortName(), dataElement.displayShortName(),
+                    dataElement.description(),
                     dataElement.displayDescription(), dataElement.valueType(),
-                    dataElement.zeroIsSignificant(), dataElement.aggregationType(), dataElement.formName(),
+                    dataElement.zeroIsSignificant(), dataElement.aggregationType(),
+                    dataElement.formName(),
                     dataElement.numberType(), dataElement.domainType(), dataElement.dimension(),
                     dataElement.displayFormName(), optionSetUid, categoryCombo, dataElement.uid());
 
             if (updatedRow <= 0) {
                 dataElementStore.insert(dataElement.uid(), dataElement.code(), dataElement.name(),
                         dataElement.displayName(), dataElement.created(), dataElement.lastUpdated(),
-                        dataElement.shortName(), dataElement.displayShortName(), dataElement.description(),
+                        dataElement.shortName(), dataElement.displayShortName(),
+                        dataElement.description(),
                         dataElement.displayDescription(), dataElement.valueType(),
-                        dataElement.zeroIsSignificant(), dataElement.aggregationType(), dataElement.formName(),
+                        dataElement.zeroIsSignificant(), dataElement.aggregationType(),
+                        dataElement.formName(),
                         dataElement.numberType(), dataElement.domainType(), dataElement.dimension(),
                         dataElement.displayFormName(), optionSetUid, categoryCombo);
             }
+
+            optionSetHandler.handleOptionSet(dataElement.optionSet());
         }
-
-        optionSetHandler.handleOptionSet(dataElement.optionSet());
-
     }
 }

@@ -57,6 +57,7 @@ import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -221,7 +222,7 @@ public class MetadataCallShould {
     private OptionSetStore optionSetStore;
 
     @Mock
-    private DataElementStore dataElementStore;
+    private DataElementFactory dataElementFactory;
 
     @Mock
     private ProgramStageDataElementStore programStageDataElementStore;
@@ -303,6 +304,7 @@ public class MetadataCallShould {
     // object to test
     private MetadataCall metadataCall;
 
+
     private Response errorResponse;
 
     Dhis2MockServer dhis2MockServer;
@@ -373,11 +375,14 @@ public class MetadataCallShould {
                 userOrganisationUnitLinkStore, programStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, dataElementStore, programStageDataElementStore,
+                programRuleStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetFactory, trackedEntityFactory, trackedEntityAttributeFactory);
+                optionSetFactory, trackedEntityFactory, trackedEntityAttributeFactory,
+                dataElementFactory);
+
+        when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
         when(userCall.execute()).thenReturn(Response.success(user));

@@ -34,7 +34,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityMetadataAuditHandle
 @SuppressWarnings({
         "PMD.CyclomaticComplexity",
         "PMD.ModifiedCyclomaticComplexity",
-        "PMD.StdCyclomaticComplexity"
+        "PMD.StdCyclomaticComplexity",
+        "PMD.ExcessiveImports"
 })
 public class MetadataAuditHandlerFactory {
 

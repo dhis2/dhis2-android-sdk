@@ -413,7 +413,7 @@ public final class D2 {
                 userRoleProgramLinkStore, organisationUnitStore, userOrganisationUnitLinkStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 categoryComboQuery, comboService, categoryComboHandler, optionSetFactory,
-                trackedEntityFactory, programFactory, relationshipTypeFactory);
+                trackedEntityFactory, programFactory);
     }
 
     @NonNull

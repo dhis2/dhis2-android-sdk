@@ -110,10 +110,10 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
                     " WHERE " + TrackedEntityAttributeModel.Columns.UID + " =?;";
 
     private static final String QUERY_ALL_TRACKED_ENTITY_ATTRIBUTES =
-            "SELECT "+FIELDS+" FROM " + TrackedEntityAttributeModel.TABLE;
+            "SELECT " + FIELDS + " FROM " + TrackedEntityAttributeModel.TABLE;
     private static final String QUERY_BY_UID =
-            "SELECT "+FIELDS+" FROM " + TrackedEntityAttributeModel.TABLE
-            + " WHERE "+TrackedEntityAttributeModel.Columns.UID + "=?;";
+            "SELECT " + FIELDS + " FROM " + TrackedEntityAttributeModel.TABLE
+                    + " WHERE " + TrackedEntityAttributeModel.Columns.UID + "=?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -246,18 +246,14 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
 
     @Override
     public TrackedEntityAttribute queryByUid(String uid) {
-        Cursor cursor = databaseAdapter.query(QUERY_BY_UID, uid);
         TrackedEntityAttribute trackedEntityAttribute = null;
-        try{
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            trackedEntityAttribute =
-                    mapTrackedEntityAttributeFromCursor(cursor);
 
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID, uid);
+
+        if (cursor.getCount() > 0) {
+            trackedEntityAttribute = mapTrackedEntityAttributesFromCursor(cursor).get(0);
         }
-        }finally {
-            cursor.close();
-        }
+
         return trackedEntityAttribute;
     }
 

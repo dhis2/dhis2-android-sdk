@@ -122,11 +122,11 @@ public class ProgramRuleActionChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(ProgramStage.class, metadataAudit);
 
-        ProgramRuleAction editedProgramRuleAction = programRuleActionStore.queryByUid(metadataAudit.getUid());
+        ProgramRuleAction programRuleActionUpdated = programRuleActionStore.queryByUid(metadataAudit.getUid());
 
-        ProgramRuleAction expectedProgramRuleAction = getExpectedProgramStage(filename);
+        ProgramRuleAction ProgramRuleActionExpected = getExpectedProgramStage(filename);
 
-        verifyProgramRuleAction(editedProgramRuleAction, expectedProgramRuleAction);
+        verifyEqualsProgramRuleAction(programRuleActionUpdated, ProgramRuleActionExpected);
     }
 
     @Test
@@ -184,15 +184,15 @@ public class ProgramRuleActionChangeOnServerShould extends AbsStoreTestCase {
         return payloadExpected.items().get(0).programRules().get(0).programRuleActions().get(0);
     }
 
-    private void verifyProgramRuleAction(ProgramRuleAction createdProgramRuleAction,
-            ProgramRuleAction expectedProgramRuleAction) {
-        assertThat(removeChildrenFromProgramStage(createdProgramRuleAction),
-                is(removeChildrenFromProgramStage(expectedProgramRuleAction)));
+    private void verifyEqualsProgramRuleAction(ProgramRuleAction programRuleActionUpdated,
+            ProgramRuleAction programRuleActionExpected) {
+        assertThat(removeForeignKeysFromProgramRuleAction(programRuleActionUpdated),
+                is(removeForeignKeysFromProgramRuleAction(programRuleActionExpected)));
     }
 
-    private ProgramRuleAction removeChildrenFromProgramStage(ProgramRuleAction programRuleAction) {
-        //compare without children because there are other tests (call, handler)
-        //that verify the tree is saved in database
+    private ProgramRuleAction removeForeignKeysFromProgramRuleAction(ProgramRuleAction programRuleAction) {
+        //compare without dependencies (FKs) because there are other tests (call, handler)
+        //that verify the whole tree is saved in database
         programRuleAction = programRuleAction.toBuilder()
                 .programRule(null)
                 .programStageSection(null)

@@ -67,7 +67,7 @@ public class MetadataAuditHandlerFactoryShould {
     }
 
     @Test
-    public void return_tracked_entity_audit() {
+    public void return_metadata_audit_handler() {
         MetadataAuditHandler metadataAuditHandler =
                 metadataAuditHandlerFactory.getByClass(dhisType);
 

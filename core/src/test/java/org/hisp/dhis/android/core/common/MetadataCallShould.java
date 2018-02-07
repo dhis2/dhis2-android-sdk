@@ -279,8 +279,9 @@ public class MetadataCallShould {
 
         optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
         trackedEntityFactory = new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
+        dataElementFactory = new DataElementFactory(retrofit, databaseAdapter, resourceHandler);
         programFactory = new ProgramFactory(retrofit, databaseAdapter, optionSetFactory.
-                getOptionSetHandler(), resourceHandler);
+                getOptionSetHandler(), dataElementFactory, resourceHandler);
 
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService, organisationUnitService,
@@ -288,8 +289,8 @@ public class MetadataCallShould {
                 userRoleProgramLinkStore, organisationUnitStore, userOrganisationUnitLinkStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetFactory, trackedEntityFactory, trackedEntityAttributeFactory,
-                programFactory, dataElementFactory);
+                optionSetFactory, trackedEntityFactory,
+                programFactory);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));

@@ -16,11 +16,11 @@ final class MetadataClassFactory {
     private static Map<String, Class<?>> createMap() {
         Map<String, Class<?>> myMap = new HashMap<>();
         myMap.put("trackedEntity", TrackedEntity.class);
-        myMap.put("relationshipType", RelationshipType.class);
         myMap.put("optionSet", OptionSet.class);
         myMap.put("option", Option.class);
         myMap.put("dataElement", DataElement.class);
         myMap.put("trackedEntityAttribute", TrackedEntityAttribute.class);
+        myMap.put("relationshipType", RelationshipType.class);
         return myMap;
     }
 

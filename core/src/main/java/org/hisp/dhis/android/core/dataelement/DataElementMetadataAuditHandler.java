@@ -25,7 +25,8 @@ public class DataElementMetadataAuditHandler implements MetadataAuditHandler {
             Set<String> uIds = new HashSet<>();
             uIds.add(metadataAudit.getUid());
             DataElementQuery dataElementQuery = new DataElementQuery(uIds);
-            dataElementFactory.newEndPointCall(dataElementQuery, metadataAudit.getCreatedAt()).call();
+            dataElementFactory.newEndPointCall(dataElementQuery,
+                    metadataAudit.getCreatedAt()).call();
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {
                 dataElement = dataElement.toBuilder().deleted(true).build();

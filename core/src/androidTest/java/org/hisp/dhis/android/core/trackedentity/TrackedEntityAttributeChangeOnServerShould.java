@@ -72,7 +72,8 @@ public class TrackedEntityAttributeChangeOnServerShould extends AbsStoreTestCase
     }
 
     @Test
-    public void create_tracked_entity_attribute_in_database_if_audit_type_is_create() throws Exception {
+    public void create_tracked_entity_attribute_in_database_if_audit_type_is_create()
+            throws Exception {
         givenAExistedOptionDependencyPreviously();
 
         MetadataAudit<TrackedEntityAttribute> metadataAudit =
@@ -134,7 +135,8 @@ public class TrackedEntityAttributeChangeOnServerShould extends AbsStoreTestCase
     }
 
     @Test
-    public void delete_tracked_entity_attribute_in_database_if_audit_type_is_delete() throws Exception {
+    public void delete_tracked_entity_attribute_in_database_if_audit_type_is_delete()
+            throws Exception {
         givenAExistedOptionDependencyPreviously();
         givenAExistedTrackedEntityAttributePreviously();
 
@@ -157,7 +159,8 @@ public class TrackedEntityAttributeChangeOnServerShould extends AbsStoreTestCase
         assertThat(trackedEntityAttributeStore.queryAll().size(), is(0));
     }
 
-    private MetadataAudit<TrackedEntityAttribute> givenAMetadataAudit(String fileName) throws IOException {
+    private MetadataAudit<TrackedEntityAttribute> givenAMetadataAudit(String fileName)
+            throws IOException {
         AssetsFileReader assetsFileReader = new AssetsFileReader();
 
         String json = assetsFileReader.getStringFromFile(fileName);
@@ -173,7 +176,8 @@ public class TrackedEntityAttributeChangeOnServerShould extends AbsStoreTestCase
         metadataAuditListener.onMetadataChanged(TrackedEntityAttribute.class, metadataAudit);
     }
 
-    private Payload<TrackedEntityAttribute> parseTrackedEntities(String fileName) throws IOException {
+    private Payload<TrackedEntityAttribute> parseTrackedEntities(String fileName)
+            throws IOException {
         String json = new AssetsFileReader().getStringFromFile(fileName);
 
         GenericClassParser parser = new GenericClassParser();

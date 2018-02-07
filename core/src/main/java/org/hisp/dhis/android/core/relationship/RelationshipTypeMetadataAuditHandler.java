@@ -16,15 +16,11 @@ public class RelationshipTypeMetadataAuditHandler implements MetadataAuditHandle
     }
 
     public void handle(MetadataAudit metadataAudit) throws Exception {
-        // MetadataAudit<Option> of CREATE type is ignored because OptionSetUid is null in payload.
-        // when a option is create on server also send a MetadataAudit<OptionSet> of UPDATE type
-        // then new option will be created by OptionSetMetadataAuditHandler.
-
         RelationshipType relationshipType = (RelationshipType) metadataAudit.getValue();
 
         if (metadataAudit.getType() == AuditType.UPDATE) {
             //metadataAudit of UPDATE type does not return payload
-            //It's necessary sync by metadata parent call
+            //It's necessary sync by relationshipType call
             Set<String> uIds = new HashSet<>();
             uIds.add(metadataAudit.getUid());
 

@@ -37,7 +37,8 @@ public class CategoryComboHandlerShould {
         MockitoAnnotations.initMocks(this);
 
 
-        categoryComboHandler = new CategoryComboHandler(mockCategoryComboStore, mockComboOptionLinkStore,
+        categoryComboHandler = new CategoryComboHandler(mockCategoryComboStore,
+                mockComboOptionLinkStore,
                 mockComboLinkStore, mockOptionComboHandler);
     }
 

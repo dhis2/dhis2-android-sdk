@@ -70,10 +70,9 @@ public class RelationshipTypeChangeOnServerShould extends AbsStoreTestCase {
 
     @Test
     public void create_relation_ship_types_in_database_if_audit_type_is_create() throws Exception {
-        String filename = "audit/relationship_types.json";
-
         MetadataAudit<RelationshipType> metadataAudit =
                 givenAMetadataAudit("audit/relationship_type_create.json");
+
         metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
             @Override
             public void onSynced(SyncedMetadata syncedMetadata) {
@@ -86,14 +85,18 @@ public class RelationshipTypeChangeOnServerShould extends AbsStoreTestCase {
         });
 
         metadataAuditListener.onMetadataChanged(RelationshipType.class, metadataAudit);
-        RelationshipType expected= parseExpected(
-                filename).items().get(0);
-        assertThat(relationshipTypeStore.queryByUid(metadataAudit.getUid()), is(expected));
+
+        RelationshipType createdRelationshipType =
+                relationshipTypeStore.queryByUid(metadataAudit.getUid());
+
+        RelationshipType expectedRelationshipType = metadataAudit.getValue();
+
+        assertThat(createdRelationshipType, is(expectedRelationshipType));
     }
 
     @Test
     public void update_relationship_type_set_if_audit_type_is_update() throws Exception {
-        String filename = "audit/relationship_types_updated.json";
+        String filename = "relationship_type_updated.json";
 
         givenAExistedRelationshipTypePreviously();
 
@@ -115,10 +118,12 @@ public class RelationshipTypeChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(RelationshipType.class, metadataAudit);
 
-        RelationshipType expected= parseExpected(
-                filename).items().get(0);
-        assertThat(getRelationshipTypeFromDatabase(metadataAudit.getUid()),
-                is(expected));
+        RelationshipType editedRelationshipType =
+                relationshipTypeStore.queryByUid(metadataAudit.getUid());
+
+        RelationshipType expectedRelationshipType = parseExpected(filename).items().get(0);
+
+        assertThat(editedRelationshipType, is(expectedRelationshipType));
     }
 
     @Test
@@ -168,11 +173,5 @@ public class RelationshipTypeChangeOnServerShould extends AbsStoreTestCase {
         GenericClassParser parser = new GenericClassParser();
 
         return parser.parse(json, Payload.class, RelationshipType.class);
-    }
-
-    private RelationshipType getRelationshipTypeFromDatabase(String uid) {
-        RelationshipType relationshipType = new RelationshipTypeStoreImpl(databaseAdapter()).queryByUid(uid);
-
-        return relationshipType;
     }
 }

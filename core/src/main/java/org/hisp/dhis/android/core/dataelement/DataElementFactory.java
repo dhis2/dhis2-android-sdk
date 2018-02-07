@@ -25,7 +25,7 @@ public class DataElementFactory {
     private final List<DeletableStore> deletableStores;
 
     public DataElementFactory(Retrofit retrofit, DatabaseAdapter databaseAdapter,
-            ResourceHandler resourceHandler){
+            ResourceHandler resourceHandler) {
         this.databaseAdapter = databaseAdapter;
         this.dataElementService = retrofit.create(DataElementService.class);
         this.resourceHandler = resourceHandler;
@@ -41,7 +41,8 @@ public class DataElementFactory {
 
     }
 
-    public DataElementEndPointCall newEndPointCall(DataElementQuery dataElementQuery, Date serverDate){
+    public DataElementEndPointCall newEndPointCall(DataElementQuery dataElementQuery,
+            Date serverDate) {
         return new DataElementEndPointCall(dataElementService,
                 dataElementQuery,
                 dataElementHandler, resourceHandler, databaseAdapter, serverDate);

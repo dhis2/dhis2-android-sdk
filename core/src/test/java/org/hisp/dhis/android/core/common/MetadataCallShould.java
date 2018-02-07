@@ -57,14 +57,11 @@ import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetService;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
@@ -81,6 +78,7 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionStore;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeFactory;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -91,7 +89,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
@@ -216,15 +213,6 @@ public class MetadataCallShould {
     private ProgramRuleStore programRuleStore;
 
     @Mock
-    private OptionStore optionStore;
-
-    @Mock
-    private OptionSetStore optionSetStore;
-
-    @Mock
-    private DataElementFactory dataElementFactory;
-
-    @Mock
     private ProgramStageDataElementStore programStageDataElementStore;
 
     @Mock
@@ -300,6 +288,8 @@ public class MetadataCallShould {
 
     private OptionSetFactory optionSetFactory;
     private TrackedEntityFactory trackedEntityFactory;
+    private DataElementFactory dataElementFactory;
+    private RelationshipTypeFactory relationshipTypeFactory;
 
     // object to test
     private MetadataCall metadataCall;
@@ -364,23 +354,27 @@ public class MetadataCallShould {
         comboService = retrofit.create(CategoryComboService.class);
 
         optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
+
         trackedEntityFactory = new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
+
+        dataElementFactory = new DataElementFactory(retrofit, databaseAdapter, resourceHandler);
+
+        relationshipTypeFactory =
+                new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
 
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService,
                 programService, organisationUnitService,
                 systemInfoStore, resourceStore, userStore,
                 userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
-                organisationUnitStore,
-                userOrganisationUnitLinkStore, programStore,
+                organisationUnitStore, userOrganisationUnitLinkStore, programStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore,
-                organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
-                CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetFactory, trackedEntityFactory, trackedEntityAttributeFactory,
-                dataElementFactory);
+                programRuleStore, programStageDataElementStore, programStageSectionStore,
+                programStageStore, organisationUnitProgramLinkStore, categoryQuery,
+                categoryService, categoryHandler, CategoryComboQuery.defaultQuery(), comboService,
+                mockCategoryComboHandler, optionSetFactory, trackedEntityFactory,
+                trackedEntityAttributeFactory, dataElementFactory, relationshipTypeFactory);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 

@@ -108,7 +108,8 @@ public class CategoryComboHandler {
         }
     }
 
-    private CategoryCategoryComboLinkModel newCategoryComboLink(@NonNull CategoryCombo categoryCombo,
+    private CategoryCategoryComboLinkModel newCategoryComboLink(
+            @NonNull CategoryCombo categoryCombo,
             @NonNull Category category) {
 
         return CategoryCategoryComboLinkModel.builder().category(

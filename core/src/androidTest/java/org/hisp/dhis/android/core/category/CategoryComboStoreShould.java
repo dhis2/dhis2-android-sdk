@@ -94,7 +94,7 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
 
     @Test
     @MediumTest
-    public void query_all_category_combos(){
+    public void query_all_category_combos() {
 
         givenACategoryCombo();
 
@@ -139,7 +139,7 @@ public class CategoryComboStoreShould extends AbsStoreTestCase {
 
     private void whenUpdateACategoryCombo() {
 
-         updatedCategoryCombo = generateCategoryCombo(DEFAULT_CATEGORY_COMBO_UID);
+        updatedCategoryCombo = generateCategoryCombo(DEFAULT_CATEGORY_COMBO_UID);
 
         store.update(updatedCategoryCombo);
     }

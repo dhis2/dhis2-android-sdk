@@ -45,10 +45,10 @@ public class MetadataAuditHandlerFactory {
             return new OptionSetMetadataAuditHandler(optionSetFactory);
         } else if (klass == Option.class) {
             return new OptionMetadataAuditHandler(optionSetFactory);
-        }  else if (klass == TrackedEntityAttribute.class) {
+        } else if (klass == TrackedEntityAttribute.class) {
             return new TrackedEntityAttributeMetadataAuditHandler(
                     trackedEntityAttributeFactory);
-        }  else if (klass == DataElement.class) {
+        } else if (klass == DataElement.class) {
             return new DataElementMetadataAuditHandler(dataElementFactory);
         } else if (klass == RelationshipType.class) {
             return new RelationshipTypeMetadataAuditHandler(relationshipTypeFactory);

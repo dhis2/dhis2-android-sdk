@@ -98,12 +98,12 @@ public class ProgramRuleVariableChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(Program.class, metadataAudit);
 
-        ProgramRuleVariable createdProgramRuleVariable = programRuleVariableStore.queryByUid(
+        ProgramRuleVariable programRuleVariableCreated = programRuleVariableStore.queryByUid(
                 metadataAudit.getUid());
 
-        ProgramRuleVariable expectedProgramRuleVariable = metadataAudit.getValue();
+        ProgramRuleVariable programRuleVariableExpected = metadataAudit.getValue();
 
-        verifyProgram(createdProgramRuleVariable, expectedProgramRuleVariable);
+        verifyEqualsProgramRuleVariable(programRuleVariableCreated, programRuleVariableExpected);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class ProgramRuleVariableChangeOnServerShould extends AbsStoreTestCase {
 
         ProgramRuleVariable expectedProgramRuleVariable = getExpectedProgramRuleVariable(filename);
 
-        verifyProgram(editedProgramRuleVariable, expectedProgramRuleVariable);
+        verifyEqualsProgramRuleVariable(editedProgramRuleVariable, expectedProgramRuleVariable);
     }
 
     @Test
@@ -195,15 +195,16 @@ public class ProgramRuleVariableChangeOnServerShould extends AbsStoreTestCase {
         return payloadExpected.items().get(0).programRuleVariables().get(0);
     }
 
-    private void verifyProgram(ProgramRuleVariable createdProgramRuleVariable,
-            ProgramRuleVariable expectedProgramRuleVariable) {
-        //compare without children because there are other tests (call, handler)
+    private void verifyEqualsProgramRuleVariable(
+            ProgramRuleVariable programRuleVariableCreatedOrUpdated,
+            ProgramRuleVariable programRuleVariableExpected) {
+        //compare without dependencies (FKs) because there are other tests (call, handler)
         //that verify the tree is saved in database
-        assertThat(removeChildrenFromProgramRuleVariable(createdProgramRuleVariable),
-                is(removeChildrenFromProgramRuleVariable(expectedProgramRuleVariable)));
+        assertThat(removeForeignKeysFromProgramRuleVariable(programRuleVariableCreatedOrUpdated),
+                is(removeForeignKeysFromProgramRuleVariable(programRuleVariableExpected)));
     }
 
-    private ProgramRuleVariable removeChildrenFromProgramRuleVariable(
+    private ProgramRuleVariable removeForeignKeysFromProgramRuleVariable(
             ProgramRuleVariable programRuleVariable) {
         programRuleVariable = programRuleVariable.toBuilder()
                 .program(null)

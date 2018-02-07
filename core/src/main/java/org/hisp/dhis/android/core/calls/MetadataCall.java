@@ -106,7 +106,6 @@ public class MetadataCall implements Call<Response> {
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
     private final ProgramFactory programFactory;
-    private final RelationshipTypeFactory relationshipTypeFactory;
 
     private boolean isExecuted;
 
@@ -158,7 +157,6 @@ public class MetadataCall implements Call<Response> {
         this.optionSetFactory = optionSetFactory;
         this.trackedEntityFactory = trackedEntityFactory;
         this.programFactory = programFactory;
-        this.relationshipTypeFactory = relationshipTypeFactory;
     }
 
     @Override

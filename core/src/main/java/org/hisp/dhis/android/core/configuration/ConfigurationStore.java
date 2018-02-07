@@ -39,5 +39,6 @@ public interface ConfigurationStore extends DeletableStore {
     @Nullable
     ConfigurationModel query();
 
+    @Override
     int delete();
 }

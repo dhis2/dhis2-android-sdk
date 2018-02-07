@@ -1,19 +1,19 @@
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboStore;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryHandler;
-import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionHandler;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryStore;
@@ -34,9 +34,12 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 
 public class HandlerFactory {
 

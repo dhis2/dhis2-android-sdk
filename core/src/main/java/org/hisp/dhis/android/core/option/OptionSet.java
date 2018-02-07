@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.option;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -39,12 +39,10 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
-import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_OptionSet.Builder.class)
 public abstract class OptionSet extends BaseIdentifiableObject {
     private static final String VERSION = "version";
     private static final String VALUE_TYPE = "valueType";
@@ -73,30 +71,23 @@ public abstract class OptionSet extends BaseIdentifiableObject {
     @JsonProperty(OPTIONS)
     public abstract List<Option> options();
 
-    @JsonCreator
-    public static OptionSet create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(VERSION) Integer version,
-            @JsonProperty(VALUE_TYPE) ValueType valueType,
-            @JsonProperty(OPTIONS) List<Option> options,
-            @JsonProperty(DELETED) Boolean deleted) {
+    public abstract OptionSet.Builder toBuilder();
 
-        return new AutoValue_OptionSet(
-                uid,
-                code,
-                name,
-                displayName,
-                created,
-                lastUpdated,
-                deleted,
-                version,
-                valueType,
-                safeUnmodifiableList(options)
-        );
+    public static OptionSet.Builder builder() {
+        return new AutoValue_OptionSet.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<OptionSet.Builder> {
+        @JsonProperty(VERSION)
+        public abstract Builder version(Integer version);
+
+        @JsonProperty(VALUE_TYPE)
+        public abstract Builder valueType(@Nullable ValueType valueType);
+
+        @JsonProperty(OPTIONS)
+        public abstract Builder options(@Nullable List<Option> options);
+
+        public abstract OptionSet build();
     }
 }

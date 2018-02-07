@@ -64,6 +64,8 @@ android {
 
         // Fail early.
         abortOnError true
+
+        lintConfig file("../lint.xml")
     }
 
     buildTypes {
@@ -112,17 +114,21 @@ dependencies {
     compile "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
     annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
 
+    //RabbitMQ
+    compile "com.rabbitmq:amqp-client:${libraries.rabbitmq}"
+
     // Java test dependencies
     testCompile "junit:junit:${libraries.junit}"
     testCompile "org.mockito:mockito-core:${libraries.mockito}"
     testCompile "org.assertj:assertj-core:${libraries.assertj}"
     testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
     testCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
+    testCompile "org.apache.qpid:qpid-broker:${libraries.qpidbroker}"
     testCompile 'com.google.code.findbugs:annotations:3.0.0'
     testCompile "com.android.support.test:runner:${libraries.testrunner}"
 
     // Android test dependencies
-    androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"
+    androidTestCompile "com.linkedin.dexmaker:dexmaker-mockito:${libraries.dexmakermockito}"
     androidTestCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
     androidTestCompile "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
@@ -130,6 +136,7 @@ dependencies {
         exclude group: 'junit' // Android has JUnit built in.
     }
     compile 'com.google.code.findbugs:annotations:3.0.0'
+
 }
 
 apply from: rootProject.file("plugins/gradle-mvn-push.gradle")

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.server;
+package org.hisp.dhis.android.core.data.server.api;
 
 import android.support.annotation.NonNull;
 
@@ -83,22 +83,27 @@ public class Dhis2MockServer {
     }
 
     public void enqueueMockResponse(String fileName) throws IOException {
-        MockResponse response = createMockResponse(fileName);
+        MockResponse response = createMockResponse(fileName, OK_CODE);
+        server.enqueue(response);
+    }
+
+    public void enqueueMockResponse(String fileName, int code) throws IOException {
+        MockResponse response = createMockResponse(fileName, code);
         server.enqueue(response);
     }
 
     @NonNull
-    private MockResponse createMockResponse(String fileName) throws IOException {
+    private MockResponse createMockResponse(String fileName, int code) throws IOException {
         String body = fileReader.getStringFromFile(fileName);
         MockResponse response = new MockResponse();
-        response.setResponseCode(OK_CODE);
+        response.setResponseCode(code);
         response.setBody(body);
         return response;
     }
 
     public void enqueueMockResponse(String fileName, Date dateHeader)
             throws IOException {
-        MockResponse response = createMockResponse(fileName);
+        MockResponse response = createMockResponse(fileName, OK_CODE);
 
         response.setHeader(HeaderUtils.DATE, new HttpHeaderDate(dateHeader).toString());
 

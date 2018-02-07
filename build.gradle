@@ -64,7 +64,7 @@ ext {
 
             // java
             jackson         : "2.8.5",
-            autovalue       : "1.3",
+            autovalue       : "1.5",
             autovaluecursor : "1.0.1",
             retrofit        : "2.1.0",
             okhttp          : "3.5.0",
@@ -78,14 +78,20 @@ ext {
             junit           : "4.12",
             assertj         : "3.5.2",
             mockito         : "1.10.19",
+            dexmakermockito : "2.12.1",
             truth           : "0.31",
             testrunner      : "0.5",
             equalsverifier  : "2.1.8",
+            qpidbroker      : "6.1.5",
 
             // plugins
             errorpronecore  : "2.0.15",
 
             //database
             sqlbritemigrations  : "v1.0.1",
+
+            // rabbitmq
+            // 5.x release series of this library require JDK 8
+            rabbitmq: "4.1.0"
     ]
 }

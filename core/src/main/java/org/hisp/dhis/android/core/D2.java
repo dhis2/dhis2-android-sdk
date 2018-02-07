@@ -118,8 +118,10 @@ import org.hisp.dhis.android.core.user.UserAuthenticateCall;
 import org.hisp.dhis.android.core.user.UserCredentialsHandler;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
+import org.hisp.dhis.android.core.user.UserHandler;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
+import org.hisp.dhis.android.core.user.UserRoleHandler;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserRoleStore;
@@ -185,7 +187,7 @@ public final class D2 {
     private final CategoryOptionComboCategoryLinkStore categoryComboOptionCategoryLinkStore;
 
     //Handlers
-    private final UserCredentialsHandler userCredentialsHandler;
+    private final UserHandler userHandler;
     private final EventHandler eventHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
@@ -262,11 +264,17 @@ public final class D2 {
                 databaseAdapter());
 
         //handlers
-        userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
         resourceHandler = new ResourceHandler(resourceStore);
+        UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore,
+                userRoleProgramLinkStore);
+        UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(
+                userCredentialsStore);
+        userHandler = new UserHandler(userStore, userCredentialsHandler, resourceHandler,
+                userRoleHandler);
+
 
         organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
-                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
+                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, resourceHandler);
 
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
@@ -347,8 +355,7 @@ public final class D2 {
             throw new NullPointerException("password == null");
         }
 
-        return new UserAuthenticateCall(userService, databaseAdapter, userStore,
-                userCredentialsHandler, resourceHandler,
+        return new UserAuthenticateCall(userService, databaseAdapter, userHandler,
                 authenticatedUserStore, organisationUnitHandler, username, password
         );
     }
@@ -409,8 +416,7 @@ public final class D2 {
     public Call<Response> syncMetaData() {
         return new MetadataCall(
                 databaseAdapter, systemInfoService, userService, organisationUnitService,
-                systemInfoStore, resourceStore, userStore, userCredentialsStore, userRoleStore,
-                userRoleProgramLinkStore, organisationUnitStore, userOrganisationUnitLinkStore,
+                systemInfoStore, resourceStore, userHandler, organisationUnitStore, userOrganisationUnitLinkStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 categoryComboQuery, comboService, categoryComboHandler, optionSetFactory,
                 trackedEntityFactory, programFactory);
@@ -514,7 +520,5 @@ public final class D2 {
 
             return new D2(retrofit, databaseAdapter, metadataAuditConnection);
         }
-
-
     }
 }

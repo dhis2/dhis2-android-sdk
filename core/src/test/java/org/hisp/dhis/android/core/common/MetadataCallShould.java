@@ -79,13 +79,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserCredentialsStore;
+import org.hisp.dhis.android.core.user.UserHandler;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRole;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
-import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserService;
-import org.hisp.dhis.android.core.user.UserStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -154,22 +151,13 @@ public class MetadataCallShould {
     private ResourceHandler resourceHandler;
 
     @Mock
-    private UserCredentialsStore userCredentialsStore;
-
-    @Mock
-    private UserRoleStore userRoleStore;
-
-    @Mock
-    private UserRoleProgramLinkStore userRoleProgramLinkStore;
-
-    @Mock
     private OrganisationUnitStore organisationUnitStore;
 
     @Mock
     private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
 
     @Mock
-    private UserStore userStore;
+    private UserHandler userHandler;
 
     @Mock
     private OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
@@ -290,8 +278,7 @@ public class MetadataCallShould {
 
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService, organisationUnitService,
-                systemInfoStore, resourceStore, userStore, userCredentialsStore, userRoleStore,
-                userRoleProgramLinkStore, organisationUnitStore, userOrganisationUnitLinkStore,
+                systemInfoStore, resourceStore, userHandler, organisationUnitStore, userOrganisationUnitLinkStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
                 optionSetFactory, trackedEntityFactory,

@@ -15,7 +15,6 @@ public class OptionSetFactory {
     private final OptionSetHandler optionSetHandler;
     private final OptionHandler optionHandler;
     private final OptionStore optionStore;
-    private final OptionSetStore optionSetStore;
 
     public OptionSetFactory(
             Retrofit retrofit, DatabaseAdapter databaseAdapter, ResourceHandler resourceHandler) {
@@ -24,9 +23,8 @@ public class OptionSetFactory {
         this.resourceHandler = resourceHandler;
         this.optionStore = new OptionStoreImpl(databaseAdapter);
         this.optionHandler = new OptionHandler(optionStore);
-        this.optionSetStore = new OptionSetStoreImpl(databaseAdapter);
-        this.optionSetHandler =
-                new OptionSetHandler(new OptionSetStoreImpl(databaseAdapter), optionHandler);
+        OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter);
+        this.optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
     }
 
     public OptionSetCall newEndPointCall(Set<String> optionSetUids, Date serverDate) {
@@ -44,9 +42,5 @@ public class OptionSetFactory {
 
     public OptionStore getOptionStore() {
         return optionStore;
-    }
-
-    public OptionSetStore getOptionSetStore() {
-        return optionSetStore;
     }
 }

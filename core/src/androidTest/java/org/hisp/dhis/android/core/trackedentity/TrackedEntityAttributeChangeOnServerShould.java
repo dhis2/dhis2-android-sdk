@@ -74,6 +74,7 @@ public class TrackedEntityAttributeChangeOnServerShould extends AbsStoreTestCase
     @Test
     public void create_tracked_entity_attribute_in_database_if_audit_type_is_create() throws Exception {
         givenAExistedOptionDependencyPreviously();
+
         MetadataAudit<TrackedEntityAttribute> metadataAudit =
                 givenAMetadataAudit("audit/tracked_entity_attribute_create.json");
 
@@ -90,14 +91,17 @@ public class TrackedEntityAttributeChangeOnServerShould extends AbsStoreTestCase
 
         metadataAuditListener.onMetadataChanged(TrackedEntityAttribute.class, metadataAudit);
 
-        TrackedEntityAttribute expected = metadataAudit.getValue();
+        TrackedEntityAttribute createdTrackedEntityAttribute =
+                trackedEntityAttributeStore.queryAll().get(0);
 
-        assertThat(trackedEntityAttributeStore.queryAll().get(0), is(getOptionSetVersionFromDB(expected)));
+        TrackedEntityAttribute expectedTrackedEntityAttribute = metadataAudit.getValue();
+
+        verifyTrackedEntityAttribute(createdTrackedEntityAttribute, expectedTrackedEntityAttribute);
     }
 
     @Test
     public void update_tracked_entity_attribute_if_audit_type_is_update() throws Exception {
-        String filename = "audit/tracked_entity_attribute_updated.json";
+        String filename = "tracked_entity_attribute_updated.json";
 
         givenAExistedOptionDependencyPreviously();
         givenAExistedTrackedEntityAttributePreviously();
@@ -120,23 +124,13 @@ public class TrackedEntityAttributeChangeOnServerShould extends AbsStoreTestCase
 
         metadataAuditListener.onMetadataChanged(TrackedEntityAttribute.class, metadataAudit);
 
-        TrackedEntityAttribute trackedEntityAttributeexpected = parseTrackedEntities(
-                filename).items().get(0);
+        TrackedEntityAttribute editedTrackedEntityAttribute =
+                trackedEntityAttributeStore.queryAll().get(0);
 
-        TrackedEntityAttribute trackedEntityAttributefromDb = getOptionSetFromDB(trackedEntityAttributeStore.queryAll().get(0));
-        assertThat(getOptionSetFromDB(trackedEntityAttributefromDb), is(getOptionSetFromDB(trackedEntityAttributeexpected)));
-    }
+        TrackedEntityAttribute expectedTrackedEntityAttribute =
+                parseTrackedEntities(filename).items().get(0);
 
-    private TrackedEntityAttribute getOptionSetVersionFromDB(TrackedEntityAttribute expected) {
-        Integer version = optionSetFactory.getOptionSetStore().queryByUid(expected.optionSet().uid()).version();
-        OptionSet optionSet =  expected.optionSet();
-        optionSet = optionSet.toBuilder().version(version).build();
-        return expected.toBuilder().optionSet(optionSet).build();
-    }
-
-    private TrackedEntityAttribute getOptionSetFromDB(TrackedEntityAttribute expected) {
-        OptionSet optionSet = optionSetFactory.getOptionSetStore().queryByUid(expected.optionSet().uid());
-        return expected.toBuilder().optionSet(optionSet).build();
+        verifyTrackedEntityAttribute(editedTrackedEntityAttribute, expectedTrackedEntityAttribute);
     }
 
     @Test
@@ -197,5 +191,21 @@ public class TrackedEntityAttributeChangeOnServerShould extends AbsStoreTestCase
                 .build();
 
         optionSetFactory.getOptionSetHandler().handleOptionSet(optionSet);
+    }
+
+    private void verifyTrackedEntityAttribute(TrackedEntityAttribute createdTrackedEntityAttribute,
+            TrackedEntityAttribute expectedTrackedEntityAttribute) {
+        //compare without children because there are other tests (call, handler)
+        //that verify the tree is saved in database
+        assertThat(removeChildrenFromTrackedEntityAttribute(createdTrackedEntityAttribute),
+                is(removeChildrenFromTrackedEntityAttribute(expectedTrackedEntityAttribute)));
+    }
+
+    private TrackedEntityAttribute removeChildrenFromTrackedEntityAttribute(
+            TrackedEntityAttribute trackedEntityAttribute) {
+        trackedEntityAttribute = trackedEntityAttribute.toBuilder()
+                .optionSet(null).build();
+
+        return trackedEntityAttribute;
     }
 }

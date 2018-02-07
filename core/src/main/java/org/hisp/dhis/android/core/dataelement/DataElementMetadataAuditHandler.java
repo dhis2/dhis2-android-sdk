@@ -19,6 +19,9 @@ public class DataElementMetadataAuditHandler implements MetadataAuditHandler {
         DataElement dataElement = (DataElement) metadataAudit.getValue();
 
         if (metadataAudit.getType() == AuditType.UPDATE) {
+            //metadataAudit of UPDATE type does not return payload
+            //It's necessary sync by metadata call
+
             Set<String> uIds = new HashSet<>();
             uIds.add(metadataAudit.getUid());
             DataElementQuery dataElementQuery = new DataElementQuery(uIds);

@@ -48,6 +48,7 @@ public class RelationshipStoreImpl extends Store implements RelationshipStore {
             RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + ", " +
                     RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + ", " +
                     RelationshipModel.Columns.RELATIONSHIP_TYPE;
+
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             RelationshipModel.TABLE + " (" + FIELDS +") " +
             "VALUES(?, ?, ?);";
@@ -78,12 +79,12 @@ public class RelationshipStoreImpl extends Store implements RelationshipStore {
     @Override
     public long insert(@Nullable String trackedEntityInstanceA,
                        @Nullable String trackedEntityInstanceB,
-                       @NonNull String displayName) {
+                       @NonNull String uid) {
 
-        isNull(displayName);
+        isNull(uid);
         sqLiteBind(insertStatement, 1, trackedEntityInstanceA);
         sqLiteBind(insertStatement, 2, trackedEntityInstanceB);
-        sqLiteBind(insertStatement, 3, displayName);
+        sqLiteBind(insertStatement, 3, uid);
 
         long ret = databaseAdapter.executeInsert(RelationshipModel.TABLE, insertStatement);
         insertStatement.clearBindings();
@@ -103,7 +104,7 @@ public class RelationshipStoreImpl extends Store implements RelationshipStore {
     }
 
     @Override
-    public List<Relationship> queryRelationsByUid(String uid) {
+    public List<Relationship> queryByTrackedEntityInstanceUid(String uid) {
         Cursor cursor = databaseAdapter.query(QUERY_BY_UID, uid, uid);
 
         List<Relationship> relationships = mapFromCursor(cursor);
@@ -120,12 +121,12 @@ public class RelationshipStoreImpl extends Store implements RelationshipStore {
                 do {
                     String trackedEntityInstanceA = getStringFromCursor(cursor, 0);
                     String trackedEntityInstanceB = getStringFromCursor(cursor, 1);
-                    String displayName = getStringFromCursor(cursor, 2);
+                    String uid = getStringFromCursor(cursor, 2);
 
                     relationships.add(Relationship.builder()
                             .trackedEntityInstanceA(trackedEntityInstanceA)
                             .trackedEntityInstanceB(trackedEntityInstanceB)
-                            .displayName(displayName)
+                            .relationshipType(uid)
                             .build());
 
                 } while (cursor.moveToNext());

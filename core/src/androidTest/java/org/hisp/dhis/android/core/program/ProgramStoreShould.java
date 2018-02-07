@@ -122,7 +122,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     private static final ProgramType PROGRAM_TYPE = ProgramType.WITH_REGISTRATION;
     private static final Long RELATIONSHIP_TYPE_ID = 3L;
     private static final String RELATIONSHIP_TYPE = "relationshipUid";
-    private static final String RELATIONSHIP_TEXT = "test relationship";
+    private static final String RELATIONSHIP_TEXT = "test relationshipType";
     private static final String RELATED_PROGRAM = "RelatedProgramUid";
     private static final Long TRACKED_ENTITY_ID = 4L;
 

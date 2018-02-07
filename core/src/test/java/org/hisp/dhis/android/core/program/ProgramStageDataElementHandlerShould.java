@@ -81,7 +81,7 @@ public class ProgramStageDataElementHandlerShould {
 
         when(programStageDataElement.uid()).thenReturn("test_psde_uid");
 
-        // mandatory one-to-one relationship fields
+        // mandatory one-to-one relationshipType fields
         when(programStageDataElement.dataElement()).thenReturn(dataElement);
         when(dataElement.uid()).thenReturn("test_data_element_uid");
         when(programStageDataElement.programStage()).thenReturn(programStage);

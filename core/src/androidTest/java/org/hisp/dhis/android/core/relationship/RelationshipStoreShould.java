@@ -51,15 +51,16 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class RelationshipStoreShould extends AbsStoreTestCase {
-    // relationship attributes:
+    // relationshipType attributes:
     private static final String TRACKED_ENTITY_INSTANCE_A = "test_tei_a_uid";
     private static final String TRACKED_ENTITY_INSTANCE_B = "test_tei_b_uid";
 
     // relationshipType (foreign key):
     private static final long RELATIONSHIP_TYPE_ID = 3L;
-    private static final String RELATIONSHIP_TYPE = "test_relationship_type_uid";
+    private static final String RELATIONSHIP_TYPE = "test_relationship_display_name";
+    private static final String RELATIONSHIP = "test_relationship_type_uid";
 
-    // relationship projection:
+    // relationshipType projection:
     private static final String[] RELATIONSHIP_PROJECTION = {
             RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A,
             RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B,
@@ -67,13 +68,15 @@ public class RelationshipStoreShould extends AbsStoreTestCase {
     };
 
     private RelationshipStore store;
+    private RelationshipTypeStore relationshipTypeStore;
 
     @Override
     public void setUp() throws IOException {
         super.setUp();
 
         store = new RelationshipStoreImpl(databaseAdapter());
-
+        relationshipTypeStore = new RelationshipTypeStoreImpl(databaseAdapter());
+        relationshipTypeStore.insert(RELATIONSHIP, "", "", "", null, null, "atob", "btoa");
         // Insert RelationshipType in RelationshipType table, such that it can be used as foreign key:
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(
                 RELATIONSHIP_TYPE_ID,
@@ -101,7 +104,7 @@ public class RelationshipStoreShould extends AbsStoreTestCase {
         long rowId = store.insert(
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
-                RELATIONSHIP_TYPE
+                RELATIONSHIP
         );
 
         Cursor cursor = database().query(RelationshipModel.TABLE,
@@ -111,7 +114,7 @@ public class RelationshipStoreShould extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
-                RELATIONSHIP_TYPE
+                RELATIONSHIP
         ).isExhausted();
     }
 
@@ -152,16 +155,17 @@ public class RelationshipStoreShould extends AbsStoreTestCase {
         //Insert foreign keys in their respective tables:
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(
                 RELATIONSHIP_TYPE_ID,
-                RELATIONSHIP_TYPE
+                RELATIONSHIP
         );
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
 
-        long rowId = store.insert(null, null, RELATIONSHIP_TYPE);
+        long rowId = store.insert(null, null,
+                RELATIONSHIP);
         Cursor cursor = database().query(RelationshipModel.TABLE, RELATIONSHIP_PROJECTION,
                 null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
-        assertThatCursor(cursor).hasRow(null, null, RELATIONSHIP_TYPE).isExhausted();
+        assertThatCursor(cursor).hasRow(null, null, RELATIONSHIP).isExhausted();
     }
 
     @Test
@@ -170,7 +174,7 @@ public class RelationshipStoreShould extends AbsStoreTestCase {
         store.insert(
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
-                RELATIONSHIP_TYPE
+                RELATIONSHIP
         );
 
         database().delete(TrackedEntityInstanceModel.TABLE, TrackedEntityInstanceModel.Columns.UID + "=?",
@@ -187,7 +191,7 @@ public class RelationshipStoreShould extends AbsStoreTestCase {
         store.insert(
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
-                RELATIONSHIP_TYPE
+                RELATIONSHIP
         );
 
         database().delete(TrackedEntityInstanceModel.TABLE, TrackedEntityInstanceModel.Columns.UID + "=?",
@@ -201,6 +205,6 @@ public class RelationshipStoreShould extends AbsStoreTestCase {
     @Test(expected = IllegalArgumentException.class)
     @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_relationship_type() {
-        store.insert(TRACKED_ENTITY_INSTANCE_A, TRACKED_ENTITY_INSTANCE_B, null);
+        store.insert(TRACKED_ENTITY_INSTANCE_A, TRACKED_ENTITY_INSTANCE_B,  null);
     }
 }

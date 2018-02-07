@@ -45,7 +45,8 @@ public class RelationshipHandler {
         }
         handleReference(trackedEntityInstanceUId, organisationUnit, trackedEntity);
         relationshipStore.insert(relationship.trackedEntityInstanceA(),
-                relationship.trackedEntityInstanceB(), relationship.displayName());
+                relationship.trackedEntityInstanceB(),
+                relationship.relationshipType());
     }
 
     private void handleReference(String uid, String organisationUnit, String trackedEntity) {

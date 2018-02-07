@@ -31,40 +31,50 @@ package org.hisp.dhis.android.core.dataelement;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.option.OptionSet;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
-public class DataElementStoreImpl implements DataElementStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + DataElementModel.TABLE + " (" +
+public class DataElementStoreImpl extends Store implements DataElementStore {
+
+    private static final String FIELDS =
             DataElementModel.Columns.UID + ", " +
-            DataElementModel.Columns.CODE + ", " +
-            DataElementModel.Columns.NAME + ", " +
-            DataElementModel.Columns.DISPLAY_NAME + ", " +
-            DataElementModel.Columns.CREATED + ", " +
-            DataElementModel.Columns.LAST_UPDATED + ", " +
-            DataElementModel.Columns.SHORT_NAME + ", " +
-            DataElementModel.Columns.DISPLAY_SHORT_NAME + ", " +
-            DataElementModel.Columns.DESCRIPTION + ", " +
-            DataElementModel.Columns.DISPLAY_DESCRIPTION + ", " +
-            DataElementModel.Columns.VALUE_TYPE + ", " +
-            DataElementModel.Columns.ZERO_IS_SIGNIFICANT + ", " +
-            DataElementModel.Columns.AGGREGATION_TYPE + ", " +
-            DataElementModel.Columns.FORM_NAME + ", " +
-            DataElementModel.Columns.NUMBER_TYPE + ", " +
-            DataElementModel.Columns.DOMAIN_TYPE + ", " +
-            DataElementModel.Columns.DIMENSION + ", " +
-            DataElementModel.Columns.DISPLAY_FORM_NAME + ", " +
-            DataElementModel.Columns.OPTION_SET + ", " +
-            DataElementModel.Columns.CATEGORY_COMBO + ") " +
+                    DataElementModel.Columns.CODE + ", " +
+                    DataElementModel.Columns.NAME + ", " +
+                    DataElementModel.Columns.DISPLAY_NAME + ", " +
+                    DataElementModel.Columns.CREATED + ", " +
+                    DataElementModel.Columns.LAST_UPDATED + ", " +
+                    DataElementModel.Columns.SHORT_NAME + ", " +
+                    DataElementModel.Columns.DISPLAY_SHORT_NAME + ", " +
+                    DataElementModel.Columns.DESCRIPTION + ", " +
+                    DataElementModel.Columns.DISPLAY_DESCRIPTION + ", " +
+                    DataElementModel.Columns.VALUE_TYPE + ", " +
+                    DataElementModel.Columns.ZERO_IS_SIGNIFICANT + ", " +
+                    DataElementModel.Columns.AGGREGATION_TYPE + ", " +
+                    DataElementModel.Columns.FORM_NAME + ", " +
+                    DataElementModel.Columns.NUMBER_TYPE + ", " +
+                    DataElementModel.Columns.DOMAIN_TYPE + ", " +
+                    DataElementModel.Columns.DIMENSION + ", " +
+                    DataElementModel.Columns.DISPLAY_FORM_NAME + ", " +
+                    DataElementModel.Columns.OPTION_SET + ", " +
+                    DataElementModel.Columns.CATEGORY_COMBO;
+
+    private static final String INSERT_STATEMENT = "INSERT INTO "
+            + DataElementModel.TABLE + " (" + FIELDS +") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + DataElementModel.TABLE + " SET " +
@@ -92,6 +102,9 @@ public class DataElementStoreImpl implements DataElementStore {
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + DataElementModel.TABLE +
             " WHERE " + DataElementModel.Columns.UID + " =?;";
+
+    private static final String QUERY_ALL = "SELECT "+FIELDS+" FROM "
+            + DataElementModel.TABLE;
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -201,5 +214,86 @@ public class DataElementStoreImpl implements DataElementStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(DataElementModel.TABLE);
+    }
+
+    @Override
+    public List<DataElement> queryAll() {
+        Cursor cursor = databaseAdapter.query(QUERY_ALL);
+
+        return mapDataElementsFromCursor(cursor);
+    }
+
+    private List<DataElement> mapDataElementsFromCursor(Cursor cursor) {
+        List<DataElement> dataElements = new ArrayList<>(cursor.getCount());
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+
+                do {
+                    DataElement dataElement = mapDataElementFromCursor(cursor);
+
+                    dataElements.add(dataElement);
+                }
+                while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return dataElements;
+    }
+
+    @NonNull
+    private DataElement mapDataElementFromCursor(Cursor cursor) {
+        String uid = getStringFromCursor(cursor, 0);
+        String code = getStringFromCursor(cursor, 1);
+        String name = getStringFromCursor(cursor, 2);
+        String displayName = getStringFromCursor(cursor, 3);
+        Date created = getDateFromCursor(cursor, 4);
+        Date lastUpdated = getDateFromCursor(cursor, 5);
+        String shortName = getStringFromCursor(cursor, 6);
+        String displayShortName = getStringFromCursor(cursor, 7);
+        String description = getStringFromCursor(cursor, 8);
+        String displayDescription = getStringFromCursor(cursor, 9);
+        ValueType valueType = getValueTypeFromCursor(cursor, 10);
+        Boolean zeroIsSignificant = getBooleanFromCursor(cursor, 11);
+        String aggregationType = getStringFromCursor(cursor, 12);
+        String formName = getStringFromCursor(cursor, 13);
+        String numberType = getStringFromCursor(cursor, 14);
+        String domainType = getStringFromCursor(cursor, 15);
+        String dimension = getStringFromCursor(cursor, 16);
+        String displayFormName = getStringFromCursor(cursor, 17);
+        String optionSet = getStringFromCursor(cursor, 18);
+        String categoryCombo = getStringFromCursor(cursor, 19);
+
+         DataElement dataElement = DataElement.builder().uid(uid).code(code).name(name)
+                .displayName(displayName).displayName(displayName)
+                .created(created).lastUpdated(lastUpdated).shortName(shortName)
+                .displayShortName(displayShortName).description(description)
+                .displayDescription(displayDescription).valueType(valueType)
+                .zeroIsSignificant(zeroIsSignificant).aggregationType(aggregationType)
+                .formName(formName).numberType(numberType).domainType(domainType)
+                .dimension(dimension).displayFormName(displayFormName)
+                .optionSet(getSimpleOptionSet(optionSet))
+                .categoryCombo(getSimpleCategoryCombo(categoryCombo))
+                .build();
+        return dataElement;
+    }
+
+    private CategoryCombo getSimpleCategoryCombo(String categoryComboUId) {
+        CategoryCombo simpleCategoryCombo = null;
+        if(categoryComboUId!=null) {
+            simpleCategoryCombo = CategoryCombo.builder().uid(categoryComboUId).build();
+        }
+        return simpleCategoryCombo;
+    }
+
+    private OptionSet getSimpleOptionSet(String optionSetUId) {
+        OptionSet simpleOptionSet = null;
+        if(optionSetUId!=null) {
+            simpleOptionSet = OptionSet.builder().uid(optionSetUId).build();
+        }
+        return simpleOptionSet;
     }
 }

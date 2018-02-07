@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
+import org.hisp.dhis.android.core.audit.broker.RealBrokerMother;
 import org.junit.After;
 import org.junit.Before;
 
@@ -23,11 +24,11 @@ public class MetadataAuditConsumerRealIntegrationShould {
     public void setUp() throws Exception {
         consumer = new MetadataAuditConsumer(
                 MetadataAuditConnection.builder()
-                        .setHost("192.168.1.42")
-                        .setVirtualHost("/")
-                        .setUsername("guest2")
-                        .setPassword("guest2")
-                        .setPort(5672)
+                        .setHost(RealBrokerMother.hostIP)
+                        .setVirtualHost(RealBrokerMother.virtualHost)
+                        .setUsername(RealBrokerMother.user)
+                        .setPassword(RealBrokerMother.password)
+                        .setPort(RealBrokerMother.port)
                         .build());
 
         consumer.start();

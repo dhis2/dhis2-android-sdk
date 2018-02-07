@@ -72,8 +72,7 @@ import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -124,8 +123,7 @@ import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
@@ -167,8 +165,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-// ToDo: onMetadataChanged corner cases when user initially has been signed in, but later was
-// locked (or
+// ToDo: handle corner cases when user initially has been signed in, but later was locked (or
 // password has changed)
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public final class D2 {
@@ -200,7 +197,7 @@ public final class D2 {
     private final UserRoleStore userRoleStore;
     private final UserRoleProgramLinkStore userRoleProgramLinkStore;
     private final ProgramStore programStore;
-    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramIndicatorStore programIndicatorStore;
@@ -210,7 +207,6 @@ public final class D2 {
     private final ProgramRuleStore programRuleStore;
     private final OptionStore optionStore;
     private final OptionSetStore optionSetStore;
-    private final DataElementStore dataElementStore;
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
@@ -246,6 +242,7 @@ public final class D2 {
 
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
+    private final DataElementFactory dataElementFactory;
     private final RelationshipTypeFactory relationshipTypeFactory;
 
     @VisibleForTesting
@@ -285,8 +282,6 @@ public final class D2 {
                 new UserRoleProgramLinkStoreImpl(databaseAdapter);
         this.programStore =
                 new ProgramStoreImpl(databaseAdapter);
-        this.trackedEntityAttributeStore =
-                new TrackedEntityAttributeStoreImpl(databaseAdapter);
         this.programTrackedEntityAttributeStore =
                 new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
         this.programRuleVariableStore =
@@ -303,8 +298,6 @@ public final class D2 {
                 new OptionStoreImpl(databaseAdapter);
         this.optionSetStore =
                 new OptionSetStoreImpl(databaseAdapter);
-        this.dataElementStore =
-                new DataElementStoreImpl(databaseAdapter);
         this.programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter);
         this.programStageSectionStore =
@@ -383,11 +376,20 @@ public final class D2 {
         trackedEntityFactory =
                 new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
 
+        trackedEntityAttributeFactory = new TrackedEntityAttributeFactory(retrofit, databaseAdapter,
+                resourceHandler);
+
+        this.dataElementFactory =
+                new DataElementFactory(retrofit, databaseAdapter, resourceHandler);
+
         relationshipTypeFactory =
                 new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
+
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
-                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory, relationshipTypeFactory);
+                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
+                            dataElementFactory, trackedEntityAttributeFactory,
+                            relationshipTypeFactory);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 
@@ -395,7 +397,6 @@ public final class D2 {
             this.metadataAuditConsumer.setMetadataAuditListener(metadataAuditListener);
         }
     }
-
 
     @NonNull
     public Retrofit retrofit() {
@@ -452,7 +453,7 @@ public final class D2 {
         deletableStoreList.add(userRoleStore);
         deletableStoreList.add(userRoleProgramLinkStore);
         deletableStoreList.add(programStore);
-        deletableStoreList.add(trackedEntityAttributeStore);
+        deletableStoreList.addAll(trackedEntityAttributeFactory.getDeletableStores());
         deletableStoreList.add(programTrackedEntityAttributeStore);
         deletableStoreList.add(programRuleVariableStore);
         deletableStoreList.add(programIndicatorStore);
@@ -461,7 +462,7 @@ public final class D2 {
         deletableStoreList.add(programRuleStore);
         deletableStoreList.add(optionStore);
         deletableStoreList.add(optionSetStore);
-        deletableStoreList.add(dataElementStore);
+        deletableStoreList.addAll(dataElementFactory.getDeletableStores());
         deletableStoreList.add(programStageDataElementStore);
         deletableStoreList.add(programStageSectionStore);
         deletableStoreList.add(programStageStore);
@@ -490,15 +491,15 @@ public final class D2 {
                 databaseAdapter, systemInfoService, userService, programService,
                 organisationUnitService, systemInfoStore, resourceStore, userStore,
                 userCredentialsStore, userRoleStore, userRoleProgramLinkStore,
-                organisationUnitStore,
-                userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
-                programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
+                organisationUnitStore, userOrganisationUnitLinkStore, programStore,
+                programTrackedEntityAttributeStore,
+                programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, dataElementStore, programStageDataElementStore,
+                programRuleStore, programStageDataElementStore,
                 programStageSectionStore, programStageStore, relationshipStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
-                categoryComboQuery, comboService, categoryComboHandler,
-                optionSetFactory, trackedEntityFactory);
+                categoryComboQuery, comboService, categoryComboHandler, optionSetFactory,
+                trackedEntityFactory, trackedEntityAttributeFactory, dataElementFactory);
     }
 
     @NonNull

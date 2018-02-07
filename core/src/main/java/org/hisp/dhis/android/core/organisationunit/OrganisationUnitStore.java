@@ -57,6 +57,7 @@ public interface OrganisationUnitStore extends DeletableStore {
 
     int delete(@NonNull String uid);
 
+    @Override
     int delete();
 
     List<OrganisationUnit> queryOrganisationUnits();

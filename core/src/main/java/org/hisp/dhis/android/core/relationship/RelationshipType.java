@@ -34,14 +34,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RelationshipType.Builder.class)
-public abstract class RelationshipType extends BaseNameableObject {
+public abstract class RelationshipType extends BaseIdentifiableObject {
     private static final String B_TO_A = "bIsToA";
     private static final String A_TO_B = "aIsToB";
 
@@ -66,13 +64,12 @@ public abstract class RelationshipType extends BaseNameableObject {
     public static Builder builder() {
         return new AutoValue_RelationshipType.Builder();
     }
-    @SuppressFBWarnings("UPM_UNCALLED_PRIVATE_METHOD")
 
     abstract RelationshipType.Builder toBuilder();
 
     @AutoValue.Builder
     public static abstract class Builder extends
-            BaseNameableObject.Builder<RelationshipType.Builder> {
+            BaseIdentifiableObject.Builder<RelationshipType.Builder> {
 
         @JsonProperty(B_TO_A)
         public abstract Builder bIsToA(String bIsToA);

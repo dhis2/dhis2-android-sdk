@@ -27,12 +27,10 @@ public class RelationshipTypeFactory {
         this.databaseAdapter = databaseAdapter;
         this.relationshipTypeService = retrofit.create(RelationshipTypeService.class);
         this.resourceHandler = resourceHandler;
-        RelationshipStore relationshipStore = new RelationshipStoreImpl(databaseAdapter);
         this.relationshipTypeStore = new RelationshipTypeStoreImpl(databaseAdapter);
         this.relationshipTypeHandler = new RelationshipTypeHandler(this.relationshipTypeStore);
         this.deletableStoreList = new ArrayList<>();
         deletableStoreList.add(relationshipTypeStore);
-        deletableStoreList.add(relationshipStore);
     }
 
     public RelationshipTypeEndPointCall newEndPointCall(Set<String> relationshipTypeUIds,

@@ -56,7 +56,7 @@ public abstract class CategoryCategoryComboLinkModel extends BaseModel {
 
     @Nullable
     @ColumnName(Columns.CATEGORY_COMBO)
-    public abstract String combo();
+    public abstract String categoryCombo();
 
     @NonNull
     public abstract ContentValues toContentValues();
@@ -76,7 +76,7 @@ public abstract class CategoryCategoryComboLinkModel extends BaseModel {
 
         public abstract Builder category(@Nullable String category);
 
-        public abstract Builder combo(@Nullable String combo);
+        public abstract Builder categoryCombo(@Nullable String combo);
 
         public abstract CategoryCategoryComboLinkModel build();
     }

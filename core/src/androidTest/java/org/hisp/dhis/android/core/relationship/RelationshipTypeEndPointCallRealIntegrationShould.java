@@ -20,6 +20,14 @@ import java.util.HashSet;
 public class RelationshipTypeEndPointCallRealIntegrationShould extends AbsStoreTestCase {
     private D2 d2;
 
+    @Override
+    @Before
+    public void setUp() throws IOException {
+        super.setUp();
+
+        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+    }
+
     @Test
     @LargeTest
     public void download_RelationshipType_according_to_default_query() throws Exception {
@@ -34,14 +42,4 @@ public class RelationshipTypeEndPointCallRealIntegrationShould extends AbsStoreT
                 Arrays.asList("V2kkHafqs8G", "o51cUNONthg")), new Date()).call();
         Truth.assertThat(response.isSuccessful()).isTrue();
     }
-
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
-    }
-
 }

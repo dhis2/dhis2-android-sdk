@@ -17,10 +17,11 @@ public class CategoryOptionHandler {
     public void handle(@NonNull CategoryOption categoryOption) {
 
         if (isDeleted(categoryOption)) {
-            store.delete(categoryOption);
+            store.delete(categoryOption.uid());
         } else {
 
-            boolean updated = store.update(categoryOption, categoryOption);
+            int numberOfRows = store.update(categoryOption);
+            boolean updated = numberOfRows >= 1;
 
             if (!updated) {
                 store.insert(categoryOption);

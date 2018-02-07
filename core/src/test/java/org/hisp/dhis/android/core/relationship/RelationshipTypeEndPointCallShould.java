@@ -38,6 +38,25 @@ public class RelationshipTypeEndPointCallShould {
     Dhis2MockServer dhis2MockServer;
     Retrofit retrofit;
 
+    @Before
+    public void setUp() throws IOException {
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        retrofit = new Retrofit.Builder()
+                .baseUrl(dhis2MockServer.getBaseEndpoint())
+                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
+                .addConverterFactory(FilterConverterFactory.create())
+                .addConverterFactory(FieldsConverterFactory.create())
+                .build();
+
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        dhis2MockServer.shutdown();
+    }
+
+
     @Test(expected = IllegalArgumentException.class)
     public void throws_illegal_argument_exception_if_uids_size_exceeds_the_limit() {
         givenARelationShipTypeEndPointCall(MAX_UIDS + 1);
@@ -59,24 +78,6 @@ public class RelationshipTypeEndPointCallShould {
         relationshipTypeEndPointCall.call();
     }
 
-
-    @Before
-    public void setUp() throws IOException {
-        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
-        retrofit = new Retrofit.Builder()
-                .baseUrl(dhis2MockServer.getBaseEndpoint())
-                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
-                .addConverterFactory(FilterConverterFactory.create())
-                .addConverterFactory(FieldsConverterFactory.create())
-                .build();
-
-        MockitoAnnotations.initMocks(this);
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        dhis2MockServer.shutdown();
-    }
 
     private RelationshipTypeEndPointCall givenARelationShipTypeEndPointCall(int uidsSize) {
         Set<String> uIds = new HashSet<>();

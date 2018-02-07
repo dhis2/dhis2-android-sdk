@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
+import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
@@ -73,7 +73,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
@@ -109,7 +109,6 @@ public class MetadataCall implements Call<Response> {
     private final OrganisationUnitStore organisationUnitStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final ProgramStore programStore;
-    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     private final ProgramRuleVariableStore programRuleVariableStore;
     private final ProgramIndicatorStore programIndicatorStore;
@@ -117,7 +116,6 @@ public class MetadataCall implements Call<Response> {
             programStageSectionProgramIndicatorLinkStore;
     private final ProgramRuleActionStore programRuleActionStore;
     private final ProgramRuleStore programRuleStore;
-    private final DataElementStore dataElementStore;
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
@@ -129,8 +127,10 @@ public class MetadataCall implements Call<Response> {
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
 
+    private final DataElementFactory dataElementFactory;
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
+    private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
 
     private boolean isExecuted;
 
@@ -150,7 +150,6 @@ public class MetadataCall implements Call<Response> {
             @NonNull OrganisationUnitStore organisationUnitStore,
             @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             @NonNull ProgramStore programStore,
-            @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
             @NonNull ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
             @NonNull ProgramRuleVariableStore programRuleVariableStore,
             @NonNull ProgramIndicatorStore programIndicatorStore,
@@ -158,7 +157,6 @@ public class MetadataCall implements Call<Response> {
                     programStageSectionProgramIndicatorLinkStore,
             @NonNull ProgramRuleActionStore programRuleActionStore,
             @NonNull ProgramRuleStore programRuleStore,
-            @NonNull DataElementStore dataElementStore,
             @NonNull ProgramStageDataElementStore programStageDataElementStore,
             @NonNull ProgramStageSectionStore programStageSectionStore,
             @NonNull ProgramStageStore programStageStore,
@@ -171,7 +169,9 @@ public class MetadataCall implements Call<Response> {
             @NonNull CategoryComboService categoryComboService,
             @NonNull CategoryComboHandler categoryComboHandler,
             @NonNull OptionSetFactory optionSetFactory,
-            @NonNull TrackedEntityFactory trackedEntityFactory) {
+            @NonNull TrackedEntityFactory trackedEntityFactory,
+            @NonNull TrackedEntityAttributeFactory trackedEntityAttributeFactory,
+            @NonNull DataElementFactory dataElementFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -186,7 +186,6 @@ public class MetadataCall implements Call<Response> {
         this.organisationUnitStore = organisationUnitStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.programStore = programStore;
-        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
         this.programRuleVariableStore = programRuleVariableStore;
         this.programIndicatorStore = programIndicatorStore;
@@ -194,7 +193,6 @@ public class MetadataCall implements Call<Response> {
                 programStageSectionProgramIndicatorLinkStore;
         this.programRuleActionStore = programRuleActionStore;
         this.programRuleStore = programRuleStore;
-        this.dataElementStore = dataElementStore;
         this.programStageDataElementStore = programStageDataElementStore;
         this.programStageSectionStore = programStageSectionStore;
         this.programStageStore = programStageStore;
@@ -209,6 +207,8 @@ public class MetadataCall implements Call<Response> {
 
         this.optionSetFactory = optionSetFactory;
         this.trackedEntityFactory = trackedEntityFactory;
+        this.trackedEntityAttributeFactory = trackedEntityAttributeFactory;
+        this.dataElementFactory = dataElementFactory;
     }
 
     @Override
@@ -280,11 +280,13 @@ public class MetadataCall implements Call<Response> {
             response = new ProgramCall(
                     programService, databaseAdapter, resourceStore, programUids, programStore,
                     serverDate,
-                    trackedEntityAttributeStore, programTrackedEntityAttributeStore,
+                    trackedEntityAttributeFactory.getTrackedEntityAttributeStore(),
+                    programTrackedEntityAttributeStore,
                     programRuleVariableStore,
                     programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
                     programRuleActionStore,
-                    programRuleStore, optionSetFactory, dataElementStore,
+                    programRuleStore, optionSetFactory,
+                    dataElementFactory.getDataElementStore(),
                     programStageDataElementStore,
                     programStageSectionStore, programStageStore, relationshipStore
             ).call();

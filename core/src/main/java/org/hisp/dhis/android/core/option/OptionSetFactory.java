@@ -23,8 +23,8 @@ public class OptionSetFactory {
         this.resourceHandler = resourceHandler;
         this.optionStore = new OptionStoreImpl(databaseAdapter);
         this.optionHandler = new OptionHandler(optionStore);
-        this.optionSetHandler =
-                new OptionSetHandler(new OptionSetStoreImpl(databaseAdapter), optionHandler);
+        OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter);
+        this.optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
     }
 
     public OptionSetCall newEndPointCall(Set<String> optionSetUids, Date serverDate) {

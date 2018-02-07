@@ -101,17 +101,18 @@ public class RelationshipTypeStoreImpl extends Store implements RelationshipType
 
     @Override
     public long insert(@NonNull String uid,
-                       @Nullable String code,
-                       @NonNull String name,
-                       @Nullable String displayName,
-                       @Nullable Date created,
-                       @Nullable Date lastUpdated,
-                       @NonNull String aIsToB,
-                       @NonNull String bIsToA) {
+            @Nullable String code,
+            @NonNull String name,
+            @Nullable String displayName,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @NonNull String aIsToB,
+            @NonNull String bIsToA) {
         isNull(uid);
         isNull(aIsToB);
         isNull(bIsToA);
-        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, aIsToB, bIsToA);
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, aIsToB,
+                bIsToA);
 
         long ret = databaseAdapter.executeInsert(RelationshipTypeModel.TABLE, insertStatement);
         insertStatement.clearBindings();
@@ -120,19 +121,20 @@ public class RelationshipTypeStoreImpl extends Store implements RelationshipType
 
     @Override
     public int update(@NonNull String uid,
-                      @Nullable String code,
-                      @Nullable String name,
-                      @Nullable String displayName,
-                      @Nullable Date created,
-                      @Nullable Date lastUpdated,
-                      @NonNull String aIsToB,
-                      @NonNull String bIsToA,
-                      @NonNull String whereUid) {
+            @Nullable String code,
+            @Nullable String name,
+            @Nullable String displayName,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @NonNull String aIsToB,
+            @NonNull String bIsToA,
+            @NonNull String whereUid) {
         isNull(uid);
         isNull(aIsToB);
         isNull(bIsToA);
         isNull(whereUid);
-        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, aIsToB, bIsToA);
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, aIsToB,
+                bIsToA);
         sqLiteBind(updateStatement, 9, whereUid);
 
         int ret = updateStatement.executeUpdateDelete();
@@ -202,14 +204,15 @@ public class RelationshipTypeStoreImpl extends Store implements RelationshipType
     }
 
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,
-                               @NonNull String uid,
-                               @Nullable String code,
-                               @Nullable String name,
-                               @Nullable String displayName,
-                               @Nullable Date created,
-                               @Nullable Date lastUpdated,
-                               @NonNull String aIsToB,
-                               @NonNull String bIsToA) {
+            @NonNull String uid,
+            @Nullable String code,
+            @Nullable String name,
+            @Nullable String displayName,
+            @Nullable Date created,
+            @Nullable Date lastUpdated,
+            @NonNull String aIsToB,
+            @NonNull String bIsToA) {
+
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);

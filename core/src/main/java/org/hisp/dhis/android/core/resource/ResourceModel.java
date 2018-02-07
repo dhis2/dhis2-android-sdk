@@ -64,7 +64,8 @@ public abstract class ResourceModel extends BaseModel {
         CATEGORY,
         CATEGORY_COMBO,
         RELATIONSHIP_TYPE,
-        TRACKED_ENTITY_ATTRIBUTE
+        TRACKED_ENTITY_ATTRIBUTE,
+        DATA_ELEMENT
     }
 
     @Nullable

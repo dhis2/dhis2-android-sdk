@@ -54,4 +54,6 @@ public interface ProgramIndicatorStore extends DeletableStore {
     );
 
     int delete(String uid);
+
+    ProgramIndicator queryByUid(String uid);
 }

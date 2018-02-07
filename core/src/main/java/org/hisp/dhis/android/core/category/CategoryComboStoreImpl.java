@@ -48,16 +48,21 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
             CategoryComboModel.Columns.IS_DEFAULT + " =? WHERE " +
             CategoryComboModel.Columns.UID + " =?;";
 
-    private static final String FIELDS = CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.UID + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.CODE + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.NAME + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.DISPLAY_NAME + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.CREATED + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.LAST_UPDATED + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.IS_DEFAULT;
+    private static final String FIELDS =
+            CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.UID + "," +
+                    CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.CODE + "," +
+                    CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.NAME + "," +
+                    CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.DISPLAY_NAME + "," +
+                    CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.CREATED + "," +
+                    CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.LAST_UPDATED + "," +
+                    CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.IS_DEFAULT;
 
     private static final String QUERY_ALL_CATEGORY_COMBOS = "SELECT " +
             FIELDS + " FROM " + CategoryComboModel.TABLE;
+
+    private static final String QUERY_BY_UID_STATEMENT = "SELECT " +
+            FIELDS + " FROM " + CategoryComboModel.TABLE +
+            " WHERE " + CategoryComboModel.Columns.UID + "=?";
 
     public CategoryComboStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
@@ -155,6 +160,19 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         Cursor cursor = databaseAdapter.query(QUERY_ALL_CATEGORY_COMBOS);
 
         return mapCategoryCombosFromCursor(cursor);
+    }
+
+    @Override
+    public CategoryCombo queryByUid(String uid) {
+        CategoryCombo categoryCombo = null;
+
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID_STATEMENT, uid);
+
+        if (cursor.getCount() > 0) {
+            categoryCombo = mapCategoryCombosFromCursor(cursor).get(0);
+        }
+
+        return categoryCombo;
     }
 
     private List<CategoryCombo> mapCategoryCombosFromCursor(Cursor cursor) {

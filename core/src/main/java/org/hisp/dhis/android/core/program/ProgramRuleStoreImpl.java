@@ -31,32 +31,48 @@ package org.hisp.dhis.android.core.program;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.ProgramRuleModel.Columns;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings({
-        "PMD.AvoidDuplicateLiterals"
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.NPathComplexity",
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity",
+        "PMD.AvoidInstantiatingObjectsInLoops"
 })
-public class ProgramRuleStoreImpl implements ProgramRuleStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " +
-            ProgramRuleModel.TABLE + " (" +
+public class ProgramRuleStoreImpl extends Store implements ProgramRuleStore {
+    private static final String FIELDS =
             Columns.UID + ", " +
-            Columns.CODE + ", " +
-            Columns.NAME + ", " +
-            Columns.DISPLAY_NAME + ", " +
-            Columns.CREATED + ", " +
-            Columns.LAST_UPDATED + ", " +
-            Columns.PRIORITY + ", " +
-            Columns.CONDITION + ", " +
-            Columns.PROGRAM + ", " +
-            Columns.PROGRAM_STAGE + ") " +
-            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                    Columns.CODE + ", " +
+                    Columns.NAME + ", " +
+                    Columns.DISPLAY_NAME + ", " +
+                    Columns.CREATED + ", " +
+                    Columns.LAST_UPDATED + ", " +
+                    Columns.PRIORITY + ", " +
+                    Columns.CONDITION + ", " +
+                    Columns.PROGRAM + ", " +
+                    Columns.PROGRAM_STAGE;
+
+    private static final String QUERY_BY_UID_STATEMENT =
+            "SELECT " + FIELDS + " FROM " + ProgramRuleModel.TABLE + " WHERE " +
+                    ProgramRuleModel.Columns.UID + "=?";
+
+    private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramRuleModel.TABLE + " (" +
+            FIELDS + ") VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + ProgramRuleModel.TABLE + " SET " +
             Columns.UID + " =?, " +
@@ -91,10 +107,10 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
 
     @Override
     public long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                       @NonNull String displayName, @NonNull Date created,
-                       @NonNull Date lastUpdated, @Nullable Integer priority,
-                       @Nullable String condition, @NonNull String program,
-                       @Nullable String programStage) {
+            @NonNull String displayName, @NonNull Date created,
+            @NonNull Date lastUpdated, @Nullable Integer priority,
+            @Nullable String condition, @NonNull String program,
+            @Nullable String programStage) {
         isNull(uid);
         isNull(program);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, priority,
@@ -107,10 +123,11 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
     }
 
     @Override
-    public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @NonNull String displayName,
-                      @NonNull Date created, @NonNull Date lastUpdated, @Nullable Integer priority,
-                      @Nullable String condition, @NonNull String program, @Nullable String programStage,
-                      @NonNull String whereProgramRuleUid) {
+    public int update(@NonNull String uid, @Nullable String code, @NonNull String name,
+            @NonNull String displayName,
+            @NonNull Date created, @NonNull Date lastUpdated, @Nullable Integer priority,
+            @Nullable String condition, @NonNull String program, @Nullable String programStage,
+            @NonNull String whereProgramRuleUid) {
         isNull(uid);
         isNull(program);
         isNull(whereProgramRuleUid);
@@ -139,11 +156,29 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
         return delete;
     }
 
-    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
-                               @NonNull String name, @NonNull String displayName, @NonNull Date created,
-                               @NonNull Date lastUpdated, @Nullable Integer priority,
-                               @Nullable String condition, @NonNull String program,
-                               @Nullable String programStage) {
+    @Override
+    public ProgramRule queryByUid(String uid) {
+        ProgramRule programRule = null;
+
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID_STATEMENT, uid);
+
+        if (cursor.getCount() > 0) {
+            Map<String, List<ProgramRule>> programRuleMap = mapFromCursor(cursor);
+
+            Map.Entry<String, List<ProgramRule>> entry =
+                    programRuleMap.entrySet().iterator().next();
+            programRule = entry.getValue().get(0);
+        }
+
+        return programRule;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid,
+            @Nullable String code,
+            @NonNull String name, @NonNull String displayName, @NonNull Date created,
+            @NonNull Date lastUpdated, @Nullable Integer priority,
+            @Nullable String condition, @NonNull String program,
+            @Nullable String programStage) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -160,4 +195,55 @@ public class ProgramRuleStoreImpl implements ProgramRuleStore {
     public int delete() {
         return databaseAdapter.delete(ProgramRuleModel.TABLE);
     }
+
+    private Map<String, List<ProgramRule>> mapFromCursor(Cursor cursor) {
+
+        Map<String, List<ProgramRule>> programRulesMap = new HashMap<>();
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    String uid = getStringFromCursor(cursor, 0);
+                    String code = getStringFromCursor(cursor, 1);
+                    String name = getStringFromCursor(cursor, 2);
+                    String displayName = getStringFromCursor(cursor, 3);
+                    Date created = getDateFromCursor(cursor, 4);
+                    Date lastUpdated = getDateFromCursor(cursor, 5);
+                    Integer priority = getIntegerFromCursor(cursor, 6);
+                    String condition = getStringFromCursor(cursor, 7);
+                    String program = getStringFromCursor(cursor, 8);
+                    String programStageUid = getStringFromCursor(cursor, 9);
+
+                    if (!programRulesMap.containsKey(program)) {
+                        programRulesMap.put(program, new ArrayList<ProgramRule>());
+                    }
+
+                    ProgramStage programStage = null;
+
+                    if (programStageUid != null) {
+                        programStage = ProgramStage.builder().uid(programStageUid).build();
+                    }
+
+                    programRulesMap.get(program).add(ProgramRule.builder()
+                            .uid(uid)
+                            .code(code)
+                            .name(name)
+                            .displayName(displayName)
+                            .created(created)
+                            .lastUpdated(lastUpdated)
+                            .priority(priority)
+                            .condition(condition)
+                            .program(Program.builder().uid(program).build())
+                            .programStage(programStage)
+                            .build());
+
+                } while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return programRulesMap;
+    }
+
 }

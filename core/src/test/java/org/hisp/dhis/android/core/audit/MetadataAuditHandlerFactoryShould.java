@@ -11,6 +11,19 @@ import org.hisp.dhis.android.core.option.OptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetMetadataAuditHandler;
+import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramFactory;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.program.ProgramIndicatorMetadataAuditHandler;
+import org.hisp.dhis.android.core.program.ProgramMetadataAuditHandler;
+import org.hisp.dhis.android.core.program.ProgramRule;
+import org.hisp.dhis.android.core.program.ProgramRuleAction;
+import org.hisp.dhis.android.core.program.ProgramRuleActionMetadataAuditHandler;
+import org.hisp.dhis.android.core.program.ProgramRuleMetadataAuditHandler;
+import org.hisp.dhis.android.core.program.ProgramRuleVariable;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableMetadataAuditHandler;
+import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.ProgramStageMetadataAuditHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeFactory;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeMetadataAuditHandler;
@@ -46,6 +59,9 @@ public class MetadataAuditHandlerFactoryShould {
     private DataElementFactory dataElementFactory;
 
     @Mock
+    private ProgramFactory programFactory;
+
+    @Mock
     private RelationshipTypeFactory relationshipTypeFactory;
 
     private MetadataAuditHandlerFactory metadataAuditHandlerFactory;
@@ -59,6 +75,13 @@ public class MetadataAuditHandlerFactoryShould {
                 {OptionMetadataAuditHandler.class, Option.class},
                 {DataElementMetadataAuditHandler.class, DataElement.class},
                 {TrackedEntityAttributeMetadataAuditHandler.class, TrackedEntityAttribute.class},
+                {OptionMetadataAuditHandler.class, Option.class},
+                {ProgramMetadataAuditHandler.class, Program.class},
+                {ProgramStageMetadataAuditHandler.class, ProgramStage.class},
+                {ProgramIndicatorMetadataAuditHandler.class, ProgramIndicator.class},
+                {ProgramRuleMetadataAuditHandler.class, ProgramRule.class},
+                {ProgramRuleActionMetadataAuditHandler.class, ProgramRuleAction.class},
+                {ProgramRuleVariableMetadataAuditHandler.class, ProgramRuleVariable.class},
                 {RelationshipTypeMetadataAuditHandler.class, RelationshipType.class}
         });
     }
@@ -78,7 +101,8 @@ public class MetadataAuditHandlerFactoryShould {
 
         metadataAuditHandlerFactory =
                 new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
-                        dataElementFactory, trackedEntityAttributeFactory, relationshipTypeFactory);
+                        dataElementFactory, trackedEntityAttributeFactory, programFactory,
+                        relationshipTypeFactory);
     }
 
     @Test

@@ -66,8 +66,6 @@ public class DataElementChangeOnServerShould extends AbsStoreTestCase {
 
     @Test
     public void create_data_element_in_database_if_audit_type_is_create() throws Exception {
-        String filename = "audit/data_element.json";
-
         MetadataAudit<DataElement> metadataAudit =
                 givenAMetadataAudit("audit/data_element_create.json");
 
@@ -84,13 +82,15 @@ public class DataElementChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(DataElement.class, metadataAudit);
 
-        assertThat(dataElementStore.queryAll().get(0), is(parseDateElements(
-                filename).items().get(0)));
+        DataElement createdDataElement = dataElementStore.queryAll().get(0);
+        DataElement expectedDataElement = metadataAudit.getValue();
+
+        verifyDataElement(createdDataElement, expectedDataElement);
     }
 
     @Test
     public void update_data_element_if_audit_type_is_update() throws Exception {
-        String filename = "audit/data_element_updated.json";
+        String filename = "data_element_updated.json";
 
         givenAExistedDataElementPreviously();
 
@@ -112,8 +112,10 @@ public class DataElementChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(DataElement.class, metadataAudit);
 
-        assertThat(dataElementStore.queryAll().get(0), is(parseDateElements(
-                filename).items().get(0)));
+        DataElement createdDataElement = dataElementStore.queryAll().get(0);
+        DataElement expectedDataElement = parseDateElements(filename).items().get(0);
+
+        verifyDataElement(createdDataElement, expectedDataElement);
     }
 
     @Test
@@ -161,5 +163,20 @@ public class DataElementChangeOnServerShould extends AbsStoreTestCase {
         GenericClassParser parser = new GenericClassParser();
 
         return parser.parse(json, Payload.class, DataElement.class);
+    }
+
+    private void verifyDataElement(DataElement createdDataElement,
+            DataElement expectedDataElement) {
+        //compare without children because there are other tests (call, handler)
+        //that verify the tree is saved in database
+        assertThat(removeChildrenFromDataElement(createdDataElement),
+                is(removeChildrenFromDataElement(expectedDataElement)));
+    }
+
+    private DataElement removeChildrenFromDataElement(DataElement dataElement) {
+        dataElement = dataElement.toBuilder()
+                .categoryCombo(null).build();
+
+        return dataElement;
     }
 }

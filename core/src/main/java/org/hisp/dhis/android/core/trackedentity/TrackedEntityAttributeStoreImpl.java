@@ -111,6 +111,9 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
 
     private static final String QUERY_ALL_TRACKED_ENTITY_ATTRIBUTES =
             "SELECT " + FIELDS + " FROM " + TrackedEntityAttributeModel.TABLE;
+    private static final String QUERY_BY_UID =
+            "SELECT " + FIELDS + " FROM " + TrackedEntityAttributeModel.TABLE
+                    + " WHERE " + TrackedEntityAttributeModel.Columns.UID + "=?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -241,6 +244,19 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
         return mapTrackedEntityAttributesFromCursor(cursor);
     }
 
+    @Override
+    public TrackedEntityAttribute queryByUid(String uid) {
+        TrackedEntityAttribute trackedEntityAttribute = null;
+
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID, uid);
+
+        if (cursor.getCount() > 0) {
+            trackedEntityAttribute = mapTrackedEntityAttributesFromCursor(cursor).get(0);
+        }
+
+        return trackedEntityAttribute;
+    }
+
     private List<TrackedEntityAttribute> mapTrackedEntityAttributesFromCursor(Cursor cursor) {
         List<TrackedEntityAttribute> trackedEntityAttributes = new ArrayList<>(
                 cursor.getCount());
@@ -318,7 +334,6 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
                 .orgUnitScope(orgUnitScope)
                 .unique(unique)
                 .inherit(inherit)
-                .deleted(false)
                 .build();
 
         return trackedEntityAttribute;

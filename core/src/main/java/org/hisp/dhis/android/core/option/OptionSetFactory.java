@@ -37,7 +37,6 @@ public class OptionSetFactory {
         this.deletableStores = new ArrayList<>();
         this.deletableStores.add(optionSetStore);
         this.deletableStores.add(optionStore);
-
     }
 
     public OptionSetCall newEndPointCall(Set<String> optionSetUids, Date serverDate) {

@@ -319,7 +319,7 @@ public final class D2 {
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
                     new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
-                            programFactory);
+                            dataElementFactory, trackedEntityAttributeFactory, programFactory);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 

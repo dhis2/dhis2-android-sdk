@@ -65,4 +65,6 @@ public interface TrackedEntityAttributeStore extends DeletableStore {
     int delete(String uid);
 
     List<TrackedEntityAttribute> queryAll();
+
+    TrackedEntityAttribute queryByUid(String uid);
 }

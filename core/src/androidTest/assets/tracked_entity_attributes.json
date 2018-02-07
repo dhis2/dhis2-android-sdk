@@ -25,8 +25,7 @@
       "generated": false,
       "inherit": false,
       "unique": false,
-      "valueType": "TEXT",
-      "deleted": false
+      "valueType": "TEXT"
     },
     {
       "created": "2014-01-09T19:12:46.582",
@@ -46,8 +45,7 @@
       "generated": false,
       "inherit": false,
       "unique": false,
-      "valueType": "AGE",
-      "deleted": false
+      "valueType": "AGE"
     },
     {
       "code": "MMD_PER_DOB",
@@ -68,8 +66,7 @@
       "generated": false,
       "inherit": false,
       "unique": false,
-      "valueType": "DATE",
-      "deleted": false
+      "valueType": "DATE"
     }
   ]
 }

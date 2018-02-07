@@ -3,6 +3,9 @@ package org.hisp.dhis.android.core.audit;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
+import org.hisp.dhis.android.core.dataelement.DataElementMetadataAuditHandler;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -22,6 +25,9 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariableMetadataAuditHandle
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageMetadataAuditHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeMetadataAuditHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityMetadataAuditHandler;
 import org.junit.Before;
@@ -41,7 +47,13 @@ public class MetadataAuditHandlerFactoryShould {
     private TrackedEntityFactory trackedEntityFactory;
 
     @Mock
+    private TrackedEntityAttributeFactory trackedEntityAttributeFactory;
+
+    @Mock
     private OptionSetFactory optionSetFactory;
+
+    @Mock
+    private DataElementFactory dataElementFactory;
 
     @Mock
     private ProgramFactory programFactory;
@@ -54,6 +66,9 @@ public class MetadataAuditHandlerFactoryShould {
         return Arrays.asList(new Object[][]{
                 {TrackedEntityMetadataAuditHandler.class, TrackedEntity.class},
                 {OptionSetMetadataAuditHandler.class, OptionSet.class},
+                {OptionMetadataAuditHandler.class, Option.class},
+                {DataElementMetadataAuditHandler.class, DataElement.class},
+                {TrackedEntityAttributeMetadataAuditHandler.class, TrackedEntityAttribute.class},
                 {OptionMetadataAuditHandler.class, Option.class},
                 {ProgramMetadataAuditHandler.class, Program.class},
                 {ProgramStageMetadataAuditHandler.class, ProgramStage.class},
@@ -79,11 +94,11 @@ public class MetadataAuditHandlerFactoryShould {
 
         metadataAuditHandlerFactory =
                 new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
-                        programFactory);
+                        dataElementFactory, trackedEntityAttributeFactory, programFactory);
     }
 
     @Test
-    public void return_tracked_entity_audit() {
+    public void return_metadata_audit_handler() {
         MetadataAuditHandler metadataAuditHandler =
                 metadataAuditHandlerFactory.getByClass(dhisType);
 

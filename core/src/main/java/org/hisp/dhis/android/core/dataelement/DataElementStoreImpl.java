@@ -74,7 +74,7 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
                     DataElementModel.Columns.CATEGORY_COMBO;
 
     private static final String INSERT_STATEMENT = "INSERT INTO "
-            + DataElementModel.TABLE + " (" + FIELDS +") " +
+            + DataElementModel.TABLE + " (" + FIELDS + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + DataElementModel.TABLE + " SET " +
@@ -103,7 +103,7 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
     private static final String DELETE_STATEMENT = "DELETE FROM " + DataElementModel.TABLE +
             " WHERE " + DataElementModel.Columns.UID + " =?;";
 
-    private static final String QUERY_ALL = "SELECT "+FIELDS+" FROM "
+    private static final String QUERY_ALL = "SELECT " + FIELDS + " FROM "
             + DataElementModel.TABLE;
 
     private final SQLiteStatement insertStatement;
@@ -267,7 +267,7 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
         String optionSet = getStringFromCursor(cursor, 18);
         String categoryCombo = getStringFromCursor(cursor, 19);
 
-         DataElement dataElement = DataElement.builder().uid(uid).code(code).name(name)
+        DataElement dataElement = DataElement.builder().uid(uid).code(code).name(name)
                 .displayName(displayName).displayName(displayName)
                 .created(created).lastUpdated(lastUpdated).shortName(shortName)
                 .displayShortName(displayShortName).description(description)
@@ -283,7 +283,7 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
 
     private CategoryCombo getSimpleCategoryCombo(String categoryComboUId) {
         CategoryCombo simpleCategoryCombo = null;
-        if(categoryComboUId!=null) {
+        if (categoryComboUId != null) {
             simpleCategoryCombo = CategoryCombo.builder().uid(categoryComboUId).build();
         }
         return simpleCategoryCombo;
@@ -291,9 +291,15 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
 
     private OptionSet getSimpleOptionSet(String optionSetUId) {
         OptionSet simpleOptionSet = null;
-        if(optionSetUId!=null) {
+        if (optionSetUId != null) {
             simpleOptionSet = OptionSet.builder().uid(optionSetUId).build();
         }
         return simpleOptionSet;
+    }
+
+    @Nullable
+    private ValueType getValueTypeFromCursor(Cursor cursor, int index) {
+        return cursor.getString(index) == null ? null :
+                ValueType.valueOf(cursor.getString(index));
     }
 }

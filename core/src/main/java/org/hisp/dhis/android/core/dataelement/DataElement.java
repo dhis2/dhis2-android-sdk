@@ -123,6 +123,7 @@ public abstract class DataElement extends BaseNameableObject {
     static DataElement.Builder builder() {
         return new AutoValue_DataElement.Builder();
     }
+
     @AutoValue.Builder
     public static abstract class Builder extends
             BaseNameableObject.Builder<DataElement.Builder> {

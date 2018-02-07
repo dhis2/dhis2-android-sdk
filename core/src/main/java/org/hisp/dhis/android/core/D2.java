@@ -114,8 +114,7 @@ import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeFactory;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -209,7 +208,6 @@ public final class D2 {
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
-    private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
 
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
@@ -242,6 +240,7 @@ public final class D2 {
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
     private final DataElementFactory dataElementFactory;
+    private final RelationshipTypeFactory relationshipTypeFactory;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
@@ -302,8 +301,6 @@ public final class D2 {
                 new ProgramStageSectionStoreImpl(databaseAdapter);
         this.programStageStore =
                 new ProgramStageStoreImpl(databaseAdapter);
-        this.relationshipStore =
-                new RelationshipTypeStoreImpl(databaseAdapter);
         this.trackedEntityStore =
                 new TrackedEntityStoreImpl(databaseAdapter);
         this.trackedEntityInstanceStore =
@@ -380,10 +377,14 @@ public final class D2 {
         this.dataElementFactory =
                 new DataElementFactory(retrofit, databaseAdapter, resourceHandler);
 
+        relationshipTypeFactory =
+                new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
+
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
-                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory, dataElementFactory,
-                            trackedEntityAttributeFactory);
+                    new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
+                            dataElementFactory, trackedEntityAttributeFactory,
+                            relationshipTypeFactory);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 
@@ -460,7 +461,7 @@ public final class D2 {
         deletableStoreList.add(programStageDataElementStore);
         deletableStoreList.add(programStageSectionStore);
         deletableStoreList.add(programStageStore);
-        deletableStoreList.add(relationshipStore);
+        deletableStoreList.addAll(relationshipTypeFactory.getDeletableStores());
         deletableStoreList.add(trackedEntityStore);
         deletableStoreList.add(trackedEntityInstanceStore);
         deletableStoreList.add(enrollmentStore);
@@ -490,10 +491,11 @@ public final class D2 {
                 programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore,
+                programStageSectionStore, programStageStore,
                 organisationUnitProgramLinkStore, categoryQuery, categoryService, categoryHandler,
                 categoryComboQuery, comboService, categoryComboHandler, optionSetFactory,
-                trackedEntityFactory, trackedEntityAttributeFactory, dataElementFactory);
+                trackedEntityFactory, trackedEntityAttributeFactory, dataElementFactory,
+                relationshipTypeFactory);
     }
 
     @NonNull

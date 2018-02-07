@@ -94,7 +94,7 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void query_all_category_options_link(){
+    public void query_all_category_options_link() {
 
         givenAllTheCategoryOptionLinkDependencies();
 

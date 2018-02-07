@@ -11,6 +11,9 @@ import org.hisp.dhis.android.core.option.OptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetMetadataAuditHandler;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeFactory;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeMetadataAuditHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
@@ -42,6 +45,9 @@ public class MetadataAuditHandlerFactoryShould {
     @Mock
     private DataElementFactory dataElementFactory;
 
+    @Mock
+    private RelationshipTypeFactory relationshipTypeFactory;
+
     private MetadataAuditHandlerFactory metadataAuditHandlerFactory;
 
     @Parameterized.Parameters(name = "{index} MetadataAuditHandlerFactory should return: {0} for "
@@ -52,7 +58,8 @@ public class MetadataAuditHandlerFactoryShould {
                 {OptionSetMetadataAuditHandler.class, OptionSet.class},
                 {OptionMetadataAuditHandler.class, Option.class},
                 {DataElementMetadataAuditHandler.class, DataElement.class},
-                {TrackedEntityAttributeMetadataAuditHandler.class, TrackedEntityAttribute.class}
+                {TrackedEntityAttributeMetadataAuditHandler.class, TrackedEntityAttribute.class},
+                {RelationshipTypeMetadataAuditHandler.class, RelationshipType.class}
         });
     }
 
@@ -71,7 +78,7 @@ public class MetadataAuditHandlerFactoryShould {
 
         metadataAuditHandlerFactory =
                 new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
-                        dataElementFactory, trackedEntityAttributeFactory);
+                        dataElementFactory, trackedEntityAttributeFactory, relationshipTypeFactory);
     }
 
     @Test

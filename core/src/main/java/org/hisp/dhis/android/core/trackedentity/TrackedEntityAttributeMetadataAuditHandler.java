@@ -11,13 +11,15 @@ public class TrackedEntityAttributeMetadataAuditHandler implements MetadataAudit
 
     private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
 
-    public TrackedEntityAttributeMetadataAuditHandler(TrackedEntityAttributeFactory trackedEntityAttributeFactory) {
+    public TrackedEntityAttributeMetadataAuditHandler(
+            TrackedEntityAttributeFactory trackedEntityAttributeFactory) {
         this.trackedEntityAttributeFactory = trackedEntityAttributeFactory;
     }
 
     public void handle(MetadataAudit metadataAudit) throws Exception {
 
-        TrackedEntityAttribute trackedEntityAttribute = (TrackedEntityAttribute) metadataAudit.getValue();
+        TrackedEntityAttribute trackedEntityAttribute =
+                (TrackedEntityAttribute) metadataAudit.getValue();
 
         if (metadataAudit.getType() == AuditType.UPDATE) {
             //metadataAudit of UPDATE type does not return payload

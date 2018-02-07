@@ -28,7 +28,7 @@ public class CategoryHandler {
             categoryStore.delete(category.uid());
         } else {
 
-            int numberOfRows =  categoryStore.update(category);
+            int numberOfRows = categoryStore.update(category);
             boolean updated = numberOfRows >= 1;
 
             if (!updated) {

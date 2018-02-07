@@ -66,7 +66,7 @@ import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeFactory;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
@@ -89,6 +89,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
 
 import retrofit2.Response;
 
@@ -119,7 +121,7 @@ public class MetadataCall implements Call<Response> {
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageStore programStageStore;
-    private final RelationshipTypeStore relationshipStore;
+
     private final CategoryQuery categoryQuery;
     private final CategoryComboQuery categoryComboQuery;
     private final CategoryService categoryService;
@@ -131,6 +133,7 @@ public class MetadataCall implements Call<Response> {
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
     private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
+    private final RelationshipTypeFactory relationshipTypeFactory;
 
     private boolean isExecuted;
 
@@ -160,7 +163,6 @@ public class MetadataCall implements Call<Response> {
             @NonNull ProgramStageDataElementStore programStageDataElementStore,
             @NonNull ProgramStageSectionStore programStageSectionStore,
             @NonNull ProgramStageStore programStageStore,
-            @NonNull RelationshipTypeStore relationshipStore,
             @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
             @NonNull CategoryQuery categoryQuery,
             @NonNull CategoryService categoryService,
@@ -171,7 +173,8 @@ public class MetadataCall implements Call<Response> {
             @NonNull OptionSetFactory optionSetFactory,
             @NonNull TrackedEntityFactory trackedEntityFactory,
             @NonNull TrackedEntityAttributeFactory trackedEntityAttributeFactory,
-            @NonNull DataElementFactory dataElementFactory) {
+            @NonNull DataElementFactory dataElementFactory,
+            @Nonnull RelationshipTypeFactory relationshipTypeFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -196,7 +199,6 @@ public class MetadataCall implements Call<Response> {
         this.programStageDataElementStore = programStageDataElementStore;
         this.programStageSectionStore = programStageSectionStore;
         this.programStageStore = programStageStore;
-        this.relationshipStore = relationshipStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
         this.categoryQuery = categoryQuery;
         this.categoryService = categoryService;
@@ -209,6 +211,7 @@ public class MetadataCall implements Call<Response> {
         this.trackedEntityFactory = trackedEntityFactory;
         this.trackedEntityAttributeFactory = trackedEntityAttributeFactory;
         this.dataElementFactory = dataElementFactory;
+        this.relationshipTypeFactory = relationshipTypeFactory;
     }
 
     @Override
@@ -288,7 +291,8 @@ public class MetadataCall implements Call<Response> {
                     programRuleStore, optionSetFactory,
                     dataElementFactory.getDataElementStore(),
                     programStageDataElementStore,
-                    programStageSectionStore, programStageStore, relationshipStore
+                    programStageSectionStore, programStageStore,
+                    relationshipTypeFactory.getRelationshipTypeStore()
             ).call();
             if (!response.isSuccessful()) {
                 return response;

@@ -21,7 +21,7 @@ public class CategoryOptionComboHandler {
         } else {
 
             int rowsAffected = store.update(entity);
-            boolean updated =rowsAffected >= 1;
+            boolean updated = rowsAffected >= 1;
 
             if (!updated) {
                 store.insert(entity);

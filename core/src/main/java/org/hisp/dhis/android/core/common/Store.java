@@ -5,8 +5,6 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeSearchScope;
-
 import java.util.Date;
 
 public class Store {
@@ -28,18 +26,5 @@ public class Store {
     @Nullable
     protected Integer getIntegerFromCursor(Cursor cursor, int index) {
         return cursor.getString(index) == null ? null : cursor.getInt(index);
-    }
-
-    @Nullable
-    protected ValueType getValueTypeFromCursor(Cursor cursor, int index) {
-        return cursor.getString(index) == null ? null :
-                ValueType.valueOf(cursor.getString(index));
-    }
-
-    @Nullable
-    protected TrackedEntityAttributeSearchScope
-    getTrackedEntityAttributeSearchScopeFromCursor(Cursor cursor, int index) {
-        return cursor.getString(index) == null ? null :
-                TrackedEntityAttributeSearchScope.valueOf(cursor.getString(index));
     }
 }

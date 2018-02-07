@@ -101,7 +101,7 @@ public class ProgramRuleOnServerShould extends AbsStoreTestCase {
 
         ProgramRule expectedProgramRule = metadataAudit.getValue();
 
-        verifyProgramRule(createdProgramRule, expectedProgramRule);
+        verifyEqualsProgramRule(createdProgramRule, expectedProgramRule);
     }
 
     @Test
@@ -128,11 +128,11 @@ public class ProgramRuleOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(ProgramRule.class, metadataAudit);
 
-        ProgramRule editedProgramRule = programRuleStore.queryByUid(metadataAudit.getUid());
+        ProgramRule programRuleUpdated = programRuleStore.queryByUid(metadataAudit.getUid());
 
-        ProgramRule expectedProgramRule = getExpectedProgramRule(filename);
+        ProgramRule programRuleExpected = getExpectedProgramRule(filename);
 
-        verifyProgramRule(expectedProgramRule, editedProgramRule);
+        verifyEqualsProgramRule(programRuleExpected, programRuleUpdated);
     }
 
     @Test
@@ -190,15 +190,15 @@ public class ProgramRuleOnServerShould extends AbsStoreTestCase {
         return payloadExpected.items().get(0).programRules().get(0);
     }
 
-    private void verifyProgramRule(ProgramRule createdProgramRule,
-            ProgramRule expectedProgramRule) {
+    private void verifyEqualsProgramRule(ProgramRule programRuleUpdated,
+            ProgramRule programRuleExpected) {
         //compare without children because there are other tests (call, handler)
         //that verify the tree is saved in database
-        assertThat(removeChildrenFromProgramRule(createdProgramRule),
-                is(removeChildrenFromProgramRule(expectedProgramRule)));
+        assertThat(removeForeignKeysFromProgramRule(programRuleUpdated),
+                is(removeForeignKeysFromProgramRule(programRuleExpected)));
     }
 
-    private ProgramRule removeChildrenFromProgramRule(ProgramRule programRule) {
+    private ProgramRule removeForeignKeysFromProgramRule(ProgramRule programRule) {
         programRule = programRule.toBuilder()
                 .program(null)
                 .programRuleActions(null)

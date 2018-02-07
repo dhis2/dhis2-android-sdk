@@ -123,11 +123,11 @@ public class ProgramStageChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(ProgramStage.class, metadataAudit);
 
-        ProgramStage editedProgramStage = programStageStore.queryByUid(metadataAudit.getUid());
+        ProgramStage programStageUpdated = programStageStore.queryByUid(metadataAudit.getUid());
 
-        ProgramStage expectedProgramStage = getExpectedProgramStage(filename);
+        ProgramStage programStageExpected = getExpectedProgramStage(filename);
 
-        verifyProgramStage(editedProgramStage, expectedProgramStage);
+        verifyEqualsProgramStage(programStageUpdated, programStageExpected);
     }
 
     @Test
@@ -185,14 +185,14 @@ public class ProgramStageChangeOnServerShould extends AbsStoreTestCase {
         return payloadExpected.items().get(0).programStages().get(0);
     }
 
-    private void verifyProgramStage(ProgramStage createdProgramStage,
-            ProgramStage expectedProgramStage) {
-        assertThat(removeChildrenFromProgramStage(createdProgramStage),
-                is(removeChildrenFromProgramStage(expectedProgramStage)));
+    private void verifyEqualsProgramStage(ProgramStage programStageUpdated,
+            ProgramStage programStageExpected) {
+        assertThat(removeForeignKeysFromProgramStage(programStageUpdated),
+                is(removeForeignKeysFromProgramStage(programStageExpected)));
     }
 
-    private ProgramStage removeChildrenFromProgramStage(ProgramStage programStage) {
-        //compare without children because there are other tests (call, handler)
+    private ProgramStage removeForeignKeysFromProgramStage(ProgramStage programStage) {
+        //compare without dependencies (FKs) because there are other tests (call, handler)
         //that verify the tree is saved in database
         programStage = programStage.toBuilder()
                 .program(null)

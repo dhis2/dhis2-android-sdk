@@ -701,6 +701,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
+    //TODO We need to review the constrain between dataelement and trackedentitydatavalue
     private static final String CREATE_TRACKED_ENTITY_DATA_VALUE_TABLE = "CREATE TABLE " +
             TrackedEntityDataValueModel.TABLE + " (" +
             TrackedEntityDataValueModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -711,10 +712,10 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             TrackedEntityDataValueModel.Columns.CREATED + " TEXT," +
             TrackedEntityDataValueModel.Columns.LAST_UPDATED + " TEXT," +
             TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE + " INTEGER," +
-            " FOREIGN KEY (" + TrackedEntityDataValueModel.Columns.DATA_ELEMENT + ")" +
+            /*" FOREIGN KEY (" + TrackedEntityDataValueModel.Columns.DATA_ELEMENT + ")" +
             " REFERENCES " + DataElementModel.TABLE +
             " (" + DataElementModel.Columns.UID + ")" +
-            " ON DELETE CASCADE, " +
+            " ON DELETE CASCADE, " +*/
             " FOREIGN KEY (" + TrackedEntityDataValueModel.Columns.EVENT + ")" +
             " REFERENCES " + EventModel.TABLE + " (" + EventModel.Columns.UID + ")" +
             " ON DELETE CASCADE" +

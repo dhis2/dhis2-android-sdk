@@ -79,7 +79,6 @@ public class MetadataAuditHandlerFactoryShould {
                 {TrackedEntityMetadataAuditHandler.class, TrackedEntity.class},
                 {OptionSetMetadataAuditHandler.class, OptionSet.class},
                 {OptionMetadataAuditHandler.class, Option.class},
-                {OptionMetadataAuditHandler.class, Option.class},
                 {DataElementMetadataAuditHandler.class, DataElement.class},
                 {TrackedEntityAttributeMetadataAuditHandler.class, TrackedEntityAttribute.class},
                 {OptionMetadataAuditHandler.class, Option.class},

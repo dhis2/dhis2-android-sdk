@@ -95,7 +95,7 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
 
     @Test
     public void update_option_set_if_audit_type_is_update() throws Exception {
-        String filename = "audit/organisation_units.json";
+        String filename = "organisation_unit_updated.json";
 
         givenMetadataDependencies();
 

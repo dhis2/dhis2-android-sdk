@@ -79,7 +79,6 @@ import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserHandler;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserRole;
 import org.hisp.dhis.android.core.user.UserService;
 import org.junit.After;
@@ -269,9 +268,8 @@ public class MetadataCallShould {
         organisationUnitFactory = new OrganisationUnitFactory(retrofit, databaseAdapter, resourceHandler);
 
         metadataCall = new MetadataCall(
-                databaseAdapter, systemInfoService, userService, organisationUnitService,
-                systemInfoStore, resourceStore, userHandler, userOrganisationUnitLinkStore,
-                categoryQuery, categoryService, categoryHandler,
+                databaseAdapter, systemInfoService, userService, userHandler,
+                systemInfoStore, resourceStore, categoryQuery, categoryService, categoryHandler,
                 CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
                 optionSetFactory, trackedEntityFactory, programFactory, organisationUnitFactory);
 
@@ -350,11 +348,6 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_organisation_unit_call_fail() throws Exception {
-        dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
         dhis2MockServer.enqueueMockResponse("api_error.json",
                 HttpURLConnection.HTTP_CONFLICT);
 

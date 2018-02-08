@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
+import static org.hisp.dhis.android.core.resource.ResourceModel.Type.ORGANISATION_UNIT;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.filters.MediumTest;
@@ -35,8 +38,8 @@ import android.support.test.runner.AndroidJUnit4;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -67,9 +70,6 @@ import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
-
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-import static org.hisp.dhis.android.core.resource.ResourceModel.Type.ORGANISATION_UNIT;
 
 @RunWith(AndroidJUnit4.class)
 public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase {
@@ -278,6 +278,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore =
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         // Create a user with the root as assigned organisation unit (for the test):
         User user = User.builder()
@@ -335,7 +336,10 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         Date serverDate = new Date();
 
         dateString = BaseIdentifiableObject.DATE_FORMAT.format(serverDate);
-        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
+        OrganisationUnitHandler organisationUnitHandler =
+                new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitLinkStore,
+                        organisationUnitProgramLinkStore, resourceHandler);
+
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, databaseAdapter(),
                 resourceHandler, new Date(), organisationUnitHandler, "");
     }

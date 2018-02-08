@@ -22,14 +22,6 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
-import org.hisp.dhis.android.core.user.AuthenticatedUserStoreImpl;
-import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserHandler;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
-import org.hisp.dhis.android.core.user.UserStore;
-import org.hisp.dhis.android.core.user.UserStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,17 +29,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
+import java.util.Date;
 
 public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
 
     @Mock
     private MetadataAuditHandlerFactory metadataAuditHandlerFactory;
 
-    private OrganisationUnitStore organisationUnitStore;
-    private OrganisationUnitHandler organisationUnitHandler;
-    private UserHandler userHandler;
-    private AuthenticatedUserStoreImpl authenticatedUserStore;
     private MetadataAuditListener metadataAuditListener;
+    private OrganisationUnitFactory organisationUnitFactory;
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
@@ -60,21 +50,14 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
 
         MockitoAnnotations.initMocks(this);
 
-        when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
-                new OrganisationUnitMetadataAuditHandler(
-                        new OrganisationUnitFactory(d2.retrofit(), databaseAdapter(),
-                                HandlerFactory.createResourceHandler(databaseAdapter()))));
+        organisationUnitFactory = new OrganisationUnitFactory(d2.retrofit(), databaseAdapter(),
+                HandlerFactory.createResourceHandler(databaseAdapter()));
 
-        organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
-        UserOrganisationUnitLinkStore userOrganisationStore = new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
-        OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore = new OrganisationUnitProgramLinkStoreImpl(databaseAdapter());
-        organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
-        organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
-                userOrganisationStore, organisationUnitProgramLinkStore);
-        UserStore userStore = new UserStoreImpl(databaseAdapter());
-        userHandler = new UserHandler(userStore);
+        when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
+                new OrganisationUnitMetadataAuditHandler(organisationUnitFactory));
+
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
-        authenticatedUserStore = new AuthenticatedUserStoreImpl(databaseAdapter());
+
     }
 
     @Override
@@ -105,30 +88,9 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(OrganisationUnit.class, metadataAudit);
 
-        assertThat(getOrganisationUnitWithParent(organisationUnitStore.queryByUid(metadataAudit.getUid())), is(metadataAudit.getValue()));
-    }
-
-    @Test
-    public void delete_option_set_in_database_if_audit_type_is_delete() throws Exception {
-        givenMetadataDependencies();
-
-        MetadataAudit<OrganisationUnit> metadataAudit =
-                givenAMetadataAudit("audit/organisation_unit_delete.json");
-
-        metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
-            @Override
-            public void onSynced(SyncedMetadata syncedMetadata) {
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                fail(throwable.getMessage());
-            }
-        });
-
-        metadataAuditListener.onMetadataChanged(OrganisationUnit.class, metadataAudit);
-
-        assertThat(organisationUnitStore.queryByUid(metadataAudit.getUid()), is(nullValue()));
+        assertThat(
+                getOrganisationUnitWithParent(getOrganisationUnitFromDatabase(
+                        metadataAudit.getUid())), is(metadataAudit.getValue()));
     }
 
     @Test
@@ -157,8 +119,35 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(OrganisationUnit.class, metadataAudit);
 
-        assertThat(getOrganisationUnitWithParent(getOrganisationUnit(metadataAudit.getUid())), is(getOrganisationUnitWithParent(parseExpected(
-                filename).items().get(0))));
+        assertThat(
+                getOrganisationUnitWithParent(
+                        getOrganisationUnitFromDatabase(metadataAudit.getUid())),
+                is(getOrganisationUnitWithParent(parseExpected(filename).items().get(0))));
+    }
+
+    @Test
+    public void delete_option_set_in_database_if_audit_type_is_delete() throws Exception {
+        givenMetadataDependencies();
+        givenAExistedOrganisationUnitPreviously();
+
+        MetadataAudit<OrganisationUnit> metadataAudit =
+                givenAMetadataAudit("audit/organisation_unit_delete.json");
+
+        metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
+            @Override
+            public void onSynced(SyncedMetadata syncedMetadata) {
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                fail(throwable.getMessage());
+            }
+        });
+
+        metadataAuditListener.onMetadataChanged(OrganisationUnit.class, metadataAudit);
+
+        assertThat(organisationUnitFactory.getOrganisationUnitStore().queryByUid(
+                metadataAudit.getUid()), is(nullValue()));
     }
 
 
@@ -168,9 +157,14 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
         metadataAuditListener.onMetadataChanged(OrganisationUnit.class, metadataAudit);
     }
 
-    private void givenMetadataDependencies() {
+    private void givenMetadataDependencies() throws Exception {
         givenAExistedUser();
         givenAExistedOrganisationUnitParent();
+    }
+
+    private void givenAExistedUser() throws Exception {
+        dhis2MockServer.enqueueMockResponse("login.json", new Date());
+        d2.logIn("user", "password").call();
     }
 
     private void givenAExistedOrganisationUnitParent() {
@@ -179,34 +173,32 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
                 .created(parse("2012-11-13T12:20:53.028"))
                 .lastUpdated(parse("2017-05-22T15:21:48.514")).build();
 
-        organisationUnitHandler.handleOrganisationUnit(organisationUnit,
-                OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, "xE7jOejl9FI");
+        organisationUnitFactory.getOrganisationUnitHandler().handleOrganisationUnit(
+                organisationUnit,
+                OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, "DXyJmlo9rge", new Date());
     }
 
     private OrganisationUnit getOrganisationUnitWithParent(OrganisationUnit organisationUnit) {
-        OrganisationUnit organisationUnitParent = organisationUnitStore.queryByUid("ImspTQPwCqd");
-        if(organisationUnitParent!=null) {
+        OrganisationUnit organisationUnitParent =
+                organisationUnitFactory.getOrganisationUnitStore().queryByUid("ImspTQPwCqd");
+        if (organisationUnitParent != null) {
             organisationUnitParent = organisationUnitParent.toBuilder().deleted(null).level(
                     null).build();
         }
-        organisationUnit = organisationUnit.toBuilder().deleted(null).parent(organisationUnitParent).build();
+        organisationUnit = organisationUnit.toBuilder().deleted(null).parent(
+                organisationUnitParent).build();
         return organisationUnit;
     }
 
-    private void givenAExistedUser() {
-        User user = User.builder().uid("xE7jOejl9FI")
-                .userCredentials(UserCredentials.builder().uid("creedentialuid")
-                        .build()).build();
-        userHandler.handleUser(user);
-        authenticatedUserStore.insert("xE7jOejl9FI", "");
-    }
-
-    private OrganisationUnit getOrganisationUnit(String uid) {
-        OrganisationUnit organisationUnit = organisationUnitStore.queryByUid(uid);
+    private OrganisationUnit getOrganisationUnitFromDatabase(String uid) {
+        OrganisationUnit organisationUnit =
+                organisationUnitFactory.getOrganisationUnitStore().queryByUid(uid);
 
         return organisationUnit;
     }
-    private MetadataAudit<OrganisationUnit> givenAMetadataAudit(String fileName) throws IOException {
+
+    private MetadataAudit<OrganisationUnit> givenAMetadataAudit(String fileName)
+            throws IOException {
         AssetsFileReader assetsFileReader = new AssetsFileReader();
 
         String json = assetsFileReader.getStringFromFile(fileName);

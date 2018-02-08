@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -46,8 +48,6 @@ import java.util.Date;
 import java.util.Set;
 
 import retrofit2.Response;
-
-import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
 
 public class OrganisationUnitCall implements Call<Response<Payload<OrganisationUnit>>> {
 

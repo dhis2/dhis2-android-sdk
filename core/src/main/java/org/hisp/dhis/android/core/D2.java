@@ -83,13 +83,7 @@ import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
-import org.hisp.dhis.android.core.option.OptionStore;
-import org.hisp.dhis.android.core.option.OptionStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramFactory;
@@ -122,8 +116,6 @@ import org.hisp.dhis.android.core.user.UserCredentialsHandler;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserHandler;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserRoleHandler;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStoreImpl;
@@ -192,10 +184,11 @@ public final class D2 {
     private final ResourceHandler resourceHandler;
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
-    private final OrganisationUnitHandler organisationUnitHandler;
+
     private MetadataAuditConsumer metadataAuditConsumer;
     private MetadataAuditListener metadataAuditListener;
 
+    //Factories
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
     private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
@@ -267,18 +260,6 @@ public final class D2 {
         userHandler = new UserHandler(userStore, userCredentialsHandler, resourceHandler,
                 userRoleHandler);
 
-
-        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore =
-                new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
-        OrganisationUnitStoreImpl organisationUnitStore =
-                new OrganisationUnitStoreImpl(databaseAdapter);
-        OrganisationUnitProgramLinkStoreImpl organisationUnitProgramLinkStore =
-                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
-                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
-
-        organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
-                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, resourceHandler);
-
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
 
@@ -313,14 +294,15 @@ public final class D2 {
 
         trackedEntityFactory =
                 new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
+
         organisationUnitFactory =
                 new OrganisationUnitFactory(retrofit, databaseAdapter, resourceHandler);
 
-        trackedEntityAttributeFactory = new TrackedEntityAttributeFactory(retrofit, databaseAdapter,
-                resourceHandler);
+        trackedEntityAttributeFactory = new TrackedEntityAttributeFactory(
+                retrofit, databaseAdapter, resourceHandler);
 
-        this.dataElementFactory =
-                new DataElementFactory(retrofit, databaseAdapter, resourceHandler);
+        this.dataElementFactory = new DataElementFactory(retrofit, databaseAdapter,
+                resourceHandler);
 
         programFactory = new ProgramFactory(retrofit, databaseAdapter,
                 optionSetFactory.getOptionSetHandler(), dataElementFactory, resourceHandler);
@@ -361,7 +343,8 @@ public final class D2 {
         }
 
         return new UserAuthenticateCall(userService, databaseAdapter, userHandler,
-                authenticatedUserStore, organisationUnitHandler, username, password
+                authenticatedUserStore, organisationUnitFactory.getOrganisationUnitHandler(),
+                username, password
         );
     }
 
@@ -418,9 +401,8 @@ public final class D2 {
     @NonNull
     public Call<Response> syncMetaData() {
         return new MetadataCall(
-                databaseAdapter, systemInfoService, userService,
-                systemInfoStore, resourceStore, userHandler, organisationUnitStore,
-                categoryQuery, categoryService, categoryHandler,
+                databaseAdapter, systemInfoService, userService, userHandler,
+                systemInfoStore, resourceStore, categoryQuery, categoryService, categoryHandler,
                 categoryComboQuery, comboService, categoryComboHandler, optionSetFactory,
                 trackedEntityFactory, programFactory, organisationUnitFactory);
     }

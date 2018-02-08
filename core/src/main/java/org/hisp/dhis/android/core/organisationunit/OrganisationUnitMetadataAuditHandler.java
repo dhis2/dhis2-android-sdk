@@ -45,7 +45,6 @@ public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandle
                 return;
             }
             organisationUnitFactory.newEndPointCall(metadataAudit.getCreatedAt(), user,
-
                     metadataAudit.getUid()).call();
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {
@@ -62,7 +61,8 @@ public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandle
             }else {
                 organisationUnitFactory.getOrganisationUnitHandler().handleOrganisationUnit(
                         organisationUnit, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
-                        authenticatedUserModelList.get(0).user());
+                        authenticatedUserModelList.get(0).user(),
+                        metadataAudit.getCreatedAt());
             }
         }
     }

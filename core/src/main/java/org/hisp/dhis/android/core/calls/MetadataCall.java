@@ -61,8 +61,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 import org.hisp.dhis.android.core.user.UserHandler;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserRole;
 import org.hisp.dhis.android.core.user.UserService;
 
@@ -84,7 +82,6 @@ public class MetadataCall implements Call<Response> {
     private final SystemInfoStore systemInfoStore;
     private final ResourceStore resourceStore;
     private final UserHandler userHandler;
-    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final CategoryQuery categoryQuery;
     private final CategoryComboQuery categoryComboQuery;
     private final CategoryService categoryService;
@@ -102,6 +99,7 @@ public class MetadataCall implements Call<Response> {
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
             @NonNull SystemInfoService systemInfoService,
             @NonNull UserService userService,
+            @Nonnull UserHandler userHandler,
             @NonNull SystemInfoStore systemInfoStore,
             @NonNull ResourceStore resourceStore,
             @NonNull CategoryQuery categoryQuery,
@@ -117,6 +115,7 @@ public class MetadataCall implements Call<Response> {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
+        this.userHandler = userHandler;
         this.systemInfoStore = systemInfoStore;
         this.resourceStore = resourceStore;
         this.categoryQuery = categoryQuery;

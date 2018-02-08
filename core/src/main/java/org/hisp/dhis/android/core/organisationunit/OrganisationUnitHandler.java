@@ -82,14 +82,32 @@ public class OrganisationUnitHandler {
             return;
         }
 
-            if (isDeleted(organisationUnit)) {
-                organisationUnitStore.delete(organisationUnit.uid());
-            } else {
-                String parentUid = null;
-                if (organisationUnit.parent() != null) {
-                    parentUid = organisationUnit.parent().uid();
-                }
-                int updatedRow = organisationUnitStore.update(
+        if (isDeleted(organisationUnit)) {
+            organisationUnitStore.delete(organisationUnit.uid());
+        } else {
+            String parentUid = null;
+            if (organisationUnit.parent() != null) {
+                parentUid = organisationUnit.parent().uid();
+            }
+            int updatedRow = organisationUnitStore.update(
+                    organisationUnit.uid(),
+                    organisationUnit.code(),
+                    organisationUnit.name(),
+                    organisationUnit.displayName(),
+                    organisationUnit.created(),
+                    organisationUnit.lastUpdated(),
+                    organisationUnit.shortName(),
+                    organisationUnit.displayShortName(),
+                    organisationUnit.description(),
+                    organisationUnit.displayDescription(),
+                    organisationUnit.path(),
+                    organisationUnit.openingDate(),
+                    organisationUnit.closedDate(),
+                    parentUid,
+                    organisationUnit.level(),
+                    organisationUnit.uid());
+            if (updatedRow <= 0) {
+                organisationUnitStore.insert(
                         organisationUnit.uid(),
                         organisationUnit.code(),
                         organisationUnit.name(),
@@ -104,31 +122,13 @@ public class OrganisationUnitHandler {
                         organisationUnit.openingDate(),
                         organisationUnit.closedDate(),
                         parentUid,
-                        organisationUnit.level(),
-                        organisationUnit.uid());
-                if (updatedRow <= 0) {
-                    organisationUnitStore.insert(
-                            organisationUnit.uid(),
-                            organisationUnit.code(),
-                            organisationUnit.name(),
-                            organisationUnit.displayName(),
-                            organisationUnit.created(),
-                            organisationUnit.lastUpdated(),
-                            organisationUnit.shortName(),
-                            organisationUnit.displayShortName(),
-                            organisationUnit.description(),
-                            organisationUnit.displayDescription(),
-                            organisationUnit.path(),
-                            organisationUnit.openingDate(),
-                            organisationUnit.closedDate(),
-                            parentUid,
-                            organisationUnit.level()
-                    );
-                }
-                addUserOrganisationUnitLink(scope, userUid, organisationUnit);
-
-                addOrganisationUnitProgramLink(organisationUnit);
+                        organisationUnit.level()
+                );
             }
+            addUserOrganisationUnitLink(scope, userUid, organisationUnit);
+
+            addOrganisationUnitProgramLink(organisationUnit);
+        }
 
         resourceHandler.handleResource(ORGANISATION_UNIT, serverDate);
     }

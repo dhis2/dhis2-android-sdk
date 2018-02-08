@@ -40,7 +40,7 @@ public class OrganisationUnitFactory {
         OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore =
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
         this.organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
-                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
+                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, resourceHandler);
         this.userOrganisationUnitLinkStore = new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
         this.authenticatedUserStore = new AuthenticatedUserStoreImpl(databaseAdapter);
         this.userStore = new UserStoreImpl(databaseAdapter);

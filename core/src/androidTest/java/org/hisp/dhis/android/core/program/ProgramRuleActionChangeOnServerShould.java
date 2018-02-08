@@ -122,7 +122,8 @@ public class ProgramRuleActionChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(ProgramStage.class, metadataAudit);
 
-        ProgramRuleAction programRuleActionUpdated = programRuleActionStore.queryByUid(metadataAudit.getUid());
+        ProgramRuleAction programRuleActionUpdated = programRuleActionStore.queryByUid(
+                metadataAudit.getUid());
 
         ProgramRuleAction ProgramRuleActionExpected = getExpectedProgramStage(filename);
 
@@ -152,7 +153,8 @@ public class ProgramRuleActionChangeOnServerShould extends AbsStoreTestCase {
         assertThat(programRuleActionStore.queryByUid(metadataAudit.getUid()), is(nullValue()));
     }
 
-    private MetadataAudit<ProgramRuleAction> givenAMetadataAudit(String fileName) throws IOException {
+    private MetadataAudit<ProgramRuleAction> givenAMetadataAudit(String fileName)
+            throws IOException {
         AssetsFileReader assetsFileReader = new AssetsFileReader();
 
         String json = assetsFileReader.getStringFromFile(fileName);
@@ -190,7 +192,8 @@ public class ProgramRuleActionChangeOnServerShould extends AbsStoreTestCase {
                 is(removeForeignKeysFromProgramRuleAction(programRuleActionExpected)));
     }
 
-    private ProgramRuleAction removeForeignKeysFromProgramRuleAction(ProgramRuleAction programRuleAction) {
+    private ProgramRuleAction removeForeignKeysFromProgramRuleAction(
+            ProgramRuleAction programRuleAction) {
         //compare without dependencies (FKs) because there are other tests (call, handler)
         //that verify the whole tree is saved in database
         programRuleAction = programRuleAction.toBuilder()

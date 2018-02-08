@@ -29,38 +29,60 @@ package org.hisp.dhis.android.core.user;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
+
+import java.util.Date;
+
 public class UserHandler {
     private final UserStore userStore;
+    private final UserCredentialsHandler userCredentialsHandler;
+    private final ResourceHandler resourceHandler;
+    private final UserRoleHandler userRoleHandler;
 
-    public UserHandler(UserStore userStore) {
+    public UserHandler(UserStore userStore,
+            UserCredentialsHandler userCredentialsHandler,
+            ResourceHandler resourceHandler,
+            UserRoleHandler userRoleHandler) {
         this.userStore = userStore;
+        this.userCredentialsHandler = userCredentialsHandler;
+        this.resourceHandler = resourceHandler;
+        this.userRoleHandler = userRoleHandler;
     }
 
-    public void handleUser(User user) {
+    public void handleUser(User user, Date serverDate) {
         if (user == null) {
             return;
         }
 
-        deleteOrPersistUser(user);
+        deleteOrPersistUser(user, serverDate);
     }
 
-    private void deleteOrPersistUser(User user) {
+    private void deleteOrPersistUser(User user, Date serverDate) {
         if (isDeleted(user)) {
             userStore.delete(user.uid());
         } else {
-            int updatedRow = userStore.update(user.uid(), user.code(), user.name(), user.displayName(),
+            int updatedRow = userStore.update(user.uid(), user.code(), user.name(),
+                    user.displayName(),
                     user.created(), user.lastUpdated(), user.birthday(), user.education(),
                     user.gender(), user.jobTitle(), user.surname(), user.firstName(),
                     user.introduction(), user.employer(), user.interests(), user.languages(),
                     user.email(), user.phoneNumber(), user.nationality(), user.uid());
 
             if (updatedRow <= 0) {
-                userStore.insert(user.uid(), user.code(), user.name(), user.displayName(), user.created(),
+                userStore.insert(user.uid(), user.code(), user.name(), user.displayName(),
+                        user.created(),
                         user.lastUpdated(), user.birthday(), user.education(),
                         user.gender(), user.jobTitle(), user.surname(), user.firstName(),
                         user.introduction(), user.employer(), user.interests(), user.languages(),
                         user.email(), user.phoneNumber(), user.nationality());
             }
+
+            userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
+
+            userRoleHandler.handleUserRoles(user.userCredentials().userRoles());
         }
+
+        resourceHandler.handleResource(ResourceModel.Type.USER, serverDate);
     }
 }

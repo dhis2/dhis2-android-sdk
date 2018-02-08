@@ -27,6 +27,14 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetHandler;
@@ -38,14 +46,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Date;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class DataElementHandlerShould {
@@ -116,7 +116,7 @@ public class DataElementHandlerShould {
                 anyString(), anyString(), anyString(), anyString());
 
         // verify that option set handler is called once
-        verify(optionSetHandler, times(1)).handleOptionSet(any(OptionSet.class));
+        verify(optionSetHandler, never()).handleOptionSet(any(OptionSet.class));
     }
 
     @Test

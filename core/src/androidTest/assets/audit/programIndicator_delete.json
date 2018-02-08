@@ -1,0 +1,55 @@
+{
+  "createdAt": "2018-01-28T11:26:08.825",
+  "createdBy": "admin",
+  "klass": "org.hisp.dhis.program.ProgramIndicator",
+  "uid": "rXoaHGAXWy9",
+  "type": "DELETE",
+  "value": {
+    "name": "example 2",
+    "created": "2018-01-28T11:20:56.428",
+    "lastUpdated": "2018-01-28T11:23:53.560",
+    "externalAccess": false,
+    "publicAccess": "rw------",
+    "user": {
+      "name": "John Traore",
+      "created": "2013-04-18T17:15:08.407",
+      "lastUpdated": "2017-06-02T13:04:58.319",
+      "externalAccess": false,
+      "displayName": "John Traore",
+      "id": "xE7jOejl9FI"
+    },
+    "displayName": "example 2",
+    "lastUpdatedBy": {
+      "id": "xE7jOejl9FI",
+      "name": "John Traore"
+    },
+    "shortName": "example",
+    "displayShortName": "example",
+    "dimensionItemType": "PROGRAM_INDICATOR",
+    "program": {
+      "name": "Antenatal care visit ",
+      "created": "2016-04-12T15:30:43.783",
+      "lastUpdated": "2018-01-21T12:42:12.110",
+      "externalAccess": false,
+      "publicAccess": "rw------",
+      "user": {
+        "name": "John Traore",
+        "created": "2013-04-18T17:15:08.407",
+        "lastUpdated": "2017-06-02T13:04:58.319",
+        "externalAccess": false,
+        "displayName": "John Traore",
+        "id": "xE7jOejl9FI"
+      },
+      "displayName": "Antenatal care visit ",
+      "lastUpdatedBy": {
+        "id": "xE7jOejl9FI",
+        "name": "John Traore"
+      },
+      "id": "lxAQ7Zs9VYR"
+    },
+    "expression": "#{dBwrot7S420.sWoqcoByYmD}",
+    "analyticsType": "EVENT",
+    "dimensionItem": "bG61Yg5Vx43",
+    "id": "rXoaHGAXWy9"
+  }
+}

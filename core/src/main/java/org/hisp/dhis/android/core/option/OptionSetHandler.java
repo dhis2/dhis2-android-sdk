@@ -51,16 +51,21 @@ public class OptionSetHandler {
         if (isDeleted(optionSet)) {
             optionSetStore.delete(optionSet.uid());
         } else {
-            int updatedRow = optionSetStore.update(optionSet.uid(), optionSet.code(), optionSet.name(),
-                    optionSet.displayName(), optionSet.created(), optionSet.lastUpdated(), optionSet.version(),
+            int updatedRow = optionSetStore.update(optionSet.uid(), optionSet.code(),
+                    optionSet.name(),
+                    optionSet.displayName(), optionSet.created(), optionSet.lastUpdated(),
+                    optionSet.version(),
                     optionSet.valueType(), optionSet.uid());
 
             if (updatedRow <= 0) {
-                optionSetStore.insert(optionSet.uid(), optionSet.code(), optionSet.name(), optionSet.displayName(),
-                        optionSet.created(), optionSet.lastUpdated(), optionSet.version(), optionSet.valueType());
+                optionSetStore.insert(optionSet.uid(), optionSet.code(), optionSet.name(),
+                        optionSet.displayName(),
+                        optionSet.created(), optionSet.lastUpdated(), optionSet.version(),
+                        optionSet.valueType());
             }
         }
-
-        optionHandler.handleOptions(optionSet.options());
+        if (optionSet.options() != null) {
+            optionHandler.handleOptions(optionSet.options());
+        }
     }
 }

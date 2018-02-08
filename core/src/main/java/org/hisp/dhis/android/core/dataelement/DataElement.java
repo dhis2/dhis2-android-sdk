@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.dataelement;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -41,9 +41,8 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.option.OptionSet;
 
-import java.util.Date;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_DataElement.Builder.class)
 public abstract class DataElement extends BaseNameableObject {
     private final static String VALUE_TYPE = "valueType";
     private final static String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
@@ -119,35 +118,48 @@ public abstract class DataElement extends BaseNameableObject {
     @JsonProperty(CATEGORY_COMBO)
     public abstract CategoryCombo categoryCombo();
 
-    @JsonCreator
-    public static DataElement create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(VALUE_TYPE) ValueType valueType,
-            @JsonProperty(ZERO_IS_SIGNIFICANT) Boolean zeroIsSignificant,
-            @JsonProperty(AGGREGATION_TYPE) String aggregationType,
-            @JsonProperty(FORM_NAME) String formName,
-            @JsonProperty(NUMBER_TYPE) String numberType,
-            @JsonProperty(DOMAIN_TYPE) String domainType,
-            @JsonProperty(DIMENSION) String dimension,
-            @JsonProperty(DISPLAY_FORM_NAME) String displayFormName,
-            @JsonProperty(OPTION_SET) OptionSet optionSet,
-            @JsonProperty(CATEGORY_COMBO) CategoryCombo categoryCombo,
-            @JsonProperty(DELETED) Boolean deleted) {
+    abstract DataElement.Builder toBuilder();
 
-        return new AutoValue_DataElement(uid, code, name,
-                displayName, created, lastUpdated, deleted,
-                shortName, displayShortName, description, displayDescription, valueType,
-                zeroIsSignificant, aggregationType, formName, numberType,
-                domainType, dimension, displayFormName, optionSet, categoryCombo);
-
+    public static DataElement.Builder builder() {
+        return new AutoValue_DataElement.Builder();
     }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends
+            BaseNameableObject.Builder<DataElement.Builder> {
+
+        @JsonProperty(VALUE_TYPE)
+        public abstract Builder valueType(@Nullable ValueType valueType);
+
+
+        @JsonProperty(ZERO_IS_SIGNIFICANT)
+        public abstract Builder zeroIsSignificant(@Nullable Boolean zeroIsSignificant);
+
+        @JsonProperty(AGGREGATION_TYPE)
+        public abstract Builder aggregationType(@Nullable String aggregationType);
+
+        @JsonProperty(FORM_NAME)
+        public abstract Builder formName(@Nullable String formName);
+
+        @JsonProperty(NUMBER_TYPE)
+        public abstract Builder numberType(@Nullable String numberType);
+
+        @JsonProperty(DOMAIN_TYPE)
+        public abstract Builder domainType(@Nullable String domainType);
+
+        @JsonProperty(DIMENSION)
+        public abstract Builder dimension(@Nullable String dimension);
+
+        @JsonProperty(DISPLAY_FORM_NAME)
+        public abstract Builder displayFormName(@Nullable String displayFormName);
+
+        @JsonProperty(OPTION_SET)
+        public abstract Builder optionSet(@Nullable OptionSet optionSet);
+
+        @JsonProperty(CATEGORY_COMBO)
+        public abstract Builder categoryCombo(@Nullable CategoryCombo categoryCombo);
+
+        public abstract DataElement build();
+    }
+
 }

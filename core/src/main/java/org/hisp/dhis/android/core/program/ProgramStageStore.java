@@ -63,4 +63,6 @@ public interface ProgramStageStore extends DeletableStore {
     );
 
     int delete(@NonNull String uid);
+
+    ProgramStage queryByUid(String uid);
 }

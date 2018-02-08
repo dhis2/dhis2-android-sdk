@@ -27,6 +27,17 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.common.FormType;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,17 +49,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class ProgramStageHandlerShould {
@@ -107,11 +107,11 @@ public class ProgramStageHandlerShould {
                 anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString(), anyString());
 
         // verify that the handlers is invoked
-        verify(programStageSectionHandler, times(1)).handleProgramStageSection(
+        verify(programStageSectionHandler, never()).handleProgramStageSection(
                 anyString(), anyListOf(ProgramStageSection.class)
         );
 
-        verify(programStageDataElementHandler, times(1)).handleProgramStageDataElements(
+        verify(programStageDataElementHandler, never()).handleProgramStageDataElements(
                 anyListOf(ProgramStageDataElement.class)
         );
 

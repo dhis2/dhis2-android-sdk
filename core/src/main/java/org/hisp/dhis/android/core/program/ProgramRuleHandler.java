@@ -27,16 +27,16 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import java.util.List;
-
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
+import java.util.List;
 
 public class ProgramRuleHandler {
     private final ProgramRuleStore programRuleStore;
     private final ProgramRuleActionHandler programRuleActionHandler;
 
     public ProgramRuleHandler(ProgramRuleStore programRuleStore,
-                              ProgramRuleActionHandler programRuleActionHandler) {
+            ProgramRuleActionHandler programRuleActionHandler) {
         this.programRuleStore = programRuleStore;
         this.programRuleActionHandler = programRuleActionHandler;
     }
@@ -52,8 +52,6 @@ public class ProgramRuleHandler {
     /**
      * Deletes or persists program rules and applies the changes to the database.
      * Has a nested call to deleteOrPersistProgramRuleActions
-     *
-     * @param programRules
      */
     private void deleteOrPersistProgramRules(List<ProgramRule> programRules) {
         int size = programRules.size();
@@ -61,25 +59,31 @@ public class ProgramRuleHandler {
         for (int i = 0; i < size; i++) {
             ProgramRule programRule = programRules.get(i);
 
-            if (isDeleted(programRule)) {
-                programRuleStore.delete(programRule.uid());
-            } else {
-                String programStageUid = null;
-                if (programRule.programStage() != null) {
-                    programStageUid = programRule.programStage().uid();
-                }
-                int updatedRow = programRuleStore.update(programRule.uid(), programRule.code(), programRule.name(),
-                        programRule.displayName(), programRule.created(), programRule.lastUpdated(),
-                        programRule.priority(), programRule.condition(), programRule.program().uid(),
-                        programStageUid, programRule.uid());
+            handle(programRule);
+        }
+    }
 
-                if (updatedRow <= 0) {
-                    programRuleStore.insert(
-                            programRule.uid(), programRule.code(), programRule.name(),
-                            programRule.displayName(), programRule.created(), programRule.lastUpdated(),
-                            programRule.priority(), programRule.condition(), programRule.program().uid(),
-                            programStageUid);
-                }
+    public void handle(ProgramRule programRule) {
+        if (isDeleted(programRule)) {
+            programRuleStore.delete(programRule.uid());
+        } else {
+            String programStageUid = null;
+            if (programRule.programStage() != null) {
+                programStageUid = programRule.programStage().uid();
+            }
+            int updatedRow = programRuleStore.update(programRule.uid(), programRule.code(),
+                    programRule.name(),
+                    programRule.displayName(), programRule.created(), programRule.lastUpdated(),
+                    programRule.priority(), programRule.condition(), programRule.program().uid(),
+                    programStageUid, programRule.uid());
+
+            if (updatedRow <= 0) {
+                programRuleStore.insert(
+                        programRule.uid(), programRule.code(), programRule.name(),
+                        programRule.displayName(), programRule.created(), programRule.lastUpdated(),
+                        programRule.priority(), programRule.condition(),
+                        programRule.program().uid(),
+                        programStageUid);
             }
 
             programRuleActionHandler.handleProgramRuleActions(programRule.programRuleActions());

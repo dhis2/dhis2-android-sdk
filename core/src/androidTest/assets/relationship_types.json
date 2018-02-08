@@ -1,0 +1,28 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 2,
+    "pageSize": 50
+  },
+  "relationshipTypes": [
+    {
+      "created": "2013-09-19T15:17:41.000",
+      "lastUpdated": "2014-04-14T13:53:20.166",
+      "name": "Mother-Child",
+      "id": "V2kkHafqs8G",
+      "displayName": "Mother-Child",
+      "bIsToA": "Child",
+      "aIsToB": "Mother"
+    },
+    {
+      "created": "2014-04-14T13:53:38.659",
+      "lastUpdated": "2014-04-14T13:53:41.066",
+      "name": "Sibling",
+      "id": "o51cUNONthg",
+      "displayName": "Sibling",
+      "bIsToA": "Sibling",
+      "aIsToB": "Sibling"
+    }
+  ]
+}

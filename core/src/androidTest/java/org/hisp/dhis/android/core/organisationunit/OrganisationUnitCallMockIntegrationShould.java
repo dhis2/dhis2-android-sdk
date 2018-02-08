@@ -69,6 +69,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
+import static org.hisp.dhis.android.core.resource.ResourceModel.Type.ORGANISATION_UNIT;
 
 @RunWith(AndroidJUnit4.class)
 public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase {
@@ -93,12 +94,14 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
             UserOrganisationUnitLinkModel.Columns.USER,
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
     };
-/*    private static String[] RESOURCE_PROJECTION = {
+    private static String[] RESOURCE_PROJECTION = {
             ResourceModel.Columns.RESOURCE_TYPE,
             ResourceModel.Columns.LAST_SYNCED
-    };*/
+    };
 
     private MockWebServer server;
+
+    private String dateString;
 
     //The return of the organisationUnitCall to be tested:
     private Call<Response<Payload<OrganisationUnit>>> organisationUnitCall;
@@ -275,7 +278,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore =
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
         // Create a user with the root as assigned organisation unit (for the test):
         User user = User.builder()
                 .uid("user_uid").code("code").name("name").displayName("display_name")
@@ -329,6 +332,9 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         program8.put(ProgramModel.Columns.UID, "ur1Edk5Oe2n");
         database().insert(ProgramModel.TABLE, null, program8);
 
+        Date serverDate = new Date();
+
+        dateString = BaseIdentifiableObject.DATE_FORMAT.format(serverDate);
         OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, databaseAdapter(),
                 resourceHandler, new Date(), organisationUnitHandler, "");
@@ -370,9 +376,9 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         Cursor userOrganisationUnitCursor = database().query(UserOrganisationUnitLinkModel.TABLE,
                 USER_ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
 
-       /* Cursor resourceCursor = database().query(ResourceModel.TABLE,
+        Cursor resourceCursor = database().query(ResourceModel.TABLE,
                 RESOURCE_PROJECTION, null, null, null, null, null);
-*/        //BO:
+        //BO:
         assertThatCursor(organisationUnitCursor).hasRow("O6uvpzGd5pu", "OU_264", "Bo", "Bo",
                 "2012-02-17T15:54:39.987", "2014-12-15T11:56:16.767", "Bo", "Bo", null, null,
                 "/ImspTQPwCqd/O6uvpzGd5pu", "1990-02-01T00:00:00.000", null, 2, "ImspTQPwCqd");
@@ -400,8 +406,8 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid",
                 "tZxqVn3xNrA").isExhausted();
 
-        // TODO: make sure this date is correctly formated:
-        // assertThatCursor(resourceCursor).hasRow(OrganisationUnit.class.getSimpleName(), "2017-02-21T16:44:46.000");
+
+        assertThatCursor(resourceCursor).hasRow(ORGANISATION_UNIT, dateString);
 
     }
 

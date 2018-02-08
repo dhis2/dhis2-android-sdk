@@ -31,55 +31,75 @@ package org.hisp.dhis.android.core.program;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings({
-        "PMD.AvoidDuplicateLiterals"
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.NPathComplexity",
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity",
+        "PMD.AvoidInstantiatingObjectsInLoops"
 })
-public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramIndicatorModel.TABLE + " (" +
+public class ProgramIndicatorStoreImpl extends Store implements ProgramIndicatorStore {
+    private static final String FIELDS =
             ProgramIndicatorModel.Columns.UID + ", " +
-            ProgramIndicatorModel.Columns.CODE + ", " +
-            ProgramIndicatorModel.Columns.NAME + ", " +
-            ProgramIndicatorModel.Columns.DISPLAY_NAME + ", " +
-            ProgramIndicatorModel.Columns.CREATED + ", " +
-            ProgramIndicatorModel.Columns.LAST_UPDATED + ", " +
-            ProgramIndicatorModel.Columns.SHORT_NAME + ", " +
-            ProgramIndicatorModel.Columns.DISPLAY_SHORT_NAME + ", " +
-            ProgramIndicatorModel.Columns.DESCRIPTION + ", " +
-            ProgramIndicatorModel.Columns.DISPLAY_DESCRIPTION + ", " +
-            ProgramIndicatorModel.Columns.DISPLAY_IN_FORM + ", " +
-            ProgramIndicatorModel.Columns.EXPRESSION + ", " +
-            ProgramIndicatorModel.Columns.DIMENSION_ITEM + ", " +
-            ProgramIndicatorModel.Columns.FILTER + ", " +
-            ProgramIndicatorModel.Columns.DECIMALS + ", " +
-            ProgramIndicatorModel.Columns.PROGRAM + ") "
-            + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    ProgramIndicatorModel.Columns.CODE + ", " +
+                    ProgramIndicatorModel.Columns.NAME + ", " +
+                    ProgramIndicatorModel.Columns.DISPLAY_NAME + ", " +
+                    ProgramIndicatorModel.Columns.CREATED + ", " +
+                    ProgramIndicatorModel.Columns.LAST_UPDATED + ", " +
+                    ProgramIndicatorModel.Columns.SHORT_NAME + ", " +
+                    ProgramIndicatorModel.Columns.DISPLAY_SHORT_NAME + ", " +
+                    ProgramIndicatorModel.Columns.DESCRIPTION + ", " +
+                    ProgramIndicatorModel.Columns.DISPLAY_DESCRIPTION + ", " +
+                    ProgramIndicatorModel.Columns.DISPLAY_IN_FORM + ", " +
+                    ProgramIndicatorModel.Columns.EXPRESSION + ", " +
+                    ProgramIndicatorModel.Columns.DIMENSION_ITEM + ", " +
+                    ProgramIndicatorModel.Columns.FILTER + ", " +
+                    ProgramIndicatorModel.Columns.DECIMALS + ", " +
+                    ProgramIndicatorModel.Columns.PROGRAM;
 
-    private static final String UPDATE_STATEMENT = "UPDATE " + ProgramIndicatorModel.TABLE + " SET " +
-            ProgramIndicatorModel.Columns.UID + " =?, " +
-            ProgramIndicatorModel.Columns.CODE + " =?, " +
-            ProgramIndicatorModel.Columns.NAME + " =?, " +
-            ProgramIndicatorModel.Columns.DISPLAY_NAME + " =?, " +
-            ProgramIndicatorModel.Columns.CREATED + " =?, " +
-            ProgramIndicatorModel.Columns.LAST_UPDATED + " =?, " +
-            ProgramIndicatorModel.Columns.SHORT_NAME + " =?, " +
-            ProgramIndicatorModel.Columns.DISPLAY_SHORT_NAME + " =?, " +
-            ProgramIndicatorModel.Columns.DESCRIPTION + " =?, " +
-            ProgramIndicatorModel.Columns.DISPLAY_DESCRIPTION + " =?, " +
-            ProgramIndicatorModel.Columns.DISPLAY_IN_FORM + " =?, " +
-            ProgramIndicatorModel.Columns.EXPRESSION + " =?, " +
-            ProgramIndicatorModel.Columns.DIMENSION_ITEM + " =?, " +
-            ProgramIndicatorModel.Columns.FILTER + " =?, " +
-            ProgramIndicatorModel.Columns.DECIMALS + " =?, " +
-            ProgramIndicatorModel.Columns.PROGRAM + " =? " +
-            " WHERE " + ProgramIndicatorModel.Columns.UID + " =?;";
+    private static final String QUERY_BY_UID_STATEMENT =
+            "SELECT " + FIELDS + " FROM " + ProgramIndicatorModel.TABLE + " WHERE " +
+                    ProgramIndicatorModel.Columns.UID + "=?";
+
+
+    private static final String INSERT_STATEMENT =
+            "INSERT INTO " + ProgramIndicatorModel.TABLE + " (" +
+                    FIELDS + ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+    private static final String UPDATE_STATEMENT =
+            "UPDATE " + ProgramIndicatorModel.TABLE + " SET " +
+                    ProgramIndicatorModel.Columns.UID + " =?, " +
+                    ProgramIndicatorModel.Columns.CODE + " =?, " +
+                    ProgramIndicatorModel.Columns.NAME + " =?, " +
+                    ProgramIndicatorModel.Columns.DISPLAY_NAME + " =?, " +
+                    ProgramIndicatorModel.Columns.CREATED + " =?, " +
+                    ProgramIndicatorModel.Columns.LAST_UPDATED + " =?, " +
+                    ProgramIndicatorModel.Columns.SHORT_NAME + " =?, " +
+                    ProgramIndicatorModel.Columns.DISPLAY_SHORT_NAME + " =?, " +
+                    ProgramIndicatorModel.Columns.DESCRIPTION + " =?, " +
+                    ProgramIndicatorModel.Columns.DISPLAY_DESCRIPTION + " =?, " +
+                    ProgramIndicatorModel.Columns.DISPLAY_IN_FORM + " =?, " +
+                    ProgramIndicatorModel.Columns.EXPRESSION + " =?, " +
+                    ProgramIndicatorModel.Columns.DIMENSION_ITEM + " =?, " +
+                    ProgramIndicatorModel.Columns.FILTER + " =?, " +
+                    ProgramIndicatorModel.Columns.DECIMALS + " =?, " +
+                    ProgramIndicatorModel.Columns.PROGRAM + " =? " +
+                    " WHERE " + ProgramIndicatorModel.Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramIndicatorModel.TABLE +
             " WHERE " + ProgramIndicatorModel.Columns.UID + " =?;";
@@ -99,44 +119,51 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
 
     @Override
     public long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                       @Nullable String displayName, @NonNull Date created,
-                       @NonNull Date lastUpdated, @Nullable String shortName,
-                       @Nullable String displayShortName, @Nullable String description,
-                       @Nullable String displayDescription, @Nullable Boolean displayInForm,
-                       @Nullable String expression, @Nullable String dimensionItem,
-                       @Nullable String filter, @Nullable Integer decimals,
-                       @Nullable String program) {
+            @Nullable String displayName, @NonNull Date created,
+            @NonNull Date lastUpdated, @Nullable String shortName,
+            @Nullable String displayShortName, @Nullable String description,
+            @Nullable String displayDescription, @Nullable Boolean displayInForm,
+            @Nullable String expression, @Nullable String dimensionItem,
+            @Nullable String filter, @Nullable Integer decimals,
+            @Nullable String program) {
         isNull(uid);
         isNull(program);
-        bindArguments(insertRowStatement, uid, code, name, displayName, created, lastUpdated, shortName,
-                displayShortName, description, displayDescription, displayInForm, expression, dimensionItem,
+        bindArguments(insertRowStatement, uid, code, name, displayName, created, lastUpdated,
+                shortName,
+                displayShortName, description, displayDescription, displayInForm, expression,
+                dimensionItem,
                 filter, decimals, program);
 
         // execute and clear bindings
-        Long insert = databaseAdapter.executeInsert(ProgramIndicatorModel.TABLE, insertRowStatement);
+        Long insert = databaseAdapter.executeInsert(ProgramIndicatorModel.TABLE,
+                insertRowStatement);
         insertRowStatement.clearBindings();
         return insert;
     }
 
     @Override
-    public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @Nullable String displayName,
-                      @NonNull Date created, @NonNull Date lastUpdated, @Nullable String shortName,
-                      @Nullable String displayShortName, @Nullable String description,
-                      @Nullable String displayDescription, @Nullable Boolean displayInForm,
-                      @Nullable String expression, @Nullable String dimensionItem, @Nullable String filter,
-                      @Nullable Integer decimals, @Nullable String program,
-                      @NonNull String whereProgramIndicatorUid) {
+    public int update(@NonNull String uid, @Nullable String code, @NonNull String name,
+            @Nullable String displayName,
+            @NonNull Date created, @NonNull Date lastUpdated, @Nullable String shortName,
+            @Nullable String displayShortName, @Nullable String description,
+            @Nullable String displayDescription, @Nullable Boolean displayInForm,
+            @Nullable String expression, @Nullable String dimensionItem, @Nullable String filter,
+            @Nullable Integer decimals, @Nullable String program,
+            @NonNull String whereProgramIndicatorUid) {
         isNull(uid);
         isNull(program);
         isNull(whereProgramIndicatorUid);
-        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
-                description, displayDescription, displayInForm, expression, dimensionItem, filter, decimals, program);
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated,
+                shortName, displayShortName,
+                description, displayDescription, displayInForm, expression, dimensionItem, filter,
+                decimals, program);
 
         // bind the where argument
         sqLiteBind(updateStatement, 17, whereProgramIndicatorUid);
 
         // execute and clear bindings
-        int update = databaseAdapter.executeUpdateDelete(ProgramIndicatorModel.TABLE, updateStatement);
+        int update = databaseAdapter.executeUpdateDelete(ProgramIndicatorModel.TABLE,
+                updateStatement);
         updateStatement.clearBindings();
         return update;
     }
@@ -148,19 +175,38 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
         sqLiteBind(deleteStatement, 1, uid);
 
         // execute and clear bindings
-        int delete = databaseAdapter.executeUpdateDelete(ProgramIndicatorModel.TABLE, deleteStatement);
+        int delete = databaseAdapter.executeUpdateDelete(ProgramIndicatorModel.TABLE,
+                deleteStatement);
         deleteStatement.clearBindings();
         return delete;
     }
 
-    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
-                               @NonNull String name, @Nullable String displayName, @NonNull Date created,
-                               @NonNull Date lastUpdated, @Nullable String shortName,
-                               @Nullable String displayShortName, @Nullable String description,
-                               @Nullable String displayDescription, @Nullable Boolean displayInForm,
-                               @Nullable String expression, @Nullable String dimensionItem,
-                               @Nullable String filter, @Nullable Integer decimals,
-                               @Nullable String program) {
+    @Override
+    public ProgramIndicator queryByUid(String uid) {
+        ProgramIndicator programIndicator = null;
+
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID_STATEMENT, uid);
+
+        if (cursor.getCount() > 0) {
+            Map<String, List<ProgramIndicator>> programIndicatorMap = mapFromCursor(cursor);
+
+            Map.Entry<String, List<ProgramIndicator>> entry =
+                    programIndicatorMap.entrySet().iterator().next();
+            programIndicator = entry.getValue().get(0);
+        }
+
+        return programIndicator;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid,
+            @Nullable String code,
+            @NonNull String name, @Nullable String displayName, @NonNull Date created,
+            @NonNull Date lastUpdated, @Nullable String shortName,
+            @Nullable String displayShortName, @Nullable String description,
+            @Nullable String displayDescription, @Nullable Boolean displayInForm,
+            @Nullable String expression, @Nullable String dimensionItem,
+            @Nullable String filter, @Nullable Integer decimals,
+            @Nullable String program) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -182,5 +228,61 @@ public class ProgramIndicatorStoreImpl implements ProgramIndicatorStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(ProgramIndicatorModel.TABLE);
+    }
+
+    private Map<String, List<ProgramIndicator>> mapFromCursor(Cursor cursor) {
+
+        Map<String, List<ProgramIndicator>> programStagesMap = new HashMap<>();
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    String uid = getStringFromCursor(cursor, 0);
+                    String code = getStringFromCursor(cursor, 1);
+                    String name = getStringFromCursor(cursor, 2);
+                    String displayName = getStringFromCursor(cursor, 3);
+                    Date created = getDateFromCursor(cursor, 4);
+                    Date lastUpdated = getDateFromCursor(cursor, 5);
+                    String shortName = getStringFromCursor(cursor, 6);
+                    String displayShortName = getStringFromCursor(cursor, 7);
+                    String description = getStringFromCursor(cursor, 8);
+                    String displayDescription = getStringFromCursor(cursor, 9);
+                    Boolean displayInForm = getBooleanFromCursor(cursor, 10);
+                    String expression = getStringFromCursor(cursor, 11);
+                    String dimensionItem = getStringFromCursor(cursor, 12);
+                    String filter = getStringFromCursor(cursor, 13);
+                    Integer decimals = getIntegerFromCursor(cursor, 14);
+                    String program = getStringFromCursor(cursor, 15);
+
+                    if (!programStagesMap.containsKey(program)) {
+                        programStagesMap.put(program, new ArrayList<ProgramIndicator>());
+                    }
+
+                    programStagesMap.get(program).add(ProgramIndicator.builder()
+                            .uid(uid)
+                            .code(code)
+                            .name(name)
+                            .displayName(displayName)
+                            .created(created)
+                            .lastUpdated(lastUpdated)
+                            .shortName(shortName)
+                            .displayShortName(displayShortName)
+                            .description(description)
+                            .displayDescription(displayDescription)
+                            .displayInForm(displayInForm)
+                            .expression(expression)
+                            .dimensionItem(dimensionItem)
+                            .filter(filter)
+                            .decimals(decimals)
+                            .program(Program.builder().uid(program).build())
+                            .build());
+
+                } while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return programStagesMap;
     }
 }

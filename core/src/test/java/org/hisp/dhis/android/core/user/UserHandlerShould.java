@@ -27,7 +27,16 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,13 +46,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Date;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class UserHandlerShould {
@@ -61,6 +63,15 @@ public class UserHandlerShould {
     private Date lastUpdated;
 
     @Mock
+    private UserCredentialsHandler userCredentialsHandler;
+
+    @Mock
+    private ResourceHandler resourceHandler;
+
+    @Mock
+    private UserRoleHandler userRoleHandler;
+
+    @Mock
     private UserCredentials userCredentials;
 
     // object to test
@@ -70,7 +81,8 @@ public class UserHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        userHandler = new UserHandler(userStore);
+        userHandler = new UserHandler(userStore, userCredentialsHandler, resourceHandler,
+                userRoleHandler);
 
         when(user.uid()).thenReturn("user_uid");
         when(user.code()).thenReturn("user_code");
@@ -103,7 +115,7 @@ public class UserHandlerShould {
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(1);
 
-        userHandler.handleUser(user);
+        userHandler.handleUser(user, new Date());
 
 
         verify(userStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
@@ -118,6 +130,15 @@ public class UserHandlerShould {
                 anyString(), anyString(), anyString(), anyString());
 
         verify(userStore, never()).delete(anyString());
+
+        verify(userCredentialsHandler, times(1)).handleUserCredentials(
+                any(UserCredentials.class), any(User.class));
+
+        verify(userRoleHandler, times(1)).handleUserRoles(
+                any(ArrayList.class));
+
+        verify(resourceHandler, times(1)).handleResource(
+                any(ResourceModel.Type.class), any(Date.class));
     }
 
 
@@ -125,7 +146,7 @@ public class UserHandlerShould {
     public void invoke_delete_when_handle_user_set_as_deleted() throws Exception {
         when(user.deleted()).thenReturn(Boolean.TRUE);
 
-        userHandler.handleUser(user);
+        userHandler.handleUser(user, new Date());
         // verify that delete is called once
         verify(userStore, times(1)).delete(anyString());
 
@@ -139,11 +160,20 @@ public class UserHandlerShould {
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString());
+
+        verify(userCredentialsHandler, never()).handleUserCredentials(
+                any(UserCredentials.class), any(User.class));
+
+        verify(userRoleHandler, never()).handleUserRoles(
+                any(ArrayList.class));
+
+        verify(resourceHandler, times(1)).handleResource(
+                any(ResourceModel.Type.class), any(Date.class));
     }
 
     @Test
     public void do_nothing_when_passing_null_argument() throws Exception {
-        userHandler.handleUser(null);
+        userHandler.handleUser(null, null);
 
         // verify that store is never called
         verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
@@ -157,6 +187,15 @@ public class UserHandlerShould {
                 anyString(), anyString(), anyString(), anyString(), anyString());
 
         verify(userStore, never()).delete(anyString());
+
+        verify(userCredentialsHandler, never()).handleUserCredentials(
+                any(UserCredentials.class), any(User.class));
+
+        verify(userRoleHandler, never()).handleUserRoles(
+                any(ArrayList.class));
+
+        verify(resourceHandler, never()).handleResource(
+                any(ResourceModel.Type.class), any(Date.class));
     }
 
     @Test
@@ -166,7 +205,7 @@ public class UserHandlerShould {
                 anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(0);
 
-        userHandler.handleUser(user);
+        userHandler.handleUser(user, new Date());
 
 
         // verify that insert is called once
@@ -183,6 +222,15 @@ public class UserHandlerShould {
 
         // verify that delete is never called
         verify(userStore, never()).delete(anyString());
+
+        verify(userCredentialsHandler, times(1)).handleUserCredentials(
+                any(UserCredentials.class), any(User.class));
+
+        verify(userRoleHandler, times(1)).handleUserRoles(
+                any(ArrayList.class));
+
+        verify(resourceHandler, times(1)).handleResource(
+                any(ResourceModel.Type.class), any(Date.class));
 
     }
 }

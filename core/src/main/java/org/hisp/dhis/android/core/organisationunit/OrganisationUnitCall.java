@@ -117,7 +117,6 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                 response = getOrganisationUnitByUId(uid, lastUpdatedFilter);
             }
             if (response != null && response.isSuccessful()) {
-                resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDate);
                 transaction.setSuccessful();
             }
         } finally {
@@ -127,15 +126,14 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     }
 
     private Response<Payload<OrganisationUnit>> getOrganisationUnitByUId(
-            @NonNull String uid,
-            @Nullable Filter<OrganisationUnit, String> lastUpdatedFilter) throws IOException {
+            @NonNull String uid, @Nullable Filter<OrganisationUnit,
+            String> lastUpdatedFilter) throws IOException {
         Response<Payload<OrganisationUnit>>  response = getOrganisationUnit(uid, lastUpdatedFilter);
         if (response.isSuccessful()) {
             organisationUnitHandler.handleOrganisationUnits(
                     response.body().items(),
                     OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
-                    user.uid()
-            );
+                    user.uid(), serverDate);
         }
         return response;
     }

@@ -1,0 +1,45 @@
+{
+  "createdAt": "2018-01-28T17:57:01.688",
+  "createdBy": "admin",
+  "klass": "org.hisp.dhis.programrule.ProgramRuleAction",
+  "uid": "UUwZWS8uirn",
+  "type": "DELETE",
+  "value": {
+    "created": "2018-01-28T17:57:01.674",
+    "lastUpdated": "2018-01-28T17:57:01.674",
+    "externalAccess": false,
+    "user": {
+      "name": "John Traore",
+      "created": "2013-04-18T17:15:08.407",
+      "lastUpdated": "2017-06-02T13:04:58.319",
+      "externalAccess": false,
+      "displayName": "John Traore",
+      "id": "xE7jOejl9FI"
+    },
+    "lastUpdatedBy": {
+      "id": "xE7jOejl9FI",
+      "name": "John Traore"
+    },
+    "programRuleActionType": "SHOWERROR",
+    "dataElement": {
+      "code": "LAB_HB",
+      "name": "WHOMCH Hemoglobin value",
+      "created": "2013-10-28T17:27:17.826",
+      "lastUpdated": "2015-10-14T13:36:44.324",
+      "externalAccess": false,
+      "publicAccess": "rw------",
+      "user": {
+        "name": "John Traore",
+        "created": "2013-04-18T17:15:08.407",
+        "lastUpdated": "2017-06-02T13:04:58.319",
+        "externalAccess": false,
+        "displayName": "John Traore",
+        "id": "xE7jOejl9FI"
+      },
+      "displayName": "WHOMCH Hemoglobin value",
+      "id": "vANAXwtLwcT"
+    },
+    "content": "Error example",
+    "id": "UUwZWS8uirn"
+  }
+}

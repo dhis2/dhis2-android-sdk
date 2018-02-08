@@ -25,10 +25,11 @@ public class CategoryHandler {
     public void handle(Category category) {
 
         if (isDeleted(category)) {
-            categoryStore.delete(category);
+            categoryStore.delete(category.uid());
         } else {
 
-            boolean updated = categoryStore.update(category);
+            int numberOfRows = categoryStore.update(category);
+            boolean updated = numberOfRows >= 1;
 
             if (!updated) {
                 categoryStore.insert(category);
@@ -56,7 +57,7 @@ public class CategoryHandler {
 
         return CategoryCategoryOptionLinkModel.builder().category(
                 category.uid())
-                .option(option.uid())
+                .categoryOption(option.uid())
                 .build();
     }
 }

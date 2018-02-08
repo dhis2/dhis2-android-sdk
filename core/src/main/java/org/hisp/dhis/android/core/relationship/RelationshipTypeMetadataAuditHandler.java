@@ -29,7 +29,8 @@ public class RelationshipTypeMetadataAuditHandler implements MetadataAuditHandle
             if (metadataAudit.getType() == AuditType.DELETE) {
                 relationshipType = relationshipType.toBuilder().deleted(true).build();
             }
-            relationshipTypeFactory.getRelationshipTypeHandler().handleRelationshipType(relationshipType);
+            relationshipTypeFactory.getRelationshipTypeHandler().handleRelationshipType(
+                    relationshipType);
         }
     }
 }

@@ -42,5 +42,4 @@ public interface AuthenticatedUserStore extends DeletableStore {
 
     @Override
     int delete();
-
 }

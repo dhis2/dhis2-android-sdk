@@ -8,6 +8,9 @@ import org.hisp.dhis.android.core.option.OptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetMetadataAuditHandler;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramFactory;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
@@ -45,19 +48,22 @@ public class MetadataAuditHandlerFactory {
     private final DataElementFactory dataElementFactory;
     private final ProgramFactory programFactory;
     private final RelationshipTypeFactory relationshipTypeFactory;
+    private final OrganisationUnitFactory organisationUnitFactory;
 
     public MetadataAuditHandlerFactory(
             TrackedEntityFactory trackedEntityFactory, OptionSetFactory optionSetFactory,
             DataElementFactory dataElementFactory,
             TrackedEntityAttributeFactory trackedEntityAttributeFactory,
             ProgramFactory programFactory,
-            RelationshipTypeFactory relationshipTypeFactory) {
+            RelationshipTypeFactory relationshipTypeFactory,
+            OrganisationUnitFactory organisationUnitFactory) {
         this.trackedEntityFactory = trackedEntityFactory;
         this.optionSetFactory = optionSetFactory;
         this.dataElementFactory = dataElementFactory;
         this.trackedEntityAttributeFactory = trackedEntityAttributeFactory;
         this.programFactory = programFactory;
         this.relationshipTypeFactory = relationshipTypeFactory;
+        this.organisationUnitFactory = organisationUnitFactory;
     }
 
     public MetadataAuditHandler getByClass(Class<?> klass) {
@@ -86,6 +92,8 @@ public class MetadataAuditHandlerFactory {
             return new ProgramRuleVariableMetadataAuditHandler(programFactory);
         } else if (klass == RelationshipType.class) {
             return new RelationshipTypeMetadataAuditHandler(relationshipTypeFactory);
+        } else if (klass == OrganisationUnit.class) {
+            return new OrganisationUnitMetadataAuditHandler(organisationUnitFactory);
         } else {
             throw new IllegalArgumentException("No exists a metadata audit handler for: " + klass);
         }

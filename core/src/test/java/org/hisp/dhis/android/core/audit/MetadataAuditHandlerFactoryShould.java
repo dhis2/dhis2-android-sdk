@@ -11,6 +11,9 @@ import org.hisp.dhis.android.core.option.OptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetMetadataAuditHandler;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMetadataAuditHandler;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramFactory;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
@@ -56,6 +59,9 @@ public class MetadataAuditHandlerFactoryShould {
     private OptionSetFactory optionSetFactory;
 
     @Mock
+    private OrganisationUnitFactory organisationUnitFactory;
+
+    @Mock
     private DataElementFactory dataElementFactory;
 
     @Mock
@@ -82,7 +88,8 @@ public class MetadataAuditHandlerFactoryShould {
                 {ProgramRuleMetadataAuditHandler.class, ProgramRule.class},
                 {ProgramRuleActionMetadataAuditHandler.class, ProgramRuleAction.class},
                 {ProgramRuleVariableMetadataAuditHandler.class, ProgramRuleVariable.class},
-                {RelationshipTypeMetadataAuditHandler.class, RelationshipType.class}
+                {RelationshipTypeMetadataAuditHandler.class, RelationshipType.class},
+                {OrganisationUnitMetadataAuditHandler.class, OrganisationUnit.class}
         });
     }
 
@@ -102,7 +109,7 @@ public class MetadataAuditHandlerFactoryShould {
         metadataAuditHandlerFactory =
                 new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
                         dataElementFactory, trackedEntityAttributeFactory, programFactory,
-                        relationshipTypeFactory);
+                        relationshipTypeFactory, organisationUnitFactory);
     }
 
     @Test

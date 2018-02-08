@@ -56,11 +56,11 @@ public class RelationshipTypeStoreImpl extends Store implements RelationshipType
             RelationshipTypeModel.Columns.CREATED + ", " +
             RelationshipTypeModel.Columns.LAST_UPDATED + ", " +
             RelationshipTypeModel.Columns.A_IS_TO_B + ", " +
-            RelationshipTypeModel.Columns.B_IS_TO_A;
+                    RelationshipTypeModel.Columns.B_IS_TO_A;
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
-            RelationshipTypeModel.TABLE + " ("+
-            FIELDS +") " +
+            RelationshipTypeModel.TABLE + " (" +
+            FIELDS + ") " +
             "VALUES (" + "?, ?, ?, ?, ?, ?, ?, ?" + ");";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + RelationshipTypeModel.TABLE + " SET " +
@@ -80,11 +80,11 @@ public class RelationshipTypeStoreImpl extends Store implements RelationshipType
             RelationshipTypeModel.Columns.UID + " =?;";
 
     private static final String QUERY_ALL_RELATIONSHIP_TYPES =
-            "SELECT "+ FIELDS +" FROM " + RelationshipTypeModel.TABLE;
+            "SELECT " + FIELDS + " FROM " + RelationshipTypeModel.TABLE;
 
     private static final String QUERY_BY_UID =
-            "SELECT "+ FIELDS +" FROM " + RelationshipTypeModel.TABLE
-            +" WHERE "+ RelationshipTypeModel.Columns.UID +"=?;";
+            "SELECT " + FIELDS + " FROM " + RelationshipTypeModel.TABLE
+                    + " WHERE " + RelationshipTypeModel.Columns.UID + "=?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -167,7 +167,7 @@ public class RelationshipTypeStoreImpl extends Store implements RelationshipType
                 cursor.moveToFirst();
                 relationshipType = mapRelationshipTypeFromCursor(cursor);
             }
-        }finally {
+        } finally {
             cursor.close();
         }
         return relationshipType;

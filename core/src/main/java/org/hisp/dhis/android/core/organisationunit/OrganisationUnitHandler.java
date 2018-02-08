@@ -70,15 +70,44 @@ public class OrganisationUnitHandler {
         int size = organisationUnits.size();
         for (int i = 0; i < size; i++) {
             OrganisationUnit organisationUnit = organisationUnits.get(i);
+            handleOrganisationUnit(organisationUnit, scope, userUid, serverDate);
+        }
+    }
 
-            if (isDeleted(organisationUnit)) {
-                organisationUnitStore.delete(organisationUnit.uid());
-            } else {
-                String parentUid = null;
-                if (organisationUnit.parent() != null) {
-                    parentUid = organisationUnit.parent().uid();
-                }
-                int updatedRow = organisationUnitStore.update(
+    public void handleOrganisationUnit(@NonNull OrganisationUnit organisationUnit,
+            @Nullable OrganisationUnitModel.Scope scope,
+            @NonNull String userUid,
+            @Nonnull Date serverDate) {
+        if (organisationUnit == null) {
+            return;
+        }
+
+        if (isDeleted(organisationUnit)) {
+            organisationUnitStore.delete(organisationUnit.uid());
+        } else {
+            String parentUid = null;
+            if (organisationUnit.parent() != null) {
+                parentUid = organisationUnit.parent().uid();
+            }
+            int updatedRow = organisationUnitStore.update(
+                    organisationUnit.uid(),
+                    organisationUnit.code(),
+                    organisationUnit.name(),
+                    organisationUnit.displayName(),
+                    organisationUnit.created(),
+                    organisationUnit.lastUpdated(),
+                    organisationUnit.shortName(),
+                    organisationUnit.displayShortName(),
+                    organisationUnit.description(),
+                    organisationUnit.displayDescription(),
+                    organisationUnit.path(),
+                    organisationUnit.openingDate(),
+                    organisationUnit.closedDate(),
+                    parentUid,
+                    organisationUnit.level(),
+                    organisationUnit.uid());
+            if (updatedRow <= 0) {
+                organisationUnitStore.insert(
                         organisationUnit.uid(),
                         organisationUnit.code(),
                         organisationUnit.name(),
@@ -93,31 +122,12 @@ public class OrganisationUnitHandler {
                         organisationUnit.openingDate(),
                         organisationUnit.closedDate(),
                         parentUid,
-                        organisationUnit.level(),
-                        organisationUnit.uid());
-                if (updatedRow <= 0) {
-                    organisationUnitStore.insert(
-                            organisationUnit.uid(),
-                            organisationUnit.code(),
-                            organisationUnit.name(),
-                            organisationUnit.displayName(),
-                            organisationUnit.created(),
-                            organisationUnit.lastUpdated(),
-                            organisationUnit.shortName(),
-                            organisationUnit.displayShortName(),
-                            organisationUnit.description(),
-                            organisationUnit.displayDescription(),
-                            organisationUnit.path(),
-                            organisationUnit.openingDate(),
-                            organisationUnit.closedDate(),
-                            parentUid,
-                            organisationUnit.level()
-                    );
-                }
-                addUserOrganisationUnitLink(scope, userUid, organisationUnit);
-
-                addOrganisationUnitProgramLink(organisationUnit);
+                        organisationUnit.level()
+                );
             }
+            addUserOrganisationUnitLink(scope, userUid, organisationUnit);
+
+            addOrganisationUnitProgramLink(organisationUnit);
         }
 
         resourceHandler.handleResource(ORGANISATION_UNIT, serverDate);

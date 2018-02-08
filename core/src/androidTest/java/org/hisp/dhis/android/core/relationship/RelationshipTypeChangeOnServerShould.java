@@ -127,7 +127,8 @@ public class RelationshipTypeChangeOnServerShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_relationship_type_set_in_database_if_audit_type_is_delete() throws Exception {
+    public void delete_relationship_type_set_in_database_if_audit_type_is_delete()
+            throws Exception {
         givenAExistedRelationshipTypePreviously();
 
         MetadataAudit<RelationshipType> metadataAudit =
@@ -150,7 +151,8 @@ public class RelationshipTypeChangeOnServerShould extends AbsStoreTestCase {
 
     }
 
-    private MetadataAudit<RelationshipType> givenAMetadataAudit(String fileName) throws IOException {
+    private MetadataAudit<RelationshipType> givenAMetadataAudit(String fileName)
+            throws IOException {
         AssetsFileReader assetsFileReader = new AssetsFileReader();
 
         String json = assetsFileReader.getStringFromFile(fileName);

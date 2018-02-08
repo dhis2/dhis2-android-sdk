@@ -45,10 +45,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramFactory;
 import org.hisp.dhis.android.core.program.ProgramStage;
@@ -64,7 +61,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 import org.hisp.dhis.android.core.user.UserHandler;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRole;
 import org.hisp.dhis.android.core.user.UserService;
 
@@ -83,12 +79,9 @@ public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
     private final UserService userService;
-    private final OrganisationUnitService organisationUnitService;
     private final SystemInfoStore systemInfoStore;
     private final ResourceStore resourceStore;
     private final UserHandler userHandler;
-    private final OrganisationUnitStore organisationUnitStore;
-    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final CategoryQuery categoryQuery;
     private final CategoryComboQuery categoryComboQuery;
     private final CategoryService categoryService;
@@ -99,21 +92,16 @@ public class MetadataCall implements Call<Response> {
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
     private final ProgramFactory programFactory;
+    private final OrganisationUnitFactory organisationUnitFactory;
 
     private boolean isExecuted;
-
-    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
             @NonNull SystemInfoService systemInfoService,
             @NonNull UserService userService,
-            @NonNull OrganisationUnitService organisationUnitService,
+            @Nonnull UserHandler userHandler,
             @NonNull SystemInfoStore systemInfoStore,
             @NonNull ResourceStore resourceStore,
-            @NonNull UserHandler userHandler,
-            @NonNull OrganisationUnitStore organisationUnitStore,
-            @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-            @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
             @NonNull CategoryQuery categoryQuery,
             @NonNull CategoryService categoryService,
             @NonNull CategoryHandler categoryHandler,
@@ -122,17 +110,14 @@ public class MetadataCall implements Call<Response> {
             @NonNull CategoryComboHandler categoryComboHandler,
             @NonNull OptionSetFactory optionSetFactory,
             @NonNull TrackedEntityFactory trackedEntityFactory,
-            @Nonnull ProgramFactory programFactory) {
+            @Nonnull ProgramFactory programFactory,
+            @NonNull OrganisationUnitFactory organisationUnitFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
-        this.organisationUnitService = organisationUnitService;
+        this.userHandler = userHandler;
         this.systemInfoStore = systemInfoStore;
         this.resourceStore = resourceStore;
-        this.userHandler = userHandler;
-        this.organisationUnitStore = organisationUnitStore;
-        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
         this.categoryQuery = categoryQuery;
         this.categoryService = categoryService;
         this.categoryHandler = categoryHandler;
@@ -143,6 +128,7 @@ public class MetadataCall implements Call<Response> {
         this.optionSetFactory = optionSetFactory;
         this.trackedEntityFactory = trackedEntityFactory;
         this.programFactory = programFactory;
+        this.organisationUnitFactory = organisationUnitFactory;
     }
 
     @Override
@@ -188,10 +174,8 @@ public class MetadataCall implements Call<Response> {
             }
 
             User user = (User) response.body();
-            response = new OrganisationUnitCall(
-                    user, organisationUnitService, databaseAdapter, organisationUnitStore,
-                    resourceStore, serverDate, userOrganisationUnitLinkStore,
-                    organisationUnitProgramLinkStore).call();
+            response = getOrganisationUnits(serverDate, user);
+
             if (!response.isSuccessful()) {
                 return response;
             }
@@ -237,6 +221,12 @@ public class MetadataCall implements Call<Response> {
         } finally {
             transaction.end();
         }
+    }
+
+    public Response getOrganisationUnits(Date serverDate, User user) throws Exception {
+        Response response;
+        response = organisationUnitFactory.newEndPointCall(serverDate, user, "").call();
+        return response;
     }
 
     /// Utilty methods:

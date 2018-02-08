@@ -9,6 +9,7 @@ import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -38,6 +39,7 @@ final class MetadataClassFactory {
         myMap.put("programRuleAction", ProgramRuleAction.class);
         myMap.put("programRuleVariable", ProgramRuleVariable.class);
         myMap.put("relationshipType", RelationshipType.class);
+        myMap.put("organisationUnit", OrganisationUnit.class);
         return myMap;
     }
 

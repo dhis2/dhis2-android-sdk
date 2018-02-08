@@ -2,7 +2,9 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import static org.hisp.dhis.android.core.resource.ResourceModel.Type.TRACKED_ENTITY_INSTANCE;
 
+import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
@@ -80,6 +82,15 @@ public class TrackedEntityInstanceEndPointCall implements
                 resourceHandler.handleResource(TRACKED_ENTITY_INSTANCE, serverDate);
                 transaction.setSuccessful();
             }
+        } catch (SQLiteConstraintException sql) {
+            // This catch is necessary to ignore events with bad foreign keys exception
+            // More info: If the foreign key have the flag
+            // DEFERRABLE INITIALLY DEFERRED this exception will be throw in transaction
+            // .end()
+            // And the rollback will be executed only when the database is closed.
+            // It is a reported as unfixed bug: https://issuetracker.google
+            // .com/issues/37001653
+            Log.d(this.getClass().getSimpleName(), sql.getMessage());
         } finally {
             transaction.end();
         }

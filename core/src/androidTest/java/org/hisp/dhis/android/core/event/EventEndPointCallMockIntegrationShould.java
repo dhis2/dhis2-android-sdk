@@ -152,7 +152,8 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void verifyNumberOfDownloadedTrackedEntityDataValue(int num) {
-        TrackedEntityDataValueStoreImpl eventStore = new TrackedEntityDataValueStoreImpl(d2.databaseAdapter());
+        TrackedEntityDataValueStoreImpl eventStore = new TrackedEntityDataValueStoreImpl(
+                d2.databaseAdapter());
 
         int numPersisted = eventStore.countAll();
 

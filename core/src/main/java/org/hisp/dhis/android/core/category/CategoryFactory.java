@@ -31,8 +31,9 @@ public class CategoryFactory {
         this.categoryStore = new CategoryStoreImpl(databaseAdapter);
         this.categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter);
         this.categoryOptionLinkStore= new CategoryCategoryOptionLinkStoreImpl(databaseAdapter);
-        this.categoryOptionHandler = new CategoryOptionHandler(categoryOptionStore, categoryOptionLinkStore);
-        this.categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler);
+        this.categoryOptionHandler = new CategoryOptionHandler(categoryOptionStore);
+        this.categoryHandler =
+                new CategoryHandler(categoryStore, categoryOptionHandler, categoryOptionLinkStore);
         this.deletableStoreList = new ArrayList<>();
         this.deletableStoreList.add(categoryStore);
         this.deletableStoreList.add(categoryOptionStore);

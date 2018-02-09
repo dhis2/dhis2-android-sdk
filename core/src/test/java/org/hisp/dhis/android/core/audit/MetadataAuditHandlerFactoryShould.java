@@ -89,7 +89,6 @@ public class MetadataAuditHandlerFactoryShould {
                 {OptionMetadataAuditHandler.class, Option.class},
                 {DataElementMetadataAuditHandler.class, DataElement.class},
                 {TrackedEntityAttributeMetadataAuditHandler.class, TrackedEntityAttribute.class},
-                {OptionMetadataAuditHandler.class, Option.class},
                 {ProgramMetadataAuditHandler.class, Program.class},
                 {ProgramStageMetadataAuditHandler.class, ProgramStage.class},
                 {ProgramIndicatorMetadataAuditHandler.class, ProgramIndicator.class},
@@ -97,7 +96,7 @@ public class MetadataAuditHandlerFactoryShould {
                 {ProgramRuleActionMetadataAuditHandler.class, ProgramRuleAction.class},
                 {ProgramRuleVariableMetadataAuditHandler.class, ProgramRuleVariable.class},
                 {RelationshipTypeMetadataAuditHandler.class, RelationshipType.class},
-                {OrganisationUnitMetadataAuditHandler.class, OrganisationUnit.class}
+                {OrganisationUnitMetadataAuditHandler.class, OrganisationUnit.class},
                 {CategoryMetadataAuditHandler.class, Category.class},
                 {CategoryOptionMetadataAuditHandler.class, CategoryOption.class}
         });

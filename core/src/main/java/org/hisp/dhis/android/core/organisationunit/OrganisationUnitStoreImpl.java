@@ -50,7 +50,7 @@ import java.util.List;
 public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
 
     private static final String FIELDS =
-                    OrganisationUnitModel.Columns.UID + ", " +
+            OrganisationUnitModel.Columns.UID + ", " +
                     OrganisationUnitModel.Columns.CODE + ", " +
                     OrganisationUnitModel.Columns.NAME + ", " +
                     OrganisationUnitModel.Columns.DISPLAY_NAME + ", " +
@@ -66,7 +66,8 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
                     OrganisationUnitModel.Columns.LEVEL + ", " +
                     OrganisationUnitModel.Columns.PARENT;
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + OrganisationUnitModel.TABLE + " (" + FIELDS+ ") " +
+    private static final String INSERT_STATEMENT =
+            "INSERT INTO " + OrganisationUnitModel.TABLE + " (" + FIELDS + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + OrganisationUnitModel.TABLE + " SET " +
@@ -93,7 +94,8 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
     private static final String QUERY_STATEMENT = "SELECT " + FIELDS +
             "  FROM " + OrganisationUnitModel.TABLE;
     private static final String QUERY_BY_UID = "SELECT " + FIELDS +
-            "  FROM " + OrganisationUnitModel.TABLE + " WHERE " + OrganisationUnitModel.Columns.UID + "=?;";
+            "  FROM " + OrganisationUnitModel.TABLE + " WHERE " + OrganisationUnitModel.Columns.UID
+            + "=?;";
 
 
     private final DatabaseAdapter databaseAdapter;
@@ -184,7 +186,7 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
         Cursor cursor = databaseAdapter.query(QUERY_BY_UID, uid);
         OrganisationUnit organisationUnit = null;
         List<OrganisationUnit> organisationUnits = mapOrgUnitsFromCursor(cursor);
-        if(organisationUnits.size()==1){
+        if (organisationUnits.size() == 1) {
             organisationUnit = organisationUnits.get(0);
         }
         return organisationUnit;

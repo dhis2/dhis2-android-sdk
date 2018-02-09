@@ -236,14 +236,17 @@ public abstract class User extends BaseIdentifiableObject {
 
 
         @JsonProperty(ORGANISATION_UNITS)
-        public abstract Builder organisationUnits(@Nullable List<OrganisationUnit> organisationUnits);
+        public abstract Builder organisationUnits(
+                @Nullable List<OrganisationUnit> organisationUnits);
 
 
         @JsonProperty(TEI_SEARCH_ORGANISATION_UNITS)
-        public abstract Builder teiSearchOrganisationUnits(@Nullable List<OrganisationUnit> teiSearchOrganisationUnits);
+        public abstract Builder teiSearchOrganisationUnits(
+                @Nullable List<OrganisationUnit> teiSearchOrganisationUnits);
 
         @JsonProperty(DATA_VIEW_ORGANISATION_UNITS)
-        public abstract Builder dataViewOrganisationUnits(@Nullable List<OrganisationUnit> dataViewOrganisationUnits);
+        public abstract Builder dataViewOrganisationUnits(
+                @Nullable List<OrganisationUnit> dataViewOrganisationUnits);
 
         public abstract User build();
     }

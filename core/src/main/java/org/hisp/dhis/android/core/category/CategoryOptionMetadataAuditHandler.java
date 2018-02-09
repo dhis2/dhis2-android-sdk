@@ -50,7 +50,7 @@ public class CategoryOptionMetadataAuditHandler implements MetadataAuditHandler 
             if (metadataAudit.getType() == AuditType.DELETE) {
                 categoryOption = categoryOption.toBuilder().deleted(true).build();
 
-                categoryFactory.getCategoryOptionHandler().handle("", categoryOption);
+                categoryFactory.getCategoryOptionHandler().handle(categoryOption);
             }
         }
     }

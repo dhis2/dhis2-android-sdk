@@ -30,14 +30,11 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
-import org.hisp.dhis.android.core.category.CategoryEndpointCall;
-import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.ResponseValidator;
@@ -101,8 +98,6 @@ public class MetadataCall implements Call<Response> {
             @Nonnull UserHandler userHandler,
             @NonNull SystemInfoStore systemInfoStore,
             @NonNull ResourceStore resourceStore,
-            @NonNull CategoryQuery categoryQuery,
-            @NonNull CategoryHandler categoryHandler,
             @NonNull CategoryComboQuery categoryComboQuery,
             @NonNull CategoryComboService categoryComboService,
             @NonNull CategoryComboHandler categoryComboHandler,
@@ -117,8 +112,6 @@ public class MetadataCall implements Call<Response> {
         this.userHandler = userHandler;
         this.systemInfoStore = systemInfoStore;
         this.resourceStore = resourceStore;
-        this.categoryQuery = categoryQuery;
-        this.categoryHandler = categoryHandler;
         this.categoryComboQuery = categoryComboQuery;
         this.categoryComboService = categoryComboService;
         this.categoryComboHandler = categoryComboHandler;

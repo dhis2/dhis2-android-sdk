@@ -43,7 +43,7 @@ public class CategoryHandler {
         if (categoryOptions != null) {
 
             for (CategoryOption option : categoryOptions) {
-                categoryOptionHandler.handle(category.uid(), option);
+                categoryOptionHandler.handle(option);
 
                 CategoryCategoryOptionLinkModel link = newCategoryOption(category, option);
 

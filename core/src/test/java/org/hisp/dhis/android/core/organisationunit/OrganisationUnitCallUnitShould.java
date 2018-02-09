@@ -197,7 +197,8 @@ public class OrganisationUnitCallUnitShould {
         when(database.beginNewTransaction()).thenReturn(transaction);
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
-        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
+        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
+                organisationUnitStore,
                 userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, resourceHandler);
         
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,

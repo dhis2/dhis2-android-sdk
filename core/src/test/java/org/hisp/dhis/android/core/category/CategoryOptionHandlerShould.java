@@ -16,8 +16,7 @@ public class CategoryOptionHandlerShould {
 
     @Mock
     private CategoryOptionStore mockCategoryOptionStore;
-    @Mock
-    private CategoryCategoryOptionLinkStore mockCategoryCategoryOptionStore;
+
 
     private CategoryOptionHandler categoryOptionHandler;
 
@@ -25,7 +24,7 @@ public class CategoryOptionHandlerShould {
     public void setUp() throws Exception {
 
         MockitoAnnotations.initMocks(this);
-        categoryOptionHandler = new CategoryOptionHandler(mockCategoryOptionStore, mockCategoryCategoryOptionStore);
+        categoryOptionHandler = new CategoryOptionHandler(mockCategoryOptionStore);
     }
 
     @Test
@@ -34,18 +33,15 @@ public class CategoryOptionHandlerShould {
 
         categoryOptionHandler.handle(deletedOption);
         verify(mockCategoryOptionStore).delete(deletedOption.uid());
-        categoryOptionHandler.handle("", deletedOption);
-        verify(mockCategoryOptionStore).delete(deletedOption);
     }
 
     @Test
     public void handle_new_categoryOption() {
         CategoryOption newOption = givenAOption();
 
-        when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(false);
         when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(0);
 
-        categoryOptionHandler.handle(any(String.class), newOption);
+        categoryOptionHandler.handle(newOption);
 
         verify(mockCategoryOptionStore).update(newOption);
         verify(mockCategoryOptionStore).insert(newOption);
@@ -56,12 +52,10 @@ public class CategoryOptionHandlerShould {
     public void handle_updated_categoryOption() {
         CategoryOption updatedOption = givenAOption();
 
-        when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(true);
         when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(1);
 
-        categoryOptionHandler.handle(any(String.class), updatedOption);
+        categoryOptionHandler.handle(updatedOption);
 
-        verify(mockCategoryOptionStore).update(updatedOption);
         verify(mockCategoryOptionStore).update(updatedOption);
         verifyZeroInteractions(mockCategoryOptionStore);
 

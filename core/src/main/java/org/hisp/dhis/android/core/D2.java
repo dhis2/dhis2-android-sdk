@@ -376,10 +376,10 @@ public final class D2 {
     @NonNull
     public Call<Response> syncMetaData() {
         return new MetadataCall(
-                databaseAdapter, systemInfoService, userService, userHandler,
-                systemInfoStore, resourceStore,
-                categoryComboQuery, comboService, categoryComboHandler, optionSetFactory,
-                trackedEntityFactory, programFactory, organisationUnitFactory, categoryFactory);
+                databaseAdapter, systemInfoService, userService, userHandler, systemInfoStore,
+                resourceStore, categoryComboQuery, comboService, categoryComboHandler,
+                optionSetFactory, trackedEntityFactory, programFactory, organisationUnitFactory,
+                categoryFactory);
     }
 
     @NonNull

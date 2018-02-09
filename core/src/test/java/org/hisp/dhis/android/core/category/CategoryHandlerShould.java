@@ -30,12 +30,14 @@ public class CategoryHandlerShould {
     @Before
     public void setUp() throws Exception {
 
-
         MockitoAnnotations.initMocks(this);
-        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                mockCategoryOptionStore, mockCategoryCategoryOptionLinkStore);
 
-        mCategoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler);
+        CategoryOptionHandler categoryOptionHandler =
+                new CategoryOptionHandler(mockCategoryOptionStore);
+
+        mCategoryHandler =
+                new CategoryHandler(mockCategoryStore, categoryOptionHandler,
+                        mockCategoryCategoryOptionLinkStore);
     }
 
     @Test
@@ -50,14 +52,13 @@ public class CategoryHandlerShould {
     public void handle_new_category() {
         Category newCategory = givenACategory();
 
-        when(mockCategoryStore.update(any(Category.class))).thenReturn(false);
+        when(mockCategoryStore.update(any(Category.class))).thenReturn(0);
         when(mockCategoryStore.update(any(Category.class))).thenReturn(0);
 
         mCategoryHandler.handle(newCategory);
 
         verify(mockCategoryStore).update(newCategory);
         verify(mockCategoryStore).insert(newCategory);
-
     }
 
     @Test
@@ -65,11 +66,11 @@ public class CategoryHandlerShould {
         Category oldCategory = givenACategory();
 
         when(mockCategoryStore.update(any(Category.class))).thenReturn(1);
-        when(mockCategoryStore.update(any(Category.class))).thenReturn(true);
+        when(mockCategoryStore.update(any(Category.class))).thenReturn(1);
 
         mCategoryHandler.handle(oldCategory);
 
-        verify(mockCategoryStore).update(updatedCategory);
+        verify(mockCategoryStore).update(oldCategory);
         verifyZeroInteractions(mockCategoryStore);
         verify(mockCategoryStore).update(oldCategory);
 
@@ -107,8 +108,9 @@ public class CategoryHandlerShould {
     private List<CategoryOption> givenAListOfCategoryOptions() {
         List<CategoryOption> list = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++) {
             list.add(givenAOption());
+        }
 
         return list;
     }

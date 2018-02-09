@@ -263,11 +263,13 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-        List<OrganisationUnit> organisationUnits = Collections.singletonList(OrganisationUnit.builder()
-                .uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu")
-                .deleted(false).build());
+        List<OrganisationUnit> organisationUnits = Collections.singletonList(
+                OrganisationUnit.builder()
+                        .uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu")
+                        .deleted(false).build());
 
-        UserCredentials userCredentials = UserCredentials.builder().uid("credentials_uid").code("code")
+        UserCredentials userCredentials = UserCredentials.builder().uid("credentials_uid").code(
+                "code")
                 .name("name").build();
         //dependencies for the OrganisationUnitCall:
         OrganisationUnitService organisationUnitService = retrofit.create(OrganisationUnitService.class);
@@ -283,11 +285,14 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         User user = User.builder()
                 .uid("user_uid").code("code").name("name").displayName("display_name")
                 .created(new Date()).lastUpdated(new Date()).birthday("birthday")
-                .education("education").gender("gender").jobTitle("job_title").surname("surname").firstName("firstName")
-                .introduction("introduction").employer("employer").interests("interests").languages("languages")
+                .education("education").gender("gender").jobTitle("job_title").surname(
+                        "surname").firstName("firstName")
+                .introduction("introduction").employer("employer").interests("interests").languages(
+                        "languages")
                 .email("email").phoneNumber("phoneNumber").nationality("nationality")
                 .userCredentials(userCredentials).organisationUnits(organisationUnits)
-                .teiSearchOrganisationUnits(organisationUnits).dataViewOrganisationUnits(organisationUnits)
+                .teiSearchOrganisationUnits(organisationUnits).dataViewOrganisationUnits(
+                        organisationUnits)
                 .deleted(false)
                 .build();
 

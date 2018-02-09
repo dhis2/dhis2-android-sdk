@@ -64,10 +64,10 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     public OrganisationUnitCall(@NonNull User user,
                                 @NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull DatabaseAdapter database,
-                                @NonNull ResourceHandler resourceHandler,
+            @NonNull ResourceHandler resourceHandler,
                                 @NonNull Date serverDate,
-                                @NonNull OrganisationUnitHandler organisationUnitHandler,
-                                @NonNull String uid) {
+            @NonNull OrganisationUnitHandler organisationUnitHandler,
+            @NonNull String uid) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
         this.database = database;
@@ -128,7 +128,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     private Response<Payload<OrganisationUnit>> getOrganisationUnitByUId(
             @NonNull String uid, @Nullable Filter<OrganisationUnit,
             String> lastUpdatedFilter) throws IOException {
-        Response<Payload<OrganisationUnit>>  response = getOrganisationUnit(uid, lastUpdatedFilter);
+        Response<Payload<OrganisationUnit>> response = getOrganisationUnit(uid, lastUpdatedFilter);
         if (response.isSuccessful()) {
             organisationUnitHandler.handleOrganisationUnits(
                     response.body().items(),

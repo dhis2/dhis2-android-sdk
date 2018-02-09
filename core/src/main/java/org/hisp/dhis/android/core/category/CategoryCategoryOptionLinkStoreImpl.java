@@ -152,7 +152,7 @@ public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOpti
     public List<String> queryCategoryOptionUidListFromCategoryUid(String optionSetUid) {
         Cursor cursor = databaseAdapter.query(QUERY_BY_CATEGORY_UID_STATEMENT, optionSetUid);
 
-        List<String> uIds = mapFromCursor(cursor);
+        List<String> uIds = mapUidsFromCursor(cursor);
 
         return uIds;
     }
@@ -161,12 +161,12 @@ public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOpti
     public List<String> queryCategoryUidListFromCategoryOptionUid(String categoryOptionUid) {
         Cursor cursor = databaseAdapter.query(QUERY_BY_CATEGORY_OPTION_UID_STATEMENT, categoryOptionUid);
 
-        List<String> uIds = mapFromCursor(cursor);
+        List<String> uIds = mapUidsFromCursor(cursor);
 
         return uIds;
     }
 
-    private List<String> mapFromCursor(Cursor cursor) {
+    private List<String> mapUidsFromCursor(Cursor cursor) {
 
         List<String> uIds = new ArrayList<>();
         try {
@@ -184,7 +184,6 @@ public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOpti
         }
         return uIds;
     }
-}
 
     private List<CategoryCategoryOptionLinkModel> mapFromCursor(
             Cursor cursor) {

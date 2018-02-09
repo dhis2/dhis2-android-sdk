@@ -256,7 +256,8 @@ public class MetadataCallShould {
 
         relationshipTypeFactory =
                 new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
-        organisationUnitFactory = new OrganisationUnitFactory(retrofit, databaseAdapter, resourceHandler);
+        organisationUnitFactory = new OrganisationUnitFactory(retrofit, databaseAdapter,
+                resourceHandler);
 
         categoryFactory = new CategoryFactory(retrofit, databaseAdapter, resourceHandler);
         metadataCall = new MetadataCall(

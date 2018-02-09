@@ -50,7 +50,7 @@ public class OrganisationUnitFactory {
         deletableStores.add(organisationUnitProgramLinkStore);
     }
 
-    public OrganisationUnitHandler getOrganisationUnitHandler(){
+    public OrganisationUnitHandler getOrganisationUnitHandler() {
         return organisationUnitHandler;
     }
 
@@ -58,12 +58,13 @@ public class OrganisationUnitFactory {
         return authenticatedUserStore;
     }
 
-    public UserOrganisationUnitLinkStore getUserOrganisationUnitLinkStore(){
+    public UserOrganisationUnitLinkStore getUserOrganisationUnitLinkStore() {
         return userOrganisationUnitLinkStore;
     }
 
-    public OrganisationUnitCall newEndPointCall(Date serverDate, User user, String uId) throws Exception {
-       return new OrganisationUnitCall(
+    public OrganisationUnitCall newEndPointCall(Date serverDate, User user, String uId)
+            throws Exception {
+        return new OrganisationUnitCall(
                 user, organisationUnitService, databaseAdapter,
                 resourceHandler, serverDate,
                 organisationUnitHandler, uId);

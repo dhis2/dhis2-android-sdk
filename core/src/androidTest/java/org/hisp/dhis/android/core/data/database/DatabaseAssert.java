@@ -22,7 +22,7 @@ public final class DatabaseAssert {
 
         Cursor res = databaseAdapter.query(
                 "SELECT " + fieldName + " from " + tableName + " where " + fieldName + " = '"
-                        + fieldValue + "'", null);
+                        + fieldValue + "'");
         int value = res.getCount();
         if (value == 1) {
             isExist = true;
@@ -35,7 +35,7 @@ public final class DatabaseAssert {
 
     public DatabaseAssert isFieldExist(String tableName, String fieldName) {
         boolean isExist = false;
-        Cursor res = databaseAdapter.query("PRAGMA table_info(" + tableName + ")", null);
+        Cursor res = databaseAdapter.query("PRAGMA table_info(" + tableName + ")");
         int value = res.getColumnIndex("name");
         if (value != -1) {
             while (res.moveToNext()) {
@@ -52,7 +52,7 @@ public final class DatabaseAssert {
 
     public DatabaseAssert ifTableExist(String table) {
         boolean isExist = false;
-        Cursor res = databaseAdapter.query("PRAGMA table_info(" + table + ")", null);
+        Cursor res = databaseAdapter.query("PRAGMA table_info(" + table + ")");
         int value = res.getColumnIndex("name");
         if (value != -1) {
             isExist = true;
@@ -110,7 +110,7 @@ public final class DatabaseAssert {
         int count = 0;
 
         try {
-            cursor = databaseAdapter.query("SELECT * from " + tableName, null);
+            cursor = databaseAdapter.query("SELECT * from " + tableName);
             count = cursor.getCount();
         } finally {
             if (cursor != null) {

@@ -57,7 +57,7 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     private final ResourceStore resourceStore;
     private final Date serverDate;
     private boolean isExecuted;
-    private OptionSetQuery query;
+    private final OptionSetQuery query;
 
 
     public OptionSetCall(OptionSetService optionSetService,

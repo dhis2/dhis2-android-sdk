@@ -47,7 +47,7 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
     private final SystemInfoService systemInfoService;
     private final ResourceStore resourceStore;
     private boolean isExecuted;
-    private SystemInfoQuery query;
+    private final SystemInfoQuery query;
 
     public SystemInfoCall(DatabaseAdapter databaseAdapter,
             SystemInfoStore systemInfoStore,

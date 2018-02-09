@@ -21,7 +21,7 @@ public abstract class TrackedEntityQuery extends BaseQuery {
         return defaultQueryBuilder().build();
     }
 
-    public static TrackedEntityQuery defaultQuery(Set<String> uids,boolean isTranslationOn,
+    public static TrackedEntityQuery defaultQuery(Set<String> uids, boolean isTranslationOn,
             String translationLocale) {
 
         return defaultQueryBuilder()

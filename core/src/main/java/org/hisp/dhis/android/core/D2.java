@@ -377,7 +377,7 @@ public final class D2 {
 
         categoryQuery = CategoryQuery
                 .defaultQuery(isTranslationOn,
-                translationLocale);
+                        translationLocale);
 
         categoryComboQuery = CategoryComboQuery
                 .defaultQuery(isTranslationOn,
@@ -404,7 +404,7 @@ public final class D2 {
             throw new NullPointerException("password == null");
         }
 
-        UserQuery userQuery = UserQuery.defaultQuery(isTranslationOn,translationLocale);
+        UserQuery userQuery = UserQuery.defaultQuery(isTranslationOn, translationLocale);
         return new UserAuthenticateCall(userService, databaseAdapter, userStore,
                 userCredentialsHandler, resourceHandler,
                 authenticatedUserStore, organisationUnitHandler, username, password,

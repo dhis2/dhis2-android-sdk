@@ -10,7 +10,7 @@ import org.hisp.dhis.android.core.common.BaseQuery;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EventQuery  extends BaseQuery{
+public class EventQuery extends BaseQuery {
     private final Set<String> uIds;
     private final int page;
     private final int pageSize;
@@ -51,7 +51,7 @@ public class EventQuery  extends BaseQuery{
             String orgUnit, String program, String trackedEntityInstance, Set<String> uIds,
             int pageLimit,
             @Nullable CategoryCombo categoryCombo,
-            @Nullable CategoryOption categoryOption,boolean isTranslationOn,
+            @Nullable CategoryOption categoryOption, boolean isTranslationOn,
             String translationLocale) {
         this.paging = paging;
         this.page = page;
@@ -71,14 +71,17 @@ public class EventQuery  extends BaseQuery{
         return uIds;
     }
 
+    @Override
     public int page() {
         return page;
     }
 
+    @Override
     public int pageSize() {
         return pageSize;
     }
 
+    @Override
     public boolean isPaging() {
         return paging;
     }
@@ -210,7 +213,7 @@ public class EventQuery  extends BaseQuery{
 
             return new EventQuery(paging, page, pageSize,
                     orgUnit, program, trackedEntityInstance, uIds, pageLimit,
-                    categoryCombo, categoryOption,isTranslationOn,translationLocale);
+                    categoryCombo, categoryOption, isTranslationOn, translationLocale);
         }
     }
 }

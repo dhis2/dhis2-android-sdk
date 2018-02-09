@@ -4,9 +4,14 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboFactory;
+import org.hisp.dhis.android.core.category.CategoryComboMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.category.CategoryOptionComboMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementFactory;
@@ -78,6 +83,9 @@ public class MetadataAuditHandlerFactoryShould {
     @Mock
     private RelationshipTypeFactory relationshipTypeFactory;
 
+    @Mock
+    private CategoryComboFactory categoryComboFactory;
+
     private MetadataAuditHandlerFactory metadataAuditHandlerFactory;
 
     @Parameterized.Parameters(name = "{index} MetadataAuditHandlerFactory should return: {0} for "
@@ -98,7 +106,9 @@ public class MetadataAuditHandlerFactoryShould {
                 {RelationshipTypeMetadataAuditHandler.class, RelationshipType.class},
                 {OrganisationUnitMetadataAuditHandler.class, OrganisationUnit.class},
                 {CategoryMetadataAuditHandler.class, Category.class},
-                {CategoryOptionMetadataAuditHandler.class, CategoryOption.class}
+                {CategoryOptionMetadataAuditHandler.class, CategoryOption.class},
+                {CategoryComboMetadataAuditHandler.class, CategoryCombo.class},
+                {CategoryOptionComboMetadataAuditHandler.class, CategoryOptionCombo.class}
         });
     }
 
@@ -118,7 +128,8 @@ public class MetadataAuditHandlerFactoryShould {
         metadataAuditHandlerFactory =
                 new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
                         dataElementFactory, trackedEntityAttributeFactory, programFactory,
-                        relationshipTypeFactory, organisationUnitFactory, categoryFactory);
+                        relationshipTypeFactory, organisationUnitFactory, categoryFactory,
+                        categoryComboFactory);
     }
 
     @Test

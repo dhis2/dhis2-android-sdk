@@ -44,19 +44,8 @@ import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStoreImpl;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryComboQuery;
-import org.hisp.dhis.android.core.category.CategoryComboService;
-import org.hisp.dhis.android.core.category.CategoryComboStore;
-import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryComboFactory;
 import org.hisp.dhis.android.core.category.CategoryFactory;
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStore;
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
-import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
-import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
-import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
@@ -137,10 +126,6 @@ public final class D2 {
     private final SystemInfoService systemInfoService;
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final EventService eventService;
-    private final CategoryComboService comboService;
-
-    // Queries
-    private final CategoryComboQuery categoryComboQuery = CategoryComboQuery.defaultQuery();
 
     // stores
     private final UserStore userStore;
@@ -159,17 +144,11 @@ public final class D2 {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
-    private final CategoryComboStore categoryComboStore;
-    private final CategoryCategoryComboLinkStore categoryCategoryComboLinkStore;
-    private final CategoryOptionComboCategoryLinkStore categoryComboOptionCategoryLinkStore;
-
     //Handlers
     private final UserHandler userHandler;
     private final EventHandler eventHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
-    private final CategoryComboHandler categoryComboHandler;
-
     private MetadataAuditConsumer metadataAuditConsumer;
     private MetadataAuditListener metadataAuditListener;
 
@@ -182,6 +161,7 @@ public final class D2 {
     private final RelationshipTypeFactory relationshipTypeFactory;
     private final OrganisationUnitFactory organisationUnitFactory;
     private final CategoryFactory categoryFactory;
+    private final CategoryComboFactory categoryComboFactory;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
@@ -193,7 +173,6 @@ public final class D2 {
         this.systemInfoService = retrofit.create(SystemInfoService.class);
         this.trackedEntityInstanceService = retrofit.create(TrackedEntityInstanceService.class);
         this.eventService = retrofit.create(EventService.class);
-        this.comboService = retrofit.create(CategoryComboService.class);
 
         // stores
         this.userStore =
@@ -224,14 +203,6 @@ public final class D2 {
         this.trackedEntityAttributeValueStore =
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter);
 
-        this.categoryComboOptionCategoryLinkStore
-                = new CategoryOptionComboCategoryLinkStoreImpl(databaseAdapter);
-        this.categoryComboStore = new CategoryComboStoreImpl(databaseAdapter());
-        this.categoryCategoryComboLinkStore = new CategoryCategoryComboLinkStoreImpl(
-                databaseAdapter());
-        CategoryOptionComboStore categoryOptionComboStore = new CategoryOptionComboStoreImpl(
-                databaseAdapter());
-
         //handlers
         resourceHandler = new ResourceHandler(resourceStore);
         UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore,
@@ -257,13 +228,6 @@ public final class D2 {
                         trackedEntityAttributeValueHandler,
                         enrollmentHandler);
 
-        CategoryOptionComboHandler optionComboHandler = new CategoryOptionComboHandler(
-                categoryOptionComboStore);
-
-        categoryComboHandler = new CategoryComboHandler(categoryComboStore,
-                categoryComboOptionCategoryLinkStore,
-                categoryCategoryComboLinkStore, optionComboHandler);
-
         //factories
         optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
 
@@ -286,12 +250,14 @@ public final class D2 {
                 new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
         this.categoryFactory = new CategoryFactory(retrofit(), databaseAdapter, resourceHandler);
 
+        this.categoryComboFactory = new CategoryComboFactory(retrofit(), databaseAdapter, resourceHandler);
 
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
                     new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
                             dataElementFactory, trackedEntityAttributeFactory, programFactory,
-                            relationshipTypeFactory, organisationUnitFactory, categoryFactory);
+                            relationshipTypeFactory, organisationUnitFactory, categoryFactory,
+                            categoryComboFactory);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 
@@ -357,10 +323,6 @@ public final class D2 {
         deletableStoreList.add(trackedEntityDataValueStore);
         deletableStoreList.add(trackedEntityAttributeValueStore);
         deletableStoreList.add(eventStore);
-        deletableStoreList.addAll(categoryFactory.getDeletableStores());
-        deletableStoreList.add(categoryComboOptionCategoryLinkStore);
-        deletableStoreList.add(categoryComboStore);
-        deletableStoreList.add(categoryCategoryComboLinkStore);
 
         deletableStoreList.addAll(trackedEntityFactory.getDeletableStores());
         deletableStoreList.addAll(trackedEntityAttributeFactory.getDeletableStores());
@@ -369,6 +331,8 @@ public final class D2 {
         deletableStoreList.addAll(dataElementFactory.getDeletableStores());
         deletableStoreList.addAll(relationshipTypeFactory.getDeletableStores());
         deletableStoreList.addAll(organisationUnitFactory.getDeletableStores());
+        deletableStoreList.addAll(categoryFactory.getDeletableStores());
+        deletableStoreList.addAll(categoryComboFactory.getDeletableStores());
 
         return new LogOutUserCallable(deletableStoreList);
     }
@@ -377,9 +341,8 @@ public final class D2 {
     public Call<Response> syncMetaData() {
         return new MetadataCall(
                 databaseAdapter, systemInfoService, userService, userHandler, systemInfoStore,
-                resourceStore, categoryComboQuery, comboService, categoryComboHandler,
-                optionSetFactory, trackedEntityFactory, programFactory, organisationUnitFactory,
-                categoryFactory);
+                resourceStore, optionSetFactory, trackedEntityFactory, programFactory,
+                organisationUnitFactory, categoryFactory, categoryComboFactory);
     }
 
     @NonNull

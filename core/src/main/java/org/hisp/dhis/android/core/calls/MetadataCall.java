@@ -29,15 +29,10 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
+import org.hisp.dhis.android.core.category.CategoryComboFactory;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
-import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryQuery;
-import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -49,7 +44,6 @@ import org.hisp.dhis.android.core.program.ProgramFactory;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
@@ -80,15 +74,13 @@ public class MetadataCall implements Call<Response> {
     private final SystemInfoStore systemInfoStore;
     private final ResourceStore resourceStore;
     private final UserHandler userHandler;
-    private final CategoryComboQuery categoryComboQuery;
-    private final CategoryComboService categoryComboService;
-    private final CategoryComboHandler categoryComboHandler;
 
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
     private final CategoryFactory categoryFactory;
     private final ProgramFactory programFactory;
     private final OrganisationUnitFactory organisationUnitFactory;
+    private final CategoryComboFactory categoryComboFactory;
 
     private boolean isExecuted;
 
@@ -98,29 +90,25 @@ public class MetadataCall implements Call<Response> {
             @Nonnull UserHandler userHandler,
             @NonNull SystemInfoStore systemInfoStore,
             @NonNull ResourceStore resourceStore,
-            @NonNull CategoryComboQuery categoryComboQuery,
-            @NonNull CategoryComboService categoryComboService,
-            @NonNull CategoryComboHandler categoryComboHandler,
             @NonNull OptionSetFactory optionSetFactory,
             @NonNull TrackedEntityFactory trackedEntityFactory,
             @Nonnull ProgramFactory programFactory,
             @NonNull OrganisationUnitFactory organisationUnitFactory,
-            @NonNull CategoryFactory categoryFactory) {
+            @NonNull CategoryFactory categoryFactory,
+            @NonNull CategoryComboFactory categoryComboFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
         this.userHandler = userHandler;
         this.systemInfoStore = systemInfoStore;
         this.resourceStore = resourceStore;
-        this.categoryComboQuery = categoryComboQuery;
-        this.categoryComboService = categoryComboService;
-        this.categoryComboHandler = categoryComboHandler;
 
         this.optionSetFactory = optionSetFactory;
         this.trackedEntityFactory = trackedEntityFactory;
         this.programFactory = programFactory;
         this.organisationUnitFactory = organisationUnitFactory;
         this.categoryFactory = categoryFactory;
+        this.categoryComboFactory = categoryComboFactory;
     }
 
     @Override
@@ -171,12 +159,14 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
-            response = downloadCategories(serverDate);
+            response = categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(),
+                    serverDate).call();
 
             if (!response.isSuccessful()) {
                 return response;
             }
-            response = downloadCategoryCombos(serverDate);
+            response = categoryComboFactory.newEndPointCall(CategoryComboQuery.defaultQuery(),
+                    serverDate).call();
 
             if (!response.isSuccessful()) {
                 return response;
@@ -330,7 +320,6 @@ public class MetadataCall implements Call<Response> {
             int size = userRoles.size();
             for (int i = 0; i < size; i++) {
                 UserRole userRole = userRoles.get(i);
-
                 int programSize = userRole.programs().size();
                 for (int j = 0; j < programSize; j++) {
                     Program program = userRole.programs().get(j);
@@ -339,19 +328,5 @@ public class MetadataCall implements Call<Response> {
                 }
             }
         }
-    }
-
-    private Response<Payload<Category>> downloadCategories(Date serverDate) throws Exception {
-        return categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(), serverDate).call();
-    }
-
-    private Response<Payload<CategoryCombo>> downloadCategoryCombos(Date serverDate)
-            throws Exception {
-
-        ResponseValidator<CategoryCombo> comboValidator = new ResponseValidator<>();
-
-        return new CategoryComboEndpointCall(categoryComboQuery, categoryComboService,
-                comboValidator, categoryComboHandler,
-                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
     }
 }

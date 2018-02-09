@@ -13,6 +13,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals",
+})
 public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryComboLinkStore {
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
@@ -43,6 +46,14 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
                     CategoryCategoryComboLinkModel.TABLE + "."
                     + CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO;
 
+    private static final String QUERY_CATEGORY_COMBO_LINKS_BY_CATEGORY_COMBO = "SELECT " + FIELDS + " FROM "
+            + CategoryCategoryComboLinkModel.TABLE
+            + " WHERE "+ CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO+"=?;";
+
+    private static final String QUERY_DELETE_CATEGORY_COMBO_RELATIONS = "DELETE FROM "
+            + CategoryCategoryComboLinkModel.TABLE
+            + " WHERE "+ CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO+"=?;";
+
     private static final String QUERY_ALL_CATEGORY_COMBO_LINKS = "SELECT " +
             FIELDS + " FROM " + CategoryCategoryComboLinkModel.TABLE;
 
@@ -55,11 +66,11 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
     }
 
     @Override
-    public long insert(@NonNull CategoryCategoryComboLinkModel entity) {
+    public long insert(CategoryCategoryComboLinkModel categoryCategoryComboLinkModel) {
 
-        validate(entity);
+        validate(categoryCategoryComboLinkModel);
 
-        bind(insertStatement, entity);
+        bind(insertStatement, categoryCategoryComboLinkModel);
 
         return executeInsert();
     }
@@ -108,13 +119,31 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
         sqLiteBind(sqLiteStatement, 2, link.categoryCombo());
     }
 
-    private int executeInsert() {
-        int lastId = databaseAdapter.executeUpdateDelete(CategoryCategoryComboLinkModel.TABLE,
+    private long executeInsert() {
+        long lastId = databaseAdapter.executeInsert(CategoryCategoryComboLinkModel.TABLE,
                 insertStatement);
         insertStatement.clearBindings();
 
         return lastId;
     }
+
+    @Override
+    public List<CategoryCategoryComboLink> queryByCategoryComboUId(String categoryComboUId) {
+        Cursor cursor = databaseAdapter.query(QUERY_CATEGORY_COMBO_LINKS_BY_CATEGORY_COMBO, categoryComboUId);
+
+        return mapFromCursor(cursor);
+    }
+
+    @Override
+    public int removeCategoryComboRelations(String categoryComboUId) {
+
+        isNull(categoryComboUId);
+
+        Cursor cursor = databaseAdapter.query(QUERY_DELETE_CATEGORY_COMBO_RELATIONS, categoryComboUId);
+
+        return cursor.getCount();
+    }
+
 
     private List<CategoryCategoryComboLink> mapFromCursor(Cursor cursor) {
         List<CategoryCategoryComboLink> categoryCategoryComboLinks = new ArrayList<>(

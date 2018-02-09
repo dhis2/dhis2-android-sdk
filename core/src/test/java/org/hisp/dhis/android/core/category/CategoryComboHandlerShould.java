@@ -17,9 +17,6 @@ import java.util.List;
 public class CategoryComboHandlerShould {
 
     @Mock
-    private CategoryOptionComboCategoryLinkStore mockComboOptionLinkStore;
-
-    @Mock
     private CategoryCategoryComboLinkStoreImpl mockComboLinkStore;
 
     @Mock
@@ -38,7 +35,6 @@ public class CategoryComboHandlerShould {
 
 
         categoryComboHandler = new CategoryComboHandler(mockCategoryComboStore,
-                mockComboOptionLinkStore,
                 mockComboLinkStore, mockOptionComboHandler);
     }
 

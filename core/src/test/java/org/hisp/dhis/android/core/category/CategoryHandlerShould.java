@@ -63,17 +63,15 @@ public class CategoryHandlerShould {
 
     @Test
     public void handle_updated_category() {
-        Category oldCategory = givenACategory();
+        Category updatedCategory = givenACategory();
 
         when(mockCategoryStore.update(any(Category.class))).thenReturn(1);
         when(mockCategoryStore.update(any(Category.class))).thenReturn(1);
 
-        mCategoryHandler.handle(oldCategory);
+        mCategoryHandler.handle(updatedCategory);
 
-        verify(mockCategoryStore).update(oldCategory);
+        verify(mockCategoryStore).update(updatedCategory);
         verifyZeroInteractions(mockCategoryStore);
-        verify(mockCategoryStore).update(oldCategory);
-
     }
 
     private Category givenADeletedCategory() {

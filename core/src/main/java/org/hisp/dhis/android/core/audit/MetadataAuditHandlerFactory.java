@@ -4,9 +4,14 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.dataelement.DataElementMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboFactory;
+import org.hisp.dhis.android.core.category.CategoryComboMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.category.CategoryOptionComboMetadataAuditHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionMetadataAuditHandler;
@@ -55,6 +60,7 @@ public class MetadataAuditHandlerFactory {
     private final RelationshipTypeFactory relationshipTypeFactory;
     private final OrganisationUnitFactory organisationUnitFactory;
     private final CategoryFactory categoryFactory;
+    private final CategoryComboFactory categoryComboFactory;
 
     public MetadataAuditHandlerFactory(
             TrackedEntityFactory trackedEntityFactory, OptionSetFactory optionSetFactory,
@@ -63,7 +69,7 @@ public class MetadataAuditHandlerFactory {
             ProgramFactory programFactory,
             RelationshipTypeFactory relationshipTypeFactory,
             OrganisationUnitFactory organisationUnitFactory,
-            CategoryFactory categoryFactory) {
+            CategoryFactory categoryFactory, CategoryComboFactory categoryComboFactory) {
         this.trackedEntityFactory = trackedEntityFactory;
         this.optionSetFactory = optionSetFactory;
         this.dataElementFactory = dataElementFactory;
@@ -72,6 +78,7 @@ public class MetadataAuditHandlerFactory {
         this.relationshipTypeFactory = relationshipTypeFactory;
         this.organisationUnitFactory = organisationUnitFactory;
         this.categoryFactory = categoryFactory;
+        this.categoryComboFactory = categoryComboFactory;
     }
 
     public MetadataAuditHandler getByClass(Class<?> klass) {
@@ -106,6 +113,10 @@ public class MetadataAuditHandlerFactory {
             return new CategoryMetadataAuditHandler(categoryFactory);
         } else if(klass == CategoryOption.class) {
             return new CategoryOptionMetadataAuditHandler(categoryFactory);
+        } else if(klass == CategoryCombo.class) {
+            return new CategoryComboMetadataAuditHandler(categoryComboFactory);
+        } else if(klass == CategoryOptionCombo.class) {
+            return new CategoryOptionComboMetadataAuditHandler(categoryComboFactory);
         } else {
             throw new IllegalArgumentException("No exists a metadata audit handler for: " + klass);
         }

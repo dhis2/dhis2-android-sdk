@@ -183,7 +183,7 @@ public class CategoryOptionStoreImpl extends Store implements CategoryOptionStor
         Date lastUpdated = getDateFromCursor(cursor, 5);
 
         categoryOption = CategoryOption.builder().uid(uid).code(code).name(name)
-        .displayName(displayName).created(created).lastUpdated(lastUpdated).build();
+                .displayName(displayName).created(created).lastUpdated(lastUpdated).build();
 
         return categoryOption;
     }

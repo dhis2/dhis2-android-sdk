@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.core.category;
 
-
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -8,13 +7,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class CategoryOptionComboCategoryLinkStoreImpl implements
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals",
+})
+public class CategoryOptionComboCategoryLinkStoreImpl extends Store implements
         CategoryOptionComboCategoryLinkStore {
 
     private static final String INSERT_STATEMENT =
@@ -22,6 +24,16 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
                     CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + ", " +
                     CategoryOptionComboCategoryLinkModel.Columns.CATEGORY + ") " +
                     "VALUES(?, ?);";
+
+    private static final String REMOVE_CATEGORY_OPTION_RELATIONS = "DELETE FROM "
+            + CategoryOptionComboCategoryLinkModel.TABLE + " WHERE "
+            + CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + "=?;";
+
+    private static final String QUERY_BY_CATEGORY_OPTION_UID = "SELECT "
+            + CategoryOptionComboCategoryLinkModel.Columns.CATEGORY + " FROM "
+            + CategoryOptionComboCategoryLinkModel.TABLE + " WHERE "
+            + CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + "=?;";
+
 
     private static final String DELETE_STATEMENT =
             "DELETE FROM " + CategoryOptionComboCategoryLinkModel.TABLE +
@@ -51,7 +63,6 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement deleteStatement;
     private final SQLiteStatement updateStatement;
-
 
     public CategoryOptionComboCategoryLinkStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
@@ -107,6 +118,31 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
         return mapFromCursor(cursor);
     }
 
+    @Override
+    public int removeCategoryComboOptionRelationsByCategoryOptionCombo(
+            String categoryOptionComboUid) {
+        Cursor cursor = databaseAdapter.query(REMOVE_CATEGORY_OPTION_RELATIONS,
+                categoryOptionComboUid);
+
+        return cursor.getCount();
+    }
+
+    @Override
+    public List<String> queryByOptionComboUId(String uid) {
+        List<String> categoryOptions = null;
+        Cursor cursor = databaseAdapter.query(QUERY_BY_CATEGORY_OPTION_UID, uid);
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                categoryOptions = listUidFromCursor(cursor);
+            }
+        } finally {
+            cursor.close();
+        }
+        return categoryOptions;
+    }
+
     private void validate(@NonNull CategoryOptionComboCategoryLinkModel link) {
         isNull(link.categoryOptionCombo());
         isNull(link.category());
@@ -119,7 +155,7 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
     }
 
     private int executeInsert() {
-        int lastId = databaseAdapter.executeUpdateDelete(CategoryOptionComboCategoryLinkModel.TABLE,
+        int lastId = (int) databaseAdapter.executeInsert(CategoryOptionComboCategoryLinkModel.TABLE,
                 insertStatement);
         insertStatement.clearBindings();
 
@@ -133,12 +169,9 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
         return rowsAffected;
     }
 
-    private List<CategoryOptionComboCategoryLinkModel>
-    mapFromCursor(
-            Cursor cursor) {
+    private List<CategoryOptionComboCategoryLinkModel> mapFromCursor(Cursor cursor) {
         List<CategoryOptionComboCategoryLinkModel> categoryOptionComboCategoryLinks =
-                new ArrayList<>(
-                        cursor.getCount());
+                new ArrayList<>(cursor.getCount());
 
         try {
             if (cursor.getCount() > 0) {
@@ -175,6 +208,23 @@ public class CategoryOptionComboCategoryLinkStoreImpl implements
         sqLiteBind(updateStatement, 3,
                 oldCategoryOptionComboCategoryLinkModel.categoryOptionCombo());
         sqLiteBind(updateStatement, 4, oldCategoryOptionComboCategoryLinkModel.category());
+    }
+
+    private List<String> listUidFromCursor(Cursor cursor) {
+        List<String> categoryOptions = new ArrayList<>();
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    categoryOptions.add(getStringFromCursor(cursor, 0));
+                }
+                while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return categoryOptions;
     }
 }
 

@@ -200,7 +200,7 @@ public class OrganisationUnitCallUnitShould {
         OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore,
                 userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, resourceHandler);
-        
+
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
                 resourceHandler, serverDate, organisationUnitHandler, "");
 

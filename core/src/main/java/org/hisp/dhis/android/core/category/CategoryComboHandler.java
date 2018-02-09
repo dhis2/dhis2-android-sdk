@@ -66,7 +66,7 @@ public class CategoryComboHandler {
 
         if(isUpdated) {
             //delete old relations
-            categoryCategoryComboLinkStore.removeCategoryComboRelations(combo.uid());
+            categoryCategoryComboLinkStore.removeCategoryComboRelations(categoryCombo.uid());
         }
 
         if (categories != null) {

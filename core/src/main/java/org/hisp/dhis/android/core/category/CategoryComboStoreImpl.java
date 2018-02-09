@@ -12,9 +12,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class CategoryComboStoreImpl extends Store implements CategoryComboStore {
@@ -31,11 +29,6 @@ public class CategoryComboStoreImpl extends Store implements CategoryComboStore 
             CategoryComboModel.Columns.CREATED + ", " +
             CategoryComboModel.Columns.LAST_UPDATED + ", " +
             CategoryComboModel.Columns.IS_DEFAULT;
-
-    private static final String QUERY_BY_UID_STATEMENT = "SELECT " +
-            FIELDS +
-            " FROM " + CategoryComboModel.TABLE +
-            " WHERE "+CategoryComboModel.Columns.UID+" =?;";
 
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryComboModel.TABLE + " (" +
@@ -212,45 +205,6 @@ public class CategoryComboStoreImpl extends Store implements CategoryComboStore 
                 .created(created).lastUpdated(lastUpdated).isDefault(isDefault).build();
 
         return categoryCombo;
-    }
-
-    private Map<String, CategoryCombo> mapFromCursor(Cursor cursor) {
-
-        Map<String, CategoryCombo> categoryMap = new HashMap<>();
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                do {
-                    mapCategory(cursor, categoryMap);
-                } while (cursor.moveToNext());
-            }
-        } finally {
-            cursor.close();
-        }
-        return categoryMap;
-    }
-
-    @SuppressWarnings({
-            "PMD.NPathComplexity",
-    })
-    private void mapCategory(Cursor cursor, Map<String, CategoryCombo> categoryMap) {
-        String uid = getStringFromCursor(cursor, 0);
-        String code = getStringFromCursor(cursor, 1);
-        String name = getStringFromCursor(cursor, 2);
-        String displayName = getStringFromCursor(cursor, 3);
-        Date created = getDateFromCursor(cursor, 4);
-        Date lastUpdated = getDateFromCursor(cursor, 5);
-        Boolean isBoolean = getBooleanFromCursor(cursor, 6);
-
-        categoryMap.put(uid, CategoryCombo.builder()
-                .uid(uid)
-                .code(code)
-                .name(name)
-                .displayName(displayName)
-                .created(created)
-                .lastUpdated(lastUpdated)
-                .isDefault(isBoolean)
-                .build());
     }
 
     @Override

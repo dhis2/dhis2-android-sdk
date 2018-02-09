@@ -13,6 +13,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals",
+})
 public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryComboLinkStore {
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
@@ -122,13 +125,6 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
         insertStatement.clearBindings();
 
         return lastId;
-    }
-
-    @Override
-    public List<CategoryCategoryComboLink> queryAll() {
-        Cursor cursor = databaseAdapter.query(QUERY_ALL_CATEGORY_COMBO_LINKS);
-
-        return mapFromCursor(cursor);
     }
 
     @Override

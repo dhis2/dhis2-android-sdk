@@ -30,10 +30,6 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.CategoryComboFactory;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryQuery;
@@ -48,7 +44,6 @@ import org.hisp.dhis.android.core.program.ProgramFactory;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
@@ -164,12 +159,14 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
-            response =  categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(), serverDate).call();
+            response = categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(),
+                    serverDate).call();
 
             if (!response.isSuccessful()) {
                 return response;
             }
-            response =  categoryComboFactory.newEndPointCall(CategoryComboQuery.defaultQuery(), serverDate).call();
+            response = categoryComboFactory.newEndPointCall(CategoryComboQuery.defaultQuery(),
+                    serverDate).call();
 
             if (!response.isSuccessful()) {
                 return response;

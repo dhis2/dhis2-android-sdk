@@ -32,6 +32,8 @@ public class CategoryOptionHandlerShould {
     public void handle_deleted_categoryOption() {
         CategoryOption deletedOption = givenADeletedOption();
 
+        categoryOptionHandler.handle(deletedOption);
+        verify(mockCategoryOptionStore).delete(deletedOption.uid());
         categoryOptionHandler.handle("", deletedOption);
         verify(mockCategoryOptionStore).delete(deletedOption);
     }
@@ -41,9 +43,11 @@ public class CategoryOptionHandlerShould {
         CategoryOption newOption = givenAOption();
 
         when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(false);
+        when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(0);
 
         categoryOptionHandler.handle(any(String.class), newOption);
 
+        verify(mockCategoryOptionStore).update(newOption);
         verify(mockCategoryOptionStore).insert(newOption);
 
     }
@@ -53,10 +57,13 @@ public class CategoryOptionHandlerShould {
         CategoryOption updatedOption = givenAOption();
 
         when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(true);
+        when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(1);
 
         categoryOptionHandler.handle(any(String.class), updatedOption);
 
         verify(mockCategoryOptionStore).update(updatedOption);
+        verify(mockCategoryOptionStore).update(updatedOption);
+        verifyZeroInteractions(mockCategoryOptionStore);
 
     }
 

@@ -90,19 +90,19 @@ public class CategoryStoreImpl extends Store implements CategoryStore {
     }
 
     @Override
-    public boolean delete(@NonNull Category category) {
+    public int delete(@NonNull String uid) {
 
-        validate(category);
+        isNull(uid);
 
-        bindForDelete(category);
+        bindForDelete(uid);
 
         return execute(deleteStatement);
     }
 
     @Override
-    public boolean update(@NonNull Category newCategory) {
+    public int update(@NonNull Category newCategory) {
 
-        validateForUpdate(newCategory);
+        validate(newCategory);
 
         bindUpdate(newCategory);
 
@@ -118,15 +118,11 @@ public class CategoryStoreImpl extends Store implements CategoryStore {
         return categoryMap.get(uid);
     }
 
-    private boolean wasExecuted(int numberOfRows) {
-        return numberOfRows >= 1;
-    }
-
-    private boolean execute(@NonNull SQLiteStatement statement) {
+    private int execute(@NonNull SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryModel.TABLE, statement);
         statement.clearBindings();
 
-        return wasExecuted(rowsAffected);
+        return rowsAffected;
     }
 
     private long executeInsert() {
@@ -136,25 +132,21 @@ public class CategoryStoreImpl extends Store implements CategoryStore {
         return lastId;
     }
 
-    private void validateForUpdate(@NonNull Category newCategory) {
-        isNull(newCategory.uid());
-    }
-
     private void validate(@NonNull Category category) {
         isNull(category.uid());
     }
 
-    private void bindForDelete(@NonNull Category category) {
+    private void bindForDelete(@NonNull String uid) {
         final int whereUidIndex = 1;
 
-        sqLiteBind(deleteStatement, whereUidIndex, category.uid());
+        sqLiteBind(deleteStatement, whereUidIndex, uid);
     }
 
-    private void bindUpdate(@NonNull Category newCategory) {
+    private void bindUpdate(@NonNull Category category) {
         final int whereUidIndex = 8;
-        bind(updateStatement, newCategory);
+        bind(updateStatement, category);
 
-        sqLiteBind(updateStatement, whereUidIndex, newCategory.uid());
+        sqLiteBind(updateStatement, whereUidIndex, category.uid());
     }
 
     private void bind(@NonNull SQLiteStatement sqLiteStatement, @NonNull Category category) {

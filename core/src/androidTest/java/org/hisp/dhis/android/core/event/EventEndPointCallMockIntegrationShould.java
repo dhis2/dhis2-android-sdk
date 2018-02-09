@@ -112,6 +112,25 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
         verifyDownloadedEvents("event_1_with_only_one_data_values.json");
     }
 
+    @Test
+    @MediumTest
+    public void rollback_transaction_when_insert_a_event_with_wrong_foreign_key()
+            throws Exception {
+        givenAMetadataInDatabase();
+
+        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+
+        dhis2MockServer.enqueueMockResponse(
+                "two_events_first_good_second_wrong_foreign_key.json");
+
+        eventEndPointCall.call();
+
+        verifyNumberOfDownloadedEvents(1);
+        verifyNumberOfDownloadedTrackedEntityDataValue(6);
+        verifyDownloadedEvents("event_1_with_all_data_values.json");
+    }
+
     private void givenAMetadataInDatabase() throws Exception {
         dhis2MockServer.enqueueMockResponse("system_info.json");
         dhis2MockServer.enqueueMockResponse("user.json");
@@ -122,6 +141,22 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
         dhis2MockServer.enqueueMockResponse("option_sets.json");
         d2.syncMetaData().call();
+    }
+
+    private void verifyNumberOfDownloadedEvents(int numEvents) {
+        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
+
+        List<Event> downloadedEvents = eventStore.querySingleEvents();
+
+        assertThat(downloadedEvents.size(), is(numEvents));
+    }
+
+    private void verifyNumberOfDownloadedTrackedEntityDataValue(int num) {
+        TrackedEntityDataValueStoreImpl eventStore = new TrackedEntityDataValueStoreImpl(d2.databaseAdapter());
+
+        int numPersisted = eventStore.countAll();
+
+        assertThat(numPersisted, is(num));
     }
 
     private void verifyDownloadedEvents(String file) throws IOException {

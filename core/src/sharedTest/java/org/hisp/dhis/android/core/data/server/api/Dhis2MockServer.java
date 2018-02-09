@@ -28,20 +28,14 @@
 
 package org.hisp.dhis.android.core.data.server.api;
 
-import static okhttp3.internal.Util.UTC;
-
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.file.IFileReader;
+import org.hisp.dhis.android.core.data.http.HttpHeaderDate;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -78,6 +72,16 @@ public class Dhis2MockServer {
         server.enqueue(mockResponse);
     }
 
+    public void enqueueStringMockResponse(String response, Date dateHeader) throws IOException {
+        MockResponse mockResponse = new MockResponse();
+        mockResponse.setResponseCode(OK_CODE);
+        mockResponse.setBody(response);
+
+        mockResponse.setHeader(HeaderUtils.DATE, new HttpHeaderDate(dateHeader).toString());
+
+        server.enqueue(mockResponse);
+    }
+
     public void enqueueMockResponse(String fileName) throws IOException {
         MockResponse response = createMockResponse(fileName, OK_CODE);
         server.enqueue(response);
@@ -101,12 +105,7 @@ public class Dhis2MockServer {
             throws IOException {
         MockResponse response = createMockResponse(fileName, OK_CODE);
 
-        DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-        rfc1123.setLenient(false);
-        rfc1123.setTimeZone(UTC);
-        String dateHeaderValue = rfc1123.format(dateHeader);
-
-        response.setHeader(HeaderUtils.DATE, dateHeaderValue);
+        response.setHeader(HeaderUtils.DATE, new HttpHeaderDate(dateHeader).toString());
 
         server.enqueue(response);
     }

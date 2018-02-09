@@ -43,7 +43,7 @@ public class CategoryHandlerShould {
         Category deletedCategory = givenADeletedCategory();
 
         mCategoryHandler.handle(deletedCategory);
-        verify(mockCategoryStore).delete(deletedCategory);
+        verify(mockCategoryStore).delete(deletedCategory.uid());
     }
 
     @Test
@@ -51,9 +51,11 @@ public class CategoryHandlerShould {
         Category newCategory = givenACategory();
 
         when(mockCategoryStore.update(any(Category.class))).thenReturn(false);
+        when(mockCategoryStore.update(any(Category.class))).thenReturn(0);
 
         mCategoryHandler.handle(newCategory);
 
+        verify(mockCategoryStore).update(newCategory);
         verify(mockCategoryStore).insert(newCategory);
 
     }
@@ -62,10 +64,13 @@ public class CategoryHandlerShould {
     public void handle_updated_category() {
         Category oldCategory = givenACategory();
 
+        when(mockCategoryStore.update(any(Category.class))).thenReturn(1);
         when(mockCategoryStore.update(any(Category.class))).thenReturn(true);
 
         mCategoryHandler.handle(oldCategory);
 
+        verify(mockCategoryStore).update(updatedCategory);
+        verifyZeroInteractions(mockCategoryStore);
         verify(mockCategoryStore).update(oldCategory);
 
     }

@@ -56,7 +56,7 @@ public abstract class CategoryCategoryOptionLinkModel extends BaseModel {
 
     @Nullable
     @ColumnName(Columns.CATEGORY_OPTION)
-    public abstract String option();
+    public abstract String categoryOption();
 
     @NonNull
     public abstract ContentValues toContentValues();
@@ -77,7 +77,7 @@ public abstract class CategoryCategoryOptionLinkModel extends BaseModel {
 
         public abstract Builder category(@Nullable String category);
 
-        public abstract Builder option(@Nullable String option);
+        public abstract Builder categoryOption(@Nullable String categoryOption);
 
         public abstract CategoryCategoryOptionLinkModel build();
     }

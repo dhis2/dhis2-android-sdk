@@ -48,16 +48,21 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
             CategoryComboModel.Columns.IS_DEFAULT + " =? WHERE " +
             CategoryComboModel.Columns.UID + " =?;";
 
-    private static final String FIELDS = CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.UID + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.CODE + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.NAME + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.DISPLAY_NAME + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.CREATED + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.LAST_UPDATED + "," +
-            CategoryComboModel.TABLE +"."+ CategoryComboModel.Columns.IS_DEFAULT;
+    private static final String FIELDS =
+            CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.UID + "," +
+                    CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.CODE + "," +
+                    CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.NAME + "," +
+                    CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.DISPLAY_NAME + "," +
+                    CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.CREATED + "," +
+                    CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.LAST_UPDATED + "," +
+                    CategoryComboModel.TABLE + "." + CategoryComboModel.Columns.IS_DEFAULT;
 
     private static final String QUERY_ALL_CATEGORY_COMBOS = "SELECT " +
             FIELDS + " FROM " + CategoryComboModel.TABLE;
+
+    private static final String QUERY_BY_UID_STATEMENT = "SELECT " +
+            FIELDS + " FROM " + CategoryComboModel.TABLE +
+            " WHERE " + CategoryComboModel.Columns.UID + "=?";
 
     public CategoryComboStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
@@ -77,31 +82,31 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
     }
 
     @Override
-    public boolean delete(@NonNull CategoryCombo combo) {
+    public int delete(@NonNull String uid) {
 
-        validate(combo);
+        isNull(uid);
 
-        bindForDelete(combo);
+        bindForDelete(uid);
 
         return execute(deleteStatement);
+
     }
 
     @Override
-    public boolean update(@NonNull CategoryCombo oldCombo,
-            @NonNull CategoryCombo newCombo) {
+    public int update(@NonNull CategoryCombo categoryCombo) {
 
-        validateForUpdate(oldCombo, newCombo);
+        validate(categoryCombo);
 
-        bindUpdate(oldCombo, newCombo);
+        bindUpdate(categoryCombo);
 
         return execute(updateStatement);
     }
 
-    private boolean execute(SQLiteStatement statement) {
+    private int execute(SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryComboModel.TABLE, statement);
         statement.clearBindings();
 
-        return wasExecuted(rowsAffected);
+        return rowsAffected;
     }
 
     private long executeInsert() {
@@ -111,27 +116,21 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         return lastId;
     }
 
-    private void validateForUpdate(@NonNull CategoryCombo oldCombo,
-            @NonNull CategoryCombo newCombo) {
-        isNull(oldCombo.uid());
-        isNull(newCombo.uid());
-    }
-
     private void validate(@NonNull CategoryCombo category) {
         isNull(category.uid());
     }
 
-    private void bindForDelete(@NonNull CategoryCombo combo) {
+    private void bindForDelete(@NonNull String uid) {
         final int uidIndex = 1;
 
-        sqLiteBind(deleteStatement, uidIndex, combo.uid());
+        sqLiteBind(deleteStatement, uidIndex, uid);
     }
 
-    private void bindUpdate(@NonNull CategoryCombo oldCombo, @NonNull CategoryCombo newCombo) {
+    private void bindUpdate(@NonNull CategoryCombo categoryCombo) {
         final int whereUidIndex = 7;
-        bind(updateStatement, newCombo);
+        bind(updateStatement, categoryCombo);
 
-        sqLiteBind(updateStatement, whereUidIndex, oldCombo.uid());
+        sqLiteBind(updateStatement, whereUidIndex, categoryCombo.uid());
     }
 
     private void bind(SQLiteStatement sqLiteStatement, @NonNull CategoryCombo categoryCombo) {
@@ -156,15 +155,24 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
         return categoryCombo.isDefault() ? 1 : 0;
     }
 
-    private boolean wasExecuted(int numberOfRows) {
-        return numberOfRows >= 1;
-    }
-
     @Override
     public List<CategoryCombo> queryAll() {
         Cursor cursor = databaseAdapter.query(QUERY_ALL_CATEGORY_COMBOS);
 
         return mapCategoryCombosFromCursor(cursor);
+    }
+
+    @Override
+    public CategoryCombo queryByUid(String uid) {
+        CategoryCombo categoryCombo = null;
+
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID_STATEMENT, uid);
+
+        if (cursor.getCount() > 0) {
+            categoryCombo = mapCategoryCombosFromCursor(cursor).get(0);
+        }
+
+        return categoryCombo;
     }
 
     private List<CategoryCombo> mapCategoryCombosFromCursor(Cursor cursor) {

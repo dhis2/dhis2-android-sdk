@@ -30,18 +30,18 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
-import java.util.Date;
 import java.util.List;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramRule.Builder.class)
 public abstract class ProgramRule extends BaseIdentifiableObject {
     private static final String PROGRAM_STAGE = "programStage";
     private static final String PROGRAM = "program";
@@ -74,7 +74,6 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
     public static final Field<ProgramRule, Boolean> deleted
             = Field.create(DELETED);
 
-
     @Nullable
     @JsonProperty(PRIORITY)
     public abstract Integer priority();
@@ -95,22 +94,32 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
     @JsonProperty(PROGRAM_RULE_ACTIONS)
     public abstract List<ProgramRuleAction> programRuleActions();
 
-    @JsonCreator
-    public static ProgramRule create(@JsonProperty(UID) String uid,
-                                     @JsonProperty(CODE) String code,
-                                     @JsonProperty(NAME) String name,
-                                     @JsonProperty(DISPLAY_NAME) String displayName,
-                                     @JsonProperty(CREATED) Date created,
-                                     @JsonProperty(LAST_UPDATED) Date lastUpdated,
-                                     @JsonProperty(PRIORITY) Integer priority,
-                                     @JsonProperty(CONDITION) String condition,
-                                     @JsonProperty(PROGRAM) Program program,
-                                     @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
-                                     @JsonProperty(PROGRAM_RULE_ACTIONS) List<ProgramRuleAction> programRuleActions,
-                                     @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_ProgramRule(
-                uid, code, name, displayName,
-                created, lastUpdated, deleted, priority, condition,
-                program, programStage, programRuleActions);
+    abstract ProgramRule.Builder toBuilder();
+
+    static ProgramRule.Builder builder() {
+        return new AutoValue_ProgramRule.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends
+            BaseIdentifiableObject.Builder<ProgramRule.Builder> {
+
+        @JsonProperty(PRIORITY)
+        public abstract ProgramRule.Builder priority(@Nullable Integer priority);
+
+        @JsonProperty(CONDITION)
+        public abstract ProgramRule.Builder condition(@Nullable String condition);
+
+        @JsonProperty(PROGRAM)
+        public abstract ProgramRule.Builder program(@Nullable Program program);
+
+        @JsonProperty(PROGRAM_STAGE)
+        public abstract ProgramRule.Builder programStage(@Nullable ProgramStage programStage);
+
+        @JsonProperty(PROGRAM_RULE_ACTIONS)
+        public abstract ProgramRule.Builder programRuleActions(
+                @Nullable List<ProgramRuleAction> programRuleActions);
+
+        public abstract ProgramRule build();
     }
 }

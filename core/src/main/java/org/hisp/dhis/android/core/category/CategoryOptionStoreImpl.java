@@ -85,34 +85,30 @@ public class CategoryOptionStoreImpl extends Store implements CategoryOptionStor
     }
 
     @Override
-    public boolean delete(@NonNull CategoryOption categoryOption) {
+    public int delete(@NonNull String uid) {
 
-        validate(categoryOption);
+        isNull(uid);
 
-        bindForDelete(categoryOption);
+        bindForDelete(uid);
 
         return execute(deleteStatement);
     }
 
     @Override
-    public boolean update(@NonNull CategoryOption newCategoryOption) {
+    public int update(@NonNull CategoryOption categoryOption) {
 
-        validateForUpdate(newCategoryOption);
+        validate(categoryOption);
 
-        bindUpdate(newCategoryOption);
+        bindUpdate(categoryOption);
 
         return execute(updateStatement);
     }
 
-    private boolean wasExecuted(int numberOfRows) {
-        return numberOfRows >= 1;
-    }
-
-    private boolean execute(@NonNull SQLiteStatement statement) {
+    private int execute(@NonNull SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryModel.TABLE, statement);
         statement.clearBindings();
 
-        return wasExecuted(rowsAffected);
+        return rowsAffected;
     }
 
     private long executeInsert() {
@@ -122,25 +118,21 @@ public class CategoryOptionStoreImpl extends Store implements CategoryOptionStor
         return lastId;
     }
 
-    private void validateForUpdate(@NonNull CategoryOption newCategoryOption) {
-        isNull(newCategoryOption.uid());
+    private void validate(@NonNull CategoryOption categoryOption) {
+        isNull(categoryOption.uid());
     }
 
-    private void validate(@NonNull CategoryOption category) {
-        isNull(category.uid());
-    }
-
-    private void bindForDelete(@NonNull CategoryOption option) {
+    private void bindForDelete(@NonNull String uid) {
         final int whereUidIndex = 1;
 
-        sqLiteBind(deleteStatement, whereUidIndex, option.uid());
+        sqLiteBind(deleteStatement, whereUidIndex, uid);
     }
 
-    private void bindUpdate(@NonNull CategoryOption newOption) {
+    private void bindUpdate(@NonNull CategoryOption categoryOption) {
         final int whereUidIndex = 7;
-        bind(updateStatement, newOption);
+        bind(updateStatement, categoryOption);
 
-        sqLiteBind(updateStatement, whereUidIndex, newOption.uid());
+        sqLiteBind(updateStatement, whereUidIndex, categoryOption.uid());
     }
 
     private void bind(@NonNull SQLiteStatement sqLiteStatement, @NonNull CategoryOption option) {

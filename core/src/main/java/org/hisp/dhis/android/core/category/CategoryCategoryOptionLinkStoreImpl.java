@@ -13,7 +13,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOptionLinkStore {
 
     private final DatabaseAdapter databaseAdapter;
@@ -159,7 +161,8 @@ public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOpti
 
     @Override
     public List<String> queryCategoryUidListFromCategoryOptionUid(String categoryOptionUid) {
-        Cursor cursor = databaseAdapter.query(QUERY_BY_CATEGORY_OPTION_UID_STATEMENT, categoryOptionUid);
+        Cursor cursor = databaseAdapter.query(QUERY_BY_CATEGORY_OPTION_UID_STATEMENT,
+                categoryOptionUid);
 
         List<String> uIds = mapUidsFromCursor(cursor);
 

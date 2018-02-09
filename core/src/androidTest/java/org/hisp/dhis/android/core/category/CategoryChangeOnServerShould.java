@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import android.support.test.filters.MediumTest;
 
+import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.audit.GenericClassParser;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
@@ -29,8 +30,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CategoryChangeOnServerShould extends AbsStoreTestCase {
 
@@ -86,13 +85,18 @@ public class CategoryChangeOnServerShould extends AbsStoreTestCase {
         });
 
         metadataAuditListener.onMetadataChanged(Category.class, metadataAudit);
-        assertThat(getCategory(categoryStore.queryAll().get(0).uid()), is(metadataAudit.getValue()));
+
+
+        Category createdCategory = categoryStore.queryAll().get(0);
+        Category expectedCategory = metadataAudit.getValue();
+
+        verifyCategory(createdCategory, expectedCategory);
     }
 
     @Test
     @MediumTest
     public void update_category_if_audit_type_is_update() throws Exception {
-        String filename = "audit/categories.json";
+        String filename = "category_edited.json";
 
         givenAExistedCategoryPreviously();
 
@@ -114,8 +118,10 @@ public class CategoryChangeOnServerShould extends AbsStoreTestCase {
 
         metadataAuditListener.onMetadataChanged(Category.class, metadataAudit);
 
-        assertThat(getCategory(categoryStore.queryAll().get(0).uid()), is(parseEntities(
-                filename).items().get(0)));
+        Category editedCategory = categoryStore.queryAll().get(0);
+        Category expectedCategory = parseEntities(filename).items().get(0);
+
+        verifyCategory(editedCategory, expectedCategory);
     }
 
     @Test
@@ -166,20 +172,17 @@ public class CategoryChangeOnServerShould extends AbsStoreTestCase {
         return parser.parse(json, Payload.class, Category.class);
     }
 
-    private Category getCategory(String uid) {
-        Category category = categoryStore.queryByUid(uid);
+    private void verifyCategory(Category createdCategory, Category expectedCategory) {
+        //compare without children because there are other tests (call, handler)
+        //that verify the tree is saved in database
+        MatcherAssert.assertThat(removeChildrenFromCategory(createdCategory),
+                is(removeChildrenFromCategory(expectedCategory)));
+    }
 
-        List<String> categoryOptionUIdList = new CategoryCategoryOptionLinkStoreImpl(databaseAdapter()).queryCategoryOptionUidListFromCategoryUid(uid);
-        List<CategoryOption> categoryOptions = new ArrayList<>();
-        for(String categoryOptionUid:categoryOptionUIdList){
-            CategoryOption categoryOption = new CategoryOptionStoreImpl(databaseAdapter()).queryByUid(categoryOptionUid);
-            categoryOptions.add(categoryOption);
-        }
-
-        category = category.toBuilder().categoryOptions(categoryOptions)
-                .build();
+    private Category removeChildrenFromCategory(Category category) {
+        category = category.toBuilder()
+                .categoryOptions(null).build();
 
         return category;
     }
-
 }

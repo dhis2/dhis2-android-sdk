@@ -30,7 +30,7 @@ public class CategoryStoreImpl extends Store implements CategoryStore {
             CategoryModel.Columns.LAST_UPDATED + "," +
             CategoryModel.Columns.DATA_DIMENSION_TYPE +
             "  FROM " + CategoryModel.TABLE +
-            " WHERE "+CategoryModel.Columns.UID+" =?;";
+            " WHERE " + CategoryModel.Columns.UID + " =?;";
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + CategoryModel.TABLE + " (" +
             CategoryModel.Columns.UID + ", " +
@@ -181,7 +181,9 @@ public class CategoryStoreImpl extends Store implements CategoryStore {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
-                    mapCategory(cursor, categoryMap);
+                    Category category = mapCategory(cursor);
+
+                    categoryMap.put(category.uid(), category);
                 } while (cursor.moveToNext());
             }
         } finally {
@@ -190,13 +192,13 @@ public class CategoryStoreImpl extends Store implements CategoryStore {
         return categoryMap;
     }
 
-    private Category mapCategory(Cursor cursor, Map<String, Category> categoryMap) {
+    private Category mapCategory(Cursor cursor) {
         String uid = getStringFromCursor(cursor, 0);
         String code = getStringFromCursor(cursor, 1);
         String name = getStringFromCursor(cursor, 2);
         String displayName = getStringFromCursor(cursor, 3);
         Date created = getDateFromCursor(cursor, 4);
-        Date lastUpdated =  getDateFromCursor(cursor, 5);
+        Date lastUpdated = getDateFromCursor(cursor, 5);
         String dataDimensionType = getStringFromCursor(cursor, 6);
 
         return Category.builder()

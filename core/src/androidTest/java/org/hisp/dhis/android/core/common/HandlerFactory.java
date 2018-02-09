@@ -125,8 +125,10 @@ public class HandlerFactory {
     public static CategoryOptionHandler createCategoryOptionHandler(
             DatabaseAdapter databaseAdapter) {
         CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter);
+        CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore =
+                new CategoryCategoryOptionLinkStoreImpl(databaseAdapter);
         CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                categoryOptionStore);
+                categoryOptionStore, categoryCategoryOptionLinkStore);
 
         return categoryOptionHandler;
     }
@@ -134,11 +136,9 @@ public class HandlerFactory {
     public static CategoryHandler createCategoryHandler(DatabaseAdapter databaseAdapter) {
         CategoryStore categoryStore = new CategoryStoreImpl(databaseAdapter);
         CategoryOptionHandler categoryOptionHandler = createCategoryOptionHandler(databaseAdapter);
-        CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore =
-                new CategoryCategoryOptionLinkStoreImpl(databaseAdapter);
+
         CategoryHandler categoryHandler =
-                new CategoryHandler(categoryStore, categoryOptionHandler,
-                        categoryCategoryOptionLinkStore);
+                new CategoryHandler(categoryStore, categoryOptionHandler);
 
         return categoryHandler;
     }

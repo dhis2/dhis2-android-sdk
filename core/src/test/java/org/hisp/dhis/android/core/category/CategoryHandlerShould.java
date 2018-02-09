@@ -33,11 +33,11 @@ public class CategoryHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         CategoryOptionHandler categoryOptionHandler =
-                new CategoryOptionHandler(mockCategoryOptionStore);
+                new CategoryOptionHandler(mockCategoryOptionStore,
+                        mockCategoryCategoryOptionLinkStore);
 
         mCategoryHandler =
-                new CategoryHandler(mockCategoryStore, categoryOptionHandler,
-                        mockCategoryCategoryOptionLinkStore);
+                new CategoryHandler(mockCategoryStore, categoryOptionHandler);
     }
 
     @Test

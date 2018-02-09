@@ -28,24 +28,29 @@
     "dimensionItemType": "CATEGORY_OPTION",
     "startDate": "2018-01-16T00:00:00.000",
     "endDate": "2018-01-26T00:00:00.000",
-    "organisationUnits": [{
-      "code": "OU_559",
-      "name": "Ngelehun CHC",
-      "created": "2012-02-17T15:54:39.987",
-      "lastUpdated": "2017-05-22T15:21:48.516",
-      "translations": [{
-        "locale": "en_GB",
-        "property": "SHORT_NAME",
-        "value": "Ngelehun CHC"
-      }, {
-        "locale": "en_GB",
-        "property": "NAME",
-        "value": "Ngelehun CHC"
-      }],
-      "externalAccess": false,
-      "displayName": "Ngelehun CHC",
-      "id": "DiszpKrYNg8"
-    }],
+    "organisationUnits": [
+      {
+        "code": "OU_559",
+        "name": "Ngelehun CHC",
+        "created": "2012-02-17T15:54:39.987",
+        "lastUpdated": "2017-05-22T15:21:48.516",
+        "translations": [
+          {
+            "locale": "en_GB",
+            "property": "SHORT_NAME",
+            "value": "Ngelehun CHC"
+          },
+          {
+            "locale": "en_GB",
+            "property": "NAME",
+            "value": "Ngelehun CHC"
+          }
+        ],
+        "externalAccess": false,
+        "displayName": "Ngelehun CHC",
+        "id": "DiszpKrYNg8"
+      }
+    ],
     "dimensionItem": "N2aIBIcVO3e",
     "id": "N2aIBIcVO3e"
   }

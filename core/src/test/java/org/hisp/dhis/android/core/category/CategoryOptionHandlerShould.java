@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core.category;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -17,6 +18,9 @@ public class CategoryOptionHandlerShould {
     @Mock
     private CategoryOptionStore mockCategoryOptionStore;
 
+    @Mock
+    private CategoryCategoryOptionLinkStore mockCategoryCategoryOptionLinkStore;
+
 
     private CategoryOptionHandler categoryOptionHandler;
 
@@ -24,14 +28,15 @@ public class CategoryOptionHandlerShould {
     public void setUp() throws Exception {
 
         MockitoAnnotations.initMocks(this);
-        categoryOptionHandler = new CategoryOptionHandler(mockCategoryOptionStore);
+        categoryOptionHandler = new CategoryOptionHandler(mockCategoryOptionStore,
+                mockCategoryCategoryOptionLinkStore);
     }
 
     @Test
     public void handle_deleted_categoryOption() {
         CategoryOption deletedOption = givenADeletedOption();
 
-        categoryOptionHandler.handle(deletedOption);
+        categoryOptionHandler.handle("", deletedOption);
         verify(mockCategoryOptionStore).delete(deletedOption.uid());
     }
 
@@ -41,7 +46,7 @@ public class CategoryOptionHandlerShould {
 
         when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(0);
 
-        categoryOptionHandler.handle(newOption);
+        categoryOptionHandler.handle(anyString(), newOption);
 
         verify(mockCategoryOptionStore).update(newOption);
         verify(mockCategoryOptionStore).insert(newOption);
@@ -54,7 +59,7 @@ public class CategoryOptionHandlerShould {
 
         when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(1);
 
-        categoryOptionHandler.handle(updatedOption);
+        categoryOptionHandler.handle(anyString(), updatedOption);
 
         verify(mockCategoryOptionStore).update(updatedOption);
         verifyZeroInteractions(mockCategoryOptionStore);

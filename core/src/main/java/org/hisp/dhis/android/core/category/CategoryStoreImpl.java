@@ -110,6 +110,15 @@ public class CategoryStoreImpl extends Store implements CategoryStore {
     }
 
     @Override
+    public List<Category> queryAll() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
+
+        Map<String, Category> categoryMap = mapFromCursor(cursor);
+
+        return new ArrayList<>(categoryMap.values());
+    }
+
+    @Override
     public Category queryByUid(String uid) {
         Cursor cursor = databaseAdapter.query(QUERY_BY_UID_STATEMENT, uid);
 
@@ -161,36 +170,8 @@ public class CategoryStoreImpl extends Store implements CategoryStore {
     }
 
     @Override
-    public List<Category> queryAll() {
-        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
-
-        return mapCategoriesFromCursor(cursor);
-    }
-
-    @Override
     public int delete() {
         return databaseAdapter.delete(CategoryModel.TABLE);
-    }
-
-    private List<Category> mapCategoriesFromCursor(Cursor cursor) {
-        List<Category> categories = new ArrayList<>(cursor.getCount());
-
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-
-                do {
-                    Category category = mapCategoryFromCursor(cursor);
-
-                    categories.add(category);
-                }
-                while (cursor.moveToNext());
-            }
-
-        } finally {
-            cursor.close();
-        }
-        return categories;
     }
 
     private Map<String, Category> mapFromCursor(Cursor cursor) {
@@ -209,7 +190,7 @@ public class CategoryStoreImpl extends Store implements CategoryStore {
         return categoryMap;
     }
 
-    private void mapCategory(Cursor cursor, Map<String, Category> categoryMap) {
+    private Category mapCategory(Cursor cursor, Map<String, Category> categoryMap) {
         String uid = getStringFromCursor(cursor, 0);
         String code = getStringFromCursor(cursor, 1);
         String name = getStringFromCursor(cursor, 2);
@@ -218,7 +199,7 @@ public class CategoryStoreImpl extends Store implements CategoryStore {
         Date lastUpdated =  getDateFromCursor(cursor, 5);
         String dataDimensionType = getStringFromCursor(cursor, 6);
 
-        categoryMap.put(uid, Category.builder()
+        return Category.builder()
                 .uid(uid)
                 .code(code)
                 .name(name)
@@ -226,28 +207,7 @@ public class CategoryStoreImpl extends Store implements CategoryStore {
                 .created(created)
                 .lastUpdated(lastUpdated)
                 .dataDimensionType(dataDimensionType)
-                .build());
-    }
-
-    @NonNull
-    private Category mapCategoryFromCursor(Cursor cursor) {
-        String uid = getStringFromCursor(cursor, 0);
-        String code = getStringFromCursor(cursor, 1);
-        String name = getStringFromCursor(cursor, 2);
-        String displayName = getStringFromCursor(cursor, 3);
-        Date created = getDateFromCursor(cursor, 4);
-        Date lastUpdated = getDateFromCursor(cursor, 5);
-        String dataDimensionType = getStringFromCursor(cursor, 6);
-
-        return Category.builder()
-                .uid(uid)
-                .code(code)
-                .created(created)
-                .name(name)
-                .lastUpdated(lastUpdated)
-                .displayName(displayName)
-                .categoryOptions(new ArrayList<CategoryOption>())
-                .dataDimensionType(dataDimensionType).build();
+                .build();
     }
 }
 

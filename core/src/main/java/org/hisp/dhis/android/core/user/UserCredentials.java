@@ -72,7 +72,8 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<UserCredentials.Builder> {
+    public static abstract class Builder extends
+            BaseIdentifiableObject.Builder<UserCredentials.Builder> {
 
 
         @JsonProperty(USERNAME)

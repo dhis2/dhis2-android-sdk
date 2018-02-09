@@ -3,6 +3,11 @@ package org.hisp.dhis.android.core.audit;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryFactory;
+import org.hisp.dhis.android.core.category.CategoryMetadataAuditHandler;
+import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryOptionMetadataAuditHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.dataelement.DataElementMetadataAuditHandler;
@@ -59,6 +64,9 @@ public class MetadataAuditHandlerFactoryShould {
     private OptionSetFactory optionSetFactory;
 
     @Mock
+    private CategoryFactory categoryFactory;
+
+    @Mock
     private OrganisationUnitFactory organisationUnitFactory;
 
     @Mock
@@ -81,7 +89,6 @@ public class MetadataAuditHandlerFactoryShould {
                 {OptionMetadataAuditHandler.class, Option.class},
                 {DataElementMetadataAuditHandler.class, DataElement.class},
                 {TrackedEntityAttributeMetadataAuditHandler.class, TrackedEntityAttribute.class},
-                {OptionMetadataAuditHandler.class, Option.class},
                 {ProgramMetadataAuditHandler.class, Program.class},
                 {ProgramStageMetadataAuditHandler.class, ProgramStage.class},
                 {ProgramIndicatorMetadataAuditHandler.class, ProgramIndicator.class},
@@ -89,7 +96,9 @@ public class MetadataAuditHandlerFactoryShould {
                 {ProgramRuleActionMetadataAuditHandler.class, ProgramRuleAction.class},
                 {ProgramRuleVariableMetadataAuditHandler.class, ProgramRuleVariable.class},
                 {RelationshipTypeMetadataAuditHandler.class, RelationshipType.class},
-                {OrganisationUnitMetadataAuditHandler.class, OrganisationUnit.class}
+                {OrganisationUnitMetadataAuditHandler.class, OrganisationUnit.class},
+                {CategoryMetadataAuditHandler.class, Category.class},
+                {CategoryOptionMetadataAuditHandler.class, CategoryOption.class}
         });
     }
 
@@ -109,7 +118,7 @@ public class MetadataAuditHandlerFactoryShould {
         metadataAuditHandlerFactory =
                 new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
                         dataElementFactory, trackedEntityAttributeFactory, programFactory,
-                        relationshipTypeFactory, organisationUnitFactory);
+                        relationshipTypeFactory, organisationUnitFactory, categoryFactory);
     }
 
     @Test

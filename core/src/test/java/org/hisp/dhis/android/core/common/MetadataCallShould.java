@@ -46,8 +46,7 @@ import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
-import org.hisp.dhis.android.core.category.CategoryHandler;
-import org.hisp.dhis.android.core.category.CategoryQuery;
+import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
@@ -177,14 +176,6 @@ public class MetadataCallShould {
 
     @Mock
     private Payload<OrganisationUnit> organisationUnitPayload;
-    @Mock
-    private CategoryQuery categoryQuery;
-
-    private CategoryService categoryService;
-
-    @Mock
-    private CategoryHandler categoryHandler;
-
 
     private CategoryComboService comboService;
 
@@ -193,6 +184,7 @@ public class MetadataCallShould {
 
     private OptionSetFactory optionSetFactory;
     private TrackedEntityFactory trackedEntityFactory;
+    private CategoryFactory categoryFactory;
     private OrganisationUnitFactory organisationUnitFactory;
 
     @Mock
@@ -254,7 +246,6 @@ public class MetadataCallShould {
                 .build();
 
 
-        categoryService = retrofit.create(CategoryService.class);
         comboService = retrofit.create(CategoryComboService.class);
 
         optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
@@ -265,13 +256,16 @@ public class MetadataCallShould {
 
         relationshipTypeFactory =
                 new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
-        organisationUnitFactory = new OrganisationUnitFactory(retrofit, databaseAdapter, resourceHandler);
+        organisationUnitFactory = new OrganisationUnitFactory(retrofit, databaseAdapter,
+                resourceHandler);
 
+        categoryFactory = new CategoryFactory(retrofit, databaseAdapter, resourceHandler);
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService, userHandler,
-                systemInfoStore, resourceStore, categoryQuery, categoryService, categoryHandler,
+                systemInfoStore, resourceStore,
                 CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetFactory, trackedEntityFactory, programFactory, organisationUnitFactory);
+                optionSetFactory, trackedEntityFactory, programFactory, organisationUnitFactory,
+                categoryFactory);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
@@ -286,7 +280,7 @@ public class MetadataCallShould {
     @Test
     public void returns_category_combo_payload_when_execute_metadata_call() throws Exception {
         dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
+        dhis2MockServer.enqueueMockResponse("empty_categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
@@ -304,7 +298,7 @@ public class MetadataCallShould {
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_system_info_call_fail() throws Exception {
         dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
+        dhis2MockServer.enqueueMockResponse("empty_categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");
@@ -369,7 +363,7 @@ public class MetadataCallShould {
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_program_call_fail() throws Exception {
         dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
+        dhis2MockServer.enqueueMockResponse("empty_categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("api_error.json", HttpURLConnection.HTTP_CONFLICT);
 
@@ -387,7 +381,7 @@ public class MetadataCallShould {
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_tracked_entity_call_fail() throws Exception {
         dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
+        dhis2MockServer.enqueueMockResponse("empty_categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("api_error.json", HttpURLConnection.HTTP_CONFLICT);
@@ -406,7 +400,7 @@ public class MetadataCallShould {
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_option_set_fail() throws Exception {
         dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
+        dhis2MockServer.enqueueMockResponse("empty_categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
         dhis2MockServer.enqueueMockResponse("programs.json");
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");

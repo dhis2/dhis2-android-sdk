@@ -104,12 +104,14 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
                 try {
                     eventHandler.handle(event);
                     transaction.setSuccessful();
-                }catch (SQLiteConstraintException sql){
+                } catch (SQLiteConstraintException sql) {
                     // This catch is necessary to ignore events with bad foreign keys exception
                     // More info: If the foreign key have the flag
-                    // DEFERRABLE INITIALLY DEFERRED this exception will be throw in transaction.end()
+                    // DEFERRABLE INITIALLY DEFERRED this exception will be throw in transaction
+                    // .end()
                     // And the rollback will be executed only when the database is closed.
-                    // It is a reported as unfixed bug: https://issuetracker.google.com/issues/37001653
+                    // It is a reported as unfixed bug: https://issuetracker.google
+                    // .com/issues/37001653
                     Log.d(this.getClass().getSimpleName(), sql.getMessage());
                 } finally {
                     transaction.end();

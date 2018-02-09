@@ -41,7 +41,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
-public class UserOrganisationUnitLinkStoreImpl extends Store implements UserOrganisationUnitLinkStore {
+public class UserOrganisationUnitLinkStoreImpl extends Store implements
+        UserOrganisationUnitLinkStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             UserOrganisationUnitLinkModel.TABLE + " (" +
             UserOrganisationUnitLinkModel.Columns.USER + ", " +
@@ -63,9 +64,9 @@ public class UserOrganisationUnitLinkStoreImpl extends Store implements UserOrga
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " =? AND " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + " =?;";
 
-    private static final String QUERY_USER_UID_BY_ORGANISATION_UNIT_UID = "SELECT "  +
+    private static final String QUERY_USER_UID_BY_ORGANISATION_UNIT_UID = "SELECT " +
             UserOrganisationUnitLinkModel.Columns.USER
-            +"  FROM " + UserOrganisationUnitLinkModel.TABLE + " WHERE " +
+            + "  FROM " + UserOrganisationUnitLinkModel.TABLE + " WHERE " +
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + "=?;";
 
     private final DatabaseAdapter databaseAdapter;
@@ -142,9 +143,10 @@ public class UserOrganisationUnitLinkStoreImpl extends Store implements UserOrga
 
     @Override
     public String queryUserUIdByOrganisationUnitUId(String organisationUnitUId) {
-        Cursor cursor = databaseAdapter.query(QUERY_USER_UID_BY_ORGANISATION_UNIT_UID, organisationUnitUId);
+        Cursor cursor = databaseAdapter.query(QUERY_USER_UID_BY_ORGANISATION_UNIT_UID,
+                organisationUnitUId);
         String userUId = null;
-        if(cursor.getCount()>0){
+        if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             userUId = getStringFromCursor(cursor, 0);
         }

@@ -91,8 +91,8 @@ public class UserStoreImpl extends Store implements UserStore {
             UserModel.Columns.NATIONALITY + " =? " + " WHERE " +
             UserModel.Columns.UID + " =?;";
 
-    private static final String QUERY_USER_BY_UID = "SELECT "+ FIELDS +" FROM "
-            + UserModel.TABLE +" WHERE "+UserModel.Columns.UID+"=?;";
+    private static final String QUERY_USER_BY_UID = "SELECT " + FIELDS + " FROM "
+            + UserModel.TABLE + " WHERE " + UserModel.Columns.UID + "=?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + UserModel.TABLE +
             " WHERE " + UserModel.Columns.UID + " =?;";
@@ -213,33 +213,33 @@ public class UserStoreImpl extends Store implements UserStore {
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-                    String uid = getStringFromCursor(cursor, 0);
-                    String code = getStringFromCursor(cursor, 1);
-                    String name = getStringFromCursor(cursor, 2);
-                    String displayName = getStringFromCursor(cursor, 3);
-                    Date creation = getDateFromCursor(cursor, 4);
-                    Date lastUpdated = getDateFromCursor(cursor, 5);
-                    String birthday = getStringFromCursor(cursor, 6);
-                    String education = getStringFromCursor(cursor, 7);
-                    String gender = getStringFromCursor(cursor, 8);
-                    String jobTitle = getStringFromCursor(cursor, 9);
-                    String surname = getStringFromCursor(cursor, 10);
-                    String firstName = getStringFromCursor(cursor, 11);
-                    String introduction = getStringFromCursor(cursor, 12);
-                    String employer = getStringFromCursor(cursor, 13);
-                    String interests = getStringFromCursor(cursor, 14);
-                    String languages = getStringFromCursor(cursor, 15);
-                    String email = getStringFromCursor(cursor, 16);
-                    String phoneNumber = getStringFromCursor(cursor, 17);
-                    String nationality = getStringFromCursor(cursor, 18);
+                String uid = getStringFromCursor(cursor, 0);
+                String code = getStringFromCursor(cursor, 1);
+                String name = getStringFromCursor(cursor, 2);
+                String displayName = getStringFromCursor(cursor, 3);
+                Date creation = getDateFromCursor(cursor, 4);
+                Date lastUpdated = getDateFromCursor(cursor, 5);
+                String birthday = getStringFromCursor(cursor, 6);
+                String education = getStringFromCursor(cursor, 7);
+                String gender = getStringFromCursor(cursor, 8);
+                String jobTitle = getStringFromCursor(cursor, 9);
+                String surname = getStringFromCursor(cursor, 10);
+                String firstName = getStringFromCursor(cursor, 11);
+                String introduction = getStringFromCursor(cursor, 12);
+                String employer = getStringFromCursor(cursor, 13);
+                String interests = getStringFromCursor(cursor, 14);
+                String languages = getStringFromCursor(cursor, 15);
+                String email = getStringFromCursor(cursor, 16);
+                String phoneNumber = getStringFromCursor(cursor, 17);
+                String nationality = getStringFromCursor(cursor, 18);
 
-                    user = User.builder().uid(uid).code(code).name(name).displayName(displayName)
-                            .created(creation).lastUpdated(lastUpdated).birthday(birthday)
-                            .education(education).gender(gender).jobTitle(jobTitle)
-                            .surname(surname).firstName(firstName).introduction(introduction)
-                            .employer(employer).interests(interests).languages(languages)
-                            .email(email).phoneNumber(phoneNumber).nationality(nationality)
-                            .userCredentials(UserCredentials.builder().uid(uid).build()).build();
+                user = User.builder().uid(uid).code(code).name(name).displayName(displayName)
+                        .created(creation).lastUpdated(lastUpdated).birthday(birthday)
+                        .education(education).gender(gender).jobTitle(jobTitle)
+                        .surname(surname).firstName(firstName).introduction(introduction)
+                        .employer(employer).interests(interests).languages(languages)
+                        .email(email).phoneNumber(phoneNumber).nationality(nationality)
+                        .userCredentials(UserCredentials.builder().uid(uid).build()).build();
             }
 
         } finally {

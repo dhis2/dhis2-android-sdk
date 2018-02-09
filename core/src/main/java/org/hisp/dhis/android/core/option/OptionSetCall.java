@@ -58,12 +58,12 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     public OptionSetCall(OptionSetService optionSetService,
             OptionSetHandler optionSetHandler,
                          DatabaseAdapter databaseAdapter,
-            ResourceHandler resourceHander,
+            ResourceHandler resourceHandler,
             Set<String> uids, Date serverDate) {
         this.optionSetService = optionSetService;
         this.optionSetHandler = optionSetHandler;
         this.databaseAdapter = databaseAdapter;
-        this.resourceHander = resourceHander;
+        this.resourceHander = resourceHandler;
         this.uids = uids;
         this.serverDate = new Date(serverDate.getTime());
     }

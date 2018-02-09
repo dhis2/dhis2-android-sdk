@@ -17,4 +17,8 @@ public interface CategoryCategoryOptionLinkStore extends DeletableStore {
             @NonNull CategoryCategoryOptionLinkModel newCategoryCategoryOptionLinkModel);
 
     List<CategoryCategoryOptionLinkModel> queryAll();
+
+    List<String> queryCategoryOptionUidListFromCategoryUid(String uid);
+
+    List<String> queryCategoryUidListFromCategoryOptionUid(String uid);
 }

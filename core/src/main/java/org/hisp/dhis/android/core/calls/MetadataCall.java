@@ -35,10 +35,8 @@ import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
-import org.hisp.dhis.android.core.category.CategoryEndpointCall;
-import org.hisp.dhis.android.core.category.CategoryHandler;
+import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.category.CategoryQuery;
-import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -82,15 +80,13 @@ public class MetadataCall implements Call<Response> {
     private final SystemInfoStore systemInfoStore;
     private final ResourceStore resourceStore;
     private final UserHandler userHandler;
-    private final CategoryQuery categoryQuery;
     private final CategoryComboQuery categoryComboQuery;
-    private final CategoryService categoryService;
     private final CategoryComboService categoryComboService;
-    private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
 
     private final OptionSetFactory optionSetFactory;
     private final TrackedEntityFactory trackedEntityFactory;
+    private final CategoryFactory categoryFactory;
     private final ProgramFactory programFactory;
     private final OrganisationUnitFactory organisationUnitFactory;
 
@@ -102,25 +98,20 @@ public class MetadataCall implements Call<Response> {
             @Nonnull UserHandler userHandler,
             @NonNull SystemInfoStore systemInfoStore,
             @NonNull ResourceStore resourceStore,
-            @NonNull CategoryQuery categoryQuery,
-            @NonNull CategoryService categoryService,
-            @NonNull CategoryHandler categoryHandler,
             @NonNull CategoryComboQuery categoryComboQuery,
             @NonNull CategoryComboService categoryComboService,
             @NonNull CategoryComboHandler categoryComboHandler,
             @NonNull OptionSetFactory optionSetFactory,
             @NonNull TrackedEntityFactory trackedEntityFactory,
             @Nonnull ProgramFactory programFactory,
-            @NonNull OrganisationUnitFactory organisationUnitFactory) {
+            @NonNull OrganisationUnitFactory organisationUnitFactory,
+            @NonNull CategoryFactory categoryFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
         this.userHandler = userHandler;
         this.systemInfoStore = systemInfoStore;
         this.resourceStore = resourceStore;
-        this.categoryQuery = categoryQuery;
-        this.categoryService = categoryService;
-        this.categoryHandler = categoryHandler;
         this.categoryComboQuery = categoryComboQuery;
         this.categoryComboService = categoryComboService;
         this.categoryComboHandler = categoryComboHandler;
@@ -129,6 +120,7 @@ public class MetadataCall implements Call<Response> {
         this.trackedEntityFactory = trackedEntityFactory;
         this.programFactory = programFactory;
         this.organisationUnitFactory = organisationUnitFactory;
+        this.categoryFactory = categoryFactory;
     }
 
     @Override
@@ -350,10 +342,7 @@ public class MetadataCall implements Call<Response> {
     }
 
     private Response<Payload<Category>> downloadCategories(Date serverDate) throws Exception {
-        ResponseValidator<Category> validator = new ResponseValidator<>();
-        return new CategoryEndpointCall(categoryQuery, categoryService, validator,
-                categoryHandler,
-                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
+        return categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(), serverDate).call();
     }
 
     private Response<Payload<CategoryCombo>> downloadCategoryCombos(Date serverDate)

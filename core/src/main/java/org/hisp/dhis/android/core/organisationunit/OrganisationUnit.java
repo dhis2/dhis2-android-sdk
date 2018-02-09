@@ -104,10 +104,12 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<OrganisationUnit.Builder> {
+    public static abstract class Builder extends
+            BaseNameableObject.Builder<OrganisationUnit.Builder> {
 
         @JsonProperty(PARENT)
-        public abstract OrganisationUnit.Builder parent(@Nullable OrganisationUnit organisationUnit);
+        public abstract OrganisationUnit.Builder parent(
+                @Nullable OrganisationUnit organisationUnit);
 
         @JsonProperty(PATH)
         public abstract OrganisationUnit.Builder path(@Nullable String path);

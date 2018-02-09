@@ -16,4 +16,6 @@ public interface CategoryOptionStore extends DeletableStore {
     int update(@NonNull CategoryOption categoryOption);
 
     List<CategoryOption> queryAll();
+
+    CategoryOption queryByUid(String uid);
 }

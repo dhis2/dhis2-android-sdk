@@ -1,0 +1,19 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 1,
+    "pageSize": 50
+  },
+  "relationshipTypes": [
+    {
+      "created": "2018-02-02T00:20:45.587",
+      "lastUpdated": "2018-02-02T00:20:45.587",
+      "name": "relationship type test updated",
+      "id": "IRN58ULaA4x",
+      "displayName": "relationship type test",
+      "bIsToA": "name",
+      "aIsToB": "surname"
+    }
+  ]
+}

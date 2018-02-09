@@ -34,23 +34,12 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementHandler;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.option.OptionHandler;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetHandler;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 
 import java.util.Date;
 import java.util.List;
@@ -63,7 +52,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
     private final ProgramService programService;
 
     private final DatabaseAdapter databaseAdapter;
-    private final ResourceStore resourceStore;
+    private final ResourceHandler resourceHandler;
 
     private boolean isExecuted;
     private final Set<String> uids;
@@ -73,61 +62,16 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
 
     public ProgramCall(ProgramService programService,
                        DatabaseAdapter databaseAdapter,
-                       ResourceStore resourceStore,
+            ResourceHandler resourceHandler,
                        Set<String> uids,
-                       ProgramStore programStore,
                        Date serverDate,
-                       TrackedEntityAttributeStore trackedEntityAttributeStore,
-                       ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
-                       ProgramRuleVariableStore programRuleVariableStore,
-                       ProgramIndicatorStore programIndicatorStore,
-                       ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore,
-                       ProgramRuleActionStore programRuleActionStore,
-                       ProgramRuleStore programRuleStore,
-                       OptionStore optionStore,
-                       OptionSetStore optionSetStore,
-                       DataElementStore dataElementStore,
-                       ProgramStageDataElementStore programStageDataElementStore,
-                       ProgramStageSectionStore programStageSectionStore,
-                       ProgramStageStore programStageStore,
-                       RelationshipTypeStore relationshipStore) {
+            ProgramHandler programHandler) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;
-        this.resourceStore = resourceStore;
+        this.resourceHandler = resourceHandler;
         this.uids = uids;
         this.serverDate = new Date(serverDate.getTime());
-
-        //TODO: make this an argument to the constructor:
-
-        //TODO: This needs to be refactored badly
-
-        ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(programIndicatorStore,
-                programStageSectionProgramIndicatorLinkStore);
-
-        OptionHandler optionHandler = new OptionHandler(optionStore);
-        OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
-        DataElementHandler dataElementHandler = new DataElementHandler(dataElementStore, optionSetHandler);
-
-        ProgramStageDataElementHandler programStageDataElementHandler = new ProgramStageDataElementHandler(
-                programStageDataElementStore, dataElementHandler
-        );
-
-        this.programHandler = new ProgramHandler(programStore,
-                new ProgramRuleVariableHandler(programRuleVariableStore),
-                new ProgramStageHandler(
-                        programStageStore,
-                        new ProgramStageSectionHandler(programStageSectionStore,
-                                programStageDataElementHandler,
-                                programIndicatorHandler
-                        ),
-                        programStageDataElementHandler
-                ),
-                programIndicatorHandler,
-                new ProgramRuleHandler(programRuleStore, new ProgramRuleActionHandler(programRuleActionStore)),
-                new ProgramTrackedEntityAttributeHandler(programTrackedEntityAttributeStore,
-                        new TrackedEntityAttributeHandler(trackedEntityAttributeStore)
-                ),
-                new RelationshipTypeHandler(relationshipStore));
+        this.programHandler = programHandler;
     }
 
     @Override
@@ -149,7 +93,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
             throw new IllegalArgumentException("Can't handle the amount of programs: " + uids.size() + ". " +
                     "Max size is: " + MAX_UIDS);
         }
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
         String lastSyncedPrograms = resourceHandler.getLastUpdated(ResourceModel.Type.PROGRAM);
         Response<Payload<Program>> programsByLastUpdated = programService.getPrograms(
                 getFields(), Program.lastUpdated.gt(lastSyncedPrograms),

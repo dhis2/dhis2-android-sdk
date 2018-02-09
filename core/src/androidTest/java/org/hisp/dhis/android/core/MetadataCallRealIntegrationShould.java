@@ -13,6 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.concurrent.TimeoutException;
 
 public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     /**
@@ -50,6 +52,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     @Test
     @LargeTest
     public void response_successful_on_sync_meta_data_two_times() throws Exception {
+
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();

@@ -37,6 +37,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -44,54 +45,36 @@ import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public class UserStoreImpl implements UserStore {
+public class UserStoreImpl extends Store implements UserStore {
+
+    private static final String FIELDS =
+            UserModel.Columns.UID + ", " +
+                    UserModel.Columns.CODE + ", " +
+                    UserModel.Columns.NAME + ", " +
+                    UserModel.Columns.DISPLAY_NAME + ", " +
+                    UserModel.Columns.CREATED + ", " +
+                    UserModel.Columns.LAST_UPDATED + ", " +
+                    UserModel.Columns.BIRTHDAY + ", " +
+                    UserModel.Columns.EDUCATION + ", " +
+                    UserModel.Columns.GENDER + ", " +
+                    UserModel.Columns.JOB_TITLE + ", " +
+                    UserModel.Columns.SURNAME + ", " +
+                    UserModel.Columns.FIRST_NAME + ", " +
+                    UserModel.Columns.INTRODUCTION + ", " +
+                    UserModel.Columns.EMPLOYER + ", " +
+                    UserModel.Columns.INTERESTS + ", " +
+                    UserModel.Columns.LANGUAGES + ", " +
+                    UserModel.Columns.EMAIL + ", " +
+                    UserModel.Columns.PHONE_NUMBER + ", " +
+                    UserModel.Columns.NATIONALITY;
 
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             UserModel.Columns.UID +
             " FROM " + UserModel.TABLE +
             " WHERE "+UserModel.Columns.UID+" =?;";
 
-    private static final String FIELDS =
-            "  "+ UserModel.TABLE + "." +UserModel.Columns.UID + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.CODE + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.NAME + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.DISPLAY_NAME + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.CREATED + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.LAST_UPDATED + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.BIRTHDAY + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.EDUCATION + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.GENDER + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.JOB_TITLE + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.SURNAME + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.FIRST_NAME + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.INTRODUCTION + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.EMPLOYER + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.INTERESTS + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.LANGUAGES + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.EMAIL + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.PHONE_NUMBER + ","
-                    + "  "+ UserModel.TABLE + "." +UserModel.Columns.NATIONALITY +" ";
-
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserModel.TABLE + " (" +
-            UserModel.Columns.UID + ", " +
-            UserModel.Columns.CODE + ", " +
-            UserModel.Columns.NAME + ", " +
-            UserModel.Columns.DISPLAY_NAME + ", " +
-            UserModel.Columns.CREATED + ", " +
-            UserModel.Columns.LAST_UPDATED + ", " +
-            UserModel.Columns.BIRTHDAY + ", " +
-            UserModel.Columns.EDUCATION + ", " +
-            UserModel.Columns.GENDER + ", " +
-            UserModel.Columns.JOB_TITLE + ", " +
-            UserModel.Columns.SURNAME + ", " +
-            UserModel.Columns.FIRST_NAME + ", " +
-            UserModel.Columns.INTRODUCTION + ", " +
-            UserModel.Columns.EMPLOYER + ", " +
-            UserModel.Columns.INTERESTS + ", " +
-            UserModel.Columns.LANGUAGES + ", " +
-            UserModel.Columns.EMAIL + ", " +
-            UserModel.Columns.PHONE_NUMBER + ", " +
-            UserModel.Columns.NATIONALITY +
+            FIELDS +
             ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + UserModel.TABLE + " SET " +
@@ -115,6 +98,9 @@ public class UserStoreImpl implements UserStore {
             UserModel.Columns.PHONE_NUMBER + " =?, " +
             UserModel.Columns.NATIONALITY + " =? " + " WHERE " +
             UserModel.Columns.UID + " =?;";
+
+    private static final String QUERY_USER_BY_UID = "SELECT " + FIELDS + " FROM "
+            + UserModel.TABLE + " WHERE " + UserModel.Columns.UID + "=?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + UserModel.TABLE +
             " WHERE " + UserModel.Columns.UID + " =?;";
@@ -198,6 +184,12 @@ public class UserStoreImpl implements UserStore {
     }
 
     @Override
+    public User queryByUId(String uid) {
+        Cursor cursor = databaseAdapter.query(QUERY_USER_BY_UID, uid);
+        return mapFromCursor(cursor);
+    }
+
+    @Override
     public Boolean exists(String userUId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, userUId);
         return cursor.getCount()>0;
@@ -248,7 +240,7 @@ public class UserStoreImpl implements UserStore {
                 cursor.moveToFirst();
 
                 do {
-                    User user = mapUserFromCursor(cursor);
+                    User user = mapFromCursor(cursor);
 
                     users.add(user);
                 }
@@ -262,36 +254,43 @@ public class UserStoreImpl implements UserStore {
     }
 
 
-    private User mapUserFromCursor(Cursor cursor) {
-        User user;
+    private User mapFromCursor(Cursor cursor) {
+        User user = null;
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                String uid = getStringFromCursor(cursor, 0);
+                String code = getStringFromCursor(cursor, 1);
+                String name = getStringFromCursor(cursor, 2);
+                String displayName = getStringFromCursor(cursor, 3);
+                Date creation = getDateFromCursor(cursor, 4);
+                Date lastUpdated = getDateFromCursor(cursor, 5);
+                String birthday = getStringFromCursor(cursor, 6);
+                String education = getStringFromCursor(cursor, 7);
+                String gender = getStringFromCursor(cursor, 8);
+                String jobTitle = getStringFromCursor(cursor, 9);
+                String surname = getStringFromCursor(cursor, 10);
+                String firstName = getStringFromCursor(cursor, 11);
+                String introduction = getStringFromCursor(cursor, 12);
+                String employer = getStringFromCursor(cursor, 13);
+                String interests = getStringFromCursor(cursor, 14);
+                String languages = getStringFromCursor(cursor, 15);
+                String email = getStringFromCursor(cursor, 16);
+                String phoneNumber = getStringFromCursor(cursor, 17);
+                String nationality = getStringFromCursor(cursor, 18);
 
-        String uid = cursor.getString(0);
-        String code = cursor.getString(1);
-        String name = cursor.getString(2);
-        String displayName = cursor.getString(3);
-        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-        Date lastUpdated = cursor.getString(5) == null ? null : parse(cursor.getString(5));
-        String birthday = cursor.getString(6);
-        String education = cursor.getString(7);
-        String gender = cursor.getString(8);
-        String jobTitle = cursor.getString(9);
-        String surname = cursor.getString(10);
-        String firstName = cursor.getString(11);
-        String introduction = cursor.getString(12);
-        String employer = cursor.getString(13);
-        String interests = cursor.getString(14);
-        String languages = cursor.getString(15);
-        String email = cursor.getString(16);
-        String phoneNumber = cursor.getString(17);
-        String nationality = cursor.getString(18);
+                user = User.builder().uid(uid).code(code).name(name).displayName(displayName)
+                        .created(creation).lastUpdated(lastUpdated).birthday(birthday)
+                        .education(education).gender(gender).jobTitle(jobTitle)
+                        .surname(surname).firstName(firstName).introduction(introduction)
+                        .employer(employer).interests(interests).languages(languages)
+                        .email(email).phoneNumber(phoneNumber).nationality(nationality)
+                        .userCredentials(UserCredentials.builder().uid(uid).build()).build();
+            }
 
-        UserCredentials userCredentials = UserCredentials.create("", "", "", "",
-                new Date(), new Date(), "", null, false);
-
-        user = User.create(
-                uid, code, name, displayName, created, lastUpdated, birthday, education, gender,
-                jobTitle, surname, firstName, introduction, employer, interests, languages, email, phoneNumber,
-                nationality, userCredentials, null, null, null, false);
+        } finally {
+            cursor.close();
+        }
         return user;
     }
 }

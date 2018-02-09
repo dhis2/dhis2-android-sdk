@@ -1,0 +1,108 @@
+{
+  "createdAt": "2018-02-05T17:28:45.536",
+  "createdBy": "admin",
+  "klass": "org.hisp.dhis.dataelement.DataElement",
+  "uid": "SKPMfGShCt5",
+  "code": "codeupdated",
+  "type": "DELETE",
+  "value": {
+    "code": "codeupdated",
+    "name": "data element test updated",
+    "created": "2018-02-05T17:19:27.066",
+    "lastUpdated": "2018-02-05T17:22:48.766",
+    "externalAccess": false,
+    "publicAccess": "rw------",
+    "user": {
+      "name": "John Traore",
+      "created": "2013-04-18T17:15:08.407",
+      "lastUpdated": "2017-06-02T13:04:58.319",
+      "externalAccess": false,
+      "displayName": "John Traore",
+      "id": "xE7jOejl9FI"
+    },
+    "displayName": "data element test updated",
+    "lastUpdatedBy": {
+      "id": "xE7jOejl9FI",
+      "name": "John Traore"
+    },
+    "shortName": "data element test short name updated",
+    "description": "description updated",
+    "displayShortName": "data element test short name updated",
+    "displayDescription": "description updated",
+    "dimensionItemType": "DATA_ELEMENT",
+    "aggregationType": "NONE",
+    "valueType": "TEXT",
+    "formName": "form name updated",
+    "displayFormName": "form name updated",
+    "domainType": "AGGREGATE",
+    "zeroIsSignificant": false,
+    "optionSet": {
+      "name": "Age category",
+      "created": "2014-06-22T10:59:26.564",
+      "lastUpdated": "2015-08-06T14:23:38.789",
+      "externalAccess": false,
+      "publicAccess": "rw------",
+      "user": {
+        "name": "Tom Wakiki",
+        "created": "2012-11-21T12:02:04.303",
+        "lastUpdated": "2017-06-02T13:05:22.694",
+        "externalAccess": false,
+        "displayName": "Tom Wakiki",
+        "id": "GOLswS44mh8"
+      },
+      "displayName": "Age category",
+      "options": [
+        {
+          "code": "0-14 years",
+          "name": "0-14 years",
+          "created": "2014-08-18T12:39:16.000",
+          "lastUpdated": "2014-08-18T12:39:16.000",
+          "externalAccess": false,
+          "displayName": "0-14 years",
+          "id": "Y1ILwhy5VDY"
+        },
+        {
+          "code": "15-19 years",
+          "name": "15-19 years",
+          "created": "2014-08-18T12:39:16.000",
+          "lastUpdated": "2014-08-18T12:39:16.000",
+          "externalAccess": false,
+          "displayName": "15-19 years",
+          "id": "egT1YqFWsVk"
+        },
+        {
+          "code": "20-24 years",
+          "name": "20-24 years",
+          "created": "2014-08-18T12:39:16.000",
+          "lastUpdated": "2014-08-18T12:39:16.000",
+          "externalAccess": false,
+          "displayName": "20-24 years",
+          "id": "WckXGsyYola"
+        },
+        {
+          "code": "25 years and above",
+          "name": "25 years and above",
+          "created": "2014-08-18T12:39:16.000",
+          "lastUpdated": "2014-08-18T12:39:16.000",
+          "externalAccess": false,
+          "displayName": "25 years and above",
+          "id": "EmQGvSlg0GD"
+        }
+      ],
+      "valueType": "TEXT",
+      "version": 1,
+      "id": "VQ2lai3OfVG"
+    },
+    "optionSetValue": true,
+    "dimensionItem": "SKPMfGShCt5",
+    "id": "SKPMfGShCt5",
+    "categoryCombo": {
+      "name": "default",
+      "created": "2011-12-24T12:24:25.203",
+      "lastUpdated": "2016-04-12T20:37:49.126",
+      "externalAccess": false,
+      "displayName": "default",
+      "id": "p0KPaWEg3cf"
+    }
+  }
+}

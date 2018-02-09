@@ -39,12 +39,14 @@ public interface OptionSetStore extends DeletableObjectStore {
     long insert(
             @NonNull String uid, @NonNull String code, @NonNull String name,
             @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @NonNull Integer version, @NonNull ValueType valueType
-    );
+            @NonNull Integer version, @NonNull ValueType valueType);
 
     int update(
             @NonNull String uid, @NonNull String code, @NonNull String name,
             @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @NonNull Integer version, @NonNull ValueType valueType, @NonNull String whereUid
-    );
+            @NonNull Integer version, @NonNull ValueType valueType, @NonNull String whereUid);
+
+    int delete(@NonNull String uid);
+
+    OptionSet queryByUid(String uid);
 }

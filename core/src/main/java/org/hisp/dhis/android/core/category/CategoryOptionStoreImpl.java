@@ -1,7 +1,6 @@
 package org.hisp.dhis.android.core.category;
 
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -9,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -16,17 +16,22 @@ import java.util.Date;
 import java.util.List;
 
 
-public class CategoryOptionStoreImpl implements CategoryOptionStore {
-
-    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
-            CategoryOptionModel.Columns.UID +
-            " FROM " + CategoryOptionModel.TABLE +
-            " WHERE "+CategoryOptionModel.Columns.UID+" =?;";
+public class CategoryOptionStoreImpl extends Store implements CategoryOptionStore {
 
     protected final DatabaseAdapter databaseAdapter;
     protected final SQLiteStatement insertStatement;
     protected final SQLiteStatement updateStatement;
     protected final SQLiteStatement deleteStatement;
+
+    private static final String QUERY_BY_UID_STATEMENT = "SELECT " +
+            CategoryOptionModel.Columns.UID + "," +
+            CategoryOptionModel.Columns.CODE + "," +
+            CategoryOptionModel.Columns.NAME + "," +
+            CategoryOptionModel.Columns.DISPLAY_NAME + "," +
+            CategoryOptionModel.Columns.CREATED + "," +
+            CategoryOptionModel.Columns.LAST_UPDATED +
+            "  FROM " + CategoryOptionModel.TABLE +
+            " WHERE "+CategoryOptionModel.Columns.UID+" =?;";
 
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryOptionModel.TABLE + " (" +
@@ -38,7 +43,13 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
                     CategoryOptionModel.Columns.LAST_UPDATED + ") " +
                     "VALUES(?, ?, ?, ?, ?, ?);";
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            CategoryOptionModel.Columns.UID +
+            " FROM " + CategoryOptionModel.TABLE +
+            " WHERE "+CategoryOptionModel.Columns.UID+" =?;";
+
     private static final String EQUAL_QUESTION_MARK = "=?";
+
     private static final String DELETE_STATEMENT = "DELETE FROM " + CategoryOptionModel.TABLE +
             " WHERE " + CategoryOptionModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ";";
 
@@ -90,23 +101,19 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
     }
 
     @Override
-    public boolean update(@NonNull CategoryOption oldCategoryOption,
-            @NonNull CategoryOption newCategoryOption) {
+    public int update(@NonNull CategoryOption categoryOption) {
 
-        validateForUpdate(oldCategoryOption, newCategoryOption);
+        validate(categoryOption);
 
-        bindUpdate(oldCategoryOption, newCategoryOption);
+        bindUpdate(categoryOption);
 
-        return wasExecuted(execute(updateStatement));
-    }
-
-    private boolean wasExecuted(int numberOfRows) {
-        return numberOfRows >= 1;
+        return execute(updateStatement);
     }
 
     private int execute(@NonNull SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryModel.TABLE, statement);
         statement.clearBindings();
+
         return rowsAffected;
     }
 
@@ -117,14 +124,8 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
         return lastId;
     }
 
-    private void validateForUpdate(@NonNull CategoryOption oldCategoryOption,
-            @NonNull CategoryOption newCategoryOption) {
-        isNull(oldCategoryOption.uid());
-        isNull(newCategoryOption.uid());
-    }
-
-    private void validate(@NonNull CategoryOption category) {
-        isNull(category.uid());
+    private void validate(@NonNull CategoryOption categoryOption) {
+        isNull(categoryOption.uid());
     }
 
     private void bindForDelete(@NonNull String uid) {
@@ -133,11 +134,11 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
         sqLiteBind(deleteStatement, whereUidIndex, uid);
     }
 
-    private void bindUpdate(@NonNull CategoryOption oldOption, @NonNull CategoryOption newOption) {
+    private void bindUpdate(@NonNull CategoryOption categoryOption) {
         final int whereUidIndex = 7;
-        bind(updateStatement, newOption);
+        bind(updateStatement, categoryOption);
 
-        sqLiteBind(updateStatement, whereUidIndex, oldOption.uid());
+        sqLiteBind(updateStatement, whereUidIndex, categoryOption.uid());
     }
 
     private void bind(@NonNull SQLiteStatement sqLiteStatement, @NonNull CategoryOption option) {
@@ -180,15 +181,15 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
     private CategoryOption mapCategoryOptionFromCursor(Cursor cursor) {
         CategoryOption categoryOption;
 
-        String uid = cursor.getString(0);
-        String code = cursor.getString(1);
-        String name = cursor.getString(2);
-        String displayName = cursor.getString(3);
-        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-        Date lastUpdated = cursor.getString(5) == null ? null : parse(cursor.getString(5));
+        String uid = getStringFromCursor(cursor, 0);
+        String code = getStringFromCursor(cursor, 1);
+        String name = getStringFromCursor(cursor, 2);
+        String displayName = getStringFromCursor(cursor, 3);
+        Date created = getDateFromCursor(cursor, 4);
+        Date lastUpdated = getDateFromCursor(cursor, 5);
 
-        categoryOption = CategoryOption.create(
-                uid, code, name, displayName, created, lastUpdated);
+        categoryOption = CategoryOption.builder().uid(uid).code(code).name(name)
+                .displayName(displayName).created(created).lastUpdated(lastUpdated).build();
 
         return categoryOption;
     }
@@ -202,6 +203,19 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(CategoryOptionModel.TABLE);
+    }
+
+    @Override
+    public CategoryOption queryByUid(String uid) {
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID_STATEMENT, uid);
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+        }else {
+            return null;
+        }
+
+        return mapCategoryOptionFromCursor(cursor);
     }
 }
 

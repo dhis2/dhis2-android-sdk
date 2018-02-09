@@ -53,4 +53,11 @@ public interface UserStore extends DeletableObjectStore {
             @Nullable String introduction, @Nullable String employer, @Nullable String interests,
             @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
             @Nullable String nationality, @NonNull String whereUid);
+
+    int delete(@NonNull String uid);
+
+    @Override
+    int delete();
+
+    User queryByUId(String userUId);
 }

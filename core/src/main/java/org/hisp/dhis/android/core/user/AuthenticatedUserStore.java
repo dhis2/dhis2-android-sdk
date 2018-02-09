@@ -40,6 +40,6 @@ public interface AuthenticatedUserStore extends DeletableStore {
     @NonNull
     List<AuthenticatedUserModel> query();
 
+    @Override
     int delete();
-
 }

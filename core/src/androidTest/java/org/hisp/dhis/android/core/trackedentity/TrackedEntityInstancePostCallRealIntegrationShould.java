@@ -1,10 +1,8 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.test.filters.LargeTest;
 import static com.google.common.truth.Truth.assertThat;
 
-import static junit.framework.Assert.assertTrue;
-
+import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;

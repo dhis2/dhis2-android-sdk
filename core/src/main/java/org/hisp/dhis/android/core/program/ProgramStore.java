@@ -101,4 +101,8 @@ public interface ProgramStore extends DeletableObjectStore {
             @Nullable String trackedEntity,
             @Nullable String categoryCombo,
             @NonNull String whereProgramUid);
+
+    int delete(@NonNull String uid);
+
+    Program queryByUid(String uid);
 }

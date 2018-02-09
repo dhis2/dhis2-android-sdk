@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.DeletableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.Date;
+import java.util.List;
 
 public interface TrackedEntityAttributeStore extends DeletableObjectStore {
     long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
@@ -60,4 +61,10 @@ public interface TrackedEntityAttributeStore extends DeletableObjectStore {
                @Nullable Boolean displayOnVisitSchedule, @Nullable Boolean orgUnitScope,
                @Nullable Boolean unique, @Nullable Boolean inherit, @NonNull String whereTrackedEntityAttributeUid
     );
+
+    int delete(String uid);
+
+    List<TrackedEntityAttribute> queryAll();
+
+    TrackedEntityAttribute queryByUid(String uid);
 }

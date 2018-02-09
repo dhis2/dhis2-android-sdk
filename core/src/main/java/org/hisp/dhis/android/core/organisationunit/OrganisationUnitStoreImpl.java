@@ -49,27 +49,30 @@ import java.util.List;
 })
 public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
 
+    private static final String FIELDS =
+            OrganisationUnitModel.Columns.UID + ", " +
+                    OrganisationUnitModel.Columns.CODE + ", " +
+                    OrganisationUnitModel.Columns.NAME + ", " +
+                    OrganisationUnitModel.Columns.DISPLAY_NAME + ", " +
+                    OrganisationUnitModel.Columns.CREATED + ", " +
+                    OrganisationUnitModel.Columns.LAST_UPDATED + ", " +
+                    OrganisationUnitModel.Columns.SHORT_NAME + ", " +
+                    OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME + ", " +
+                    OrganisationUnitModel.Columns.DESCRIPTION + ", " +
+                    OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION + ", " +
+                    OrganisationUnitModel.Columns.PATH + ", " +
+                    OrganisationUnitModel.Columns.OPENING_DATE + ", " +
+                    OrganisationUnitModel.Columns.CLOSED_DATE + ", " +
+                    OrganisationUnitModel.Columns.LEVEL + ", " +
+                    OrganisationUnitModel.Columns.PARENT;
+
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             OrganisationUnitModel.Columns.UID +
             " FROM " + OrganisationUnitModel.TABLE +
             " WHERE "+OrganisationUnitModel.Columns.UID+" =?;";
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + OrganisationUnitModel.TABLE + " (" +
-            OrganisationUnitModel.Columns.UID + ", " +
-            OrganisationUnitModel.Columns.CODE + ", " +
-            OrganisationUnitModel.Columns.NAME + ", " +
-            OrganisationUnitModel.Columns.DISPLAY_NAME + ", " +
-            OrganisationUnitModel.Columns.CREATED + ", " +
-            OrganisationUnitModel.Columns.LAST_UPDATED + ", " +
-            OrganisationUnitModel.Columns.SHORT_NAME + ", " +
-            OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME + ", " +
-            OrganisationUnitModel.Columns.DESCRIPTION + ", " +
-            OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION + ", " +
-            OrganisationUnitModel.Columns.PATH + ", " +
-            OrganisationUnitModel.Columns.OPENING_DATE + ", " +
-            OrganisationUnitModel.Columns.CLOSED_DATE + ", " +
-            OrganisationUnitModel.Columns.LEVEL + ", " +
-            OrganisationUnitModel.Columns.PARENT + ") " +
+    private static final String INSERT_STATEMENT =
+            "INSERT INTO " + OrganisationUnitModel.TABLE + " (" + FIELDS + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + OrganisationUnitModel.TABLE + " SET " +
@@ -93,23 +96,11 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
     private static final String DELETE_STATEMENT = "DELETE FROM " + OrganisationUnitModel.TABLE +
             " WHERE " + OrganisationUnitModel.Columns.UID + " =?;";
 
-    private static final String QUERY_STATEMENT = "SELECT " +
-            OrganisationUnitModel.Columns.UID + "," +
-            OrganisationUnitModel.Columns.CODE + "," +
-            OrganisationUnitModel.Columns.NAME + "," +
-            OrganisationUnitModel.Columns.DISPLAY_NAME + "," +
-            OrganisationUnitModel.Columns.CREATED + "," +
-            OrganisationUnitModel.Columns.LAST_UPDATED + "," +
-            OrganisationUnitModel.Columns.SHORT_NAME + "," +
-            OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME + "," +
-            OrganisationUnitModel.Columns.DESCRIPTION + "," +
-            OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION + "," +
-            OrganisationUnitModel.Columns.PATH + "," +
-            OrganisationUnitModel.Columns.OPENING_DATE + "," +
-            OrganisationUnitModel.Columns.CLOSED_DATE + "," +
-            OrganisationUnitModel.Columns.LEVEL + "," +
-            OrganisationUnitModel.Columns.PARENT +
+    private static final String QUERY_STATEMENT = "SELECT " + FIELDS +
             "  FROM " + OrganisationUnitModel.TABLE;
+    private static final String QUERY_BY_UID = "SELECT " + FIELDS +
+            "  FROM " + OrganisationUnitModel.TABLE + " WHERE " + OrganisationUnitModel.Columns.UID
+            + "=?;";
 
 
     private final DatabaseAdapter databaseAdapter;
@@ -189,6 +180,12 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
     }
 
     @Override
+    public Boolean exists(String organisationUnitUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, organisationUnitUId);
+        return cursor.getCount()>0;
+    }
+
+    @Override
     public List<OrganisationUnit> queryOrganisationUnits() {
         Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
 
@@ -196,9 +193,14 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
     }
 
     @Override
-    public Boolean exists(String organisationUnitUId) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, organisationUnitUId);
-        return cursor.getCount()>0;
+    public OrganisationUnit queryByUid(String uid) {
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID, uid);
+        OrganisationUnit organisationUnit = null;
+        List<OrganisationUnit> organisationUnits = mapOrgUnitsFromCursor(cursor);
+        if (organisationUnits.size() == 1) {
+            organisationUnit = organisationUnits.get(0);
+        }
+        return organisationUnit;
     }
 
     private List<OrganisationUnit> mapOrgUnitsFromCursor(Cursor cursor) {
@@ -242,11 +244,12 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
                 cursor.getString(12));
         int level = cursor.getInt(13);
 
-        return OrganisationUnit.create(
-                uid, code, name, displayName, created, lastUpdated, shortName,
-                displayShortName,
-                description, displayDescription, null, path, openingDate,
-                closedDate, level, null, false);
+        return OrganisationUnit.builder().uid(uid).code(code).name(name)
+                .displayName(displayName).created(created).lastUpdated(lastUpdated)
+                .shortName(shortName).displayShortName(displayShortName)
+                .description(description).displayDescription(displayDescription)
+                .path(path).openingDate(openingDate).closedDate(closedDate)
+                .level(level).build();
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid,

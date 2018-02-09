@@ -44,6 +44,7 @@ public interface TrackedEntityInstanceStore extends DeletableStore {
             @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
             @NonNull String organisationUnit, @NonNull String trackedEntity, @Nullable State state);
 
+    @Override
     int delete();
 
     int update(@NonNull String uid,

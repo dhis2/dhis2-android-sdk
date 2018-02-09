@@ -34,6 +34,7 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.DeletableObjectStore;
 
 import java.util.Date;
+import java.util.List;
 
 public interface TrackedEntityStore extends DeletableObjectStore {
 
@@ -48,4 +49,8 @@ public interface TrackedEntityStore extends DeletableObjectStore {
                @Nullable String shortName, @Nullable String displayShortName,
                @Nullable String description, @Nullable String displayDescription, @NonNull String whereUid
     );
+
+    int delete(@NonNull String uid);
+
+    List<TrackedEntity> queryAll();
 }

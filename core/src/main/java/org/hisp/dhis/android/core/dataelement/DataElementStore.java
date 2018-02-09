@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.DeletableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.Date;
+import java.util.List;
 
 public interface DataElementStore extends DeletableObjectStore {
 
@@ -67,4 +68,6 @@ public interface DataElementStore extends DeletableObjectStore {
             @Nullable String optionSet,
             @Nullable String categoryCombo, @NonNull String whereDataElementUid
     );
+
+    List<DataElement> queryAll();
 }

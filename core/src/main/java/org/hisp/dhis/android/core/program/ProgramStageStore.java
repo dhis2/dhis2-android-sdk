@@ -61,4 +61,8 @@ public interface ProgramStageStore extends DeletableObjectStore {
                @NonNull Integer minDaysFromStart, @NonNull Integer standardInterval,
                @NonNull String program, @NonNull String whereProgramStageUid
     );
+
+    int delete(@NonNull String uid);
+
+    ProgramStage queryByUid(String uid);
 }

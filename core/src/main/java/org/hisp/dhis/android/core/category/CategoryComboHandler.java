@@ -10,9 +10,6 @@ import java.util.List;
 public class CategoryComboHandler {
 
     @NonNull
-    private final CategoryOptionComboCategoryLinkStore categoryComboOptionLinkCategoryStore;
-
-    @NonNull
     private final CategoryCategoryComboLinkStore categoryCategoryComboLinkStore;
 
     @NonNull
@@ -23,97 +20,73 @@ public class CategoryComboHandler {
 
     public CategoryComboHandler(
             @NonNull CategoryComboStore store,
-            @NonNull CategoryOptionComboCategoryLinkStore
-                    categoryComboOptionCategoryLinkStore,
             @NonNull CategoryCategoryComboLinkStore categoryCategoryComboLinkStore,
             @NonNull CategoryOptionComboHandler optionComboHandler) {
         this.store = store;
-        this.categoryComboOptionLinkCategoryStore = categoryComboOptionCategoryLinkStore;
         this.categoryCategoryComboLinkStore = categoryCategoryComboLinkStore;
         this.optionComboHandler = optionComboHandler;
     }
 
-    public void handle(CategoryCombo combo) {
+    public void handle(CategoryCombo categoryCombo) {
 
-        if (isDeleted(combo)) {
-            store.delete(combo.uid());
+        if (isDeleted(categoryCombo)) {
+            store.delete(categoryCombo.uid());
         } else {
-
-            boolean updated = store.update(combo, combo);
+            int rowsAffected = store.update(categoryCombo);
+            boolean updated = rowsAffected >= 1;
 
             if (!updated) {
-                store.insert(combo);
-                handleRelations(combo);
+                store.insert(categoryCombo);
+
             }
+            handleRelations(categoryCombo, updated);
         }
     }
 
-    private void handleRelations(@NonNull CategoryCombo combo) {
+    private void handleRelations(@NonNull CategoryCombo categoryCombo, boolean isUpdated) {
 
-        handleCategoriesLink(combo);
+        handleCategoriesLink(categoryCombo, isUpdated);
 
-        handleOptionCombo(combo);
+        handleOptionCombo(categoryCombo);
 
     }
 
-    private void handleOptionCombo(@NonNull CategoryCombo combo) {
-        List<CategoryOptionCombo> optionsCombo = combo.categoryOptionCombos();
+    private void handleOptionCombo(@NonNull CategoryCombo categoryCombo) {
+        List<CategoryOptionCombo> optionsCombo = categoryCombo.categoryOptionCombos();
 
         if (optionsCombo != null) {
             for (CategoryOptionCombo optionCombo : optionsCombo) {
                 optionComboHandler.handle(optionCombo);
-
-                handleOptionComboLinkCategory(optionCombo);
             }
         }
     }
 
-    private void handleOptionComboLinkCategory(@NonNull CategoryOptionCombo optionCombo) {
+    private void handleCategoriesLink(@NonNull CategoryCombo categoryCombo, boolean isUpdated) {
+        List<Category> categories = categoryCombo.categories();
 
-        List<CategoryOption> categoryOptions = optionCombo.categoryOptions();
-
-        if (categoryOptions != null) {
-            for (CategoryOption categoryOption : categoryOptions) {
-
-                CategoryOptionComboCategoryLinkModel link = newCategoryOptionLinkCategory(
-                        optionCombo,
-                        categoryOption);
-
-                categoryComboOptionLinkCategoryStore.insert(link);
-            }
+        if(isUpdated) {
+            //delete old relations
+            categoryCategoryComboLinkStore.removeCategoryComboRelations(categoryCombo.uid());
         }
-    }
-
-    @NonNull
-    private CategoryOptionComboCategoryLinkModel newCategoryOptionLinkCategory(
-            @NonNull CategoryOptionCombo optionCombo,
-            @NonNull CategoryOption categoryOption) {
-        return CategoryOptionComboCategoryLinkModel.
-                builder()
-                .category(categoryOption.uid())
-                .optionCombo(optionCombo.uid())
-                .build();
-    }
-
-    private void handleCategoriesLink(@NonNull CategoryCombo combo) {
-        List<Category> categories = combo.categories();
 
         if (categories != null) {
+
             for (Category category : categories) {
 
-                CategoryCategoryComboLinkModel link = newCategoryComboLink(combo, category);
+                CategoryCategoryComboLinkModel link = newCategoryComboLink(categoryCombo, category);
 
                 categoryCategoryComboLinkStore.insert(link);
             }
         }
     }
 
-    private CategoryCategoryComboLinkModel newCategoryComboLink(@NonNull CategoryCombo combo,
+    private CategoryCategoryComboLinkModel newCategoryComboLink(
+            @NonNull CategoryCombo categoryCombo,
             @NonNull Category category) {
 
         return CategoryCategoryComboLinkModel.builder().category(
                 category.uid())
-                .combo(combo.uid())
+                .categoryCombo(categoryCombo.uid())
                 .build();
     }
 }

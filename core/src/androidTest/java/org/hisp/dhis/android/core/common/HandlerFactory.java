@@ -1,19 +1,19 @@
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboStore;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryHandler;
-import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionHandler;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryStore;
@@ -125,9 +125,10 @@ public class HandlerFactory {
     public static CategoryOptionHandler createCategoryOptionHandler(
             DatabaseAdapter databaseAdapter) {
         CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter);
-
+        CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore =
+                new CategoryCategoryOptionLinkStoreImpl(databaseAdapter);
         CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                categoryOptionStore);
+                categoryOptionStore, categoryCategoryOptionLinkStore);
 
         return categoryOptionHandler;
     }
@@ -135,12 +136,9 @@ public class HandlerFactory {
     public static CategoryHandler createCategoryHandler(DatabaseAdapter databaseAdapter) {
         CategoryStore categoryStore = new CategoryStoreImpl(databaseAdapter);
         CategoryOptionHandler categoryOptionHandler = createCategoryOptionHandler(databaseAdapter);
-        CategoryCategoryOptionLinkStore
-                categoryCategoryOptionLinkStore = new CategoryCategoryOptionLinkStoreImpl(
-                databaseAdapter);
 
-        CategoryHandler categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler,
-                categoryCategoryOptionLinkStore);
+        CategoryHandler categoryHandler =
+                new CategoryHandler(categoryStore, categoryOptionHandler);
 
         return categoryHandler;
     }
@@ -152,17 +150,18 @@ public class HandlerFactory {
 
         CategoryOptionComboStore optionComboStore = new CategoryOptionComboStoreImpl(
                 databaseAdapter);
-        CategoryOptionComboHandler optionComboHandler = new CategoryOptionComboHandler(
-                optionComboStore);
-
-        CategoryComboStore store = new CategoryComboStoreImpl(databaseAdapter);
 
         CategoryOptionComboCategoryLinkStore
                 categoryComboOptionLinkCategoryStore = new CategoryOptionComboCategoryLinkStoreImpl(
                 databaseAdapter);
 
+        CategoryOptionComboHandler optionComboHandler = new CategoryOptionComboHandler(
+                optionComboStore, categoryComboOptionLinkCategoryStore);
+
+        CategoryComboStore store = new CategoryComboStoreImpl(databaseAdapter);
+
         CategoryComboHandler categoryComboHandler = new CategoryComboHandler(store,
-                categoryComboOptionLinkCategoryStore, categoryCategoryComboLinkStore,
+                categoryCategoryComboLinkStore,
                 optionComboHandler);
 
         return categoryComboHandler;

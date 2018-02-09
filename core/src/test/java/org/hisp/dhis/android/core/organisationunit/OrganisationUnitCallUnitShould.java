@@ -27,6 +27,17 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import static junit.framework.Assert.fail;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.common.Payload;
@@ -35,6 +46,7 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
@@ -61,16 +73,6 @@ import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
-
-import static junit.framework.Assert.fail;
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class OrganisationUnitCallUnitShould {
@@ -193,11 +195,14 @@ public class OrganisationUnitCallUnitShould {
 
 
         when(database.beginNewTransaction()).thenReturn(transaction);
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
+        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
+                organisationUnitStore,
+                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, resourceHandler);
 
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
-                organisationUnitStore,
-                resourceStore,
-                serverDate, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
+                resourceHandler, serverDate, organisationUnitHandler, "");
 
         //Return only one organisationUnit.
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));

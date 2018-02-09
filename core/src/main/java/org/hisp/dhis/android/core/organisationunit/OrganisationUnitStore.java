@@ -55,5 +55,12 @@ public interface OrganisationUnitStore extends DeletableObjectStore {
             @Nullable String parent, @Nullable Integer level, @NonNull String whereUid
     );
 
+    int delete(@NonNull String uid);
+
+    @Override
+    int delete();
+
     List<OrganisationUnit> queryOrganisationUnits();
+
+    OrganisationUnit queryByUid(String uid);
 }

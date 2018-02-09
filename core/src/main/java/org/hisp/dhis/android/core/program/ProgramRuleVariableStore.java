@@ -53,4 +53,8 @@ public interface ProgramRuleVariableStore extends DeletableObjectStore {
             @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType,
             @NonNull String whereProgramRuleVariableUid
     );
+
+    int delete(String uid);
+
+    ProgramRuleVariable queryByUid(String uid);
 }

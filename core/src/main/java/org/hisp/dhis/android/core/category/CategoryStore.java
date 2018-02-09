@@ -8,9 +8,13 @@ import java.util.List;
 
 public interface CategoryStore extends DeletableObjectStore {
 
-    long insert(@NonNull Category element);
+    long insert(@NonNull Category category);
 
-    boolean update(@NonNull Category oldElement, @NonNull Category newElement);
+    int delete(@NonNull String uid);
+
+    int update(@NonNull Category category);
+
+    Category queryByUid(String uid);
 
     List<Category> queryAll();
 }

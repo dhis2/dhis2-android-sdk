@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -39,9 +41,7 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
 import java.io.IOException;
 import java.util.Date;
@@ -49,17 +49,14 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
-
 public class OrganisationUnitCall implements Call<Response<Payload<OrganisationUnit>>> {
 
     private final User user;
     private final OrganisationUnitService organisationUnitService;
     private final DatabaseAdapter database;
-    private final OrganisationUnitStore organisationUnitStore;
-    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
-    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
-    private final ResourceStore resourceStore;
+    private final OrganisationUnitHandler organisationUnitHandler;
+    private final ResourceHandler resourceHandler;
+    private final String uid;
 
     private final Date serverDate;
     private boolean isExecuted;
@@ -67,19 +64,17 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     public OrganisationUnitCall(@NonNull User user,
                                 @NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull DatabaseAdapter database,
-                                @NonNull OrganisationUnitStore organisationUnitStore,
-                                @NonNull ResourceStore resourceStore,
+            @NonNull ResourceHandler resourceHandler,
                                 @NonNull Date serverDate,
-                                @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                                @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore) {
+            @NonNull OrganisationUnitHandler organisationUnitHandler,
+            @NonNull String uid) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
         this.database = database;
-        this.organisationUnitStore = organisationUnitStore;
-        this.resourceStore = resourceStore;
+        this.resourceHandler = resourceHandler;
         this.serverDate = new Date(serverDate.getTime());
-        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
+        this.organisationUnitHandler = organisationUnitHandler;
+        this.uid = uid;
     }
 
     @Override
@@ -98,37 +93,47 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             isExecuted = true;
         }
         Response<Payload<OrganisationUnit>> response = null;
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-
-        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore);
 
         Transaction transaction = database.beginNewTransaction();
         try {
-            Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
-            Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
-                    resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
-            );
-            // Call OrganisationUnitService for each tree root & try to handleTrackedEntity sub-tree:
-            for (String uid : rootOrgUnitUids) {
-                response = getOrganisationUnit(uid, lastUpdatedFilter);
-                if (response.isSuccessful()) {
-                    organisationUnitHandler.handleOrganisationUnits(
-                            response.body().items(),
-                            OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
-                            user.uid()
+            Filter<OrganisationUnit, String> lastUpdatedFilter =
+                    OrganisationUnit.lastUpdated.gt(
+                            resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
                     );
-                } else {
-                    break; //stop early unsuccessful:
+            // Call OrganisationUnitService for each tree root & try to handleTrackedEntity
+            // sub-tree:
+
+
+            if (uid.isEmpty()) {
+                Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
+                for (String uid : rootOrgUnitUids) {
+                    response = getOrganisationUnitByUId(uid, lastUpdatedFilter);
+                    if (!response.isSuccessful()) {
+                        //stop early unsuccessful
+                        break;
+                    }
                 }
+            } else {
+                response = getOrganisationUnitByUId(uid, lastUpdatedFilter);
             }
             if (response != null && response.isSuccessful()) {
-                resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDate);
                 transaction.setSuccessful();
             }
         } finally {
             transaction.end();
+        }
+        return response;
+    }
+
+    private Response<Payload<OrganisationUnit>> getOrganisationUnitByUId(
+            @NonNull String uid, @Nullable Filter<OrganisationUnit,
+            String> lastUpdatedFilter) throws IOException {
+        Response<Payload<OrganisationUnit>> response = getOrganisationUnit(uid, lastUpdatedFilter);
+        if (response.isSuccessful()) {
+            organisationUnitHandler.handleOrganisationUnits(
+                    response.body().items(),
+                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
+                    user.uid(), serverDate);
         }
         return response;
     }

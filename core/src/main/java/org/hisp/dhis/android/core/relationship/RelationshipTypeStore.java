@@ -34,6 +34,7 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.DeletableObjectStore;
 
 import java.util.Date;
+import java.util.List;
 
 public interface RelationshipTypeStore extends DeletableObjectStore {
 
@@ -58,4 +59,10 @@ public interface RelationshipTypeStore extends DeletableObjectStore {
             @NonNull String bIsToA,
             @NonNull String whereRelationshipTypeUid
     );
+
+    int delete(@NonNull String uid);
+
+    List<RelationshipType> queryAll();
+
+    RelationshipType queryByUid(String uid);
 }

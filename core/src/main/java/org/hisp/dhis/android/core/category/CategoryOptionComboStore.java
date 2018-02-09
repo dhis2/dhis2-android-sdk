@@ -11,8 +11,13 @@ public interface CategoryOptionComboStore extends DeletableObjectStore {
 
     long insert(@NonNull CategoryOptionCombo element);
 
-    boolean update(@NonNull CategoryOptionCombo oldElement,
-            @NonNull CategoryOptionCombo newElement);
+    int delete(@NonNull String uid);
+
+    int update(@NonNull CategoryOptionCombo categoryOptionCombo);
 
     List<CategoryOptionCombo> queryAll();
+
+    List<CategoryOptionCombo> queryByCategoryComboUId(String uid);
+
+    CategoryOptionCombo queryByUId(String uid);
 }

@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import java.util.List;
-
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
+import java.util.List;
 
 public class ProgramRuleVariableHandler {
     private final ProgramRuleVariableStore programRuleVariableStore;
@@ -52,25 +52,43 @@ public class ProgramRuleVariableHandler {
         for (int i = 0; i < size; i++) {
             ProgramRuleVariable programRuleVariable = programRuleVariables.get(i);
 
-            if (isDeleted(programRuleVariable)) {
-                programRuleVariableStore.delete(programRuleVariable.uid());
-            } else {
-                String programStageUid = null;
-                if(programRuleVariable.programStage() != null) {
-                    programStageUid = programRuleVariable.programStage().uid();
-                }
+            handle(programRuleVariable);
 
-                String dataElementUid = null;
-                if(programRuleVariable.dataElement() != null) {
-                    dataElementUid = programRuleVariable.dataElement().uid();
-                }
+        }
+    }
 
-                String trackedEntityAttributeUid = null;
-                if(programRuleVariable.trackedEntityAttribute() != null) {
-                    trackedEntityAttributeUid = programRuleVariable.trackedEntityAttribute().uid();
-                }
+    public void handle(ProgramRuleVariable programRuleVariable) {
+        if (isDeleted(programRuleVariable)) {
+            programRuleVariableStore.delete(programRuleVariable.uid());
+        } else {
+            String programStageUid = null;
+            if (programRuleVariable.programStage() != null) {
+                programStageUid = programRuleVariable.programStage().uid();
+            }
 
-                int updatedRow = programRuleVariableStore.update(
+            String dataElementUid = null;
+            if (programRuleVariable.dataElement() != null) {
+                dataElementUid = programRuleVariable.dataElement().uid();
+            }
+
+            String trackedEntityAttributeUid = null;
+            if (programRuleVariable.trackedEntityAttribute() != null) {
+                trackedEntityAttributeUid = programRuleVariable.trackedEntityAttribute().uid();
+            }
+
+            int updatedRow = programRuleVariableStore.update(
+                    programRuleVariable.uid(), programRuleVariable.code(),
+                    programRuleVariable.name(), programRuleVariable.displayName(),
+                    programRuleVariable.created(), programRuleVariable.lastUpdated(),
+                    programRuleVariable.useCodeForOptionSet(),
+                    programRuleVariable.program().uid(), programStageUid,
+                    dataElementUid,
+                    trackedEntityAttributeUid,
+                    programRuleVariable.programRuleVariableSourceType(), programRuleVariable.uid()
+            );
+
+            if (updatedRow <= 0) {
+                programRuleVariableStore.insert(
                         programRuleVariable.uid(), programRuleVariable.code(),
                         programRuleVariable.name(), programRuleVariable.displayName(),
                         programRuleVariable.created(), programRuleVariable.lastUpdated(),
@@ -78,23 +96,9 @@ public class ProgramRuleVariableHandler {
                         programRuleVariable.program().uid(), programStageUid,
                         dataElementUid,
                         trackedEntityAttributeUid,
-                        programRuleVariable.programRuleVariableSourceType(), programRuleVariable.uid()
+                        programRuleVariable.programRuleVariableSourceType()
                 );
-
-                if (updatedRow <= 0) {
-                    programRuleVariableStore.insert(
-                            programRuleVariable.uid(), programRuleVariable.code(),
-                            programRuleVariable.name(), programRuleVariable.displayName(),
-                            programRuleVariable.created(), programRuleVariable.lastUpdated(),
-                            programRuleVariable.useCodeForOptionSet(),
-                            programRuleVariable.program().uid(), programStageUid,
-                            dataElementUid,
-                            trackedEntityAttributeUid,
-                            programRuleVariable.programRuleVariableSourceType()
-                    );
-                }
             }
-
         }
     }
 }

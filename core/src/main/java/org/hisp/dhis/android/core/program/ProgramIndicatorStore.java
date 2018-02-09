@@ -52,4 +52,8 @@ public interface ProgramIndicatorStore extends DeletableObjectStore {
                @Nullable String dimensionItem, @Nullable String filter,
                @Nullable Integer decimals, @Nullable String program, @NonNull String whereProgramIndicatorUid
     );
+
+    int delete(String uid);
+
+    ProgramIndicator queryByUid(String uid);
 }

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
@@ -204,19 +205,16 @@ public class OptionSetCallMockIntegrationShould extends AbsStoreTestCase {
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-        OptionSetService optionSetService = retrofit.create(OptionSetService.class);
-        OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter());
-        OptionStore optionStore = new OptionStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
         Set<String> uids = new HashSet<>();
         uids.add("POc7DkGU3QU");
 
+        OptionSetFactory optionSetFactory =
+                new OptionSetFactory(retrofit, databaseAdapter(),
+                        new ResourceHandler(resourceStore));
 
-        optionSetCall = new OptionSetCall(
-                optionSetService, optionSetStore, databaseAdapter(), resourceStore, uids, new Date(),
-                optionStore);
-
+        optionSetCall = optionSetFactory.newEndPointCall(uids, new Date());
     }
 
 

@@ -104,7 +104,7 @@ public class CategoryComboChangeOnServerShould extends AbsStoreTestCase {
     @Test
     @MediumTest
     public void update_category_combo_if_audit_type_is_update() throws Exception {
-        String filename = "audit/category_combos.json";
+        String filename = "category_combo_updated.json";
 
         givenAExistedCategoryComboPreviously();
 

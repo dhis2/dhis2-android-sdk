@@ -323,10 +323,6 @@ public final class D2 {
         deletableStoreList.add(trackedEntityDataValueStore);
         deletableStoreList.add(trackedEntityAttributeValueStore);
         deletableStoreList.add(eventStore);
-        deletableStoreList.add(categoryFactory.getCategoryStore());
-        deletableStoreList.add(categoryFactory.getCategoryOptionStore());
-        deletableStoreList.add(categoryFactory.getCategoryOptionLinkStore());
-        deletableStoreList.addAll(categoryComboFactory.getDeletableStores());
 
         deletableStoreList.addAll(trackedEntityFactory.getDeletableStores());
         deletableStoreList.addAll(trackedEntityAttributeFactory.getDeletableStores());
@@ -335,6 +331,8 @@ public final class D2 {
         deletableStoreList.addAll(dataElementFactory.getDeletableStores());
         deletableStoreList.addAll(relationshipTypeFactory.getDeletableStores());
         deletableStoreList.addAll(organisationUnitFactory.getDeletableStores());
+        deletableStoreList.addAll(categoryFactory.getDeletableStores());
+        deletableStoreList.addAll(categoryComboFactory.getDeletableStores());
 
         return new LogOutUserCallable(deletableStoreList);
     }

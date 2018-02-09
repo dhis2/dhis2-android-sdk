@@ -118,6 +118,31 @@ public class CategoryOptionComboCategoryLinkStoreImpl extends Store implements
         return mapFromCursor(cursor);
     }
 
+    @Override
+    public int removeCategoryComboOptionRelationsByCategoryOptionCombo(
+            String categoryOptionComboUid) {
+        Cursor cursor = databaseAdapter.query(REMOVE_CATEGORY_OPTION_RELATIONS,
+                categoryOptionComboUid);
+
+        return cursor.getCount();
+    }
+
+    @Override
+    public List<String> queryByOptionComboUId(String uid) {
+        List<String> categoryOptions = null;
+        Cursor cursor = databaseAdapter.query(QUERY_BY_CATEGORY_OPTION_UID, uid);
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                categoryOptions = listUidFromCursor(cursor);
+            }
+        } finally {
+            cursor.close();
+        }
+        return categoryOptions;
+    }
+
     private void validate(@NonNull CategoryOptionComboCategoryLinkModel link) {
         isNull(link.categoryOptionCombo());
         isNull(link.category());
@@ -144,12 +169,9 @@ public class CategoryOptionComboCategoryLinkStoreImpl extends Store implements
         return rowsAffected;
     }
 
-    private List<CategoryOptionComboCategoryLinkModel>
-    mapFromCursor(
-            Cursor cursor) {
+    private List<CategoryOptionComboCategoryLinkModel> mapFromCursor(Cursor cursor) {
         List<CategoryOptionComboCategoryLinkModel> categoryOptionComboCategoryLinks =
-                new ArrayList<>(
-                        cursor.getCount());
+                new ArrayList<>(cursor.getCount());
 
         try {
             if (cursor.getCount() > 0) {
@@ -186,31 +208,6 @@ public class CategoryOptionComboCategoryLinkStoreImpl extends Store implements
         sqLiteBind(updateStatement, 3,
                 oldCategoryOptionComboCategoryLinkModel.categoryOptionCombo());
         sqLiteBind(updateStatement, 4, oldCategoryOptionComboCategoryLinkModel.category());
-    }
-
-    @Override
-    public int removeCategoryComboOptionRelationsByCategoryOptionCombo(
-            String categoryOptionComboUid) {
-        Cursor cursor = databaseAdapter.query(REMOVE_CATEGORY_OPTION_RELATIONS,
-                categoryOptionComboUid);
-
-        return cursor.getCount();
-    }
-
-    @Override
-    public List<String> queryByOptionComboUId(String uid) {
-        List<String> categoryOptions = null;
-        Cursor cursor = databaseAdapter.query(QUERY_BY_CATEGORY_OPTION_UID, uid);
-
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                categoryOptions = listUidFromCursor(cursor);
-            }
-        } finally {
-            cursor.close();
-        }
-        return categoryOptions;
     }
 
     private List<String> listUidFromCursor(Cursor cursor) {

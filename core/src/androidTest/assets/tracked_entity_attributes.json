@@ -1,0 +1,72 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 3,
+    "pageSize": 50
+  },
+  "trackedEntityAttributes": [
+    {
+      "code": "MMD_PER_ADR1",
+      "created": "2014-06-06T20:37:25.949",
+      "lastUpdated": "2015-10-20T13:57:01.025",
+      "name": "Address",
+      "id": "VqEFza8wbwA",
+      "shortName": "Address",
+      "displayDescription": "Country",
+      "programScope": false,
+      "displayInListNoProgram": false,
+      "displayName": "Address",
+      "pattern": "",
+      "description": "Country",
+      "displayShortName": "Address",
+      "sortOrderInListNoProgram": 0,
+      "displayOnVisitSchedule": false,
+      "generated": false,
+      "inherit": false,
+      "unique": false,
+      "valueType": "TEXT"
+    },
+    {
+      "created": "2014-01-09T19:12:46.582",
+      "lastUpdated": "2017-01-26T19:36:22.158",
+      "name": "Age",
+      "id": "spFvx9FndA4",
+      "shortName": "Age",
+      "displayDescription": "Age",
+      "programScope": false,
+      "displayInListNoProgram": false,
+      "displayName": "Age",
+      "pattern": "",
+      "description": "Age",
+      "displayShortName": "Age",
+      "sortOrderInListNoProgram": 0,
+      "displayOnVisitSchedule": false,
+      "generated": false,
+      "inherit": false,
+      "unique": false,
+      "valueType": "AGE"
+    },
+    {
+      "code": "MMD_PER_DOB",
+      "created": "2014-06-06T20:37:58.928",
+      "lastUpdated": "2015-10-20T13:57:01.006",
+      "name": "Birth date",
+      "id": "gHGyrwKPzej",
+      "shortName": "Birth date",
+      "displayDescription": "Birth date",
+      "programScope": false,
+      "displayInListNoProgram": false,
+      "displayName": "Birth date",
+      "pattern": "",
+      "description": "Birth date",
+      "displayShortName": "Birth date",
+      "sortOrderInListNoProgram": 0,
+      "displayOnVisitSchedule": false,
+      "generated": false,
+      "inherit": false,
+      "unique": false,
+      "valueType": "DATE"
+    }
+  ]
+}

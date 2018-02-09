@@ -1,0 +1,61 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 3,
+    "pageSize": 50
+  },
+  "trackedEntityAttributes": [
+    {
+      "code": "code2",
+      "lastUpdated": "2018-02-02T18:43:24.749",
+      "id": "bNNXBXTGDVV",
+      "href": "http://localhost:8080/api/trackedEntityAttributes/bNNXBXTGDVV",
+      "created": "2018-02-02T18:41:45.406",
+      "name": "tea test2",
+      "shortName": "test name2",
+      "aggregationType": "NONE",
+      "programScope": false,
+      "displayInListNoProgram": false,
+      "displayName": "tea test2",
+      "publicAccess": "rw------",
+      "pattern": "",
+      "description": "desceiption",
+      "displayShortName": "test name2",
+      "externalAccess": false,
+      "generated": false,
+      "displayOnVisitSchedule": false,
+      "valueType": "TEXT",
+      "orgunitScope": false,
+      "confidential": false,
+      "displayDescription": "desceiption",
+      "dimensionItem": "bNNXBXTGDVV",
+      "unique": false,
+      "inherit": false,
+      "optionSetValue": true,
+      "dimensionItemType": "PROGRAM_ATTRIBUTE",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true
+      },
+      "optionSet": {
+        "id": "VQ2lai3OfVG"
+      },
+      "lastUpdatedBy": {
+        "id": "xE7jOejl9FI"
+      },
+      "user": {
+        "id": "xE7jOejl9FI"
+      },
+      "translations": [],
+      "userGroupAccesses": [],
+      "attributeValues": [],
+      "userAccesses": [],
+      "legendSets": []
+    }
+  ]
+}

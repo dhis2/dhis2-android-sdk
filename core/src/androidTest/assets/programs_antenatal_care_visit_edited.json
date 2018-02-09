@@ -1,0 +1,252 @@
+{
+  "programs": [
+    {
+      "lastUpdated": "2017-01-19T14:32:05.307",
+      "id": "lxAQ7Zs9VYR",
+      "created": "2016-04-12T15:30:43.783",
+      "name": "Antenatal care visit edited",
+      "shortName": "Antenatal care edited",
+      "displayName": "Antenatal care edited",
+      "ignoreOverdueEvents": false,
+      "displayShortName": "Antenatal care edited",
+      "captureCoordinates": false,
+      "displayFrontPageList": false,
+      "enrollmentDateLabel": "Enrollment Date edited",
+      "onlyEnrollOnce": false,
+      "programType": "WITHOUT_REGISTRATION",
+      "relationshipFromA": false,
+      "version": 3,
+      "selectIncidentDatesInFuture": false,
+      "incidentDateLabel": "Incident Date edited",
+      "displayIncidentDate": false,
+      "selectEnrollmentDatesInFuture": false,
+      "registration": false,
+      "useFirstStageDuringRegistration": false,
+      "programRuleVariables": [
+        {
+          "created": "2016-04-12T15:57:18.645",
+          "lastUpdated": "2017-05-23T00:29:24.356",
+          "name": "hemoglobin",
+          "id": "omrL0gtPpDL",
+          "displayName": "hemoglobin",
+          "programRuleVariableSourceType": "DATAELEMENT_NEWEST_EVENT_PROGRAM",
+          "program": {
+            "id": "lxAQ7Zs9VYR"
+          },
+          "dataElement": {
+            "id": "vANAXwtLwcT"
+          }
+        },
+        {
+          "created": "2016-04-12T15:55:02.406",
+          "lastUpdated": "2017-05-23T00:29:24.368",
+          "name": "womanSmoking",
+          "id": "Z92dJO9gIje",
+          "displayName": "womanSmoking",
+          "programRuleVariableSourceType": "DATAELEMENT_NEWEST_EVENT_PROGRAM",
+          "program": {
+            "id": "lxAQ7Zs9VYR"
+          },
+          "dataElement": {
+            "id": "sWoqcoByYmD"
+          }
+        }
+      ],
+      "programTrackedEntityAttributes": [],
+      "programIndicators": [],
+      "programStages": [
+        {
+          "lastUpdated": "2016-04-12T15:34:04.929",
+          "id": "dBwrot7S420",
+          "created": "2016-04-12T15:30:43.806",
+          "name": "Antenatal care visit - Program rules demo edited",
+          "allowGenerateNextVisit": false,
+          "executionDateLabel": "Visit date",
+          "validCompleteOnly": true,
+          "displayName": "Antenatal care visit - Program rules demo",
+          "openAfterEnrollment": false,
+          "repeatable": true,
+          "captureCoordinates": false,
+          "formType": "DEFAULT",
+          "displayGenerateEventBox": false,
+          "generatedByEnrollmentDate": false,
+          "autoGenerateEvent": true,
+          "sortOrder": 1,
+          "blockEntryForm": true,
+          "hideDueDate": false,
+          "minDaysFromStart": 0,
+          "programStageDataElements": [
+            {
+              "lastUpdated": "2016-04-12T15:34:04.913",
+              "created": "2016-04-12T15:34:04.913",
+              "id": "eM6beRIqUnM",
+              "displayInReports": false,
+              "compulsory": false,
+              "allowProvidedElsewhere": false,
+              "sortOrder": 0,
+              "allowFutureDate": false,
+              "programStage": {
+                "id": "dBwrot7S420"
+              },
+              "dataElement": {
+                "code": "STA_SMO",
+                "created": "2015-01-14T07:43:31.645",
+                "lastUpdated": "2016-04-06T01:39:41.132",
+                "name": "WHOMCH Smoking",
+                "id": "sWoqcoByYmD",
+                "shortName": "Smoking",
+                "aggregationType": "SUM",
+                "domainType": "TRACKER",
+                "displayName": "WHOMCH Smoking",
+                "displayFormName": "WHOMCH Smoking",
+                "zeroIsSignificant": false,
+                "displayShortName": "Smoking",
+                "valueType": "BOOLEAN"
+              }
+            },
+            {
+              "lastUpdated": "2016-04-12T15:34:04.920",
+              "created": "2016-04-12T15:34:04.920",
+              "id": "ZD8pd21Dt4i",
+              "displayInReports": false,
+              "compulsory": false,
+              "allowProvidedElsewhere": false,
+              "sortOrder": 1,
+              "allowFutureDate": false,
+              "programStage": {
+                "id": "dBwrot7S420"
+              },
+              "dataElement": {
+                "code": "EA5_TRE_SMO",
+                "created": "2013-10-31T12:12:02.900",
+                "lastUpdated": "2015-10-14T13:36:33.896",
+                "name": "WHOMCH Smoking cessation counselling provided ",
+                "id": "Ok9OQpitjQr",
+                "shortName": "Smoking cessation counselling provided ",
+                "displayDescription": "Counselling and behavioural interventions on smoking cessation.",
+                "aggregationType": "SUM",
+                "domainType": "TRACKER",
+                "displayName": "WHOMCH Smoking cessation counselling provided ",
+                "description": "Counselling and behavioural interventions on smoking cessation.",
+                "displayFormName": "WHOMCH Smoking cessation counselling provided ",
+                "zeroIsSignificant": false,
+                "displayShortName": "Smoking cessation counselling provided ",
+                "valueType": "BOOLEAN"
+              }
+            },
+            {
+              "lastUpdated": "2016-04-12T15:34:04.924",
+              "created": "2016-04-12T15:34:04.924",
+              "id": "QgGD234oA8i",
+              "displayInReports": false,
+              "compulsory": false,
+              "allowProvidedElsewhere": false,
+              "sortOrder": 2,
+              "allowFutureDate": false,
+              "programStage": {
+                "id": "dBwrot7S420"
+              },
+              "dataElement": {
+                "code": "LAB_HB",
+                "created": "2013-10-28T17:27:17.826",
+                "lastUpdated": "2015-10-14T13:36:44.324",
+                "name": "WHOMCH Hemoglobin value",
+                "id": "vANAXwtLwcT",
+                "shortName": "Hemoglobin value",
+                "displayDescription": "Screening for anemia.",
+                "aggregationType": "SUM",
+                "domainType": "TRACKER",
+                "displayName": "WHOMCH Hemoglobin value",
+                "description": "Screening for anemia.",
+                "displayFormName": "WHOMCH Hemoglobin value",
+                "zeroIsSignificant": true,
+                "displayShortName": "Hemoglobin value",
+                "valueType": "NUMBER"
+              }
+            }
+          ],
+          "programStageSections": []
+        }
+      ],
+      "programRules": [
+        {
+          "lastUpdated": "2017-05-23T00:29:24.535",
+          "created": "2016-04-12T15:58:54.797",
+          "name": "Show error for high hemoglobin value edited",
+          "id": "dahuKlP7jR2",
+          "condition": "#{hemoglobin} > 99",
+          "displayName": "Show error for high hemoglobin value edited",
+          "program": {
+            "id": "lxAQ7Zs9VYR"
+          },
+          "programRuleActions": [
+            {
+              "created": "2016-04-12T15:58:55.041",
+              "lastUpdated": "2017-05-23T00:29:24.454",
+              "id": "UUwZWS8uirn",
+              "programRuleActionType": "SHOWERROR",
+              "content": "The hemoglobin value cannot be above 99 edited",
+              "dataElement": {
+                "id": "vANAXwtLwcT"
+              },
+              "programRule": {
+                "id": "dahuKlP7jR2"
+              }
+            }
+          ]
+        },
+        {
+          "lastUpdated": "2017-05-23T00:29:24.533",
+          "created": "2016-04-12T15:55:02.043",
+          "name": "Hide smoking cessation councelling",
+          "id": "xOe5qCzRS0Y",
+          "condition": "!#{womanSmoking} ",
+          "displayName": "Hide smoking cessation councelling",
+          "program": {
+            "id": "lxAQ7Zs9VYR"
+          },
+          "programRuleActions": [
+            {
+              "created": "2016-04-12T15:55:03.082",
+              "lastUpdated": "2017-05-23T00:29:24.455",
+              "id": "hwgyO59SSxu",
+              "programRuleActionType": "HIDEFIELD",
+              "dataElement": {
+                "id": "Ok9OQpitjQr"
+              },
+              "programRule": {
+                "id": "xOe5qCzRS0Y"
+              }
+            }
+          ]
+        },
+        {
+          "lastUpdated": "2017-05-23T00:29:24.528",
+          "created": "2016-04-12T15:57:18.356",
+          "name": "Hemoglobin warning",
+          "id": "GC4gpdoSD4r",
+          "condition": "#{hemoglobin} < 9",
+          "displayName": "Hemoglobin warning",
+          "program": {
+            "id": "lxAQ7Zs9VYR"
+          },
+          "programRuleActions": [
+            {
+              "created": "2016-04-12T15:57:19.288",
+              "lastUpdated": "2017-05-23T00:29:24.455",
+              "id": "suS9GnraCx1",
+              "programRuleActionType": "SHOWWARNING",
+              "content": "Hemoglobin value lower than normal",
+              "dataElement": {
+                "id": "vANAXwtLwcT"
+              },
+              "programRule": {
+                "id": "GC4gpdoSD4r"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,6 @@
 package org.hisp.dhis.android.core.category;
 
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -9,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class CategoryOptionStoreImpl implements CategoryOptionStore {
+public class CategoryOptionStoreImpl extends Store implements CategoryOptionStore {
 
     protected final DatabaseAdapter databaseAdapter;
     protected final SQLiteStatement insertStatement;
@@ -85,34 +85,30 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
     }
 
     @Override
-    public boolean delete(@NonNull CategoryOption categoryOption) {
+    public int delete(@NonNull String uid) {
 
-        validate(categoryOption);
+        isNull(uid);
 
-        bindForDelete(categoryOption);
+        bindForDelete(uid);
 
         return execute(deleteStatement);
     }
 
     @Override
-    public boolean update(@NonNull CategoryOption newCategoryOption) {
+    public int update(@NonNull CategoryOption categoryOption) {
 
-        validateForUpdate(newCategoryOption);
+        validate(categoryOption);
 
-        bindUpdate(newCategoryOption);
+        bindUpdate(categoryOption);
 
         return execute(updateStatement);
     }
 
-    private boolean wasExecuted(int numberOfRows) {
-        return numberOfRows >= 1;
-    }
-
-    private boolean execute(@NonNull SQLiteStatement statement) {
+    private int execute(@NonNull SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryModel.TABLE, statement);
         statement.clearBindings();
 
-        return wasExecuted(rowsAffected);
+        return rowsAffected;
     }
 
     private long executeInsert() {
@@ -122,25 +118,21 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
         return lastId;
     }
 
-    private void validateForUpdate(@NonNull CategoryOption newCategoryOption) {
-        isNull(newCategoryOption.uid());
+    private void validate(@NonNull CategoryOption categoryOption) {
+        isNull(categoryOption.uid());
     }
 
-    private void validate(@NonNull CategoryOption category) {
-        isNull(category.uid());
-    }
-
-    private void bindForDelete(@NonNull CategoryOption option) {
+    private void bindForDelete(@NonNull String uid) {
         final int whereUidIndex = 1;
 
-        sqLiteBind(deleteStatement, whereUidIndex, option.uid());
+        sqLiteBind(deleteStatement, whereUidIndex, uid);
     }
 
-    private void bindUpdate(@NonNull CategoryOption newOption) {
+    private void bindUpdate(@NonNull CategoryOption categoryOption) {
         final int whereUidIndex = 7;
-        bind(updateStatement, newOption);
+        bind(updateStatement, categoryOption);
 
-        sqLiteBind(updateStatement, whereUidIndex, newOption.uid());
+        sqLiteBind(updateStatement, whereUidIndex, categoryOption.uid());
     }
 
     private void bind(@NonNull SQLiteStatement sqLiteStatement, @NonNull CategoryOption option) {
@@ -183,15 +175,15 @@ public class CategoryOptionStoreImpl implements CategoryOptionStore {
     private CategoryOption mapCategoryOptionFromCursor(Cursor cursor) {
         CategoryOption categoryOption;
 
-        String uid = cursor.getString(0);
-        String code = cursor.getString(1);
-        String name = cursor.getString(2);
-        String displayName = cursor.getString(3);
-        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-        Date lastUpdated = cursor.getString(5) == null ? null : parse(cursor.getString(5));
+        String uid = getStringFromCursor(cursor, 0);
+        String code = getStringFromCursor(cursor, 1);
+        String name = getStringFromCursor(cursor, 2);
+        String displayName = getStringFromCursor(cursor, 3);
+        Date created = getDateFromCursor(cursor, 4);
+        Date lastUpdated = getDateFromCursor(cursor, 5);
 
-        categoryOption = CategoryOption.create(
-                uid, code, name, displayName, created, lastUpdated);
+        categoryOption = CategoryOption.builder().uid(uid).code(code).name(name)
+        .displayName(displayName).created(created).lastUpdated(lastUpdated).build();
 
         return categoryOption;
     }

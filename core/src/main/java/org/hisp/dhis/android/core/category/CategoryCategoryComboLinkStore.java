@@ -10,6 +10,11 @@ import java.util.List;
 public interface CategoryCategoryComboLinkStore extends DeletableStore {
     long insert(@NonNull CategoryCategoryComboLinkModel element);
 
+    int delete(@NonNull CategoryCategoryComboLinkModel element);
+
+    int update(@NonNull CategoryCategoryComboLinkModel oldCategoryCategoryComboLinkMode,
+            @NonNull CategoryCategoryComboLinkModel newCategoryCategoryComboLinkMode);
+
     List<CategoryCategoryComboLink> queryAll();
 
     List<CategoryCategoryComboLink> queryByCategoryComboUId(String categoryComboUId);

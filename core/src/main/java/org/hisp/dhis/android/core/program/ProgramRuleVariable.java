@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -40,9 +40,8 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
-import java.util.Date;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramRuleVariable.Builder.class)
 public abstract class ProgramRuleVariable extends BaseIdentifiableObject {
     private static final String PROGRAM_STAGE = "programStage";
     private static final String PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";
@@ -103,23 +102,38 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject {
     @JsonProperty(PROGRAM_RULE_VARIABLE_SOURCE_TYPE)
     public abstract ProgramRuleVariableSourceType programRuleVariableSourceType();
 
-    @JsonCreator
-    public static ProgramRuleVariable create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(USE_CODE_FOR_OPTION_SET) Boolean useCodeForOptionSet,
-            @JsonProperty(PROGRAM) Program program,
-            @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
-            @JsonProperty(DATA_ELEMENT) DataElement dataElement,
-            @JsonProperty(TRACKED_ENTITY_ATTRIBUTE) TrackedEntityAttribute trackedEntityAttribute,
-            @JsonProperty(PROGRAM_RULE_VARIABLE_SOURCE_TYPE) ProgramRuleVariableSourceType sourceType,
-            @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_ProgramRuleVariable(uid, code, name, displayName, created,
-                lastUpdated, deleted, useCodeForOptionSet, program, programStage,
-                dataElement, trackedEntityAttribute, sourceType);
+    abstract ProgramRuleVariable.Builder toBuilder();
+
+    static ProgramRuleVariable.Builder builder() {
+        return new AutoValue_ProgramRuleVariable.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends
+            BaseIdentifiableObject.Builder<ProgramRuleVariable.Builder> {
+
+        @JsonProperty(USE_CODE_FOR_OPTION_SET)
+        public abstract ProgramRuleVariable.Builder useCodeForOptionSet(
+                @Nullable Boolean useCodeForOptionSet);
+
+        @JsonProperty(PROGRAM)
+        public abstract ProgramRuleVariable.Builder program(@Nullable Program program);
+
+        @JsonProperty(PROGRAM_STAGE)
+        public abstract ProgramRuleVariable.Builder programStage(
+                @Nullable ProgramStage programStage);
+
+        @JsonProperty(DATA_ELEMENT)
+        public abstract ProgramRuleVariable.Builder dataElement(@Nullable DataElement dataElement);
+
+        @JsonProperty(TRACKED_ENTITY_ATTRIBUTE)
+        public abstract ProgramRuleVariable.Builder trackedEntityAttribute(
+                @Nullable TrackedEntityAttribute trackedEntityAttribute);
+
+        @JsonProperty(PROGRAM_RULE_VARIABLE_SOURCE_TYPE)
+        public abstract ProgramRuleVariable.Builder programRuleVariableSourceType(
+                @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType);
+
+        public abstract ProgramRuleVariable build();
     }
 }

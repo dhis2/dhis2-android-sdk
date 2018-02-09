@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.core.category;
 
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -9,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import java.util.Map;
 @SuppressWarnings({
         "PMD.NPathComplexity",
 })
-public class CategoryStoreImpl implements CategoryStore {
+public class CategoryStoreImpl extends Store implements CategoryStore {
 
     private static final String QUERY_BY_UID_STATEMENT = "SELECT " +
             CategoryModel.Columns.UID + "," +
@@ -31,7 +30,7 @@ public class CategoryStoreImpl implements CategoryStore {
             CategoryModel.Columns.LAST_UPDATED + "," +
             CategoryModel.Columns.DATA_DIMENSION_TYPE +
             "  FROM " + CategoryModel.TABLE +
-            " WHERE "+CategoryModel.Columns.UID+" =?;";
+            " WHERE " + CategoryModel.Columns.UID + " =?;";
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + CategoryModel.TABLE + " (" +
             CategoryModel.Columns.UID + ", " +
@@ -91,23 +90,32 @@ public class CategoryStoreImpl implements CategoryStore {
     }
 
     @Override
-    public boolean delete(@NonNull Category category) {
+    public int delete(@NonNull String uid) {
 
-        validate(category);
+        isNull(uid);
 
-        bindForDelete(category);
+        bindForDelete(uid);
 
         return execute(deleteStatement);
     }
 
     @Override
-    public boolean update(@NonNull Category newCategory) {
+    public int update(@NonNull Category newCategory) {
 
-        validateForUpdate(newCategory);
+        validate(newCategory);
 
         bindUpdate(newCategory);
 
         return execute(updateStatement);
+    }
+
+    @Override
+    public List<Category> queryAll() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
+
+        Map<String, Category> categoryMap = mapFromCursor(cursor);
+
+        return new ArrayList<>(categoryMap.values());
     }
 
     @Override
@@ -119,15 +127,11 @@ public class CategoryStoreImpl implements CategoryStore {
         return categoryMap.get(uid);
     }
 
-    private boolean wasExecuted(int numberOfRows) {
-        return numberOfRows >= 1;
-    }
-
-    private boolean execute(@NonNull SQLiteStatement statement) {
+    private int execute(@NonNull SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryModel.TABLE, statement);
         statement.clearBindings();
 
-        return wasExecuted(rowsAffected);
+        return rowsAffected;
     }
 
     private long executeInsert() {
@@ -137,18 +141,14 @@ public class CategoryStoreImpl implements CategoryStore {
         return lastId;
     }
 
-    private void validateForUpdate(@NonNull Category newCategory) {
-        isNull(newCategory.uid());
-    }
-
     private void validate(@NonNull Category category) {
         isNull(category.uid());
     }
 
-    private void bindForDelete(@NonNull Category category) {
+    private void bindForDelete(@NonNull String uid) {
         final int whereUidIndex = 1;
 
-        sqLiteBind(deleteStatement, whereUidIndex, category.uid());
+        sqLiteBind(deleteStatement, whereUidIndex, uid);
     }
 
     private void bindUpdate(@NonNull Category category) {
@@ -170,36 +170,8 @@ public class CategoryStoreImpl implements CategoryStore {
     }
 
     @Override
-    public List<Category> queryAll() {
-        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
-
-        return mapCategoriesFromCursor(cursor);
-    }
-
-    @Override
     public int delete() {
         return databaseAdapter.delete(CategoryModel.TABLE);
-    }
-
-    private List<Category> mapCategoriesFromCursor(Cursor cursor) {
-        List<Category> categories = new ArrayList<>(cursor.getCount());
-
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-
-                do {
-                    Category category = mapCategoryFromCursor(cursor);
-
-                    categories.add(category);
-                }
-                while (cursor.moveToNext());
-            }
-
-        } finally {
-            cursor.close();
-        }
-        return categories;
     }
 
     private Map<String, Category> mapFromCursor(Cursor cursor) {
@@ -209,7 +181,9 @@ public class CategoryStoreImpl implements CategoryStore {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
-                    mapCategory(cursor, categoryMap);
+                    Category category = mapCategory(cursor);
+
+                    categoryMap.put(category.uid(), category);
                 } while (cursor.moveToNext());
             }
         } finally {
@@ -218,22 +192,16 @@ public class CategoryStoreImpl implements CategoryStore {
         return categoryMap;
     }
 
-    private void mapCategory(Cursor cursor, Map<String, Category> categoryMap) {
-        String uid = cursor.getString(0) == null ? null : cursor.getString(
-                0);
-        String code = cursor.getString(1) == null ? null : cursor.getString(
-                1);
-        String name = cursor.getString(2) == null ? null : cursor.getString(
-                2);
-        String displayName = cursor.getString(3) == null ? null : cursor.getString(
-                3);
-        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-        Date lastUpdated = cursor.getString(5) == null ? null : parse(
-                cursor.getString(5));
-        String dataDimensionType = cursor.getString(6) == null ? null : cursor.getString(
-                6);
+    private Category mapCategory(Cursor cursor) {
+        String uid = getStringFromCursor(cursor, 0);
+        String code = getStringFromCursor(cursor, 1);
+        String name = getStringFromCursor(cursor, 2);
+        String displayName = getStringFromCursor(cursor, 3);
+        Date created = getDateFromCursor(cursor, 4);
+        Date lastUpdated = getDateFromCursor(cursor, 5);
+        String dataDimensionType = getStringFromCursor(cursor, 6);
 
-        categoryMap.put(uid, Category.builder()
+        return Category.builder()
                 .uid(uid)
                 .code(code)
                 .name(name)
@@ -241,29 +209,7 @@ public class CategoryStoreImpl implements CategoryStore {
                 .created(created)
                 .lastUpdated(lastUpdated)
                 .dataDimensionType(dataDimensionType)
-                .build());
-    }
-
-    @NonNull
-    private Category mapCategoryFromCursor(Cursor cursor) {
-        String uid = cursor.getString(0);
-        String code = cursor.getString(1);
-        String name = cursor.getString(2);
-        String displayName = cursor.getString(3);
-        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-        Date lastUpdated = cursor.getString(5) == null ? null : parse(
-                cursor.getString(5));
-        String dataDimensionType = cursor.getString(6);
-
-        return Category.builder()
-                .uid(uid)
-                .code(code)
-                .created(created)
-                .name(name)
-                .lastUpdated(lastUpdated)
-                .displayName(displayName)
-                .categoryOptions(new ArrayList<CategoryOption>())
-                .dataDimensionType(dataDimensionType).build();
+                .build();
     }
 }
 

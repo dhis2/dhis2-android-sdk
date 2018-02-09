@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -39,12 +39,10 @@ import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
-import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramStage.Builder.class)
 public abstract class ProgramStage extends BaseIdentifiableObject {
     private static final String EXECUTION_DATE_LABEL = "executionDateLabel";
     private static final String ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";
@@ -73,26 +71,38 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     public static final Field<ProgramStage, String> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<ProgramStage, Integer> sortOrder = Field.create(SORT_ORDER);
     public static final Field<ProgramStage, Boolean> deleted = Field.create(DELETED);
-    public static final Field<ProgramStage, String> executionDateLabel = Field.create(EXECUTION_DATE_LABEL);
-    public static final Field<ProgramStage, Boolean> allowGenerateNextVisit = Field.create(ALLOW_GENERATE_NEXT_VISIT);
-    public static final Field<ProgramStage, Boolean> validCompleteOnly = Field.create(VALID_COMPLETE_ONLY);
-    public static final Field<ProgramStage, String> reportDateToUse = Field.create(REPORT_DATE_TO_USE);
-    public static final Field<ProgramStage, Boolean> openAfterEnrollment = Field.create(OPEN_AFTER_ENROLLMENT);
+    public static final Field<ProgramStage, String> executionDateLabel = Field.create(
+            EXECUTION_DATE_LABEL);
+    public static final Field<ProgramStage, Boolean> allowGenerateNextVisit = Field.create(
+            ALLOW_GENERATE_NEXT_VISIT);
+    public static final Field<ProgramStage, Boolean> validCompleteOnly = Field.create(
+            VALID_COMPLETE_ONLY);
+    public static final Field<ProgramStage, String> reportDateToUse = Field.create(
+            REPORT_DATE_TO_USE);
+    public static final Field<ProgramStage, Boolean> openAfterEnrollment = Field.create(
+            OPEN_AFTER_ENROLLMENT);
     public static final Field<ProgramStage, Boolean> repeatable = Field.create(REPEATABLE);
-    public static final Field<ProgramStage, Boolean> captureCoordinates = Field.create(CAPTURE_COORDINATES);
+    public static final Field<ProgramStage, Boolean> captureCoordinates = Field.create(
+            CAPTURE_COORDINATES);
     public static final Field<ProgramStage, FormType> formType = Field.create(FORM_TYPE);
-    public static final Field<ProgramStage, Boolean> displayGenerateEventBox = Field.create(DISPLAY_GENERATE_EVENT_BOX);
+    public static final Field<ProgramStage, Boolean> displayGenerateEventBox = Field.create(
+            DISPLAY_GENERATE_EVENT_BOX);
     public static final Field<ProgramStage, Boolean> generatedByEnrollmentDate =
             Field.create(GENERATED_BY_ENROLMENT_DATE);
-    public static final Field<ProgramStage, Boolean> autoGenerateEvent = Field.create(AUTO_GENERATE_EVENT);
+    public static final Field<ProgramStage, Boolean> autoGenerateEvent = Field.create(
+            AUTO_GENERATE_EVENT);
     public static final Field<ProgramStage, Boolean> hideDueDate = Field.create(HIDE_DUE_DATE);
-    public static final Field<ProgramStage, Boolean> blockEntryForm = Field.create(BLOCK_ENTRY_FORM);
-    public static final Field<ProgramStage, Integer> minDaysFromStart = Field.create(MIN_DAYS_FROM_START);
-    public static final Field<ProgramStage, Integer> standardInterval = Field.create(STANDARD_INTERVAL);
+    public static final Field<ProgramStage, Boolean> blockEntryForm = Field.create(
+            BLOCK_ENTRY_FORM);
+    public static final Field<ProgramStage, Integer> minDaysFromStart = Field.create(
+            MIN_DAYS_FROM_START);
+    public static final Field<ProgramStage, Integer> standardInterval = Field.create(
+            STANDARD_INTERVAL);
 
     public static final NestedField<ProgramStage, ProgramStageSection> programStageSections
             = NestedField.create(PROGRAM_STAGE_SECTIONS);
-    public static final NestedField<ProgramStage, ProgramStageDataElement> programStageDataElements =
+    public static final NestedField<ProgramStage, ProgramStageDataElement>
+            programStageDataElements =
             NestedField.create(PROGRAM_STAGE_DATA_ELEMENTS);
 
     @Nullable
@@ -167,61 +177,84 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS)
     public abstract List<ProgramStageDataElement> programStageDataElements();
 
-    @JsonCreator
-    public static ProgramStage create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(EXECUTION_DATE_LABEL) String executionDateLabel,
-            @JsonProperty(ALLOW_GENERATE_NEXT_VISIT) Boolean allowGenerateNextVisit,
-            @JsonProperty(VALID_COMPLETE_ONLY) Boolean validCompleteOnly,
-            @JsonProperty(REPORT_DATE_TO_USE) String reportDateToUse,
-            @JsonProperty(OPEN_AFTER_ENROLLMENT) Boolean openAfterEnrollment,
-            @JsonProperty(REPEATABLE) Boolean repeatable,
-            @JsonProperty(CAPTURE_COORDINATES) Boolean captureCoordinates,
-            @JsonProperty(FORM_TYPE) FormType formType,
-            @JsonProperty(DISPLAY_GENERATE_EVENT_BOX) Boolean displayGenerateEventBox,
-            @JsonProperty(GENERATED_BY_ENROLMENT_DATE) Boolean generatedByEnrollmentDate,
-            @JsonProperty(AUTO_GENERATE_EVENT) Boolean autoGenerateEvent,
-            @JsonProperty(SORT_ORDER) Integer sortOrder,
-            @JsonProperty(HIDE_DUE_DATE) Boolean hideDueDate,
-            @JsonProperty(BLOCK_ENTRY_FORM) Boolean blockEntryForm,
-            @JsonProperty(MIN_DAYS_FROM_START) Integer minDaysFromStart,
-            @JsonProperty(STANDARD_INTERVAL) Integer standardInterval,
-            @JsonProperty(PROGRAM_STAGE_SECTIONS) List<ProgramStageSection> programStageSections,
-            @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements,
-            @JsonProperty(DELETED) Boolean deleted
-    ) {
+    @Nullable
+    public abstract String program();
 
-        return new AutoValue_ProgramStage(
-                uid,
-                code,
-                name,
-                displayName,
-                created,
-                lastUpdated,
-                deleted,
-                executionDateLabel,
-                allowGenerateNextVisit,
-                validCompleteOnly,
-                reportDateToUse,
-                openAfterEnrollment,
-                repeatable,
-                captureCoordinates,
-                formType,
-                displayGenerateEventBox,
-                generatedByEnrollmentDate,
-                autoGenerateEvent,
-                sortOrder,
-                hideDueDate,
-                blockEntryForm,
-                minDaysFromStart,
-                standardInterval,
-                safeUnmodifiableList(programStageSections),
-                safeUnmodifiableList(programStageDataElements)
-        );
+    abstract ProgramStage.Builder toBuilder();
+
+    static ProgramStage.Builder builder() {
+        return new AutoValue_ProgramStage.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends
+            BaseIdentifiableObject.Builder<ProgramStage.Builder> {
+
+        @JsonProperty(EXECUTION_DATE_LABEL)
+        public abstract ProgramStage.Builder executionDateLabel(
+                @Nullable String executionDateLabel);
+
+        @JsonProperty(ALLOW_GENERATE_NEXT_VISIT)
+        public abstract ProgramStage.Builder allowGenerateNextVisit(
+                @Nullable Boolean allowGenerateNextVisit);
+
+        @JsonProperty(VALID_COMPLETE_ONLY)
+        public abstract ProgramStage.Builder validCompleteOnly(@Nullable Boolean validCompleteOnly);
+
+        @JsonProperty(REPORT_DATE_TO_USE)
+        public abstract ProgramStage.Builder reportDateToUse(@Nullable String reportDateToUse);
+
+        @JsonProperty(OPEN_AFTER_ENROLLMENT)
+        public abstract ProgramStage.Builder openAfterEnrollment(
+                @Nullable Boolean openAfterEnrollment);
+
+        @JsonProperty(REPEATABLE)
+        public abstract ProgramStage.Builder repeatable(@Nullable Boolean repeatable);
+
+        @JsonProperty(CAPTURE_COORDINATES)
+        public abstract ProgramStage.Builder captureCoordinates(
+                @Nullable Boolean captureCoordinates);
+
+        @JsonProperty(FORM_TYPE)
+        public abstract ProgramStage.Builder formType(@Nullable FormType formType);
+
+        @JsonProperty(DISPLAY_GENERATE_EVENT_BOX)
+        public abstract ProgramStage.Builder displayGenerateEventBox(
+                @Nullable Boolean displayGenerateEventBox);
+
+        @JsonProperty(GENERATED_BY_ENROLMENT_DATE)
+        public abstract ProgramStage.Builder generatedByEnrollmentDate(
+                @Nullable Boolean generatedByEnrollmentDate);
+
+        @JsonProperty(AUTO_GENERATE_EVENT)
+        public abstract ProgramStage.Builder autoGenerateEvent(@Nullable Boolean autoGenerateEvent);
+
+        @JsonProperty(SORT_ORDER)
+        public abstract ProgramStage.Builder sortOrder(@Nullable Integer sortOrder);
+
+        @JsonProperty(HIDE_DUE_DATE)
+        public abstract ProgramStage.Builder hideDueDate(@Nullable Boolean hideDueDate);
+
+        @JsonProperty(BLOCK_ENTRY_FORM)
+        public abstract ProgramStage.Builder blockEntryForm(@Nullable Boolean blockEntryForm);
+
+        @JsonProperty(MIN_DAYS_FROM_START)
+        public abstract ProgramStage.Builder minDaysFromStart(@Nullable Integer minDaysFromStart);
+
+        @JsonProperty(STANDARD_INTERVAL)
+        public abstract ProgramStage.Builder standardInterval(@Nullable Integer standardInterval);
+
+        @JsonProperty(PROGRAM_STAGE_SECTIONS)
+        public abstract ProgramStage.Builder programStageSections(
+                @Nullable List<ProgramStageSection> programStageSections);
+
+        @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS)
+        public abstract ProgramStage.Builder programStageDataElements(
+                @Nullable List<ProgramStageDataElement> programStageDataElements);
+
+        public abstract ProgramStage.Builder program(
+                @Nullable String program);
+
+        public abstract ProgramStage build();
     }
 }

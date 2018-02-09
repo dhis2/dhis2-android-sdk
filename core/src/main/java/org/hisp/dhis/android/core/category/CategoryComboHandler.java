@@ -27,31 +27,32 @@ public class CategoryComboHandler {
         this.optionComboHandler = optionComboHandler;
     }
 
-    public void handle(CategoryCombo combo) {
+    public void handle(CategoryCombo categoryCombo) {
 
-        if (isDeleted(combo)) {
-            store.delete(combo);
+        if (isDeleted(categoryCombo)) {
+            store.delete(categoryCombo.uid());
         } else {
-
-            boolean updated = store.update(combo);
+            int rowsAffected = store.update(categoryCombo);
+            boolean updated = rowsAffected >= 1;
 
             if (!updated) {
-                store.insert(combo);
+                store.insert(categoryCombo);
+
             }
-            handleRelations(combo, updated);
+            handleRelations(categoryCombo, updated);
         }
     }
 
-    private void handleRelations(@NonNull CategoryCombo combo, boolean isUpdated) {
+    private void handleRelations(@NonNull CategoryCombo categoryCombo, boolean isUpdated) {
 
-        handleCategoriesLink(combo, isUpdated);
+        handleCategoriesLink(categoryCombo, isUpdated);
 
-        handleOptionCombo(combo);
+        handleOptionCombo(categoryCombo);
 
     }
 
-    private void handleOptionCombo(@NonNull CategoryCombo combo) {
-        List<CategoryOptionCombo> optionsCombo = combo.categoryOptionCombos();
+    private void handleOptionCombo(@NonNull CategoryCombo categoryCombo) {
+        List<CategoryOptionCombo> optionsCombo = categoryCombo.categoryOptionCombos();
 
         if (optionsCombo != null) {
             for (CategoryOptionCombo optionCombo : optionsCombo) {
@@ -60,8 +61,8 @@ public class CategoryComboHandler {
         }
     }
 
-    private void handleCategoriesLink(@NonNull CategoryCombo combo, boolean isUpdated) {
-        List<Category> categories = combo.categories();
+    private void handleCategoriesLink(@NonNull CategoryCombo categoryCombo, boolean isUpdated) {
+        List<Category> categories = categoryCombo.categories();
 
         if(isUpdated) {
             //delete old relations
@@ -72,19 +73,20 @@ public class CategoryComboHandler {
 
             for (Category category : categories) {
 
-                CategoryCategoryComboLinkModel link = newCategoryComboLink(combo, category);
+                CategoryCategoryComboLinkModel link = newCategoryComboLink(categoryCombo, category);
 
                 categoryCategoryComboLinkStore.insert(link);
             }
         }
     }
 
-    private CategoryCategoryComboLinkModel newCategoryComboLink(@NonNull CategoryCombo combo,
+    private CategoryCategoryComboLinkModel newCategoryComboLink(
+            @NonNull CategoryCombo categoryCombo,
             @NonNull Category category) {
 
         return CategoryCategoryComboLinkModel.builder().category(
                 category.uid())
-                .combo(combo.uid())
+                .categoryCombo(categoryCombo.uid())
                 .build();
     }
 }

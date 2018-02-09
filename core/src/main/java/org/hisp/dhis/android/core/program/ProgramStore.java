@@ -103,4 +103,6 @@ public interface ProgramStore extends DeletableStore {
             @NonNull String whereProgramUid);
 
     int delete(@NonNull String uid);
+
+    Program queryByUid(String uid);
 }

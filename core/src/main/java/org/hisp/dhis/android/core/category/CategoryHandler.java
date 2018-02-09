@@ -4,14 +4,12 @@ package org.hisp.dhis.android.core.category;
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 
 import java.util.List;
 
 public class CategoryHandler {
-    @VisibleForTesting
-    private final CategoryStore categoryStore;
     private final CategoryOptionHandler categoryOptionHandler;
+    private final CategoryStore categoryStore;
 
     public CategoryHandler(
             @NonNull CategoryStore categoryStore,
@@ -20,17 +18,20 @@ public class CategoryHandler {
         this.categoryOptionHandler = categoryOptionHandler;
     }
 
+
     public void handle(Category category) {
 
         if (isDeleted(category)) {
-            categoryStore.delete(category);
+            categoryStore.delete(category.uid());
         } else {
 
-            boolean updated = categoryStore.update(category);
+            int numberOfRows = categoryStore.update(category);
+            boolean updated = numberOfRows >= 1;
 
             if (!updated) {
                 categoryStore.insert(category);
             }
+
             handleCategoryOption(category);
         }
     }
@@ -45,3 +46,6 @@ public class CategoryHandler {
         }
     }
 }
+
+
+

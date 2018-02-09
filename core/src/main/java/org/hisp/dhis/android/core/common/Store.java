@@ -1,4 +1,5 @@
 package org.hisp.dhis.android.core.common;
+
 import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 
 import android.database.Cursor;
@@ -25,5 +26,11 @@ public class Store {
     @Nullable
     protected Integer getIntegerFromCursor(Cursor cursor, int index) {
         return cursor.getString(index) == null ? null : cursor.getInt(index);
+    }
+
+    @Nullable
+    protected ValueType getValueTypeFromCursor(Cursor cursor, int index) {
+        return cursor.getString(index) == null ? null :
+                ValueType.valueOf(cursor.getString(index));
     }
 }

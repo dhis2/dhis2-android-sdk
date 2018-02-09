@@ -51,7 +51,7 @@ public abstract class CategoryOptionComboCategoryLinkModel extends BaseModel {
 
     @NonNull
     @ColumnName(Columns.CATEGORY_OPTION_COMBO)
-    public abstract String optionCombo();
+    public abstract String categoryOptionCombo();
 
     @NonNull
     @ColumnName(Columns.CATEGORY)
@@ -74,7 +74,7 @@ public abstract class CategoryOptionComboCategoryLinkModel extends BaseModel {
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
 
-        public abstract Builder optionCombo(@Nullable String optionCombo);
+        public abstract Builder categoryOptionCombo(@Nullable String optionCombo);
 
         public abstract Builder category(@Nullable String category);
 

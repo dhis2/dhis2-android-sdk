@@ -30,16 +30,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class CategoryCategoryOptionChangeOnServerShould extends AbsStoreTestCase {
+public class CategoryOptionChangeOnServerShould extends AbsStoreTestCase {
 
     @Mock
     private MetadataAuditHandlerFactory metadataAuditHandlerFactory;
 
-    private CategoryStore categoryStore;
     private CategoryOptionStore categoryOptionStore;
     private MetadataAuditListener metadataAuditListener;
 
@@ -62,7 +59,6 @@ public class CategoryCategoryOptionChangeOnServerShould extends AbsStoreTestCase
         when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
                 new CategoryOptionMetadataAuditHandler(categoryFactory));
 
-        categoryStore = new CategoryStoreImpl(databaseAdapter());
         categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 
@@ -80,7 +76,7 @@ public class CategoryCategoryOptionChangeOnServerShould extends AbsStoreTestCase
     @MediumTest
     public void ignore_category_option_if_audit_type_is_create() throws Exception {
         MetadataAudit<CategoryOption> metadataAudit =
-                givenAMetadataAudit("audit/category_option_create.json");
+                givenAMetadataAudit("audit/categoryOption_create.json");
 
         metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
             @Override
@@ -100,12 +96,12 @@ public class CategoryCategoryOptionChangeOnServerShould extends AbsStoreTestCase
     @Test
     @MediumTest
     public void update_category_option_if_audit_type_is_update() throws Exception {
-        String filename = "audit/categories.json";
+        String filename = "category_edited.json";
 
         givenAExistedCategoryOptionPreviously();
 
         MetadataAudit<CategoryOption> metadataAudit =
-                givenAMetadataAudit("audit/category_option_update.json");
+                givenAMetadataAudit("audit/categoryOption_update.json");
 
         dhis2MockServer.enqueueMockResponse(filename);
 
@@ -123,7 +119,7 @@ public class CategoryCategoryOptionChangeOnServerShould extends AbsStoreTestCase
         metadataAuditListener.onMetadataChanged(CategoryOption.class, metadataAudit);
 
         assertThat(categoryOptionStore.queryByUid(metadataAudit.getUid()),
-                is(getCategoryOptionExpected(metadataAudit.getUid())));
+                is(getCategoryOptionExpected(filename, metadataAudit.getUid())));
     }
 
     @Test
@@ -132,7 +128,7 @@ public class CategoryCategoryOptionChangeOnServerShould extends AbsStoreTestCase
         givenAExistedCategoryOptionPreviously();
 
         MetadataAudit<CategoryOption> metadataAudit =
-                givenAMetadataAudit("audit/category_option_delete.json");
+                givenAMetadataAudit("audit/categoryOption_delete.json");
 
         metadataAuditListener.setMetadataSyncedListener(new MetadataSyncedListener() {
             @Override
@@ -150,8 +146,9 @@ public class CategoryCategoryOptionChangeOnServerShould extends AbsStoreTestCase
         assertThat(categoryOptionStore.queryAll().size(), is(0));
     }
 
-    private CategoryOption getCategoryOptionExpected(String uid) throws IOException {
-        String json = new AssetsFileReader().getStringFromFile("audit/categories.json");
+    private CategoryOption getCategoryOptionExpected(String fileName, String uid)
+            throws IOException {
+        String json = new AssetsFileReader().getStringFromFile(fileName);
 
         GenericClassParser parser = new GenericClassParser();
 

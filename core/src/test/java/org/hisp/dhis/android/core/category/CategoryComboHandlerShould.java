@@ -23,7 +23,7 @@ public class CategoryComboHandlerShould {
     private CategoryOptionComboHandler mockOptionComboHandler;
 
     @Mock
-    private CategoryComboStore mockComboStore;
+    private CategoryComboStore mockCategoryComboStore;
 
     private CategoryComboHandler categoryComboHandler;
 
@@ -34,21 +34,20 @@ public class CategoryComboHandlerShould {
         MockitoAnnotations.initMocks(this);
 
 
-        categoryComboHandler = new CategoryComboHandler(mockComboStore,
+        categoryComboHandler = new CategoryComboHandler(mockCategoryComboStore,
                 mockComboLinkStore, mockOptionComboHandler);
     }
 
     @Test
     public void handle_a_new_category_combo() {
-        CategoryCombo combo = givenACategoryCombo();
+        CategoryCombo categoryCombo = givenACategoryCombo();
 
-        when(mockComboStore.update(any(CategoryCombo.class))).thenReturn(
-                false);
+        when(mockCategoryComboStore.update(any(CategoryCombo.class))).thenReturn(0);
 
-        categoryComboHandler.handle(combo);
+        categoryComboHandler.handle(categoryCombo);
 
-        verify(mockComboStore).update(combo);
-        verify(mockComboStore).insert(combo);
+        verify(mockCategoryComboStore).update(categoryCombo);
+        verify(mockCategoryComboStore).insert(categoryCombo);
 
     }
 
@@ -57,20 +56,19 @@ public class CategoryComboHandlerShould {
         CategoryCombo deletedCombo = givenADeletedCategoryCombo();
 
         categoryComboHandler.handle(deletedCombo);
-        verify(mockComboStore).delete(deletedCombo);
+        verify(mockCategoryComboStore).delete(deletedCombo.uid());
     }
 
     @Test
     public void handle_updated_category() {
-        CategoryCombo updatedCombo = givenACategoryCombo();
+        CategoryCombo updatedCategoryCombo = givenACategoryCombo();
 
-        when(mockComboStore.update(any(CategoryCombo.class))).thenReturn(
-                true);
+        when(mockCategoryComboStore.update(any(CategoryCombo.class))).thenReturn(1);
 
-        categoryComboHandler.handle(updatedCombo);
+        categoryComboHandler.handle(updatedCategoryCombo);
 
-        verify(mockComboStore).update(updatedCombo);
-        verifyZeroInteractions(mockComboStore);
+        verify(mockCategoryComboStore).update(updatedCategoryCombo);
+        verifyZeroInteractions(mockCategoryComboStore);
 
     }
 

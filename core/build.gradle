@@ -64,6 +64,8 @@ android {
 
         // Fail early.
         abortOnError true
+
+        lintConfig file("../lint.xml")
     }
 
     buildTypes {

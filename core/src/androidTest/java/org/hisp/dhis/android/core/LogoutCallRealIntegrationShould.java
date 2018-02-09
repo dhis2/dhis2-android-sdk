@@ -2,9 +2,6 @@ package org.hisp.dhis.android.core;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
-import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isTableEmpty;
-
 import android.support.test.filters.LargeTest;
 
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -90,14 +87,14 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
 
         eventCall.call();
 
-        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
         d2.logout().call();
 
-        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
-        assertThat(isTableEmpty(databaseAdapter(), EventModel.TABLE)).isFalse();
-
-        assertThat(isTableEmpty(databaseAdapter(), AuthenticatedUserModel.TABLE)).isTrue();
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .isNotEmpty()
+                .isNotEmptyTable(EventModel.TABLE)
+                .isEmptyTable(AuthenticatedUserModel.TABLE);
     }
 
     @Test
@@ -111,23 +108,18 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
         response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 
-        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
+        DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
         d2.logout().call();
 
-        assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
-
-        assertThat(isTableEmpty(databaseAdapter(), EventModel.TABLE)).isTrue();
-
-        assertThat(isTableEmpty(databaseAdapter(), UserModel.TABLE)).isFalse();
-
-        assertThat(isTableEmpty(databaseAdapter(), OrganisationUnitModel.TABLE)).isFalse();
-
-        assertThat(isTableEmpty(databaseAdapter(), ProgramModel.TABLE)).isFalse();
-
-        assertThat(isTableEmpty(databaseAdapter(), ResourceModel.TABLE)).isFalse();
-
-        assertThat(isTableEmpty(databaseAdapter(), AuthenticatedUserModel.TABLE)).isTrue();
+        DatabaseAssert.assertThatDatabase(databaseAdapter())
+                .isNotEmpty()
+                .isEmptyTable(AuthenticatedUserModel.TABLE)
+                .isNotEmptyTable(UserModel.TABLE)
+                .isNotEmptyTable(OrganisationUnitModel.TABLE)
+                .isNotEmptyTable(ProgramModel.TABLE)
+                .isNotEmptyTable(ResourceModel.TABLE)
+                .isEmptyTable(AuthenticatedUserModel.TABLE);
     }
 
     @Test

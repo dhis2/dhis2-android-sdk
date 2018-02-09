@@ -6,13 +6,14 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 public final class ResourcesFileReader implements IFileReader {
     @Override
     public String getStringFromFile(String filename) throws IOException {
         FileInputStream inputStream = new FileInputStream(getFile(getClass(), filename));
 
-        InputStreamReader isr = new InputStreamReader(inputStream);
+        InputStreamReader isr = new InputStreamReader(inputStream, Charset.defaultCharset());
         BufferedReader bufferedReader = new BufferedReader(isr);
         StringBuilder sb = new StringBuilder();
         String line;

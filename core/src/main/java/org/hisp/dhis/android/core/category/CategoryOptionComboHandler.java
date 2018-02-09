@@ -23,10 +23,11 @@ public class CategoryOptionComboHandler {
     public void handle(@NonNull CategoryOptionCombo entity) {
 
         if (isDeleted(entity)) {
-            store.delete(entity);
+            store.delete(entity.uid());
         } else {
 
-            boolean updated = store.update(entity);
+            int rowsAffected = store.update(entity);
+            boolean updated = rowsAffected >= 1;
 
             if (!updated) {
                 store.insert(entity);
@@ -65,7 +66,7 @@ public class CategoryOptionComboHandler {
         return CategoryOptionComboCategoryLinkModel.
                 builder()
                 .category(categoryOption.uid())
-                .optionCombo(optionCombo.uid())
+                .categoryOptionCombo(optionCombo.uid())
                 .build();
     }
 }

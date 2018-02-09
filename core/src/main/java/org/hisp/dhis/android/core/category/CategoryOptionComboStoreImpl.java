@@ -21,7 +21,7 @@ import java.util.List;
 })
 public class CategoryOptionComboStoreImpl extends Store implements CategoryOptionComboStore {
 
-    public final DatabaseAdapter databaseAdapter;
+    private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
@@ -91,21 +91,21 @@ public class CategoryOptionComboStoreImpl extends Store implements CategoryOptio
     }
 
     @Override
-    public boolean delete(@NonNull CategoryOptionCombo entity) {
+    public int delete(@NonNull String uid) {
 
-        validate(entity);
+        isNull(uid);
 
-        bindForDelete(entity);
+        bindForDelete(uid);
 
         return execute(deleteStatement);
     }
 
     @Override
-    public boolean update(@NonNull CategoryOptionCombo entity) {
+    public int update(@NonNull CategoryOptionCombo categoryOptionCombo) {
 
-        validate(entity);
+        validate(categoryOptionCombo);
 
-        bindUpdate(entity);
+        bindUpdate(categoryOptionCombo);
 
         return execute(updateStatement);
     }
@@ -114,17 +114,17 @@ public class CategoryOptionComboStoreImpl extends Store implements CategoryOptio
         isNull(optionCombo.uid());
     }
 
-    private void bindForDelete(@NonNull CategoryOptionCombo optionCombo) {
+    private void bindForDelete(@NonNull String uid) {
         final int uidIndex = 1;
 
-        sqLiteBind(deleteStatement, uidIndex, optionCombo.uid());
+        sqLiteBind(deleteStatement, uidIndex, uid);
     }
 
-    private void bindUpdate(@NonNull CategoryOptionCombo entity) {
+    private void bindUpdate(@NonNull CategoryOptionCombo categoryOptionCombo) {
         final int whereUidIndex = 8;
-        bind(updateStatement, entity);
+        bind(updateStatement, categoryOptionCombo);
 
-        sqLiteBind(updateStatement, whereUidIndex, entity.uid());
+        sqLiteBind(updateStatement, whereUidIndex, categoryOptionCombo.uid());
     }
 
     private void bind(SQLiteStatement sqLiteStatement, @NonNull CategoryOptionCombo newOptionCombo) {
@@ -144,15 +144,11 @@ public class CategoryOptionComboStoreImpl extends Store implements CategoryOptio
 
     }
 
-    private boolean wasExecuted(int numberOfRows) {
-        return numberOfRows >= 1;
-    }
-
-    private boolean execute(SQLiteStatement statement) {
+    private int execute(SQLiteStatement statement) {
         int rowsAffected = databaseAdapter.executeUpdateDelete(CategoryOptionComboModel.TABLE, statement);
         statement.clearBindings();
 
-        return wasExecuted(rowsAffected);
+        return rowsAffected;
     }
 
     private long executeInsert() {
@@ -235,10 +231,6 @@ public class CategoryOptionComboStoreImpl extends Store implements CategoryOptio
     @Override
     public int delete() {
         return databaseAdapter.delete(CategoryOptionComboModel.TABLE);
-    }
-
-    public  DatabaseAdapter getAdapter(){
-        return databaseAdapter;
     }
 
 }

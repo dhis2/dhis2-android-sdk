@@ -55,4 +55,6 @@ public interface ProgramRuleVariableStore extends DeletableStore {
     );
 
     int delete(String uid);
+
+    ProgramRuleVariable queryByUid(String uid);
 }

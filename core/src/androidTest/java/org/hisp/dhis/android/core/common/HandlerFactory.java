@@ -34,12 +34,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 
 public class HandlerFactory {
 
@@ -128,8 +125,8 @@ public class HandlerFactory {
     public static CategoryOptionHandler createCategoryOptionHandler(
             DatabaseAdapter databaseAdapter) {
         CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter);
-        CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore = new CategoryCategoryOptionLinkStoreImpl(databaseAdapter);
-
+        CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore =
+                new CategoryCategoryOptionLinkStoreImpl(databaseAdapter);
         CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
                 categoryOptionStore, categoryCategoryOptionLinkStore);
 
@@ -139,7 +136,9 @@ public class HandlerFactory {
     public static CategoryHandler createCategoryHandler(DatabaseAdapter databaseAdapter) {
         CategoryStore categoryStore = new CategoryStoreImpl(databaseAdapter);
         CategoryOptionHandler categoryOptionHandler = createCategoryOptionHandler(databaseAdapter);
-        CategoryHandler categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler);
+
+        CategoryHandler categoryHandler =
+                new CategoryHandler(categoryStore, categoryOptionHandler);
 
         return categoryHandler;
     }

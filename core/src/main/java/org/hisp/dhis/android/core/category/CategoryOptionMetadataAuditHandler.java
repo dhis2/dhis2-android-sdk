@@ -19,8 +19,10 @@ public class CategoryOptionMetadataAuditHandler implements MetadataAuditHandler 
     }
 
     public void handle(MetadataAudit metadataAudit) throws Exception {
-        // MetadataAudit<CategoryOption> of CREATE type is ignored because Category parent is null in payload.
-        // when a categoryOption is create on server also send a MetadataAudit<Category> of UPDATE type
+        // MetadataAudit<CategoryOption> of CREATE type is ignored because Category parent is
+        // null in payload.
+        // when a categoryOption is create on server also send a MetadataAudit<Category> of
+        // UPDATE type
         // then new categoryOption will be created by CategoryMetadataAuditHandler.
 
         CategoryOption categoryOption = (CategoryOption) metadataAudit.getValue();
@@ -34,8 +36,8 @@ public class CategoryOptionMetadataAuditHandler implements MetadataAuditHandler 
 
             if (oldCategoryOption == null) {
                 Log.e(this.getClass().getSimpleName(),
-                        "MetadataAudit Error: "+ this.getClass().getSimpleName()
-                                +" updated on server but does not exists in local: "
+                        "MetadataAudit Error: " + this.getClass().getSimpleName()
+                                + " updated on server but does not exists in local: "
                                 + metadataAudit);
             } else {
                 Set<String> uIds = new HashSet<>();

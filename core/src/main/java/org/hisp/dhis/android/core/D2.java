@@ -66,6 +66,7 @@ import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
@@ -139,6 +140,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEndPointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
@@ -166,6 +169,7 @@ import org.hisp.dhis.android.core.user.UserStore;
 import org.hisp.dhis.android.core.user.UserStoreImpl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -519,6 +523,13 @@ public final class D2 {
         return new TrackerDataCall(trackedEntityInstanceStore, systemInfoStore, systemInfoService,
                 resourceStore, trackedEntityInstanceService, databaseAdapter, resourceHandler,
                 trackedEntityInstanceHandler);
+    }
+
+    @NonNull
+    public Call<Response<Payload<TrackedEntityInstance>>> syncTEI(String trackedEntityInstanceUid) {
+        return new TrackedEntityInstanceEndPointCall(
+                trackedEntityInstanceService, databaseAdapter, trackedEntityInstanceHandler,
+                resourceHandler, new Date(), trackedEntityInstanceUid);
     }
 
     @NonNull

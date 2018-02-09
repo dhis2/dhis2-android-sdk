@@ -9,6 +9,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import org.hisp.dhis.android.core.audit.broker.RealBrokerMother;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 

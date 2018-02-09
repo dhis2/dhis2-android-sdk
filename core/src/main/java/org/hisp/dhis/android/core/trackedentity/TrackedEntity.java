@@ -53,7 +53,7 @@ public abstract class TrackedEntity extends BaseNameableObject {
 
     abstract Builder toBuilder();
 
-    static TrackedEntity.Builder builder() {
+    public static TrackedEntity.Builder builder() {
         return new AutoValue_TrackedEntity.Builder();
     }
 

@@ -161,7 +161,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
 
     abstract TrackedEntityAttribute.Builder toBuilder();
 
-    static TrackedEntityAttribute.Builder builder() {
+    public static TrackedEntityAttribute.Builder builder() {
         return new AutoValue_TrackedEntityAttribute.Builder();
     }
 

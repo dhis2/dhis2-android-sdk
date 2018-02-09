@@ -30,13 +30,14 @@ public class CategoryHandlerShould {
     @Before
     public void setUp() throws Exception {
 
-
         MockitoAnnotations.initMocks(this);
-        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                mockCategoryOptionStore);
 
-        mCategoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler,
-                mockCategoryCategoryOptionLinkStore);
+        CategoryOptionHandler categoryOptionHandler =
+                new CategoryOptionHandler(mockCategoryOptionStore,
+                        mockCategoryCategoryOptionLinkStore);
+
+        mCategoryHandler =
+                new CategoryHandler(mockCategoryStore, categoryOptionHandler);
     }
 
     @Test
@@ -52,12 +53,12 @@ public class CategoryHandlerShould {
         Category newCategory = givenACategory();
 
         when(mockCategoryStore.update(any(Category.class))).thenReturn(0);
+        when(mockCategoryStore.update(any(Category.class))).thenReturn(0);
 
         mCategoryHandler.handle(newCategory);
 
         verify(mockCategoryStore).update(newCategory);
         verify(mockCategoryStore).insert(newCategory);
-
     }
 
     @Test
@@ -65,12 +66,12 @@ public class CategoryHandlerShould {
         Category updatedCategory = givenACategory();
 
         when(mockCategoryStore.update(any(Category.class))).thenReturn(1);
+        when(mockCategoryStore.update(any(Category.class))).thenReturn(1);
 
         mCategoryHandler.handle(updatedCategory);
 
         verify(mockCategoryStore).update(updatedCategory);
         verifyZeroInteractions(mockCategoryStore);
-
     }
 
     private Category givenADeletedCategory() {
@@ -105,8 +106,9 @@ public class CategoryHandlerShould {
     private List<CategoryOption> givenAListOfCategoryOptions() {
         List<CategoryOption> list = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++) {
             list.add(givenAOption());
+        }
 
         return list;
     }

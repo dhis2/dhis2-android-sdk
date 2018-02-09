@@ -59,4 +59,5 @@ public interface UserStore extends DeletableStore{
     @Override
     int delete();
 
+    User queryByUId(String userUId);
 }

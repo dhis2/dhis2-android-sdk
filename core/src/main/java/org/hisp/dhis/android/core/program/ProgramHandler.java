@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
-
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
+import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 
 public class ProgramHandler {
 
@@ -107,15 +107,17 @@ public class ProgramHandler {
                         program.programType(), relationshipTypeUid, program.relationshipText(),
                         relatedProgramUid, trackedEntityUid, categoryCombo);
             }
+
+            // programStageHandler will invoke programStageSectionHandler,
+            // programStageDataElementHandler,
+            // programIndicatorHandler, dataElement handler and optionSetHandler
+            programStageHandler.handleProgramStage(program.uid(), program.programStages());
+            programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(
+                    program.programTrackedEntityAttributes());
+            programIndicatorHandler.handleProgramIndicator(null, program.programIndicators());
+            programRuleHandler.handleProgramRules(program.programRules());
+            programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
+            relationshipHandler.handleRelationshipType(program.relationshipType());
         }
-        // programStageHandler will invoke programStageSectionHandler, programStageDataElementHandler,
-        // programIndicatorHandler, dataElement handler and optionSetHandler
-        programStageHandler.handleProgramStage(program.uid(), program.programStages());
-        programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(
-                program.programTrackedEntityAttributes());
-        programIndicatorHandler.handleProgramIndicator(null, program.programIndicators());
-        programRuleHandler.handleProgramRules(program.programRules());
-        programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
-        relationshipHandler.handleRelationshipType(program.relationshipType());
     }
 }

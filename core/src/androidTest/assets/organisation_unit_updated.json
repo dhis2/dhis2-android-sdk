@@ -1,0 +1,20 @@
+{
+  "organisationUnits": [
+    {
+      "code": "OU_559",
+      "level": 4,
+      "created": "2012-02-17T15:54:39.987",
+      "lastUpdated": "2017-05-22T15:21:48.516",
+      "name": "Ngelehun CHC edited",
+      "id": "iYkwseT3Umf",
+      "shortName": "Ngelehun CHC edited",
+      "displayName": "Ngelehun CHC edited",
+      "displayShortName": "Ngelehun CHC edited",
+      "path": "/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/iYkwseT3Umf",
+      "openingDate": "1970-01-01T00:00:00.000",
+      "parent": {
+        "id": "ImspTQPwCqd"
+      }
+    }
+  ]
+}

@@ -61,4 +61,6 @@ public interface OrganisationUnitStore extends DeletableStore {
     int delete();
 
     List<OrganisationUnit> queryOrganisationUnits();
+
+    OrganisationUnit queryByUid(String uid);
 }

@@ -1,0 +1,85 @@
+{
+  "createdAt": "2018-01-22T18:37:15.841",
+  "createdBy": "admin",
+  "klass": "org.hisp.dhis.dataelement.DataElementCategory",
+  "uid": "DkS8tTZCkNE",
+  "code": "43ferf34",
+  "type": "CREATE",
+  "value": {
+    "code": "43ferf34",
+    "name": "new cat 001dis",
+    "created": "2018-01-22T18:37:15.835",
+    "lastUpdated": "2018-01-22T18:37:15.835",
+    "externalAccess": false,
+    "publicAccess": "rw------",
+    "user": {
+      "name": "John Traore",
+      "created": "2013-04-18T17:15:08.407",
+      "lastUpdated": "2017-06-02T13:04:58.319",
+      "externalAccess": false,
+      "displayName": "John Traore",
+      "id": "xE7jOejl9FI"
+    },
+    "displayName": "new cat 001dis",
+    "lastUpdatedBy": {
+      "id": "xE7jOejl9FI",
+      "name": "John Traore"
+    },
+    "dimensionType": "CATEGORY",
+    "items": [{
+      "code": "AGE15-24",
+      "name": "15-24y",
+      "created": "2011-12-24T12:24:24.149",
+      "lastUpdated": "2015-03-11T11:10:12.274",
+      "translations": [{
+        "locale": "en_GB",
+        "property": "NAME",
+        "value": "15-24y"
+      }],
+      "externalAccess": false,
+      "publicAccess": "rw------",
+      "user": {
+        "name": "Tom Wakiki",
+        "created": "2012-11-21T12:02:04.303",
+        "lastUpdated": "2017-06-02T13:05:22.694",
+        "externalAccess": false,
+        "displayName": "Tom Wakiki",
+        "id": "GOLswS44mh8"
+      },
+      "displayName": "15-24y",
+      "shortName": "15-24y",
+      "displayShortName": "15-24y",
+      "dimensionItemType": "CATEGORY_OPTION",
+      "dimensionItem": "UOqJW6HPvvL",
+      "id": "UOqJW6HPvvL"
+    }],
+    "allItems": false,
+    "dataDimension": true,
+    "dataDimensionType": "DISAGGREGATION",
+    "categoryOptions": [{
+      "code": "AGE15-24",
+      "name": "15-24y",
+      "created": "2011-12-24T12:24:24.149",
+      "lastUpdated": "2015-03-11T11:10:12.274",
+      "translations": [{
+        "locale": "en_GB",
+        "property": "NAME",
+        "value": "15-24y"
+      }],
+      "externalAccess": false,
+      "publicAccess": "rw------",
+      "user": {
+        "name": "Tom Wakiki",
+        "created": "2012-11-21T12:02:04.303",
+        "lastUpdated": "2017-06-02T13:05:22.694",
+        "externalAccess": false,
+        "displayName": "Tom Wakiki",
+        "id": "GOLswS44mh8"
+      },
+      "displayName": "15-24y",
+      "id": "UOqJW6HPvvL"
+    }],
+    "dimension": "DkS8tTZCkNE",
+    "id": "DkS8tTZCkNE"
+  }
+}

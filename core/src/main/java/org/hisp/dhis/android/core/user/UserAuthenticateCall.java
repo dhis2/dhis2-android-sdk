@@ -41,8 +41,6 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
@@ -59,9 +57,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
     // stores and databaseAdapter related dependencies
     private final DatabaseAdapter databaseAdapter;
-    private final UserStore userStore;
-    private final UserCredentialsHandler userCredentialsHandler;
-    private final ResourceHandler resourceHandler;
+    private final UserHandler userHandler;
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitHandler organisationUnitHandler;
 
@@ -74,9 +70,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     public UserAuthenticateCall(
             @NonNull UserService userService,
             @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull UserStore userStore,
-            @NonNull UserCredentialsHandler userCredentialsHandler,
-            @NonNull ResourceHandler resourceHandler,
+            @NonNull UserHandler userHandler,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
             @NonNull OrganisationUnitHandler organisationUnitHandler,
             @NonNull String username,
@@ -84,9 +78,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         this.userService = userService;
 
         this.databaseAdapter = databaseAdapter;
-        this.userStore = userStore;
-        this.userCredentialsHandler = userCredentialsHandler;
-        this.resourceHandler = resourceHandler;
+        this.userHandler = userHandler;
         this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitHandler = organisationUnitHandler;
 
@@ -180,44 +172,16 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     }
 
     @NonNull
-    private void handleUser(User user, Date serverDateTime) {
-
-        int updatedRow = userStore.update(
-                user.uid(), user.code(), user.name(), user.displayName(), user.created(),
-                user.lastUpdated(), user.birthday(), user.education(),
-                user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                user.introduction(), user.employer(), user.interests(), user.languages(),
-                user.email(), user.phoneNumber(), user.nationality(), user.uid()
-        );
-
-        if (updatedRow <= 0) {
-            userStore.insert(
-                    user.uid(), user.code(), user.name(), user.displayName(), user.created(),
-                    user.lastUpdated(), user.birthday(), user.education(),
-                    user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                    user.introduction(), user.employer(), user.interests(), user.languages(),
-                    user.email(), user.phoneNumber(), user.nationality()
-            );
-        }
-
-        resourceHandler.handleResource(ResourceModel.Type.USER, serverDateTime);
-
-        userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
-
-        resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, serverDateTime);
+    private void handleUser(User user, Date serverDate) {
+        userHandler.handleUser(user, serverDate);
 
         authenticatedUserStore.insert(user.uid(), base64(username, password));
-
-        resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, serverDateTime);
 
         if (user.organisationUnits() != null) {
             organisationUnitHandler.handleOrganisationUnits(
                     user.organisationUnits(),
                     OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
-                    user.uid());
-
-            // TODO: This is introduced to download all descendants
-            // resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDateTime);
+                    user.uid(), serverDate);
         }
     }
 }

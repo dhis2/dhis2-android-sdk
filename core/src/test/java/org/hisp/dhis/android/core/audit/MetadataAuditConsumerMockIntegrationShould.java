@@ -33,10 +33,32 @@ public class MetadataAuditConsumerMockIntegrationShould {
                         "audit/optionSet_create.json"},
                 {MetadataAudit.class, "metadata.option.create.eHqt440U096",
                         "audit/option_create.json"},
+                {MetadataAudit.class, "metadata.program.create.CtLttUVOkea",
+                        "audit/program_create.json"},
+                {MetadataAudit.class, "metadata.programStage.create.hKuTxVbPcci",
+                        "audit/programStage_create.json"},
+                {MetadataAudit.class, "metadata.programIndicator.create.bG61Yg5Vx43",
+                        "audit/programIndicator_create.json"},
+                {MetadataAudit.class, "metadata.programRule.create.lpAbEkA12h0",
+                        "audit/programRule_create.json"},
+                {MetadataAudit.class, "metadata.programRuleAction.create.yCTGPpo27M0",
+                        "audit/programRuleAction_create.json"},
+                {MetadataAudit.class, "metadata.programRuleVariable.create.sm4OWIjiY6K",
+                        "audit/programRuleVariable_create.json"},
                 {MetadataAudit.class, "metadata.dataElement.create.SKPMfGShCt5",
                         "audit/data_element_create.json"},
                 {MetadataAudit.class, "metadata.trackedEntityAttribute.create.bNNXBXTGDVV",
-                        "audit/tracked_entity_attribute_create.json"}
+                        "audit/tracked_entity_attribute_create.json"},
+                {MetadataAudit.class, "metadata.organisationUnit.create.iYkwseT3Umf",
+                        "audit/organisation_unit_create.json"},
+                {MetadataAudit.class, "metadata.dataElementCategory.create.DkS8tTZCkNE",
+                        "audit/category_create.json"},
+                {MetadataAudit.class, "metadata.dataElementCategoryOption.create.N2aIBIcVO3e",
+                        "audit/category_option_create.json"},
+                {MetadataAudit.class, "metadata.dataElementCategoryCombo.create.SO8aY5wDjRJ",
+                        "audit/category_combo_create.json"},
+                {MetadataAudit.class, "metadata.dataElementCategoryOptionCombo.update.S34ULMcHMca",
+                        "audit/category_option_combo_update.json"}
         });
     }
 

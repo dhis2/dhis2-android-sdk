@@ -92,7 +92,7 @@ public class OptionChangeOnServerShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void update_option_set_if_audit_type_is_update() throws Exception {
+    public void update_option_if_audit_type_is_update() throws Exception {
         String filename = "option_sets.json";
 
         givenAPreExistingOption();
@@ -120,7 +120,7 @@ public class OptionChangeOnServerShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_option_set_in_database_if_audit_type_is_delete() throws Exception {
+    public void delete_option_in_database_if_audit_type_is_delete() throws Exception {
         givenAPreExistingOption();
 
         MetadataAudit<Option> metadataAudit =

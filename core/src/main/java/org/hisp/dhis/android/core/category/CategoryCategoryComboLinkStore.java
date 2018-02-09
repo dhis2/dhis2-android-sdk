@@ -16,4 +16,8 @@ public interface CategoryCategoryComboLinkStore extends DeletableStore {
             @NonNull CategoryCategoryComboLinkModel newCategoryCategoryComboLinkMode);
 
     List<CategoryCategoryComboLink> queryAll();
+
+    List<CategoryCategoryComboLink> queryByCategoryComboUId(String categoryComboUId);
+
+    int removeCategoryComboRelations(String uid);
 }

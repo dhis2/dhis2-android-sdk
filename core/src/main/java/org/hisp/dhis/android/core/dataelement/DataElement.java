@@ -120,9 +120,10 @@ public abstract class DataElement extends BaseNameableObject {
 
     abstract DataElement.Builder toBuilder();
 
-    static DataElement.Builder builder() {
+    public static DataElement.Builder builder() {
         return new AutoValue_DataElement.Builder();
     }
+
     @AutoValue.Builder
     public static abstract class Builder extends
             BaseNameableObject.Builder<DataElement.Builder> {

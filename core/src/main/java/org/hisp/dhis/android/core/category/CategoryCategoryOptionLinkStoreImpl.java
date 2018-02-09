@@ -13,7 +13,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOptionLinkStore {
 
     private final DatabaseAdapter databaseAdapter;
@@ -48,6 +50,14 @@ public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOpti
 
     private static final String QUERY_ALL_CATEGORY_OPTION_LINKS = "SELECT " +
             FIELDS + " FROM " + CategoryCategoryOptionLinkModel.TABLE;
+    private static final String QUERY_BY_CATEGORY_UID_STATEMENT =
+            "SELECT " + CategoryCategoryOptionLinkModel.Columns.CATEGORY_OPTION +
+                    " FROM " + CategoryCategoryOptionLinkModel.TABLE +
+                    " WHERE " + CategoryCategoryOptionLinkModel.Columns.CATEGORY + " =?;";
+    private static final String QUERY_BY_CATEGORY_OPTION_UID_STATEMENT =
+            "SELECT " + CategoryCategoryOptionLinkModel.Columns.CATEGORY + " " +
+                    " FROM " + CategoryCategoryOptionLinkModel.TABLE +
+                    " WHERE " + CategoryCategoryOptionLinkModel.Columns.CATEGORY_OPTION + " =?;";
 
     public CategoryCategoryOptionLinkStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
@@ -138,6 +148,44 @@ public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOpti
         statement.clearBindings();
 
         return rowsAffected;
+    }
+
+    @Override
+    public List<String> queryCategoryOptionUidListFromCategoryUid(String optionSetUid) {
+        Cursor cursor = databaseAdapter.query(QUERY_BY_CATEGORY_UID_STATEMENT, optionSetUid);
+
+        List<String> uIds = mapUidsFromCursor(cursor);
+
+        return uIds;
+    }
+
+    @Override
+    public List<String> queryCategoryUidListFromCategoryOptionUid(String categoryOptionUid) {
+        Cursor cursor = databaseAdapter.query(QUERY_BY_CATEGORY_OPTION_UID_STATEMENT,
+                categoryOptionUid);
+
+        List<String> uIds = mapUidsFromCursor(cursor);
+
+        return uIds;
+    }
+
+    private List<String> mapUidsFromCursor(Cursor cursor) {
+
+        List<String> uIds = new ArrayList<>();
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    String uid = cursor.getString(0) == null ? null : cursor.getString(
+                            0);
+                    uIds.add(uid);
+                } while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return uIds;
     }
 
     private List<CategoryCategoryOptionLinkModel> mapFromCursor(

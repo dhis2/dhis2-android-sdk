@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import java.util.List;
-
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
+import java.util.List;
 
 public class ProgramRuleActionHandler {
     private final ProgramRuleActionStore programRuleActionStore;
@@ -48,8 +48,6 @@ public class ProgramRuleActionHandler {
 
     /**
      * Deletes or persists program rule actions and applies the changes to the database.
-     *
-     * @param programRuleActions
      */
     private void deleteOrPersistProgramRuleActions(List<ProgramRuleAction> programRuleActions) {
         int size = programRuleActions.size();
@@ -57,35 +55,61 @@ public class ProgramRuleActionHandler {
         for (int i = 0; i < size; i++) {
             ProgramRuleAction programRuleAction = programRuleActions.get(i);
 
-            if (isDeleted(programRuleAction)) {
-                programRuleActionStore.delete(programRuleAction.uid());
-            } else {
-                String trackedEntityAttributeUid = null;
-                if(programRuleAction.trackedEntityAttribute() != null) {
-                    trackedEntityAttributeUid = programRuleAction.trackedEntityAttribute().uid();
-                }
+            handle(programRuleAction);
+        }
+    }
 
-                String dataElementUid = null;
-                if(programRuleAction.dataElement() != null) {
-                    dataElementUid = programRuleAction.dataElement().uid();
-                }
+    public void handle(ProgramRuleAction programRuleAction) {
+        if (isDeleted(programRuleAction)) {
+            programRuleActionStore.delete(programRuleAction.uid());
+        } else {
+            String trackedEntityAttributeUid = null;
+            if (programRuleAction.trackedEntityAttribute() != null) {
+                trackedEntityAttributeUid = programRuleAction.trackedEntityAttribute().uid();
+            }
 
-                String programIndicatorUid = null;
-                if(programRuleAction.programIndicator() != null) {
-                    programIndicatorUid = programRuleAction.programIndicator().uid();
-                }
+            String dataElementUid = null;
+            if (programRuleAction.dataElement() != null) {
+                dataElementUid = programRuleAction.dataElement().uid();
+            }
 
-                String programStageSectionUid = null;
-                if(programRuleAction.programStageSection() != null) {
-                    programStageSectionUid = programRuleAction.programStageSection().uid();
-                }
+            String programIndicatorUid = null;
+            if (programRuleAction.programIndicator() != null) {
+                programIndicatorUid = programRuleAction.programIndicator().uid();
+            }
 
-                String programStageUid = null;
-                if(programRuleAction.programStage() != null) {
-                    programStageUid = programRuleAction.programStage().uid();
-                }
+            String programStageSectionUid = null;
+            if (programRuleAction.programStageSection() != null) {
+                programStageSectionUid = programRuleAction.programStageSection().uid();
+            }
 
-                int updatedRow = programRuleActionStore.update(
+            String programStageUid = null;
+            if (programRuleAction.programStage() != null) {
+                programStageUid = programRuleAction.programStage().uid();
+            }
+
+            int updatedRow = programRuleActionStore.update(
+                    programRuleAction.uid(),
+                    programRuleAction.code(),
+                    programRuleAction.name(),
+                    programRuleAction.displayName(),
+                    programRuleAction.created(),
+                    programRuleAction.lastUpdated(),
+                    programRuleAction.data(),
+                    programRuleAction.content(),
+                    programRuleAction.location(),
+                    trackedEntityAttributeUid,
+                    programIndicatorUid,
+                    programStageSectionUid,
+                    programRuleAction.programRuleActionType(),
+                    programStageUid,
+                    dataElementUid,
+                    programRuleAction.programRule().uid(),
+                    programRuleAction.uid()
+            );
+
+            if (updatedRow <= 0) {
+                programRuleActionStore.insert(
                         programRuleAction.uid(),
                         programRuleAction.code(),
                         programRuleAction.name(),
@@ -101,31 +125,9 @@ public class ProgramRuleActionHandler {
                         programRuleAction.programRuleActionType(),
                         programStageUid,
                         dataElementUid,
-                        programRuleAction.programRule().uid(),
-                        programRuleAction.uid()
+                        programRuleAction.programRule().uid()
                 );
 
-                if (updatedRow <= 0) {
-                    programRuleActionStore.insert(
-                            programRuleAction.uid(),
-                            programRuleAction.code(),
-                            programRuleAction.name(),
-                            programRuleAction.displayName(),
-                            programRuleAction.created(),
-                            programRuleAction.lastUpdated(),
-                            programRuleAction.data(),
-                            programRuleAction.content(),
-                            programRuleAction.location(),
-                            trackedEntityAttributeUid,
-                            programIndicatorUid,
-                            programStageSectionUid,
-                            programRuleAction.programRuleActionType(),
-                            programStageUid,
-                            dataElementUid,
-                            programRuleAction.programRule().uid()
-                    );
-
-                }
             }
         }
     }

@@ -108,7 +108,7 @@ public class CategoryStoreShould extends AbsStoreTestCase {
 
     private void whenUpdateCategory() {
         int rowsAffected = store.update(newCategory);
-        wasUpdated= rowsAffected >= 1;
+        wasUpdated = rowsAffected >= 1;
 
     }
 

@@ -16,13 +16,15 @@ public class CategoryOptionComboHandlerShould {
 
     @Mock
     private CategoryOptionComboStore mockStore;
+    @Mock
+    private CategoryOptionComboCategoryLinkStore categoryOptionComboStore;
 
     private CategoryOptionComboHandler handler;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        handler = new CategoryOptionComboHandler(mockStore);
+        handler = new CategoryOptionComboHandler(mockStore, categoryOptionComboStore);
     }
 
     @Test

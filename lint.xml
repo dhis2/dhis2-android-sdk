@@ -1,8 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <lint>
     <issue id="InvalidPackage">
         <ignore path="**/amqp-client*.jar" />
     </issue>
-    <issue id="TrustAllX509TrustManager">
+    <issue id="TrustAllX509TrustManager" severity="ignore">
         <ignore path="**/amqp-client*.jar" />
     </issue>
 </lint>

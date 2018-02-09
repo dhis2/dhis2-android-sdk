@@ -6,6 +6,8 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseQuery;
 
+import java.util.Set;
+
 
 @AutoValue
 public abstract class CategoryQuery extends BaseQuery {
@@ -18,6 +20,13 @@ public abstract class CategoryQuery extends BaseQuery {
     public static CategoryQuery defaultQuery() {
         return builder().paging(false).pageSize(
                 CategoryQuery.DEFAULT_PAGE_SIZE).page(1).build();
+    }
+
+    @NonNull
+    public static CategoryQuery defaultQuery(Set<String> uIds) {
+        return builder().paging(false).pageSize(
+                CategoryQuery.DEFAULT_PAGE_SIZE).page(1)
+                .uIds(uIds).build();
     }
 
     @AutoValue.Builder

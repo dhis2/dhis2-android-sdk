@@ -7,7 +7,7 @@ import java.util.Date;
 
 public final class CategoryOptionMother {
 
-    public static CategoryOption generatedCategoryOption(String uid){
+    public static CategoryOption generatedCategoryOption(String uid) {
         return CategoryOption.builder()
                 .uid(uid)
                 .code("SECHN")

@@ -31,44 +31,63 @@ package org.hisp.dhis.android.core.program;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings({
-        "PMD.AvoidDuplicateLiterals"
+        "PMD.AvoidDuplicateLiterals",
+        "PMD.NPathComplexity",
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity",
+        "PMD.AvoidInstantiatingObjectsInLoops"
 })
-public class ProgramStageStoreImpl implements ProgramStageStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramStageModel.TABLE + " (" +
+public class ProgramStageStoreImpl extends Store implements ProgramStageStore {
+    private static final String FIELDS =
             ProgramStageModel.Columns.UID + ", " +
-            ProgramStageModel.Columns.CODE + ", " +
-            ProgramStageModel.Columns.NAME + ", " +
-            ProgramStageModel.Columns.DISPLAY_NAME + ", " +
-            ProgramStageModel.Columns.CREATED + ", " +
-            ProgramStageModel.Columns.LAST_UPDATED + ", " +
-            ProgramStageModel.Columns.EXECUTION_DATE_LABEL + ", " +
-            ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT + ", " +
-            ProgramStageModel.Columns.VALID_COMPLETE_ONLY + ", " +
-            ProgramStageModel.Columns.REPORT_DATE_TO_USE + ", " +
-            ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT + ", " +
-            ProgramStageModel.Columns.REPEATABLE + ", " +
-            ProgramStageModel.Columns.CAPTURE_COORDINATES + ", " +
-            ProgramStageModel.Columns.FORM_TYPE + ", " +
-            ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX + ", " +
-            ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE + ", " +
-            ProgramStageModel.Columns.AUTO_GENERATE_EVENT + ", " +
-            ProgramStageModel.Columns.SORT_ORDER + ", " +
-            ProgramStageModel.Columns.HIDE_DUE_DATE + ", " +
-            ProgramStageModel.Columns.BLOCK_ENTRY_FORM + ", " +
-            ProgramStageModel.Columns.MIN_DAYS_FROM_START + ", " +
-            ProgramStageModel.Columns.STANDARD_INTERVAL + ", " +
-            ProgramStageModel.Columns.PROGRAM + ") " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                    ProgramStageModel.Columns.CODE + ", " +
+                    ProgramStageModel.Columns.NAME + ", " +
+                    ProgramStageModel.Columns.DISPLAY_NAME + ", " +
+                    ProgramStageModel.Columns.CREATED + ", " +
+                    ProgramStageModel.Columns.LAST_UPDATED + ", " +
+                    ProgramStageModel.Columns.EXECUTION_DATE_LABEL + ", " +
+                    ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT + ", " +
+                    ProgramStageModel.Columns.VALID_COMPLETE_ONLY + ", " +
+                    ProgramStageModel.Columns.REPORT_DATE_TO_USE + ", " +
+                    ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT + ", " +
+                    ProgramStageModel.Columns.REPEATABLE + ", " +
+                    ProgramStageModel.Columns.CAPTURE_COORDINATES + ", " +
+                    ProgramStageModel.Columns.FORM_TYPE + ", " +
+                    ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX + ", " +
+                    ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE + ", " +
+                    ProgramStageModel.Columns.AUTO_GENERATE_EVENT + ", " +
+                    ProgramStageModel.Columns.SORT_ORDER + ", " +
+                    ProgramStageModel.Columns.HIDE_DUE_DATE + ", " +
+                    ProgramStageModel.Columns.BLOCK_ENTRY_FORM + ", " +
+                    ProgramStageModel.Columns.MIN_DAYS_FROM_START + ", " +
+                    ProgramStageModel.Columns.STANDARD_INTERVAL + ", " +
+                    ProgramStageModel.Columns.PROGRAM;
+
+    private static final String QUERY_BY_UID_STATEMENT =
+            "SELECT " + FIELDS + " FROM " + ProgramStageModel.TABLE + " WHERE " +
+                    ProgramStageModel.Columns.UID + "=?";
+
+    private static final String INSERT_STATEMENT = "INSERT INTO " + ProgramStageModel.TABLE + " (" +
+            FIELDS
+            + ") "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + ProgramStageModel.TABLE + " SET " +
             ProgramStageModel.Columns.UID + " =?, " +
@@ -96,8 +115,9 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
             ProgramStageModel.Columns.PROGRAM + " =? " +
             " WHERE " +
             ProgramStageModel.Columns.UID + " =?;";
-    private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramStageModel.TABLE + " WHERE " +
-            ProgramStageModel.Columns.UID + " =?;";
+    private static final String DELETE_STATEMENT =
+            "DELETE FROM " + ProgramStageModel.TABLE + " WHERE " +
+                    ProgramStageModel.Columns.UID + " =?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -114,34 +134,38 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
 
     @Override
     public long insert(@NonNull String uid,
-                       @Nullable String code,
-                       @NonNull String name,
-                       @NonNull String displayName,
-                       @NonNull Date created,
-                       @NonNull Date lastUpdated,
-                       @Nullable String executionDateLabel,
-                       @NonNull Boolean allowGenerateNextVisit,
-                       @NonNull Boolean validCompleteOnly,
-                       @Nullable String reportDateToUse,
-                       @NonNull Boolean openAfterEnrollment,
-                       @NonNull Boolean repeatable,
-                       @NonNull Boolean captureCoordinates,
-                       @NonNull FormType formType,
-                       @NonNull Boolean displayGenerateEventBox,
-                       @NonNull Boolean generatedByEnrollmentDate,
-                       @NonNull Boolean autoGenerateEvent,
-                       @NonNull Integer sortOrder,
-                       @NonNull Boolean hideDueDate,
-                       @NonNull Boolean blockEntryForm,
-                       @NonNull Integer minDaysFromStart,
-                       @NonNull Integer standardInterval,
-                       @NonNull String program) {
+            @Nullable String code,
+            @NonNull String name,
+            @NonNull String displayName,
+            @NonNull Date created,
+            @NonNull Date lastUpdated,
+            @Nullable String executionDateLabel,
+            @NonNull Boolean allowGenerateNextVisit,
+            @NonNull Boolean validCompleteOnly,
+            @Nullable String reportDateToUse,
+            @NonNull Boolean openAfterEnrollment,
+            @NonNull Boolean repeatable,
+            @NonNull Boolean captureCoordinates,
+            @NonNull FormType formType,
+            @NonNull Boolean displayGenerateEventBox,
+            @NonNull Boolean generatedByEnrollmentDate,
+            @NonNull Boolean autoGenerateEvent,
+            @NonNull Integer sortOrder,
+            @NonNull Boolean hideDueDate,
+            @NonNull Boolean blockEntryForm,
+            @NonNull Integer minDaysFromStart,
+            @NonNull Integer standardInterval,
+            @NonNull String program) {
         isNull(uid);
         isNull(program);
-        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, executionDateLabel,
-                allowGenerateNextVisit, validCompleteOnly, reportDateToUse, openAfterEnrollment, repeatable,
-                captureCoordinates, formType, displayGenerateEventBox, generatedByEnrollmentDate, autoGenerateEvent,
-                sortOrder, hideDueDate, blockEntryForm, minDaysFromStart, standardInterval, program);
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated,
+                executionDateLabel,
+                allowGenerateNextVisit, validCompleteOnly, reportDateToUse, openAfterEnrollment,
+                repeatable,
+                captureCoordinates, formType, displayGenerateEventBox, generatedByEnrollmentDate,
+                autoGenerateEvent,
+                sortOrder, hideDueDate, blockEntryForm, minDaysFromStart, standardInterval,
+                program);
 
         Long insert = databaseAdapter.executeInsert(ProgramStageModel.TABLE, insertStatement);
 
@@ -150,21 +174,25 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
     }
 
     @Override
-    public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @NonNull String displayName,
-                      @NonNull Date created, @NonNull Date lastUpdated, @Nullable String executionDateLabel,
-                      @NonNull Boolean allowGenerateNextVisit, @NonNull Boolean validCompleteOnly,
-                      @Nullable String reportDateToUse, @NonNull Boolean openAfterEnrollment,
-                      @NonNull Boolean repeatable, @NonNull Boolean captureCoordinates,
-                      @NonNull FormType formType, @NonNull Boolean displayGenerateEventBox,
-                      @NonNull Boolean generatedByEnrollmentDate, @NonNull Boolean autoGenerateEvent,
-                      @NonNull Integer sortOrder, @NonNull Boolean hideDueDate, @NonNull Boolean blockEntryForm,
-                      @NonNull Integer minDaysFromStart, @NonNull Integer standardInterval,
-                      @NonNull String program, @NonNull String whereProgramStageUid) {
+    public int update(@NonNull String uid, @Nullable String code, @NonNull String name,
+            @NonNull String displayName,
+            @NonNull Date created, @NonNull Date lastUpdated, @Nullable String executionDateLabel,
+            @NonNull Boolean allowGenerateNextVisit, @NonNull Boolean validCompleteOnly,
+            @Nullable String reportDateToUse, @NonNull Boolean openAfterEnrollment,
+            @NonNull Boolean repeatable, @NonNull Boolean captureCoordinates,
+            @NonNull FormType formType, @NonNull Boolean displayGenerateEventBox,
+            @NonNull Boolean generatedByEnrollmentDate, @NonNull Boolean autoGenerateEvent,
+            @NonNull Integer sortOrder, @NonNull Boolean hideDueDate,
+            @NonNull Boolean blockEntryForm,
+            @NonNull Integer minDaysFromStart, @NonNull Integer standardInterval,
+            @NonNull String program, @NonNull String whereProgramStageUid) {
         isNull(uid);
         isNull(program);
         isNull(whereProgramStageUid);
-        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, executionDateLabel,
-                allowGenerateNextVisit, validCompleteOnly, reportDateToUse, openAfterEnrollment, repeatable,
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated,
+                executionDateLabel,
+                allowGenerateNextVisit, validCompleteOnly, reportDateToUse, openAfterEnrollment,
+                repeatable,
                 captureCoordinates, formType, displayGenerateEventBox, generatedByEnrollmentDate,
                 autoGenerateEvent, sortOrder, hideDueDate, blockEntryForm,
                 minDaysFromStart, standardInterval, program);
@@ -192,17 +220,35 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
         return delete;
     }
 
-    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
-                               @NonNull String name, @NonNull String displayName,
-                               @NonNull Date created, @NonNull Date lastUpdated, @Nullable String executionDateLabel,
-                               @NonNull Boolean allowGenerateNextVisit, @NonNull Boolean validCompleteOnly,
-                               @Nullable String reportDateToUse, @NonNull Boolean openAfterEnrollment,
-                               @NonNull Boolean repeatable, @NonNull Boolean captureCoordinates,
-                               @NonNull FormType formType, @NonNull Boolean displayGenerateEventBox,
-                               @NonNull Boolean generatedByEnrollmentDate, @NonNull Boolean autoGenerateEvent,
-                               @NonNull Integer sortOrder, @NonNull Boolean hideDueDate,
-                               @NonNull Boolean blockEntryForm, @NonNull Integer minDaysFromStart,
-                               @NonNull Integer standardInterval, @NonNull String program) {
+    @Override
+    public ProgramStage queryByUid(String uid) {
+        ProgramStage programStage = null;
+
+        Cursor cursor = databaseAdapter.query(QUERY_BY_UID_STATEMENT, uid);
+
+        if (cursor.getCount() > 0) {
+            Map<String, List<ProgramStage>> programStageMap = mapFromCursor(cursor);
+
+            Map.Entry<String, List<ProgramStage>> entry =
+                    programStageMap.entrySet().iterator().next();
+            programStage = entry.getValue().get(0);
+        }
+
+        return programStage;
+    }
+
+    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid,
+            @Nullable String code,
+            @NonNull String name, @NonNull String displayName,
+            @NonNull Date created, @NonNull Date lastUpdated, @Nullable String executionDateLabel,
+            @NonNull Boolean allowGenerateNextVisit, @NonNull Boolean validCompleteOnly,
+            @Nullable String reportDateToUse, @NonNull Boolean openAfterEnrollment,
+            @NonNull Boolean repeatable, @NonNull Boolean captureCoordinates,
+            @NonNull FormType formType, @NonNull Boolean displayGenerateEventBox,
+            @NonNull Boolean generatedByEnrollmentDate, @NonNull Boolean autoGenerateEvent,
+            @NonNull Integer sortOrder, @NonNull Boolean hideDueDate,
+            @NonNull Boolean blockEntryForm, @NonNull Integer minDaysFromStart,
+            @NonNull Integer standardInterval, @NonNull String program) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -216,7 +262,7 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
         sqLiteBind(sqLiteStatement, 11, openAfterEnrollment);
         sqLiteBind(sqLiteStatement, 12, repeatable);
         sqLiteBind(sqLiteStatement, 13, captureCoordinates);
-        sqLiteBind(sqLiteStatement, 14, formType.name());
+        sqLiteBind(sqLiteStatement, 14, formType == null ? null : formType.name());
         sqLiteBind(sqLiteStatement, 15, displayGenerateEventBox);
         sqLiteBind(sqLiteStatement, 16, generatedByEnrollmentDate);
         sqLiteBind(sqLiteStatement, 17, autoGenerateEvent);
@@ -231,5 +277,83 @@ public class ProgramStageStoreImpl implements ProgramStageStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(ProgramStageModel.TABLE);
+    }
+
+    private Map<String, List<ProgramStage>> mapFromCursor(Cursor cursor) {
+
+        Map<String, List<ProgramStage>> programStagesMap = new HashMap<>();
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+
+                    String uid = getStringFromCursor(cursor, 0);
+                    String code = getStringFromCursor(cursor, 1);
+                    String name = getStringFromCursor(cursor, 2);
+                    String displayName = getStringFromCursor(cursor, 3);
+                    Date created = getDateFromCursor(cursor, 4);
+                    Date lastUpdated = getDateFromCursor(cursor, 5);
+                    String executionDateLabel = getStringFromCursor(cursor, 6);
+                    Boolean allowGenerateNextVisit = getBooleanFromCursor(cursor, 7);
+                    Boolean validCompleteOnly = getBooleanFromCursor(cursor, 8);
+                    String reportDateToUse = getStringFromCursor(cursor, 9);
+                    Boolean openAfterEnrollment = getBooleanFromCursor(cursor, 10);
+                    Boolean repeatable = getBooleanFromCursor(cursor, 11);
+                    Boolean captureCoordinates = getBooleanFromCursor(cursor, 12);
+                    FormType formType = getFormTypeFromCursor(cursor, 13);
+                    Boolean displayGenerateEventBox = getBooleanFromCursor(cursor, 14);
+                    Boolean generatedByEnrollmentDate = getBooleanFromCursor(cursor, 15);
+                    Boolean autoGenerateEvent = getBooleanFromCursor(cursor, 16);
+                    Integer sortOrder = getIntegerFromCursor(cursor, 17);
+                    Boolean hideDueDate = getBooleanFromCursor(cursor, 18);
+                    Boolean blockEntryForm = getBooleanFromCursor(cursor, 19);
+                    Integer minDaysFromStart = getIntegerFromCursor(cursor, 20);
+                    Integer standardInterval = getIntegerFromCursor(cursor, 21);
+                    String program = getStringFromCursor(cursor, 22);
+
+                    if (!programStagesMap.containsKey(program)) {
+                        programStagesMap.put(program, new ArrayList<ProgramStage>());
+                    }
+
+                    programStagesMap.get(program).add(ProgramStage.builder()
+                            .uid(uid)
+                            .code(code)
+                            .name(name)
+                            .displayName(displayName)
+                            .created(created)
+                            .lastUpdated(lastUpdated)
+                            .executionDateLabel(executionDateLabel)
+                            .allowGenerateNextVisit(allowGenerateNextVisit)
+                            .validCompleteOnly(validCompleteOnly)
+                            .reportDateToUse(reportDateToUse)
+                            .openAfterEnrollment(openAfterEnrollment)
+                            .repeatable(repeatable)
+                            .captureCoordinates(captureCoordinates)
+                            .formType(formType)
+                            .displayGenerateEventBox(displayGenerateEventBox)
+                            .generatedByEnrollmentDate(generatedByEnrollmentDate)
+                            .autoGenerateEvent(autoGenerateEvent)
+                            .sortOrder(sortOrder)
+                            .hideDueDate(hideDueDate)
+                            .blockEntryForm(blockEntryForm)
+                            .minDaysFromStart(minDaysFromStart)
+                            .captureCoordinates(captureCoordinates)
+                            .standardInterval(standardInterval)
+                            .program(program)
+                            .build());
+
+                } while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return programStagesMap;
+    }
+
+    @Nullable
+    private FormType getFormTypeFromCursor(Cursor cursor, int index) {
+        return cursor.getString(index) == null ? null : FormType.valueOf(
+                cursor.getString(index));
     }
 }

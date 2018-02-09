@@ -19,4 +19,8 @@ public interface CategoryOptionComboCategoryLinkStore extends DeletableStore {
     @NonNull
     List<CategoryOptionComboCategoryLinkModel> queryAll();
 
+
+    int removeCategoryComboOptionRelationsByCategoryOptionCombo(@NonNull String uid);
+
+    List<String> queryByOptionComboUId(String uId);
 }

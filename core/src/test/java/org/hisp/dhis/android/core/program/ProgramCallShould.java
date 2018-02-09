@@ -32,7 +32,6 @@ import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
@@ -50,18 +49,13 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetHandler;
-import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,52 +89,13 @@ public class ProgramCallShould {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private ProgramStore programStore;
-
-    @Mock
-    private TrackedEntityAttributeStore trackedEntityAttributeStore;
-
-    @Mock
-    private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
-
-    @Mock
-    private ProgramRuleVariableStore programRuleVariableStore;
-
-    @Mock
-    private ProgramIndicatorStore programIndicatorStore;
-
-    @Mock
-    private ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
-
-    @Mock
-    private ProgramRuleActionStore programRuleActionStore;
-
-    @Mock
-    private ProgramRuleStore programRuleStore;
-
-    @Mock
-    private OptionStore optionStore;
+    private ProgramHandler programHandler;
 
     @Mock
     private OptionSetHandler optionSetHandler;
 
     @Mock
-    private DataElementStore dataElementStore;
-
-    @Mock
-    private ProgramStageDataElementStore programStageDataElementStore;
-
-    @Mock
-    private ProgramStageSectionStore programStageSectionStore;
-
-    @Mock
-    private ProgramStageStore programStageStore;
-
-    @Mock
-    private RelationshipTypeStore relationshipStore;
-
-    @Mock
-    private ResourceStore resourceStore;
+    private ResourceHandler resourceHandler;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<Payload<Program>> programCall;
@@ -177,9 +132,6 @@ public class ProgramCallShould {
     // the call we are testing
     private Call<Response<Payload<Program>>> programSyncCall;
 
-    @Mock
-    private OptionSetFactory optionSetFactory;
-
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
@@ -189,32 +141,27 @@ public class ProgramCallShould {
         uids.add("test_program_uid");
         uids.add("test_program1_uid");
 
-
         programSyncCall = new ProgramCall(programService, databaseAdapter,
-                resourceStore, uids, programStore, serverDate, trackedEntityAttributeStore,
-                programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
-                programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
-                optionSetFactory, dataElementStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore
-        );
-
-        when(optionSetFactory.getOptionSetHandler()).thenReturn(optionSetHandler);
+                resourceHandler, uids, serverDate, programHandler);
 
         when(program.uid()).thenReturn("test_program_uid");
 
         when(payload.items()).thenReturn(Collections.singletonList(program));
 
 
-        when(databaseAdapter.query(ResourceModel.TABLE, "SELECT " + ResourceModel.Columns.LAST_SYNCED +
-                " FROM " + ResourceModel.TABLE +
-                " WHERE " + ResourceModel.Columns.RESOURCE_TYPE +
-                " = " +
-                ProgramModel.class.getSimpleName())).thenReturn(cursor);
+        when(databaseAdapter.query(ResourceModel.TABLE,
+                "SELECT " + ResourceModel.Columns.LAST_SYNCED +
+                        " FROM " + ResourceModel.TABLE +
+                        " WHERE " + ResourceModel.Columns.RESOURCE_TYPE +
+                        " = " +
+                        ProgramModel.class.getSimpleName())).thenReturn(cursor);
         when(cursor.moveToFirst()).thenReturn(Boolean.FALSE);
-        when(cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED))).thenReturn(null);
+        when(cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED))).thenReturn(
+                null);
 
 
-        when(programService.getPrograms(any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
+        when(programService.getPrograms(any(Fields.class), any(Filter.class), any(Filter.class),
+                anyBoolean())
         ).thenReturn(programCall);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
@@ -227,15 +174,18 @@ public class ProgramCallShould {
         when(programCall.execute()).thenReturn(Response.success(payload));
 
         when(programService.getPrograms(
-                fieldsCaptor.capture(), lastUpdatedFilter.capture(), idInFilter.capture(), anyBoolean())
+                fieldsCaptor.capture(), lastUpdatedFilter.capture(), idInFilter.capture(),
+                anyBoolean())
         ).thenReturn(programCall);
 
         programSyncCall.call();
 
         assertThat(fieldsCaptor.getValue().fields()).contains(
                 Program.uid, Program.code, Program.name, Program.displayName, Program.created,
-                Program.lastUpdated, Program.shortName, Program.displayShortName, Program.description,
-                Program.displayDescription, Program.version, Program.captureCoordinates, Program.dataEntryMethod,
+                Program.lastUpdated, Program.shortName, Program.displayShortName,
+                Program.description,
+                Program.displayDescription, Program.version, Program.captureCoordinates,
+                Program.dataEntryMethod,
                 Program.deleted, Program.displayFrontPageList, Program.displayIncidentDate,
                 Program.enrollmentDateLabel, Program.ignoreOverdueEvents, Program.incidentDateLabel,
                 Program.onlyEnrollOnce, Program.programType, Program.registration,
@@ -246,30 +196,44 @@ public class ProgramCallShould {
                         Program.uid
                 ),
                 Program.programStages.with(
-                        ProgramStage.uid, ProgramStage.code, ProgramStage.name, ProgramStage.displayName,
-                        ProgramStage.created, ProgramStage.lastUpdated, ProgramStage.allowGenerateNextVisit,
-                        ProgramStage.autoGenerateEvent, ProgramStage.blockEntryForm, ProgramStage.captureCoordinates,
-                        ProgramStage.deleted, ProgramStage.displayGenerateEventBox, ProgramStage.executionDateLabel,
-                        ProgramStage.formType, ProgramStage.generatedByEnrollmentDate, ProgramStage.hideDueDate,
-                        ProgramStage.minDaysFromStart, ProgramStage.openAfterEnrollment, ProgramStage.repeatable,
-                        ProgramStage.reportDateToUse, ProgramStage.sortOrder, ProgramStage.standardInterval,
+                        ProgramStage.uid, ProgramStage.code, ProgramStage.name,
+                        ProgramStage.displayName,
+                        ProgramStage.created, ProgramStage.lastUpdated,
+                        ProgramStage.allowGenerateNextVisit,
+                        ProgramStage.autoGenerateEvent, ProgramStage.blockEntryForm,
+                        ProgramStage.captureCoordinates,
+                        ProgramStage.deleted, ProgramStage.displayGenerateEventBox,
+                        ProgramStage.executionDateLabel,
+                        ProgramStage.formType, ProgramStage.generatedByEnrollmentDate,
+                        ProgramStage.hideDueDate,
+                        ProgramStage.minDaysFromStart, ProgramStage.openAfterEnrollment,
+                        ProgramStage.repeatable,
+                        ProgramStage.reportDateToUse, ProgramStage.sortOrder,
+                        ProgramStage.standardInterval,
                         ProgramStage.validCompleteOnly, ProgramStage.programStageDataElements.with(
                                 ProgramStageDataElement.uid, ProgramStageDataElement.code,
-                                ProgramStageDataElement.created, ProgramStageDataElement.lastUpdated,
+                                ProgramStageDataElement.created,
+                                ProgramStageDataElement.lastUpdated,
                                 ProgramStageDataElement.allowFutureDate,
-                                ProgramStageDataElement.allowProvidedElsewhere, ProgramStageDataElement.compulsory,
-                                ProgramStageDataElement.deleted, ProgramStageDataElement.displayInReports,
+                                ProgramStageDataElement.allowProvidedElsewhere,
+                                ProgramStageDataElement.compulsory,
+                                ProgramStageDataElement.deleted,
+                                ProgramStageDataElement.displayInReports,
                                 ProgramStageDataElement.sortOrder,
                                 ProgramStageDataElement.programStage.with(
                                         ProgramStage.uid
                                 ),
                                 ProgramStageDataElement.dataElement.with(
-                                        DataElement.uid, DataElement.code, DataElement.name, DataElement.displayName,
-                                        DataElement.created, DataElement.lastUpdated, DataElement.shortName,
+                                        DataElement.uid, DataElement.code, DataElement.name,
+                                        DataElement.displayName,
+                                        DataElement.created, DataElement.lastUpdated,
+                                        DataElement.shortName,
                                         DataElement.displayShortName, DataElement.description,
                                         DataElement.displayDescription, DataElement.aggregationType,
-                                        DataElement.deleted, DataElement.dimension, DataElement.displayFormName,
-                                        DataElement.domainType, DataElement.formName, DataElement.numberType,
+                                        DataElement.deleted, DataElement.dimension,
+                                        DataElement.displayFormName,
+                                        DataElement.domainType, DataElement.formName,
+                                        DataElement.numberType,
                                         DataElement.valueType, DataElement.zeroIsSignificant,
                                         DataElement.optionSet.with(
                                                 OptionSet.uid, OptionSet.version
@@ -279,10 +243,12 @@ public class ProgramCallShould {
                                 )
                         ),
                         ProgramStage.programStageSections.with(
-                                ProgramStageSection.uid, ProgramStageSection.code, ProgramStageSection.name,
+                                ProgramStageSection.uid, ProgramStageSection.code,
+                                ProgramStageSection.name,
                                 ProgramStageSection.displayName, ProgramStageSection.created,
                                 ProgramStageSection.lastUpdated, ProgramStageSection.sortOrder,
-                                ProgramStageSection.deleted, ProgramStageSection.dataElements.with(DataElement.uid),
+                                ProgramStageSection.deleted,
+                                ProgramStageSection.dataElements.with(DataElement.uid),
                                 ProgramStageSection.programIndicators.with(
                                         ProgramIndicator.uid,
                                         ProgramIndicator.program.with(
@@ -292,7 +258,8 @@ public class ProgramCallShould {
                         )
                 ),
                 Program.programRules.with(
-                        ProgramRule.uid, ProgramRule.code, ProgramRule.name, ProgramRule.displayName,
+                        ProgramRule.uid, ProgramRule.code, ProgramRule.name,
+                        ProgramRule.displayName,
                         ProgramRule.created, ProgramRule.lastUpdated, ProgramRule.deleted,
                         ProgramRule.priority, ProgramRule.condition,
                         ProgramRule.program.with(
@@ -302,9 +269,11 @@ public class ProgramCallShould {
                                 ProgramStage.uid
                         ),
                         ProgramRule.programRuleActions.with(
-                                ProgramRuleAction.uid, ProgramRuleAction.code, ProgramRuleAction.name,
+                                ProgramRuleAction.uid, ProgramRuleAction.code,
+                                ProgramRuleAction.name,
                                 ProgramRuleAction.displayName, ProgramRuleAction.created,
-                                ProgramRuleAction.lastUpdated, ProgramRuleAction.content, ProgramRuleAction.data,
+                                ProgramRuleAction.lastUpdated, ProgramRuleAction.content,
+                                ProgramRuleAction.data,
                                 ProgramRuleAction.deleted, ProgramRuleAction.location,
                                 ProgramRuleAction.programRuleActionType,
                                 ProgramRuleAction.programRule.with(
@@ -329,8 +298,10 @@ public class ProgramCallShould {
                 ),
                 Program.programRuleVariables.with(
                         ProgramRuleVariable.uid, ProgramRuleVariable.code, ProgramRuleVariable.name,
-                        ProgramRuleVariable.displayName, ProgramRuleVariable.created, ProgramRuleVariable.lastUpdated,
-                        ProgramRuleVariable.deleted, ProgramRuleVariable.programRuleVariableSourceType,
+                        ProgramRuleVariable.displayName, ProgramRuleVariable.created,
+                        ProgramRuleVariable.lastUpdated,
+                        ProgramRuleVariable.deleted,
+                        ProgramRuleVariable.programRuleVariableSourceType,
                         ProgramRuleVariable.useCodeForOptionSet,
                         ProgramRuleVariable.program.with(
                                 Program.uid
@@ -353,18 +324,25 @@ public class ProgramCallShould {
                         ProgramIndicator.displayDescription, ProgramIndicator.decimals,
                         ProgramIndicator.deleted, ProgramIndicator.dimensionItem,
                         ProgramIndicator.displayInForm,
-                        ProgramIndicator.expression, ProgramIndicator.filter, ProgramIndicator.program.with(
+                        ProgramIndicator.expression, ProgramIndicator.filter,
+                        ProgramIndicator.program.with(
                                 Program.uid
                         )
                 ),
                 Program.programTrackedEntityAttributes.with(
                         ProgramTrackedEntityAttribute.uid, ProgramTrackedEntityAttribute.code,
-                        ProgramTrackedEntityAttribute.name, ProgramTrackedEntityAttribute.displayName,
-                        ProgramTrackedEntityAttribute.created, ProgramTrackedEntityAttribute.lastUpdated,
-                        ProgramTrackedEntityAttribute.shortName, ProgramTrackedEntityAttribute.displayShortName,
-                        ProgramTrackedEntityAttribute.description, ProgramTrackedEntityAttribute.displayDescription,
-                        ProgramTrackedEntityAttribute.allowFutureDate, ProgramTrackedEntityAttribute.deleted,
-                        ProgramTrackedEntityAttribute.displayInList, ProgramTrackedEntityAttribute.mandatory,
+                        ProgramTrackedEntityAttribute.name,
+                        ProgramTrackedEntityAttribute.displayName,
+                        ProgramTrackedEntityAttribute.created,
+                        ProgramTrackedEntityAttribute.lastUpdated,
+                        ProgramTrackedEntityAttribute.shortName,
+                        ProgramTrackedEntityAttribute.displayShortName,
+                        ProgramTrackedEntityAttribute.description,
+                        ProgramTrackedEntityAttribute.displayDescription,
+                        ProgramTrackedEntityAttribute.allowFutureDate,
+                        ProgramTrackedEntityAttribute.deleted,
+                        ProgramTrackedEntityAttribute.displayInList,
+                        ProgramTrackedEntityAttribute.mandatory,
                         ProgramTrackedEntityAttribute.program.with(
                                 Program.uid
                         ),
@@ -372,15 +350,21 @@ public class ProgramCallShould {
                                 TrackedEntityAttribute.uid, TrackedEntityAttribute.code,
                                 TrackedEntityAttribute.created, TrackedEntityAttribute.lastUpdated,
                                 TrackedEntityAttribute.name, TrackedEntityAttribute.displayName,
-                                TrackedEntityAttribute.shortName, TrackedEntityAttribute.displayShortName,
-                                TrackedEntityAttribute.description, TrackedEntityAttribute.displayDescription,
+                                TrackedEntityAttribute.shortName,
+                                TrackedEntityAttribute.displayShortName,
+                                TrackedEntityAttribute.description,
+                                TrackedEntityAttribute.displayDescription,
                                 TrackedEntityAttribute.displayInListNoProgram,
-                                TrackedEntityAttribute.displayOnVisitSchedule, TrackedEntityAttribute.expression,
+                                TrackedEntityAttribute.displayOnVisitSchedule,
+                                TrackedEntityAttribute.expression,
                                 TrackedEntityAttribute.generated, TrackedEntityAttribute.inherit,
-                                TrackedEntityAttribute.orgUnitScope, TrackedEntityAttribute.programScope,
-                                TrackedEntityAttribute.pattern, TrackedEntityAttribute.sortOrderInListNoProgram,
+                                TrackedEntityAttribute.orgUnitScope,
+                                TrackedEntityAttribute.programScope,
+                                TrackedEntityAttribute.pattern,
+                                TrackedEntityAttribute.sortOrderInListNoProgram,
                                 TrackedEntityAttribute.unique, TrackedEntityAttribute.valueType,
-                                TrackedEntityAttribute.searchScope, TrackedEntityAttribute.optionSet.with(
+                                TrackedEntityAttribute.searchScope,
+                                TrackedEntityAttribute.optionSet.with(
                                         OptionSet.uid, OptionSet.version
                                 )
 
@@ -395,16 +379,18 @@ public class ProgramCallShould {
 
                 Program.relationshipType.with(
                         RelationshipType.uid, RelationshipType.code, RelationshipType.name,
-                        RelationshipType.displayName, RelationshipType.created, RelationshipType.lastUpdated,
+                        RelationshipType.displayName, RelationshipType.created,
+                        RelationshipType.lastUpdated,
                         RelationshipType.aIsToB, RelationshipType.bIsToA, RelationshipType.deleted
                 )
         );
     }
 
     @Test
-    public void not_invoke_program_store_if_request_fail() throws Exception {
-        when(programCall.execute()).thenReturn(Response.<Payload<Program>>error(HttpURLConnection.HTTP_UNAUTHORIZED,
-                ResponseBody.create(MediaType.parse("application/json"), "{}")));
+    public void not_invoke_program_handler_if_request_fail() throws Exception {
+        when(programCall.execute()).thenReturn(
+                Response.<Payload<Program>>error(HttpURLConnection.HTTP_UNAUTHORIZED,
+                        ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
         Response<Payload<Program>> response = programSyncCall.call();
 
@@ -416,30 +402,13 @@ public class ProgramCallShould {
         verify(transaction, never()).end();
 
         // verify that program store is never called
-        verify(programStore, never()).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
-                anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                any(ProgramType.class), anyString(), anyString(), anyString(), anyString(), anyString());
-
-        verify(programStore, never()).update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
-                anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                any(ProgramType.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
-
-        verify(programStore, never()).delete(anyString());
-
-        verify(resourceStore, never()).insert(anyString(), any(Date.class));
-        verify(resourceStore, never()).update(anyString(), any(Date.class), anyString());
-        verify(resourceStore, never()).delete(anyString());
+        verify(programHandler, never()).handleProgram(any(Program.class));
     }
 
     @Test
-    public void invoke_program_handler_and_update_resource_into_table_if_request_succeeds() throws Exception {
+    public void invoke_program_handler_and_resource_handler_if_request_succeeds() throws Exception {
         when(programCall.execute()).thenReturn(Response.success(payload));
         when(payload.items()).thenReturn(Arrays.asList(program, program, program));
-        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(1);
 
         programSyncCall.call();
 
@@ -452,47 +421,9 @@ public class ProgramCallShould {
         // assert that payload contains 3 times and all is handled by ProgramHandler
         assertThat(payload.items().size()).isEqualTo(3);
 
-        verify(programStore, times(3)).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
-                anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                any(ProgramType.class), anyString(), anyString(), anyString(), anyString(), anyString());
-
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
-
-        // verify that nothing is inserted into resourceStore
-        verify(resourceStore, never()).insert(anyString(), any(Date.class));
-    }
-
-    @Test
-    public void invoke_program_handler_and_insert_resource_into_table_if_request_succeeds() throws Exception {
-        when(programCall.execute()).thenReturn(Response.success(payload));
-        when(payload.items()).thenReturn(Arrays.asList(program, program, program));
-        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(0);
-
-        programSyncCall.call();
-
-        // verify that transactions is created also in the correct order
-        verify(databaseAdapter, times(1)).beginNewTransaction();
-        InOrder transactionMethodsOrder = inOrder(transaction);
-        transactionMethodsOrder.verify(transaction, times(1)).setSuccessful();
-        transactionMethodsOrder.verify(transaction, times(1)).end();
-
-        // assert that payload contains 3 times and all is handled by ProgramHandler
-        assertThat(payload.items().size()).isEqualTo(3);
-
-        // verify that insert is called 3 times in program store
-        verify(programStore, times(3)).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
-                anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                any(ProgramType.class), anyString(), anyString(), anyString(), anyString(), anyString());
-
-        // we need to verify that resource store is invoked with update since we update before we insert
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
-
-        // check that insert is called once
-        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
+        verify(programHandler, times(3)).handleProgram(any(Program.class));
+        verify(resourceHandler, times(1)).handleResource(any(ResourceModel.Type.class),
+                any(Date.class));
     }
 
     @Test
@@ -510,19 +441,17 @@ public class ProgramCallShould {
         transactionMethodsOrder.verify(transaction, times(1)).setSuccessful();
         transactionMethodsOrder.verify(transaction, times(1)).end();
 
-        // cursor.getString is also getting called if insert and update into resource store is invoked
-        verify(cursor, atLeastOnce()).getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));
+        // cursor.getString is also getting called if insert and update into resource store is
+        // invoked
+        verify(cursor, atLeastOnce()).getString(
+                cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));
 
 
         // only 1 program in payload (See setUp method)
         assertThat(payload.items().size()).isEqualTo(1);
 
         // verify that insert is called once in program store
-        verify(programStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyInt(),
-                anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                any(ProgramType.class), anyString(), anyString(), anyString(), anyString(), anyString());
+        verify(programHandler, times(1)).handleProgram(any(Program.class));
     }
 
     @Test
@@ -546,6 +475,7 @@ public class ProgramCallShould {
             // do nothing
         }
     }
+
     @Test
     @SuppressWarnings("unchecked")
     public void throw_io_exception_when_call_is_executed() throws Exception {

@@ -31,13 +31,13 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableObjectStore;
+import org.hisp.dhis.android.core.common.SoftDeletableStore;
 import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.Date;
 import java.util.List;
 
-public interface TrackedEntityAttributeStore extends DeletableObjectStore {
+public interface TrackedEntityAttributeStore extends SoftDeletableStore {
     long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
                 @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
                 @Nullable String shortName, @Nullable String displayShortName,

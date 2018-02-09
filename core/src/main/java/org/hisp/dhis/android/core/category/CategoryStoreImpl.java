@@ -18,6 +18,7 @@ import java.util.Map;
 
 @SuppressWarnings({
         "PMD.NPathComplexity",
+        "PMD.AvoidDuplicateLiterals"
 })
 public class CategoryStoreImpl extends Store implements CategoryStore {
 

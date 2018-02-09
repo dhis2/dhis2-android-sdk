@@ -42,9 +42,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.deletedobject.DeletedObject;
-import org.hisp.dhis.android.core.deletedobject.DeletedObjectEndPointCall;
-import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandler;
-import org.hisp.dhis.android.core.deletedobject.DeletedObjectService;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectFactory;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
@@ -85,7 +83,9 @@ import javax.annotation.Nonnull;
 import retrofit2.Response;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
-        "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
+        "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity", "PMD.CouplingBetweenObjects",
+        "PMD.GodClass"
+})
 public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
@@ -100,8 +100,7 @@ public class MetadataCall implements Call<Response> {
     private final ProgramFactory programFactory;
     private final OrganisationUnitFactory organisationUnitFactory;
     private final CategoryComboFactory categoryComboFactory;
-    private final DeletedObjectService deletedObjectService;
-    private final DeletedObjectHandler deletedObjectHandler;
+    private final DeletedObjectFactory deletedObjectFactory;
 
     private boolean isExecuted;
 
@@ -117,7 +116,7 @@ public class MetadataCall implements Call<Response> {
             @NonNull OrganisationUnitFactory organisationUnitFactory,
             @NonNull CategoryFactory categoryFactory,
             @NonNull CategoryComboFactory categoryComboFactory,
-            @NonNull DeletedObjectHandler deletedObjectHandler) {
+            @NonNull DeletedObjectFactory deletedObjectFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -131,8 +130,7 @@ public class MetadataCall implements Call<Response> {
         this.organisationUnitFactory = organisationUnitFactory;
         this.categoryFactory = categoryFactory;
         this.categoryComboFactory = categoryComboFactory;
-        this.deletedObjectService = deletedObjectService;
-        this.deletedObjectHandler = deletedObjectHandler;
+        this.deletedObjectFactory = deletedObjectFactory;
     }
 
     @Override
@@ -392,8 +390,7 @@ public class MetadataCall implements Call<Response> {
     }
 
     private Response<Payload<DeletedObject>> syncDeletedObject(Date serverDate, String klass) throws Exception {
-        return new DeletedObjectEndPointCall(deletedObjectService, resourceStore,
-                deletedObjectHandler, serverDate, klass).call();
+        return deletedObjectFactory.newEndPointCall(klass, serverDate).call();
     }
 
     public Response getOrganisationUnits(Date serverDate, User user) throws Exception {

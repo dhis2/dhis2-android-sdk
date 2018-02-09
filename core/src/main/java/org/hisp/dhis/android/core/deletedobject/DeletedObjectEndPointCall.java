@@ -7,7 +7,6 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 
 import java.util.Date;
 import java.util.List;
@@ -25,12 +24,12 @@ public class DeletedObjectEndPointCall implements Call<Response<Payload<DeletedO
     private boolean isExecuted;
 
     public DeletedObjectEndPointCall(@NonNull DeletedObjectService deletedObjectService,
-            @NonNull ResourceStore resourceStore,
+            @NonNull ResourceHandler resourceHandler,
             @NonNull DeletedObjectHandler deletedObjectHandler,
             @NonNull Date serverDate,
             @NonNull String deletedObjectKlass) {
         this.deletedObjectService = deletedObjectService;
-        this.resourceHandler = new ResourceHandler(resourceStore);
+        this.resourceHandler = resourceHandler;
         this.deletedObjectHandler = deletedObjectHandler;
         this.deletedObjectKlass = deletedObjectKlass;
         this.serverDate = new Date(serverDate.getTime());

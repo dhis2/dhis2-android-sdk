@@ -183,7 +183,7 @@ public abstract class User extends BaseIdentifiableObject {
     @JsonProperty(DATA_VIEW_ORGANISATION_UNITS)
     public abstract List<OrganisationUnit> dataViewOrganisationUnits();
 
-    abstract User.Builder toBuilder();
+    public abstract User.Builder toBuilder();
 
     public static User.Builder builder() {
         return new AutoValue_User.Builder();

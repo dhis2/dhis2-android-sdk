@@ -31,13 +31,13 @@ package org.hisp.dhis.android.core.dataelement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableObjectStore;
+import org.hisp.dhis.android.core.common.SoftDeletableStore;
 import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.Date;
 import java.util.List;
 
-public interface DataElementStore extends DeletableObjectStore {
+public interface DataElementStore extends SoftDeletableStore {
 
     long insert(
             @NonNull String uid,

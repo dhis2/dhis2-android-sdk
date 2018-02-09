@@ -16,6 +16,9 @@ import java.util.Date;
 import java.util.List;
 
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class CategoryOptionStoreImpl extends Store implements CategoryOptionStore {
 
     protected final DatabaseAdapter databaseAdapter;

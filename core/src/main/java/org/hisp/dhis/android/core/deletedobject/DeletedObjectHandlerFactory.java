@@ -8,7 +8,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
-import org.hisp.dhis.android.core.common.DeletableObjectStore;
+import org.hisp.dhis.android.core.common.SoftDeletableStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
@@ -66,7 +66,7 @@ public class DeletedObjectHandlerFactory {
             "PMD.ModifiedCyclomaticComplexity",
             "PMD.StdCyclomaticComplexity"
     })
-    public DeletableObjectStore getByKlass(String klass){
+    public SoftDeletableStore getByKlass(String klass){
         if(klass.equals(User.class.getSimpleName())) {
             return new UserStoreImpl(databaseAdapter);
         }

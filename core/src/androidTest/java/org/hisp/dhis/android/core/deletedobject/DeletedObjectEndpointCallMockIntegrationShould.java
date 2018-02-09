@@ -54,11 +54,11 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.DeletableObjectStore;
+import org.hisp.dhis.android.core.common.SoftDeletableStore;
 import org.hisp.dhis.android.core.common.MockedCalls;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
 import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
@@ -178,7 +178,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
 
     @Test
     @MediumTest
-    public void have_empty_deleted_resources_model_on_start_and_persisted_on_pull_end()
+    public void have_empty_deleted_resources_model_on_start_and_persisted_after_pull_metadata()
             throws Exception {
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(databaseAdapter());
         for (ResourceModel.Type resource : ResourceModel.Type.values()) {
@@ -190,11 +190,15 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         d2.syncMetaData().call();
         for (ResourceModel.Type resource : ResourceModel.Type.values()) {
             String lastUpdated = resourceStore.getLastUpdated(resource);
-            //Ignore not called resources
+            //Ignore not called endpoints
             if (resource.equals(ResourceModel.Type.EVENT) || resource.equals(
-                    ResourceModel.Type.TRACKED_ENTITY_INSTANCE)
-                    || resource.equals(ResourceModel.Type.USER_CREDENTIALS)
-                    || resource.equals(ResourceModel.Type.AUTHENTICATED_USER)) {
+                    ResourceModel.Type.TRACKED_ENTITY_INSTANCE) ||
+                    resource.equals(
+                            ResourceModel.Type.RELATIONSHIP_TYPE) ||
+                    resource.equals(
+                            ResourceModel.Type.TRACKED_ENTITY_ATTRIBUTE) ||
+                    resource.equals(
+                            ResourceModel.Type.DATA_ELEMENT) ) {
                 continue;
             }
             assertFalse(lastUpdated.equals(""));
@@ -629,12 +633,12 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsDeleted("zINGRka3g9N", programRuleVariableStore);
     }
 
-    private void verifyIfIsPersisted(String uid, DeletableObjectStore store) {
+    private void verifyIfIsPersisted(String uid, SoftDeletableStore store) {
         Boolean isPersisted = store.exists(uid);
         assertThat(isPersisted, is(true));
     }
 
-    private void verifyIfIsDeleted(String uid, DeletableObjectStore store) {
+    private void verifyIfIsDeleted(String uid, SoftDeletableStore store) {
         Boolean isPersisted = store.exists(uid);
         assertThat(isPersisted, is(false));
     }

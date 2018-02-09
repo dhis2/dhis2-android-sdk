@@ -30,6 +30,7 @@ import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
@@ -72,10 +73,10 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         Date date = new Date();
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, Program.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
         assertTrue(hasDeletedObjects(response));
@@ -85,7 +86,7 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
 
         //when
         response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, new Date(), Program.class.getSimpleName()).call();
 
         //then
@@ -100,10 +101,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
+        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, new ResourceStoreImpl(d2.databaseAdapter()),
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, new Date(), Program.class.getSimpleName()).call();
 
         //then
@@ -120,10 +123,10 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         Date date = new Date();
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, Program.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
         assertTrue(hasDeletedObjects(response));
@@ -141,10 +144,11 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         Date date = new Date();
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
 
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, RelationshipType.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -161,10 +165,11 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         Date date = new Date();
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
 
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, TrackedEntityAttribute.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -181,10 +186,11 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         Date date = new Date();
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
 
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, TrackedEntity.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -201,10 +207,11 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         Date date = new Date();
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
 
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, ProgramStage.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -221,10 +228,11 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         Date date = new Date();
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
 
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, ProgramStageDataElement.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -242,10 +250,11 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         Date date = new Date();
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, ProgramStageSection.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -262,11 +271,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, ProgramRule.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -283,11 +293,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, ProgramRuleAction.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -304,11 +315,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, ProgramRuleVariable.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -325,11 +337,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, ProgramIndicator.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -346,11 +359,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, Option.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -367,11 +381,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, DataElement.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -388,11 +403,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, ProgramTrackedEntityAttribute.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -409,11 +425,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, OptionSet.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -430,11 +447,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, OrganisationUnit.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -451,11 +469,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, User.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -472,11 +491,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, CategoryCombo.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -493,11 +513,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, CategoryOptionCombo.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -514,11 +535,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, CategoryOption.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 
@@ -535,11 +557,12 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
         ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         //when
         Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceStore,
+                deletedObjectService, resourceHandler,
                 deletedObjectHandler, date, Category.class.getSimpleName()).call();
         assertTrue(response.isSuccessful());
 

@@ -31,12 +31,12 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableObjectStore;
+import org.hisp.dhis.android.core.common.SoftDeletableStore;
 
 import java.util.Date;
 import java.util.List;
 
-public interface OrganisationUnitStore extends DeletableObjectStore {
+public interface OrganisationUnitStore extends SoftDeletableStore {
     long insert(
             @NonNull String uid, @Nullable String code, @Nullable String name,
             @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,

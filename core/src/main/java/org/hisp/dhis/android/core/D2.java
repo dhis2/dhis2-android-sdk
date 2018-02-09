@@ -53,12 +53,7 @@ import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementFactory;
-import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandler;
-import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandlerFactory;
-import org.hisp.dhis.android.core.deletedobject.DeletedObjectService;
-import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandler;
-import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandlerFactory;
-import org.hisp.dhis.android.core.deletedobject.DeletedObjectService;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectFactory;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -157,7 +152,7 @@ public final class D2 {
     private final ResourceHandler resourceHandler;
     private MetadataAuditConsumer metadataAuditConsumer;
     private MetadataAuditListener metadataAuditListener;
-    private final DeletedObjectHandler deletedObjectHandler;
+    private final DeletedObjectFactory deletedObjectFactory;
 
     //Factories
     private final OptionSetFactory optionSetFactory;
@@ -180,7 +175,6 @@ public final class D2 {
         this.systemInfoService = retrofit.create(SystemInfoService.class);
         this.trackedEntityInstanceService = retrofit.create(TrackedEntityInstanceService.class);
         this.eventService = retrofit.create(EventService.class);
-        this.deletedObjectService = retrofit.create(DeletedObjectService.class);
 
         // stores
         this.userStore =
@@ -212,12 +206,13 @@ public final class D2 {
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter);
 
         //handlers
-        resourceHandler = new ResourceHandler(resourceStore);
+        this.resourceHandler = new ResourceHandler(resourceStore);
         UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore,
                 userRoleProgramLinkStore);
         UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(
                 userCredentialsStore);
-        userHandler = new UserHandler(userStore, userCredentialsHandler, resourceHandler,
+
+        this.userHandler = new UserHandler(userStore, userCredentialsHandler, resourceHandler,
                 userRoleHandler);
 
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
@@ -230,38 +225,37 @@ public final class D2 {
 
         EnrollmentHandler enrollmentHandler = new EnrollmentHandler(enrollmentStore, eventHandler);
 
-        trackedEntityInstanceHandler =
+        this.trackedEntityInstanceHandler =
                 new TrackedEntityInstanceHandler(
                         trackedEntityInstanceStore,
                         trackedEntityAttributeValueHandler,
                         enrollmentHandler);
-        DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(databaseAdapter);
-
-        deletedObjectHandler = new DeletedObjectHandler(deletedObjectHandlerFactory);
 
         //factories
-        optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
+        this.optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
 
-        trackedEntityFactory =
+        this.trackedEntityFactory =
                 new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
 
-        organisationUnitFactory =
+        this.organisationUnitFactory =
                 new OrganisationUnitFactory(retrofit, databaseAdapter, resourceHandler);
 
-        trackedEntityAttributeFactory = new TrackedEntityAttributeFactory(
+        this.trackedEntityAttributeFactory = new TrackedEntityAttributeFactory(
                 retrofit, databaseAdapter, resourceHandler);
 
         this.dataElementFactory = new DataElementFactory(retrofit, databaseAdapter,
                 resourceHandler);
 
-        programFactory = new ProgramFactory(retrofit, databaseAdapter,
+        this.programFactory = new ProgramFactory(retrofit, databaseAdapter,
                 optionSetFactory.getOptionSetHandler(), dataElementFactory, resourceHandler);
 
-        relationshipTypeFactory =
+        this.relationshipTypeFactory =
                 new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
         this.categoryFactory = new CategoryFactory(retrofit(), databaseAdapter, resourceHandler);
 
         this.categoryComboFactory = new CategoryComboFactory(retrofit(), databaseAdapter, resourceHandler);
+
+        this.deletedObjectFactory = new DeletedObjectFactory(retrofit, databaseAdapter, resourceHandler);
 
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
@@ -353,7 +347,8 @@ public final class D2 {
         return new MetadataCall(
                 databaseAdapter, systemInfoService, userService, userHandler, systemInfoStore,
                 resourceStore, optionSetFactory, trackedEntityFactory, programFactory,
-                organisationUnitFactory, categoryFactory, categoryComboFactory, deletedObjectHandler);
+                organisationUnitFactory, categoryFactory, categoryComboFactory,
+                deletedObjectFactory);
     }
 
     @NonNull

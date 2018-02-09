@@ -5,7 +5,8 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.junit.After;
 import org.junit.Before;
@@ -24,10 +25,7 @@ public class DeletedObjectEndPointShould  extends AbsStoreTestCase {
     private DeletedObjectService deletedObjectService;
 
     @Mock
-    private DatabaseAdapter databaseAdapter;
-
-    @Mock
-    private ResourceStore resourceStore;
+    private ResourceHandler resourceHandler;
 
     @Mock
     private DeletedObjectHandler deleteObjectHandler;
@@ -51,7 +49,7 @@ public class DeletedObjectEndPointShould  extends AbsStoreTestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_exception_if_type_is_not_supported() throws Exception {
-        new DeletedObjectEndPointCall(deletedObjectService, resourceStore,
+        new DeletedObjectEndPointCall(deletedObjectService, resourceHandler,
                 deleteObjectHandler, new Date(), "wrong_klass").call();
     }
 }

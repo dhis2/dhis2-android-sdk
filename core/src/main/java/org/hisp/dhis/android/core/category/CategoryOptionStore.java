@@ -3,11 +3,11 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.DeletableObjectStore;
+import org.hisp.dhis.android.core.common.SoftDeletableStore;
 
 import java.util.List;
 
-public interface CategoryOptionStore extends DeletableObjectStore {
+public interface CategoryOptionStore extends SoftDeletableStore {
 
     long insert(@NonNull CategoryOption categoryOption);
 

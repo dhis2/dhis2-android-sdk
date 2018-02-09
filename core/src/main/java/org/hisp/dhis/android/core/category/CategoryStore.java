@@ -2,11 +2,11 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.DeletableObjectStore;
+import org.hisp.dhis.android.core.common.SoftDeletableStore;
 
 import java.util.List;
 
-public interface CategoryStore extends DeletableObjectStore {
+public interface CategoryStore extends SoftDeletableStore {
 
     long insert(@NonNull Category category);
 

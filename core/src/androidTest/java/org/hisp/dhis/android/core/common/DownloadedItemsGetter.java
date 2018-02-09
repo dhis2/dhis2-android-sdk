@@ -71,14 +71,7 @@ public class DownloadedItemsGetter {
 
             UserCredentials userCredentials = userCredentialsStore.queryByUserUid(user.uid());
 
-            user = User.create(
-                    user.uid(), user.code(), user.name(), user.displayName(), user.created(),
-                    user.lastUpdated(), user.birthday(), user.education(), user.gender(),
-                    user.jobTitle(), user.surname(), user.firstName(), user.introduction(), user.employer(),
-                    user.interests(), user.languages(), user.email(), user.phoneNumber(), user.nationality(),
-                    userCredentials,
-                    user.organisationUnits(), user.teiSearchOrganisationUnits(), user.dataViewOrganisationUnits(), null
-                     );
+            user = user.toBuilder().userCredentials(userCredentials).build();
 
             downloadedItems.add(user);
         }

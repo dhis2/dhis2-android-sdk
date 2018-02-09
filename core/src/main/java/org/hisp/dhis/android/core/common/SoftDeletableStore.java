@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
-public interface DeletableObjectStore extends DeletableStore{
+public interface SoftDeletableStore extends DeletableStore{
 
     int delete(@NonNull String uid);
 

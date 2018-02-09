@@ -335,6 +335,11 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
     }
 
     @Override
+    public int delete(@NonNull String uid) {
+        return 0;
+    }
+
+    @Override
     public Boolean exists(String id) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, id);
         return cursor.getCount()>0;

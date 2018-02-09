@@ -12,12 +12,11 @@ import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryStore;
-import org.hisp.dhis.android.core.common.DeletableObjectStore;
+import org.hisp.dhis.android.core.common.SoftDeletableStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.deletedobject.DeletedObject;
-import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandler;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandlerFactory;
 import org.hisp.dhis.android.core.option.Option;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -45,7 +44,6 @@ import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
@@ -76,10 +74,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof RelationshipTypeStore);
+        assertTrue(softDeletableStore instanceof RelationshipTypeStore);
     }
 
     @Test
@@ -89,10 +87,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof TrackedEntityAttributeStore);
+        assertTrue(softDeletableStore instanceof TrackedEntityAttributeStore);
     }
 
 
@@ -103,10 +101,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof ProgramTrackedEntityAttributeStore);
+        assertTrue(softDeletableStore instanceof ProgramTrackedEntityAttributeStore);
     }
 
 
@@ -117,10 +115,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof ProgramStageSectionStore);
+        assertTrue(softDeletableStore instanceof ProgramStageSectionStore);
     }
 
     @Test
@@ -130,10 +128,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof ProgramStageDataElementStore);
+        assertTrue(softDeletableStore instanceof ProgramStageDataElementStore);
     }
 
     @Test
@@ -143,10 +141,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof ProgramStageStore);
+        assertTrue(softDeletableStore instanceof ProgramStageStore);
     }
 
     @Test
@@ -156,10 +154,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof ProgramRuleVariableStore);
+        assertTrue(softDeletableStore instanceof ProgramRuleVariableStore);
     }
 
     @Test
@@ -169,10 +167,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof ProgramRuleActionStore);
+        assertTrue(softDeletableStore instanceof ProgramRuleActionStore);
     }
 
     @Test
@@ -182,10 +180,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof ProgramRuleStore);
+        assertTrue(softDeletableStore instanceof ProgramRuleStore);
     }
 
     @Test
@@ -195,10 +193,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof ProgramIndicatorStore);
+        assertTrue(softDeletableStore instanceof ProgramIndicatorStore);
     }
 
     @Test
@@ -208,10 +206,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof OptionStore);
+        assertTrue(softDeletableStore instanceof OptionStore);
     }
 
     @Test
@@ -221,10 +219,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof DataElementStore);
+        assertTrue(softDeletableStore instanceof DataElementStore);
     }
 
     @Test
@@ -234,10 +232,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof TrackedEntityStore);
+        assertTrue(softDeletableStore instanceof TrackedEntityStore);
     }
 
     @Test
@@ -247,10 +245,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof OptionSetStore);
+        assertTrue(softDeletableStore instanceof OptionSetStore);
     }
 
     @Test
@@ -260,10 +258,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof OrganisationUnitStore);
+        assertTrue(softDeletableStore instanceof OrganisationUnitStore);
     }
 
     @Test
@@ -273,10 +271,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof ProgramStore);
+        assertTrue(softDeletableStore instanceof ProgramStore);
     }
 
     @Test
@@ -286,10 +284,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof UserStore);
+        assertTrue(softDeletableStore instanceof UserStore);
     }
 
     @Test
@@ -299,10 +297,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof CategoryComboStore);
+        assertTrue(softDeletableStore instanceof CategoryComboStore);
     }
 
     @Test
@@ -312,10 +310,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof CategoryOptionComboStore);
+        assertTrue(softDeletableStore instanceof CategoryOptionComboStore);
     }
 
     @Test
@@ -325,10 +323,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof CategoryOptionStore);
+        assertTrue(softDeletableStore instanceof CategoryOptionStore);
     }
 
     @Test
@@ -338,10 +336,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof CategoryStore);
+        assertTrue(softDeletableStore instanceof CategoryStore);
     }
 
 
@@ -352,10 +350,10 @@ public class DeleteObjectHandlerFactoryShould {
 
         //when
         DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(mDatabaseAdapter);
-        DeletableObjectStore deletableObjectStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
+        SoftDeletableStore softDeletableStore = deletedObjectHandlerFactory.getByKlass(deletedObject.klass());
 
         //then
-        assertTrue(deletableObjectStore instanceof UserCredentialsStore);
+        assertTrue(softDeletableStore instanceof UserCredentialsStore);
     }
 
 

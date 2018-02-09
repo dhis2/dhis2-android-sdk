@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -37,6 +36,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public class UserCredentialsStoreImpl implements UserCredentialsStore {
+public class UserCredentialsStoreImpl extends Store implements UserCredentialsStore {
 
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             UserCredentialsModel.Columns.UID +
@@ -192,16 +192,17 @@ public class UserCredentialsStoreImpl implements UserCredentialsStore {
 
 
     private UserCredentials mapUserCredentialFromCursor(Cursor cursor) {
-        String uid = cursor.getString(0);
-        String code = cursor.getString(1);
-        String name = cursor.getString(2);
-        String displayName = cursor.getString(3);
-        Date created = cursor.getString(4) == null ? null : parse(cursor.getString(4));
-        Date lastUpdated = cursor.getString(5) == null ? null : parse(cursor.getString(5));
-        String username = cursor.getString(6);
+        String uid = getStringFromCursor(cursor, 0);
+        String code = getStringFromCursor(cursor, 1);
+        String name = getStringFromCursor(cursor, 2);
+        String displayName = getStringFromCursor(cursor, 3);
+        Date created = getDateFromCursor(cursor, 4);
+        Date lastUpdated = getDateFromCursor(cursor, 5);
+        String username = getStringFromCursor(cursor, 6);
 
-        UserCredentials userCredentials = UserCredentials.create(uid, code, name, displayName,
-                created, lastUpdated, username, null, false);
+        UserCredentials userCredentials = UserCredentials.builder().uid(uid).code(code)
+                .name(name).displayName(displayName).created(created).lastUpdated(lastUpdated)
+                .username(username).build();
         return userCredentials;
     }
 

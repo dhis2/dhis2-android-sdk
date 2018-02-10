@@ -49,8 +49,6 @@ import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
@@ -70,7 +68,6 @@ import retrofit2.Response;
 
 import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
 import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
@@ -122,7 +119,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("programs_complete.json");
 
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         OptionSetFactory optionSetFactory = new OptionSetFactory(d2.retrofit(), databaseAdapter(),
                 resourceHandler);
@@ -149,7 +146,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
 
-        programCall = programFactory.newEndPointCall(uids, new Date());
+        programCall = programFactory.newEndPointCall(programQuery, new Date());
     }
 
     @Test

@@ -26,16 +26,13 @@ public class CategoryComboEndpointCall implements Call<Response<Payload<Category
     private final DatabaseAdapter databaseAdapter;
     private final Date serverDate;
     private boolean isExecuted;
-    private final boolean isTranslationOn;
-    private final String translationLocale;
 
     public CategoryComboEndpointCall(CategoryComboQuery query,
             CategoryComboService categoryComboService,
             ResponseValidator<CategoryCombo> responseValidator,
             CategoryComboHandler handler,
             ResourceHandler resourceHandler,
-            DatabaseAdapter databaseAdapter, Date serverDate, boolean isTranslationOn,
-            @NonNull String translationLocale) {
+            DatabaseAdapter databaseAdapter, Date serverDate) {
         this.query = query;
         this.categoryComboService = categoryComboService;
         this.responseValidator = responseValidator;
@@ -43,8 +40,6 @@ public class CategoryComboEndpointCall implements Call<Response<Payload<Category
         this.resourceHandler = resourceHandler;
         this.databaseAdapter = databaseAdapter;
         this.serverDate = new Date(serverDate.getTime());
-        this.isTranslationOn = isTranslationOn;
-        this.translationLocale = translationLocale;
     }
 
 
@@ -63,7 +58,10 @@ public class CategoryComboEndpointCall implements Call<Response<Payload<Category
         Response<Payload<CategoryCombo>> response = categoryComboService.getCategoryCombos(
                 getFields(),
                 query.isPaging(),
-                query.page(), query.pageSize(), isTranslationOn, translationLocale)
+                query.page(),
+                query.pageSize(),
+                query.isTranslationOn(),
+                query.translationLocale())
                 .execute();
 
         if (responseValidator.isValid(response)) {

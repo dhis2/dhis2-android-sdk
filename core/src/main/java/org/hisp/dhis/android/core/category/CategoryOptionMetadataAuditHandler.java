@@ -18,6 +18,7 @@ public class CategoryOptionMetadataAuditHandler implements MetadataAuditHandler 
         this.categoryFactory = categoryFactory;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         // MetadataAudit<CategoryOption> of CREATE type is ignored because Category parent is
         // null in payload.

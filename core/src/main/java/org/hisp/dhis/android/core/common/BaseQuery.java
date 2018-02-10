@@ -7,6 +7,7 @@ import java.util.Set;
 public abstract class BaseQuery {
     public static final int DEFAULT_PAGE_SIZE = 50;
     public static final int DEFAULT_PAGE = 0;
+    public static final boolean DEFAULT_IS_PAGING = false;
     public static final String DEFAULT_TRANSLATION_LOCALE = Locale.ENGLISH.toString();
     public static final boolean DEFAULT_IS_TRANSLATION_ON = false;
 

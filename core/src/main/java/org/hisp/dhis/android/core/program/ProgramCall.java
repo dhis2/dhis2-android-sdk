@@ -62,10 +62,10 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
     private final ProgramQuery query;
 
     public ProgramCall(ProgramService programService,
-                       DatabaseAdapter databaseAdapter,
+            DatabaseAdapter databaseAdapter,
             ResourceHandler resourceHandler,
-                       Date serverDate,
-            ProgramHandler programHandler,@NonNull ProgramQuery query) {
+            Date serverDate,
+            ProgramHandler programHandler, @NonNull ProgramQuery query) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;
         this.resourceHandler = resourceHandler;
@@ -90,16 +90,16 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
             }
             isExecuted = true;
         }
-        if (query.uids().size() > MAX_UIDS) {
+        if (query.uIds().size() > MAX_UIDS) {
             throw new IllegalArgumentException(
-                    "Can't handle the amount of programs: " + query.uids().size() + ". " +
+                    "Can't handle the amount of programs: " + query.uIds().size() + ". " +
                             "Max size is: " + MAX_UIDS);
         }
 
         String lastSyncedPrograms = resourceHandler.getLastUpdated(ResourceModel.Type.PROGRAM);
         Response<Payload<Program>> programsByLastUpdated = programService.getPrograms(
                 getFields(), Program.lastUpdated.gt(lastSyncedPrograms),
-                Program.uid.in(query.uids()), Boolean.FALSE, query.isTranslationOn(),
+                Program.uid.in(query.uIds()), Boolean.FALSE, query.isTranslationOn(),
                 query.translationLocale()
         ).execute();
         if (programsByLastUpdated.isSuccessful()) {

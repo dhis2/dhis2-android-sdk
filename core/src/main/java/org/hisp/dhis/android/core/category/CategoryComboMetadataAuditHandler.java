@@ -15,6 +15,7 @@ public class CategoryComboMetadataAuditHandler implements MetadataAuditHandler {
         this.categoryComboFactory = categoryComboFactory;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         CategoryCombo categoryCombo = (CategoryCombo) metadataAudit.getValue();
 

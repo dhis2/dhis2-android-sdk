@@ -10,9 +10,6 @@ import java.util.TreeSet;
 @AutoValue
 public abstract class TrackedEntityQuery extends BaseQuery {
 
-    public abstract Set<String> uids();
-
-
     public static TrackedEntityQuery.Builder builder() {
         return new AutoValue_TrackedEntityQuery.Builder();
     }
@@ -25,7 +22,7 @@ public abstract class TrackedEntityQuery extends BaseQuery {
             String translationLocale) {
 
         return defaultQueryBuilder()
-                .uids(uids)
+                .uIds(uids)
                 .isTranslationOn(isTranslationOn)
                 .translationLocale(translationLocale)
                 .build();
@@ -33,7 +30,7 @@ public abstract class TrackedEntityQuery extends BaseQuery {
 
     private static Builder defaultQueryBuilder() {
         return builder()
-                .uids(new TreeSet<String>())
+                .uIds(new TreeSet<String>())
                 .page(DEFAULT_PAGE)
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .isPaging(false)
@@ -43,8 +40,6 @@ public abstract class TrackedEntityQuery extends BaseQuery {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseQuery.Builder<TrackedEntityQuery.Builder> {
-
-        public abstract Builder uids(Set<String> uids);
 
         public abstract TrackedEntityQuery build();
     }

@@ -35,16 +35,16 @@ public abstract class CategoryQuery extends BaseQuery {
         return builder()
                 .isPaging(false)
                 .pageSize(DEFAULT_PAGE_SIZE)
-                .page(1)
+                .page(DEFAULT_PAGE)
                 .isTranslationOn(DEFAULT_IS_TRANSLATION_ON)
                 .translationLocale(DEFAULT_TRANSLATION_LOCALE);
     }
 
     @NonNull
     public static CategoryQuery defaultQuery(Set<String> uIds) {
-        return builder().paging(false).pageSize(
-                CategoryQuery.DEFAULT_PAGE_SIZE).page(1)
-                .uIds(uIds).build();
+        return defaultQueryBuilder()
+                .uIds(uIds)
+                .build();
     }
 
     @AutoValue.Builder

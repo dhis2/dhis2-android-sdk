@@ -35,7 +35,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     @Test
     @LargeTest
     public void have_empty_database_when_wipe_db_after_sync_metadata() throws Exception {
-        retrofit2.Response response = null;
+        retrofit2.Response response;
 
         response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
@@ -53,7 +53,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     @Test
     @LargeTest
     public void have_empty_database_when_wipe_db_after_sync_data() throws Exception {
-        retrofit2.Response response = null;
+        retrofit2.Response response;
         response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
 
@@ -75,7 +75,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     @Test
     @LargeTest
     public void delete_autenticate_user_table_only_when_log_out_after_sync_data() throws Exception {
-        retrofit2.Response response = null;
+        retrofit2.Response response;
         response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
 
@@ -101,7 +101,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     @LargeTest
     public void delete_autenticate_user_table_only_when_log_out_after_sync_metadata()
             throws Exception {
-        retrofit2.Response response = null;
+        retrofit2.Response response;
         response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
 
@@ -125,7 +125,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     @Test
     @LargeTest
     public void response_successful_on_login_logout_and_login() throws Exception {
-        retrofit2.Response response = null;
+        retrofit2.Response response;
         response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
 

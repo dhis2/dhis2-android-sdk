@@ -260,7 +260,7 @@ public class MetadataCallShould {
                 getOptionSetHandler(), dataElementFactory, resourceHandler);
 
         relationshipTypeFactory =
-                new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler,
+                new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler
                         ,DEFAULT_IS_TRANSLATION_ON,
                         DEFAULT_TRANSLATION_LOCALE);
         organisationUnitFactory = new OrganisationUnitFactory(retrofit, databaseAdapter,

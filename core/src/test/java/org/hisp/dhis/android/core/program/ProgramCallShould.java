@@ -58,7 +58,6 @@ import org.hisp.dhis.android.core.data.server.RetrofitFactory;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -101,9 +100,6 @@ public class ProgramCallShould {
 
     @Mock
     private ProgramHandler programHandler;
-
-    @Mock
-    private OptionSetHandler optionSetHandler;
 
     @Mock
     private ResourceHandler resourceHandler;

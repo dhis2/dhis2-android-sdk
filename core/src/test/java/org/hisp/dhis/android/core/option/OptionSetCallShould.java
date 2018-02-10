@@ -9,9 +9,9 @@ import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.data.server.RetrofitFactory;
-import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.TreeSet;
+
 
 import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Retrofit;
@@ -36,13 +36,10 @@ public class OptionSetCallShould {
     private Transaction mockTransaction;
 
     @Mock
-    private ResourceStore mockResourceStore;
+    private ResourceHandler mockResourceHandler;
 
     @Mock
-    private OptionSetStore mockOptionSetStore;
-
-    @Mock
-    private OptionStore mockOptionStore;
+    private OptionSetHandler mockOptionSetHandler;
 
     private Dhis2MockServer dhis2MockServer;
 
@@ -61,8 +58,8 @@ public class OptionSetCallShould {
 
         OptionSetQuery optionSetQuery = OptionSetQuery.defaultQuery();
 
-        optionSetCall = new OptionSetCall(mockService, mockOptionSetStore, mockDatabase,
-                mockResourceStore, new Date(), mockOptionStore, optionSetQuery
+        optionSetCall = new OptionSetCall(mockService, mockOptionSetHandler, mockDatabase,
+                mockResourceHandler, new Date(), optionSetQuery
         );
     }
 

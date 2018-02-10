@@ -45,9 +45,7 @@ import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.category.CategoryComboFactory;
-import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryFactory;
-import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
@@ -97,9 +95,8 @@ import org.hisp.dhis.android.core.user.UserAuthenticateCall;
 import org.hisp.dhis.android.core.user.UserCredentialsHandler;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserQuery;
 import org.hisp.dhis.android.core.user.UserHandler;
+import org.hisp.dhis.android.core.user.UserQuery;
 import org.hisp.dhis.android.core.user.UserRoleHandler;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStoreImpl;
@@ -131,9 +128,6 @@ public final class D2 {
     private final SystemInfoService systemInfoService;
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final EventService eventService;
-    // Queries
-    private final CategoryQuery categoryQuery;
-    private final CategoryComboQuery categoryComboQuery;
 
     // stores
     private final UserStore userStore;
@@ -247,13 +241,6 @@ public final class D2 {
 
         trackedEntityFactory =
                 new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
-        categoryQuery = CategoryQuery
-                .defaultQuery(isTranslationOn,
-                        translationLocale);
-
-        categoryComboQuery = CategoryComboQuery
-                .defaultQuery(isTranslationOn,
-                        translationLocale);
 
         organisationUnitFactory =
                 new OrganisationUnitFactory(retrofit, databaseAdapter, resourceHandler);
@@ -268,12 +255,14 @@ public final class D2 {
                 optionSetFactory.getOptionSetHandler(), dataElementFactory, resourceHandler);
 
         relationshipTypeFactory =
-                new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler,isTranslationOn,
+                new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler,
+                        isTranslationOn,
                         translationLocale);
 
         this.categoryFactory = new CategoryFactory(retrofit(), databaseAdapter, resourceHandler);
 
-        this.categoryComboFactory = new CategoryComboFactory(retrofit(), databaseAdapter, resourceHandler);
+        this.categoryComboFactory = new CategoryComboFactory(retrofit(), databaseAdapter,
+                resourceHandler);
 
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
@@ -311,7 +300,7 @@ public final class D2 {
         UserQuery userQuery = UserQuery.defaultQuery(isTranslationOn, translationLocale);
         return new UserAuthenticateCall(userService, databaseAdapter, userHandler,
                 authenticatedUserStore, organisationUnitFactory.getOrganisationUnitHandler()
-                , username, password , userQuery
+                , username, password, userQuery
         );
     }
 

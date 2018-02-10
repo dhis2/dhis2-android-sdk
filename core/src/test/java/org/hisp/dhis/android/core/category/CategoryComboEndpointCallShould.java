@@ -9,8 +9,8 @@ import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.data.server.RetrofitFactory;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.junit.After;
 import org.junit.Before;
@@ -58,9 +58,7 @@ public class CategoryComboEndpointCallShould {
 
         categoryComboEndpointCall = new CategoryComboEndpointCall(CategoryComboQuery.defaultQuery(),
                 mockService, new ResponseValidator<CategoryCombo>(),
-                mockCategoryComboHandler, mockResourceHandler, mockDatabase, new Date(),
-                DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
+                mockCategoryComboHandler, mockResourceHandler, mockDatabase, new Date());
     }
 
     @After

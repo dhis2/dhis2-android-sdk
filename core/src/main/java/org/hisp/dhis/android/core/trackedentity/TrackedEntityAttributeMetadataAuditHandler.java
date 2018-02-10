@@ -16,6 +16,7 @@ public class TrackedEntityAttributeMetadataAuditHandler implements MetadataAudit
         this.trackedEntityAttributeFactory = trackedEntityAttributeFactory;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
 
         TrackedEntityAttribute trackedEntityAttribute =

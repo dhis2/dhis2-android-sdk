@@ -353,7 +353,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 new OrganisationUnitHandler(organisationUnitStore, userOrganisationUnitLinkStore,
                         organisationUnitProgramLinkStore, resourceHandler);
 
-        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, databaseAdapter(),
+        organisationUnitCall = new OrganisationUnitCall(organisationUnitService, databaseAdapter(),
                 resourceHandler, new Date(), organisationUnitHandler,organizationUnitQuery);
     }
 

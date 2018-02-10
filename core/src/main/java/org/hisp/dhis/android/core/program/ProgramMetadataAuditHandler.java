@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.program;
 
+import static org.hisp.dhis.android.core.common.BaseQuery.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.common.BaseQuery.DEFAULT_TRANSLATION_LOCALE;
+
 import org.hisp.dhis.android.core.audit.AuditType;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
 import org.hisp.dhis.android.core.audit.MetadataAuditHandler;
@@ -15,6 +18,7 @@ public class ProgramMetadataAuditHandler implements MetadataAuditHandler {
         this.programFactory = programFactory;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         Program program = (Program) metadataAudit.getValue();
 
@@ -25,7 +29,9 @@ public class ProgramMetadataAuditHandler implements MetadataAuditHandler {
             Set<String> uIds = new HashSet<>();
             uIds.add(metadataAudit.getUid());
 
-            programFactory.newEndPointCall(uIds, metadataAudit.getCreatedAt()).call();
+            ProgramQuery programQuery = ProgramQuery.defaultQuery(uIds,
+                    DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+            programFactory.newEndPointCall(programQuery, metadataAudit.getCreatedAt()).call();
         } else {
 
             if (metadataAudit.getType() == AuditType.DELETE) {

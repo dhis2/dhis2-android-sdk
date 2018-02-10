@@ -36,7 +36,6 @@ import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
@@ -54,15 +53,13 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.SqLiteTransaction;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.data.http.HttpHeaderDate;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.data.http.HttpHeaderDate;
 import org.hisp.dhis.android.core.data.server.RetrofitFactory;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -154,12 +151,19 @@ public class UserAuthenticateCallUnitShould {
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
+        userQuery = UserQuery.defaultQuery(DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
+
         userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userHandler,
+                authenticatedUserStore,
+                organisationUnitHandler, "test_user_name", "test_user_password",
+                userQuery);
+
+
+
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
         retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
 
-        userQuery = UserQuery.defaultQuery(DEFAULT_IS_TRANSLATION_ON,
-                DEFAULT_TRANSLATION_LOCALE);
 
         userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userHandler,
                 authenticatedUserStore,
@@ -462,14 +466,14 @@ public class UserAuthenticateCallUnitShould {
     private UserAuthenticateCall provideUserAuthenticateCallWithMockWebservice() {
         UserService mockUserService = retrofit.create(UserService.class);
 
-        return new UserAuthenticateCall(
-                mockUserService,
-                databaseAdapter, userStore,
-                userCredentialsHandler, resourceHandler,
+        userQuery = UserQuery.defaultQuery(DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
+
+
+        return  new UserAuthenticateCall(mockUserService, databaseAdapter, userHandler,
                 authenticatedUserStore,
                 organisationUnitHandler, "test_user_name", "test_user_password",
                 userQuery);
-    }
-
+  }
 
 }

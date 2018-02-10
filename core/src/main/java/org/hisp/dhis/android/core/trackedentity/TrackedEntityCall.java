@@ -86,9 +86,9 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
             isExecuted = true;
         }
 
-        if (query.uids().size() > MAX_UIDS) {
+        if (query.uIds().size() > MAX_UIDS) {
             throw new IllegalArgumentException(
-                    "Can't handle the amount of tracked entities: " + query.uids().size() + ". " +
+                    "Can't handle the amount of tracked entities: " + query.uIds().size() + ". " +
                             "Max size is: " + MAX_UIDS);
         }
 
@@ -129,7 +129,7 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
                         TrackedEntity.description, TrackedEntity.displayDescription,
                         TrackedEntity.deleted
                 ).build(),
-                TrackedEntity.uid.in(query.uids()),
+                TrackedEntity.uid.in(query.uIds()),
                 TrackedEntity.lastUpdated.gt(lastUpdated),
                 false
                 , query.isTranslationOn(), query.translationLocale()).execute();

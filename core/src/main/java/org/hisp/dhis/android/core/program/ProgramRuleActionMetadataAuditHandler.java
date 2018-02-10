@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.program;
 
+import static org.hisp.dhis.android.core.common.BaseQuery.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.common.BaseQuery.DEFAULT_TRANSLATION_LOCALE;
+
 import android.util.Log;
 
 import org.hisp.dhis.android.core.audit.AuditType;
@@ -17,6 +20,7 @@ public class ProgramRuleActionMetadataAuditHandler implements MetadataAuditHandl
         this.programFactory = programFactory;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         // MetadataAudit<ProgramRuleAction> of CREATE type is ignored because programRule does
         // not exists
@@ -50,8 +54,9 @@ public class ProgramRuleActionMetadataAuditHandler implements MetadataAuditHandl
                 Set<String> uIds = new HashSet<>();
 
                 uIds.add(programRuleInDB.program().uid());
-
-                programFactory.newEndPointCall(uIds, metadataAudit.getCreatedAt()).call();
+                ProgramQuery programQuery = ProgramQuery.defaultQuery(uIds,
+                        DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+                programFactory.newEndPointCall(programQuery, metadataAudit.getCreatedAt()).call();
             }
         } else {
 

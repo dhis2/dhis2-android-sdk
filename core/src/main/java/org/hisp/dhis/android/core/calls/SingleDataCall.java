@@ -86,7 +86,7 @@ public class SingleDataCall implements Call<Response> {
             isExecuted = true;
         }
 
-        Response response = null;
+        Response response;
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             SystemInfoQuery systemInfoQuery = SystemInfoQuery.defaultQuery(isTranslationOn,

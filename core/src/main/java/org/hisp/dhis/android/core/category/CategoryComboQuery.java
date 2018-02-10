@@ -32,14 +32,13 @@ public abstract class CategoryComboQuery extends BaseQuery {
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .isTranslationOn(DEFAULT_IS_TRANSLATION_ON)
                 .translationLocale(DEFAULT_TRANSLATION_LOCALE)
-                .page(0);
+                .page(DEFAULT_PAGE);
     }
 
     public static CategoryComboQuery defaultQuery(Set<String> uIds) {
-        return CategoryComboQuery
-                .builder().paging(false).pageSize(
-                        CategoryComboQuery.DEFAULT_PAGE_SIZE)
-                .page(0).uIds(uIds).build();
+        return defaultQueryBuilder()
+                .uIds(uIds)
+                .build();
     }
 
     @AutoValue.Builder

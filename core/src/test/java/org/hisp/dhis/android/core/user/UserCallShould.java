@@ -373,10 +373,9 @@ public class UserCallShould {
     @NonNull
     private UserCall provideUserCallWithMockWebservice() {
         UserService mockUserService = retrofit.create(UserService.class);
+
         return new UserCall(
-                mockUserService, databaseAdapter,
-                userStore, userCredentialsStore, userRoleStore, resourceStore,
-                serverDate, userRoleProgramLinkStore,userQuery
-        );
+                mockUserService, databaseAdapter, userHandler, serverDate,
+                userQuery);
     }
 }

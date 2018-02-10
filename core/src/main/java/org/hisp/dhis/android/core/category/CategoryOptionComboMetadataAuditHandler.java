@@ -17,6 +17,7 @@ public class CategoryOptionComboMetadataAuditHandler implements MetadataAuditHan
         this.categoryComboFactory = categoryComboFactory;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         //dhis server only send update auditType events for the CategoryOptionCombo Element.
         if (metadataAudit.getType() == AuditType.UPDATE) {

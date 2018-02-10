@@ -5,6 +5,7 @@ import android.util.Log;
 import org.hisp.dhis.android.core.audit.AuditType;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
 import org.hisp.dhis.android.core.audit.MetadataAuditHandler;
+import org.hisp.dhis.android.core.common.BaseQuery;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.User;
 
@@ -18,6 +19,7 @@ public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandle
         this.organisationUnitFactory = organisationUnitFactory;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         OrganisationUnit organisationUnit = (OrganisationUnit) metadataAudit.getValue();
 
@@ -44,8 +46,11 @@ public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandle
                                 + metadataAudit);
                 return;
             }
-            organisationUnitFactory.newEndPointCall(metadataAudit.getCreatedAt(), user,
-                    metadataAudit.getUid()).call();
+            OrganizationUnitQuery organizationUnitQuery =
+                    OrganizationUnitQuery.defaultQuery(user, BaseQuery.DEFAULT_IS_TRANSLATION_ON,
+                            BaseQuery.DEFAULT_TRANSLATION_LOCALE, metadataAudit.getUid());
+            organisationUnitFactory.newEndPointCall(metadataAudit.getCreatedAt(),
+                    organizationUnitQuery).call();
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {
                 organisationUnit = organisationUnit.toBuilder().deleted(true).build();

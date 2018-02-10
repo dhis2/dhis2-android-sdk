@@ -245,8 +245,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         UserQuery userQuery = UserQuery.defaultQuery(DEFAULT_IS_TRANSLATION_ON,
                 DEFAULT_TRANSLATION_LOCALE);
 
-        authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userStore,
-                userCredentialsHandler, resourceHandler,
         authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userHandler,
                 authenticatedUserStore,organisationUnitHandler, "test_user", "test_password"
                 , userQuery);

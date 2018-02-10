@@ -3,7 +3,6 @@ package org.hisp.dhis.android.core.event;
 import static com.google.common.truth.Truth.assertThat;
 
 import android.support.test.filters.LargeTest;
-import android.support.test.filters.SmallTest;
 import static junit.framework.Assert.assertTrue;
 
 import android.support.test.runner.AndroidJUnit4;
@@ -34,10 +33,6 @@ import retrofit2.Response;
 public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
-    Exception e;
-    CodeGenerator codeGenerator;
-
-
     private EventStore eventStore;
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
 
@@ -68,7 +63,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         attributeCategoryOption = "C6nZpLKjEJr";
         attributeOptionCombo = "nvLjum6Xbv5";
         categoryComboUID = "nM3u9s5a52V";
-        codeGenerator = new CodeGeneratorImpl();
+        CodeGenerator codeGenerator = new CodeGeneratorImpl();
 
         eventUid = codeGenerator.generate();
 
@@ -77,7 +72,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     @Test
     @LargeTest
     public void successful_response_after_sync_events() throws Exception {
-        retrofit2.Response response = null;
+        retrofit2.Response response;
         response = d2.logIn(user, password).call();
         assertThat(response.isSuccessful()).isTrue();
 
@@ -96,7 +91,6 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     @Test
     @LargeTest
     public void pull_event_with_correct_category_combo_after_be_pushed() throws Exception {
-        retrofit2.Response response = null;
 
         downloadMetadata();
 

@@ -35,8 +35,8 @@ public class DataElementEndPointCallShould {
     @Mock
     private ResourceHandler resourceHandler;
 
-    Dhis2MockServer dhis2MockServer;
-    Retrofit retrofit;
+    private Dhis2MockServer dhis2MockServer;
+    private Retrofit retrofit;
 
     @Before
     public void setUp() throws IOException {

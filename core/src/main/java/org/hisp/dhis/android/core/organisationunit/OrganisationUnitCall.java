@@ -100,7 +100,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             // sub-tree:
 
 
-            if (query.user().uid().isEmpty()) {
+            if (query.uid().isEmpty()) {
                 Set<String> rootOrgUnitUids = findRoots(query.user().organisationUnits());
                 for (String uid : rootOrgUnitUids) {
                     response = getOrganisationUnitByUId(uid, lastUpdatedFilter);
@@ -110,7 +110,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                     }
                 }
             } else {
-                response = getOrganisationUnitByUId(query.user().uid(), lastUpdatedFilter);
+                response = getOrganisationUnitByUId(query.uid(), lastUpdatedFilter);
             }
             if (response != null && response.isSuccessful()) {
                 transaction.setSuccessful();

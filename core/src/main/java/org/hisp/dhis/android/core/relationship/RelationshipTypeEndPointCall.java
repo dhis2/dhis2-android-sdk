@@ -36,11 +36,11 @@ public class RelationshipTypeEndPointCall implements Call<Response<Payload<Relat
         this.relationshipTypeHandler = relationshipTypeHandler;
         this.resourceHandler = resourceHandler;
 
-        if (relationshipTypeQuery.uids() != null
-                && relationshipTypeQuery.uids().size() > MAX_UIDS) {
+        if (relationshipTypeQuery.uIds() != null
+                && relationshipTypeQuery.uIds().size() > MAX_UIDS) {
             throw new IllegalArgumentException(
                     "Can't handle the amount of relationshipType: "
-                            + relationshipTypeQuery.uids().size() + ". " +
+                            + relationshipTypeQuery.uIds().size() + ". " +
                             "Max size is: " + MAX_UIDS);
         }
     }
@@ -66,7 +66,7 @@ public class RelationshipTypeEndPointCall implements Call<Response<Payload<Relat
 
         Response<Payload<RelationshipType>> relationshipTypeByUId =
                 relationshipTypeService.getRelationshipTypes(getFields(),
-                        RelationshipType.uid.in(relationshipTypeQuery.uids()),
+                        RelationshipType.uid.in(relationshipTypeQuery.uIds()),
                         RelationshipType.lastUpdated.gt(lastSyncedRelationshipType),
                         relationshipTypeQuery.isTranslationOn(),
                         relationshipTypeQuery.translationLocale()).execute();

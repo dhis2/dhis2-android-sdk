@@ -60,9 +60,9 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
 
     public OptionSetCall(OptionSetService optionSetService,
             OptionSetHandler optionSetHandler,
-                         DatabaseAdapter databaseAdapter,
+            DatabaseAdapter databaseAdapter,
             ResourceHandler resourceHandler,
-             Date serverDate,@NonNull OptionSetQuery query) {
+            Date serverDate, @NonNull OptionSetQuery query) {
         this.optionSetService = optionSetService;
         this.optionSetHandler = optionSetHandler;
         this.databaseAdapter = databaseAdapter;
@@ -90,13 +90,13 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
             isExecuted = true;
         }
 
-        if (query.uids().size() > MAX_UIDS) {
+        if (query.uIds().size() > MAX_UIDS) {
             throw new IllegalArgumentException(
-                    "Can't handle the amount of option sets: " + query.uids().size() + ". "
+                    "Can't handle the amount of option sets: " + query.uIds().size() + ". "
                             + "Max size is: " + MAX_UIDS);
 
         }
-        Response<Payload<OptionSet>> response = getOptionSets(query.uids());
+        Response<Payload<OptionSet>> response = getOptionSets(query.uIds());
 
         if (response != null && response.isSuccessful()) {
             saveOptionSets(response);

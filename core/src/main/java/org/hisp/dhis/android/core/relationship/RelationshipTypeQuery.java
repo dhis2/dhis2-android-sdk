@@ -8,6 +8,7 @@ import java.util.Set;
 @AutoValue
 public abstract class RelationshipTypeQuery extends BaseQuery{
 
+    @Override
     public abstract Set<String> uIds();
 
     public static RelationshipTypeQuery.Builder builder() {
@@ -17,6 +18,7 @@ public abstract class RelationshipTypeQuery extends BaseQuery{
     @AutoValue.Builder
     public static abstract class Builder extends BaseQuery.Builder<RelationshipTypeQuery.Builder> {
 
+        @Override
         public abstract Builder uIds(Set<String> uIds);
 
         public abstract RelationshipTypeQuery build();

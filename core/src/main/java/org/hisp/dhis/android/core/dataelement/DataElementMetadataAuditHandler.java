@@ -15,6 +15,7 @@ public class DataElementMetadataAuditHandler implements MetadataAuditHandler {
         this.dataElementFactory = dataElementFactory;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         DataElement dataElement = (DataElement) metadataAudit.getValue();
 

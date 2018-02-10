@@ -142,7 +142,7 @@ public class MetadataCall implements Call<Response> {
             isExecuted = true;
         }
 
-        Response response = null;
+        Response response;
         Transaction transaction = databaseAdapter.beginNewTransaction();
         SystemInfoQuery systemInfoQuery = SystemInfoQuery.defaultQuery(isTranslationOn,
                 translationLocale);
@@ -174,20 +174,30 @@ public class MetadataCall implements Call<Response> {
 
             User user = (User) response.body();
             OrganizationUnitQuery organizationUnitQuery = OrganizationUnitQuery.defaultQuery(user,
-                    isTranslationOn, translationLocale);
+                    isTranslationOn, translationLocale,
+                    OrganizationUnitQuery.DEFAULT_UID);
 
-            response = getOrganisationUnits(serverDate, user,organizationUnitQuery);
+            response = getOrganisationUnits(serverDate, organizationUnitQuery);
 
             if (!response.isSuccessful()) {
                 return response;
             }
-            response = categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(),
+            CategoryQuery categoryQuery = CategoryQuery
+                    .defaultQuery(isTranslationOn,
+                            translationLocale);
+
+
+
+            response = categoryFactory.newEndPointCall(categoryQuery,
                     serverDate).call();
 
             if (!response.isSuccessful()) {
                 return response;
             }
-            response = categoryComboFactory.newEndPointCall(CategoryComboQuery.defaultQuery(),
+            CategoryComboQuery categoryComboQuery = CategoryComboQuery
+                    .defaultQuery(isTranslationOn,
+                            translationLocale);
+            response = categoryComboFactory.newEndPointCall(categoryComboQuery,
                     serverDate).call();
 
             if (!response.isSuccessful()) {
@@ -197,11 +207,10 @@ public class MetadataCall implements Call<Response> {
             Set<String> programUids = getAssignedProgramUids(user);
 
             ProgramQuery programQuery = ProgramQuery.defaultQuery(programUids, isTranslationOn,
-                   translationLocale);
+                    translationLocale);
 
-
-            response = programFactory.newEndPointCall(programUids,
-                    serverDate,programQuery).call();
+            response = programFactory.newEndPointCall(programQuery, serverDate)
+                    .call();
 
             if (!response.isSuccessful()) {
                 return response;
@@ -210,11 +219,12 @@ public class MetadataCall implements Call<Response> {
             List<Program> programs = ((Response<Payload<Program>>) response).body().items();
 
             Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
+
             TrackedEntityQuery trackedEntityQuery = TrackedEntityQuery.defaultQuery(
                     trackedEntityUids, isTranslationOn,
                     translationLocale);
 
-            response = trackedEntityFactory.newEndPointCall(trackedEntityUids, serverDate,trackedEntityQuery).call();
+            response = trackedEntityFactory.newEndPointCall(trackedEntityQuery, serverDate).call();
 
             if (!response.isSuccessful()) {
                 return response;
@@ -224,7 +234,7 @@ public class MetadataCall implements Call<Response> {
             OptionSetQuery optionSetQuery = OptionSetQuery.defaultQuery(optionSetUids,
                     isTranslationOn, translationLocale);
 
-            response = optionSetFactory.newEndPointCall(optionSetUids, serverDate,optionSetQuery).call();
+            response = optionSetFactory.newEndPointCall(optionSetQuery, serverDate).call();
 
             if (!response.isSuccessful()) {
                 return response;
@@ -237,9 +247,11 @@ public class MetadataCall implements Call<Response> {
         }
     }
 
-    public Response getOrganisationUnits(Date serverDate, User user) throws Exception {
+    public Response getOrganisationUnits(Date serverDate,
+            OrganizationUnitQuery organizationUnitQuery) throws Exception {
         Response response;
-        response = organisationUnitFactory.newEndPointCall(serverDate, user, "").call();
+        response = organisationUnitFactory.newEndPointCall(serverDate,
+                organizationUnitQuery).call();
         return response;
     }
 

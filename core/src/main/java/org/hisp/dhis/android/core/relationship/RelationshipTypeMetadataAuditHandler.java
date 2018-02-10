@@ -15,6 +15,7 @@ public class RelationshipTypeMetadataAuditHandler implements MetadataAuditHandle
         this.relationshipTypeFactory = relationshipTypeFactory;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         RelationshipType relationshipType = (RelationshipType) metadataAudit.getValue();
 

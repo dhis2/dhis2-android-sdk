@@ -21,6 +21,7 @@ public class MetadataAuditRealIntegrationShould extends AbsStoreTestCase {
     private D2 d2;
     private SyncedMetadata syncedMetadataFromServer;
 
+    @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();

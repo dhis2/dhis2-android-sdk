@@ -71,6 +71,12 @@ public class EventQuery extends BaseQuery {
         return uIds;
     }
 
+    @Nullable
+    @Override
+    public Set<String> uIds() {
+        return uIds;
+    }
+
     @Override
     public int page() {
         return page;

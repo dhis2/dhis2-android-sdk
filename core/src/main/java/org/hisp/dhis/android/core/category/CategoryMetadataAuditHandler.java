@@ -15,6 +15,7 @@ public class CategoryMetadataAuditHandler implements MetadataAuditHandler {
         this.categoryFactory = categoryFactory;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         Category category = (Category) metadataAudit.getValue();
 

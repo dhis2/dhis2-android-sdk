@@ -141,8 +141,7 @@ public class TrackedEntityCallMockIntegrationShould extends AbsStoreTestCase {
                 new TrackedEntityFactory(retrofit, databaseAdapter(),
                         HandlerFactory.createResourceHandler(databaseAdapter()));
 
-        trackedEntityCall = trackedEntityFactory.newEndPointCall(uids, new Date(),
-                trackedEntityQuery);
+        trackedEntityCall = trackedEntityFactory.newEndPointCall(trackedEntityQuery, new Date());
     }
 
     @Test

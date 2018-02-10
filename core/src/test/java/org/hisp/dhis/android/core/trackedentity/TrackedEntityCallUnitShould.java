@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import static junit.framework.Assert.fail;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
 import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
@@ -41,9 +41,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import android.database.Cursor;
-
 import org.assertj.core.util.Sets;
 import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.common.Payload;
@@ -56,7 +53,6 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.RetrofitFactory;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -335,8 +331,8 @@ public class TrackedEntityCallUnitShould {
     private void whenCallTrackedEntityCallWithMockWebservice() throws Exception {
         TrackedEntityService mockService = retrofit.create(TrackedEntityService.class);
 
-        TrackedEntityCall callWithMockWebservice = new TrackedEntityCall(
-                database, trackedEntityQuery, resourceStore, mockService, serverDate,
+        TrackedEntityCall callWithMockWebservice =  new TrackedEntityCall(database,
+                trackedEntityHandler, resourceHandler, mockService, serverDate,
                 trackedEntityQuery);
 
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");

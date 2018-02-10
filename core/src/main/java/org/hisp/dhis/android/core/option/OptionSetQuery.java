@@ -11,7 +11,8 @@ import java.util.TreeSet;
 @AutoValue
 public abstract class OptionSetQuery extends BaseQuery {
 
-    public abstract Set<String> uids();
+    @Override
+    public abstract Set<String> uIds();
 
     public static OptionSetQuery.Builder builder() {
         return new AutoValue_OptionSetQuery.Builder();
@@ -21,11 +22,11 @@ public abstract class OptionSetQuery extends BaseQuery {
         return defaultQueryBuilder().build();
     }
 
-    public static OptionSetQuery defaultQuery(Set<String> uids, boolean isTranslationOn,
+    public static OptionSetQuery defaultQuery(Set<String> uIds, boolean isTranslationOn,
             String translationLocale) {
 
         return defaultQueryBuilder()
-                .uids(uids)
+                .uIds(uIds)
                 .isTranslationOn(isTranslationOn)
                 .translationLocale(translationLocale)
                 .build();
@@ -33,10 +34,10 @@ public abstract class OptionSetQuery extends BaseQuery {
 
     private static Builder defaultQueryBuilder() {
         return builder()
-                .uids(new TreeSet<String>())
-                .page(0)
+                .uIds(new TreeSet<String>())
+                .page(DEFAULT_PAGE)
                 .pageSize(DEFAULT_PAGE_SIZE)
-                .isPaging(false)
+                .isPaging(DEFAULT_IS_PAGING)
                 .isTranslationOn(DEFAULT_IS_TRANSLATION_ON)
                 .translationLocale(DEFAULT_TRANSLATION_LOCALE);
     }
@@ -44,7 +45,8 @@ public abstract class OptionSetQuery extends BaseQuery {
     @AutoValue.Builder
     public static abstract class Builder extends BaseQuery.Builder<OptionSetQuery.Builder> {
 
-        public abstract Builder uids(Set<String> uids);
+        @Override
+        public abstract Builder uIds(Set<String> uIdsca);
 
         public abstract OptionSetQuery build();
     }

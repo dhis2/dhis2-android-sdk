@@ -46,10 +46,10 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
         this.serverDate = new Date(serverDate.getTime());
 
 
-        if (eventQuery != null && eventQuery.getUIds() != null &&
-                eventQuery.getUIds().size() > MAX_UIDS) {
+        if (eventQuery != null && eventQuery.uIds() != null &&
+                eventQuery.uIds().size() > MAX_UIDS) {
             throw new IllegalArgumentException(
-                    "Can't handle the amount of events: " + eventQuery.getUIds().size() + ". " +
+                    "Can't handle the amount of events: " + eventQuery.uIds().size() + ". " +
                             "Max size is: " + MAX_UIDS);
         }
     }
@@ -80,7 +80,7 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
             eventsByLastUpdated = eventService.getEvents(
                     eventQuery.getOrgUnit(), eventQuery.getProgram(),
                     eventQuery.getTrackedEntityInstance(), getSingleFields(),
-                    Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
+                    Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.uIds()),
                     Boolean.TRUE, eventQuery.page(), eventQuery.pageSize(), eventQuery.isTranslationOn(),
                     eventQuery.translationLocale()).execute();
         } else {
@@ -90,7 +90,7 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
             eventsByLastUpdated = eventService.getEvents(
                     eventQuery.getOrgUnit(), eventQuery.getProgram(),
                     eventQuery.getTrackedEntityInstance(), getSingleFields(),
-                    Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
+                    Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.uIds()),
                     Boolean.TRUE, eventQuery.page(), eventQuery.pageSize(),
                     categoryCombo.uid(), categoryOption.uid(), eventQuery.isTranslationOn(),
                     eventQuery.translationLocale()).execute();

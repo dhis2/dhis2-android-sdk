@@ -42,8 +42,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import android.database.Cursor;
-
 import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -153,8 +151,6 @@ public class OrganisationUnitCallUnitShould {
 
     private Dhis2MockServer dhis2MockServer;
 
-    private Retrofit retrofit;
-
     private OrganizationUnitQuery organizationUnitQuery;
 
 
@@ -162,7 +158,6 @@ public class OrganisationUnitCallUnitShould {
     public void setUp() throws IOException {
 
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
-        retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
 
         MockitoAnnotations.initMocks(this);
         lastUpdated = new Date();
@@ -429,10 +424,16 @@ public class OrganisationUnitCallUnitShould {
     }
 
     private OrganisationUnitCall provideOrganizationUnitCallWithMockWebservice() {
+        Retrofit retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
+
         OrganisationUnitService mockService = retrofit.create(OrganisationUnitService.class);
 
-        return new OrganisationUnitCall(mockService, database, organisationUnitStore,
-                resourceStore, serverDate, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore, organizationUnitQuery);
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
+                organisationUnitStore,
+                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, resourceHandler);
+
+        return new OrganisationUnitCall(mockService, database, resourceHandler,
+                 serverDate, organisationUnitHandler, organizationUnitQuery);
     }
 }

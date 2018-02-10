@@ -37,13 +37,13 @@ import java.util.Date;
 
 public interface ProgramRuleActionStore extends DeletableStore {
     long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-                @Nullable String data, @Nullable String content, @Nullable String location,
-                @Nullable String trackedEntityAttribute, @Nullable String programIndicator,
-                @Nullable String programStageSection,
-                @NonNull ProgramRuleActionType programRuleActionType,
-                @Nullable String programStage, @Nullable String dataElement,
-                @Nullable String programRule);
+            @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
+            @Nullable String data, @Nullable String content, @Nullable String location,
+            @Nullable String trackedEntityAttribute, @Nullable String programIndicator,
+            @Nullable String programStageSection,
+            @NonNull ProgramRuleActionType programRuleActionType,
+            @Nullable String programStage, @Nullable String dataElement,
+            @Nullable String programRule);
 
     int update(
             @NonNull String uid, @Nullable String code, @NonNull String name,
@@ -57,4 +57,6 @@ public interface ProgramRuleActionStore extends DeletableStore {
     );
 
     int delete(String uid);
+
+    ProgramRuleAction queryByUid(String uid);
 }

@@ -14,7 +14,7 @@ import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -85,14 +85,15 @@ public class CategoryEndpointCallMockIntegrationShould extends AbsStoreTestCase 
 
         CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
 
-        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                categoryOptionStore);
-        CategoryCategoryOptionLinkStore
-                categoryCategoryOptionLinkStore = new CategoryCategoryOptionLinkStoreImpl(
-                databaseAdapter());
+        CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore =
+                new CategoryCategoryOptionLinkStoreImpl(databaseAdapter());
 
-        CategoryHandler handler = new CategoryHandler(store, categoryOptionHandler,
-                categoryCategoryOptionLinkStore);
+        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
+                categoryOptionStore, categoryCategoryOptionLinkStore);
+
+        CategoryHandler handler =
+                new CategoryHandler(store, categoryOptionHandler);
+
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Date serverDate = new Date();

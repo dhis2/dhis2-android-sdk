@@ -31,37 +31,42 @@ package org.hisp.dhis.android.core.user;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public class UserStoreImpl implements UserStore {
+public class UserStoreImpl extends Store implements UserStore {
+
+    private static final String FIELDS =
+            UserModel.Columns.UID + ", " +
+                    UserModel.Columns.CODE + ", " +
+                    UserModel.Columns.NAME + ", " +
+                    UserModel.Columns.DISPLAY_NAME + ", " +
+                    UserModel.Columns.CREATED + ", " +
+                    UserModel.Columns.LAST_UPDATED + ", " +
+                    UserModel.Columns.BIRTHDAY + ", " +
+                    UserModel.Columns.EDUCATION + ", " +
+                    UserModel.Columns.GENDER + ", " +
+                    UserModel.Columns.JOB_TITLE + ", " +
+                    UserModel.Columns.SURNAME + ", " +
+                    UserModel.Columns.FIRST_NAME + ", " +
+                    UserModel.Columns.INTRODUCTION + ", " +
+                    UserModel.Columns.EMPLOYER + ", " +
+                    UserModel.Columns.INTERESTS + ", " +
+                    UserModel.Columns.LANGUAGES + ", " +
+                    UserModel.Columns.EMAIL + ", " +
+                    UserModel.Columns.PHONE_NUMBER + ", " +
+                    UserModel.Columns.NATIONALITY;
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserModel.TABLE + " (" +
-            UserModel.Columns.UID + ", " +
-            UserModel.Columns.CODE + ", " +
-            UserModel.Columns.NAME + ", " +
-            UserModel.Columns.DISPLAY_NAME + ", " +
-            UserModel.Columns.CREATED + ", " +
-            UserModel.Columns.LAST_UPDATED + ", " +
-            UserModel.Columns.BIRTHDAY + ", " +
-            UserModel.Columns.EDUCATION + ", " +
-            UserModel.Columns.GENDER + ", " +
-            UserModel.Columns.JOB_TITLE + ", " +
-            UserModel.Columns.SURNAME + ", " +
-            UserModel.Columns.FIRST_NAME + ", " +
-            UserModel.Columns.INTRODUCTION + ", " +
-            UserModel.Columns.EMPLOYER + ", " +
-            UserModel.Columns.INTERESTS + ", " +
-            UserModel.Columns.LANGUAGES + ", " +
-            UserModel.Columns.EMAIL + ", " +
-            UserModel.Columns.PHONE_NUMBER + ", " +
-            UserModel.Columns.NATIONALITY +
+            FIELDS +
             ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + UserModel.TABLE + " SET " +
@@ -85,6 +90,9 @@ public class UserStoreImpl implements UserStore {
             UserModel.Columns.PHONE_NUMBER + " =?, " +
             UserModel.Columns.NATIONALITY + " =? " + " WHERE " +
             UserModel.Columns.UID + " =?;";
+
+    private static final String QUERY_USER_BY_UID = "SELECT " + FIELDS + " FROM "
+            + UserModel.TABLE + " WHERE " + UserModel.Columns.UID + "=?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + UserModel.TABLE +
             " WHERE " + UserModel.Columns.UID + " =?;";
@@ -164,6 +172,12 @@ public class UserStoreImpl implements UserStore {
         return databaseAdapter.delete(UserModel.TABLE);
     }
 
+    @Override
+    public User queryByUId(String uid) {
+        Cursor cursor = databaseAdapter.query(QUERY_USER_BY_UID, uid);
+        return mapFromCursor(cursor);
+    }
+
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
                                @Nullable String name, @Nullable String displayName,
                                @Nullable Date created, @Nullable Date lastUpdated,
@@ -191,5 +205,46 @@ public class UserStoreImpl implements UserStore {
         sqLiteBind(sqLiteStatement, 17, email);
         sqLiteBind(sqLiteStatement, 18, phoneNumber);
         sqLiteBind(sqLiteStatement, 19, nationality);
+    }
+
+
+    private User mapFromCursor(Cursor cursor) {
+        User user = null;
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                String uid = getStringFromCursor(cursor, 0);
+                String code = getStringFromCursor(cursor, 1);
+                String name = getStringFromCursor(cursor, 2);
+                String displayName = getStringFromCursor(cursor, 3);
+                Date creation = getDateFromCursor(cursor, 4);
+                Date lastUpdated = getDateFromCursor(cursor, 5);
+                String birthday = getStringFromCursor(cursor, 6);
+                String education = getStringFromCursor(cursor, 7);
+                String gender = getStringFromCursor(cursor, 8);
+                String jobTitle = getStringFromCursor(cursor, 9);
+                String surname = getStringFromCursor(cursor, 10);
+                String firstName = getStringFromCursor(cursor, 11);
+                String introduction = getStringFromCursor(cursor, 12);
+                String employer = getStringFromCursor(cursor, 13);
+                String interests = getStringFromCursor(cursor, 14);
+                String languages = getStringFromCursor(cursor, 15);
+                String email = getStringFromCursor(cursor, 16);
+                String phoneNumber = getStringFromCursor(cursor, 17);
+                String nationality = getStringFromCursor(cursor, 18);
+
+                user = User.builder().uid(uid).code(code).name(name).displayName(displayName)
+                        .created(creation).lastUpdated(lastUpdated).birthday(birthday)
+                        .education(education).gender(gender).jobTitle(jobTitle)
+                        .surname(surname).firstName(firstName).introduction(introduction)
+                        .employer(employer).interests(interests).languages(languages)
+                        .email(email).phoneNumber(phoneNumber).nationality(nationality)
+                        .userCredentials(UserCredentials.builder().uid(uid).build()).build();
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return user;
     }
 }

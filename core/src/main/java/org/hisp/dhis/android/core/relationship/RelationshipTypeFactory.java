@@ -1,10 +1,13 @@
 package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.BaseQuery;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import retrofit2.Retrofit;
@@ -16,6 +19,7 @@ public class RelationshipTypeFactory {
     private final ResourceHandler resourceHandler;
     private final RelationshipTypeHandler relationshipTypeHandler;
     private final RelationshipTypeStore relationshipTypeStore;
+    private final List<DeletableStore> deletableStoreList;
     public final boolean isTranslationOn;
     public final String translationLocale;
 
@@ -29,6 +33,8 @@ public class RelationshipTypeFactory {
         this.resourceHandler = resourceHandler;
         this.relationshipTypeStore = new RelationshipTypeStoreImpl(databaseAdapter);
         this.relationshipTypeHandler = new RelationshipTypeHandler(this.relationshipTypeStore);
+        this.deletableStoreList = new ArrayList<>();
+        deletableStoreList.add(relationshipTypeStore);
         this.isTranslationOn = isTranslationOn;
         this.translationLocale = translationLocale;
 
@@ -39,7 +45,7 @@ public class RelationshipTypeFactory {
         RelationshipTypeQuery relationshipTypeQuery =
                 RelationshipTypeQuery
                         .builder()
-                        .uids(relationshipTypeUIds)
+                        .uIds(relationshipTypeUIds)
                         .isTranslationOn(isTranslationOn)
                         .isPaging(false)
                         .page(BaseQuery.DEFAULT_PAGE)
@@ -57,5 +63,9 @@ public class RelationshipTypeFactory {
 
     public RelationshipTypeStore getRelationshipTypeStore() {
         return relationshipTypeStore;
+    }
+
+    public List<DeletableStore> getDeletableStores() {
+        return deletableStoreList;
     }
 }

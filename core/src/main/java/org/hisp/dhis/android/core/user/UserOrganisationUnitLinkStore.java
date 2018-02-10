@@ -52,4 +52,5 @@ public interface UserOrganisationUnitLinkStore extends DeletableStore {
     @Override
     int delete();
 
+    String queryUserUIdByOrganisationUnitUId(String organisationUnitUId);
 }

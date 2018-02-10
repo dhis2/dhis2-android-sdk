@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
+import java.util.List;
 
 public interface OptionStore extends DeletableStore {
     long insert(
@@ -48,4 +49,8 @@ public interface OptionStore extends DeletableStore {
     );
 
     int delete(@NonNull String uid);
+
+    List<Option> queryByOptionSet(String uid);
+
+    Option queryByUid(String uid);
 }

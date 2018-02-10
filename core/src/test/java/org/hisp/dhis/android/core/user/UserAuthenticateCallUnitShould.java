@@ -54,13 +54,16 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.SqLiteTransaction;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.data.http.HttpHeaderDate;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.data.server.RetrofitFactory;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,6 +85,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import okhttp3.mockwebserver.RecordedRequest;
@@ -102,13 +106,7 @@ public class UserAuthenticateCallUnitShould {
     private SqLiteTransaction sqLiteTransaction;
 
     @Mock
-    private UserStore userStore;
-
-    @Mock
-    private UserCredentialsHandler userCredentialsHandler;
-
-    @Mock
-    private ResourceHandler resourceHandler;
+    private UserHandler userHandler;
 
     @Mock
     private OrganisationUnitHandler organisationUnitHandler;
@@ -139,8 +137,7 @@ public class UserAuthenticateCallUnitShould {
 
     private List<OrganisationUnit> organisationUnits;
 
-    @Mock
-    private Date lastUpdated;
+    private Date lastUpdated = new Date();
 
     @Mock
     private AuthenticatedUserModel authenticatedUser;
@@ -157,14 +154,14 @@ public class UserAuthenticateCallUnitShould {
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
+        userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userHandler,
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
         retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
 
         userQuery = UserQuery.defaultQuery(DEFAULT_IS_TRANSLATION_ON,
                 DEFAULT_TRANSLATION_LOCALE);
 
-        userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userStore,
-                userCredentialsHandler, resourceHandler,
+        userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userHandler,
                 authenticatedUserStore,
                 organisationUnitHandler, "test_user_name", "test_user_password",
                 userQuery);
@@ -302,14 +299,9 @@ public class UserAuthenticateCallUnitShould {
 
             // stores must not be invoked
             verify(authenticatedUserStore, never()).insert(anyString(), anyString());
-            verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                    any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), anyString());
-            verify(userCredentialsHandler, never()).handleUserCredentials(
-                    any(UserCredentials.class), any(User.class));
+            verify(userHandler, never()).handleUser(any(User.class), any(Date.class));
             verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
-                    any(OrganisationUnitModel.Scope.class), anyString());
+                    any(OrganisationUnitModel.Scope.class), anyString(), any(Date.class));
         }
     }
 
@@ -332,20 +324,20 @@ public class UserAuthenticateCallUnitShould {
 
         // stores must not be invoked
         verify(authenticatedUserStore, never()).insert(anyString(), anyString());
-        verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString());
-        verify(userCredentialsHandler, never()).handleUserCredentials(
-                any(UserCredentials.class), any(User.class));
+        verify(userHandler, never()).handleUser(any(User.class), any(Date.class));
         verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
-                any(OrganisationUnitModel.Scope.class), anyString());
+                any(OrganisationUnitModel.Scope.class), anyString(), any(Date.class));
 
     }
 
     @Test
     public void persist_objects_after_successful_call() throws Exception {
-        when(userCall.execute()).thenReturn(Response.success(user));
+        String headerDateValue = new HttpHeaderDate(lastUpdated).toString();
+
+        Headers headers = new Headers.Builder().add(HeaderUtils.DATE, headerDateValue).build();
+
+
+        when(userCall.execute()).thenReturn(Response.success(user, headers));
 
         userAuthenticateCall.call();
 
@@ -358,21 +350,11 @@ public class UserAuthenticateCallUnitShould {
         verify(authenticatedUserStore, times(1)).insert(
                 "test_user_uid", base64("test_user_name", "test_user_password"));
 
-        verify(userStore, times(1)).insert(
-                "test_user_uid", "test_user_code", "test_user_name", "test_user_display_name",
-                created, lastUpdated, "test_user_birthday", "test_user_education",
-                "test_user_gender", "test_user_job_title", "test_user_surname",
-                "test_user_first_name", "test_user_introduction", "test_user_employer",
-                "test_user_interests", "test_user_languages", "test_user_email",
-                "test_user_phone_number", "test_user_nationality"
-        );
-
-        verify(userCredentialsHandler, times(1)).handleUserCredentials(
-                userCredentials, user);
+        verify(userHandler, times(1)).handleUser(any(User.class), any(Date.class));
 
         verify(organisationUnitHandler, times(1)).handleOrganisationUnits(
-                organisationUnits, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user.uid());
-
+                organisationUnits, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user.uid(),
+                HttpHeaderDate.parse(headerDateValue).getDate());
     }
 
 
@@ -391,16 +373,10 @@ public class UserAuthenticateCallUnitShould {
 
         // stores must not be invoked
         verify(authenticatedUserStore, times(1)).insert(anyString(), anyString());
-        verify(userStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString());
+        verify(userHandler, times(1)).handleUser(any(User.class), any(Date.class));
 
-        verify(userCredentialsHandler, times(1)).handleUserCredentials(
-                userCredentials, user);
-        verify(organisationUnitHandler, never()).handleOrganisationUnits(
-                anyListOf(OrganisationUnit.class),
-                any(OrganisationUnitModel.Scope.class), anyString());
+        verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
+                any(OrganisationUnitModel.Scope.class), anyString(), any(Date.class));
     }
 
     @Test

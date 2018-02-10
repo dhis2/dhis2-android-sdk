@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.HandlerFactory;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
@@ -131,19 +132,17 @@ public class TrackedEntityCallMockIntegrationShould extends AbsStoreTestCase {
                 .addConverterFactory(FilterConverterFactory.create())
                 .build();
 
-        TrackedEntityService service = retrofit.create(TrackedEntityService.class);
-
         HashSet<String> uids = new HashSet<>(Arrays.asList("kIeke8tAQnd", "nEenWmSyUEp"));
-        TrackedEntityStore trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter());
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
         TrackedEntityQuery trackedEntityQuery = TrackedEntityQuery.defaultQuery(
                 uids, DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
 
-        trackedEntityCall = new TrackedEntityCall(databaseAdapter(), trackedEntityStore,
-                resourceStore, service, new Date()
-                , trackedEntityQuery
-        );
+        TrackedEntityFactory trackedEntityFactory =
+                new TrackedEntityFactory(retrofit, databaseAdapter(),
+                        HandlerFactory.createResourceHandler(databaseAdapter()));
+
+        trackedEntityCall = trackedEntityFactory.newEndPointCall(uids, new Date(),
+                trackedEntityQuery);
     }
 
     @Test

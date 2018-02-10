@@ -8,32 +8,31 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 public class CategoryHandler {
-
     private final CategoryOptionHandler categoryOptionHandler;
-    private final CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore;
     private final CategoryStore categoryStore;
 
     public CategoryHandler(
             @NonNull CategoryStore categoryStore,
-            @NonNull CategoryOptionHandler categoryOptionHandler,
-            @NonNull CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore) {
+            @NonNull CategoryOptionHandler categoryOptionHandler) {
         this.categoryStore = categoryStore;
         this.categoryOptionHandler = categoryOptionHandler;
-        this.categoryCategoryOptionLinkStore = categoryCategoryOptionLinkStore;
     }
+
 
     public void handle(Category category) {
 
         if (isDeleted(category)) {
-            categoryStore.delete(category);
+            categoryStore.delete(category.uid());
         } else {
 
-            boolean updated = categoryStore.update(category);
+            int numberOfRows = categoryStore.update(category);
+            boolean updated = numberOfRows >= 1;
 
             if (!updated) {
                 categoryStore.insert(category);
-                handleCategoryOption(category);
             }
+
+            handleCategoryOption(category);
         }
     }
 
@@ -42,21 +41,11 @@ public class CategoryHandler {
         if (categoryOptions != null) {
 
             for (CategoryOption option : categoryOptions) {
-                categoryOptionHandler.handle(option);
-
-                CategoryCategoryOptionLinkModel link = newCategoryOption(category, option);
-
-                categoryCategoryOptionLinkStore.insert(link);
+                categoryOptionHandler.handle(category.uid(), option);
             }
         }
     }
-
-    private CategoryCategoryOptionLinkModel newCategoryOption(@NonNull Category category,
-            @NonNull CategoryOption option) {
-
-        return CategoryCategoryOptionLinkModel.builder().category(
-                category.uid())
-                .option(option.uid())
-                .build();
-    }
 }
+
+
+

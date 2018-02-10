@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core.category;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -17,33 +18,37 @@ public class CategoryOptionHandlerShould {
     @Mock
     private CategoryOptionStore mockCategoryOptionStore;
 
+    @Mock
+    private CategoryCategoryOptionLinkStore mockCategoryCategoryOptionLinkStore;
+
+
     private CategoryOptionHandler categoryOptionHandler;
 
     @Before
     public void setUp() throws Exception {
 
         MockitoAnnotations.initMocks(this);
-        categoryOptionHandler = new CategoryOptionHandler(mockCategoryOptionStore);
+        categoryOptionHandler = new CategoryOptionHandler(mockCategoryOptionStore,
+                mockCategoryCategoryOptionLinkStore);
     }
 
     @Test
     public void handle_deleted_categoryOption() {
         CategoryOption deletedOption = givenADeletedOption();
 
-        categoryOptionHandler.handle(deletedOption);
-        verify(mockCategoryOptionStore).delete(deletedOption);
+        categoryOptionHandler.handle("", deletedOption);
+        verify(mockCategoryOptionStore).delete(deletedOption.uid());
     }
 
     @Test
     public void handle_new_categoryOption() {
         CategoryOption newOption = givenAOption();
 
-        when(mockCategoryOptionStore.update(any(CategoryOption.class),
-                any(CategoryOption.class))).thenReturn(false);
+        when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(0);
 
-        categoryOptionHandler.handle(newOption);
+        categoryOptionHandler.handle(anyString(), newOption);
 
-        verify(mockCategoryOptionStore).update(newOption, newOption);
+        verify(mockCategoryOptionStore).update(newOption);
         verify(mockCategoryOptionStore).insert(newOption);
 
     }
@@ -52,12 +57,11 @@ public class CategoryOptionHandlerShould {
     public void handle_updated_categoryOption() {
         CategoryOption updatedOption = givenAOption();
 
-        when(mockCategoryOptionStore.update(any(CategoryOption.class),
-                any(CategoryOption.class))).thenReturn(true);
+        when(mockCategoryOptionStore.update(any(CategoryOption.class))).thenReturn(1);
 
-        categoryOptionHandler.handle(updatedOption);
+        categoryOptionHandler.handle(anyString(), updatedOption);
 
-        verify(mockCategoryOptionStore).update(updatedOption, updatedOption);
+        verify(mockCategoryOptionStore).update(updatedOption);
         verifyZeroInteractions(mockCategoryOptionStore);
 
     }

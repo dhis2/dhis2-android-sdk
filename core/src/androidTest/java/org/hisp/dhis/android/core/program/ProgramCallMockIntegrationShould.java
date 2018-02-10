@@ -27,46 +27,34 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.dataelement.DataElementHandler;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
+import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.dataelement.DataElementStoreImpl;
-import org.hisp.dhis.android.core.option.OptionHandler;
-import org.hisp.dhis.android.core.option.OptionSetHandler;
+import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetModel;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionSetStoreImpl;
-import org.hisp.dhis.android.core.option.OptionStore;
-import org.hisp.dhis.android.core.option.OptionStoreImpl;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
 import org.junit.After;
 import org.junit.Before;
@@ -133,96 +121,17 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
 
         dhis2MockServer.enqueueMockResponse("programs_complete.json");
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        TrackedEntityAttributeStore trackedEntityAttributeStore =
-                new TrackedEntityAttributeStoreImpl(databaseAdapter());
-        TrackedEntityAttributeHandler trackedEntityAttributeHandler =
-                new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
-
-        ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore =
-                new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter());
-
-        ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler =
-                new ProgramTrackedEntityAttributeHandler(
-                        programTrackedEntityAttributeStore,
-                        trackedEntityAttributeHandler
-                );
-
-        ProgramRuleVariableStore programRuleVariableStore =
-                new ProgramRuleVariableStoreImpl(databaseAdapter());
-        ProgramRuleVariableHandler programRuleVariableHandler =
-                new ProgramRuleVariableHandler(programRuleVariableStore);
-
-        ProgramIndicatorStore programIndicatorStore = new ProgramIndicatorStoreImpl(
-                databaseAdapter());
-        ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore =
-                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter());
-        ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(
-                programIndicatorStore,
-                programStageSectionProgramIndicatorLinkStore
-        );
-
-        ProgramRuleActionStore programRuleActionStore = new ProgramRuleActionStoreImpl(
-                databaseAdapter());
-        ProgramRuleActionHandler programRuleActionHandler = new ProgramRuleActionHandler(
-                programRuleActionStore);
-        ProgramRuleStore programRuleStore = new ProgramRuleStoreImpl(databaseAdapter());
-        ProgramRuleHandler programRuleHandler = new ProgramRuleHandler(programRuleStore,
-                programRuleActionHandler);
-
-        OptionStore optionStore = new OptionStoreImpl(databaseAdapter());
-        OptionHandler optionHandler = new OptionHandler(optionStore);
-
-        OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter());
-        OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
-
-        DataElementStore dataElementStore = new DataElementStoreImpl(databaseAdapter());
-        DataElementHandler dataElementHandler = new DataElementHandler(dataElementStore,
-                optionSetHandler);
-        ProgramStageDataElementStore programStageDataElementStore =
-                new ProgramStageDataElementStoreImpl(databaseAdapter());
-
-        ProgramStageDataElementHandler programStageDataElementHandler =
-                new ProgramStageDataElementHandler(
-                        programStageDataElementStore, dataElementHandler
-                );
-
-        ProgramStageSectionStore programStageSectionStore = new ProgramStageSectionStoreImpl(
-                databaseAdapter());
-        ProgramStageSectionHandler programStageSectionHandler = new ProgramStageSectionHandler(
-                programStageSectionStore,
-                programStageDataElementHandler,
-                programIndicatorHandler
-        );
-
-        ProgramStageStore programStageStore = new ProgramStageStoreImpl(databaseAdapter());
-        ProgramStageHandler programStageHandler = new ProgramStageHandler(
-                programStageStore,
-                programStageSectionHandler,
-                programStageDataElementHandler
-        );
-
-        RelationshipTypeStore relationshipStore = new RelationshipTypeStoreImpl(databaseAdapter());
-        RelationshipTypeHandler relationshipTypeHandler = new RelationshipTypeHandler(
-                relationshipStore);
-        ProgramService programService = d2.retrofit().create(ProgramService.class);
-        ProgramStore programStore = new ProgramStoreImpl(databaseAdapter());
-
-
-        ProgramHandler programHandler = new ProgramHandler(
-                programStore,
-                programRuleVariableHandler,
-                programStageHandler,
-                programIndicatorHandler,
-                programRuleHandler,
-                programTrackedEntityAttributeHandler,
-                relationshipTypeHandler);
-
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
+
+        OptionSetFactory optionSetFactory = new OptionSetFactory(d2.retrofit(), databaseAdapter(),
+                resourceHandler);
+
+        DataElementFactory dataElementFactory = new DataElementFactory(d2.retrofit(),
+                databaseAdapter(), resourceHandler);
+
+        ProgramFactory programFactory = new ProgramFactory(d2.retrofit(), databaseAdapter(),
+                optionSetFactory.getOptionSetHandler(), dataElementFactory, resourceHandler);
 
         Set<String> uids = new HashSet<>();
         uids.add("uid1");
@@ -240,17 +149,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
 
-        programCall = new ProgramCall(
-                programService, databaseAdapter(), resourceStore, programStore, new Date(),
-                trackedEntityAttributeStore, programTrackedEntityAttributeStore,
-                programRuleVariableStore,
-                programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
-                programRuleActionStore,
-                programRuleStore, optionStore, optionSetStore, dataElementStore,
-                programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore, programQuery
-
-        );
+        programCall = programFactory.newEndPointCall(uids, new Date());
     }
 
     @Test

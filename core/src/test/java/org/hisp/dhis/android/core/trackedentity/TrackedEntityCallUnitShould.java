@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import static junit.framework.Assert.fail;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
 import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
@@ -42,6 +42,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import android.database.Cursor;
+
 import org.assertj.core.util.Sets;
 import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.common.Payload;
@@ -49,8 +51,9 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.data.server.RetrofitFactory;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -82,10 +85,10 @@ public class TrackedEntityCallUnitShould {
     private DatabaseAdapter database;
 
     @Mock
-    private TrackedEntityStore trackedEntityStore;
+    private TrackedEntityHandler trackedEntityHandler;
 
     @Mock
-    private ResourceStore resourceStore;
+    private ResourceHandler resourceHandler;
 
     @Mock
     private Transaction transaction;
@@ -152,8 +155,10 @@ public class TrackedEntityCallUnitShould {
                 Sets.newLinkedHashSet(trackedEntity.uid()), DEFAULT_IS_TRANSLATION_ON,
                 DEFAULT_TRANSLATION_LOCALE);
 
-        call = new TrackedEntityCall(database, trackedEntityStore, resourceStore, service,
-                serverDate, trackedEntityQuery);
+
+        call = new TrackedEntityCall(database,
+                trackedEntityHandler, resourceHandler, service, serverDate,
+                trackedEntityQuery);
 
         when(database.beginNewTransaction()).thenReturn(transaction);
         when(service.trackedEntities(
@@ -195,7 +200,8 @@ public class TrackedEntityCallUnitShould {
     public void invoke_server_with_correct_parameters_after_call_with_last_updated()
             throws Exception {
         String date = "2014-11-25T09:37:53.358";
-        when(resourceStore.getLastUpdated(eq(ResourceModel.Type.TRACKED_ENTITY))).thenReturn(date);
+        when(resourceHandler.getLastUpdated(eq(ResourceModel.Type.TRACKED_ENTITY))).thenReturn(
+                date);
         when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
 
         call.call();
@@ -240,15 +246,13 @@ public class TrackedEntityCallUnitShould {
         verify(database, times(1)).beginNewTransaction();
         verify(transaction, times(1)).setSuccessful();
         verify(transaction, times(1)).end();
-        verify(trackedEntityStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class),
-                anyString(), anyString(), anyString(), anyString());
-        //TODO: after implementing the SystemInfoCall, tests..etc modify this to actually check
-        // the date:
+        verify(trackedEntityHandler, times(1)).handleTrackedEntity(
+                any(TrackedEntity.class));
+        //TODO: after implementing the SystemInfoCall, tests..etc modify this to actually check the date:
         //Right now it only checks if: (Date) null is an instance of Date.class, not a terribly
         // useful:
-        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
+        verify(resourceHandler, times(1)).handleResource(
+                any(ResourceModel.Type.class), any(Date.class));
     }
 
 
@@ -256,7 +260,7 @@ public class TrackedEntityCallUnitShould {
     @SuppressWarnings("unchecked")
     public void not_fail_on_empty_input() throws IOException {
         TrackedEntityCall call = new TrackedEntityCall(database,
-                trackedEntityStore, resourceStore, service, serverDate, trackedEntityQuery);
+                trackedEntityHandler, resourceHandler, service, serverDate,trackedEntityQuery);
         when(service.trackedEntities(
                 fieldsCaptor.capture(),
                 idFilterCaptor.capture(),
@@ -332,7 +336,7 @@ public class TrackedEntityCallUnitShould {
         TrackedEntityService mockService = retrofit.create(TrackedEntityService.class);
 
         TrackedEntityCall callWithMockWebservice = new TrackedEntityCall(
-                database, trackedEntityStore, resourceStore, mockService, serverDate,
+                database, trackedEntityQuery, resourceStore, mockService, serverDate,
                 trackedEntityQuery);
 
         dhis2MockServer.enqueueMockResponse("tracked_entities.json");

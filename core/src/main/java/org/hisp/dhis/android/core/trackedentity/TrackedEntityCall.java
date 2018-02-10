@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 
 import java.io.IOException;
 import java.util.Date;
@@ -48,23 +47,24 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
 
     private final TrackedEntityService service;
     private final DatabaseAdapter databaseAdapter;
-    private final TrackedEntityStore trackedEntityStore;
-    private final ResourceStore resourceStore;
+    private final TrackedEntityHandler trackedEntityHandler;
+    private final ResourceHandler resourceHandler;
     private final Date serverDate;
     private final ResourceModel.Type resourceType = ResourceModel.Type.TRACKED_ENTITY;
+
     private Boolean isExecuted = false;
     private final TrackedEntityQuery query;
 
     public TrackedEntityCall(
             @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull TrackedEntityStore trackedEntityStore,
-            @NonNull ResourceStore resourceStore,
+            @NonNull TrackedEntityHandler trackedEntityHandler,
+            @NonNull ResourceHandler resourceHandler,
             @NonNull TrackedEntityService service,
             @NonNull Date serverDate,
             @NonNull TrackedEntityQuery query) {
         this.databaseAdapter = databaseAdapter;
-        this.trackedEntityStore = trackedEntityStore;
-        this.resourceStore = resourceStore;
+        this.trackedEntityHandler = trackedEntityHandler;
+        this.resourceHandler = resourceHandler;
         this.service = service;
         this.serverDate = new Date(serverDate.getTime());
         this.query = query;
@@ -91,12 +91,10 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
                     "Can't handle the amount of tracked entities: " + query.uids().size() + ". " +
                             "Max size is: " + MAX_UIDS);
         }
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         String lastUpdated = resourceHandler.getLastUpdated(resourceType);
         Response<Payload<TrackedEntity>> response = getTrackedEntities(lastUpdated);
 
-        TrackedEntityHandler trackedEntityHandler = new TrackedEntityHandler(trackedEntityStore);
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
 

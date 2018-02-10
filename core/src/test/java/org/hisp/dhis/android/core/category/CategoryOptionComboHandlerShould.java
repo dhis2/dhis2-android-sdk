@@ -16,24 +16,26 @@ public class CategoryOptionComboHandlerShould {
 
     @Mock
     private CategoryOptionComboStore mockStore;
+    @Mock
+    private CategoryOptionComboCategoryLinkStore categoryOptionComboStore;
 
     private CategoryOptionComboHandler handler;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        handler = new CategoryOptionComboHandler(mockStore);
+        handler = new CategoryOptionComboHandler(mockStore, categoryOptionComboStore);
     }
 
     @Test
     public void handle_a_new_combo_option() {
         CategoryOptionCombo newOptionCombo = givenAOptionCombo();
 
-        when(mockStore.update(any(CategoryOptionCombo.class), any(CategoryOptionCombo.class))).thenReturn(false);
+        when(mockStore.update(any(CategoryOptionCombo.class))).thenReturn(0);
 
         handler.handle(newOptionCombo);
 
-        verify(mockStore).update(newOptionCombo, newOptionCombo);
+        verify(mockStore).update(newOptionCombo);
         verify(mockStore).insert(newOptionCombo);
 
     }
@@ -43,18 +45,18 @@ public class CategoryOptionComboHandlerShould {
         CategoryOptionCombo deletedComboOption = givenADeletedOptionCombo();
 
         handler.handle(deletedComboOption);
-        verify(mockStore).delete(deletedComboOption);
+        verify(mockStore).delete(deletedComboOption.uid());
     }
 
     @Test
     public void handle_an_updated_combo_option() {
         CategoryOptionCombo updatedOptionCombo = givenAOptionCombo();
 
-        when(mockStore.update(any(CategoryOptionCombo.class), any(CategoryOptionCombo.class))).thenReturn(true);
+        when(mockStore.update(any(CategoryOptionCombo.class))).thenReturn(1);
 
         handler.handle(updatedOptionCombo);
 
-        verify(mockStore).update(updatedOptionCombo, updatedOptionCombo);
+        verify(mockStore).update(updatedOptionCombo);
         verifyZeroInteractions(mockStore);
 
     }

@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.data.server.RetrofitFactory;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -86,19 +86,10 @@ public class UserCallShould {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private UserStore userStore;
-
-    @Mock
     private Transaction transaction;
 
     @Mock
-    private UserCredentialsStore userCredentialsStore;
-
-    @Mock
-    private ResourceStore resourceStore;
-
-    @Mock
-    private UserRoleStore userRoleStore;
+    private UserHandler userHandler;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<User> userCall;
@@ -150,10 +141,8 @@ public class UserCallShould {
                 DEFAULT_TRANSLATION_LOCALE);
 
         userSyncCall = new UserCall(
-                userService, databaseAdapter,
-                userStore, userCredentialsStore, userRoleStore, resourceStore,
-                serverDate, userRoleProgramLinkStore, userQuery
-        );
+                userService, databaseAdapter, userHandler, serverDate,
+                userQuery);
 
         when(userCredentials.uid()).thenReturn("user_credentials_uid");
         when(userCredentials.code()).thenReturn("user_credentials_code");
@@ -284,41 +273,7 @@ public class UserCallShould {
             verify(transaction, never()).setSuccessful();
             verify(transaction, never()).end();
 
-            verify(userStore, never()).insert(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                    any(Date.class),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                    anyString(),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
-            verify(userStore, never()).update(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                    any(Date.class),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                    anyString(),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                    anyString());
-            verify(userStore, never()).delete(anyString());
-
-            verify(userCredentialsStore, never()).insert(
-                    anyString(), anyString(), anyString(), anyString(),
-                    any(Date.class), any(Date.class), anyString(), anyString()
-            );
-            verify(userCredentialsStore, never()).update(
-                    anyString(), anyString(), anyString(), anyString(),
-                    any(Date.class), any(Date.class), anyString(), anyString(), anyString()
-            );
-
-            verify(userCredentialsStore, never()).delete(anyString());
-
-            verify(userRoleStore, never()).insert(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                    any(Date.class)
-            );
-            verify(userRoleStore, never()).update(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                    any(Date.class), anyString()
-            );
-            verify(userRoleStore, never()).delete(anyString());
+            verify(userHandler, never()).handleUser(any(User.class), any(Date.class));
         }
     }
 
@@ -339,40 +294,7 @@ public class UserCallShould {
         verify(transaction, never()).setSuccessful();
         verify(transaction, never()).end();
 
-        verify(userStore, never()).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
-        verify(userStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString());
-        verify(userStore, never()).delete(anyString());
-
-        verify(userCredentialsStore, never()).insert(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString()
-        );
-        verify(userCredentialsStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString()
-        );
-
-        verify(userCredentialsStore, never()).delete(anyString());
-
-        verify(userRoleStore, never()).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class)
-        );
-        verify(userRoleStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString()
-        );
-        verify(userRoleStore, never()).delete(anyString());
+        verify(userHandler, never()).handleUser(any(User.class), any(Date.class));
     }
 
     @Test
@@ -420,26 +342,7 @@ public class UserCallShould {
 
         userSyncCall.call();
 
-        verify(userStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
-        );
-
-        verify(userCredentialsStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString()
-        );
-
-        verify(userRoleStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class)
-        );
-
-        verify(userRoleProgramLinkStore, times(1)).insert(anyString(), anyString());
-
-        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
+        verify(userHandler, times(1)).handleUser(any(User.class), any(Date.class));
 
     }
 

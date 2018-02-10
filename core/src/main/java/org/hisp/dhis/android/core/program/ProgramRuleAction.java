@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -40,9 +40,8 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
-import java.util.Date;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramRuleAction.Builder.class)
 public abstract class ProgramRuleAction extends BaseIdentifiableObject {
     private static final String DATA = "data";
     private static final String CONTENT = "content";
@@ -66,10 +65,11 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject {
     public static final Field<ProgramRuleAction, String> location = Field.create(LOCATION);
     public static final Field<ProgramRuleAction, Boolean> deleted = Field.create(DELETED);
 
+    public static final NestedField<ProgramRuleAction, ProgramRule> programRule =
+            NestedField.create(PROGRAM_RULE);
 
-    public static final NestedField<ProgramRuleAction, ProgramRule> programRule = NestedField.create(PROGRAM_RULE);
-
-    public static final NestedField<ProgramRuleAction, TrackedEntityAttribute> trackedEntityAttribute =
+    public static final NestedField<ProgramRuleAction, TrackedEntityAttribute>
+            trackedEntityAttribute =
             NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
 
     public static final NestedField<ProgramRuleAction, ProgramIndicator> programIndicator =
@@ -127,29 +127,50 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject {
     @JsonProperty(PROGRAM_RULE)
     public abstract ProgramRule programRule();
 
-    @JsonCreator
-    public static ProgramRuleAction create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(DATA) String data,
-            @JsonProperty(CONTENT) String content,
-            @JsonProperty(LOCATION) String location,
-            @JsonProperty(TRACKED_ENTITY_ATTRIBUTE) TrackedEntityAttribute trackedEntityAttribute,
-            @JsonProperty(PROGRAM_INDICATOR) ProgramIndicator programIndicator,
-            @JsonProperty(PROGRAM_STAGE_SECTION) ProgramStageSection programStageSection,
-            @JsonProperty(PROGRAM_RULE_ACTION_TYPE) ProgramRuleActionType programRuleActionType,
-            @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
-            @JsonProperty(DATA_ELEMENT) DataElement dataElement,
-            @JsonProperty(PROGRAM_RULE) ProgramRule programRule,
-            @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_ProgramRuleAction(
-                uid, code, name, displayName, created, lastUpdated, deleted, data, content, location,
-                trackedEntityAttribute, programIndicator, programStageSection, programRuleActionType,
-                programStage, dataElement, programRule
-        );
+    abstract ProgramRuleAction.Builder toBuilder();
+
+    static ProgramRuleAction.Builder builder() {
+        return new AutoValue_ProgramRuleAction.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends
+            BaseIdentifiableObject.Builder<ProgramRuleAction.Builder> {
+
+        @JsonProperty(DATA)
+        public abstract ProgramRuleAction.Builder data(@Nullable String data);
+
+        @JsonProperty(CONTENT)
+        public abstract ProgramRuleAction.Builder content(@Nullable String content);
+
+        @JsonProperty(LOCATION)
+        public abstract ProgramRuleAction.Builder location(@Nullable String location);
+
+        @JsonProperty(TRACKED_ENTITY_ATTRIBUTE)
+        public abstract ProgramRuleAction.Builder trackedEntityAttribute(
+                @Nullable TrackedEntityAttribute trackedEntityAttribute);
+
+        @JsonProperty(PROGRAM_INDICATOR)
+        public abstract ProgramRuleAction.Builder programIndicator(
+                @Nullable ProgramIndicator programIndicator);
+
+        @JsonProperty(PROGRAM_STAGE_SECTION)
+        public abstract ProgramRuleAction.Builder programStageSection(
+                @Nullable ProgramStageSection programStageSection);
+
+        @JsonProperty(PROGRAM_RULE_ACTION_TYPE)
+        public abstract ProgramRuleAction.Builder programRuleActionType(
+                @Nullable ProgramRuleActionType programRuleActionType);
+
+        @JsonProperty(PROGRAM_STAGE)
+        public abstract ProgramRuleAction.Builder programStage(@Nullable ProgramStage programStage);
+
+        @JsonProperty(DATA_ELEMENT)
+        public abstract ProgramRuleAction.Builder dataElement(@Nullable DataElement dataElement);
+
+        @JsonProperty(PROGRAM_RULE)
+        public abstract ProgramRuleAction.Builder programRule(@Nullable ProgramRule programRule);
+
+        public abstract ProgramRuleAction build();
     }
 }

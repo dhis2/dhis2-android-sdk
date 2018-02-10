@@ -27,6 +27,22 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import static junit.framework.Assert.fail;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import android.database.Cursor;
 
 import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.common.Payload;
@@ -35,9 +51,10 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.data.server.RetrofitFactory;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
@@ -67,21 +84,6 @@ import okhttp3.ResponseBody;
 import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
-import static junit.framework.Assert.fail;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class OrganisationUnitCallUnitShould {
@@ -208,13 +210,14 @@ public class OrganisationUnitCallUnitShould {
         organizationUnitQuery = OrganizationUnitQuery.defaultQuery(user);
 
         when(database.beginNewTransaction()).thenReturn(transaction);
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
+        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
+                organisationUnitStore,
+                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, resourceHandler);
 
         organisationUnitCall = new OrganisationUnitCall(organisationUnitService, database,
-                organisationUnitStore,
-                resourceStore,
-                serverDate, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore,
-                organizationUnitQuery);
+                resourceHandler, serverDate, organisationUnitHandler, organizationUnitQuery);
 
         //Return only one organisationUnit.
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));

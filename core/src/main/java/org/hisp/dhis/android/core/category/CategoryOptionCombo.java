@@ -73,6 +73,8 @@ public abstract class CategoryOptionCombo extends BaseNameableObject {
     @JsonProperty(CATEGORY_OPTIONS)
     public abstract List<CategoryOption> categoryOptions();
 
+    abstract CategoryOptionCombo.Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_CategoryOptionCombo.Builder();
     }

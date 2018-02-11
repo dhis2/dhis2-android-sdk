@@ -1,8 +1,5 @@
 package org.hisp.dhis.android.core.program;
 
-import static org.hisp.dhis.android.core.common.BaseQuery.DEFAULT_IS_TRANSLATION_ON;
-import static org.hisp.dhis.android.core.common.BaseQuery.DEFAULT_TRANSLATION_LOCALE;
-
 import android.util.Log;
 
 import org.hisp.dhis.android.core.audit.AuditType;
@@ -15,9 +12,14 @@ import java.util.Set;
 public class ProgramIndicatorMetadataAuditHandler implements MetadataAuditHandler {
 
     private final ProgramFactory programFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public ProgramIndicatorMetadataAuditHandler(ProgramFactory programFactory) {
+    public ProgramIndicatorMetadataAuditHandler(ProgramFactory programFactory,
+            boolean isTranslationOn, String translationLocale) {
         this.programFactory = programFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -49,8 +51,8 @@ public class ProgramIndicatorMetadataAuditHandler implements MetadataAuditHandle
                 Set<String> uIds = new HashSet<>();
 
                 uIds.add(programIndicatorInDB.program().uid());
-                ProgramQuery programQuery = ProgramQuery.defaultQuery(uIds,
-                        DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+                ProgramQuery programQuery = ProgramQuery.defaultQuery(uIds, isTranslationOn,
+                        translationLocale);
 
                 programFactory.newEndPointCall(programQuery, metadataAudit.getCreatedAt()).call();
             }

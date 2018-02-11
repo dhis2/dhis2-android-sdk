@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.option;
 
+import android.support.annotation.NonNull;
+
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseQuery;
@@ -11,9 +13,6 @@ import java.util.TreeSet;
 @AutoValue
 public abstract class OptionSetQuery extends BaseQuery {
 
-    @Override
-    public abstract Set<String> uIds();
-
     public static OptionSetQuery.Builder builder() {
         return new AutoValue_OptionSetQuery.Builder();
     }
@@ -23,7 +22,7 @@ public abstract class OptionSetQuery extends BaseQuery {
     }
 
     public static OptionSetQuery defaultQuery(Set<String> uIds, boolean isTranslationOn,
-            String translationLocale) {
+            @NonNull String translationLocale) {
 
         return defaultQueryBuilder()
                 .uIds(uIds)
@@ -34,19 +33,16 @@ public abstract class OptionSetQuery extends BaseQuery {
 
     private static Builder defaultQueryBuilder() {
         return builder()
-                .uIds(new TreeSet<String>())
                 .page(DEFAULT_PAGE)
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .isPaging(DEFAULT_IS_PAGING)
                 .isTranslationOn(DEFAULT_IS_TRANSLATION_ON)
-                .translationLocale(DEFAULT_TRANSLATION_LOCALE);
+                .translationLocale(DEFAULT_TRANSLATION_LOCALE)
+                .uIds(new TreeSet<String>());
     }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseQuery.Builder<OptionSetQuery.Builder> {
-
-        @Override
-        public abstract Builder uIds(Set<String> uIdsca);
 
         public abstract OptionSetQuery build();
     }

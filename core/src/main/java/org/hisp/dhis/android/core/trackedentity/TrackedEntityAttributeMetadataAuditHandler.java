@@ -10,10 +10,15 @@ import java.util.Set;
 public class TrackedEntityAttributeMetadataAuditHandler implements MetadataAuditHandler {
 
     private final TrackedEntityAttributeFactory trackedEntityAttributeFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     public TrackedEntityAttributeMetadataAuditHandler(
-            TrackedEntityAttributeFactory trackedEntityAttributeFactory) {
+            TrackedEntityAttributeFactory trackedEntityAttributeFactory, boolean isTranslationOn,
+            String translationLocale) {
         this.trackedEntityAttributeFactory = trackedEntityAttributeFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -30,8 +35,8 @@ public class TrackedEntityAttributeMetadataAuditHandler implements MetadataAudit
             uIds.add(metadataAudit.getUid());
 
             TrackedEntityAttributeQuery trackedEntityAttributeQuery =
-                    TrackedEntityAttributeQuery.Builder.create()
-                            .withUIds(uIds).build();
+                    TrackedEntityAttributeQuery.defaultQuery(uIds,
+                            isTranslationOn, translationLocale);
 
             trackedEntityAttributeFactory.newEndPointCall(trackedEntityAttributeQuery,
                     metadataAudit.getCreatedAt()).call();

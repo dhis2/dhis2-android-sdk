@@ -10,8 +10,6 @@ import java.util.TreeSet;
 @AutoValue
 public abstract class ProgramQuery extends BaseQuery {
 
-
-
     public static ProgramQuery.Builder builder() {
         return new AutoValue_ProgramQuery.Builder();
     }
@@ -32,12 +30,12 @@ public abstract class ProgramQuery extends BaseQuery {
 
     private static Builder defaultQueryBuilder() {
         return builder()
-                .uIds(new TreeSet<String>())
                 .page(DEFAULT_PAGE)
                 .pageSize(DEFAULT_PAGE_SIZE)
-                .isPaging(false)
+                .isPaging(DEFAULT_IS_PAGING)
                 .isTranslationOn(DEFAULT_IS_TRANSLATION_ON)
-                .translationLocale(DEFAULT_TRANSLATION_LOCALE);
+                .translationLocale(DEFAULT_TRANSLATION_LOCALE)
+                .uIds(new TreeSet<String>());
     }
 
     @AutoValue.Builder
@@ -45,5 +43,4 @@ public abstract class ProgramQuery extends BaseQuery {
 
         public abstract ProgramQuery build();
     }
-
 }

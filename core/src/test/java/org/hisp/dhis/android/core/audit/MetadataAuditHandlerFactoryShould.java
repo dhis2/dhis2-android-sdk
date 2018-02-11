@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core.audit;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -129,7 +131,8 @@ public class MetadataAuditHandlerFactoryShould {
                 new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
                         dataElementFactory, trackedEntityAttributeFactory, programFactory,
                         relationshipTypeFactory, organisationUnitFactory, categoryFactory,
-                        categoryComboFactory);
+                        categoryComboFactory, DEFAULT_IS_TRANSLATION_ON,
+                        DEFAULT_TRANSLATION_LOCALE);
     }
 
     @Test

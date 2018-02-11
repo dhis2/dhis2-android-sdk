@@ -4,6 +4,8 @@ import static junit.framework.Assert.fail;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -43,13 +45,12 @@ public class CategoryOptionChangeOnServerShould extends AbsStoreTestCase {
     private CategoryFactory categoryFactory;
 
     private Dhis2MockServer dhis2MockServer;
-    private D2 d2;
 
     @Before
     public void setup() throws IOException {
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         MockitoAnnotations.initMocks(this);
 
@@ -57,7 +58,8 @@ public class CategoryOptionChangeOnServerShould extends AbsStoreTestCase {
                 databaseAdapter(), HandlerFactory.createResourceHandler(databaseAdapter()));
 
         when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
-                new CategoryOptionMetadataAuditHandler(categoryFactory));
+                new CategoryOptionMetadataAuditHandler(categoryFactory, DEFAULT_IS_TRANSLATION_ON,
+                        DEFAULT_TRANSLATION_LOCALE));
 
         categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
@@ -176,8 +178,8 @@ public class CategoryOptionChangeOnServerShould extends AbsStoreTestCase {
     }
 
     private void givenAExistedCategoryOptionPreviously() throws IOException {
-        String categoryOptionUid="UOqJW6HPvvL";
-        String categoryUid="DkS8tTZCkNE";
+        String categoryOptionUid = "UOqJW6HPvvL";
+        String categoryUid = "DkS8tTZCkNE";
         Category category = Category.builder()
                 .uid(categoryUid)
                 .build();

@@ -42,11 +42,11 @@ public class DataElementEndPointCall implements
         this.dataElementHandler = trackedEntityAttributeHandler;
         this.resourceHandler = resourceHandler;
 
-        if (dataElementQuery.getUIds() != null
-                && dataElementQuery.getUIds().size() > MAX_UIDS) {
+        if (dataElementQuery.uIds() != null
+                && dataElementQuery.uIds().size() > MAX_UIDS) {
             throw new IllegalArgumentException(
                     "Can't handle the amount of dataElement: "
-                            + dataElementQuery.getUIds().size() + ". " +
+                            + dataElementQuery.uIds().size() + ". " +
                             "Max size is: " + MAX_UIDS);
         }
     }
@@ -72,7 +72,7 @@ public class DataElementEndPointCall implements
 
         Response<Payload<DataElement>> dataElementByUids =
                 dataElementService.getDataElements(getFields(),
-                        DataElement.uid.in(dataElementQuery.getUIds()),
+                        DataElement.uid.in(dataElementQuery.uIds()),
                         DataElement.lastUpdated.gt(
                                 lastSyncedDataElements)).execute();
 

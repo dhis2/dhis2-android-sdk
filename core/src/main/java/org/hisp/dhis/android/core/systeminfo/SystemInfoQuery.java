@@ -4,9 +4,10 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseQuery;
 
+import java.util.TreeSet;
+
 @AutoValue
 public abstract class SystemInfoQuery extends BaseQuery {
-
 
     public static SystemInfoQuery.Builder builder() {
         return new AutoValue_SystemInfoQuery.Builder();
@@ -29,9 +30,10 @@ public abstract class SystemInfoQuery extends BaseQuery {
         return builder()
                 .page(DEFAULT_PAGE)
                 .pageSize(DEFAULT_PAGE_SIZE)
-                .isPaging(false)
+                .isPaging(DEFAULT_IS_PAGING)
                 .isTranslationOn(DEFAULT_IS_TRANSLATION_ON)
-                .translationLocale(DEFAULT_TRANSLATION_LOCALE);
+                .translationLocale(DEFAULT_TRANSLATION_LOCALE)
+                .uIds(new TreeSet<String>());
     }
 
     @AutoValue.Builder

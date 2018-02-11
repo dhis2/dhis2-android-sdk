@@ -255,9 +255,7 @@ public final class D2 {
                 optionSetFactory.getOptionSetHandler(), dataElementFactory, resourceHandler);
 
         relationshipTypeFactory =
-                new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler,
-                        isTranslationOn,
-                        translationLocale);
+                new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
 
         this.categoryFactory = new CategoryFactory(retrofit(), databaseAdapter, resourceHandler);
 
@@ -269,7 +267,7 @@ public final class D2 {
                     new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
                             dataElementFactory, trackedEntityAttributeFactory, programFactory,
                             relationshipTypeFactory, organisationUnitFactory, categoryFactory,
-                            categoryComboFactory);
+                            categoryComboFactory, isTranslationOn, translationLocale);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 

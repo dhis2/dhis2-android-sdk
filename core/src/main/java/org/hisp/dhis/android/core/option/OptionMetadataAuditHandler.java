@@ -5,7 +5,6 @@ import android.util.Log;
 import org.hisp.dhis.android.core.audit.AuditType;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
 import org.hisp.dhis.android.core.audit.MetadataAuditHandler;
-import org.hisp.dhis.android.core.common.BaseQuery;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,9 +12,14 @@ import java.util.Set;
 public class OptionMetadataAuditHandler implements MetadataAuditHandler {
 
     private final OptionSetFactory optionSetFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public OptionMetadataAuditHandler(OptionSetFactory optionSetFactory) {
+    public OptionMetadataAuditHandler(OptionSetFactory optionSetFactory, boolean isTranslationOn,
+            String translationLocale) {
         this.optionSetFactory = optionSetFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -42,10 +46,10 @@ public class OptionMetadataAuditHandler implements MetadataAuditHandler {
                 Set<String> uIds = new HashSet<>();
                 uIds.add(optionInDB.optionSet().uid());
                 OptionSetQuery optionSetQuery =
-                        OptionSetQuery.defaultQuery(uIds, BaseQuery.DEFAULT_IS_TRANSLATION_ON,
-                                BaseQuery.DEFAULT_TRANSLATION_LOCALE);
+                        OptionSetQuery.defaultQuery(uIds, isTranslationOn, translationLocale);
 
-                optionSetFactory.newEndPointCall(optionSetQuery, metadataAudit.getCreatedAt()).call();
+                optionSetFactory.newEndPointCall(optionSetQuery,
+                        metadataAudit.getCreatedAt()).call();
 
             }
         } else {

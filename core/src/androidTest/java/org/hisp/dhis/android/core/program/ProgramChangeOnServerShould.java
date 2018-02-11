@@ -5,6 +5,8 @@ import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -63,7 +65,9 @@ public class ProgramChangeOnServerShould extends AbsStoreTestCase {
                 new ProgramMetadataAuditHandler(
                         new ProgramFactory(d2.retrofit(), databaseAdapter(),
                                 optionSetFactory.getOptionSetHandler(), dataElementFactory,
-                                resourceHandler)));
+                                resourceHandler), DEFAULT_IS_TRANSLATION_ON,
+                        DEFAULT_TRANSLATION_LOCALE
+                ));
 
         programStore = new ProgramStoreImpl(databaseAdapter());
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);

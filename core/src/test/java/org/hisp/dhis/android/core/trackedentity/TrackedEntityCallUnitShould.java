@@ -31,8 +31,8 @@ import static junit.framework.Assert.fail;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;

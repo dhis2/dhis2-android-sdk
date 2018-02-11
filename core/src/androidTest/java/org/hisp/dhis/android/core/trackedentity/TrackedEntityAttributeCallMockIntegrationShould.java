@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 
 import android.support.test.filters.MediumTest;
 
@@ -31,7 +33,6 @@ import java.util.Set;
 public class TrackedEntityAttributeCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
-    private D2 d2;
     private TrackedEntityAttributeFactory trackedEntityAttributeFactory;
 
     @Override
@@ -41,7 +42,7 @@ public class TrackedEntityAttributeCallMockIntegrationShould extends AbsStoreTes
 
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         trackedEntityAttributeFactory =
                 new TrackedEntityAttributeFactory(d2.retrofit(), databaseAdapter(),
@@ -66,7 +67,8 @@ public class TrackedEntityAttributeCallMockIntegrationShould extends AbsStoreTes
                 new HashSet<>(Arrays.asList("VqEFza8wbwA", "spFvx9FndA4", "gHGyrwKPzej"));
 
         TrackedEntityAttributeQuery trackedEntityAttributeQuery =
-                new TrackedEntityAttributeQuery(uIds);
+                TrackedEntityAttributeQuery.defaultQuery(uIds, DEFAULT_IS_TRANSLATION_ON,
+                        DEFAULT_TRANSLATION_LOCALE);
 
         trackedEntityAttributeFactory.newEndPointCall(trackedEntityAttributeQuery, new Date())
                 .call();

@@ -70,10 +70,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-
 @RunWith(AndroidJUnit4.class)
 public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase {
     private static final String[] ORGANISATION_UNIT_PROJECTION = {

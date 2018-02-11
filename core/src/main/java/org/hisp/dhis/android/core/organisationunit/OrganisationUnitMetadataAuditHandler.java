@@ -5,7 +5,6 @@ import android.util.Log;
 import org.hisp.dhis.android.core.audit.AuditType;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
 import org.hisp.dhis.android.core.audit.MetadataAuditHandler;
-import org.hisp.dhis.android.core.common.BaseQuery;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.User;
 
@@ -14,9 +13,14 @@ import java.util.List;
 public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandler {
 
     private final OrganisationUnitFactory organisationUnitFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public OrganisationUnitMetadataAuditHandler(OrganisationUnitFactory organisationUnitFactory) {
+    public OrganisationUnitMetadataAuditHandler(OrganisationUnitFactory organisationUnitFactory,
+            boolean isTranslationOn, String translationLocale) {
         this.organisationUnitFactory = organisationUnitFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -47,8 +51,8 @@ public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandle
                 return;
             }
             OrganizationUnitQuery organizationUnitQuery =
-                    OrganizationUnitQuery.defaultQuery(user, BaseQuery.DEFAULT_IS_TRANSLATION_ON,
-                            BaseQuery.DEFAULT_TRANSLATION_LOCALE, metadataAudit.getUid());
+                    OrganizationUnitQuery.defaultQuery(user, isTranslationOn, translationLocale,
+                            metadataAudit.getUid());
             organisationUnitFactory.newEndPointCall(metadataAudit.getCreatedAt(),
                     organizationUnitQuery).call();
         } else {

@@ -7,6 +7,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseQuery;
 
 import java.util.Set;
+import java.util.TreeSet;
 
 
 @AutoValue
@@ -33,17 +34,21 @@ public abstract class CategoryQuery extends BaseQuery {
 
     private static Builder defaultQueryBuilder() {
         return builder()
-                .isPaging(false)
+                .uIds(new TreeSet<String>())
+                .isPaging(DEFAULT_IS_PAGING)
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .page(DEFAULT_PAGE)
                 .isTranslationOn(DEFAULT_IS_TRANSLATION_ON)
                 .translationLocale(DEFAULT_TRANSLATION_LOCALE);
     }
 
-    @NonNull
-    public static CategoryQuery defaultQuery(Set<String> uIds) {
+    public static CategoryQuery defaultQuery(Set<String> uIds, boolean isTranslationOn,
+            @NonNull String translationLocale) {
+
         return defaultQueryBuilder()
                 .uIds(uIds)
+                .isTranslationOn(isTranslationOn)
+                .translationLocale(translationLocale)
                 .build();
     }
 

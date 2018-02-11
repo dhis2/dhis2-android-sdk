@@ -10,9 +10,14 @@ import java.util.Set;
 public class DataElementMetadataAuditHandler implements MetadataAuditHandler {
 
     private final DataElementFactory dataElementFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public DataElementMetadataAuditHandler(DataElementFactory dataElementFactory) {
+    public DataElementMetadataAuditHandler(DataElementFactory dataElementFactory,
+            boolean isTranslationOn, String translationLocale) {
         this.dataElementFactory = dataElementFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -25,7 +30,9 @@ public class DataElementMetadataAuditHandler implements MetadataAuditHandler {
 
             Set<String> uIds = new HashSet<>();
             uIds.add(metadataAudit.getUid());
-            DataElementQuery dataElementQuery = new DataElementQuery(uIds);
+            DataElementQuery dataElementQuery = DataElementQuery.defaultQuery(
+                    uIds, isTranslationOn, translationLocale);
+
             dataElementFactory.newEndPointCall(dataElementQuery,
                     metadataAudit.getCreatedAt()).call();
         } else {

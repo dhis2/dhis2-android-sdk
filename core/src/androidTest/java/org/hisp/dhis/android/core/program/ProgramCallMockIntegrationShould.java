@@ -66,8 +66,8 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {

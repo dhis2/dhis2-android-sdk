@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.dataelement;
 
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
+
 import android.support.test.filters.LargeTest;
 
 import com.google.common.truth.Truth;
@@ -32,7 +35,7 @@ public class DataElementEndPointCallRealIntegrationShould extends AbsStoreTestCa
     @Test
     @LargeTest
     public void download_data_element_according_to_default_query() throws Exception {
-        retrofit2.Response response = null;
+        retrofit2.Response response;
         response = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
@@ -43,9 +46,8 @@ public class DataElementEndPointCallRealIntegrationShould extends AbsStoreTestCa
         Set<String> uidsSet =
                 new HashSet<>(Arrays.asList("FTRrcoaog83", "P+-3jJH5Tu5VC", "FQ2o8UBlcrS"));
 
-        DataElementQuery dataElementQuery = DataElementQuery.Builder.create()
-                .withUIds(uidsSet)
-                .build();
+        DataElementQuery dataElementQuery = DataElementQuery.defaultQuery(uidsSet,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
 
         response = dataElementFactory.newEndPointCall(dataElementQuery,
                 new Date()).call();

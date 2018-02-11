@@ -5,11 +5,15 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseQuery;
 import org.hisp.dhis.android.core.user.User;
 
+import java.util.TreeSet;
+
 @AutoValue
 public abstract class OrganizationUnitQuery extends BaseQuery {
 
     public static final String DEFAULT_UID = "";
+
     public abstract User user();
+
     public abstract String uid();
 
 
@@ -42,7 +46,8 @@ public abstract class OrganizationUnitQuery extends BaseQuery {
                 .isPaging(DEFAULT_IS_PAGING)
                 .isTranslationOn(DEFAULT_IS_TRANSLATION_ON)
                 .translationLocale(DEFAULT_TRANSLATION_LOCALE)
-                .uid(DEFAULT_UID);
+                .uid(DEFAULT_UID)
+                .uIds(new TreeSet<String>());
 
     }
 

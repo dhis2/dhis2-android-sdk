@@ -13,9 +13,14 @@ import java.util.Set;
 public class CategoryOptionMetadataAuditHandler implements MetadataAuditHandler {
 
     private final CategoryFactory categoryFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public CategoryOptionMetadataAuditHandler(CategoryFactory categoryFactory) {
+    public CategoryOptionMetadataAuditHandler(CategoryFactory categoryFactory,
+            boolean isTranslationOn, String translationLocale) {
         this.categoryFactory = categoryFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -46,7 +51,8 @@ public class CategoryOptionMetadataAuditHandler implements MetadataAuditHandler 
                         queryCategoryUidListFromCategoryOptionUid(oldCategoryOption.uid());
                 uIds.add(categoryFactory.getCategoryStore().queryByUid(parentUIds.get(0)).uid());
 
-                categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(uIds),
+                categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(uIds,
+                        isTranslationOn, translationLocale),
                         metadataAudit.getCreatedAt()).call();
             }
         } else {

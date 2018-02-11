@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
+
 import android.support.test.filters.LargeTest;
 
 import com.google.common.truth.Truth;
@@ -50,7 +53,8 @@ public class TrackedEntityAttributeEndPointCallRealIntegrationShould extends Abs
                 new HashSet<>(Arrays.asList("VqEFza8wbwA", "spFvx9FndA4", "gHGyrwKPzej"));
 
         TrackedEntityAttributeQuery trackedEntityAttributeQuery =
-                new TrackedEntityAttributeQuery(uIds);
+                TrackedEntityAttributeQuery.defaultQuery(uIds, DEFAULT_IS_TRANSLATION_ON,
+                        DEFAULT_TRANSLATION_LOCALE);
 
         response = trackedEntityAttributeFactory.newEndPointCall(trackedEntityAttributeQuery,
                 new Date()).call();

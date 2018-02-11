@@ -1,8 +1,5 @@
 package org.hisp.dhis.android.core.common;
 
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
-
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.Category;

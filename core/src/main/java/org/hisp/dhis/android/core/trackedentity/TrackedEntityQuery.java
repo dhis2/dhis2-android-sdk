@@ -33,7 +33,7 @@ public abstract class TrackedEntityQuery extends BaseQuery {
                 .uIds(new TreeSet<String>())
                 .page(DEFAULT_PAGE)
                 .pageSize(DEFAULT_PAGE_SIZE)
-                .isPaging(false)
+                .isPaging(DEFAULT_IS_PAGING)
                 .isTranslationOn(DEFAULT_IS_TRANSLATION_ON)
                 .translationLocale(DEFAULT_TRANSLATION_LOCALE);
     }

@@ -3,7 +3,6 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.audit.AuditType;
 import org.hisp.dhis.android.core.audit.MetadataAudit;
 import org.hisp.dhis.android.core.audit.MetadataAuditHandler;
-import org.hisp.dhis.android.core.common.BaseQuery;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,9 +10,14 @@ import java.util.Set;
 public class TrackedEntityMetadataAuditHandler implements MetadataAuditHandler {
 
     private final TrackedEntityFactory mTrackedEntityFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public TrackedEntityMetadataAuditHandler(TrackedEntityFactory trackedEntityFactory) {
+    public TrackedEntityMetadataAuditHandler(TrackedEntityFactory trackedEntityFactory,
+            boolean isTranslationOn, String translationLocale) {
         this.mTrackedEntityFactory = trackedEntityFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -27,10 +31,10 @@ public class TrackedEntityMetadataAuditHandler implements MetadataAuditHandler {
             Set<String> uIds = new HashSet<>();
             uIds.add(metadataAudit.getUid());
             TrackedEntityQuery trackedEntityQuery = TrackedEntityQuery.defaultQuery(
-                    uIds, BaseQuery.DEFAULT_IS_TRANSLATION_ON,
-                    BaseQuery.DEFAULT_TRANSLATION_LOCALE);
+                    uIds, isTranslationOn, translationLocale);
 
-            mTrackedEntityFactory.newEndPointCall(trackedEntityQuery, metadataAudit.getCreatedAt()).call();
+            mTrackedEntityFactory.newEndPointCall(trackedEntityQuery,
+                    metadataAudit.getCreatedAt()).call();
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {
                 trackedEntity = trackedEntity.toBuilder().deleted(true).build();

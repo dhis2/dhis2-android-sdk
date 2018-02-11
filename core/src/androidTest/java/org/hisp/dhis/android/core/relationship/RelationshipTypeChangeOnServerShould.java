@@ -4,8 +4,8 @@ import static junit.framework.Assert.fail;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_IS_TRANSLATION_ON;
-import static org.hisp.dhis.android.core.data.Constants.DEFAULT_TRANSLATION_LOCALE;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -51,11 +51,11 @@ public class RelationshipTypeChangeOnServerShould extends AbsStoreTestCase {
 
         RelationshipTypeFactory relationshipTypeFactory = new RelationshipTypeFactory(d2.retrofit(),
                 databaseAdapter(),
-                HandlerFactory.createResourceHandler(databaseAdapter()),
-                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+                HandlerFactory.createResourceHandler(databaseAdapter()));
 
         when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
-                new RelationshipTypeMetadataAuditHandler(relationshipTypeFactory));
+                new RelationshipTypeMetadataAuditHandler(relationshipTypeFactory,
+                        DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE));
 
         relationshipTypeStore = new RelationshipTypeStoreImpl(databaseAdapter());
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);

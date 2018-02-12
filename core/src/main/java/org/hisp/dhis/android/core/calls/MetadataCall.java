@@ -166,7 +166,7 @@ public class MetadataCall implements Call<Response> {
             SystemInfo systemInfo = (SystemInfo) response.body();
             Date serverDate = systemInfo.serverDate();
 
-            response = syncDeletedObject(serverDate, User.class.getSimpleName());
+            response = syncDeletedObject(serverDate, User.class);
 
             if (!response.isSuccessful()) {
                 return response;
@@ -186,7 +186,7 @@ public class MetadataCall implements Call<Response> {
             @SuppressWarnings({"PMD.PrematureDeclaration"})
             User user = (User) response.body();
 
-            response = syncDeletedObject(serverDate, OrganisationUnit.class.getSimpleName());
+            response = syncDeletedObject(serverDate, OrganisationUnit.class);
 
             if (!response.isSuccessful()) {
                 return response;
@@ -233,12 +233,12 @@ public class MetadataCall implements Call<Response> {
 
     private Response syncOptionSets(Date serverDate, List<Program> programs) throws Exception {
         Response response = syncDeletedObject(serverDate,
-                Option.class.getSimpleName());
+                Option.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
-        response = syncDeletedObject(serverDate, OptionSet.class.getSimpleName());
+        response = syncDeletedObject(serverDate, OptionSet.class);
 
         if (!response.isSuccessful()) {
             return response;
@@ -252,7 +252,7 @@ public class MetadataCall implements Call<Response> {
     }
 
     private Response syncTrackedEntities(Date serverDate, List<Program> programs) throws Exception {
-        Response response = syncDeletedObject(serverDate, TrackedEntity.class.getSimpleName());
+        Response response = syncDeletedObject(serverDate, TrackedEntity.class);
 
         if (!response.isSuccessful()) {
             return response;
@@ -268,13 +268,13 @@ public class MetadataCall implements Call<Response> {
     private Response syncCategories(Date serverDate)
             throws Exception {
 
-        Response response = syncDeletedObject(serverDate, Category.class.getSimpleName());
+        Response response = syncDeletedObject(serverDate, Category.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
-        response = syncDeletedObject(serverDate, CategoryOption.class.getSimpleName());
+        response = syncDeletedObject(serverDate, CategoryOption.class);
 
         if (!response.isSuccessful()) {
             return response;
@@ -287,14 +287,14 @@ public class MetadataCall implements Call<Response> {
             return response;
         }
 
-        response = syncDeletedObject(serverDate, CategoryCombo.class.getSimpleName());
+        response = syncDeletedObject(serverDate, CategoryCombo.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
 
-        response = syncDeletedObject(serverDate, CategoryOptionCombo.class.getSimpleName());
+        response = syncDeletedObject(serverDate, CategoryOptionCombo.class);
 
         if (!response.isSuccessful()) {
             return response;
@@ -309,74 +309,74 @@ public class MetadataCall implements Call<Response> {
     @SuppressWarnings("PMD.NPathComplexity")
     private Response syncPrograms(Date serverDate, User user)
             throws Exception {
-        Response response = syncDeletedObject(serverDate, ProgramRule.class.getSimpleName());
+        Response response = syncDeletedObject(serverDate, ProgramRule.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
-        response = syncDeletedObject(serverDate, ProgramRuleAction.class.getSimpleName());
+        response = syncDeletedObject(serverDate, ProgramRuleAction.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
-        response = syncDeletedObject(serverDate, ProgramRuleVariable.class.getSimpleName());
+        response = syncDeletedObject(serverDate, ProgramRuleVariable.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
-        response = syncDeletedObject(serverDate, ProgramIndicator.class.getSimpleName());
+        response = syncDeletedObject(serverDate, ProgramIndicator.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
         response = syncDeletedObject(serverDate,
-                DataElement.class.getSimpleName());
+                DataElement.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
-        response = syncDeletedObject(serverDate, ProgramStage.class.getSimpleName());
+        response = syncDeletedObject(serverDate, ProgramStage.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
-        response = syncDeletedObject(serverDate, ProgramStageDataElement.class.getSimpleName());
+        response = syncDeletedObject(serverDate, ProgramStageDataElement.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
-        response = syncDeletedObject(serverDate, ProgramStageSection.class.getSimpleName());
+        response = syncDeletedObject(serverDate, ProgramStageSection.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
-        response = syncDeletedObject(serverDate, ProgramTrackedEntityAttribute.class.getSimpleName());
+        response = syncDeletedObject(serverDate, ProgramTrackedEntityAttribute.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
-        response = syncDeletedObject(serverDate, TrackedEntityAttribute.class.getSimpleName());
+        response = syncDeletedObject(serverDate, TrackedEntityAttribute.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
-        response = syncDeletedObject(serverDate, RelationshipType.class.getSimpleName());
+        response = syncDeletedObject(serverDate, RelationshipType.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
-        response = syncDeletedObject(serverDate, Program.class.getSimpleName());
+        response = syncDeletedObject(serverDate, Program.class);
 
         if (!response.isSuccessful()) {
             return response;
@@ -389,7 +389,8 @@ public class MetadataCall implements Call<Response> {
         return response;
     }
 
-    private Response<Payload<DeletedObject>> syncDeletedObject(Date serverDate, String klass) throws Exception {
+    private Response<Payload<DeletedObject>> syncDeletedObject(Date serverDate, Class<?> klass)
+            throws Exception {
         return deletedObjectFactory.newEndPointCall(klass, serverDate).call();
     }
 

@@ -13,6 +13,7 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.HandlerFactory;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -30,8 +31,8 @@ import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -42,9 +43,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Response;
@@ -52,537 +51,306 @@ import retrofit2.Response;
 public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
-    private DeletedObjectHandlerFactory deletedObjectHandlerFactory;
-    private DeletedObjectHandler deletedObjectHandler;
+    private DeletedObjectFactory deletedObjectFactory;
+
+    private ResourceStore resourceStore;
+    private Date currentDate;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
-        deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(d2.databaseAdapter());
-        deletedObjectHandler = new DeletedObjectHandler(deletedObjectHandlerFactory);
+
+        deletedObjectFactory =
+                new DeletedObjectFactory(d2.retrofit(), databaseAdapter(),
+                        HandlerFactory.createResourceHandler(databaseAdapter()));
+
+        resourceStore = new ResourceStoreImpl(databaseAdapter());
+        currentDate = new Date();
     }
 
     @Test
     @LargeTest
-    public void return_empty_deleted_object_programs_when_is_called_a_second_time() throws Exception {
-        //given
+    public void persist_in_resources_when_program_deleted_object_is_called() throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        Date date = new Date();
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, Program.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
-        assertTrue(hasDeletedObjects(response));
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                Program.class, currentDate).call();
 
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_PROGRAM);
-        assertPersistedDate(date, lastUpdated);
-
-        //when
-        response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, new Date(), Program.class.getSimpleName()).call();
-
-        //then
-        assertTrue(response.isSuccessful());
-        assertTrue(hasEmptyDeleteObjects(response));
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_PROGRAM);
     }
 
     @Test
     @LargeTest
-    public void return_deleted_programs_when_call_deleted_object_endpoint_using_program() throws Exception {
-        //given
+    public void persist_in_resources_when_relationship_type_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, new Date(), Program.class.getSimpleName()).call();
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                RelationshipType.class, currentDate).call();
 
-        //then
-        assertTrue(response.isSuccessful());
-        assertTrue(hasDeletedObjects(response));
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_RELATIONSHIP_TYPE);
     }
 
     @Test
     @LargeTest
-    public void persist_program_last_updated_when_program_deleted_object_is_called() throws Exception {
-        //given
+    public void persist_in_resources_when_tracked_entity_attribute_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        Date date = new Date();
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, Program.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
-        assertTrue(hasDeletedObjects(response));
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                TrackedEntityAttribute.class, currentDate).call();
 
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_PROGRAM);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_TRACKED_ENTITY_ATTRIBUTE);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_relationship_type_last_updated_when_relationship_type_deleted_object_is_called() throws Exception {
-        //given
+    public void persist_in_resources_when_tracked_entity_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        Date date = new Date();
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                TrackedEntity.class, currentDate).call();
 
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, RelationshipType.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
-
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_RELATIONSHIP_TYPE);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_TRACKED_ENTITY);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_tracked_entity_attribute_last_updated_when_tracked_entity_attribute_deleted_object_is_called() throws Exception {
-        //given
+    public void persist_in_resources_when_program_stage_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        Date date = new Date();
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                ProgramStage.class, currentDate).call();
 
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, TrackedEntityAttribute.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
-
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_TRACKED_ENTITY_ATTRIBUTE);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_PROGRAM_STAGE);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_tracked_entity_last_updated_when_tracked_entity_deleted_object_is_called() throws Exception {
-        //given
+    public void persist_in_resources_when_program_stage_data_element_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        Date date = new Date();
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                ProgramStageDataElement.class, currentDate).call();
 
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, TrackedEntity.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
-
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_TRACKED_ENTITY);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_PROGRAM_STAGE_DATA_ELEMENT);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_program_stage_last_updated_when_program_stage_deleted_object_is_called() throws Exception {
-        //given
+    public void persist_in_resources_when_program_stage_section_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        Date date = new Date();
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                ProgramStageSection.class, currentDate).call();
 
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, ProgramStage.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
-
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_PROGRAM_STAGE);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_PROGRAM_STAGE_SECTION);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_program_stage_data_element_last_updated_when_program_stage_data_element_deleted_object_is_called() throws Exception {
-        //given
+    public void persist_in_resources_when_program_rule_deleted_object_is_called() throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        Date date = new Date();
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                ProgramRule.class, currentDate).call();
 
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, ProgramStageDataElement.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
-
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_PROGRAM_STAGE_DATA_ELEMENT);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_PROGRAM_RULE);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_program_stage_section_last_updated_when_program_stage_section_deleted_object_is_called() throws Exception {
-
-        //given
+    public void persist_in_resources_when_program_rule_action_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        Date date = new Date();
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, ProgramStageSection.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                ProgramRuleAction.class, currentDate).call();
 
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_PROGRAM_STAGE_SECTION);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_PROGRAM_RULE_ACTION);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_program_rule_last_updated_when_program_rule_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
+    public void persist_in_resources_when_program_rule_variable_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, ProgramRule.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                ProgramRuleVariable.class, currentDate).call();
 
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_PROGRAM_RULE);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_PROGRAM_RULE_VARIABLE);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_program_rule_action_last_updated_when_program_rule_action_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
+    public void persist_in_resources_when_program_indicator_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, ProgramRuleAction.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                ProgramIndicator.class, currentDate).call();
 
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_PROGRAM_RULE_ACTION);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_PROGRAM_INDICATOR);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_program_rule_variable_last_updated_when_program_rule_variable_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
+    public void persist_in_resources_when_option_deleted_object_is_called() throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, ProgramRuleVariable.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                Option.class, currentDate).call();
 
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_PROGRAM_RULE_VARIABLE);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_OPTION);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_program_indicator_last_updated_when_program_indicator_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
+    public void persist_in_resources_when_data_element_deleted_object_is_called() throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, ProgramIndicator.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                DataElement.class, currentDate).call();
 
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_PROGRAM_INDICATOR);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_DATA_ELEMENT);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_option_last_updated_when_option_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
+    public void
+    persist_in_resources_when_program_tracked_entity_attribute_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, Option.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                ProgramTrackedEntityAttribute.class, currentDate).call();
 
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_OPTION);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response,
+                ResourceModel.Type.DELETED_PROGRAM_TRACKED_ENTITY_ATTRIBUTE);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_data_element_when_data_element_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
+    public void persist_in_resources_when_option_set_deleted_object_is_called() throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, DataElement.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                OptionSet.class, currentDate).call();
 
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_DATA_ELEMENT);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_OPTION_SET);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_program_tracked_entity_attribute_when_program_tracked_entity_attribute_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
+    public void persist_in_resources_when_organisation_units_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, ProgramTrackedEntityAttribute.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                OrganisationUnit.class, currentDate).call();
 
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_PROGRAM_TRACKED_ENTITY_ATTRIBUTE);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_ORGANISATION_UNIT);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_option_set_when_option_set_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
+    public void persist_in_resources_when_user_deleted_object_is_called() throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, OptionSet.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                User.class, currentDate).call();
 
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_OPTION_SET);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_USER);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_organisation_units_when_organisation_units_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
+    public void persist_in_resources_when_category_combo_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, OrganisationUnit.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                CategoryCombo.class, currentDate).call();
 
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_ORGANISATION_UNIT);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_CATEGORY_COMBO);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_user_when_user_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
+    public void persist_in_resources_when_category_option_combo_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, User.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                CategoryOptionCombo.class, currentDate).call();
 
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_USER);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_CATEGORY_OPTION_COMBO);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_category_combo_when_category_combo_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
+    public void persist_in_resources_when_category_option_deleted_object_is_called()
+            throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, CategoryCombo.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                CategoryOption.class, currentDate).call();
 
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_CATEGORY_COMBO);
-        assertPersistedDate(date, lastUpdated);
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_CATEGORY_OPTION);
     }
 
     @Test
     @LargeTest
-    public void persist_deleted_category_option_combo_when_category_option_combo_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
+    public void persist_in_resources_when_category_deleted_object_is_called() throws Exception {
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, CategoryOptionCombo.class.getSimpleName()).call();
+        Response<Payload<DeletedObject>> response = deletedObjectFactory.newEndPointCall(
+                Category.class, currentDate).call();
+
+        verifyResponseAndResources(response, ResourceModel.Type.DELETED_CATEGORY);
+    }
+
+    private void verifyResponseAndResources(Response response, ResourceModel.Type type)
+            throws ParseException {
+
         assertTrue(response.isSuccessful());
-
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_CATEGORY_OPTION_COMBO);
-        assertPersistedDate(date, lastUpdated);
-    }
-
-    @Test
-    @LargeTest
-    public void persist_deleted_category_option_when_category_option_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
-        Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-        Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
-
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, CategoryOption.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
-
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_CATEGORY_OPTION);
-        assertPersistedDate(date, lastUpdated);
-    }
-
-    @Test
-    @LargeTest
-    public void persist_deleted_category_when_category_deleted_object_is_called() throws Exception {
-        //given
-        Date date = new Date();
-        Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        DeletedObjectService  deletedObjectService = d2.retrofit().create(DeletedObjectService.class);
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(d2.databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-        Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
-
-        //when
-        Response<Payload<DeletedObject>> response = new DeletedObjectEndPointCall(
-                deletedObjectService, resourceHandler,
-                deletedObjectHandler, date, Category.class.getSimpleName()).call();
-        assertTrue(response.isSuccessful());
-
-        //then
-        String lastUpdated = resourceStore.getLastUpdated(ResourceModel.Type.DELETED_CATEGORY);
-        assertPersistedDate(date, lastUpdated);
-    }
-
-    private boolean hasDeletedObjects(Response<Payload<DeletedObject>> response) {
-        return !response.body().items().isEmpty();
-    }
-
-    private boolean hasEmptyDeleteObjects(Response<Payload<DeletedObject>> response) {
-        return response.body().items().isEmpty();
+        String lastUpdated = resourceStore.getLastUpdated(type);
+        assertPersistedDate(currentDate, lastUpdated);
     }
 
     private void assertPersistedDate(Date date, String lastUpdated) throws ParseException {
         SimpleDateFormat
                 simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
         Date lastUpdatedDate = simpleDateFormat.parse(lastUpdated);
+
         assertTrue(date.compareTo(lastUpdatedDate)==0);
     }
 }

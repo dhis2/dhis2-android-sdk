@@ -20,9 +20,9 @@ public class DeletedObjectFactory {
         this.resourceHandler = resourceHandler;
     }
 
-    public DeletedObjectEndPointCall newEndPointCall(String deletedObjectKlass, Date serverDate)
+    public DeletedObjectEndPointCall newEndPointCall(Class<?> deletedObjectKlass, Date serverDate)
             throws Exception {
         return new DeletedObjectEndPointCall(deletedObjectService, resourceHandler,
-                deletedObjectHandler, serverDate, deletedObjectKlass);
+                deletedObjectHandler, serverDate, deletedObjectKlass.getSimpleName());
     }
 }

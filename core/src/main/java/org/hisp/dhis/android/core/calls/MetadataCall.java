@@ -29,43 +29,27 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboFactory;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryFactory;
-import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.deletedobject.DeletedObject;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectFactory;
-import org.hisp.dhis.android.core.option.Option;
-import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramFactory;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.hisp.dhis.android.core.program.ProgramRule;
-import org.hisp.dhis.android.core.program.ProgramRuleAction;
-import org.hisp.dhis.android.core.program.ProgramRuleVariable;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
-import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
@@ -166,12 +150,6 @@ public class MetadataCall implements Call<Response> {
             SystemInfo systemInfo = (SystemInfo) response.body();
             Date serverDate = systemInfo.serverDate();
 
-            response = syncDeletedObject(serverDate, User.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-
             response = new UserCall(
                     userService,
                     databaseAdapter,
@@ -185,12 +163,6 @@ public class MetadataCall implements Call<Response> {
 
             @SuppressWarnings({"PMD.PrematureDeclaration"})
             User user = (User) response.body();
-
-            response = syncDeletedObject(serverDate, OrganisationUnit.class.getSimpleName());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
 
             response = getOrganisationUnits(serverDate, user);
 
@@ -224,6 +196,15 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
+            DeletedObjectCall deletedObjectCall = new DeletedObjectCall(databaseAdapter,
+                    systemInfoService, systemInfoStore, resourceStore, deletedObjectFactory);
+
+            response = deletedObjectCall.call();
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
             transaction.setSuccessful();
             return response;
         } finally {
@@ -232,35 +213,20 @@ public class MetadataCall implements Call<Response> {
     }
 
     private Response syncOptionSets(Date serverDate, List<Program> programs) throws Exception {
-        Response response = syncDeletedObject(serverDate,
-                Option.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-        response = syncDeletedObject(serverDate, OptionSet.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
 
         Set<String> optionSetUids = getAssignedOptionSetUids(programs);
-        response = optionSetFactory.newEndPointCall(optionSetUids,
+        Response response = optionSetFactory.newEndPointCall(optionSetUids,
                 serverDate).call();
 
         return response;
     }
 
     private Response syncTrackedEntities(Date serverDate, List<Program> programs) throws Exception {
-        Response response = syncDeletedObject(serverDate, TrackedEntity.class.getSimpleName());
 
-        if (!response.isSuccessful()) {
-            return response;
-        }
 
         Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
 
-        response = trackedEntityFactory.newEndPointCall(trackedEntityUids, serverDate).call();
+        Response response = trackedEntityFactory.newEndPointCall(trackedEntityUids, serverDate).call();
 
 
         return response;
@@ -268,33 +234,8 @@ public class MetadataCall implements Call<Response> {
     private Response syncCategories(Date serverDate)
             throws Exception {
 
-        Response response = syncDeletedObject(serverDate, Category.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = syncDeletedObject(serverDate, CategoryOption.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(),
+        Response response = categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(),
                 serverDate).call();
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = syncDeletedObject(serverDate, CategoryCombo.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-
-        response = syncDeletedObject(serverDate, CategoryOptionCombo.class.getSimpleName());
 
         if (!response.isSuccessful()) {
             return response;
@@ -309,88 +250,13 @@ public class MetadataCall implements Call<Response> {
     @SuppressWarnings("PMD.NPathComplexity")
     private Response syncPrograms(Date serverDate, User user)
             throws Exception {
-        Response response = syncDeletedObject(serverDate, ProgramRule.class.getSimpleName());
 
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = syncDeletedObject(serverDate, ProgramRuleAction.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = syncDeletedObject(serverDate, ProgramRuleVariable.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = syncDeletedObject(serverDate, ProgramIndicator.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = syncDeletedObject(serverDate,
-                DataElement.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = syncDeletedObject(serverDate, ProgramStage.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = syncDeletedObject(serverDate, ProgramStageDataElement.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = syncDeletedObject(serverDate, ProgramStageSection.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = syncDeletedObject(serverDate, ProgramTrackedEntityAttribute.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = syncDeletedObject(serverDate, TrackedEntityAttribute.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = syncDeletedObject(serverDate, RelationshipType.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
-
-        response = syncDeletedObject(serverDate, Program.class.getSimpleName());
-
-        if (!response.isSuccessful()) {
-            return response;
-        }
 
         Set<String> programUids = getAssignedProgramUids(user);
 
-        response = programFactory.newEndPointCall(programUids,
+        Response response = programFactory.newEndPointCall(programUids,
                 serverDate).call();
         return response;
-    }
-
-    private Response<Payload<DeletedObject>> syncDeletedObject(Date serverDate, String klass) throws Exception {
-        return deletedObjectFactory.newEndPointCall(klass, serverDate).call();
     }
 
     public Response getOrganisationUnits(Date serverDate, User user) throws Exception {

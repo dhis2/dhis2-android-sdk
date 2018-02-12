@@ -36,7 +36,6 @@ public class MockedCalls {
             "deletedobject/deleted_object_option_sets.json";
     public static final String DELETED_OBJECT_OPTIONS =
             "deletedobject/deleted_object_options.json";
-
     public static final String DELETED_OBJECT_PROGRAMS =
             "deletedobject/deleted_object_programs.json";
     public static final String DELETED_OBJECT_TRACKED_ENTITY =
@@ -53,7 +52,6 @@ public class MockedCalls {
             "deletedobject/deleted_object_tracked_entity_attributes.json";
     public static final String DELETED_OBJECT_RELATIONSHIP_TYPES =
             "deletedobject/deleted_object_relationship_types.json";
-
     public static final String DELETED_OBJECT_DATA_ELEMENTS =
             "deletedobject/deleted_object_data_elements.json";
     public static final String DELETED_OBJECT_PROGRAM_INDICATORS =
@@ -65,7 +63,6 @@ public class MockedCalls {
     public static final String DELETED_OBJECT_PROGRAM_RULE_VARIABLES =
             "deletedobject/deleted_object_program_rule_variables.json";
 
-
     public static final String SYSTEM_INFO = "system_info.json";
     public static final String USER = "user.json";
     public static final String ADMIN_USER = "admin/user.json";
@@ -74,7 +71,6 @@ public class MockedCalls {
     public static final String ORGANISATION_UNITS = "organisationUnits.json";
     public static final String ADMIN_ORGANISATION_UNITS = "admin/organisation_units.json";
     public static final String SIMPLE_CATEGORIES = "deletedobject/simple_categories.json";
-
     public static final String CATEGORIES = "categories.json";
     public static final String CATEGORY_COMBOS = "category_combos.json";
     public static final String PROGRAMS = "programs.json";
@@ -96,32 +92,28 @@ public class MockedCalls {
             "deletedobject/expected_normal_user.json";
 
     final static String[] commonMetadataJsonFiles = new String[]{
-            SYSTEM_INFO,
-            DELETED_OBJECT_EMPTY, USER, DELETED_OBJECT_EMPTY, ORGANISATION_UNITS,
-            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, CATEGORIES, DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, CATEGORY_COMBOS, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            SYSTEM_INFO, USER, ORGANISATION_UNITS,
+            CATEGORIES, CATEGORY_COMBOS, PROGRAMS,
+            TRACKED_ENTITIES, OPTION_SETS, SYSTEM_INFO,
             DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, PROGRAMS,
-            DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, OPTION_SETS};
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY};
 
     final static String[] adminCommonMetadataJsonFiles = new String[]{
-            SYSTEM_INFO,
-            DELETED_OBJECT_EMPTY, ADMIN_USER,
-            DELETED_OBJECT_EMPTY, ADMIN_ORGANISATION_UNITS, DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, CATEGORIES, DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, CATEGORY_COMBOS, DELETED_OBJECT_EMPTY,
+            SYSTEM_INFO, ADMIN_USER,
+            ADMIN_ORGANISATION_UNITS, CATEGORIES, CATEGORY_COMBOS,
+            PROGRAMS, TRACKED_ENTITIES, OPTION_SETS, SYSTEM_INFO,
             DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, PROGRAMS,
-            DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, OPTION_SETS};
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
+            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY};
 
     public static void givenAMetadataInDatabase(Dhis2MockServer dhis2MockServer)
             throws Exception {

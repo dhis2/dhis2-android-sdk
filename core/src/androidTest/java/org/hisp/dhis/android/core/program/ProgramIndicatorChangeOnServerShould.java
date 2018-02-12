@@ -17,8 +17,8 @@ import org.hisp.dhis.android.core.audit.MetadataSyncedListener;
 import org.hisp.dhis.android.core.audit.SyncedMetadata;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.HandlerFactory;
-import org.hisp.dhis.android.core.common.MockedCalls;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.responses.BasicMetadataMockResponseList;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
@@ -173,7 +173,7 @@ public class ProgramIndicatorChangeOnServerShould extends AbsStoreTestCase {
     }
 
     private void givenAMetadataInDatabase() throws Exception {
-        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
+        dhis2MockServer.enqueueMockResponses(new BasicMetadataMockResponseList());
         d2.syncMetaData().call();
     }
 

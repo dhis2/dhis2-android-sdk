@@ -5,39 +5,38 @@ import static junit.framework.Assert.assertTrue;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORY_OPTION_COMBO;
-import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_DATA_ELEMENTS;
-import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_OPTIONS;
-import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_OPTION_SETS;
-import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_INDICATORS;
-import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_RULES;
-import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_RULE_ACTIONS;
-import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_RULE_VARIABLES;
-import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_STAGE_SECTIONS;
-import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_STAGES;
-import static org.hisp.dhis.android.core.common.MockedCalls
-        .DELETED_OBJECT_PROGRAM_STAGE_DATA_ELEMENTS;
-import static org.hisp.dhis.android.core.common.MockedCalls
-        .DELETED_OBJECT_PROGRAM_TRACKED_ENTITY_ATTRIBUTES;
-import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_RELATIONSHIP_TYPES;
-import static org.hisp.dhis.android.core.common.MockedCalls
-        .DELETED_OBJECT_TRACKED_ENTITY_ATTRIBUTES;
-import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_OPTION_SETS;
-import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_PROGRAMS;
-import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_TRACKED_ENTITIES;
+import static org.hisp.dhis.android.core.common.MockedCalls.ALTERNATIVE_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.CATEGORY_COMBOS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORY_COMBO;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORY_OPTIONS;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_CATEGORY_OPTION_COMBO;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_DATA_ELEMENTS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_EMPTY;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_OPTIONS;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_ORGANISATION_UNITS;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAMS;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_INDICATORS;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_RULES;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_RULE_ACTIONS;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_RULE_VARIABLES;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_STAGES;
+import static org.hisp.dhis.android.core.common.MockedCalls
+        .DELETED_OBJECT_PROGRAM_STAGE_DATA_ELEMENTS;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_PROGRAM_STAGE_SECTIONS;
+import static org.hisp.dhis.android.core.common.MockedCalls
+        .DELETED_OBJECT_PROGRAM_TRACKED_ENTITY_ATTRIBUTES;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_RELATIONSHIP_TYPES;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_TRACKED_ENTITY;
+import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_TRACKED_ENTITY_ATTRIBUTES;
 import static org.hisp.dhis.android.core.common.MockedCalls.DELETED_OBJECT_USER;
-import static org.hisp.dhis.android.core.common.MockedCalls.ALTERNATIVE_USER;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_CATEGORIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_CATEGORY_COMBOS;
+import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_OPTION_SETS;
 import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_ORGANISATION_UNITS;
+import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_PROGRAMS;
+import static org.hisp.dhis.android.core.common.MockedCalls.EMPTY_TRACKED_ENTITIES;
 import static org.hisp.dhis.android.core.common.MockedCalls.MULTIPLE_ORGANISATION_UNITS;
 import static org.hisp.dhis.android.core.common.MockedCalls.MULTIPLE_PROGRAMS;
 import static org.hisp.dhis.android.core.common.MockedCalls.OPTION_SETS;
@@ -55,7 +54,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.IdentifiableStore;
-import org.hisp.dhis.android.core.common.MockedCalls;
+import org.hisp.dhis.android.core.common.responses.BasicMetadataMockResponseList;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
@@ -226,7 +225,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     @MediumTest
     public void delete_the_given_deleted_user() throws Exception {
         UserStoreImpl userStore = new UserStoreImpl(databaseAdapter());
-        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
+        dhis2MockServer.enqueueMockResponses(new BasicMetadataMockResponseList());
         d2.syncMetaData().call();
         verifyIfIsPersisted("DXyJmlo9rge", userStore);
 
@@ -301,7 +300,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         CategoryStoreImpl categoryStore = new CategoryStoreImpl(databaseAdapter());
         CategoryOptionStoreImpl categoryOptionStore = new CategoryOptionStoreImpl(
                 databaseAdapter());
-        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
+        dhis2MockServer.enqueueMockResponses(new BasicMetadataMockResponseList());
         d2.syncMetaData().call();
         verifyIfIsPersisted("TXGfLxZlInA", categoryOptionStore);
         verifyIfIsPersisted("uZUnebiT5DI", categoryOptionStore);
@@ -601,7 +600,7 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     public void delete_the_given_deleted_tracked_entity() throws Exception {
         //given
         TrackedEntityStoreImpl trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter());
-        MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
+        dhis2MockServer.enqueueMockResponses(new BasicMetadataMockResponseList());
         d2.syncMetaData().call();
         verifyIfIsPersisted("nEenWmSyUE2", trackedEntityStore);
         verifyIfIsPersisted("nEenWmSyUE3", trackedEntityStore);

@@ -95,19 +95,6 @@ public class MockedCalls {
     public static final String NORMAL_USER =
             "deletedobject/expected_normal_user.json";
 
-    final static String[] commonMetadataJsonFiles = new String[]{
-            SYSTEM_INFO,
-            DELETED_OBJECT_EMPTY, USER, DELETED_OBJECT_EMPTY, ORGANISATION_UNITS,
-            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, CATEGORIES, DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, CATEGORY_COMBOS, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY, DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, PROGRAMS,
-            DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
-            DELETED_OBJECT_EMPTY,
-            DELETED_OBJECT_EMPTY, OPTION_SETS};
-
     final static String[] adminCommonMetadataJsonFiles = new String[]{
             SYSTEM_INFO,
             DELETED_OBJECT_EMPTY, ADMIN_USER,
@@ -122,11 +109,6 @@ public class MockedCalls {
             DELETED_OBJECT_EMPTY, TRACKED_ENTITIES,
             DELETED_OBJECT_EMPTY,
             DELETED_OBJECT_EMPTY, OPTION_SETS};
-
-    public static void givenAMetadataInDatabase(Dhis2MockServer dhis2MockServer)
-            throws Exception {
-        dhis2MockServer.enqueueMockedResponsesFromArrayFiles(commonMetadataJsonFiles);
-    }
 
     public static void givenAMetadataWithDescendantsInDatabase(Dhis2MockServer dhis2MockServer)
             throws IOException {

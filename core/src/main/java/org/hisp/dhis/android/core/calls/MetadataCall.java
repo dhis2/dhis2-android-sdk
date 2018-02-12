@@ -232,8 +232,7 @@ public class MetadataCall implements Call<Response> {
     }
 
     private Response syncOptionSets(Date serverDate, List<Program> programs) throws Exception {
-        Response response = syncDeletedObject(serverDate,
-                Option.class);
+        Response response = syncDeletedObject(serverDate, Option.class);
 
         if (!response.isSuccessful()) {
             return response;
@@ -333,8 +332,7 @@ public class MetadataCall implements Call<Response> {
             return response;
         }
 
-        response = syncDeletedObject(serverDate,
-                DataElement.class);
+        response = syncDeletedObject(serverDate, DataElement.class);
 
         if (!response.isSuccessful()) {
             return response;

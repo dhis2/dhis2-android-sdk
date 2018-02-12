@@ -87,6 +87,12 @@ public class Dhis2MockServer {
         server.enqueue(response);
     }
 
+    public void enqueueMockResponses(MockResponseList mockResponseList) {
+        for (MockResponse mockResponse : mockResponseList.toList()) {
+            server.enqueue(mockResponse);
+        }
+    }
+
     public void enqueueMockResponse(String fileName, int code) throws IOException {
         MockResponse response = createMockResponse(fileName, code);
         server.enqueue(response);

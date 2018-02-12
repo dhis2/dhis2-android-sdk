@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.deletedobject;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.SoftDeletableStore;
+import org.hisp.dhis.android.core.common.IdentifiableStore;
 public class DeletedObjectHandler {
     @NonNull
     public final DeletedObjectHandlerFactory deletedObjectHandlerFactory;
@@ -13,11 +13,11 @@ public class DeletedObjectHandler {
     }
 
     public void handle(String uid, String klass) {
-        SoftDeletableStore softDeletableStore = getStore(klass);
-        softDeletableStore.delete(uid);
+        IdentifiableStore identifiableStore = getStore(klass);
+        identifiableStore.delete(uid);
     }
 
-    public SoftDeletableStore getStore(String klass) {
+    public IdentifiableStore getStore(String klass) {
         return deletedObjectHandlerFactory.getByKlass(klass);
     }
 }

@@ -54,7 +54,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.SoftDeletableStore;
+import org.hisp.dhis.android.core.common.IdentifiableStore;
 import org.hisp.dhis.android.core.common.MockedCalls;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
@@ -633,12 +633,12 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsDeleted("zINGRka3g9N", programRuleVariableStore);
     }
 
-    private void verifyIfIsPersisted(String uid, SoftDeletableStore store) {
+    private void verifyIfIsPersisted(String uid, IdentifiableStore store) {
         Boolean isPersisted = store.exists(uid);
         assertThat(isPersisted, is(true));
     }
 
-    private void verifyIfIsDeleted(String uid, SoftDeletableStore store) {
+    private void verifyIfIsDeleted(String uid, IdentifiableStore store) {
         Boolean isPersisted = store.exists(uid);
         assertThat(isPersisted, is(false));
     }

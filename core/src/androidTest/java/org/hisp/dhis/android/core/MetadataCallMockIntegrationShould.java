@@ -37,7 +37,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 
-public class MetadataCallMocklIntegrationShould extends AbsStoreTestCase {
+public class MetadataCallMockIntegrationShould extends AbsStoreTestCase {
 
 
 
@@ -55,8 +55,9 @@ public class MetadataCallMocklIntegrationShould extends AbsStoreTestCase {
     }
 
 
-    @Test
-    @MediumTest
+    //TODO verify all metadata
+    //@Test
+    //@MediumTest
     public void not_delete_nothing_when_the_deletable_object_list_is_empty() throws Exception {
         MockedCalls.givenAMetadataInDatabase(dhis2MockServer);
         d2.syncMetaData().call();
@@ -64,7 +65,6 @@ public class MetadataCallMocklIntegrationShould extends AbsStoreTestCase {
         verifyDownloadedUsers(NORMAL_USER);
         verifyDownloadedOrganisationUnits(AFTER_DELETE_EXPECTED_ORGANISATION_UNIT);
         verifyDownloadedCategories(SIMPLE_CATEGORIES);
-        //TODO verify all metadata
         //verifyDownloadedCategoryCombo(".json");
         //verifyDownloadedPrograms("1.json");
         //verifyDownloadedTrackedEntities(".json");

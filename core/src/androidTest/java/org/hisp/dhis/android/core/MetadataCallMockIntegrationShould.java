@@ -2,15 +2,14 @@ package org.hisp.dhis.android.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hisp.dhis.android.core.common.MockedCalls.AFTER_DELETE_EXPECTED_ORGANISATION_UNIT;
-import static org.hisp.dhis.android.core.common.MockedCalls.NORMAL_USER;
-import static org.hisp.dhis.android.core.common.MockedCalls.SIMPLE_CATEGORIES;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.DownloadedItemsGetter;
-import org.hisp.dhis.android.core.common.MockedCalls;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.responses.BasicMetadataMockResponseList;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -29,7 +28,11 @@ import java.util.List;
 
 public class MetadataCallMockIntegrationShould extends AbsStoreTestCase {
 
-
+    public static final String SIMPLE_CATEGORIES = "deletedobject/simple_categories.json";
+    public static final String AFTER_DELETE_EXPECTED_ORGANISATION_UNIT =
+            "deletedobject/expected_not_deleted_organisationUnit.json";
+    public static final String NORMAL_USER =
+            "deletedobject/expected_normal_user.json";
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
@@ -63,7 +66,7 @@ public class MetadataCallMockIntegrationShould extends AbsStoreTestCase {
 
 
     private void verifyDownloadedUsers(String file) throws IOException {
-        Payload<User> expectedUserResponse = MockedCalls.parseUserResponse(file);
+        Payload<User> expectedUserResponse = parseUserResponse(file);
 
         List<User> downloadedUsers = DownloadedItemsGetter.getDownloadedUsers(databaseAdapter());
 
@@ -74,7 +77,7 @@ public class MetadataCallMockIntegrationShould extends AbsStoreTestCase {
 
     private void verifyDownloadedOrganisationUnits(String file) throws IOException {
         Payload<OrganisationUnit> expectedOrganisationUnitsResponse =
-                MockedCalls.parseOrganisationUnitResponse(file);
+                parseOrganisationUnitResponse(file);
 
         List<OrganisationUnit> downloadedOrganisationUnits =
                 DownloadedItemsGetter.getDownloadedOrganisationUnits(d2.databaseAdapter());
@@ -86,7 +89,7 @@ public class MetadataCallMockIntegrationShould extends AbsStoreTestCase {
 
 
     private void verifyDownloadedCategories(String file) throws IOException {
-        Payload<Category> expectedCategoriesResponse = MockedCalls.parseCategoryResponse(file);
+        Payload<Category> expectedCategoriesResponse = parseCategoryResponse(file);
 
         List<Category> downloadedCategories = DownloadedItemsGetter.getDownloadedCategories(
                 databaseAdapter());
@@ -97,7 +100,7 @@ public class MetadataCallMockIntegrationShould extends AbsStoreTestCase {
 
     private void verifyDownloadedCategoryCombo(String file) throws IOException {
         Payload<CategoryCombo> expectedCategoryCombosResponse =
-                MockedCalls.parseCategoryComboResponse(file);
+                parseCategoryComboResponse(file);
 
         List<CategoryCombo> downloadedCategoryCombos =
                 DownloadedItemsGetter.getDownloadedCategoryCombos(databaseAdapter());
@@ -109,7 +112,7 @@ public class MetadataCallMockIntegrationShould extends AbsStoreTestCase {
 
 
     private void verifyDownloadedPrograms(String file) throws IOException {
-        Payload<Program> expectedProgramsResponse = MockedCalls.parseProgramResponse(file);
+        Payload<Program> expectedProgramsResponse = parseProgramResponse(file);
 
         List<Program> downloadedPrograms = DownloadedItemsGetter.getDownloadedPrograms(
                 databaseAdapter());
@@ -121,7 +124,7 @@ public class MetadataCallMockIntegrationShould extends AbsStoreTestCase {
 
     private void verifyDownloadedTrackedEntities(String file) throws IOException {
         Payload<TrackedEntity> expectedTrackedEntitiesResponse =
-                MockedCalls.parseTrackedEntityResponse(file);
+                parseTrackedEntityResponse(file);
 
         List<TrackedEntity> downloadedTrackedEntities =
                 DownloadedItemsGetter.getDownloadedTrackedEntities(databaseAdapter());
@@ -133,7 +136,7 @@ public class MetadataCallMockIntegrationShould extends AbsStoreTestCase {
 
 
     private void verifyDownloadedOptionSets(String file) throws IOException {
-        Payload<OptionSet> expectedOptionSetsResponse = MockedCalls.parseOptionSetResponse(file);
+        Payload<OptionSet> expectedOptionSetsResponse = parseOptionSetResponse(file);
 
         List<OptionSet> downloadedOptionSets = DownloadedItemsGetter.getDownloadedOptionSets(
                 databaseAdapter());
@@ -143,11 +146,103 @@ public class MetadataCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void verifyDownloadedEvents(String file) throws IOException {
-        Payload<Event> expectedEventsResponse = MockedCalls.parseEventResponse(file);
+        Payload<Event> expectedEventsResponse = parseEventResponse(file);
 
         List<Event> downloadedEvents = DownloadedItemsGetter.getDownloadedEvents(databaseAdapter());
 
         assertThat(downloadedEvents.size(), is(expectedEventsResponse.items().size()));
         assertThat(downloadedEvents, is(expectedEventsResponse.items()));
+    }
+
+
+    public static Payload<User> parseUserResponse(String file) throws IOException {
+        String expectedResponseJson = new AssetsFileReader().getStringFromFile(file);
+
+        ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
+                BaseIdentifiableObject.DATE_FORMAT.raw());
+
+        return objectMapper.readValue(expectedResponseJson,
+                new TypeReference<Payload<User>>() {
+                });
+    }
+
+    public static Payload<OrganisationUnit> parseOrganisationUnitResponse(String file)
+            throws IOException {
+        String expectedResponseJson = new AssetsFileReader().getStringFromFile(file);
+
+        ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
+                BaseIdentifiableObject.DATE_FORMAT.raw());
+
+        return objectMapper.readValue(expectedResponseJson,
+                new TypeReference<Payload<OrganisationUnit>>() {
+                });
+    }
+
+    public static Payload<Category> parseCategoryResponse(String file) throws IOException {
+        String expectedResponseJson = new AssetsFileReader().getStringFromFile(file);
+
+        ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
+                BaseIdentifiableObject.DATE_FORMAT.raw());
+
+        return objectMapper.readValue(expectedResponseJson,
+                new TypeReference<Payload<Category>>() {
+                });
+    }
+
+    public static Payload<CategoryCombo> parseCategoryComboResponse(String file)
+            throws IOException {
+        String expectedResponseJson = new AssetsFileReader().getStringFromFile(file);
+
+        ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
+                BaseIdentifiableObject.DATE_FORMAT.raw());
+
+        return objectMapper.readValue(expectedResponseJson,
+                new TypeReference<Payload<CategoryCombo>>() {
+                });
+    }
+
+    public static Payload<Program> parseProgramResponse(String file) throws IOException {
+        String expectedResponseJson = new AssetsFileReader().getStringFromFile(file);
+
+        ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
+                BaseIdentifiableObject.DATE_FORMAT.raw());
+
+        return objectMapper.readValue(expectedResponseJson,
+                new TypeReference<Payload<Program>>() {
+                });
+    }
+
+    public static Payload<TrackedEntity> parseTrackedEntityResponse(String file)
+            throws IOException {
+        String expectedResponseJson = new AssetsFileReader().getStringFromFile(file);
+
+        ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
+                BaseIdentifiableObject.DATE_FORMAT.raw());
+
+        return objectMapper.readValue(expectedResponseJson,
+                new TypeReference<Payload<TrackedEntity>>() {
+                });
+    }
+
+    public static Payload<OptionSet> parseOptionSetResponse(String file) throws IOException {
+        String expectedResponseJson = new AssetsFileReader().getStringFromFile(file);
+
+        ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
+                BaseIdentifiableObject.DATE_FORMAT.raw());
+
+        return objectMapper.readValue(expectedResponseJson,
+                new TypeReference<Payload<OptionSet>>() {
+                });
+    }
+
+    public static Payload<Event> parseEventResponse(String file) throws IOException {
+        String expectedResponseJson = new AssetsFileReader().getStringFromFile(file);
+
+        ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
+                BaseIdentifiableObject.DATE_FORMAT.raw());
+
+        return objectMapper.readValue(expectedResponseJson,
+                new TypeReference<Payload<Event>>() {
+                });
     }
 }

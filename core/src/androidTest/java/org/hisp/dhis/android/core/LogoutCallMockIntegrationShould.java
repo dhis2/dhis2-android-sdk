@@ -13,8 +13,8 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
-import org.hisp.dhis.android.core.common.MockedCalls;
 import org.hisp.dhis.android.core.common.responses.BasicMetadataMockResponseList;
+import org.hisp.dhis.android.core.common.responses.MetadataWithDescendantsMockResponseList;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
@@ -199,7 +199,7 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenAMetadataWithDescendantsInDatabase() throws Exception {
-        MockedCalls.givenAMetadataWithDescendantsInDatabase(dhis2MockServer);
+        dhis2MockServer.enqueueMockResponses(new MetadataWithDescendantsMockResponseList());
 
         Response response = d2.syncMetaData().call();
 

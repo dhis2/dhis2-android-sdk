@@ -12,19 +12,30 @@ public abstract class MetadataMockResponseList extends MockResponseList {
 
         addFileResponse(getSystemInfoMockResponse());
 
-        addFileResponse(getDeletedObjectUserMockResponse());
         addFileResponse(getUserMockResponse());
 
-        addFileResponse(getDeletedObjectOrganisationUnitMockResponse());
         addFileResponse(getOrganisationUnitMockResponse());
+
+        addFileResponse(getCategoriesMockResponse());
+
+        addFileResponse(getCategoryCombosMockResponse());
+
+        addFileResponse(getProgramsMockResponse());
+
+        addFileResponse(getTrackedEntityMockResponse());
+
+        addFileResponse(getOptionSetMockResponse());
+
+        addFileResponse(getSystemInfoMockResponse());
+
+        addFileResponse(getDeletedObjectUserMockResponse());
+
+        addFileResponse(getDeletedObjectOrganisationUnitMockResponse());
 
         addFileResponse(getDeletedObjectCategoryMockResponse());
         addFileResponse(getDeletedObjectCategoryOptionMockResponse());
-        addFileResponse(getCategoriesMockResponse());
-
         addFileResponse(getDeletedObjectCategoryComboMockResponse());
         addFileResponse(getDeletedObjectCategoryOptionComboMockResponse());
-        addFileResponse(getCategoryCombosMockResponse());
 
         addFileResponse(getDeletedObjectProgramRuleMockResponse());
         addFileResponse(getDeletedObjectProgramRuleActionMockResponse());
@@ -38,14 +49,11 @@ public abstract class MetadataMockResponseList extends MockResponseList {
         addFileResponse(getDeletedObjectTrackedEntityAttributeMockResponse());
         addFileResponse(getDeletedObjectRelationshipTypeMockResponse());
         addFileResponse(getDeletedObjectProgramMockResponse());
-        addFileResponse(getProgramsMockResponse());
 
         addFileResponse(getDeletedObjectTrackedEntityMockResponse());
-        addFileResponse(getTrackedEntityMockResponse());
 
         addFileResponse(getDeletedObjectOptionSetMockResponse());
         addFileResponse(getDeletedObjectOptionMockResponse());
-        addFileResponse(getOptionSetMockResponse());
 
     }
 

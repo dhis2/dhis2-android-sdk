@@ -95,14 +95,14 @@ public class DeletedObjectCall implements Call<Response> {
             Date serverDate = systemInfo.serverDate();
 
             response = syncDeletedObject(serverDate,
-                    User.class.getSimpleName());
+                    User.class);
 
             if (!response.isSuccessful()) {
                 return response;
             }
 
             response = syncDeletedObject(serverDate,
-                    OrganisationUnit.class.getSimpleName());
+                    OrganisationUnit.class);
 
             if (!response.isSuccessful()) {
                 return response;
@@ -121,41 +121,41 @@ public class DeletedObjectCall implements Call<Response> {
             }
 
             response = syncDeletedObject(serverDate,
-                    TrackedEntityAttribute.class.getSimpleName());
+                    TrackedEntityAttribute.class);
 
             if (!response.isSuccessful()) {
                 return response;
             }
 
             response = syncDeletedObject(serverDate,
-                    RelationshipType.class.getSimpleName());
+                    RelationshipType.class);
 
             if (!response.isSuccessful()) {
                 return response;
             }
 
             response = syncDeletedObject(serverDate,
-                    Program.class.getSimpleName());
+                    Program.class);
 
             if (!response.isSuccessful()) {
                 return response;
             }
 
             response = syncDeletedObject(serverDate,
-                    TrackedEntity.class.getSimpleName());
+                    TrackedEntity.class);
 
             if (!response.isSuccessful()) {
                 return response;
             }
 
             response = syncDeletedObject(serverDate,
-                    Option.class.getSimpleName());
+                    Option.class);
 
             if (!response.isSuccessful()) {
                 return response;
             }
             response = syncDeletedObject(serverDate,
-                    OptionSet.class.getSimpleName());
+                    OptionSet.class);
 
 
             transaction.setSuccessful();
@@ -168,63 +168,63 @@ public class DeletedObjectCall implements Call<Response> {
     @Nullable
     private Response syncPrograms(Date serverDate) throws Exception {
         Response response = syncDeletedObject(serverDate,
-                ProgramRule.class.getSimpleName());
+                ProgramRule.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
         response = syncDeletedObject(serverDate,
-                ProgramRuleAction.class.getSimpleName());
+                ProgramRuleAction.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
         response = syncDeletedObject(serverDate,
-                ProgramRuleVariable.class.getSimpleName());
+                ProgramRuleVariable.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
         response = syncDeletedObject(serverDate,
-                ProgramIndicator.class.getSimpleName());
+                ProgramIndicator.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
         response = syncDeletedObject(serverDate,
-                DataElement.class.getSimpleName());
+                DataElement.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
         response = syncDeletedObject(serverDate,
-                ProgramStage.class.getSimpleName());
+                ProgramStage.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
         response = syncDeletedObject(serverDate,
-                ProgramStageDataElement.class.getSimpleName());
+                ProgramStageDataElement.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
         response = syncDeletedObject(serverDate,
-                ProgramStageSection.class.getSimpleName());
+                ProgramStageSection.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
         response = syncDeletedObject(serverDate,
-                ProgramTrackedEntityAttribute.class.getSimpleName());
+                ProgramTrackedEntityAttribute.class);
 
         return response;
     }
@@ -232,35 +232,35 @@ public class DeletedObjectCall implements Call<Response> {
     @Nullable
     private Response syncCategories(Date serverDate) throws Exception {
         Response response = syncDeletedObject(serverDate,
-                Category.class.getSimpleName());
+                Category.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
         response = syncDeletedObject(serverDate,
-                CategoryOption.class.getSimpleName());
+                CategoryOption.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
         response = syncDeletedObject(serverDate,
-                CategoryCombo.class.getSimpleName());
+                CategoryCombo.class);
 
         if (!response.isSuccessful()) {
             return response;
         }
 
         response = syncDeletedObject(serverDate,
-                CategoryOptionCombo.class.getSimpleName());
+                CategoryOptionCombo.class);
 
         return response;
     }
 
 
-    private Response<Payload<DeletedObject>> syncDeletedObject(Date serverDate, String klass)
+    private Response<Payload<DeletedObject>> syncDeletedObject(Date serverDate, Class<?> deletedObjectKlass)
             throws Exception {
-        return deletedObjectFactory.newEndPointCall(klass, serverDate).call();
+        return deletedObjectFactory.newEndPointCall(deletedObjectKlass, serverDate).call();
     }
 }

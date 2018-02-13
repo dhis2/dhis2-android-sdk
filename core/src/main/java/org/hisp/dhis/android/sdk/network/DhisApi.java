@@ -80,8 +80,10 @@ public interface DhisApi {
     SystemInfo getSystemInfo();
 
     @GET("/23/me/")
-    UserAccount getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
+    UserAccount getCurrentUserAccountOnDeprecatedApi(@QueryMap Map<String, String> queryParams);
 
+    @GET("/me/")
+    UserAccount getCurrentUserAccountOnLatestApi(@QueryMap Map<String, String> queryParams);
 
     /////////////////////////////////////////////////////////////////////////
     // Methods for getting Dashboard and DashboardItems
@@ -208,10 +210,6 @@ public interface DhisApi {
     /////////////////////////////////////////////////////////////////////////
     // Methods for working with Meta data
     /////////////////////////////////////////////////////////////////////////
-
-    // SWAPPED FOR "/me/programs/
-    @GET("/me/programs/")
-    Response getAssignedPrograms(@QueryMap Map<String, String> queryMap);
 
     @GET("/me?fields=organisationUnits[id,displayName,programs[id]],userCredentials[userRoles[programs[id]]],teiSearchOrganisationUnits")
     UserAccount getUserAccount();

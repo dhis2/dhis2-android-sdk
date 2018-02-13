@@ -63,7 +63,6 @@ import org.hisp.dhis.android.sdk.synchronization.domain.app.SyncAppUseCase;
 import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.IEnrollmentRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance
         .ITrackedEntityInstanceRepository;
-import org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance.SyncTrackedEntityInstanceUseCase;
 import org.hisp.dhis.android.sdk.utils.SyncDateWrapper;
 import org.hisp.dhis.client.sdk.ui.AppPreferencesImpl;
 
@@ -178,8 +177,9 @@ public final class DhisController {
     static UserAccount signInUser(HttpUrl serverUrl, Credentials credentials) throws APIException {
         DhisApi dhisApi = RepoManager
                 .createService(serverUrl, credentials);
+        float systemVersion = dhisApi.getSystemInfo().getVersionAsFloat();
         UserAccount user = (new UserController(dhisApi)
-                .logInUser(serverUrl, credentials));
+                .logInUser(serverUrl, credentials, systemVersion));
 
         // fetch meta data from disk
         readSession();

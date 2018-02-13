@@ -80,9 +80,20 @@ public class SystemInfo extends BaseModel {
         return version;
     }
 
+    public float getVersionAsFloat() {
+        return removeNonNumericCharacters(version);
+    }
+
     public void setVersion(String version) {
         this.version = version;
     }
 
+
+    private static Float removeNonNumericCharacters(String version) {
+        if(!version.isEmpty()) {
+            return Float.parseFloat(version.replaceAll("[^0-9.]", ""));
+        }
+        else return null;
+    }
 
 }

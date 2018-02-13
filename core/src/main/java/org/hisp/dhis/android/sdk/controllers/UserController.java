@@ -35,7 +35,6 @@ import com.squareup.okhttp.HttpUrl;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.network.SessionManager;
 import org.hisp.dhis.android.sdk.network.APIException;
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.network.Credentials;
 import org.hisp.dhis.android.sdk.network.Session;
@@ -49,20 +48,27 @@ import java.util.Map;
  * @author Araz Abishov <araz.abishov.gsoc@gmail.com>.
  */
 final class UserController {
+    private final float startServerVersionLatestApi =2.29f;
     private final DhisApi dhisApi;
 
     public UserController(DhisApi dhisApi) {
         this.dhisApi = dhisApi;
     }
 
-    public UserAccount logInUser(HttpUrl serverUrl, Credentials credentials) throws APIException {
+    public UserAccount logInUser(HttpUrl serverUrl, Credentials credentials, float serverVersion) throws APIException {
         final Map<String, String> QUERY_PARAMS = new HashMap<>();
         QUERY_PARAMS.put("fields", "id,created,lastUpdated,name,displayName," +
                 "firstName,surname,gender,birthday,introduction," +
                 "education,employer,interests,jobTitle,languages,email,phoneNumber," +
                 "teiSearchOrganisationUnits[id],organisationUnits[id]");
-        UserAccount userAccount = dhisApi
-                .getCurrentUserAccount(QUERY_PARAMS);
+        UserAccount userAccount;
+        if(serverVersion>= startServerVersionLatestApi){
+            userAccount = dhisApi
+                    .getCurrentUserAccountOnLatestApi(QUERY_PARAMS);
+        }else{
+            userAccount= dhisApi
+                    .getCurrentUserAccountOnDeprecatedApi(QUERY_PARAMS);
+        }
 
         // if we got here, it means http
         // request was executed successfully
@@ -86,18 +92,5 @@ final class UserController {
         Delete.tables(
                 UserAccount.class
         );
-    }
-
-    public UserAccount updateUserAccount() throws APIException {
-        final Map<String, String> QUERY_PARAMS = new HashMap<>();
-        QUERY_PARAMS.put("fields", "id,created,lastUpdated,name,displayName," +
-                "firstName,surname,gender,birthday,introduction," +
-                "education,employer,interests,jobTitle,languages,email,phoneNumber," +
-                "organisationUnits[id]");
-        UserAccount userAccount =
-                dhisApi.getCurrentUserAccount(QUERY_PARAMS);
-        // update userAccount in database
-        userAccount.save();
-        return userAccount;
     }
 }

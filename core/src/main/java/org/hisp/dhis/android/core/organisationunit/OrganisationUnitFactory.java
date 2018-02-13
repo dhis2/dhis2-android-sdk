@@ -62,12 +62,12 @@ public class OrganisationUnitFactory {
     }
 
     public OrganisationUnitCall newEndPointCall(Date serverDate,
-            OrganizationUnitQuery organizationUnitQuery)
+            OrganisationUnitQuery organisationUnitQuery)
             throws Exception {
         return new OrganisationUnitCall(
                 organisationUnitService, databaseAdapter,
                 resourceHandler, serverDate,
-                organisationUnitHandler, organizationUnitQuery);
+                organisationUnitHandler, organisationUnitQuery);
     }
 
     public UserStore getUserStore() {

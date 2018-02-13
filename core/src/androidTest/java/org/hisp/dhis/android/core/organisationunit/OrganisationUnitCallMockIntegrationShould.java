@@ -298,7 +298,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 .deleted(false)
                 .build();
 
-        OrganizationUnitQuery organizationUnitQuery = OrganizationUnitQuery.defaultQuery(user);
+        OrganisationUnitQuery organisationUnitQuery = OrganisationUnitQuery.defaultQuery(user);
 
         ContentValues userContentValues = new ContentValues();
         userContentValues.put(UserModel.Columns.ID, "user_uid");
@@ -350,7 +350,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                         organisationUnitProgramLinkStore, resourceHandler);
 
         organisationUnitCall = new OrganisationUnitCall(organisationUnitService, databaseAdapter(),
-                resourceHandler, new Date(), organisationUnitHandler,organizationUnitQuery);
+                resourceHandler, new Date(), organisationUnitHandler, organisationUnitQuery);
     }
 
 

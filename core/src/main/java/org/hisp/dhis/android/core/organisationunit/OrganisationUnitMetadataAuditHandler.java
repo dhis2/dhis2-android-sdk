@@ -50,11 +50,11 @@ public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandle
                                 + metadataAudit);
                 return;
             }
-            OrganizationUnitQuery organizationUnitQuery =
-                    OrganizationUnitQuery.defaultQuery(user, isTranslationOn, translationLocale,
+            OrganisationUnitQuery organisationUnitQuery =
+                    OrganisationUnitQuery.defaultQuery(user, isTranslationOn, translationLocale,
                             metadataAudit.getUid());
             organisationUnitFactory.newEndPointCall(metadataAudit.getCreatedAt(),
-                    organizationUnitQuery).call();
+                    organisationUnitQuery).call();
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {
                 organisationUnit = organisationUnit.toBuilder().deleted(true).build();

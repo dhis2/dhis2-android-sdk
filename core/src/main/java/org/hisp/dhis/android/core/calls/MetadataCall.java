@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetQuery;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
-import org.hisp.dhis.android.core.organisationunit.OrganizationUnitQuery;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitQuery;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramFactory;
 import org.hisp.dhis.android.core.program.ProgramQuery;
@@ -183,11 +183,11 @@ public class MetadataCall implements Call<Response> {
 
             @SuppressWarnings({"PMD.PrematureDeclaration"})
             User user = (User) response.body();
-            OrganizationUnitQuery organizationUnitQuery = OrganizationUnitQuery.defaultQuery(user,
+            OrganisationUnitQuery organisationUnitQuery = OrganisationUnitQuery.defaultQuery(user,
                     isTranslationOn, translationLocale,
-                    OrganizationUnitQuery.DEFAULT_UID);
+                    OrganisationUnitQuery.DEFAULT_UID);
 
-            response = getOrganisationUnits(serverDate, organizationUnitQuery);
+            response = getOrganisationUnits(serverDate, organisationUnitQuery);
 
             if (!response.isSuccessful()) {
                 return response;
@@ -298,10 +298,10 @@ public class MetadataCall implements Call<Response> {
     }
 
     public Response getOrganisationUnits(Date serverDate,
-            OrganizationUnitQuery organizationUnitQuery) throws Exception {
+            OrganisationUnitQuery organisationUnitQuery) throws Exception {
         Response response;
         response = organisationUnitFactory.newEndPointCall(serverDate,
-                organizationUnitQuery).call();
+                organisationUnitQuery).call();
         return response;
     }
 

@@ -8,7 +8,7 @@ import org.hisp.dhis.android.core.user.User;
 import java.util.TreeSet;
 
 @AutoValue
-public abstract class OrganizationUnitQuery extends BaseQuery {
+public abstract class OrganisationUnitQuery extends BaseQuery {
 
     public static final String DEFAULT_UID = "";
 
@@ -17,17 +17,17 @@ public abstract class OrganizationUnitQuery extends BaseQuery {
     public abstract String uid();
 
 
-    public static OrganizationUnitQuery.Builder builder() {
-        return new AutoValue_OrganizationUnitQuery.Builder();
+    public static OrganisationUnitQuery.Builder builder() {
+        return new AutoValue_OrganisationUnitQuery.Builder();
     }
 
-    public static OrganizationUnitQuery defaultQuery(User user) {
+    public static OrganisationUnitQuery defaultQuery(User user) {
         return defaultQueryBuilder()
                 .user(user)
                 .build();
     }
 
-    public static OrganizationUnitQuery defaultQuery(User user, boolean isTranslationOn,
+    public static OrganisationUnitQuery defaultQuery(User user, boolean isTranslationOn,
             String translationLocale,
             String uid) {
 
@@ -52,13 +52,13 @@ public abstract class OrganizationUnitQuery extends BaseQuery {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseQuery.Builder<OrganizationUnitQuery.Builder> {
+    public static abstract class Builder extends BaseQuery.Builder<OrganisationUnitQuery.Builder> {
 
         public abstract Builder user(User user);
 
         public abstract Builder uid(String uid);
 
-        public abstract OrganizationUnitQuery build();
+        public abstract OrganisationUnitQuery build();
     }
 
 }

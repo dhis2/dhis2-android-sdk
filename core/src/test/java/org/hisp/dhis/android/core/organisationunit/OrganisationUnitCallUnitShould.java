@@ -151,7 +151,7 @@ public class OrganisationUnitCallUnitShould {
 
     private Dhis2MockServer dhis2MockServer;
 
-    private OrganizationUnitQuery organizationUnitQuery;
+    private OrganisationUnitQuery organisationUnitQuery;
 
 
     @Before
@@ -202,7 +202,7 @@ public class OrganisationUnitCallUnitShould {
         when(user.phoneNumber()).thenReturn("user_phone_number");
         when(user.nationality()).thenReturn("user_nationality");
 
-        organizationUnitQuery = OrganizationUnitQuery.defaultQuery(user);
+        organisationUnitQuery = OrganisationUnitQuery.defaultQuery(user);
 
         when(database.beginNewTransaction()).thenReturn(transaction);
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
@@ -212,7 +212,7 @@ public class OrganisationUnitCallUnitShould {
                 userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, resourceHandler);
 
         organisationUnitCall = new OrganisationUnitCall(organisationUnitService, database,
-                resourceHandler, serverDate, organisationUnitHandler, organizationUnitQuery);
+                resourceHandler, serverDate, organisationUnitHandler, organisationUnitQuery);
 
         //Return only one organisationUnit.
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
@@ -434,6 +434,6 @@ public class OrganisationUnitCallUnitShould {
                 userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, resourceHandler);
 
         return new OrganisationUnitCall(mockService, database, resourceHandler,
-                 serverDate, organisationUnitHandler, organizationUnitQuery);
+                serverDate, organisationUnitHandler, organisationUnitQuery);
     }
 }

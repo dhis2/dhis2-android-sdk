@@ -57,14 +57,14 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
 
     private final Date serverDate;
     private boolean isExecuted;
-    private final OrganizationUnitQuery query;
+    private final OrganisationUnitQuery query;
 
     public OrganisationUnitCall(@NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull DatabaseAdapter database,
             @NonNull ResourceHandler resourceHandler,
                                 @NonNull Date serverDate,
             @NonNull OrganisationUnitHandler organisationUnitHandler,
-            @NonNull OrganizationUnitQuery query) {
+            @NonNull OrganisationUnitQuery query) {
         this.organisationUnitService = organisationUnitService;
         this.database = database;
         this.resourceHandler = resourceHandler;

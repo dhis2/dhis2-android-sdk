@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -37,7 +37,7 @@ public class IndicatorTypeHandlerShould {
 
     @Test
     public void extend_generic_handler_impl() {
-        GenericHandlerImpl<IndicatorType, IndicatorTypeModel> genericHandler
+        IdentifiableHandlerImpl<IndicatorType, IndicatorTypeModel> genericHandler
                 = new IndicatorTypeHandler(null);
     }
 }

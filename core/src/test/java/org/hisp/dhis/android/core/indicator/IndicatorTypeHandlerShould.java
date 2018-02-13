@@ -33,10 +33,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
-public class IndicatorHandlerShould {
+public class IndicatorTypeHandlerShould {
 
     @Test
     public void extend_generic_handler_impl() {
-        GenericHandlerImpl<Indicator, IndicatorModel> genericHandler = new IndicatorHandler(null);
+        GenericHandlerImpl<IndicatorType, IndicatorTypeModel> genericHandler
+                = new IndicatorTypeHandler(null);
     }
 }

@@ -91,7 +91,7 @@ public class ProgramStoreImpl extends Store implements ProgramStore {
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             ProgramModel.Columns.UID +
             " FROM " + ProgramModel.TABLE +
-            " WHERE "+ProgramModel.Columns.UID+" =?;";
+            " WHERE " + ProgramModel.Columns.UID + " =?;";
 
     private static final String QUERY_STATEMENT = "SELECT " + FIELDS
             + " FROM " + ProgramModel.TABLE + " WHERE " +
@@ -276,7 +276,7 @@ public class ProgramStoreImpl extends Store implements ProgramStore {
     @Override
     public Boolean exists(String programUId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, programUId);
-        return cursor.getCount()>0;
+        return cursor.getCount() > 0;
     }
 
     @Override

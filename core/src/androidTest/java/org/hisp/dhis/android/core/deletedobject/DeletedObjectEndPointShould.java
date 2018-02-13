@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import java.io.IOException;
 import java.util.Date;
 
-public class DeletedObjectEndPointShould  extends AbsStoreTestCase {
+public class DeletedObjectEndPointShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;

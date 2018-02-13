@@ -58,7 +58,8 @@ public class DeletedObjectEndPointCall implements Call<Response<Payload<DeletedO
 
         deletedObjectsByLastUpdated =
                 deletedObjectService.getDeletedObjectsDeletedAt(
-                        getSingleFields(), true, deletedObjectKlass, lastSyncedDeletedObjects).execute();
+                        getSingleFields(), true, deletedObjectKlass,
+                        lastSyncedDeletedObjects).execute();
 
         if (deletedObjectsByLastUpdated.isSuccessful()
                 && deletedObjectsByLastUpdated.body().items() != null) {

@@ -73,7 +73,8 @@ import javax.annotation.Nonnull;
 import retrofit2.Response;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
-        "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity", "PMD.CouplingBetweenObjects",
+        "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity",
+        "PMD.CouplingBetweenObjects",
         "PMD.GodClass"
 })
 public class MetadataCall implements Call<Response> {
@@ -194,13 +195,13 @@ public class MetadataCall implements Call<Response> {
 
             response = syncCategories(serverDate);
 
-            if(!response.isSuccessful()){
+            if (!response.isSuccessful()) {
                 return response;
             }
 
             response = syncPrograms(serverDate, user);
 
-            if(!response.isSuccessful()){
+            if (!response.isSuccessful()) {
                 return response;
             }
 
@@ -219,7 +220,8 @@ public class MetadataCall implements Call<Response> {
             }
 
             DeletedObjectCall deletedObjectCall = new DeletedObjectCall(databaseAdapter,
-                    systemInfoService, systemInfoStore, resourceStore, deletedObjectFactory);
+                    systemInfoService, systemInfoStore, resourceStore, deletedObjectFactory,
+                    isTranslationOn, translationLocale);
 
             response = deletedObjectCall.call();
 
@@ -252,11 +254,13 @@ public class MetadataCall implements Call<Response> {
                 trackedEntityUids, isTranslationOn,
                 translationLocale);
 
-        Response response = trackedEntityFactory.newEndPointCall(trackedEntityQuery, serverDate).call();
+        Response response = trackedEntityFactory.newEndPointCall(trackedEntityQuery,
+                serverDate).call();
 
 
         return response;
     }
+
     private Response syncCategories(Date serverDate)
             throws Exception {
 

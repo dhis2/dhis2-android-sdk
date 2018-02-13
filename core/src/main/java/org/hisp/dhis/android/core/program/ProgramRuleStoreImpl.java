@@ -70,7 +70,7 @@ public class ProgramRuleStoreImpl extends Store implements ProgramRuleStore {
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             ProgramRuleModel.Columns.UID +
             " FROM " + ProgramRuleModel.TABLE +
-            " WHERE "+ProgramRuleModel.Columns.UID+" =?;";
+            " WHERE " + ProgramRuleModel.Columns.UID + " =?;";
 
     private static final String QUERY_BY_UID_STATEMENT =
             "SELECT " + FIELDS + " FROM " + ProgramRuleModel.TABLE + " WHERE " +
@@ -199,7 +199,7 @@ public class ProgramRuleStoreImpl extends Store implements ProgramRuleStore {
     @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
+        return cursor.getCount() > 0;
     }
 
     @Override

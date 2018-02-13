@@ -351,6 +351,6 @@ public class DeletedObjectEndpointCallRealIntegrationShould extends AbsStoreTest
                 simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US);
         Date lastUpdatedDate = simpleDateFormat.parse(lastUpdated);
 
-        assertTrue(date.compareTo(lastUpdatedDate)==0);
+        assertTrue(date.compareTo(lastUpdatedDate) == 0);
     }
 }

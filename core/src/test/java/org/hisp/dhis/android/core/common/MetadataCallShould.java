@@ -44,8 +44,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.CategoryComboFactory;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryFactory;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
@@ -58,7 +56,6 @@ import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.deletedobject.DeletedObject;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectFactory;
-import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandler;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectService;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
@@ -126,9 +123,6 @@ public class MetadataCallShould {
     private retrofit2.Call<Payload<DeletedObject>> deletableObjectCall;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<Program>> programCall;
-
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<Payload<OptionSet>> optionSetCall;
 
     @Mock
@@ -181,30 +175,11 @@ public class MetadataCallShould {
     @Mock
     private Payload<OrganisationUnit> organisationUnitPayload;
 
-    private CategoryComboService comboService;
-
     @Mock
     private Payload<DeletedObject> deletedObjectPayload;
 
     @Mock
-    private CategoryComboHandler mockCategoryComboHandler;
-    @Mock
-    private DeletedObjectHandler mockDeletedObjectHandler;
-
-
-    private OptionSetFactory optionSetFactory;
-    private TrackedEntityFactory trackedEntityFactory;
-    private CategoryFactory categoryFactory;
-    private CategoryComboFactory categoryComboFactory;
-    private OrganisationUnitFactory organisationUnitFactory;
-
-    @Mock
-    private TrackedEntityAttributeFactory trackedEntityAttributeFactory;
-    private ProgramFactory programFactory;
-
-    @Mock
     private DataElementFactory dataElementFactory;
-    private RelationshipTypeFactory relationshipTypeFactory;
 
     // object to test
     private MetadataCall metadataCall;
@@ -228,11 +203,14 @@ public class MetadataCallShould {
         when(systemInfoService.getSystemInfo(any(Fields.class), anyBoolean(),
                 anyString())).thenReturn(systemInfoCall);
 
-        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), anyString())).thenReturn(deletableObjectCall);
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(),
+                anyString(), anyString())).thenReturn(deletableObjectCall);
 
-        when(userService.getUser(any(Fields.class), anyBoolean(), anyString())).thenReturn(userCall);
+        when(userService.getUser(any(Fields.class), anyBoolean(), anyString())).thenReturn(
+                userCall);
 
-        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), anyString()))
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(),
+                anyString(), anyString()))
                 .thenReturn(deletableObjectCall);
 
         when(organisationUnitService.getOrganisationUnits(
@@ -244,7 +222,8 @@ public class MetadataCallShould {
                 anyBoolean(), any(Fields.class), any(Filter.class), anyBoolean(), anyString())
         ).thenReturn(optionSetCall);
 
-        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(), anyString(), anyString())).thenReturn(deletableObjectCall);
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(),
+                anyString(), anyString())).thenReturn(deletableObjectCall);
 
 
         when(systemInfo.serverDate()).thenReturn(serverDateTime);
@@ -283,9 +262,12 @@ public class MetadataCallShould {
                 databaseAdapter,
                 resourceHandler);
 
-        CategoryFactory categoryFactory = new CategoryFactory(retrofit, databaseAdapter, resourceHandler);
-        CategoryComboFactory categoryComboFactory = new CategoryComboFactory(retrofit, databaseAdapter, resourceHandler);
-        DeletedObjectFactory deletedObjectFactory = new DeletedObjectFactory(retrofit, databaseAdapter, resourceHandler);
+        CategoryFactory categoryFactory = new CategoryFactory(retrofit, databaseAdapter,
+                resourceHandler);
+        CategoryComboFactory categoryComboFactory = new CategoryComboFactory(retrofit,
+                databaseAdapter, resourceHandler);
+        DeletedObjectFactory deletedObjectFactory = new DeletedObjectFactory(retrofit,
+                databaseAdapter, resourceHandler);
 
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService, userHandler,

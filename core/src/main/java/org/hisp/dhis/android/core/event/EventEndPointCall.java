@@ -82,7 +82,7 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
                     eventQuery.getTrackedEntityInstance(), getSingleFields(),
                     Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
                     Boolean.TRUE, eventQuery.page(), eventQuery.pageSize(),
-                    true, eventQuery.isTranslationOn(),eventQuery.translationLocale()).execute();
+                    true, eventQuery.isTranslationOn(), eventQuery.translationLocale()).execute();
         } else {
             CategoryCombo categoryCombo = eventQuery.getCategoryCombo();
             CategoryOption categoryOption = eventQuery.getCategoryOption();

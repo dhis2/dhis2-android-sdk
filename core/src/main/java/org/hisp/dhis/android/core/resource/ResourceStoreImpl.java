@@ -57,7 +57,7 @@ public class ResourceStoreImpl implements ResourceStore {
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + ResourceModel.TABLE +
             " WHERE " + Columns.RESOURCE_TYPE + " =?;";
-    
+
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -83,7 +83,7 @@ public class ResourceStoreImpl implements ResourceStore {
 
     @Override
     public int update(@NonNull String resourceType, @Nullable Date lastSynced,
-                      @NonNull String whereResourceType) {
+            @NonNull String whereResourceType) {
         isNull(resourceType);
         isNull(whereResourceType);
         sqLiteBind(updateStatement, 1, resourceType);

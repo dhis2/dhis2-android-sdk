@@ -66,7 +66,7 @@ public class OptionStoreImpl implements OptionStore {
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             OptionModel.Columns.UID +
             " FROM " + OptionModel.TABLE +
-            " WHERE "+OptionModel.Columns.UID+" =?;";
+            " WHERE " + OptionModel.Columns.UID + " =?;";
 
     private static final String QUERY_BY_OPTION_SET_STATEMENT =
             "SELECT " + FIELDS + " FROM " + OptionModel.TABLE +
@@ -211,7 +211,7 @@ public class OptionStoreImpl implements OptionStore {
     @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
+        return cursor.getCount() > 0;
     }
 
     private Map<String, List<Option>> mapFromCursor(Cursor cursor) {

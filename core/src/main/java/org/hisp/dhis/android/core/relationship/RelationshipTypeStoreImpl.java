@@ -66,7 +66,7 @@ public class RelationshipTypeStoreImpl extends Store implements RelationshipType
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             RelationshipTypeModel.Columns.UID +
             " FROM " + RelationshipTypeModel.TABLE +
-            " WHERE "+RelationshipTypeModel.Columns.UID+" =?;";
+            " WHERE " + RelationshipTypeModel.Columns.UID + " =?;";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + RelationshipTypeModel.TABLE + " SET " +
             RelationshipTypeModel.Columns.UID + " =?, " +
@@ -236,6 +236,6 @@ public class RelationshipTypeStoreImpl extends Store implements RelationshipType
     @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
+        return cursor.getCount() > 0;
     }
 }

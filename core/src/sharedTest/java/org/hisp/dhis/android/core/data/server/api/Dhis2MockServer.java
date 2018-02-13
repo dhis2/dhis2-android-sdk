@@ -125,7 +125,7 @@ public class Dhis2MockServer {
     }
 
     public void enqueueMockedResponsesFromArrayFiles(String[] fileArray) throws IOException {
-        for(String item:fileArray) {
+        for (String item : fileArray) {
             enqueueMockResponse(item);
         }
     }

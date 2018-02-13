@@ -49,7 +49,7 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             ProgramStageDataElementModel.Columns.UID +
             " FROM " + ProgramStageDataElementModel.TABLE +
-            " WHERE "+ProgramStageDataElementModel.Columns.UID+" =?;";
+            " WHERE " + ProgramStageDataElementModel.Columns.UID + " =?;";
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             ProgramStageDataElementModel.TABLE + " (" +
@@ -223,6 +223,6 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
     @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
+        return cursor.getCount() > 0;
     }
 }

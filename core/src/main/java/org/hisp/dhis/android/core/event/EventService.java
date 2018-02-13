@@ -5,11 +5,6 @@ import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLA
 
 import android.support.annotation.NonNull;
 
-import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_LOCALE;
-import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLATION;
-
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;

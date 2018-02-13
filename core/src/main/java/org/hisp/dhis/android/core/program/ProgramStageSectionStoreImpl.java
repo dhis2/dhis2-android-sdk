@@ -48,7 +48,7 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             ProgramStageSectionModel.Columns.UID +
             " FROM " + ProgramStageSectionModel.TABLE +
-            " WHERE "+ProgramStageSectionModel.Columns.UID+" =?;";
+            " WHERE " + ProgramStageSectionModel.Columns.UID + " =?;";
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             ProgramStageSectionModel.TABLE + " (" +
@@ -155,7 +155,7 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
     @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
+        return cursor.getCount() > 0;
     }
 
 }

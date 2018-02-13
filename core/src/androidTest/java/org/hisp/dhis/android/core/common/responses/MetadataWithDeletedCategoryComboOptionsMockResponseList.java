@@ -5,7 +5,8 @@ import org.hisp.dhis.android.core.data.server.api.MetadataMockResponseList;
 
 import java.io.IOException;
 
-public class MetadataWithDeletedCategoryComboOptionsMockResponseList extends MetadataMockResponseList {
+public class MetadataWithDeletedCategoryComboOptionsMockResponseList extends
+        MetadataMockResponseList {
 
     public MetadataWithDeletedCategoryComboOptionsMockResponseList() throws IOException {
         super(new AssetsFileReader());
@@ -62,7 +63,7 @@ public class MetadataWithDeletedCategoryComboOptionsMockResponseList extends Met
     }
 
     @Override
-    protected String getDeletedObjectCategoryOptionComboMockResponse(){
+    protected String getDeletedObjectCategoryOptionComboMockResponse() {
         return "deletedobject/deleted_object_category_option_combo.json";
     }
 

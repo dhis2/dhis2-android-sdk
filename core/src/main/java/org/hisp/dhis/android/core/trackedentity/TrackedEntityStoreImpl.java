@@ -68,7 +68,7 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             TrackedEntityModel.Columns.UID +
             " FROM " + TrackedEntityModel.TABLE +
-            " WHERE "+TrackedEntityModel.Columns.UID+" =?;";
+            " WHERE " + TrackedEntityModel.Columns.UID + " =?;";
 
     private static final String QUERY_STATEMENT = "SELECT " +
             FIELDS + " FROM " + TrackedEntityModel.TABLE;
@@ -185,7 +185,7 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
     @Override
     public Boolean exists(String trackedEntityUId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, trackedEntityUId);
-        return cursor.getCount()>0;
+        return cursor.getCount() > 0;
     }
 
     private Map<String, TrackedEntity> mapFromCursor(Cursor cursor) {

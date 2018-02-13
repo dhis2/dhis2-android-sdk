@@ -73,8 +73,9 @@ public class DataElementEndPointCall implements
         Response<Payload<DataElement>> dataElementByUids =
                 dataElementService.getDataElements(getFields(),
                         DataElement.uid.in(dataElementQuery.uIds()),
-                        DataElement.lastUpdated.gt(
-                                lastSyncedDataElements)).execute();
+                        DataElement.lastUpdated.gt(lastSyncedDataElements),
+                        dataElementQuery.isTranslationOn(),
+                        dataElementQuery.translationLocale()).execute();
 
         if (dataElementByUids.isSuccessful()
                 && dataElementByUids.body().items() != null) {

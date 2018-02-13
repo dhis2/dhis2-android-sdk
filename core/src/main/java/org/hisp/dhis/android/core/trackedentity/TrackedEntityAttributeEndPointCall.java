@@ -71,8 +71,9 @@ public class TrackedEntityAttributeEndPointCall implements
         Response<Payload<TrackedEntityAttribute>> trackedEntityAttributeByUids =
                 trackedEntityAttributeService.getTrackedEntityAttributes(getFields(),
                         TrackedEntityAttribute.uid.in(trackedEntityAttributeQuery.uIds()),
-                        TrackedEntityAttribute.lastUpdated.gt(
-                                lastSyncedTrackedEntityAttributes)).execute();
+                        TrackedEntityAttribute.lastUpdated.gt(lastSyncedTrackedEntityAttributes),
+                        trackedEntityAttributeQuery.isTranslationOn(),
+                        trackedEntityAttributeQuery.translationLocale()).execute();
 
         if (trackedEntityAttributeByUids.isSuccessful()
                 && trackedEntityAttributeByUids.body().items() != null) {

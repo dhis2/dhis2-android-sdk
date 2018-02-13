@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_LOCALE;
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLATION;
+
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Payload;
@@ -20,5 +23,7 @@ public interface TrackedEntityAttributeService {
     Call<Payload<TrackedEntityAttribute>> getTrackedEntityAttributes(
             @NonNull @Query(FIELDS) @Which Fields<TrackedEntityAttribute> fields,
             @NonNull @Query(FILTER) @Where Filter<TrackedEntityAttribute, String> idFilter,
-            @NonNull @Query(FILTER) @Where Filter<TrackedEntityAttribute, String> lastUpdated);
+            @NonNull @Query(FILTER) @Where Filter<TrackedEntityAttribute, String> lastUpdated,
+            @Query(QUERY_TRANSLATION) boolean isTranslationOn,
+            @NonNull @Query(QUERY_LOCALE) String locale);
 }

@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import static junit.framework.Assert.assertTrue;
-
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -45,10 +43,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.CategoryComboFactory;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryFactory;
-import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -62,7 +58,6 @@ import org.hisp.dhis.android.core.deletedobject.DeletedObject;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectFactory;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectHandler;
 import org.hisp.dhis.android.core.deletedobject.DeletedObjectService;
-import org.hisp.dhis.android.core.deletedobject.DeletedObject;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetService;
@@ -108,7 +103,6 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
-import retrofit2.http.DELETE;
 
 @RunWith(JUnit4.class)
 public class MetadataCallShould {
@@ -313,53 +307,8 @@ public class MetadataCallShould {
     }
 
     @Test
-    public void returns_category_combo_payload_when_execute_metadata_call() throws Exception {
-        dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_empty.json");
-        dhis2MockServer.enqueueMockResponse("deleted_object_option_sets.json");
-        Response response = metadataCall.call();
-        // assert that last successful response is returned
-
-        Payload<String> payload = (Payload<String>) response.body();
-
-        assertTrue(!payload.items().isEmpty());
-    }
-
-    @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_system_info_call_fail() throws Exception {
-        dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("empty_categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
-
         final int expectedTransactions = 1;
         when(systemInfoCall.execute()).thenReturn(errorResponse);
 
@@ -375,13 +324,6 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_user_call_fail() throws Exception {
-        dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
-
         final int expectedTransactions = 2;
         when(userCall.execute()).thenReturn(errorResponse);
 

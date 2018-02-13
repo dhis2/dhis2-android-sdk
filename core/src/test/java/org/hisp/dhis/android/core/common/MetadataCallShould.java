@@ -99,6 +99,7 @@ import org.mockito.MockitoAnnotations;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -367,7 +368,7 @@ public class MetadataCallShould {
 
         when(resourceStore.getLastUpdated(any(ResourceModel.Type.class))).thenReturn("2017-01-01");
 
-        when(dataSetParentCallFactory.create(any(User.class), any(GenericCallData.class)))
+        when(dataSetParentCallFactory.create(any(User.class), any(GenericCallData.class), any(List.class)))
                 .thenReturn(dataSetParentCall);
         dataSetParentCallResponse = Response.success(dataElementPayload);
         when(dataSetParentCall.call()).thenReturn(dataSetParentCallResponse);

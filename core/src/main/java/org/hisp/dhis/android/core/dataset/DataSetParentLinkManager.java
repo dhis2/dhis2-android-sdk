@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
 
@@ -89,9 +88,7 @@ class DataSetParentLinkManager {
         }
     }
 
-    void saveDataSetOrganisationUnitLinks(User user) {
-        List<OrganisationUnit> organisationUnits = user.organisationUnits();
-
+    void saveDataSetOrganisationUnitLinks(List<OrganisationUnit> organisationUnits) {
         if (organisationUnits != null) {
             for (OrganisationUnit organisationUnit : organisationUnits) {
                 saveDataSetOrganisationUnitLink(organisationUnit);

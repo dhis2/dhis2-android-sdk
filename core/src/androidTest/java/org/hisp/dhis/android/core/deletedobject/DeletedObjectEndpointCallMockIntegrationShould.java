@@ -52,10 +52,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 
 @RunWith(AndroidJUnit4.class)
-public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTestCase { 
-
-    public final static String[] commonMetadataWithMultipleObjectsJsonFiles = new String[]{
-    };
+public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;

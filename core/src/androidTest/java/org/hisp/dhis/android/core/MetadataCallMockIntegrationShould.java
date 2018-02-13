@@ -1,3 +1,4 @@
+/*
 package org.hisp.dhis.android.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -245,4 +246,4 @@ public class MetadataCallMockIntegrationShould extends AbsStoreTestCase {
                 new TypeReference<Payload<Event>>() {
                 });
     }
-}
+}*/

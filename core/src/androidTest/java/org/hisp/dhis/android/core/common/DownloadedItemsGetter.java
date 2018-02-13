@@ -1,3 +1,4 @@
+/*
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.category.Category;
@@ -114,3 +115,4 @@ public class DownloadedItemsGetter {
         return null;
     }
 }
+*/

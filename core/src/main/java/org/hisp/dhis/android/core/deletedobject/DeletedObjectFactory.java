@@ -15,8 +15,9 @@ public class DeletedObjectFactory {
     public DeletedObjectFactory(
             Retrofit retrofit, DatabaseAdapter databaseAdapter, ResourceHandler resourceHandler) {
         this.deletedObjectService = retrofit.create(DeletedObjectService.class);
-        DeletedObjectHandlerFactory deletedObjectHandlerFactory = new DeletedObjectHandlerFactory(databaseAdapter);
-        deletedObjectHandler = new DeletedObjectHandler(deletedObjectHandlerFactory);
+        IdentifiableStoreFactory identifiableStoreFactory = new IdentifiableStoreFactory(
+                databaseAdapter);
+        deletedObjectHandler = new DeletedObjectHandler(identifiableStoreFactory);
         this.resourceHandler = resourceHandler;
     }
 

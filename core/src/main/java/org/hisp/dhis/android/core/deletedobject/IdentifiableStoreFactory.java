@@ -53,10 +53,10 @@ import org.hisp.dhis.android.core.user.UserStoreImpl;
         "PMD.StdCyclomaticComplexity",
         "PMD.CouplingBetweenObjects"
 })
-public class DeletedObjectHandlerFactory {
+public class IdentifiableStoreFactory {
     private final DatabaseAdapter databaseAdapter;
 
-    public DeletedObjectHandlerFactory(DatabaseAdapter databaseAdapter) {
+    public IdentifiableStoreFactory(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
     }
 

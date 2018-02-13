@@ -184,9 +184,9 @@ public abstract class ResourceModel extends BaseModel {
             return ResourceModel.Type.DELETED_TRACKED_ENTITY_ATTRIBUTE;
         } else if (klass.equals(RelationshipType.class.getSimpleName())) {
             return ResourceModel.Type.DELETED_RELATIONSHIP_TYPE;
+        } else {
+            throw new IllegalArgumentException("invalid class name");
         }
-
-        return null;
     }
 
 }

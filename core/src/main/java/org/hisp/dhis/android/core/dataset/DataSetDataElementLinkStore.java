@@ -32,8 +32,7 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-@SuppressWarnings("PMD")
-public class DataSetDataElementLinkStore {
+public final class DataSetDataElementLinkStore {
 
     private DataSetDataElementLinkStore() {}
 

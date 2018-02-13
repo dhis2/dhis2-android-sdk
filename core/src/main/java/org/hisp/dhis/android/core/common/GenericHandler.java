@@ -29,9 +29,7 @@ package org.hisp.dhis.android.core.common;
 
 import java.util.Collection;
 
-public interface GenericHandler<
-        P extends BaseIdentifiableObject,
-        M extends BaseIdentifiableObjectModel & StatementBinder> {
+public interface GenericHandler<P extends BaseIdentifiableObject> {
 
     void handle(P p);
 

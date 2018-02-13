@@ -8,8 +8,8 @@ import java.util.Date;
 
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
-public class StoreMocks {
-    public static OptionSetModel generateOptionSetModel() {
+class StoreMocks {
+    static OptionSetModel generateOptionSetModel() {
         return OptionSetModel.builder()
                 .uid("1234567890")
                 .code("code")
@@ -22,7 +22,7 @@ public class StoreMocks {
                 .build();
     }
 
-    public static OptionSetModel generateUpdatedOptionSetModel() {
+    static OptionSetModel generateUpdatedOptionSetModel() {
         return OptionSetModel.builder()
                 .uid("1234567890")
                 .code("updated_code")
@@ -35,7 +35,7 @@ public class StoreMocks {
                 .build();
     }
 
-    public static OptionSetModel generateOptionSetModelWithoutUid() {
+    static OptionSetModel generateOptionSetModelWithoutUid() {
         return OptionSetModel.builder()
                 .uid(null)
                 .code("code")
@@ -48,7 +48,7 @@ public class StoreMocks {
                 .build();
     }
 
-    public static void optionSetCursorAssert(Cursor cursor, OptionSetModel m) {
+    static void optionSetCursorAssert(Cursor cursor, OptionSetModel m) {
         assertThatCursor(cursor).hasRow(
                 m.uid(),
                 m.code(),

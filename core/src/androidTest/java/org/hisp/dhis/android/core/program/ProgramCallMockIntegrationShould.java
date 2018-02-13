@@ -163,9 +163,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         ProgramRuleStore programRuleStore = new ProgramRuleStoreImpl(databaseAdapter());
         ProgramRuleHandler programRuleHandler = new ProgramRuleHandler(programRuleStore, programRuleActionHandler);
 
-        GenericHandler<OptionSet, OptionSetModel> optionSetHandler =
-                OptionSetHandler.create(databaseAdapter());
-        GenericHandler<DataElement, DataElementModel> dataElementHandler =
+        GenericHandler<OptionSet> optionSetHandler = OptionSetHandler.create(databaseAdapter());
+        GenericHandler<DataElement> dataElementHandler =
                 DataElementHandler.create(databaseAdapter(), optionSetHandler);
         ProgramStageDataElementStore programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter());

@@ -68,7 +68,7 @@ public class GenericHandlerShould {
     @Mock
     private NameableMockModelInterface model;
 
-    private GenericHandler<BaseIdentifiableObject, NameableMockModelInterface> genericHandler;
+    private GenericHandler<BaseIdentifiableObject> genericHandler;
 
     @Before
     public void setUp() throws Exception {

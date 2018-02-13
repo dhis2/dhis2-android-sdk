@@ -37,12 +37,11 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.io.IOException;
 import java.util.Set;
 
-@SuppressWarnings("PMD")
-public class DataSetEndpointCall extends GenericEndpointCallImpl<DataSet> {
+public final class DataSetEndpointCall extends GenericEndpointCallImpl<DataSet> {
     private final DataSetService dataSetService;
 
     private DataSetEndpointCall(GenericCallData data, DataSetService dataSetService,
-                               GenericHandler<DataSet, DataSetModel> dataSetHandler, Set<String> uids) {
+                                GenericHandler<DataSet> dataSetHandler, Set<String> uids) {
         super(data, dataSetHandler, ResourceModel.Type.DATA_SET, uids, 64);
         this.dataSetService = dataSetService;
     }

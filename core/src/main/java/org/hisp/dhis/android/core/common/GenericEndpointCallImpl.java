@@ -41,14 +41,14 @@ import retrofit2.Response;
 public abstract class GenericEndpointCallImpl<P extends BaseIdentifiableObject>
         implements Call<Response<Payload<P>>> {
     private final GenericCallData data;
-    private final GenericHandler<P, ?> handler;
+    private final GenericHandler<P> handler;
     private boolean isExecuted;
 
     private final ResourceModel.Type resourceType;
     private final Set<String> uids;
     private final Integer limit;
 
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, ?> handler,
+    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P> handler,
                                    ResourceModel.Type resourceType, Set<String> uids,
                                    Integer limit) {
         this.data = data;
@@ -93,7 +93,7 @@ public abstract class GenericEndpointCallImpl<P extends BaseIdentifiableObject>
     protected abstract retrofit2.Call<Payload<P>> getCall(Set<String> uids,
                                                           String lastUpdated) throws IOException;
 
-    private Response<Payload<P>> persist(Response<Payload<P>> response) {
+    private void persist(Response<Payload<P>> response) {
         if (response == null) {
             throw new RuntimeException("Trying to process call without download data");
         }
@@ -110,7 +110,6 @@ public abstract class GenericEndpointCallImpl<P extends BaseIdentifiableObject>
                 transaction.end();
             }
         }
-        return response;
     }
 
     private boolean isValidResponse(Response<Payload<P>> response) {

@@ -47,17 +47,18 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 public abstract class DataSetDataElementLinkModel extends BaseModel implements UpdateWhereStatementBinder {
     public static final String TABLE = "DataSetDataElementLink";
 
-    @SuppressWarnings("PMD")
     public static class Columns extends BaseModel.Columns {
         public static final String DATA_SET = "dataSet";
         public static final String DATA_ELEMENT = "dataElement";
+
+        private Columns() {}
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseModel.Columns.all(),
                     DATA_SET, DATA_ELEMENT);
         }
 
-        public static String[] whereUpdate() {
+        static String[] whereUpdate() {
             return new String[]{DATA_SET, DATA_ELEMENT};
         }
     }

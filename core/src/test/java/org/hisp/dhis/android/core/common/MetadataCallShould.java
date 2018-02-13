@@ -47,11 +47,9 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
@@ -301,10 +299,10 @@ public class MetadataCallShould {
     private CategoryComboHandler mockCategoryComboHandler;
 
     @Mock
-    private GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
+    private GenericHandler<OptionSet> optionSetHandler;
 
     @Mock
-    private GenericHandler<DataElement, DataElementModel> dataElementHandler;
+    private GenericHandler<DataElement> dataElementHandler;
 
     @Mock
     private DataSetParentCall.Factory dataSetParentCallFactory;

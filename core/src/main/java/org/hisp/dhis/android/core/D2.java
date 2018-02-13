@@ -65,8 +65,6 @@ import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramFactory;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeFactory;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -132,11 +130,10 @@ public final class D2 {
     private final UserStore userStore;
     private final UserCredentialsStore userCredentialsStore;
     private final AuthenticatedUserStore authenticatedUserStore;
-    private final OrganisationUnitStore organisationUnitStore;
-    private final ResourceStore resourceStore;
-    private final SystemInfoStore systemInfoStore;
     private final UserRoleStore userRoleStore;
     private final UserRoleProgramLinkStore userRoleProgramLinkStore;
+    private final ResourceStore resourceStore;
+    private final SystemInfoStore systemInfoStore;
 
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentStore enrollmentStore;
@@ -183,8 +180,6 @@ public final class D2 {
                 new UserCredentialsStoreImpl(databaseAdapter);
         this.authenticatedUserStore =
                 new AuthenticatedUserStoreImpl(databaseAdapter);
-        this.organisationUnitStore =
-                new OrganisationUnitStoreImpl(databaseAdapter);
         this.resourceStore =
                 new ResourceStoreImpl(databaseAdapter);
         this.systemInfoStore =
@@ -253,9 +248,11 @@ public final class D2 {
                 new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
         this.categoryFactory = new CategoryFactory(retrofit(), databaseAdapter, resourceHandler);
 
-        this.categoryComboFactory = new CategoryComboFactory(retrofit(), databaseAdapter, resourceHandler);
+        this.categoryComboFactory = new CategoryComboFactory(retrofit(), databaseAdapter,
+                resourceHandler);
 
-        this.deletedObjectFactory = new DeletedObjectFactory(retrofit, databaseAdapter, resourceHandler);
+        this.deletedObjectFactory = new DeletedObjectFactory(retrofit, databaseAdapter,
+                resourceHandler);
 
         if (metadataAuditConnection != null) {
             MetadataAuditHandlerFactory metadataAuditHandlerFactory =
@@ -353,8 +350,8 @@ public final class D2 {
 
     @NonNull
     public Call<Response> syncSingleData(int eventLimitByOrgUnit) {
-        return new SingleDataCall(organisationUnitStore, systemInfoStore, systemInfoService,
-                resourceStore,
+        return new SingleDataCall(organisationUnitFactory.getOrganisationUnitStore(),
+                systemInfoStore, systemInfoService, resourceStore,
                 eventService, databaseAdapter, resourceHandler, eventHandler, eventLimitByOrgUnit);
     }
 

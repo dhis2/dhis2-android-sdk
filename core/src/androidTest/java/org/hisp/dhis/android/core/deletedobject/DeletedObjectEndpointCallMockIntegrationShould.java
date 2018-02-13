@@ -1,8 +1,5 @@
 package org.hisp.dhis.android.core.deletedobject;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -39,8 +36,6 @@ import org.hisp.dhis.android.core.program.ProgramStageStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
-import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 import org.hisp.dhis.android.core.user.UserStoreImpl;
@@ -73,34 +68,6 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         super.tearDown();
 
         dhis2MockServer.shutdown();
-    }
-
-    @Test
-    @MediumTest
-    public void have_empty_deleted_resources_model_on_start_and_persisted_after_pull_metadata()
-            throws Exception {
-        ResourceStoreImpl resourceStore = new ResourceStoreImpl(databaseAdapter());
-        for (ResourceModel.Type resource : ResourceModel.Type.values()) {
-            String lastUpdated = resourceStore.getLastUpdated(resource);
-            assertTrue(lastUpdated == null);
-        }
-        dhis2MockServer.enqueueMockResponses(new MetadataWithMultipleObjectsMockResponseList());
-        d2.syncMetaData().call();
-        for (ResourceModel.Type resource : ResourceModel.Type.values()) {
-            String lastUpdated = resourceStore.getLastUpdated(resource);
-            //Ignore not called endpoints
-            if (resource.equals(ResourceModel.Type.EVENT) || resource.equals(
-                    ResourceModel.Type.TRACKED_ENTITY_INSTANCE) ||
-                    resource.equals(
-                            ResourceModel.Type.RELATIONSHIP_TYPE) ||
-                    resource.equals(
-                            ResourceModel.Type.TRACKED_ENTITY_ATTRIBUTE) ||
-                    resource.equals(
-                            ResourceModel.Type.DATA_ELEMENT) ) {
-                continue;
-            }
-            assertFalse(lastUpdated.equals(""));
-        }
     }
 
     @Test

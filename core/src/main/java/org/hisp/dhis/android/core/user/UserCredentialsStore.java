@@ -61,4 +61,6 @@ public interface UserCredentialsStore extends DeletableStore {
 
     @Override
     int delete();
+
+    UserCredentials queryByUserUid(String uid);
 }

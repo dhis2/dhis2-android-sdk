@@ -40,7 +40,11 @@ import org.hisp.dhis.android.core.resource.ResourceModel.Columns;
 
 import java.util.Date;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class ResourceStoreImpl implements ResourceStore {
+
     public static final String INSERT_STATEMENT = "INSERT INTO " + ResourceModel.TABLE + " (" +
             Columns.RESOURCE_TYPE + ", " +
             Columns.LAST_SYNCED + ") " +

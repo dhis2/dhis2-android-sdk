@@ -38,7 +38,6 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class RelationshipStoreImpl implements RelationshipStore {
-
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             RelationshipModel.TABLE + " (" +
             RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + ", " +

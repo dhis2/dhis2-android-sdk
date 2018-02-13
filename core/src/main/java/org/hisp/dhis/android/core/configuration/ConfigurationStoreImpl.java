@@ -40,7 +40,6 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class ConfigurationStoreImpl implements ConfigurationStore {
-
     private static final long CONFIGURATION_ID = 1L;
 
     public static final String INSERT_STATEMENT = "INSERT INTO " + ConfigurationModel.CONFIGURATION

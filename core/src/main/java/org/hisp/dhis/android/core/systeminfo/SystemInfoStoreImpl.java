@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoModel.Columns;
 import java.util.Date;
 
 public class SystemInfoStoreImpl implements SystemInfoStore {
+
     private static final String INSERT_STATEMENT = "INSERT INTO " + SystemInfoModel.TABLE + " (" +
             Columns.SERVER_DATE + ", " +
             Columns.DATE_FORMAT + ", " +

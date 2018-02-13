@@ -79,7 +79,7 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
                     eventQuery.getOrgUnit(), eventQuery.getProgram(),
                     eventQuery.getTrackedEntityInstance(), getSingleFields(),
                     Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
-                    Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize()).execute();
+                    Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize(), true).execute();
         } else {
             CategoryCombo categoryCombo =  eventQuery.getCategoryCombo();
             CategoryOption categoryOption =  eventQuery.getCategoryOption();
@@ -89,7 +89,7 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
                     eventQuery.getTrackedEntityInstance(), getSingleFields(),
                     Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
                     Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize(),
-                    categoryCombo.uid(), categoryOption.uid()).execute();
+                    categoryCombo.uid(), categoryOption.uid(), true).execute();
         }
 
         if (eventsByLastUpdated.isSuccessful() && eventsByLastUpdated.body().items() != null) {

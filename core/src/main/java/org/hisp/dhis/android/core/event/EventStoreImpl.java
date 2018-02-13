@@ -56,7 +56,6 @@ import java.util.Map;
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
 public class EventStoreImpl implements EventStore {
-
     private static final String INSERT_STATEMENT = "INSERT INTO " + EventModel.TABLE + " (" +
             Columns.UID + ", " +
             Columns.ENROLLMENT_UID + ", " +

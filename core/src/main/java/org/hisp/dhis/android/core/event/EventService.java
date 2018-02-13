@@ -25,6 +25,7 @@ public interface EventService {
     String EVENTS = "events";
     String ATTRIBUTE_CATEGORY_COMBO = "attributeCc";
     String ATTRIBUTE_CATEGORY_OPTION = "attributeCos";
+    String INCLUDED_DELETED = "includeDeleted";
 
     @POST(EVENTS)
     Call<WebResponse> postEvents(@Body EventPayload events);
@@ -37,7 +38,8 @@ public interface EventService {
             @Query(FILTER) @Where Filter<Event, String> lastUpdated,
             @Query(FILTER) @Where Filter<Event, String> uids,
             @Query(PAGING) Boolean paging, @Query(PAGE) int page,
-            @Query(PAGE_SIZE) int pageSize);
+            @Query(PAGE_SIZE) int pageSize,
+            @Query(INCLUDED_DELETED) boolean includedDeleted);
 
     @GET(EVENTS)
     Call<Payload<Event>> getEvents(@Query(ORG_UNIT) String orgUnit,
@@ -48,5 +50,6 @@ public interface EventService {
             @Query(FILTER) @Where Filter<Event, String> uids,
             @Query(PAGING) Boolean paging, @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize, @Query(ATTRIBUTE_CATEGORY_COMBO) String categoryCombo,
-            @Query(ATTRIBUTE_CATEGORY_OPTION) String categoryOption);
+            @Query(ATTRIBUTE_CATEGORY_OPTION) String categoryOption,
+            @Query(INCLUDED_DELETED) boolean includedDeleted);
 }

@@ -31,12 +31,12 @@ package org.hisp.dhis.android.core.relationship;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.IdentifiableStore;
 
 import java.util.Date;
 import java.util.List;
 
-public interface RelationshipTypeStore extends DeletableStore {
+public interface RelationshipTypeStore extends IdentifiableStore {
 
     long insert(
             @NonNull String uid,

@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectFactory;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
@@ -66,7 +67,9 @@ import javax.annotation.Nonnull;
 import retrofit2.Response;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
-        "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
+        "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity", "PMD.CouplingBetweenObjects",
+        "PMD.GodClass"
+})
 public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
@@ -81,6 +84,7 @@ public class MetadataCall implements Call<Response> {
     private final ProgramFactory programFactory;
     private final OrganisationUnitFactory organisationUnitFactory;
     private final CategoryComboFactory categoryComboFactory;
+    private final DeletedObjectFactory deletedObjectFactory;
 
     private boolean isExecuted;
 
@@ -95,7 +99,8 @@ public class MetadataCall implements Call<Response> {
             @Nonnull ProgramFactory programFactory,
             @NonNull OrganisationUnitFactory organisationUnitFactory,
             @NonNull CategoryFactory categoryFactory,
-            @NonNull CategoryComboFactory categoryComboFactory) {
+            @NonNull CategoryComboFactory categoryComboFactory,
+            @NonNull DeletedObjectFactory deletedObjectFactory) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.userService = userService;
@@ -109,6 +114,7 @@ public class MetadataCall implements Call<Response> {
         this.organisationUnitFactory = organisationUnitFactory;
         this.categoryFactory = categoryFactory;
         this.categoryComboFactory = categoryComboFactory;
+        this.deletedObjectFactory = deletedObjectFactory;
     }
 
     @Override
@@ -118,8 +124,8 @@ public class MetadataCall implements Call<Response> {
         }
     }
 
-    @SuppressWarnings("PMD.NPathComplexity")
     @Override
+    @SuppressWarnings({"PMD.NPathComplexity"})
     public Response call() throws Exception {
         synchronized (this) {
             if (isExecuted) {
@@ -136,12 +142,13 @@ public class MetadataCall implements Call<Response> {
                     databaseAdapter, systemInfoStore,
                     systemInfoService, resourceStore
             ).call();
+
             if (!response.isSuccessful()) {
                 return response;
             }
+
             SystemInfo systemInfo = (SystemInfo) response.body();
             Date serverDate = systemInfo.serverDate();
-
 
             response = new UserCall(
                     userService,
@@ -149,50 +156,50 @@ public class MetadataCall implements Call<Response> {
                     userHandler,
                     serverDate
             ).call();
+
             if (!response.isSuccessful()) {
                 return response;
             }
 
+            @SuppressWarnings({"PMD.PrematureDeclaration"})
             User user = (User) response.body();
+
             response = getOrganisationUnits(serverDate, user);
 
             if (!response.isSuccessful()) {
                 return response;
             }
-            response = categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(),
-                    serverDate).call();
 
-            if (!response.isSuccessful()) {
-                return response;
-            }
-            response = categoryComboFactory.newEndPointCall(CategoryComboQuery.defaultQuery(),
-                    serverDate).call();
+            response = syncCategories(serverDate);
 
-            if (!response.isSuccessful()) {
+            if(!response.isSuccessful()){
                 return response;
             }
 
-            Set<String> programUids = getAssignedProgramUids(user);
+            response = syncPrograms(serverDate, user);
 
-            response = programFactory.newEndPointCall(programUids,
-                    serverDate).call();
-
-            if (!response.isSuccessful()) {
+            if(!response.isSuccessful()){
                 return response;
             }
 
             List<Program> programs = ((Response<Payload<Program>>) response).body().items();
 
-            Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
-
-            response = trackedEntityFactory.newEndPointCall(trackedEntityUids, serverDate).call();
+            response = syncTrackedEntities(serverDate, programs);
 
             if (!response.isSuccessful()) {
                 return response;
             }
 
-            Set<String> optionSetUids = getAssignedOptionSetUids(programs);
-            response = optionSetFactory.newEndPointCall(optionSetUids, serverDate).call();
+            response = syncOptionSets(serverDate, programs);
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            DeletedObjectCall deletedObjectCall = new DeletedObjectCall(databaseAdapter,
+                    systemInfoService, systemInfoStore, resourceStore, deletedObjectFactory);
+
+            response = deletedObjectCall.call();
 
             if (!response.isSuccessful()) {
                 return response;
@@ -203,6 +210,53 @@ public class MetadataCall implements Call<Response> {
         } finally {
             transaction.end();
         }
+    }
+
+    private Response syncOptionSets(Date serverDate, List<Program> programs) throws Exception {
+
+        Set<String> optionSetUids = getAssignedOptionSetUids(programs);
+        Response response = optionSetFactory.newEndPointCall(optionSetUids,
+                serverDate).call();
+
+        return response;
+    }
+
+    private Response syncTrackedEntities(Date serverDate, List<Program> programs) throws Exception {
+
+
+        Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
+
+        Response response = trackedEntityFactory.newEndPointCall(trackedEntityUids, serverDate).call();
+
+
+        return response;
+    }
+    private Response syncCategories(Date serverDate)
+            throws Exception {
+
+        Response response = categoryFactory.newEndPointCall(CategoryQuery.defaultQuery(),
+                serverDate).call();
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+
+        response = categoryComboFactory.newEndPointCall(CategoryComboQuery.defaultQuery(),
+                serverDate).call();
+
+        return response;
+    }
+
+    @SuppressWarnings("PMD.NPathComplexity")
+    private Response syncPrograms(Date serverDate, User user)
+            throws Exception {
+
+
+        Set<String> programUids = getAssignedProgramUids(user);
+
+        Response response = programFactory.newEndPointCall(programUids,
+                serverDate).call();
+        return response;
     }
 
     public Response getOrganisationUnits(Date serverDate, User user) throws Exception {

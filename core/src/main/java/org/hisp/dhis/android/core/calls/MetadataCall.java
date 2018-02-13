@@ -284,8 +284,6 @@ public class MetadataCall implements Call<Response> {
             if (!organisationUnitResponse.isSuccessful()) {
                 return organisationUnitResponse;
             }
-            List<OrganisationUnit> organisationUnits = organisationUnitResponse.body().items();
-
             response = downloadCategories(data.serverDate());
 
             if (!response.isSuccessful()) {
@@ -330,7 +328,7 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
-
+            List<OrganisationUnit> organisationUnits = organisationUnitResponse.body().items();
             response = dataSetParentCallFactory.create(user, data, organisationUnits).call();
             if (!response.isSuccessful()) {
                 return response;

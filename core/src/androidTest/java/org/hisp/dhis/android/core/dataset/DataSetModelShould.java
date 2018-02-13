@@ -96,7 +96,8 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel
                 false, 1, 10, 100, false,
                 0, false, false,
                 false, false, false,
-                false, false, new ArrayList<DataElementUids>(), DELETED);
+                false, false, new ArrayList<DataElementUids>(),
+                new ArrayList<ObjectWithUid>(), DELETED);
     }
 
     @Override

@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
+
     private static final String[] PROJECTION = new String[]{
             AuthenticatedUserModel.Columns.ID,
             AuthenticatedUserModel.Columns.USER,
@@ -105,5 +106,4 @@ public class AuthenticatedUserStoreImpl implements AuthenticatedUserStore {
     public int delete() {
         return databaseAdapter.delete(AuthenticatedUserModel.TABLE);
     }
-
 }

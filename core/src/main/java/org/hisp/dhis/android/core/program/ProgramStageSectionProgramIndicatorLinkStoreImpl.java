@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements ProgramStageSectionProgramIndicatorLinkStore {
+
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             ProgramStageSectionProgramIndicatorLinkModel.TABLE + " (" +
             ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION + ", " +

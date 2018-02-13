@@ -1,0 +1,22 @@
+{
+  "pager": {
+    "page": 1,
+    "pageCount": 1,
+    "total": 2,
+    "pageSize": 50
+  },
+  "deletedObjects": [
+    {
+      "uid": "VQ2lai3OfVG",
+      "deletedAt": "2017-05-31T13:44:50.802",
+      "klass": "OptionSet",
+      "deletedBy": "system"
+    },
+    {
+      "uid": "R3mpvjqJ81H",
+      "deletedAt": "2017-05-31T13:44:50.802",
+      "klass": "OptionSet",
+      "deletedBy": "system"
+    }
+  ]
+}

@@ -7,6 +7,7 @@ import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.responses.BasicMetadataMockResponseList;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
@@ -19,6 +20,8 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.List;
+
+import retrofit2.Response;
 
 @RunWith(AndroidJUnit4.class)
 public class SingleDataCallMockIntegrationShould extends AbsStoreTestCase {
@@ -66,14 +69,7 @@ public class SingleDataCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenAMetadataInDatabase() throws Exception {
-        dhis2MockServer.enqueueMockResponse("system_info.json");
-        dhis2MockServer.enqueueMockResponse("user.json");
-        dhis2MockServer.enqueueMockResponse("organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
-        d2.syncMetaData().call();
+        dhis2MockServer.enqueueMockResponses(new BasicMetadataMockResponseList());
+        Response response = d2.syncMetaData().call();
     }
 }

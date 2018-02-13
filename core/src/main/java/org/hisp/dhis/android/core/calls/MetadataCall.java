@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectFactory;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetQuery;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -72,7 +73,9 @@ import javax.annotation.Nonnull;
 import retrofit2.Response;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
-        "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
+        "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity", "PMD.CouplingBetweenObjects",
+        "PMD.GodClass"
+})
 public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
@@ -87,6 +90,7 @@ public class MetadataCall implements Call<Response> {
     private final ProgramFactory programFactory;
     private final OrganisationUnitFactory organisationUnitFactory;
     private final CategoryComboFactory categoryComboFactory;
+    private final DeletedObjectFactory deletedObjectFactory;
 
     private boolean isExecuted;
     private final boolean isTranslationOn;
@@ -104,6 +108,7 @@ public class MetadataCall implements Call<Response> {
             @NonNull OrganisationUnitFactory organisationUnitFactory,
             @NonNull CategoryFactory categoryFactory,
             @NonNull CategoryComboFactory categoryComboFactory,
+            @NonNull DeletedObjectFactory deletedObjectFactory,
             boolean isTranslationOn,
             @NonNull String translationLocale) {
         this.databaseAdapter = databaseAdapter;
@@ -119,6 +124,7 @@ public class MetadataCall implements Call<Response> {
         this.organisationUnitFactory = organisationUnitFactory;
         this.categoryFactory = categoryFactory;
         this.categoryComboFactory = categoryComboFactory;
+        this.deletedObjectFactory = deletedObjectFactory;
         this.isTranslationOn = isTranslationOn;
         this.translationLocale = translationLocale;
 
@@ -152,9 +158,11 @@ public class MetadataCall implements Call<Response> {
                     systemInfoService, resourceStore,
                     systemInfoQuery
             ).call();
+
             if (!response.isSuccessful()) {
                 return response;
             }
+
             SystemInfo systemInfo = (SystemInfo) response.body();
             Date serverDate = systemInfo.serverDate();
             UserQuery userQuery = UserQuery.defaultQuery(isTranslationOn,
@@ -172,6 +180,7 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
+            @SuppressWarnings({"PMD.PrematureDeclaration"})
             User user = (User) response.body();
             OrganizationUnitQuery organizationUnitQuery = OrganizationUnitQuery.defaultQuery(user,
                     isTranslationOn, translationLocale,
@@ -182,59 +191,37 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
-            CategoryQuery categoryQuery = CategoryQuery
-                    .defaultQuery(isTranslationOn,
-                            translationLocale);
 
+            response = syncCategories(serverDate);
 
-
-            response = categoryFactory.newEndPointCall(categoryQuery,
-                    serverDate).call();
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-            CategoryComboQuery categoryComboQuery = CategoryComboQuery
-                    .defaultQuery(isTranslationOn,
-                            translationLocale);
-            response = categoryComboFactory.newEndPointCall(categoryComboQuery,
-                    serverDate).call();
-
-            if (!response.isSuccessful()) {
+            if(!response.isSuccessful()){
                 return response;
             }
 
-            Set<String> programUids = getAssignedProgramUids(user);
+            response = syncPrograms(serverDate, user);
 
-            ProgramQuery programQuery = ProgramQuery.defaultQuery(programUids, isTranslationOn,
-                    translationLocale);
-
-            response = programFactory.newEndPointCall(programQuery, serverDate)
-                    .call();
-
-            if (!response.isSuccessful()) {
+            if(!response.isSuccessful()){
                 return response;
             }
 
             List<Program> programs = ((Response<Payload<Program>>) response).body().items();
 
-            Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
-
-            TrackedEntityQuery trackedEntityQuery = TrackedEntityQuery.defaultQuery(
-                    trackedEntityUids, isTranslationOn,
-                    translationLocale);
-
-            response = trackedEntityFactory.newEndPointCall(trackedEntityQuery, serverDate).call();
+            response = syncTrackedEntities(serverDate, programs);
 
             if (!response.isSuccessful()) {
                 return response;
             }
 
-            Set<String> optionSetUids = getAssignedOptionSetUids(programs);
-            OptionSetQuery optionSetQuery = OptionSetQuery.defaultQuery(optionSetUids,
-                    isTranslationOn, translationLocale);
+            response = syncOptionSets(serverDate, programs);
 
-            response = optionSetFactory.newEndPointCall(optionSetQuery, serverDate).call();
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            DeletedObjectCall deletedObjectCall = new DeletedObjectCall(databaseAdapter,
+                    systemInfoService, systemInfoStore, resourceStore, deletedObjectFactory);
+
+            response = deletedObjectCall.call();
 
             if (!response.isSuccessful()) {
                 return response;
@@ -245,6 +232,65 @@ public class MetadataCall implements Call<Response> {
         } finally {
             transaction.end();
         }
+    }
+
+    private Response syncOptionSets(Date serverDate, List<Program> programs) throws Exception {
+        Set<String> optionSetUids = getAssignedOptionSetUids(programs);
+        OptionSetQuery optionSetQuery = OptionSetQuery.defaultQuery(optionSetUids,
+                isTranslationOn, translationLocale);
+
+        Response response = optionSetFactory.newEndPointCall(optionSetQuery,
+                serverDate).call();
+
+        return response;
+    }
+
+    private Response syncTrackedEntities(Date serverDate, List<Program> programs) throws Exception {
+        Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
+
+        TrackedEntityQuery trackedEntityQuery = TrackedEntityQuery.defaultQuery(
+                trackedEntityUids, isTranslationOn,
+                translationLocale);
+
+        Response response = trackedEntityFactory.newEndPointCall(trackedEntityQuery, serverDate).call();
+
+
+        return response;
+    }
+    private Response syncCategories(Date serverDate)
+            throws Exception {
+
+        CategoryQuery categoryQuery = CategoryQuery
+                .defaultQuery(isTranslationOn,
+                        translationLocale);
+
+        Response response = categoryFactory.newEndPointCall(categoryQuery,
+                serverDate).call();
+
+        if (!response.isSuccessful()) {
+            return response;
+        }
+        CategoryComboQuery categoryComboQuery = CategoryComboQuery
+                .defaultQuery(isTranslationOn,
+                        translationLocale);
+        response = categoryComboFactory.newEndPointCall(categoryComboQuery,
+                serverDate).call();
+
+        return response;
+    }
+
+    @SuppressWarnings("PMD.NPathComplexity")
+    private Response syncPrograms(Date serverDate, User user)
+            throws Exception {
+        Set<String> programUids = getAssignedProgramUids(user);
+
+        ProgramQuery programQuery = ProgramQuery.defaultQuery(programUids, isTranslationOn,
+                translationLocale);
+
+        Response response = programFactory.newEndPointCall(programQuery, serverDate)
+                .call();
+
+        return response;
     }
 
     public Response getOrganisationUnits(Date serverDate,

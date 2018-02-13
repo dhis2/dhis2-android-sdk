@@ -49,6 +49,7 @@ import java.util.Map;
         "PMD.NPathComplexity"
 })
 public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
+
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityInstanceModel.TABLE + " (" +
             Columns.UID + ", " +

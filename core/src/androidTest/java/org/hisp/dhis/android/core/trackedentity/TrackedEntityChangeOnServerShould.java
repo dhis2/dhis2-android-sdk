@@ -89,7 +89,7 @@ public class TrackedEntityChangeOnServerShould extends AbsStoreTestCase {
 
     @Test
     public void update_tracked_entity_if_audit_type_is_update() throws Exception {
-        String filename = "tracked_entities.json";
+        String filename = "tracked_entity.json";
 
         givenAExistedTrackedEntityPreviously();
 

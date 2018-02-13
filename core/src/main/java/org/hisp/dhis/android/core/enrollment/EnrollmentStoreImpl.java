@@ -55,7 +55,6 @@ import java.util.Map;
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
 public class EnrollmentStoreImpl implements EnrollmentStore {
-
     private static final String INSERT_STATEMENT = "INSERT INTO " + EnrollmentModel.TABLE + " (" +
             Columns.UID + ", " +
             Columns.CREATED + ", " +

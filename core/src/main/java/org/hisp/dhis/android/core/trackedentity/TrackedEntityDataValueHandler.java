@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,10 +72,6 @@ public class TrackedEntityDataValueHandler {
                     eventUid, dataValue.created(), dataValue.lastUpdated(), dataValue.dataElement(),
                     dataValue.storedBy(), dataValue.value(), dataValue.providedElsewhere());
         }
-    }
-
-    public boolean areAllDataValueAdded(@NonNull List<TrackedEntityDataValue> trackedEntityDataValues){
-        return trackedEntityDataValueStore.areAllDataValueAdded(trackedEntityDataValues);
     }
 }
 

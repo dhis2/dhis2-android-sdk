@@ -1,12 +1,11 @@
 package org.hisp.dhis.android.core.event;
 
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
-
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 import java.util.List;
 
@@ -58,11 +57,7 @@ public class EventHandler {
                     event.attributeOptionCombo(),
                     event.trackedEntityInstance(), event.uid());
 
-            List<TrackedEntityDataValue> trackedEntityDataValues = event.trackedEntityDataValues();
-            boolean areDataValuesAdded = trackedEntityDataValueHandler.areAllDataValueAdded(
-                    trackedEntityDataValues);
-
-            if (updatedRow <= 0 && areDataValuesAdded) {
+            if (updatedRow <= 0) {
 
                 eventStore.insert(event.uid(), event.enrollmentUid(), event.created(),
                         event.lastUpdated(),
@@ -75,10 +70,7 @@ public class EventHandler {
                         event.trackedEntityInstance());
             }
 
-            if (areDataValuesAdded) {
-                trackedEntityDataValueHandler.handle(event.uid(),
-                        event.trackedEntityDataValues());
-            }
+            trackedEntityDataValueHandler.handle(event.uid(), event.trackedEntityDataValues());
         }
     }
 

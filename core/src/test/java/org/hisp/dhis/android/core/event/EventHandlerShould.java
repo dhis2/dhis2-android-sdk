@@ -1,7 +1,6 @@
 package org.hisp.dhis.android.core.event;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -9,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.junit.Before;
 import org.junit.Test;
@@ -136,9 +134,6 @@ public class EventHandlerShould {
                 anyString(), anyString(), anyString())
         ).thenReturn(0);
 
-        when(trackedEntityDataValueHandler.areAllDataValueAdded(
-                anyListOf(TrackedEntityDataValue.class))).thenReturn(true);
-
         eventHandler.handle(event);
 
         // verify that update and insert is invoked, since we're updating before inserting
@@ -160,36 +155,5 @@ public class EventHandlerShould {
 
         // verify that delete is never invoked
         verify(eventStore, never()).delete(anyString());
-    }
-
-    @Test
-    public void not_add_event_with_data_elements_that_not_exists() {
-        eventHandler.handle(event);
-
-        verify(eventStore, never()).insert(anyString(), anyString(), any(Date.class),
-                any(Date.class),
-                anyString(), anyString(),
-                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
-                anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
-                anyString(), anyString());
-
-    }
-
-    @Test
-    public void add_event_with_data_elements_that() {
-        when(trackedEntityDataValueHandler.areAllDataValueAdded(
-                anyListOf(TrackedEntityDataValue.class))).thenReturn(true);
-
-        eventHandler.handle(event);
-
-        verify(eventStore, times(1)).insert(anyString(), anyString(), any(Date.class),
-                any(Date.class),
-                anyString(), anyString(),
-                any(EventStatus.class), anyString(), anyString(), anyString(), anyString(),
-                anyString(),
-                any(Date.class), any(Date.class), any(Date.class), any(State.class), anyString(),
-                anyString(), anyString());
-
     }
 }

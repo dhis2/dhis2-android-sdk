@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.constant;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,12 +40,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.Date;
 
 public class ConstantStoreImpl implements ConstantStore {
-
-    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
-            ConstantModel.Columns.UID +
-            " FROM " + ConstantModel.TABLE +
-            " WHERE "+ConstantModel.Columns.UID+" =?;";
-
     private static final String INSERT_STATEMENT = "INSERT INTO " + ConstantModel.TABLE + " (" +
             ConstantModel.Columns.UID + "," +
             ConstantModel.Columns.CODE + "," +
@@ -86,10 +79,5 @@ public class ConstantStoreImpl implements ConstantStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(ConstantModel.TABLE);
-    }
-    
-    public Boolean exists(String uId) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
     }
 }

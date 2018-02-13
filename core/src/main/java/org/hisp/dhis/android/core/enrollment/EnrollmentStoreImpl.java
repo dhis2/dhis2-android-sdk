@@ -55,12 +55,6 @@ import java.util.Map;
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
 public class EnrollmentStoreImpl implements EnrollmentStore {
-
-    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
-            Columns.UID +
-            " FROM " + EnrollmentModel.TABLE +
-            " WHERE "+Columns.UID+" =?;";
-
     private static final String INSERT_STATEMENT = "INSERT INTO " + EnrollmentModel.TABLE + " (" +
             Columns.UID + ", " +
             Columns.CREATED + ", " +
@@ -315,10 +309,5 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(EnrollmentModel.TABLE);
-    }
-
-    public Boolean exists(String uId) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
     }
 }

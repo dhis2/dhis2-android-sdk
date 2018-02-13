@@ -30,18 +30,12 @@ package org.hisp.dhis.android.core.program;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements ProgramStageSectionProgramIndicatorLinkStore {
-
-    private static final String EXIST_BY_ID_STATEMENT = "SELECT " +
-            ProgramStageSectionProgramIndicatorLinkModel.Columns.ID +
-            " FROM " + ProgramStageSectionProgramIndicatorLinkModel.TABLE +
-            " WHERE "+ProgramStageSectionProgramIndicatorLinkModel.Columns.ID+" =?;";
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             ProgramStageSectionProgramIndicatorLinkModel.TABLE + " (" +
@@ -104,10 +98,5 @@ public class ProgramStageSectionProgramIndicatorLinkStoreImpl implements Program
     @Override
     public int delete() {
         return databaseAdapter.delete(ProgramStageSectionProgramIndicatorLinkModel.TABLE);
-    }
-
-    public Boolean exists(String uId) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, uId);
-        return cursor.getCount()>0;
     }
 }

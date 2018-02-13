@@ -58,11 +58,6 @@ import java.util.Map;
 })
 public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueStore {
 
-    private static final String EXIST_BY_ID_STATEMENT = "SELECT " +
-            TrackedEntityDataValueModel.Columns.ID +
-            " FROM " + TrackedEntityDataValueModel.TABLE +
-            " WHERE "+TrackedEntityDataValueModel.Columns.ID+" =?;";
-
     private static final String SELECT_FIELDS =
             TrackedEntityDataValueModel.TABLE + "." + TrackedEntityDataValueModel.Columns.CREATED
                     + ", " +
@@ -332,16 +327,5 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
 
         Cursor cursor = databaseAdapter.query(queryStatement);
         return cursor.getCount();
-    }
-
-    @Override
-    public int delete(@NonNull String uid) {
-        return 0;
-    }
-
-    @Override
-    public Boolean exists(String id) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, id);
-        return cursor.getCount()>0;
     }
 }

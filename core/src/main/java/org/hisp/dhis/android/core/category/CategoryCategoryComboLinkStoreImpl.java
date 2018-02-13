@@ -28,11 +28,6 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
                     CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO + ") " +
                     "VALUES(?, ?);";
 
-    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
-            CategoryCategoryComboLinkModel.Columns.UID +
-            " FROM " + CategoryCategoryComboLinkModel.TABLE +
-            " WHERE " + CategoryCategoryComboLinkModel.Columns.UID + " =?;";
-
     private static final String DELETE_STATEMENT =
             "DELETE FROM " + CategoryCategoryComboLinkModel.TABLE +
                     " WHERE " + CategoryCategoryComboLinkModel.Columns.CATEGORY + " =?" + " AND "
@@ -207,10 +202,5 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
 
         sqLiteBind(updateStatement, 3, oldCategoryCategoryComboLinkMode.category());
         sqLiteBind(updateStatement, 4, oldCategoryCategoryComboLinkMode.categoryCombo());
-    }
-
-    public Boolean exists(String uId) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount() > 0;
     }
 }

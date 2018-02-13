@@ -45,11 +45,6 @@ import java.util.Date;
 })
 public class ResourceStoreImpl implements ResourceStore {
 
-    private static final String EXIST_BY_ID_STATEMENT = "SELECT " +
-            Columns.ID +
-            " FROM " + ResourceModel.TABLE +
-            " WHERE "+ Columns.ID+" =?;";
-
     public static final String INSERT_STATEMENT = "INSERT INTO " + ResourceModel.TABLE + " (" +
             Columns.RESOURCE_TYPE + ", " +
             Columns.LAST_SYNCED + ") " +
@@ -131,11 +126,5 @@ public class ResourceStoreImpl implements ResourceStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(ResourceModel.TABLE);
-    }
-
-    @Override
-    public Boolean exists(String uId) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, uId);
-        return cursor.getCount()>0;
     }
 }

@@ -50,11 +50,6 @@ import java.util.Map;
 })
 public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
 
-    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
-            Columns.UID +
-            " FROM " + TrackedEntityInstanceModel.TABLE +
-            " WHERE "+Columns.UID+" =?;";
-
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityInstanceModel.TABLE + " (" +
             Columns.UID + ", " +
@@ -245,10 +240,5 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             cursor.close();
         }
         return trackedEntityInstanceMap;
-    }
-
-    public Boolean exists(String uId) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
     }
 }

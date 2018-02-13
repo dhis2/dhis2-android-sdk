@@ -19,11 +19,6 @@ import java.util.List;
 public class CategoryOptionComboCategoryLinkStoreImpl extends Store implements
         CategoryOptionComboCategoryLinkStore {
 
-    private static final String EXIST_BY_ID_STATEMENT = "SELECT " +
-            CategoryOptionComboCategoryLinkModel.Columns.ID +
-            " FROM " + CategoryOptionComboCategoryLinkModel.TABLE +
-            " WHERE "+CategoryOptionComboCategoryLinkModel.Columns.ID+" =?;";
-
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryOptionComboCategoryLinkModel.TABLE + " (" +
                     CategoryOptionComboCategoryLinkModel.Columns.CATEGORY_OPTION_COMBO + ", " +
@@ -231,11 +226,5 @@ public class CategoryOptionComboCategoryLinkStoreImpl extends Store implements
         }
         return categoryOptions;
     }
-
-    public Boolean exists(String id) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, id);
-        return cursor.getCount()>0;
-    }
-
 }
 

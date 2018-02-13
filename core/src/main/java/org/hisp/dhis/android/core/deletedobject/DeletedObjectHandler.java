@@ -6,10 +6,10 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.common.IdentifiableStore;
 public class DeletedObjectHandler {
     @NonNull
-    public final IdentifiableStoreFactory IdentifiableStoreFactory;
+    public final IdentifiableStoreFactory identifiableStoreFactory;
 
     public DeletedObjectHandler(IdentifiableStoreFactory identifiableStoreFactory) {
-        this.IdentifiableStoreFactory = identifiableStoreFactory;
+        this.identifiableStoreFactory = identifiableStoreFactory;
     }
 
     public void handle(String uid, String klass) {
@@ -18,6 +18,6 @@ public class DeletedObjectHandler {
     }
 
     public IdentifiableStore getStore(String klass) {
-        return IdentifiableStoreFactory.getByKlass(klass);
+        return identifiableStoreFactory.getByKlass(klass);
     }
 }

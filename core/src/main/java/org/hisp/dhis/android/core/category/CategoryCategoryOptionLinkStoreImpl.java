@@ -59,11 +59,6 @@ public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOpti
                     " FROM " + CategoryCategoryOptionLinkModel.TABLE +
                     " WHERE " + CategoryCategoryOptionLinkModel.Columns.CATEGORY_OPTION + " =?;";
 
-    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
-            CategoryCategoryOptionLinkModel.Columns.UID +
-            " FROM " + CategoryCategoryOptionLinkModel.TABLE +
-            " WHERE "+CategoryCategoryOptionLinkModel.Columns.UID+" =?;";
-
     public CategoryCategoryOptionLinkStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
@@ -162,11 +157,6 @@ public class CategoryCategoryOptionLinkStoreImpl implements CategoryCategoryOpti
         List<String> uIds = mapUidsFromCursor(cursor);
 
         return uIds;
-    }
-
-    public Boolean exists(String uId) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
     }
 
     @Override

@@ -53,9 +53,6 @@ public class DeletedObjectEndPointCall implements Call<Response<Payload<DeletedO
 
         ResourceModel.Type type = ResourceModel.getResourceModelFromKlass(deletedObjectKlass);
 
-        if (type == null) {
-            throw new IllegalArgumentException(deletedObjectKlass + " unsupported klass type");
-        }
         Response<Payload<DeletedObject>> deletedObjectsByLastUpdated = null;
         String lastSyncedDeletedObjects = resourceHandler.getLastUpdated(type);
 

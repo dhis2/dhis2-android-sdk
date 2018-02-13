@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.relationship;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,13 +38,6 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class RelationshipStoreImpl implements RelationshipStore {
-
-    private static final String EXIST_BY_ID_STATEMENT = "SELECT " +
-            RelationshipModel.Columns.ID +
-            " FROM " + RelationshipModel.TABLE +
-            " WHERE "+RelationshipModel.Columns.ID+" =?;";
-
-
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             RelationshipModel.TABLE + " (" +
             RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + ", " +
@@ -79,10 +71,5 @@ public class RelationshipStoreImpl implements RelationshipStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(RelationshipModel.TABLE);
-    }
-
-    public Boolean exists(String id) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, id);
-        return cursor.getCount()>0;
     }
 }

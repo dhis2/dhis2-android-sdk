@@ -56,12 +56,6 @@ import java.util.Map;
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
 public class EventStoreImpl implements EventStore {
-
-    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
-            Columns.UID +
-            " FROM " + EventModel.TABLE +
-            " WHERE "+Columns.UID+" =?;";
-
     private static final String INSERT_STATEMENT = "INSERT INTO " + EventModel.TABLE + " (" +
             Columns.UID + ", " +
             Columns.ENROLLMENT_UID + ", " +
@@ -377,10 +371,5 @@ public class EventStoreImpl implements EventStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(EventModel.TABLE);
-    }
-
-    public Boolean exists(String uId) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
     }
 }

@@ -21,9 +21,4 @@ public interface DeletedObjectService {
             @Query(FIELDS) @Which Fields<DeletedObject> fields,
             @Query(SKIP_PAGING) Boolean paging, @Query(KLASS) String klass,
             @Query(DELETED_AT) @Where String deletedAt);
-
-    @GET(DELETED_OBJECTS)
-    Call<Payload<DeletedObject>> getDeletedObjects(
-            @Query(FIELDS) @Which Fields<DeletedObject> fields,
-            @Query(SKIP_PAGING) Boolean paging, @Query(KLASS) String klass);
 }

@@ -185,7 +185,7 @@ public abstract class ResourceModel extends BaseModel {
         } else if (klass.equals(RelationshipType.class.getSimpleName())) {
             return ResourceModel.Type.DELETED_RELATIONSHIP_TYPE;
         } else {
-            throw new IllegalArgumentException("invalid class name");
+            throw new IllegalArgumentException("unsupported class");
         }
     }
 

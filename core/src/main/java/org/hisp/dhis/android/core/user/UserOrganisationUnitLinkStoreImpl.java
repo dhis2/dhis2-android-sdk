@@ -44,11 +44,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 public class UserOrganisationUnitLinkStoreImpl extends Store
         implements UserOrganisationUnitLinkStore {
 
-    private static final String EXIST_BY_ID_STATEMENT = "SELECT " +
-            UserOrganisationUnitLinkModel.Columns.ID +
-            " FROM " + UserOrganisationUnitLinkModel.TABLE +
-            " WHERE "+UserOrganisationUnitLinkModel.Columns.ID+" =?;";
-
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             UserOrganisationUnitLinkModel.TABLE + " (" +
             UserOrganisationUnitLinkModel.Columns.USER + ", " +
@@ -145,11 +140,6 @@ public class UserOrganisationUnitLinkStoreImpl extends Store
     @Override
     public int delete() {
         return databaseAdapter.delete(UserOrganisationUnitLinkModel.TABLE);
-    }
-
-    public Boolean exists(String id) {
-        Cursor cursor = databaseAdapter.query(EXIST_BY_ID_STATEMENT, id);
-        return cursor.getCount()>0;
     }
 
     @Override

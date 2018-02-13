@@ -42,7 +42,8 @@ public interface DataValueService {
     Call<Payload<DataValue>> getDataValues(@Query("fields") @Which Fields<DataValue> fields,
                                            @Query("filter") @Where Filter<DataValue, String> lastUpdated,
                                            @Query("dataSet") @Where String dataSetUids,
-                                           @Query("period") @Where String periodIds,
                                            @Query("orgUnit") @Where String orgUnitUids,
+                                           @Query("startDate") @Where String startDate,
+                                           @Query("endDate") @Where String endDate,
                                            @Query("paging") Boolean paging);
 }

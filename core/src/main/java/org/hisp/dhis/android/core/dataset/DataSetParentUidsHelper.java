@@ -115,16 +115,6 @@ final class DataSetParentUidsHelper {
         return uids;
     }
 
-    static Set<String> getPeriodsIds() {
-        // TODO Return periods ids
-        Set<String> uids = new HashSet<>();
-
-        // Mocked periods
-        uids.add("201712");
-        uids.add("2017");
-        return uids;
-    }
-
     static Set<String> getOrganisationUnitUids(User user) {
         List<OrganisationUnit> organisationUnits = user.organisationUnits();
         Set<String> uids = new HashSet<>();

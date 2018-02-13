@@ -36,9 +36,13 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -112,5 +116,21 @@ public final class Utils {
 
     public static String commaSeparatedArrayValuesFromSet(Set<String> values) {
         return  commaSeparatedArrayValues(values.toArray(new String[values.size()]));
+    }
+
+    public static String generateFormatedStartDateStr() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, -1);
+        cal.add(Calendar.MONTH, -1);
+        Date previousYear = cal.getTime();
+
+        return formatter.format(previousYear);
+    }
+
+    public static String generateFormatedEndDateStr() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        return formatter.format(new Date());
     }
 }

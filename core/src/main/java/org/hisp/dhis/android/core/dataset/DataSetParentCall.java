@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.indicator.IndicatorEndpointCall;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeEndpointCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.List;
 import java.util.Set;
@@ -97,7 +98,8 @@ public class DataSetParentCall extends TransactionalCall {
         indicatorTypeEndpointCall.call();
 
         DataValueEndpointCall dataValueEndpointCall = dataValueCallFactory.create(data, dataSetUids,
-                DataSetParentUidsHelper.getPeriodsIds(), DataSetParentUidsHelper.getOrganisationUnitUids(user));
+                DataSetParentUidsHelper.getOrganisationUnitUids(user), Utils.generateFormatedStartDateStr(),
+                Utils.generateFormatedEndDateStr());
         dataValueEndpointCall.call();
 
         linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);

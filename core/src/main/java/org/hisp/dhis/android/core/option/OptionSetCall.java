@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.option;
 
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -52,20 +54,22 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     private final DatabaseAdapter databaseAdapter;
     private final ResourceHandler resourceHander;
     private final Date serverDate;
-    private final Set<String> uids;
     private boolean isExecuted;
+    private final OptionSetQuery query;
+
 
     public OptionSetCall(OptionSetService optionSetService,
             OptionSetHandler optionSetHandler,
-                         DatabaseAdapter databaseAdapter,
+            DatabaseAdapter databaseAdapter,
             ResourceHandler resourceHandler,
-            Set<String> uids, Date serverDate) {
+            Date serverDate, @NonNull OptionSetQuery query) {
         this.optionSetService = optionSetService;
         this.optionSetHandler = optionSetHandler;
         this.databaseAdapter = databaseAdapter;
         this.resourceHander = resourceHandler;
-        this.uids = uids;
         this.serverDate = new Date(serverDate.getTime());
+        this.query = query;
+
     }
 
 
@@ -86,12 +90,13 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
             isExecuted = true;
         }
 
-        if (uids.size() > MAX_UIDS) {
+        if (query.uIds().size() > MAX_UIDS) {
             throw new IllegalArgumentException(
-                    "Can't handle the amount of option sets: " + uids.size() + ". " + "Max size is: " + MAX_UIDS);
+                    "Can't handle the amount of option sets: " + query.uIds().size() + ". "
+                            + "Max size is: " + MAX_UIDS);
 
         }
-        Response<Payload<OptionSet>> response = getOptionSets(uids);
+        Response<Payload<OptionSet>> response = getOptionSets(query.uIds());
 
         if (response != null && response.isSuccessful()) {
             saveOptionSets(response);
@@ -114,7 +119,8 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
                 )
         ).build();
 
-        return optionSetService.optionSets(false, optionSetFields, OptionSet.uid.in(uids)).execute();
+        return optionSetService.optionSets(false, optionSetFields, OptionSet.uid.in(uids),
+                query.isTranslationOn(), query.translationLocale()).execute();
     }
 
     private void saveOptionSets(Response<Payload<OptionSet>> response) {

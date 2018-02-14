@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core.dataelement;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 
 import android.support.test.filters.MediumTest;
 
@@ -31,7 +33,6 @@ import java.util.Set;
 public class DataElementEndPointCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
-    private D2 d2;
     private DataElementFactory dataElementFactory;
 
 
@@ -42,7 +43,7 @@ public class DataElementEndPointCallMockIntegrationShould extends AbsStoreTestCa
 
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         dataElementFactory = new DataElementFactory(
                 d2.retrofit(), databaseAdapter(),
@@ -66,9 +67,8 @@ public class DataElementEndPointCallMockIntegrationShould extends AbsStoreTestCa
         Set<String> uidsSet =
                 new HashSet<>(Arrays.asList("FTRrcoaog83", "P+-3jJH5Tu5VC", "FQ2o8UBlcrS"));
 
-        DataElementQuery dataElementQuery = DataElementQuery.Builder.create()
-                .withUIds(uidsSet)
-                .build();
+        DataElementQuery dataElementQuery = DataElementQuery.defaultQuery(uidsSet,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
 
         dataElementFactory.newEndPointCall(dataElementQuery, new Date()).call();
 

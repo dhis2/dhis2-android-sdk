@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_LOCALE;
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLATION;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -48,6 +51,8 @@ public interface TrackedEntityService {
             @NonNull @Query("fields") @Which Fields<TrackedEntity> fields,
             @NonNull @Query("filter") @Where Filter<TrackedEntity, String> idFilter,
             @Nullable @Query("filter") @Where Filter<TrackedEntity, String> lastUpdated,
-            @NonNull @Query("paging") boolean paging
+            @Query("paging") boolean paging,
+            @Query(QUERY_TRANSLATION) boolean isTranslationOn,
+            @NonNull @Query(QUERY_LOCALE) String locale
     );
 }

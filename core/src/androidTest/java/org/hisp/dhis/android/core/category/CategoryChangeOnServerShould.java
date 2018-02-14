@@ -3,6 +3,8 @@ package org.hisp.dhis.android.core.category;
 import static junit.framework.Assert.fail;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -40,20 +42,20 @@ public class CategoryChangeOnServerShould extends AbsStoreTestCase {
     private MetadataAuditListener metadataAuditListener;
 
     private Dhis2MockServer dhis2MockServer;
-    private D2 d2;
 
     @Before
     public void setup() throws IOException {
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         MockitoAnnotations.initMocks(this);
 
         when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
                 new CategoryMetadataAuditHandler(
                         new CategoryFactory(d2.retrofit(), databaseAdapter(),
-                                HandlerFactory.createResourceHandler(databaseAdapter()))));
+                                HandlerFactory.createResourceHandler(databaseAdapter())),
+                        DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE));
 
         categoryStore = new CategoryStoreImpl(databaseAdapter());
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);

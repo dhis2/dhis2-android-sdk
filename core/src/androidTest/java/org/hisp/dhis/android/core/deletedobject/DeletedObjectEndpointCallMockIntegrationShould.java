@@ -73,7 +73,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
     @Test
     @MediumTest
     public void delete_the_given_deleted_Relationship_types() throws Exception {
-        RelationshipTypeStoreImpl relationshipTypeStore = new RelationshipTypeStoreImpl(databaseAdapter());
+        RelationshipTypeStoreImpl relationshipTypeStore = new RelationshipTypeStoreImpl(
+                databaseAdapter());
         dhis2MockServer.enqueueMockResponses(new MetadataWithMultipleObjectsMockResponseList());
         d2.syncMetaData().call();
         verifyIfIsPersisted("V2kkHafqs82", relationshipTypeStore);
@@ -111,7 +112,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsPersisted("CgwB73TbuLC", programTrackedEntityAttributeStore);
         verifyIfIsPersisted("r5BFLb7DBUz", programTrackedEntityAttributeStore);
 
-        dhis2MockServer.enqueueMockResponses(new MetadataWithDeletedProgramStagesMockResponseList());
+        dhis2MockServer.enqueueMockResponses(
+                new MetadataWithDeletedProgramStagesMockResponseList());
         d2.syncMetaData().call();
 
         verifyIfIsDeleted("CgwB73TbuLC", programTrackedEntityAttributeStore);
@@ -252,7 +254,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsPersisted("Gmbgme7z9BF", categoryOptionComboStore);
 
         //when
-        dhis2MockServer.enqueueMockResponses(new MetadataWithDeletedCategoryComboOptionsMockResponseList());
+        dhis2MockServer.enqueueMockResponses(
+                new MetadataWithDeletedCategoryComboOptionsMockResponseList());
         d2.syncMetaData().call();
 
         //then
@@ -311,7 +314,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsPersisted("A03MvHHogjR", programStageStore);
 
         //when
-        dhis2MockServer.enqueueMockResponses(new MetadataWithDeletedProgramStagesMockResponseList());
+        dhis2MockServer.enqueueMockResponses(
+                new MetadataWithDeletedProgramStagesMockResponseList());
         d2.syncMetaData().call();
 
         //then
@@ -331,7 +335,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsPersisted("OeSqs7pkKqI", programSectionStore);
 
         //when
-        dhis2MockServer.enqueueMockResponses(new MetadataWithDeletedProgramStagesMockResponseList());
+        dhis2MockServer.enqueueMockResponses(
+                new MetadataWithDeletedProgramStagesMockResponseList());
         d2.syncMetaData().call();
 
         //then
@@ -351,7 +356,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsPersisted("VqEFza8wbwA", trackedEntityAttributeStore);
 
         //when
-        dhis2MockServer.enqueueMockResponses(new MetadataWithDeletedProgramStagesMockResponseList());
+        dhis2MockServer.enqueueMockResponses(
+                new MetadataWithDeletedProgramStagesMockResponseList());
         d2.syncMetaData().call();
 
         //then
@@ -371,7 +377,8 @@ public class DeletedObjectEndpointCallMockIntegrationShould extends AbsStoreTest
         verifyIfIsPersisted("vdc1saaN2ma", programStageDataElementStore);
 
         //when
-        dhis2MockServer.enqueueMockResponses(new MetadataWithDeletedProgramStagesMockResponseList());
+        dhis2MockServer.enqueueMockResponses(
+                new MetadataWithDeletedProgramStagesMockResponseList());
         d2.syncMetaData().call();
 
         //then

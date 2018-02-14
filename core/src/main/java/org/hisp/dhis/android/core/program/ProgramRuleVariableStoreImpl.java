@@ -76,7 +76,7 @@ public class ProgramRuleVariableStoreImpl extends Store implements ProgramRuleVa
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             ProgramRuleVariableModel.Columns.UID +
             " FROM " + ProgramRuleVariableModel.TABLE +
-            " WHERE "+ProgramRuleVariableModel.Columns.UID+" =?;";
+            " WHERE " + ProgramRuleVariableModel.Columns.UID + " =?;";
 
     private static final String QUERY_BY_UID_STATEMENT = "SELECT " + FIELDS +
             " FROM " + ProgramRuleVariableModel.TABLE +
@@ -223,7 +223,7 @@ public class ProgramRuleVariableStoreImpl extends Store implements ProgramRuleVa
     @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
+        return cursor.getCount() > 0;
     }
 
     @Override

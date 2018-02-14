@@ -27,11 +27,31 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.fail;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import android.support.annotation.NonNull;
+
+import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.server.RetrofitFactory;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,16 +68,9 @@ import java.util.Date;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
+import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Response;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import retrofit2.Retrofit;
 
 @RunWith(JUnit4.class)
 public class SystemInfoCallShould {
@@ -91,13 +104,26 @@ public class SystemInfoCallShould {
 
     private Call<Response<SystemInfo>> systemInfoSyncCall;
 
+    private Dhis2MockServer dhis2MockServer;
+
+    private Retrofit retrofit;
+
+    private SystemInfoQuery systemInfoQuery;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
+
         MockitoAnnotations.initMocks(this);
+
+        systemInfoQuery = SystemInfoQuery.defaultQuery(DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
+
         systemInfoSyncCall = new SystemInfoCall(
-                databaseAdapter, systemInfoStore, systemInfoService, resourceStore
+                databaseAdapter, systemInfoStore, systemInfoService, resourceStore,
+                systemInfoQuery
         );
 
         when(systemInfo.version()).thenReturn("test.version-SNAPSHOT");
@@ -105,14 +131,21 @@ public class SystemInfoCallShould {
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
-        when(systemInfoService.getSystemInfo(any(Fields.class))).thenReturn(systemInfoCall);
+        when(systemInfoService.getSystemInfo(any(Fields.class), anyBoolean(),
+                anyString())).thenReturn(systemInfoCall);
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        dhis2MockServer.shutdown();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void return_correct_fields_after_call() throws Exception {
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
-        when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenReturn(systemInfoCall);
+        when(systemInfoService.getSystemInfo(filterCaptor.capture(), anyBoolean(),
+                anyString())).thenReturn(systemInfoCall);
 
         systemInfoSyncCall.call();
 
@@ -139,7 +172,8 @@ public class SystemInfoCallShould {
             verify(transaction, never()).setSuccessful();
             verify(transaction, never()).end();
 
-            verify(systemInfoStore, never()).insert(any(Date.class), anyString(), anyString(), anyString());
+            verify(systemInfoStore, never()).insert(any(Date.class), anyString(), anyString(),
+                    anyString());
             verify(resourceStore, never()).insert(anyString(), any(Date.class));
             verify(resourceStore, never()).update(anyString(), any(Date.class), anyString());
             verify(resourceStore, never()).delete(anyString());
@@ -150,8 +184,9 @@ public class SystemInfoCallShould {
     @Test
     public void never_invoke_handlers_if_request_fail() throws Exception {
         // unauthorized
-        when(systemInfoCall.execute()).thenReturn(Response.<SystemInfo>error(HttpURLConnection.HTTP_UNAUTHORIZED,
-                ResponseBody.create(MediaType.parse("application/json"), "{}")));
+        when(systemInfoCall.execute()).thenReturn(
+                Response.<SystemInfo>error(HttpURLConnection.HTTP_UNAUTHORIZED,
+                        ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
         Response<SystemInfo> response = systemInfoSyncCall.call();
 
@@ -163,7 +198,8 @@ public class SystemInfoCallShould {
         verify(transaction, never()).end();
         verify(transaction, never()).setSuccessful();
 
-        verify(systemInfoStore, never()).insert(any(Date.class), anyString(), anyString(), anyString());
+        verify(systemInfoStore, never()).insert(any(Date.class), anyString(), anyString(),
+                anyString());
         verify(resourceStore, never()).insert(anyString(), any(Date.class));
         verify(resourceStore, never()).update(anyString(), any(Date.class), anyString());
         verify(resourceStore, never()).delete(anyString());
@@ -171,7 +207,9 @@ public class SystemInfoCallShould {
     }
 
     @Test
-    public void return_true_when_ask_if_is_executed_before_throw_illegal_state_exception_on_consecutive_calls() throws Exception {
+    public void
+    return_true_when_ask_if_is_executed_before_throw_illegal_state_exception_on_consecutive_calls()
+            throws Exception {
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
 
         systemInfoSyncCall.call();
@@ -213,8 +251,43 @@ public class SystemInfoCallShould {
 
         systemInfoSyncCall.call();
 
-        verify(systemInfoStore, times(1)).insert(any(Date.class), anyString(), anyString(), anyString());
+        verify(systemInfoStore, times(1)).insert(any(Date.class), anyString(), anyString(),
+                anyString());
         verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
 
+    }
+
+    @Test
+    public void append_translation_variables_to_the_query_string()
+            throws Exception {
+
+        whenCalSystemInfoCallWithMockWebservice();
+
+        thenAssertTranslationParametersAreIncluded();
+    }
+
+    private void thenAssertTranslationParametersAreIncluded() throws InterruptedException {
+        RecordedRequest request = dhis2MockServer.takeRequest();
+
+        MatcherAssert.assertThat(request.getPath(), containsString(
+                "translation=" + DEFAULT_IS_TRANSLATION_ON + "&locale="
+                        + DEFAULT_TRANSLATION_LOCALE));
+    }
+
+    private void whenCalSystemInfoCallWithMockWebservice() throws Exception {
+        SystemInfoCall callWithMockWebservice = provideSystemInfoCallWithMockWebservice();
+
+        dhis2MockServer.enqueueMockResponse("system_info.json");
+        callWithMockWebservice.call();
+    }
+
+    @NonNull
+    private SystemInfoCall provideSystemInfoCallWithMockWebservice() {
+        SystemInfoService mockService = retrofit.create(SystemInfoService.class);
+
+        return new SystemInfoCall(
+                databaseAdapter, systemInfoStore, mockService, resourceStore,
+                systemInfoQuery
+        );
     }
 }

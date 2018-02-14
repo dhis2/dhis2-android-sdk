@@ -62,7 +62,7 @@ public class MetadataWithDeletedProgramStagesMockResponseList extends MetadataMo
     }
 
     @Override
-    protected String getDeletedObjectCategoryOptionComboMockResponse(){
+    protected String getDeletedObjectCategoryOptionComboMockResponse() {
         return "deletedobject/deleted_object_category_option_combo.json";
     }
 
@@ -77,39 +77,39 @@ public class MetadataWithDeletedProgramStagesMockResponseList extends MetadataMo
     }
 
     @Override
-    protected String getDeletedObjectProgramStageMockResponse(){
+    protected String getDeletedObjectProgramStageMockResponse() {
         return "deletedobject/deleted_object_program_stages.json";
     }
 
     @Override
-    protected String getDeletedObjectProgramStageDataElementMockResponse(){
+    protected String getDeletedObjectProgramStageDataElementMockResponse() {
         return "deletedobject/deleted_object_program_stage_data_elements.json";
     }
 
     @Override
-    protected String getDeletedObjectProgramStageSectionMockResponse(){
+    protected String getDeletedObjectProgramStageSectionMockResponse() {
         return "deletedobject/deleted_object_program_stage_sections.json";
     }
 
     @Override
-    protected String getDeletedObjectProgramTrackedEntityAttributeMockResponse(){
+    protected String getDeletedObjectProgramTrackedEntityAttributeMockResponse() {
         return "deletedobject/deleted_object_program_tracked_entity_attributes.json";
     }
+
     @Override
-    protected String getDeletedObjectTrackedEntityAttributeMockResponse(){
+    protected String getDeletedObjectTrackedEntityAttributeMockResponse() {
         return "deletedobject/deleted_object_tracked_entity_attributes.json";
     }
 
     @Override
-    protected String getDeletedObjectTrackedEntityMockResponse(){
+    protected String getDeletedObjectTrackedEntityMockResponse() {
         return "deletedobject/deleted_object_tracked_entity.json";
     }
 
     @Override
-    protected String getDeletedObjectOptionSetMockResponse(){
+    protected String getDeletedObjectOptionSetMockResponse() {
         return "deletedobject/deleted_object_option_sets.json";
     }
-
 
 
 }

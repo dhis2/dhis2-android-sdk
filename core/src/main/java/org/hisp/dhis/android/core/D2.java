@@ -95,6 +95,7 @@ import org.hisp.dhis.android.core.user.UserCredentialsHandler;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserHandler;
+import org.hisp.dhis.android.core.user.UserQuery;
 import org.hisp.dhis.android.core.user.UserRoleHandler;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStoreImpl;
@@ -106,6 +107,7 @@ import org.hisp.dhis.android.core.user.UserStoreImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
@@ -150,6 +152,8 @@ public final class D2 {
     private MetadataAuditConsumer metadataAuditConsumer;
     private MetadataAuditListener metadataAuditListener;
     private final DeletedObjectFactory deletedObjectFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     //Factories
     private final OptionSetFactory optionSetFactory;
@@ -164,9 +168,13 @@ public final class D2 {
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
-            MetadataAuditConnection metadataAuditConnection) {
+            MetadataAuditConnection metadataAuditConnection,
+            boolean isTranslationOn, @NonNull String translationLocale) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
+
         // services
         this.userService = retrofit.create(UserService.class);
         this.systemInfoService = retrofit.create(SystemInfoService.class);
@@ -246,6 +254,7 @@ public final class D2 {
 
         this.relationshipTypeFactory =
                 new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
+
         this.categoryFactory = new CategoryFactory(retrofit(), databaseAdapter, resourceHandler);
 
         this.categoryComboFactory = new CategoryComboFactory(retrofit(), databaseAdapter,
@@ -259,7 +268,7 @@ public final class D2 {
                     new MetadataAuditHandlerFactory(trackedEntityFactory, optionSetFactory,
                             dataElementFactory, trackedEntityAttributeFactory, programFactory,
                             relationshipTypeFactory, organisationUnitFactory, categoryFactory,
-                            categoryComboFactory);
+                            categoryComboFactory, isTranslationOn, translationLocale);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 
@@ -287,9 +296,10 @@ public final class D2 {
             throw new NullPointerException("password == null");
         }
 
+        UserQuery userQuery = UserQuery.defaultQuery(isTranslationOn, translationLocale);
         return new UserAuthenticateCall(userService, databaseAdapter, userHandler,
-                authenticatedUserStore, organisationUnitFactory.getOrganisationUnitHandler(),
-                username, password
+                authenticatedUserStore, organisationUnitFactory.getOrganisationUnitHandler()
+                , username, password, userQuery
         );
     }
 
@@ -345,21 +355,22 @@ public final class D2 {
                 databaseAdapter, systemInfoService, userService, userHandler, systemInfoStore,
                 resourceStore, optionSetFactory, trackedEntityFactory, programFactory,
                 organisationUnitFactory, categoryFactory, categoryComboFactory,
-                deletedObjectFactory);
+                deletedObjectFactory, isTranslationOn, translationLocale);
     }
 
     @NonNull
     public Call<Response> syncSingleData(int eventLimitByOrgUnit) {
         return new SingleDataCall(organisationUnitFactory.getOrganisationUnitStore(),
                 systemInfoStore, systemInfoService, resourceStore,
-                eventService, databaseAdapter, resourceHandler, eventHandler, eventLimitByOrgUnit);
+                eventService, databaseAdapter, resourceHandler, eventHandler, eventLimitByOrgUnit,
+                isTranslationOn, translationLocale);
     }
 
     @NonNull
     public Call<Response> syncTrackerData() {
         return new TrackerDataCall(trackedEntityInstanceStore, systemInfoStore, systemInfoService,
                 resourceStore, trackedEntityInstanceService, databaseAdapter, resourceHandler,
-                trackedEntityInstanceHandler);
+                trackedEntityInstanceHandler, isTranslationOn, translationLocale);
     }
 
     @NonNull
@@ -389,6 +400,9 @@ public final class D2 {
         private DatabaseAdapter databaseAdapter;
         private OkHttpClient okHttpClient;
         private MetadataAuditConnection metadataAuditConnection;
+        private boolean isTranslationOn;
+        private Locale translationLocale = Locale.ENGLISH;
+
 
         public Builder() {
             // empty constructor
@@ -409,6 +423,13 @@ public final class D2 {
         @NonNull
         public Builder okHttpClient(@NonNull OkHttpClient okHttpClient) {
             this.okHttpClient = okHttpClient;
+            return this;
+        }
+
+        @NonNull
+        public Builder translation(@NonNull Locale locale) {
+            this.isTranslationOn = true;
+            this.translationLocale = locale;
             return this;
         }
 
@@ -444,7 +465,8 @@ public final class D2 {
                     .validateEagerly(true)
                     .build();
 
-            return new D2(retrofit, databaseAdapter, metadataAuditConnection);
+            return new D2(retrofit, databaseAdapter, metadataAuditConnection,
+                    isTranslationOn, translationLocale.toString());
         }
     }
 }

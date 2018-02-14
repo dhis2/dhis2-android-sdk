@@ -7,7 +7,6 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import retrofit2.Retrofit;
 
@@ -33,11 +32,8 @@ public class RelationshipTypeFactory {
         deletableStoreList.add(relationshipTypeStore);
     }
 
-    public RelationshipTypeEndPointCall newEndPointCall(Set<String> relationshipTypeUIds,
+    public RelationshipTypeEndPointCall newEndPointCall(RelationshipTypeQuery relationshipTypeQuery,
             Date serveDate) {
-        RelationshipTypeQuery relationshipTypeQuery =
-                RelationshipTypeQuery.Builder.create().withUIds(relationshipTypeUIds).build();
-
         return new RelationshipTypeEndPointCall(relationshipTypeService, databaseAdapter,
                 relationshipTypeQuery, serveDate, relationshipTypeHandler, resourceHandler);
     }

@@ -76,7 +76,7 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             DataElementModel.Columns.UID +
             " FROM " + DataElementModel.TABLE +
-            " WHERE "+DataElementModel.Columns.UID+" =?;";
+            " WHERE " + DataElementModel.Columns.UID + " =?;";
 
     private static final String INSERT_STATEMENT = "INSERT INTO "
             + DataElementModel.TABLE + " (" + FIELDS + ") " +
@@ -231,7 +231,7 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
     @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
+        return cursor.getCount() > 0;
     }
 
     private List<DataElement> mapDataElementsFromCursor(Cursor cursor) {

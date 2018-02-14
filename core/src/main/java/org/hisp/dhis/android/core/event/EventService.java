@@ -1,5 +1,10 @@
 package org.hisp.dhis.android.core.event;
 
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_LOCALE;
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLATION;
+
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -39,7 +44,9 @@ public interface EventService {
             @Query(FILTER) @Where Filter<Event, String> uids,
             @Query(PAGING) Boolean paging, @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize,
-            @Query(INCLUDED_DELETED) boolean includedDeleted);
+            @Query(INCLUDED_DELETED) boolean includedDeleted,
+            @Query(QUERY_TRANSLATION) boolean isTranslationOn,
+            @NonNull @Query(QUERY_LOCALE) String locale);
 
     @GET(EVENTS)
     Call<Payload<Event>> getEvents(@Query(ORG_UNIT) String orgUnit,
@@ -51,5 +58,7 @@ public interface EventService {
             @Query(PAGING) Boolean paging, @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize, @Query(ATTRIBUTE_CATEGORY_COMBO) String categoryCombo,
             @Query(ATTRIBUTE_CATEGORY_OPTION) String categoryOption,
-            @Query(INCLUDED_DELETED) boolean includedDeleted);
+            @Query(INCLUDED_DELETED) boolean includedDeleted,
+            @Query(QUERY_TRANSLATION) boolean isTranslationOn,
+            @NonNull @Query(QUERY_LOCALE) String locale);
 }

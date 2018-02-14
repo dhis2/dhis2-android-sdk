@@ -41,9 +41,6 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -61,6 +58,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
@@ -133,11 +132,14 @@ public class TrackedEntityCallMockIntegrationShould extends AbsStoreTestCase {
 
         HashSet<String> uids = new HashSet<>(Arrays.asList("kIeke8tAQnd", "nEenWmSyUEp"));
 
+        TrackedEntityQuery trackedEntityQuery = TrackedEntityQuery.defaultQuery(
+                uids, DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+
         TrackedEntityFactory trackedEntityFactory =
                 new TrackedEntityFactory(retrofit, databaseAdapter(),
                         HandlerFactory.createResourceHandler(databaseAdapter()));
 
-        trackedEntityCall = trackedEntityFactory.newEndPointCall(uids, new Date());
+        trackedEntityCall = trackedEntityFactory.newEndPointCall(trackedEntityQuery, new Date());
     }
 
     @Test
@@ -145,18 +147,22 @@ public class TrackedEntityCallMockIntegrationShould extends AbsStoreTestCase {
     public void have_valid_values_when_call() throws Exception {
         trackedEntityCall.call();
 
-        Cursor cursor = database().query(TrackedEntityModel.TABLE, PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(TrackedEntityModel.TABLE, PROJECTION, null, null, null,
+                null, null);
       /*  Cursor resourceCursor = database().query(ResourceModel.TABLE,
                 RESOURCE_PROJECTION, null, null, null, null, null);
 */
-        assertThatCursor(cursor).hasRow("kIeke8tAQnd", null, "Lab sample", "Lab sample", "2014-04-14T13:54:54.497",
+        assertThatCursor(cursor).hasRow("kIeke8tAQnd", null, "Lab sample", "Lab sample",
+                "2014-04-14T13:54:54.497",
                 "2014-04-14T13:54:54.497", null, null, "Lab sample", "Lab sample");
 
-        assertThatCursor(cursor).hasRow("nEenWmSyUEp", null, "Person", "Person", "2014-08-20T12:28:56.409",
+        assertThatCursor(cursor).hasRow("nEenWmSyUEp", null, "Person", "Person",
+                "2014-08-20T12:28:56.409",
                 "2015-10-14T13:36:53.063", null, null, "Person", "Person").isExhausted();
 
         //TODO: make sure this date is correctly formated:
-        //assertThatCursor(resourceCursor).hasRow(OrganisationUnit.class.getSimpleName(), "2017-02-21T16:44:46.000");
+        //assertThatCursor(resourceCursor).hasRow(OrganisationUnit.class.getSimpleName(),
+        // "2017-02-21T16:44:46.000");
     }
 
     @After

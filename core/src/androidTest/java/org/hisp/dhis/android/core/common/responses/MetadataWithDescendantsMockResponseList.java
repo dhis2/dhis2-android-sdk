@@ -7,6 +7,7 @@ public class MetadataWithDescendantsMockResponseList extends BasicMetadataMockRe
     public MetadataWithDescendantsMockResponseList() throws IOException {
         super();
     }
+
     @Override
     protected String getUserMockResponse() {
         return "admin/user.json";

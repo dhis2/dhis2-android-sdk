@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.relationship;
 
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_LOCALE;
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLATION;
+
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Payload;
@@ -20,5 +23,7 @@ public interface RelationshipTypeService {
     Call<Payload<RelationshipType>> getRelationshipTypes(
             @NonNull @Query(FIELDS) @Which Fields<RelationshipType> fields,
             @NonNull @Query(FILTER) @Where Filter<RelationshipType, String> idFilter,
-            @NonNull @Query(FILTER) @Where Filter<RelationshipType, String> lastUpdate);
+            @NonNull @Query(FILTER) @Where Filter<RelationshipType, String> lastUpdate,
+            @Query(QUERY_TRANSLATION) boolean isTranslationOn,
+            @NonNull @Query(QUERY_LOCALE) String locale);
 }

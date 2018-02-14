@@ -48,7 +48,7 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             ProgramTrackedEntityAttributeModel.Columns.UID +
             " FROM " + ProgramTrackedEntityAttributeModel.TABLE +
-            " WHERE "+ProgramTrackedEntityAttributeModel.Columns.UID+" =?;";
+            " WHERE " + ProgramTrackedEntityAttributeModel.Columns.UID + " =?;";
 
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             ProgramTrackedEntityAttributeModel.TABLE + " (" +
@@ -198,6 +198,6 @@ public class ProgramTrackedEntityAttributeStoreImpl implements ProgramTrackedEnt
     @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
+        return cursor.getCount() > 0;
     }
 }

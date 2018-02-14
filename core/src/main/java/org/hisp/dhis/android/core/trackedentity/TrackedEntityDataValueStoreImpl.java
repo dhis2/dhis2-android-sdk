@@ -97,7 +97,6 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
                     " WHERE " + TrackedEntityDataValueModel.Columns.EVENT + " =? AND " +
                     TrackedEntityDataValueModel.Columns.DATA_ELEMENT + " =?;";
 
-
     private static final String QUERY_TRACKED_ENTITY_DATA_VALUES_ATTACHED_TO_TRACKER_EVENTS =
             "SELECT " +
                     SELECT_FIELDS +

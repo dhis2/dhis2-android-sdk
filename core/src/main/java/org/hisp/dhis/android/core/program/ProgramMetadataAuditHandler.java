@@ -10,11 +10,17 @@ import java.util.Set;
 public class ProgramMetadataAuditHandler implements MetadataAuditHandler {
 
     private final ProgramFactory programFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public ProgramMetadataAuditHandler(ProgramFactory programFactory) {
+    public ProgramMetadataAuditHandler(ProgramFactory programFactory, boolean isTranslationOn,
+            String translationLocale) {
         this.programFactory = programFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         Program program = (Program) metadataAudit.getValue();
 
@@ -25,7 +31,9 @@ public class ProgramMetadataAuditHandler implements MetadataAuditHandler {
             Set<String> uIds = new HashSet<>();
             uIds.add(metadataAudit.getUid());
 
-            programFactory.newEndPointCall(uIds, metadataAudit.getCreatedAt()).call();
+            ProgramQuery programQuery = ProgramQuery.defaultQuery(uIds, isTranslationOn,
+                    translationLocale);
+            programFactory.newEndPointCall(programQuery, metadataAudit.getCreatedAt()).call();
         } else {
 
             if (metadataAudit.getType() == AuditType.DELETE) {

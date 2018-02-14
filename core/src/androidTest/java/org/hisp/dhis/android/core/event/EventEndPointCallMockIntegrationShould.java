@@ -215,7 +215,8 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
                     event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.program(), event.programStage(), event.organisationUnit(),
                     event.eventDate(), event.status(), event.coordinates(), event.completedDate(),
-                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()), event.attributeCategoryOptions(),
+                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()),
+                    event.attributeCategoryOptions(),
                     event.attributeOptionCombo(), event.trackedEntityInstance());
 
             downloadedEvents.add(event);

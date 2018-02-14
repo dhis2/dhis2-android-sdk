@@ -4,6 +4,8 @@ import static junit.framework.Assert.fail;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -38,23 +40,22 @@ public class RelationshipTypeChangeOnServerShould extends AbsStoreTestCase {
     private MetadataAuditListener metadataAuditListener;
 
     private Dhis2MockServer dhis2MockServer;
-    private D2 d2;
-
-    private RelationshipTypeFactory relationshipTypeFactory;
 
     @Before
     public void setup() throws IOException {
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         MockitoAnnotations.initMocks(this);
 
-        relationshipTypeFactory = new RelationshipTypeFactory(d2.retrofit(), databaseAdapter(),
+        RelationshipTypeFactory relationshipTypeFactory = new RelationshipTypeFactory(d2.retrofit(),
+                databaseAdapter(),
                 HandlerFactory.createResourceHandler(databaseAdapter()));
 
         when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
-                new RelationshipTypeMetadataAuditHandler(relationshipTypeFactory));
+                new RelationshipTypeMetadataAuditHandler(relationshipTypeFactory,
+                        DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE));
 
         relationshipTypeStore = new RelationshipTypeStoreImpl(databaseAdapter());
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);

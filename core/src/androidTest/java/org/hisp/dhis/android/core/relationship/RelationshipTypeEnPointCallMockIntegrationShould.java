@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core.relationship;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 
 import android.support.test.filters.MediumTest;
 
@@ -64,8 +66,12 @@ public class RelationshipTypeEnPointCallMockIntegrationShould extends AbsStoreTe
 
         dhis2MockServer.enqueueMockResponse(filename);
 
-        relationshipTypeFactory.newEndPointCall(new HashSet<>(
-                Arrays.asList("V2kkHafqs8G", "o51cUNONthg")), new Date()).call();
+        RelationshipTypeQuery relationshipTypeQuery =
+                RelationshipTypeQuery.defaultQuery(new HashSet<>(
+                                Arrays.asList("V2kkHafqs8G", "o51cUNONthg")),
+                        DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE );
+
+        relationshipTypeFactory.newEndPointCall(relationshipTypeQuery, new Date()).call();
 
         verifyDownloadedRelationshipTypes(filename);
     }

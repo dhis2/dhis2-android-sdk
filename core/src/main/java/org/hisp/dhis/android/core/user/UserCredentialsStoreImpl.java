@@ -47,14 +47,21 @@ import java.util.List;
 public class UserCredentialsStoreImpl extends Store implements UserCredentialsStore {
 
     private static final String FIELDS =
-            "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.UID + ","
-                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.CODE + ","
-                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.NAME + ","
-                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.DISPLAY_NAME + ","
-                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.CREATED + ","
-                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.LAST_UPDATED + ","
-                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.USERNAME + ","
-                    + "  "+ UserCredentialsModel.TABLE + "." +UserCredentialsModel.Columns.USER + " ";
+            "  " + UserCredentialsModel.TABLE + "." + UserCredentialsModel.Columns.UID + ","
+                    + "  " + UserCredentialsModel.TABLE + "." + UserCredentialsModel.Columns.CODE
+                    + ","
+                    + "  " + UserCredentialsModel.TABLE + "." + UserCredentialsModel.Columns.NAME
+                    + ","
+                    + "  " + UserCredentialsModel.TABLE + "."
+                    + UserCredentialsModel.Columns.DISPLAY_NAME + ","
+                    + "  " + UserCredentialsModel.TABLE + "." + UserCredentialsModel.Columns.CREATED
+                    + ","
+                    + "  " + UserCredentialsModel.TABLE + "."
+                    + UserCredentialsModel.Columns.LAST_UPDATED + ","
+                    + "  " + UserCredentialsModel.TABLE + "."
+                    + UserCredentialsModel.Columns.USERNAME + ","
+                    + "  " + UserCredentialsModel.TABLE + "." + UserCredentialsModel.Columns.USER
+                    + " ";
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserCredentialsModel.TABLE + " (" +
             UserCredentialsModel.Columns.UID + ", " +
@@ -82,7 +89,7 @@ public class UserCredentialsStoreImpl extends Store implements UserCredentialsSt
             " WHERE " + UserCredentialsModel.Columns.UID + " =?;";
 
     private static final String QUERY_USER_CREDENTIALS_BY_USER = "SELECT " +
-            FIELDS + " FROM "+UserCredentialsModel.TABLE + " where user like ?";
+            FIELDS + " FROM " + UserCredentialsModel.TABLE + " where user like ?";
 
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
@@ -161,7 +168,6 @@ public class UserCredentialsStoreImpl extends Store implements UserCredentialsSt
         sqLiteBind(sqLiteStatement, 7, username);
         sqLiteBind(sqLiteStatement, 8, user);
     }
-
 
 
     private List<UserCredentials> mapCredentialsFromCursor(Cursor cursor) {

@@ -29,6 +29,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoQuery;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
@@ -36,9 +37,11 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.Date;
+
 import retrofit2.Response;
 
-@SuppressWarnings({"PMD.NPathComplexity", "PMD.StdCyclomaticComplexity", "PMD.CouplingBetweenObjects",
+@SuppressWarnings({"PMD.NPathComplexity", "PMD.StdCyclomaticComplexity",
+        "PMD.CouplingBetweenObjects",
         "PMD.ExcessiveImports", "PMD.ModifiedCyclomaticComplexity", "PMD.CyclomaticComplexity"
 })
 public class DeletedObjectCall implements Call<Response> {
@@ -49,17 +52,23 @@ public class DeletedObjectCall implements Call<Response> {
     DeletedObjectFactory deletedObjectFactory;
 
     private boolean isExecuted;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     public DeletedObjectCall(@NonNull DatabaseAdapter databaseAdapter,
             @NonNull SystemInfoService systemInfoService,
             @NonNull SystemInfoStore systemInfoStore,
             @NonNull ResourceStore resourceStore,
-            @NonNull DeletedObjectFactory deletedObjectFactory){
+            @NonNull DeletedObjectFactory deletedObjectFactory,
+            boolean isTranslationOn,
+            @NonNull String translationLocale) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoService = systemInfoService;
         this.systemInfoStore = systemInfoStore;
         this.resourceStore = resourceStore;
         this.deletedObjectFactory = deletedObjectFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -81,11 +90,14 @@ public class DeletedObjectCall implements Call<Response> {
 
         Response response = null;
         Transaction transaction = databaseAdapter.beginNewTransaction();
+
+        SystemInfoQuery systemInfoQuery = SystemInfoQuery.defaultQuery(isTranslationOn,
+                translationLocale);
         try {
             response = new SystemInfoCall(
-                databaseAdapter, systemInfoStore,
-                systemInfoService, resourceStore
-            ).call();
+                    databaseAdapter, systemInfoStore, systemInfoService, resourceStore,
+                    systemInfoQuery)
+                    .call();
 
             if (!response.isSuccessful()) {
                 return response;
@@ -259,7 +271,8 @@ public class DeletedObjectCall implements Call<Response> {
     }
 
 
-    private Response<Payload<DeletedObject>> syncDeletedObject(Date serverDate, Class<?> deletedObjectKlass)
+    private Response<Payload<DeletedObject>> syncDeletedObject(Date serverDate,
+            Class<?> deletedObjectKlass)
             throws Exception {
         return deletedObjectFactory.newEndPointCall(deletedObjectKlass, serverDate).call();
     }

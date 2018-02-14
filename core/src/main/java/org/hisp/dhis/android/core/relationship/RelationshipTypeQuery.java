@@ -1,40 +1,49 @@
 package org.hisp.dhis.android.core.relationship;
 
-import java.util.HashSet;
+import android.support.annotation.NonNull;
+
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseQuery;
+
 import java.util.Set;
+import java.util.TreeSet;
 
-public class RelationshipTypeQuery {
+@AutoValue
+public abstract class RelationshipTypeQuery extends BaseQuery {
 
-    private final Set<String> uIds;
-
-
-    public RelationshipTypeQuery(Set<String> uIds) {
-        this.uIds = uIds;
+    public static Builder builder() {
+        return new AutoValue_RelationshipTypeQuery.Builder();
     }
 
-    public Set<String> getUIds() {
-        return uIds;
+    public static RelationshipTypeQuery defaultQuery() {
+        return defaultQueryBuilder().build();
     }
 
-    public static class Builder {
-        private Set<String> uIds = new HashSet<>();
+    public static RelationshipTypeQuery defaultQuery(Set<String> uIds, boolean isTranslationOn,
+            @NonNull String translationLocale) {
 
-        private Builder() {
-        }
-
-        public static Builder create() {
-            return new Builder();
-        }
-
-        public Builder withUIds(Set<String> uIds) {
-            this.uIds = uIds;
-            return this;
-        }
-
-        public RelationshipTypeQuery build() {
-            return new RelationshipTypeQuery(uIds);
-        }
+        return defaultQueryBuilder()
+                .uIds(uIds)
+                .isTranslationOn(isTranslationOn)
+                .translationLocale(translationLocale)
+                .build();
     }
 
+    private static Builder defaultQueryBuilder() {
+        return builder()
+                .page(DEFAULT_PAGE)
+                .pageSize(DEFAULT_PAGE_SIZE)
+                .isPaging(DEFAULT_IS_PAGING)
+                .isTranslationOn(DEFAULT_IS_TRANSLATION_ON)
+                .translationLocale(DEFAULT_TRANSLATION_LOCALE)
+                .uIds(new TreeSet<String>());
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseQuery.Builder<RelationshipTypeQuery.Builder> {
+
+        public abstract RelationshipTypeQuery build();
+    }
 
 }

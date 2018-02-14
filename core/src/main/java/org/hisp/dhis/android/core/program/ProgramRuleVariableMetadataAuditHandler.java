@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.program;
 
+
 import android.util.Log;
 
 import org.hisp.dhis.android.core.audit.AuditType;
@@ -12,11 +13,17 @@ import java.util.Set;
 public class ProgramRuleVariableMetadataAuditHandler implements MetadataAuditHandler {
 
     private final ProgramFactory programFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public ProgramRuleVariableMetadataAuditHandler(ProgramFactory programFactory) {
+    public ProgramRuleVariableMetadataAuditHandler(ProgramFactory programFactory,
+            boolean isTranslationOn, String translationLocale) {
         this.programFactory = programFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         ProgramRuleVariable programRuleVariable = (ProgramRuleVariable) metadataAudit.getValue();
 
@@ -39,8 +46,10 @@ public class ProgramRuleVariableMetadataAuditHandler implements MetadataAuditHan
                 Set<String> uIds = new HashSet<>();
 
                 uIds.add(programRuleVariableInDB.program().uid());
+                ProgramQuery programQuery = ProgramQuery.defaultQuery(uIds,
+                        isTranslationOn, translationLocale);
 
-                programFactory.newEndPointCall(uIds, metadataAudit.getCreatedAt()).call();
+                programFactory.newEndPointCall(programQuery, metadataAudit.getCreatedAt()).call();
             }
         } else {
 

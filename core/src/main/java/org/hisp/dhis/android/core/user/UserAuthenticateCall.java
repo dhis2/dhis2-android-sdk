@@ -60,6 +60,8 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     private final UserHandler userHandler;
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitHandler organisationUnitHandler;
+    private final UserQuery query;
+
 
     // username and password of candidate
     private final String username;
@@ -74,13 +76,16 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
             @NonNull AuthenticatedUserStore authenticatedUserStore,
             @NonNull OrganisationUnitHandler organisationUnitHandler,
             @NonNull String username,
-            @NonNull String password) {
-        this.userService = userService;
+            @NonNull String password,
+            @NonNull UserQuery query) {
 
+        this.userService = userService;
         this.databaseAdapter = databaseAdapter;
         this.userHandler = userHandler;
         this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitHandler = organisationUnitHandler;
+
+        this.query = query;
 
         // credentials
         this.username = username;
@@ -150,7 +155,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                         OrganisationUnit.level,
                         OrganisationUnit.parent.with(
                                 OrganisationUnit.uid))
-        ).build()).execute();
+        ).build(), query.isTranslationOn(), query.translationLocale()).execute();
     }
 
     private void saveUser(Response<User> response) throws Exception {

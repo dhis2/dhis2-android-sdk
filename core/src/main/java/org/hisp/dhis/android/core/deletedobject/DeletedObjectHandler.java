@@ -4,6 +4,7 @@ package org.hisp.dhis.android.core.deletedobject;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.IdentifiableStore;
+
 public class DeletedObjectHandler {
     @NonNull
     public final IdentifiableStoreFactory identifiableStoreFactory;

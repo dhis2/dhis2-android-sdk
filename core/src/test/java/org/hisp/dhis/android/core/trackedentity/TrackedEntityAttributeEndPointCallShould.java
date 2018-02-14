@@ -5,6 +5,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hisp.dhis.android.core.calls.Call.MAX_UIDS;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -95,10 +97,8 @@ public class TrackedEntityAttributeEndPointCallShould {
             uIds.add("uid" + i);
         }
         TrackedEntityAttributeQuery trackedEntityAttributeQuery =
-                TrackedEntityAttributeQuery.Builder
-                        .create()
-                        .withUIds(uIds)
-                        .build();
+                TrackedEntityAttributeQuery.defaultQuery(uIds, DEFAULT_IS_TRANSLATION_ON,
+                        DEFAULT_TRANSLATION_LOCALE);
 
         TrackedEntityAttributeEndPointCall trackedEntityAttributeEndPointCall =
                 new TrackedEntityAttributeEndPointCall(trackedEntityAttributeService,

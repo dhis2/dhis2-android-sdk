@@ -61,6 +61,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
@@ -210,11 +213,14 @@ public class OptionSetCallMockIntegrationShould extends AbsStoreTestCase {
         Set<String> uids = new HashSet<>();
         uids.add("POc7DkGU3QU");
 
+        OptionSetQuery optionSetQuery = OptionSetQuery.defaultQuery(uids,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+
         OptionSetFactory optionSetFactory =
                 new OptionSetFactory(retrofit, databaseAdapter(),
                         new ResourceHandler(resourceStore));
 
-        optionSetCall = optionSetFactory.newEndPointCall(uids, new Date());
+        optionSetCall = optionSetFactory.newEndPointCall(optionSetQuery,new Date());
     }
 
 

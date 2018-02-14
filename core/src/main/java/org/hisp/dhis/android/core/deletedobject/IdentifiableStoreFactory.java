@@ -67,72 +67,72 @@ public class IdentifiableStoreFactory {
             "PMD.StdCyclomaticComplexity"
     })
     public IdentifiableStore getByKlass(String klass) {
-        if(klass.equals(User.class.getSimpleName())) {
+        if (klass.equals(User.class.getSimpleName())) {
             return new UserStoreImpl(databaseAdapter);
         }
-        if(klass.equals(Category.class.getSimpleName())) {
+        if (klass.equals(Category.class.getSimpleName())) {
             return new CategoryStoreImpl(databaseAdapter);
         }
-        if(klass.equals(CategoryCombo.class.getSimpleName())) {
+        if (klass.equals(CategoryCombo.class.getSimpleName())) {
             return new CategoryComboStoreImpl(databaseAdapter);
         }
-        if(klass.equals(CategoryOptionCombo.class.getSimpleName())) {
+        if (klass.equals(CategoryOptionCombo.class.getSimpleName())) {
             return new CategoryOptionComboStoreImpl(databaseAdapter);
         }
-        if(klass.equals(Program.class.getSimpleName())) {
+        if (klass.equals(Program.class.getSimpleName())) {
             return new ProgramStoreImpl(databaseAdapter);
         }
-        if(klass.equals(OrganisationUnit.class.getSimpleName())) {
+        if (klass.equals(OrganisationUnit.class.getSimpleName())) {
             return new OrganisationUnitStoreImpl(databaseAdapter);
         }
-        if(klass.equals(OptionSet.class.getSimpleName())) {
+        if (klass.equals(OptionSet.class.getSimpleName())) {
             return new OptionSetStoreImpl(databaseAdapter);
         }
-        if(klass.equals(TrackedEntity.class.getSimpleName())) {
+        if (klass.equals(TrackedEntity.class.getSimpleName())) {
             return new TrackedEntityStoreImpl(databaseAdapter);
         }
-        if(klass.equals(CategoryOption.class.getSimpleName())) {
+        if (klass.equals(CategoryOption.class.getSimpleName())) {
             return new CategoryOptionStoreImpl(databaseAdapter);
         }
-        if(klass.equals(DataElement.class.getSimpleName())) {
+        if (klass.equals(DataElement.class.getSimpleName())) {
             return new DataElementStoreImpl(databaseAdapter);
         }
-        if(klass.equals(Option.class.getSimpleName())) {
+        if (klass.equals(Option.class.getSimpleName())) {
             return new OptionStoreImpl(databaseAdapter);
         }
-        if(klass.equals(ProgramIndicator.class.getSimpleName())) {
+        if (klass.equals(ProgramIndicator.class.getSimpleName())) {
             return new ProgramIndicatorStoreImpl(databaseAdapter);
         }
-        if(klass.equals(ProgramRule.class.getSimpleName())) {
+        if (klass.equals(ProgramRule.class.getSimpleName())) {
             return new ProgramRuleStoreImpl(databaseAdapter);
         }
-        if(klass.equals(ProgramRuleAction.class.getSimpleName())) {
+        if (klass.equals(ProgramRuleAction.class.getSimpleName())) {
             return new ProgramRuleActionStoreImpl(databaseAdapter);
         }
-        if(klass.equals(ProgramRuleVariable.class.getSimpleName())) {
+        if (klass.equals(ProgramRuleVariable.class.getSimpleName())) {
             return new ProgramRuleVariableStoreImpl(databaseAdapter);
         }
-        if(klass.equals(ProgramStage.class.getSimpleName())) {
+        if (klass.equals(ProgramStage.class.getSimpleName())) {
             return new ProgramStageStoreImpl(databaseAdapter);
         }
-        if(klass.equals(ProgramStageDataElement.class.getSimpleName())) {
+        if (klass.equals(ProgramStageDataElement.class.getSimpleName())) {
             return new ProgramStageDataElementStoreImpl(databaseAdapter);
         }
-        if(klass.equals(ProgramStageSection.class.getSimpleName())) {
+        if (klass.equals(ProgramStageSection.class.getSimpleName())) {
             return new ProgramStageSectionStoreImpl(databaseAdapter);
         }
-        if(klass.equals(ProgramTrackedEntityAttribute.class.getSimpleName())) {
+        if (klass.equals(ProgramTrackedEntityAttribute.class.getSimpleName())) {
             return new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter);
         }
-        if(klass.equals(TrackedEntityAttribute.class.getSimpleName())) {
+        if (klass.equals(TrackedEntityAttribute.class.getSimpleName())) {
             return new TrackedEntityAttributeStoreImpl(databaseAdapter);
         }
-        if(klass.equals(RelationshipType.class.getSimpleName())) {
+        if (klass.equals(RelationshipType.class.getSimpleName())) {
             return new RelationshipTypeStoreImpl(databaseAdapter);
         }
-        if(klass.equals(DataElement.class.getSimpleName())) {
+        if (klass.equals(DataElement.class.getSimpleName())) {
             return new DataElementStoreImpl(databaseAdapter);
         }
-        throw  new IllegalArgumentException("klass "+klass+"not supported ");
+        throw new IllegalArgumentException("klass " + klass + "not supported ");
     }
 }

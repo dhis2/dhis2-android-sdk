@@ -4,6 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hisp.dhis.android.core.calls.Call.MAX_UIDS;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,8 +37,8 @@ public class DataElementEndPointCallShould {
     @Mock
     private ResourceHandler resourceHandler;
 
-    Dhis2MockServer dhis2MockServer;
-    Retrofit retrofit;
+    private Dhis2MockServer dhis2MockServer;
+    private Retrofit retrofit;
 
     @Before
     public void setUp() throws IOException {
@@ -88,7 +90,8 @@ public class DataElementEndPointCallShould {
         DataElementFactory dataElementFactory = new DataElementFactory(retrofit,
                 databaseAdapter, resourceHandler);
 
-        DataElementQuery dataElementQuery = new DataElementQuery(uIds);
+        DataElementQuery dataElementQuery = DataElementQuery.defaultQuery(uIds,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
         return dataElementFactory.newEndPointCall(dataElementQuery, new Date());
     }
 }

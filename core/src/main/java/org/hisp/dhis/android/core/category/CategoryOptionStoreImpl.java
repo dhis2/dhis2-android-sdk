@@ -49,7 +49,7 @@ public class CategoryOptionStoreImpl extends Store implements CategoryOptionStor
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             CategoryOptionModel.Columns.UID +
             " FROM " + CategoryOptionModel.TABLE +
-            " WHERE "+CategoryOptionModel.Columns.UID+" =?;";
+            " WHERE " + CategoryOptionModel.Columns.UID + " =?;";
 
     private static final String EQUAL_QUESTION_MARK = "=?";
 
@@ -200,7 +200,7 @@ public class CategoryOptionStoreImpl extends Store implements CategoryOptionStor
     @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
+        return cursor.getCount() > 0;
     }
 
     @Override

@@ -70,7 +70,7 @@ public class UserStoreImpl extends Store implements UserStore {
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             UserModel.Columns.UID +
             " FROM " + UserModel.TABLE +
-            " WHERE "+UserModel.Columns.UID+" =?;";
+            " WHERE " + UserModel.Columns.UID + " =?;";
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserModel.TABLE + " (" +
             FIELDS +
@@ -191,7 +191,7 @@ public class UserStoreImpl extends Store implements UserStore {
     @Override
     public Boolean exists(String userUId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, userUId);
-        return cursor.getCount()>0;
+        return cursor.getCount() > 0;
     }
 
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
@@ -228,7 +228,6 @@ public class UserStoreImpl extends Store implements UserStore {
 
         return mapUsersFromCursor(cursor);
     }
-
 
 
     private List<User> mapUsersFromCursor(Cursor cursor) {

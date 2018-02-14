@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.user;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -55,6 +57,7 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
+
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -217,8 +220,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 databaseAdapter());
         AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(
                 databaseAdapter());
-        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore =
-                new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
+
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
@@ -240,9 +242,12 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 organisationUnitStore, new UserOrganisationUnitLinkStoreImpl(databaseAdapter()),
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter()), resourceHandler);
 
+        UserQuery userQuery = UserQuery.defaultQuery(DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
+
         authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userHandler,
-                authenticatedUserStore,
-                organisationUnitHandler, "test_user", "test_password");
+                authenticatedUserStore,organisationUnitHandler, "test_user", "test_password"
+                , userQuery);
     }
 
     @Test

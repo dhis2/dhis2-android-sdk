@@ -37,7 +37,6 @@ public abstract class DeletedObject {
     public abstract String deletedBy();
 
 
-
     @JsonCreator
     public static DeletedObject create(
             @JsonProperty(UID) String uid,

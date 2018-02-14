@@ -12,11 +12,17 @@ import java.util.Set;
 public class OptionMetadataAuditHandler implements MetadataAuditHandler {
 
     private final OptionSetFactory optionSetFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public OptionMetadataAuditHandler(OptionSetFactory optionSetFactory) {
+    public OptionMetadataAuditHandler(OptionSetFactory optionSetFactory, boolean isTranslationOn,
+            String translationLocale) {
         this.optionSetFactory = optionSetFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         // MetadataAudit<Option> of CREATE type is ignored because OptionSetUid is null in payload.
         // when a option is create on server also send a MetadataAudit<OptionSet> of UPDATE type
@@ -39,8 +45,11 @@ public class OptionMetadataAuditHandler implements MetadataAuditHandler {
             } else {
                 Set<String> uIds = new HashSet<>();
                 uIds.add(optionInDB.optionSet().uid());
+                OptionSetQuery optionSetQuery =
+                        OptionSetQuery.defaultQuery(uIds, isTranslationOn, translationLocale);
 
-                optionSetFactory.newEndPointCall(uIds, metadataAudit.getCreatedAt()).call();
+                optionSetFactory.newEndPointCall(optionSetQuery,
+                        metadataAudit.getCreatedAt()).call();
 
             }
         } else {

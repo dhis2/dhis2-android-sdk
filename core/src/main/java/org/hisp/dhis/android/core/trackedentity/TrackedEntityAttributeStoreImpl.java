@@ -82,7 +82,7 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
     private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
             TrackedEntityAttributeModel.Columns.UID +
             " FROM " + TrackedEntityAttributeModel.TABLE +
-            " WHERE "+TrackedEntityAttributeModel.Columns.UID+" =?;";
+            " WHERE " + TrackedEntityAttributeModel.Columns.UID + " =?;";
 
     private static final String UPDATE_STATEMENT =
             "UPDATE " + TrackedEntityAttributeModel.TABLE + " SET " +
@@ -247,7 +247,7 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
     @Override
     public Boolean exists(String uId) {
         Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
-        return cursor.getCount()>0;
+        return cursor.getCount() > 0;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.audit;
 
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementFactory;
 import org.hisp.dhis.android.core.dataelement.DataElementMetadataAuditHandler;
@@ -61,6 +63,8 @@ public class MetadataAuditHandlerFactory {
     private final OrganisationUnitFactory organisationUnitFactory;
     private final CategoryFactory categoryFactory;
     private final CategoryComboFactory categoryComboFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     public MetadataAuditHandlerFactory(
             TrackedEntityFactory trackedEntityFactory, OptionSetFactory optionSetFactory,
@@ -69,7 +73,8 @@ public class MetadataAuditHandlerFactory {
             ProgramFactory programFactory,
             RelationshipTypeFactory relationshipTypeFactory,
             OrganisationUnitFactory organisationUnitFactory,
-            CategoryFactory categoryFactory, CategoryComboFactory categoryComboFactory) {
+            CategoryFactory categoryFactory, CategoryComboFactory categoryComboFactory
+            , boolean isTranslationOn, @NonNull String translationLocale) {
         this.trackedEntityFactory = trackedEntityFactory;
         this.optionSetFactory = optionSetFactory;
         this.dataElementFactory = dataElementFactory;
@@ -79,44 +84,63 @@ public class MetadataAuditHandlerFactory {
         this.organisationUnitFactory = organisationUnitFactory;
         this.categoryFactory = categoryFactory;
         this.categoryComboFactory = categoryComboFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     public MetadataAuditHandler getByClass(Class<?> klass) {
         if (klass == TrackedEntity.class) {
-            return new TrackedEntityMetadataAuditHandler(trackedEntityFactory);
+            return new TrackedEntityMetadataAuditHandler(trackedEntityFactory, isTranslationOn,
+                    translationLocale);
         } else if (klass == OptionSet.class) {
-            return new OptionSetMetadataAuditHandler(optionSetFactory);
+            return new OptionSetMetadataAuditHandler(optionSetFactory, isTranslationOn,
+                    translationLocale);
         } else if (klass == Option.class) {
-            return new OptionMetadataAuditHandler(optionSetFactory);
+            return new OptionMetadataAuditHandler(optionSetFactory, isTranslationOn,
+                    translationLocale);
         } else if (klass == TrackedEntityAttribute.class) {
             return new TrackedEntityAttributeMetadataAuditHandler(
-                    trackedEntityAttributeFactory);
+                    trackedEntityAttributeFactory, isTranslationOn,
+                    translationLocale);
         } else if (klass == DataElement.class) {
-            return new DataElementMetadataAuditHandler(dataElementFactory);
+            return new DataElementMetadataAuditHandler(dataElementFactory, isTranslationOn,
+                    translationLocale);
         } else if (klass == Program.class) {
-            return new ProgramMetadataAuditHandler(programFactory);
+            return new ProgramMetadataAuditHandler(programFactory, isTranslationOn,
+                    translationLocale);
         } else if (klass == ProgramStage.class) {
-            return new ProgramStageMetadataAuditHandler(programFactory);
+            return new ProgramStageMetadataAuditHandler(programFactory, isTranslationOn,
+                    translationLocale);
         } else if (klass == ProgramIndicator.class) {
-            return new ProgramIndicatorMetadataAuditHandler(programFactory);
+            return new ProgramIndicatorMetadataAuditHandler(programFactory, isTranslationOn,
+                    translationLocale);
         } else if (klass == ProgramRule.class) {
-            return new ProgramRuleMetadataAuditHandler(programFactory);
+            return new ProgramRuleMetadataAuditHandler(programFactory, isTranslationOn,
+                    translationLocale);
         } else if (klass == ProgramRuleAction.class) {
-            return new ProgramRuleActionMetadataAuditHandler(programFactory);
+            return new ProgramRuleActionMetadataAuditHandler(programFactory, isTranslationOn,
+                    translationLocale);
         } else if (klass == ProgramRuleVariable.class) {
-            return new ProgramRuleVariableMetadataAuditHandler(programFactory);
+            return new ProgramRuleVariableMetadataAuditHandler(programFactory, isTranslationOn,
+                    translationLocale);
         } else if (klass == RelationshipType.class) {
-            return new RelationshipTypeMetadataAuditHandler(relationshipTypeFactory);
+            return new RelationshipTypeMetadataAuditHandler(relationshipTypeFactory,
+                    isTranslationOn, translationLocale);
         } else if (klass == OrganisationUnit.class) {
-            return new OrganisationUnitMetadataAuditHandler(organisationUnitFactory);
-        } else if(klass == Category.class) {
-            return new CategoryMetadataAuditHandler(categoryFactory);
-        } else if(klass == CategoryOption.class) {
-            return new CategoryOptionMetadataAuditHandler(categoryFactory);
-        } else if(klass == CategoryCombo.class) {
-            return new CategoryComboMetadataAuditHandler(categoryComboFactory);
-        } else if(klass == CategoryOptionCombo.class) {
-            return new CategoryOptionComboMetadataAuditHandler(categoryComboFactory);
+            return new OrganisationUnitMetadataAuditHandler(organisationUnitFactory,
+                    isTranslationOn, translationLocale);
+        } else if (klass == Category.class) {
+            return new CategoryMetadataAuditHandler(categoryFactory, isTranslationOn,
+                    translationLocale);
+        } else if (klass == CategoryOption.class) {
+            return new CategoryOptionMetadataAuditHandler(categoryFactory, isTranslationOn,
+                    translationLocale);
+        } else if (klass == CategoryCombo.class) {
+            return new CategoryComboMetadataAuditHandler(categoryComboFactory, isTranslationOn,
+                    translationLocale);
+        } else if (klass == CategoryOptionCombo.class) {
+            return new CategoryOptionComboMetadataAuditHandler(categoryComboFactory,
+                    isTranslationOn, translationLocale);
         } else {
             throw new IllegalArgumentException("No exists a metadata audit handler for: " + klass);
         }

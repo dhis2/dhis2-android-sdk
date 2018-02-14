@@ -27,6 +27,11 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_LOCALE;
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLATION;
+
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -40,8 +45,9 @@ import retrofit2.http.Query;
 public interface ProgramService {
     @GET("programs")
     Call<Payload<Program>> getPrograms(@Query("fields") @Which Fields<Program> fields,
-                                       @Query("filter") @Where Filter<Program, String> lastUpdated,
-                                       @Query("filter") @Where Filter<Program, String> uids,
-                                       @Query("paging") Boolean paging);
+            @Query("filter") @Where Filter<Program, String> lastUpdated,
+            @Query("filter") @Where Filter<Program, String> uids,
+            @Query("paging") Boolean paging, @Query(QUERY_TRANSLATION) boolean isTranslationOn,
+            @NonNull @Query(QUERY_LOCALE) String locale);
 
 }

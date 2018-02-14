@@ -48,21 +48,20 @@ import java.util.Map;
  * @author Araz Abishov <araz.abishov.gsoc@gmail.com>.
  */
 final class UserController {
-    private final float startServerVersionLatestApi =2.29f;
     private final DhisApi dhisApi;
 
     public UserController(DhisApi dhisApi) {
         this.dhisApi = dhisApi;
     }
 
-    public UserAccount logInUser(HttpUrl serverUrl, Credentials credentials, float serverVersion) throws APIException {
+    public UserAccount logInUser(HttpUrl serverUrl, Credentials credentials) throws APIException {
         final Map<String, String> QUERY_PARAMS = new HashMap<>();
         QUERY_PARAMS.put("fields", "id,created,lastUpdated,name,displayName," +
                 "firstName,surname,gender,birthday,introduction," +
                 "education,employer,interests,jobTitle,languages,email,phoneNumber," +
                 "teiSearchOrganisationUnits[id],organisationUnits[id]");
         UserAccount userAccount;
-        if(serverVersion>= startServerVersionLatestApi){
+        if(DhisController.getInstance().isLoggedInServerWithLatestApiVersion()){
             userAccount = dhisApi
                     .getCurrentUserAccountOnLatestApi(QUERY_PARAMS);
         }else{

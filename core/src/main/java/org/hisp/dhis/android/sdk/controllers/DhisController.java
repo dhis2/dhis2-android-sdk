@@ -81,6 +81,8 @@ public final class DhisController {
     private final static String PASSWORD = "password";
     private final static String SERVER = "server";
     private final static String CREDENTIALS = "credentials";
+    public static final Float startServerVersionLatestApi =2.29f;
+    public static Float serverVersion;
 
     /**
      * Variable hasUnSynchronizedDatavalues
@@ -177,9 +179,9 @@ public final class DhisController {
     static UserAccount signInUser(HttpUrl serverUrl, Credentials credentials) throws APIException {
         DhisApi dhisApi = RepoManager
                 .createService(serverUrl, credentials);
-        float systemVersion = dhisApi.getSystemInfo().getVersionAsFloat();
+        serverVersion = dhisApi.getSystemInfo().getVersionAsFloat();
         UserAccount user = (new UserController(dhisApi)
-                .logInUser(serverUrl, credentials, systemVersion));
+                .logInUser(serverUrl, credentials));
 
         // fetch meta data from disk
         readSession();
@@ -239,4 +241,10 @@ public final class DhisController {
         return getInstance().syncDateWrapper;
     }
 
+    public boolean isLoggedInServerWithLatestApiVersion() {
+        if(serverVersion==null){
+            serverVersion = getDhisApi().getSystemInfo().getVersionAsFloat();
+        }
+        return serverVersion>=startServerVersionLatestApi;
+    }
 }

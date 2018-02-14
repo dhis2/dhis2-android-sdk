@@ -99,6 +99,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             isExecuted = true;
         }
         Response<Payload<OrganisationUnit>> response = null;
+        Response<Payload<OrganisationUnit>> totalResponse = null;
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
@@ -115,12 +116,18 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             for (String uid : rootOrgUnitUids) {
                 response = getOrganisationUnit(uid, lastUpdatedFilter);
                 if (response.isSuccessful()) {
+                    if (totalResponse == null) {
+                        totalResponse = response;
+                    } else  {
+                        totalResponse.body().items().addAll(response.body().items());
+                    }
                     organisationUnitHandler.handleOrganisationUnits(
                             response.body().items(),
                             OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
                             user.uid()
                     );
                 } else {
+                    totalResponse = response;
                     break; //stop early unsuccessful:
                 }
             }
@@ -131,7 +138,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         } finally {
             transaction.end();
         }
-        return response;
+        return totalResponse;
     }
 
     private Response<Payload<OrganisationUnit>> getOrganisationUnit(

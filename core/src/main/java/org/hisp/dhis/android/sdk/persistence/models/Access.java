@@ -47,6 +47,8 @@ public final class Access {
         this.read = access.read;
         this.update = access.update;
         this.delete = access.delete;
+        this.data = access.data;
+
     }
 
     @JsonProperty("manage")
@@ -67,6 +69,9 @@ public final class Access {
     @JsonProperty("delete")
     boolean delete;
 
+    @JsonProperty("data")
+    Data data;
+
     /**
      * Factory method which creates Access object with all rights set to true.
      *
@@ -80,6 +85,7 @@ public final class Access {
         access.setUpdate(true);
         access.setRead(true);
         access.setDelete(true);
+        access.setData(Data.provideDefaultData());
         return access;
     }
 
@@ -143,6 +149,14 @@ public final class Access {
         this.write = write;
     }
 
+    public Data getData() {
+        return data;
+    }
+
+    public void setData(Data data) {
+        this.data = data;
+    }
+
     @JsonIgnore
     @Override
     public String toString() {
@@ -154,6 +168,7 @@ public final class Access {
                 .append(", read=").append(read)
                 .append(", update=").append(update)
                 .append(", delete=").append(delete)
+                .append(", data=").append(data)
                 .append("}")
                 .build();
     }

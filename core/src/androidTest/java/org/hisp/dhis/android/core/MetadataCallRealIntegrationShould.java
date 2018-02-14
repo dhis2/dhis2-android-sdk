@@ -3,8 +3,6 @@ package org.hisp.dhis.android.core;
 import static com.google.common.truth.Truth.assertThat;
 
 import android.support.test.filters.LargeTest;
-import android.support.test.filters.SmallTest;
-import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -13,8 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.concurrent.TimeoutException;
+import java.util.Locale;
 
 public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     /**
@@ -30,7 +27,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.create(RealServerMother.url, databaseAdapter(), Locale.ENGLISH);
     }
 
 

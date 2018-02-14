@@ -14,12 +14,12 @@ public abstract class MetadataAuditConnection {
 
     public abstract int port();
 
-    static Builder builder() {
+    public static Builder builder() {
         return new AutoValue_MetadataAuditConnection.Builder();
     }
 
     @AutoValue.Builder
-    abstract static class Builder {
+    public abstract static class Builder {
         public abstract MetadataAuditConnection.Builder setHost(String value);
 
         public abstract MetadataAuditConnection.Builder setVirtualHost(String value);

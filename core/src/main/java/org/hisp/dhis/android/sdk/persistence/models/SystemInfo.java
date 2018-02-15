@@ -37,10 +37,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
-import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.joda.time.DateTime;
-
-import java.util.Date;
 
 /**
  * @author Simen Skogly Russnes on 26.02.15.
@@ -55,6 +52,8 @@ public class SystemInfo extends BaseModel {
     @JsonProperty("serverDate")
     @Column(name = "serverDate")
     DateTime serverDate;
+
+    String version;
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
@@ -75,5 +74,25 @@ public class SystemInfo extends BaseModel {
 
     public void setServerDate(DateTime serverDate) {
         this.serverDate = serverDate;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public Float getVersionAsFloat() {
+        try {
+            return removeNonNumericCharacters(version);
+        }catch (NullPointerException e){
+            return null;
+        }
+    }
+
+    private static Float removeNonNumericCharacters(String version) {
+            return Float.parseFloat(version.replaceAll("[^0-9.]", ""));
     }
 }

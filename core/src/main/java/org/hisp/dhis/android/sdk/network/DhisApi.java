@@ -78,9 +78,10 @@ public interface DhisApi {
     SystemInfo getSystemInfo();
 
     @GET("/23/me/")
-    UserAccount getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
+    UserAccount getCurrentUserAccountOnDeprecatedApi(@QueryMap Map<String, String> queryParams);
 
-
+    @GET("/me/")
+    UserAccount getCurrentUserAccountOnLatestApi(@QueryMap Map<String, String> queryParams);
     /////////////////////////////////////////////////////////////////////////
     // Methods for getting Dashboard and DashboardItems
     /////////////////////////////////////////////////////////////////////////

@@ -101,7 +101,7 @@ public class TrackedEntityInstanceEndPointCall implements
                 TrackedEntityInstance.relationships.with(
                         Relationship.trackedEntityInstanceA,
                         Relationship.trackedEntityInstanceB,
-                        Relationship.displayName),
+                        Relationship.relationship),
                 TrackedEntityInstance.trackedEntityAttributeValues.with(
                         TrackedEntityAttributeValue.trackedEntityAttribute,
                         TrackedEntityAttributeValue.value,

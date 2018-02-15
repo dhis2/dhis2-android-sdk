@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
+import org.hisp.dhis.android.core.relationship.RelationshipHandler;
 
 import java.util.List;
 
@@ -14,15 +15,18 @@ public class TrackedEntityInstanceHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
     private final EnrollmentHandler enrollmentHandler;
+    private final RelationshipHandler relationshipHandler;
 
 
     public TrackedEntityInstanceHandler(
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler,
-            @NonNull EnrollmentHandler enrollmentHandler) {
+            @NonNull EnrollmentHandler enrollmentHandler,
+            @NonNull RelationshipHandler relationshipHandler) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.trackedEntityAttributeValueHandler = trackedEntityAttributeValueHandler;
         this.enrollmentHandler = enrollmentHandler;
+        this.relationshipHandler = relationshipHandler;
     }
 
     public void handle(@NonNull TrackedEntityInstance trackedEntityInstance) {
@@ -54,6 +58,8 @@ public class TrackedEntityInstanceHandler {
             List<Enrollment> enrollments = trackedEntityInstance.enrollments();
 
             enrollmentHandler.handle(enrollments);
+
+            relationshipHandler.handle(trackedEntityInstance);
         }
     }
 }

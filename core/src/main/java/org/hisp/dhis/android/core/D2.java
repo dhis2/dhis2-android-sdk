@@ -66,6 +66,9 @@ import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
 import org.hisp.dhis.android.core.program.ProgramFactory;
+import org.hisp.dhis.android.core.relationship.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.RelationshipStore;
+import org.hisp.dhis.android.core.relationship.RelationshipStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeFactory;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -134,6 +137,7 @@ public final class D2 {
     private final AuthenticatedUserStore authenticatedUserStore;
     private final UserRoleStore userRoleStore;
     private final UserRoleProgramLinkStore userRoleProgramLinkStore;
+    private final RelationshipStore relationshipStore;
     private final ResourceStore resourceStore;
     private final SystemInfoStore systemInfoStore;
 
@@ -202,7 +206,6 @@ public final class D2 {
                 new EnrollmentStoreImpl(databaseAdapter);
         this.eventStore =
                 new EventStoreImpl(databaseAdapter);
-
         this.trackedEntityDataValueStore =
                 new TrackedEntityDataValueStoreImpl(databaseAdapter);
         this.trackedEntityAttributeValueStore =
@@ -227,12 +230,15 @@ public final class D2 {
                 new TrackedEntityAttributeValueHandler(trackedEntityAttributeValueStore);
 
         EnrollmentHandler enrollmentHandler = new EnrollmentHandler(enrollmentStore, eventHandler);
+        relationshipStore = new RelationshipStoreImpl(databaseAdapter);
+        RelationshipHandler relationshipHandler = new RelationshipHandler(relationshipStore,
+                trackedEntityInstanceStore);
 
         this.trackedEntityInstanceHandler =
                 new TrackedEntityInstanceHandler(
                         trackedEntityInstanceStore,
                         trackedEntityAttributeValueHandler,
-                        enrollmentHandler);
+                        enrollmentHandler, relationshipHandler);
 
         //factories
         this.optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
@@ -271,7 +277,6 @@ public final class D2 {
                             categoryComboFactory, isTranslationOn, translationLocale);
 
             this.metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
-
             this.metadataAuditConsumer = new MetadataAuditConsumer(metadataAuditConnection);
             this.metadataAuditConsumer.setMetadataAuditListener(metadataAuditListener);
         }
@@ -329,6 +334,7 @@ public final class D2 {
         deletableStoreList.add(resourceStore);
         deletableStoreList.add(systemInfoStore);
         deletableStoreList.add(userRoleStore);
+        deletableStoreList.add(relationshipStore);
         deletableStoreList.add(userRoleProgramLinkStore);
         deletableStoreList.add(trackedEntityInstanceStore);
         deletableStoreList.add(enrollmentStore);

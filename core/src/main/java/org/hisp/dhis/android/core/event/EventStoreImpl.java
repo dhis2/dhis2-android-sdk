@@ -359,11 +359,26 @@ public class EventStoreImpl implements EventStore {
             coordinates = Coordinates.create(latitude, longitude);
         }
 
-        event = Event.create(
-                uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                program, programStage, organisationUnit, eventDate, eventStatus,
-                coordinates, completedDate,
-                dueDate, false, null, categoryCombo, optionCombo, trackedEntityInstance);
+        event = Event.builder()
+                .uid(uid)
+                .enrollmentUid(enrollment)
+                .created(created)
+                .lastUpdated(lastUpdated)
+                .createdAtClient(createdAtClient)
+                .lastUpdatedAtClient(lastUpdatedAtClient)
+                .program(program)
+                .programStage(programStage)
+                .organisationUnit(organisationUnit)
+                .eventDate(eventDate)
+                .status(eventStatus)
+                .coordinates(coordinates)
+                .completedDate(completedDate)
+                .dueDate(dueDate)
+                .deleted(false)
+                .attributeOptionCombo(optionCombo)
+                .attributeCategoryOptions(categoryCombo)
+                .trackedEntityInstance(trackedEntityInstance)
+                .build();
 
         return event;
     }

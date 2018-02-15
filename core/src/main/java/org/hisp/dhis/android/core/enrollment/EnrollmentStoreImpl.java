@@ -289,11 +289,14 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                         coordinates = Coordinates.create(latitude, longitude);
                     }
 
-                    enrollmentMap.get(trackedEntityInstance).add(Enrollment.create(
-                            uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                            organisationUnit, program, enrollmentDate, incidentDate, followUp,
-                            status, trackedEntityInstance, coordinates, false, null
-                    ));
+                    enrollmentMap.get(trackedEntityInstance).add(Enrollment.builder().uid(uid)
+                            .created(created).lastUpdated(lastUpdated).createdAtClient(createdAtClient)
+                            .lastUpdatedAtClient(lastUpdatedAtClient).organisationUnit(organisationUnit)
+                            .program(program).dateOfEnrollment(enrollmentDate).dateOfIncident(incidentDate)
+                            .followUp(followUp).enrollmentStatus(status).trackedEntityInstance(trackedEntityInstance)
+                            .deleted(false)
+                            .coordinate(coordinates).build()
+                    );
 
                 }
                 while (cursor.moveToNext());

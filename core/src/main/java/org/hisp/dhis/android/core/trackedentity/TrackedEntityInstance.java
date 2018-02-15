@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
@@ -42,9 +43,8 @@ import org.hisp.dhis.android.core.relationship.Relationship;
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_TrackedEntityInstance.Builder.class)
 public abstract class TrackedEntityInstance {
     private static final String UID = "trackedEntityInstance";
     private static final String CREATED_AT_CLIENT = "createdAtClient";
@@ -118,24 +118,54 @@ public abstract class TrackedEntityInstance {
     @JsonProperty(ENROLLMENTS)
     public abstract List<Enrollment> enrollments();
 
-    @JsonCreator
-    public static TrackedEntityInstance create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(CREATED_AT_CLIENT) String createdAtClient,
-            @JsonProperty(LAST_UPDATED_AT_CLIENT) String lastUpdatedAtClient,
-            @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
-            @JsonProperty(TRACKED_ENTITY) String trackedEntity,
-            @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(TRACKED_ENTITY_ATTRIBUTE_VALUES)
-                    List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
-            @JsonProperty(RELATIONSHIPS) List<Relationship> relationships,
-            @JsonProperty(ENROLLMENTS) List<Enrollment> enrollments) {
-        return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                organisationUnit, trackedEntity, deleted,
-                safeUnmodifiableList(trackedEntityAttributeValues),
-                safeUnmodifiableList(relationships), safeUnmodifiableList(enrollments));
+
+    public abstract TrackedEntityInstance.Builder toBuilder();
+
+    public static TrackedEntityInstance.Builder builder() {
+        return new AutoValue_TrackedEntityInstance.Builder();
     }
 
+    @AutoValue.Builder
+    public static abstract class Builder{
+
+        @JsonProperty(UID)
+        public abstract Builder uid(@NonNull String uid);
+
+        @JsonProperty(CREATED)
+        public abstract Builder created(@Nullable Date created);
+
+        @JsonProperty(LAST_UPDATED)
+        public abstract Builder lastUpdated(@Nullable Date lastUpdated);
+
+        @JsonProperty(CREATED_AT_CLIENT)
+        public abstract Builder createdAtClient(@Nullable String createdAtClient);
+
+        @JsonProperty(LAST_UPDATED_AT_CLIENT)
+        public abstract Builder lastUpdatedAtClient(@Nullable String lastUpdatedAtClient);
+
+        @Nullable
+        @JsonProperty(ORGANISATION_UNIT)
+        public abstract Builder organisationUnit(@Nullable String organisationUnit);
+
+        @JsonProperty(TRACKED_ENTITY)
+        public abstract Builder trackedEntity(@Nullable String trackedEntity);
+
+        @JsonProperty(DELETED)
+        public abstract Builder deleted(@Nullable Boolean deleted);
+
+        @JsonProperty(TRACKED_ENTITY_ATTRIBUTE_VALUES)
+        public abstract Builder trackedEntityAttributeValues(@Nullable
+                List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
+
+        @JsonProperty(RELATIONSHIPS)
+        public abstract Builder relationships(@Nullable
+                List<Relationship> relationships);
+
+        @JsonProperty(ENROLLMENTS)
+        public abstract Builder enrollments(@Nullable
+                List<Enrollment> enrollments);
+
+        public abstract TrackedEntityInstance build();
+    }
+    
 }

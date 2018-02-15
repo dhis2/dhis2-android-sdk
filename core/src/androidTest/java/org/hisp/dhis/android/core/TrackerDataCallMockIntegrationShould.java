@@ -221,10 +221,11 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
         Date date = new Date();
         String dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
 
-        TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.create(
-                uid, date, date, dateString, dateString,
-                "DiszpKrYNg8", "nEenWmSyUEp",
-                false, null, null, null);
+        TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.builder()
+                .uid(uid).created(date).lastUpdated(date).createdAtClient(dateString)
+                .lastUpdatedAtClient(dateString)
+                .organisationUnit("DiszpKrYNg8")
+                .trackedEntity("nEenWmSyUEp").build();
 
         trackedEntityInstanceStore.insert(
                 trackedEntityInstance.uid(), trackedEntityInstance.created(),

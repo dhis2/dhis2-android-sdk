@@ -389,8 +389,8 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         Cursor userOrganisationUnitCursor = database().query(UserOrganisationUnitLinkModel.TABLE,
                 USER_ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
 
-        Cursor resourceCursor = database().query(ResourceModel.TABLE,
-                RESOURCE_PROJECTION, null, null, null, null, null);
+        //Cursor resourceCursor = database().query(ResourceModel.TABLE,
+        //        RESOURCE_PROJECTION, null, null, null, null, null);
         //BO:
         assertThatCursor(organisationUnitCursor).hasRow("O6uvpzGd5pu", "OU_264", "Bo", "Bo",
                 "2012-02-17T15:54:39.987", "2014-12-15T11:56:16.767", "Bo", "Bo", null, null,

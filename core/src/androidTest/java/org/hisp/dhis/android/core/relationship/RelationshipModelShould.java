@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
+import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.State;
@@ -48,9 +49,10 @@ public class RelationshipModelShould {
     // RelationshipModel attributes:
     private static final String TRACKED_ENTITY_INSTANCE_A = "Tei A uid";
     private static final String TRACKED_ENTITY_INSTANCE_B = "Tei B uid";
-    private static final String RELATIONSHIP_TYPE = "RelationshipType uid";
+    private static final String RELATIONSHIP_TYPE_UID = "RelationshipType uid";
 
     @Test
+    @SmallTest
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
@@ -63,7 +65,7 @@ public class RelationshipModelShould {
                 ID, STATE.name(),
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
-                RELATIONSHIP_TYPE
+                RELATIONSHIP_TYPE_UID
         });
         cursor.moveToFirst();
 
@@ -74,7 +76,7 @@ public class RelationshipModelShould {
         assertThat(model.state()).isEqualTo(STATE);
         assertThat(model.trackedEntityInstanceA()).isEqualTo(TRACKED_ENTITY_INSTANCE_A);
         assertThat(model.trackedEntityInstanceB()).isEqualTo(TRACKED_ENTITY_INSTANCE_B);
-        assertThat(model.relationshipType()).isEqualTo(RELATIONSHIP_TYPE);
+        assertThat(model.relationshipType()).isEqualTo(RELATIONSHIP_TYPE_UID);
     }
 
     @Test
@@ -84,7 +86,7 @@ public class RelationshipModelShould {
                 .state(STATE)
                 .trackedEntityInstanceA(TRACKED_ENTITY_INSTANCE_A)
                 .trackedEntityInstanceB(TRACKED_ENTITY_INSTANCE_B)
-                .relationshipType(RELATIONSHIP_TYPE)
+                .relationshipType(RELATIONSHIP_TYPE_UID)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -92,6 +94,7 @@ public class RelationshipModelShould {
         assertThat(contentValues.getAsString(Columns.STATE)).isEqualTo(STATE.name());
         assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_INSTANCE_A)).isEqualTo(TRACKED_ENTITY_INSTANCE_A);
         assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_INSTANCE_B)).isEqualTo(TRACKED_ENTITY_INSTANCE_B);
-        assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);
+        assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TYPE)).isEqualTo(
+                RELATIONSHIP_TYPE_UID);
     }
 }

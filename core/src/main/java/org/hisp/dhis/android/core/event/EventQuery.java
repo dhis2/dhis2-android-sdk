@@ -5,11 +5,12 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.common.BaseQuery;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class EventQuery {
+public class EventQuery extends BaseQuery {
     private final Set<String> uIds;
     private final int page;
     private final int pageSize;
@@ -18,6 +19,10 @@ public class EventQuery {
     private final String program;
     private final String trackedEntityInstance;
     private final int pageLimit;
+    private final boolean isTranslationOn;
+
+    @Nullable
+    private final String translationLocale;
 
     @Nullable
     private final CategoryOption categoryOption;
@@ -38,13 +43,16 @@ public class EventQuery {
         this.pageLimit = pageLimit;
         this.categoryCombo = null;
         this.categoryOption = null;
+        this.isTranslationOn = DEFAULT_IS_TRANSLATION_ON;
+        this.translationLocale = DEFAULT_TRANSLATION_LOCALE;
     }
 
     public EventQuery(boolean paging, int page, int pageSize,
             String orgUnit, String program, String trackedEntityInstance, Set<String> uIds,
             int pageLimit,
             @Nullable CategoryCombo categoryCombo,
-            @Nullable CategoryOption categoryOption) {
+            @Nullable CategoryOption categoryOption, boolean isTranslationOn,
+            String translationLocale) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
@@ -55,22 +63,43 @@ public class EventQuery {
         this.pageLimit = pageLimit;
         this.categoryCombo = categoryCombo;
         this.categoryOption = categoryOption;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     public Set<String> getUIds() {
         return uIds;
     }
 
-    public int getPage() {
+    @Nullable
+    @Override
+    public Set<String> uIds() {
+        return uIds;
+    }
+
+    @Override
+    public int page() {
         return page;
     }
 
-    public int getPageSize() {
+    @Override
+    public int pageSize() {
         return pageSize;
     }
 
+    @Override
     public boolean isPaging() {
         return paging;
+    }
+
+    @Override
+    public boolean isTranslationOn() {
+        return isTranslationOn;
+    }
+
+    @Override
+    public String translationLocale() {
+        return translationLocale;
     }
 
     public String getOrgUnit() {
@@ -107,6 +136,8 @@ public class EventQuery {
         private String program;
         private String trackedEntityInstance;
         int pageLimit;
+        private boolean isTranslationOn;
+        private String translationLocale;
 
         private Set<String> uIds = new HashSet<>();
 
@@ -170,6 +201,16 @@ public class EventQuery {
             return this;
         }
 
+        public Builder withIsTranslationOn(boolean isTranslationOn) {
+            this.isTranslationOn = isTranslationOn;
+            return this;
+        }
+
+        public Builder withTranslationLocale(String translationLocale) {
+            this.translationLocale = translationLocale;
+            return this;
+        }
+
         public EventQuery build() {
             if (pageLimit > pageSize) {
                 throw new IllegalArgumentException(
@@ -178,7 +219,7 @@ public class EventQuery {
 
             return new EventQuery(paging, page, pageSize,
                     orgUnit, program, trackedEntityInstance, uIds, pageLimit,
-                    categoryCombo, categoryOption);
+                    categoryCombo, categoryOption, isTranslationOn, translationLocale);
         }
     }
 }

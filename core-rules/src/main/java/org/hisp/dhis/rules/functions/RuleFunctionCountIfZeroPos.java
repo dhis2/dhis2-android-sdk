@@ -44,11 +44,11 @@ final class RuleFunctionCountIfZeroPos extends RuleFunction {
         RuleVariableValue ruleVariableValue = valueMap.get(variableName);
         Integer count = 0;
         if (ruleVariableValue != null && ruleVariableValue.value() != null) {
-            if (ruleVariableValue.candidates().size() > 0) {
-                count = countCandidates(ruleVariableValue);
-            } else if (ruleVariableValue.value() != null) {
-                count = countValue(ruleVariableValue);
-            }
+                if (ruleVariableValue.candidates().size() > 0) {
+                    count = countCandidates(ruleVariableValue);
+                } else if (ruleVariableValue.value() != null) {
+                    count = countValue(ruleVariableValue);
+                }
         }
         return count;
     }

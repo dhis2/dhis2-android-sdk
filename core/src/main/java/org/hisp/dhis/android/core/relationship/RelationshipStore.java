@@ -28,17 +28,21 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
+
+import java.util.List;
 
 public interface RelationshipStore extends DeletableStore {
 
     long insert(
             @Nullable String trackedEntityInstanceA,
             @Nullable String trackedEntityInstanceB,
-            @NonNull String relationshipType
+            @Nullable String relationship
     );
 
+    int removeOldRelations(String uid);
+
+    List<Relationship> queryByTrackedEntityInstanceUid(String uid);
 }

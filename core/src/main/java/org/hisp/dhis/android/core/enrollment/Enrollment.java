@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Coordinates;
@@ -42,9 +43,9 @@ import org.hisp.dhis.android.core.event.Event;
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)
 public abstract class Enrollment {
     private static final String UID = "enrollment";
     private static final String CREATED = "created";
@@ -138,26 +139,62 @@ public abstract class Enrollment {
     @JsonProperty(EVENTS)
     public abstract List<Event> events();
 
-    @JsonCreator
-    public static Enrollment create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(CREATED_AT_CLIENT) String createdAtClient,
-            @JsonProperty(LAST_UPDATED_AT_CLIENT) String lastUpdatedAtClient,
-            @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
-            @JsonProperty(PROGRAM) String program,
-            @JsonProperty(DATE_OF_ENROLLMENT) Date dateOfEnrollment,
-            @JsonProperty(DATE_OF_INCIDENT) Date dateOfIncident,
-            @JsonProperty(FOLLOW_UP) Boolean followUp,
-            @JsonProperty(ENROLLMENT_STATUS) EnrollmentStatus enrollmentStatus,
-            @JsonProperty(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
-            @JsonProperty(COORDINATE) Coordinates coordinate,
-            @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(EVENTS) List<Event> events) {
-        return new AutoValue_Enrollment(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                organisationUnit, program, dateOfEnrollment, dateOfIncident, followUp, enrollmentStatus,
-                trackedEntityInstance, coordinate, deleted, safeUnmodifiableList(events));
+    public abstract Enrollment.Builder toBuilder();
+
+    public static Enrollment.Builder builder() {
+        return new AutoValue_Enrollment.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder{
+
+        @JsonProperty(UID)
+        public abstract Builder uid(@NonNull String uid);
+
+        @JsonProperty(CREATED)
+        public abstract Builder created(@Nullable Date created);
+
+        @JsonProperty(LAST_UPDATED)
+        public abstract Builder lastUpdated(@Nullable Date lastUpdated);
+
+        @JsonProperty(CREATED_AT_CLIENT)
+        public abstract Builder createdAtClient(@Nullable String createdAtClient);
+
+        @JsonProperty(LAST_UPDATED_AT_CLIENT)
+        public abstract Builder lastUpdatedAtClient(@Nullable String lastUpdatedAtClient);
+
+        @Nullable
+        @JsonProperty(ORGANISATION_UNIT)
+        public abstract Builder organisationUnit(@Nullable String organisationUnit);
+
+        @JsonProperty(PROGRAM)
+        public abstract Builder program(String program);
+
+        @JsonProperty(DATE_OF_ENROLLMENT)
+        public abstract Builder dateOfEnrollment(@Nullable Date dateOfEnrollment);
+
+        @JsonProperty(DATE_OF_INCIDENT)
+        public abstract Builder dateOfIncident(@Nullable Date dateOfincident);
+
+        @JsonProperty(FOLLOW_UP)
+        public abstract Builder followUp(@Nullable Boolean followUp);
+
+        @JsonProperty(ENROLLMENT_STATUS)
+        public abstract Builder enrollmentStatus(@Nullable EnrollmentStatus enrollmentStatus);
+
+        @JsonProperty(TRACKED_ENTITY_INSTANCE)
+        public abstract Builder trackedEntityInstance(@Nullable String trackedEntityInstance);
+
+        @JsonProperty(COORDINATE)
+        public abstract Builder coordinate(@Nullable Coordinates coordinates);
+
+        @JsonProperty(DELETED)
+        public abstract Builder deleted(@Nullable Boolean deleted);
+
+        @JsonProperty(EVENTS)
+        public abstract Builder events(@Nullable List<Event> events);
+
+        public abstract Enrollment build();
     }
 
 }

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -44,6 +45,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
@@ -61,6 +63,8 @@ import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
@@ -91,6 +95,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     private MockWebServer mockWebServer;
     private UserCall userCall;
     private OrganisationUnitHandler organisationUnitHandler;
+    private UserQuery userQuery;
 
     @Override
     @Before
@@ -103,10 +108,13 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         mockResponse.setHeader(HeaderUtils.DATE, Calendar.getInstance().getTime());
 
         // JSON payload is returned from this api query:
-        // https://play.dhis2.org/dev/api/me.json?fields=id,code,name,displayName,created,lastUpdated,birthday,
-        // education,gender,jobTitle,surname,firstName,introduction,employer,interests,languages,email,
+        // https://play.dhis2.org/dev/api/me.json?fields=id,code,name,displayName,created,
+        // lastUpdated,birthday,
+        // education,gender,jobTitle,surname,firstName,introduction,employer,interests,languages,
+        // email,
         // phoneNumber,nationality,teiSearchOrganisationUnits[id],organisationUnits[id,programs],
-        // userCredentials[id,code,name,displayName,created,lastUpdated,username,userRoles[id,programs[id]]]
+        // userCredentials[id,code,name,displayName,created,lastUpdated,username,userRoles[id,
+        // programs[id]]]
         mockResponse.setBody("{\n" +
                 "\n" +
                 "    \"created\": \"2015-03-31T13:31:09.324\",\n" +
@@ -218,24 +226,42 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
 
         UserService userService = retrofit.create(UserService.class);
 
-        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
+        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(
+                databaseAdapter());
         UserOrganisationUnitLinkStore userOrganisationUnitStore =
                 new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
         UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
         UserRoleStore userRoleStore = new UserRoleStoreImpl(databaseAdapter());
         UserStore userStore = new UserStoreImpl(databaseAdapter());
-        UserRoleProgramLinkStore userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter());
+        UserRoleProgramLinkStore userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(
+                databaseAdapter());
         OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore =
                 new OrganisationUnitProgramLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
+        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+
+
+        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore =
+                new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
+
+        UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(
+                userCredentialsStore);
+
+        UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore,
+                userRoleProgramLinkStore);
+
+        UserHandler userHandler = new UserHandler(userStore, userCredentialsHandler,
+                resourceHandler, userRoleHandler);
 
         organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, userOrganisationUnitStore, organisationUnitProgramLinkStore
-        );
+                organisationUnitStore, userOrganisationUnitStore, organisationUnitProgramLinkStore,
+                resourceHandler);
+
+        userQuery = UserQuery.defaultQuery( DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
 
         userCall = new UserCall(userService, databaseAdapter(),
-                userStore, userCredentialsStore, userRoleStore, resourceStore, new Date(),
-                userRoleProgramLinkStore);
+                userHandler, new Date(),userQuery);
 
         ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
         ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);
@@ -253,10 +279,12 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_user_in_data_base_when_call() throws Exception {
         userCall.call();
 
-        Cursor userCursor = database().query(UserModel.TABLE, USER_PROJECTION, null, null, null, null, null);
+        Cursor userCursor = database().query(UserModel.TABLE, USER_PROJECTION, null, null, null,
+                null, null);
 
         assertThatCursor(userCursor).hasRow(
                 1L,
@@ -283,6 +311,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_user_credentials_in_data_base_when_call() throws Exception {
         userCall.call();
 
@@ -314,6 +343,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void persist_user_roles_in_data_base_when_call() throws Exception {
         userCall.call();
 
@@ -343,10 +373,12 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
                 null
         ).isExhausted();
 
-        Cursor linkModelCursor = database().query(UserRoleProgramLinkModel.TABLE, userRoleProgramLinkModelProjection,
+        Cursor linkModelCursor = database().query(UserRoleProgramLinkModel.TABLE,
+                userRoleProgramLinkModelProjection,
                 UserRoleProgramLinkModel.Columns.USER_ROLE + "=?" +
                         " AND " +
-                        UserRoleProgramLinkModel.Columns.PROGRAM + "=?", new String[]{"cUlTcejWree", "ur1Edk5Oe2n"},
+                        UserRoleProgramLinkModel.Columns.PROGRAM + "=?",
+                new String[]{"cUlTcejWree", "ur1Edk5Oe2n"},
                 null, null, null);
 
         assertThatCursor(linkModelCursor).hasRow(

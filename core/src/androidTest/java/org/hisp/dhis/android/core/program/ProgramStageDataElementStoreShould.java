@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.program;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -113,6 +114,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_persist_program_stage_data_element_in_data_base_when_insert() {
         // inserting necessary foreign key
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
@@ -168,6 +170,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_deferrable_program_stage_data_element_in_data_base_when_insert() {
         final String deferredDataElementUid = "deferredDataElementUid";
         final String deferredProgramStageUid = "deferredProgramStageUid";
@@ -208,6 +211,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void insert_persist_program_stage_data_element_in_data_base_when_insert_with_option_set() {
         // inserting necessary foreign key
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
@@ -265,6 +269,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = SQLiteConstraintException.class)
+    @MediumTest
     public void throw_sqlite_constraint_exception_when_insert_program_stage_data_element_with_invalid_foreign_key() {
         String fakeDataElementId = "fake_data_element_id";
         store.insert(
@@ -286,6 +291,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_program_stage_data_element_in_data_base_when_delete_data_element() {
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
         database().insert(DataElementModel.TABLE, null, dataElement);
@@ -319,6 +325,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_program_stage_data_element_in_data_base_when_delete_option_set_nested_foreign_key() {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(OptionSetModel.TABLE, null, optionSet);
@@ -355,6 +362,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void delete_program_stage_data_element_in_data_base_when_delete_program_stage_section() {
         String programStageUid = "test_programStageUid";
 
@@ -406,6 +414,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update__program_stage_data_element_in_data_base_without_program_stage_section_when_update() throws Exception {
         // inserting mandatory and nested foreign keys
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
@@ -460,6 +469,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
 
 
     @Test
+    @MediumTest
     public void delete_program_stage_data_element_when_delete() throws Exception {
         // inserting necessary foreign keys
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
@@ -495,6 +505,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_program_stage_data_element_with_program_stage_section_when_update() throws Exception {
         // inserting necessary foreign keys
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
@@ -536,18 +547,21 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_null_uid_and_null_program_stage_uid() {
         store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
                 ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, PROGRAM_STAGE, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_with_null_dataElement_and_program_stage_uid() {
         store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
                 ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, null, PROGRAM_STAGE, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_insert_with_program_stage_uid_and_program_stage_section() {
         store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
                 ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, null, null);
@@ -555,30 +569,35 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
 
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_with_null_uid() {
         store.update(null, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
                 ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, PROGRAM_STAGE, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_with_null_data_element() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
                 ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, null, PROGRAM_STAGE, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_with_null_program_stage_uid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
                 ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, null, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_update_with_null_where_program_stage_data_element_uid() {
         store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, DISPLAY_IN_REPORTS, COMPULSORY,
                 ALLOW_PROVIDED_ELSEWHERE, SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, PROGRAM_STAGE, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
+    @MediumTest
     public void throw_illegal_argument_exception_when_delete_null_uid() {
         store.delete(null);
     }

@@ -32,7 +32,6 @@ import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
@@ -73,25 +72,15 @@ public abstract class CategoryOption extends BaseNameableObject {
     @JsonProperty(END_DATE)
     public abstract Date endDate();
 
+
+    abstract CategoryOption.Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_CategoryOption.Builder();
     }
 
-    @JsonCreator
-    public static CategoryOption create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated
-    ) {
-        return builder().uid(uid).code(code).name(name).displayName(displayName).created(
-                created).lastUpdated(lastUpdated).build();
-    }
-
     @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+    public static abstract class Builder extends BaseNameableObject.Builder<CategoryOption.Builder> {
 
         @JsonProperty(CATEGORY_OPTION_COMBOS)
         public abstract Builder categoryOptionCombos(

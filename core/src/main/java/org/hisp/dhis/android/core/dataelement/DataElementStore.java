@@ -31,12 +31,13 @@ package org.hisp.dhis.android.core.dataelement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.IdentifiableStore;
 import org.hisp.dhis.android.core.common.ValueType;
 
 import java.util.Date;
+import java.util.List;
 
-public interface DataElementStore extends DeletableStore {
+public interface DataElementStore extends IdentifiableStore {
 
     long insert(
             @NonNull String uid,
@@ -53,8 +54,6 @@ public interface DataElementStore extends DeletableStore {
             @Nullable String categoryCombo
     );
 
-    int delete(String uid);
-
     int update(
             @NonNull String uid,
             @Nullable String code,
@@ -69,4 +68,6 @@ public interface DataElementStore extends DeletableStore {
             @Nullable String optionSet,
             @Nullable String categoryCombo, @NonNull String whereDataElementUid
     );
+
+    List<DataElement> queryAll();
 }

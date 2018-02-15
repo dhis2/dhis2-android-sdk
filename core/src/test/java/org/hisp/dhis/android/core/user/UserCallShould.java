@@ -27,13 +27,17 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.server.RetrofitFactory;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,16 +56,24 @@ import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
+import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import android.support.annotation.NonNull;
 
 @RunWith(JUnit4.class)
 public class UserCallShould {
@@ -73,19 +85,10 @@ public class UserCallShould {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private UserStore userStore;
-
-    @Mock
     private Transaction transaction;
 
     @Mock
-    private UserCredentialsStore userCredentialsStore;
-
-    @Mock
-    private ResourceStore resourceStore;
-
-    @Mock
-    private UserRoleStore userRoleStore;
+    private UserHandler userHandler;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<User> userCall;
@@ -122,16 +125,23 @@ public class UserCallShould {
     @Mock
     private UserRoleProgramLinkStore userRoleProgramLinkStore;
 
+    private Dhis2MockServer dhis2MockServer;
+    private Retrofit retrofit;
+    private UserQuery userQuery;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
+        userQuery = UserQuery.defaultQuery( DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
+
         userSyncCall = new UserCall(
-                userService, databaseAdapter,
-                userStore, userCredentialsStore, userRoleStore, resourceStore,
-                serverDate, userRoleProgramLinkStore
-        );
+                userService, databaseAdapter, userHandler, serverDate,
+                userQuery);
 
         when(userCredentials.uid()).thenReturn("user_credentials_uid");
         when(userCredentials.code()).thenReturn("user_credentials_code");
@@ -160,7 +170,8 @@ public class UserCallShould {
         when(organisationUnit.shortName()).thenReturn("organisation_unit_shortName");
         when(organisationUnit.shortName()).thenReturn("organisation_unit_displayShortName");
         when(organisationUnit.description()).thenReturn("organisation_unit_description");
-        when(organisationUnit.displayDescription()).thenReturn("organisation_unit_displayDescription");
+        when(organisationUnit.displayDescription()).thenReturn(
+                "organisation_unit_displayDescription");
         when(organisationUnit.path()).thenReturn("organisation/unit/path");
         when(organisationUnit.openingDate()).thenReturn(created);
         when(organisationUnit.closedDate()).thenReturn(created);
@@ -194,15 +205,22 @@ public class UserCallShould {
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
-        when(userService.getUser(any(Fields.class))).thenReturn(userCall);
+        when(userService.getUser(any(Fields.class), anyBoolean(), anyString())).thenReturn(
+                userCall);
 
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        dhis2MockServer.shutdown();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void return_correct_fields_after_invoke_user_sync_call() throws Exception {
         when(userCall.execute()).thenReturn(Response.success(user));
-        when(userService.getUser(filterCaptor.capture())).thenReturn(userCall);
+        when(userService.getUser(filterCaptor.capture(), anyBoolean(), anyString())).thenReturn(
+                userCall);
 
         // fake call to api
         userSyncCall.call();
@@ -254,42 +272,16 @@ public class UserCallShould {
             verify(transaction, never()).setSuccessful();
             verify(transaction, never()).end();
 
-            verify(userStore, never()).insert(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
-            verify(userStore, never()).update(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
-            verify(userStore, never()).delete(anyString());
-
-            verify(userCredentialsStore, never()).insert(
-                    anyString(), anyString(), anyString(), anyString(),
-                    any(Date.class), any(Date.class), anyString(), anyString()
-            );
-            verify(userCredentialsStore, never()).update(
-                    anyString(), anyString(), anyString(), anyString(),
-                    any(Date.class), any(Date.class), anyString(), anyString(), anyString()
-            );
-
-            verify(userCredentialsStore, never()).delete(anyString());
-
-            verify(userRoleStore, never()).insert(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class)
-            );
-            verify(userRoleStore, never()).update(
-                    anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class), anyString()
-            );
-            verify(userRoleStore, never()).delete(anyString());
+            verify(userHandler, never()).handleUser(any(User.class), any(Date.class));
         }
     }
 
     @Test
     public void not_invoke_stores_after_call_failure() throws Exception {
         // unauthorized
-        when(userCall.execute()).thenReturn(Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
-                ResponseBody.create(MediaType.parse("application/json"), "{}")));
+        when(userCall.execute()).thenReturn(
+                Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
+                        ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
         Response<User> response = userSyncCall.call();
 
@@ -301,34 +293,7 @@ public class UserCallShould {
         verify(transaction, never()).setSuccessful();
         verify(transaction, never()).end();
 
-        verify(userStore, never()).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
-        verify(userStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
-        verify(userStore, never()).delete(anyString());
-
-        verify(userCredentialsStore, never()).insert(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString()
-        );
-        verify(userCredentialsStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString()
-        );
-
-        verify(userCredentialsStore, never()).delete(anyString());
-
-        verify(userRoleStore, never()).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class)
-        );
-        verify(userRoleStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class), anyString()
-        );
-        verify(userRoleStore, never()).delete(anyString());
+        verify(userHandler, never()).handleUser(any(User.class), any(Date.class));
     }
 
     @Test
@@ -376,24 +341,40 @@ public class UserCallShould {
 
         userSyncCall.call();
 
-        verify(userStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
-        );
+        verify(userHandler, times(1)).handleUser(any(User.class), any(Date.class));
 
-        verify(userCredentialsStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString()
-        );
+    }
 
-        verify(userRoleStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class)
-        );
+    @Test
+    public void append_translation_variables_to_the_query_string()
+            throws Exception {
 
-        verify(userRoleProgramLinkStore, times(1)).insert(anyString(), anyString());
+        whenCallUserCall();
 
-        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
+        thenAssertTranslationParametersAreInclude();
+    }
 
+    private void thenAssertTranslationParametersAreInclude() throws InterruptedException {
+        RecordedRequest request = dhis2MockServer.takeRequest();
+
+        MatcherAssert.assertThat(request.getPath(), containsString(
+                "translation=" + DEFAULT_IS_TRANSLATION_ON + "&locale="
+                        + DEFAULT_TRANSLATION_LOCALE));
+    }
+
+    private void whenCallUserCall() throws Exception {
+        UserCall userSyncCallWithMockWebservice = provideUserCallWithMockWebservice();
+
+        dhis2MockServer.enqueueMockResponse("me.json");
+        userSyncCallWithMockWebservice.call();
+    }
+
+    @NonNull
+    private UserCall provideUserCallWithMockWebservice() {
+        UserService mockUserService = retrofit.create(UserService.class);
+
+        return new UserCall(
+                mockUserService, databaseAdapter, userHandler, serverDate,
+                userQuery);
     }
 }

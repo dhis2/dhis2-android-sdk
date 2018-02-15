@@ -31,11 +31,11 @@ package org.hisp.dhis.android.core.program;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.IdentifiableStore;
 
 import java.util.Date;
 
-public interface ProgramTrackedEntityAttributeStore extends DeletableStore {
+public interface ProgramTrackedEntityAttributeStore extends IdentifiableStore {
     long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
                 @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
                 @Nullable String shortName, @Nullable String displayShortName,
@@ -51,6 +51,4 @@ public interface ProgramTrackedEntityAttributeStore extends DeletableStore {
                @Nullable Boolean mandatory, @NonNull String trackedEntityAttribute,
                @Nullable Boolean allowFutureDates, @Nullable Boolean displayInList, @NonNull String program,
                @Nullable Integer sortOrder, @NonNull String whereProgramTrackedEntityAttributeUid);
-
-    int delete(String uid);
 }

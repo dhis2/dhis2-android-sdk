@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -43,9 +44,9 @@ import org.hisp.dhis.android.core.program.Program;
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_OrganisationUnit.Builder.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class OrganisationUnit extends BaseNameableObject {
     private static final String PARENT = "parent";
     private static final String PATH = "path";
@@ -96,27 +97,35 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     @JsonProperty(PROGRAMS)
     public abstract List<Program> programs();
 
-    @JsonCreator
-    public static OrganisationUnit create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(PARENT) OrganisationUnit parent,
-            @JsonProperty(PATH) String path,
-            @JsonProperty(OPENING_DATE) Date openingDate,
-            @JsonProperty(CLOSED_DATE) Date closedDate,
-            @JsonProperty(LEVEL) Integer level,
-            @JsonProperty(PROGRAMS) List<Program> programs,
-            @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_OrganisationUnit(uid, code, name, displayName, created, lastUpdated, deleted,
-                shortName, displayShortName, description, displayDescription, parent, path, openingDate,
-                closedDate, level, safeUnmodifiableList(programs));
+    abstract OrganisationUnit.Builder toBuilder();
+
+    static OrganisationUnit.Builder builder() {
+        return new AutoValue_OrganisationUnit.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends
+            BaseNameableObject.Builder<OrganisationUnit.Builder> {
+
+        @JsonProperty(PARENT)
+        public abstract OrganisationUnit.Builder parent(
+                @Nullable OrganisationUnit organisationUnit);
+
+        @JsonProperty(PATH)
+        public abstract OrganisationUnit.Builder path(@Nullable String path);
+
+        @JsonProperty(OPENING_DATE)
+        public abstract OrganisationUnit.Builder openingDate(@Nullable Date openningDate);
+
+        @JsonProperty(CLOSED_DATE)
+        public abstract OrganisationUnit.Builder closedDate(@Nullable Date closedDate);
+
+        @JsonProperty(LEVEL)
+        public abstract OrganisationUnit.Builder level(@Nullable Integer level);
+
+        @JsonProperty(PROGRAMS)
+        public abstract OrganisationUnit.Builder programs(@Nullable List<Program> programs);
+
+        public abstract OrganisationUnit build();
     }
 }

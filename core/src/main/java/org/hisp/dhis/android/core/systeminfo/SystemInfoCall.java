@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -45,15 +47,18 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
     private final SystemInfoService systemInfoService;
     private final ResourceStore resourceStore;
     private boolean isExecuted;
+    private final SystemInfoQuery query;
 
     public SystemInfoCall(DatabaseAdapter databaseAdapter,
-                          SystemInfoStore systemInfoStore,
-                          SystemInfoService systemInfoService,
-                          ResourceStore resourceStore) {
+            SystemInfoStore systemInfoStore,
+            SystemInfoService systemInfoService,
+            ResourceStore resourceStore, @NonNull SystemInfoQuery query) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoStore = systemInfoStore;
         this.systemInfoService = systemInfoService;
         this.resourceStore = resourceStore;
+        this.query = query;
+
     }
 
     @Override
@@ -79,7 +84,6 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
             insertOrUpdateSystemInfo(response);
         }
 
-
         return response;
     }
 
@@ -93,7 +97,8 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
                 SystemInfo systemInfo = response.body();
                 systemInfoHandler.handleSystemInfo(systemInfo);
 
-                resourceHandler.handleResource(ResourceModel.Type.SYSTEM_INFO, systemInfo.serverDate());
+                resourceHandler.handleResource(ResourceModel.Type.SYSTEM_INFO,
+                        systemInfo.serverDate());
             }
 
             transaction.setSuccessful();
@@ -109,7 +114,8 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
                         SystemInfo.dateFormat,
                         SystemInfo.version,
                         SystemInfo.contextPath
-                ).build()
+                ).build(),
+                query.isTranslationOn(), query.translationLocale()
         ).execute();
     }
 }

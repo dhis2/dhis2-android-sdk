@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.support.test.filters.LargeTest;
+
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
@@ -24,11 +26,8 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTest
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-    //This test is commented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-
-    //@Test
+    @Test
+    @LargeTest
     public void download_tei_enrollments_and_events() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn(RealServerMother.user, RealServerMother.password).call();
@@ -46,4 +45,26 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTest
 
         Truth.assertThat(response.isSuccessful()).isTrue();
     }
+
+    @Test
+    @LargeTest
+    public void download_tei_enrollments_and_events_with_relationships() throws Exception {
+        retrofit2.Response response = null;
+        response = d2.logIn(RealServerMother.user, RealServerMother.password).call();
+        Truth.assertThat(response.isSuccessful()).isTrue();
+
+
+        response = d2.syncMetaData().call();
+        Truth.assertThat(response.isSuccessful()).isTrue();
+
+        TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
+                TrackedEntityInstanceCallFactory.create(
+                        d2.retrofit(), databaseAdapter(), "Tm9Lh2J2n1M");
+
+        response = trackedEntityInstanceEndPointCall.call();
+
+        Truth.assertThat(response.isSuccessful()).isTrue();
+    }
+
+
 }

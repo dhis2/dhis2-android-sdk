@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.event;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.support.test.filters.LargeTest;
 import static junit.framework.Assert.assertTrue;
 
 import android.support.test.runner.AndroidJUnit4;
@@ -32,10 +33,6 @@ import retrofit2.Response;
 public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
-    Exception e;
-    CodeGenerator codeGenerator;
-
-
     private EventStore eventStore;
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
 
@@ -66,20 +63,16 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         attributeCategoryOption = "C6nZpLKjEJr";
         attributeOptionCombo = "nvLjum6Xbv5";
         categoryComboUID = "nM3u9s5a52V";
-        codeGenerator = new CodeGeneratorImpl();
+        CodeGenerator codeGenerator = new CodeGeneratorImpl();
 
         eventUid = codeGenerator.generate();
 
     }
 
     @Test
-    public void stub() throws Exception {
-
-    }
-    // commented out since it is a flaky test that works against a real server.
-    //@Test
+    @LargeTest
     public void successful_response_after_sync_events() throws Exception {
-        retrofit2.Response response = null;
+        retrofit2.Response response;
         response = d2.logIn(user, password).call();
         assertThat(response.isSuccessful()).isTrue();
 
@@ -95,12 +88,11 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
     }
 
-    // commented out since it is a flaky test that works against a real server.
-    //@Test
+    @Test
+    @LargeTest
     public void pull_event_with_correct_category_combo_after_be_pushed() throws Exception {
-        retrofit2.Response response = null;
 
-        dowloadMetadata();
+        downloadMetadata();
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid, dataElementUid, attributeCategoryOption, attributeOptionCombo, null);
 
@@ -110,7 +102,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.wipeDB().call();
 
-        dowloadMetadata();
+        downloadMetadata();
 
         downloadEventsBy(categoryComboUID,attributeCategoryOption);
 
@@ -168,7 +160,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         assertThat(response.isSuccessful()).isTrue();
     }
 
-    private void dowloadMetadata() throws Exception {
+    private void downloadMetadata() throws Exception {
         Response response;
         response = d2.logIn(user, password).call();
         assertThat(response.isSuccessful()).isTrue();

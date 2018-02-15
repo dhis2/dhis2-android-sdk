@@ -40,7 +40,11 @@ import org.hisp.dhis.android.core.resource.ResourceModel.Columns;
 
 import java.util.Date;
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class ResourceStoreImpl implements ResourceStore {
+
     public static final String INSERT_STATEMENT = "INSERT INTO " + ResourceModel.TABLE + " (" +
             Columns.RESOURCE_TYPE + ", " +
             Columns.LAST_SYNCED + ") " +
@@ -53,7 +57,7 @@ public class ResourceStoreImpl implements ResourceStore {
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + ResourceModel.TABLE +
             " WHERE " + Columns.RESOURCE_TYPE + " =?;";
-    
+
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -79,7 +83,7 @@ public class ResourceStoreImpl implements ResourceStore {
 
     @Override
     public int update(@NonNull String resourceType, @Nullable Date lastSynced,
-                      @NonNull String whereResourceType) {
+            @NonNull String whereResourceType) {
         isNull(resourceType);
         isNull(whereResourceType);
         sqLiteBind(updateStatement, 1, resourceType);

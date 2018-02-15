@@ -27,6 +27,11 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_LOCALE;
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLATION;
+
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Which;
 
@@ -36,5 +41,7 @@ import retrofit2.http.Query;
 
 public interface SystemInfoService {
     @GET("system/info")
-    Call<SystemInfo> getSystemInfo(@Query("fields") @Which Fields<SystemInfo> fields);
+    Call<SystemInfo> getSystemInfo(@Query("fields") @Which Fields<SystemInfo> fields,
+            @Query(QUERY_TRANSLATION) boolean isTranslationOn,
+            @NonNull @Query(QUERY_LOCALE) String locale);
 }

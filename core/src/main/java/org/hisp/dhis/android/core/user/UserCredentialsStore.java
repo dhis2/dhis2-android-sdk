@@ -59,5 +59,8 @@ public interface UserCredentialsStore extends DeletableStore {
 
     int delete(@NonNull String uid);
 
+    @Override
     int delete();
+
+    UserCredentials queryByUserUid(String uid);
 }

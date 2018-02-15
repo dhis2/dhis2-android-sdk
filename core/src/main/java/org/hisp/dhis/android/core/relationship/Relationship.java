@@ -28,25 +28,28 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import android.support.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
 
 // TODO: Tests when relationship is fixed to be queried.
 @AutoValue
+@JsonDeserialize(builder = AutoValue_Relationship.Builder.class)
 public abstract class Relationship {
     private static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
     private static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
-    private static final String DISPLAY_NAME = "displayName";
+    private static final String RELATIONSHIP_TYPE = "relationship";
 
 
     public static final Field<Relationship, String> trackedEntityInstanceA
             = Field.create(TRACKED_ENTITY_INSTANCE_A);
     public static final Field<Relationship, String> trackedEntityInstanceB
             = Field.create(TRACKED_ENTITY_INSTANCE_B);
-    public static final Field<Relationship, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<Relationship, String> relationship = Field.create(RELATIONSHIP_TYPE);
 
     @JsonProperty(TRACKED_ENTITY_INSTANCE_A)
     public abstract String trackedEntityInstanceA();
@@ -54,16 +57,28 @@ public abstract class Relationship {
     @JsonProperty(TRACKED_ENTITY_INSTANCE_B)
     public abstract String trackedEntityInstanceB();
 
-    @JsonProperty(DISPLAY_NAME)
-    public abstract String displayName();
+    @Nullable
+    @JsonProperty(RELATIONSHIP_TYPE)
+    public abstract String relationshipType();
 
-    @JsonCreator
-    public static Relationship create(
-            @JsonProperty(TRACKED_ENTITY_INSTANCE_A) String trackedEntityInstanceA,
-            @JsonProperty(TRACKED_ENTITY_INSTANCE_B) String trackedEntityInstanceB,
-            @JsonProperty(DISPLAY_NAME) String displayName) {
+    abstract Relationship.Builder toBuilder();
 
-        return new AutoValue_Relationship(trackedEntityInstanceA, trackedEntityInstanceB,
-                displayName);
+    public static Relationship.Builder builder() {
+        return new AutoValue_Relationship.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder {
+        @JsonProperty(TRACKED_ENTITY_INSTANCE_A)
+        public abstract Builder trackedEntityInstanceA(String trackedEntityInstanceA);
+
+        @JsonProperty(TRACKED_ENTITY_INSTANCE_B)
+        public abstract Builder trackedEntityInstanceB(String trackedEntityInstanceB);
+
+        @Nullable
+        @JsonProperty(RELATIONSHIP_TYPE)
+        public abstract Builder relationshipType(String relationshipType);
+
+        public abstract Relationship build();
     }
 }

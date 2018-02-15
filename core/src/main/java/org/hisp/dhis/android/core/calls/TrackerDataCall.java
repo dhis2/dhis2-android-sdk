@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoQuery;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -33,6 +34,8 @@ public class TrackerDataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final ResourceHandler resourceHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     private boolean isExecuted;
 
@@ -44,7 +47,9 @@ public class TrackerDataCall implements Call<Response> {
             @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull ResourceHandler resourceHandler,
-            @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler) {
+            @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
+            boolean isTranslationOn,
+            @NonNull String translationLocale) {
 
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
 
@@ -56,6 +61,8 @@ public class TrackerDataCall implements Call<Response> {
         this.databaseAdapter = databaseAdapter;
         this.resourceHandler = resourceHandler;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -82,11 +89,15 @@ public class TrackerDataCall implements Call<Response> {
 
         if (!trackedEntityInstances.isEmpty()) {
             Transaction transaction = databaseAdapter.beginNewTransaction();
+            SystemInfoQuery systemInfoQuery = SystemInfoQuery.defaultQuery(isTranslationOn,
+                    translationLocale);
+
             try {
 
                 response = new SystemInfoCall(
                         databaseAdapter, systemInfoStore,
-                        systemInfoService, resourceStore
+                        systemInfoService, resourceStore,
+                        systemInfoQuery
                 ).call();
 
                 if (!response.isSuccessful()) {
@@ -116,7 +127,7 @@ public class TrackerDataCall implements Call<Response> {
 
             response = new TrackedEntityInstanceEndPointCall(trackedEntityInstanceService,
                     databaseAdapter, trackedEntityInstanceHandler, resourceHandler,
-                    serverDate, entry.getValue().uid()).call();
+                    serverDate, entry.getValue().uid(), isTranslationOn, translationLocale).call();
 
             if (!response.isSuccessful()) {
                 return response;

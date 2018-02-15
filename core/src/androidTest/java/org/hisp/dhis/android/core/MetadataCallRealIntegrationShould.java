@@ -2,12 +2,16 @@ package org.hisp.dhis.android.core;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import android.support.test.filters.LargeTest;
+
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Locale;
 
 public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     /**
@@ -23,7 +27,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        d2 = D2Factory.create(RealServerMother.url, databaseAdapter(), Locale.ENGLISH);
     }
 
 
@@ -42,11 +46,10 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     pragma foreign_keys = on;
     pragma foreign_key_check;*/
 
-    //This test is uncommented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    //@Test
+    @Test
+    @LargeTest
     public void response_successful_on_sync_meta_data_two_times() throws Exception {
+
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
@@ -66,7 +69,8 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         // adding a new program..etc.
     }
 
-    //@Test
+    @Test
+    @LargeTest
     public void response_successful_on_login_wipe_db_and_login() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();
@@ -78,7 +82,8 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         assertThat(response.isSuccessful()).isTrue();
     }
 
-    //@Test
+    @Test
+    @LargeTest
     public void response_successful_on_login_logout_and_login() throws Exception {
         retrofit2.Response response = null;
         response = d2.logIn("android", "Android123").call();

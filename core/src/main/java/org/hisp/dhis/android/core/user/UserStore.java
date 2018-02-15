@@ -31,11 +31,11 @@ package org.hisp.dhis.android.core.user;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.IdentifiableStore;
 
 import java.util.Date;
 
-public interface UserStore extends DeletableStore{
+public interface UserStore extends IdentifiableStore {
     long insert(
             @NonNull String uid, @Nullable String code, @Nullable String name, @Nullable String displayName,
             @Nullable Date created, @Nullable Date lastUpdated,
@@ -56,6 +56,8 @@ public interface UserStore extends DeletableStore{
 
     int delete(@NonNull String uid);
 
+    @Override
     int delete();
 
+    User queryByUId(String userUId);
 }

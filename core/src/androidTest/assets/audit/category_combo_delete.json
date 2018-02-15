@@ -1,0 +1,68 @@
+{
+  "createdAt": "2018-01-25T00:48:57.053",
+  "createdBy": "admin",
+  "klass": "org.hisp.dhis.dataelement.DataElementCategoryCombo",
+  "uid": "SO8aY5wDjRJ",
+  "code": "testatcomb",
+  "type": "DELETE",
+  "value": {
+    "code": "testatcomb",
+    "name": "new category combo",
+    "created": "2018-01-25T00:45:15.214",
+    "lastUpdated": "2018-01-25T00:47:09.731",
+    "externalAccess": false,
+    "publicAccess": "rw------",
+    "user": {
+      "name": "John Traore",
+      "created": "2013-04-18T17:15:08.407",
+      "lastUpdated": "2017-06-02T13:04:58.319",
+      "externalAccess": false,
+      "displayName": "John Traore",
+      "id": "xE7jOejl9FI"
+    },
+    "displayName": "new category combo",
+    "lastUpdatedBy": {
+      "id": "xE7jOejl9FI",
+      "name": "John Traore"
+    },
+    "categories": [{
+      "code": "COMMODITIES",
+      "name": "Commodities",
+      "created": "2014-03-02T02:14:34.600",
+      "lastUpdated": "2014-03-05T04:10:47.764",
+      "externalAccess": false,
+      "publicAccess": "rw------",
+      "user": {
+        "name": "Tom Wakiki",
+        "created": "2012-11-21T12:02:04.303",
+        "lastUpdated": "2017-06-02T13:05:22.694",
+        "externalAccess": false,
+        "displayName": "Tom Wakiki",
+        "id": "GOLswS44mh8"
+      },
+      "displayName": "Commodities",
+      "id": "gtuVl6NbXQV"
+    }, {
+      "code": "LOC_PHU_COMM",
+      "name": "Location PHU/Community",
+      "created": "2011-12-24T12:24:25.155",
+      "lastUpdated": "2013-05-28T09:59:48.308",
+      "externalAccess": false,
+      "publicAccess": "rw------",
+      "user": {
+        "name": "Tom Wakiki",
+        "created": "2012-11-21T12:02:04.303",
+        "lastUpdated": "2017-06-02T13:05:22.694",
+        "externalAccess": false,
+        "displayName": "Tom Wakiki",
+        "id": "GOLswS44mh8"
+      },
+      "displayName": "Location PHU/Community",
+      "id": "x3uo8LqiTBk"
+    }],
+    "dataDimensionType": "DISAGGREGATION",
+    "skipTotal": false,
+    "id": "SO8aY5wDjRJ",
+    "isDefault": false
+  }
+}

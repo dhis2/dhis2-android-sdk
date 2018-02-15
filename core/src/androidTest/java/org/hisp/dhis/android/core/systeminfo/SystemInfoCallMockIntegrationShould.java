@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -53,6 +54,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
@@ -121,12 +124,17 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
         SystemInfoStore systemInfoStore = new SystemInfoStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
+        SystemInfoQuery systemInfoQuery = SystemInfoQuery.defaultQuery(DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
+
         systeminfoCall = new SystemInfoCall(
-                databaseAdapter(), systemInfoStore, systemInfoService, resourceStore
+                databaseAdapter(), systemInfoStore, systemInfoService, resourceStore,
+                systemInfoQuery
         );
     }
 
     @Test
+    @MediumTest
     public void persist_system_info_when_call() throws Exception {
         // fake call to api to retrieve response
         systeminfoCall.call();
@@ -143,6 +151,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void update_system_info_when_call() throws Exception {
         ContentValues systemInfo = new ContentValues();
         systemInfo.put(SystemInfoModel.Columns.SERVER_DATE, "2017-02-27T15:00:46.332");

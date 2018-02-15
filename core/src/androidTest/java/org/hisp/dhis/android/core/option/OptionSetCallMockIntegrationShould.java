@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.option;
 
 import android.database.Cursor;
+import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -39,6 +40,7 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
@@ -59,10 +61,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class OptionSetCallShould extends AbsStoreTestCase {
+public class OptionSetCallMockIntegrationShould extends AbsStoreTestCase {
     private static final String[] OPTION_SET_PROJECTION = {
             OptionSetModel.Columns.ID,
             OptionSetModel.Columns.UID,
@@ -203,23 +208,24 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-        OptionSetService optionSetService = retrofit.create(OptionSetService.class);
-        OptionSetStore optionSetStore = new OptionSetStoreImpl(databaseAdapter());
-        OptionStore optionStore = new OptionStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
         Set<String> uids = new HashSet<>();
         uids.add("POc7DkGU3QU");
 
+        OptionSetQuery optionSetQuery = OptionSetQuery.defaultQuery(uids,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
 
-        optionSetCall = new OptionSetCall(
-                optionSetService, optionSetStore, databaseAdapter(), resourceStore, uids, new Date(),
-                optionStore);
+        OptionSetFactory optionSetFactory =
+                new OptionSetFactory(retrofit, databaseAdapter(),
+                        new ResourceHandler(resourceStore));
 
+        optionSetCall = optionSetFactory.newEndPointCall(optionSetQuery,new Date());
     }
 
 
     @Test
+    @MediumTest
     public void persist_option_set_with_options_in_data_base_when_call() throws Exception {
         optionSetCall.call();
 
@@ -294,6 +300,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
     }
 
     @Test
+    @MediumTest
     public void return_option_set_model_after_call() throws Exception {
         Response<Payload<OptionSet>> response = optionSetCall.call();
 

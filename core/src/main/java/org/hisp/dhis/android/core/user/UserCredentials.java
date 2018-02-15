@@ -30,20 +30,18 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
-import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_UserCredentials.Builder.class)
 public abstract class UserCredentials extends BaseIdentifiableObject {
     private static final String USER_ROLES = "userRoles";
     private static final String USERNAME = "username";
@@ -67,20 +65,24 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
     @JsonProperty(USER_ROLES)
     public abstract List<UserRole> userRoles();
 
+    abstract UserCredentials.Builder toBuilder();
 
-    @JsonCreator
-    public static UserCredentials create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(USERNAME) String username,
-            @JsonProperty(USER_ROLES) List<UserRole> userRoles,
-            @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_UserCredentials(uid, code, name, displayName, created, lastUpdated, deleted, username,
-                safeUnmodifiableList(userRoles)
-        );
+    public static UserCredentials.Builder builder() {
+        return new AutoValue_UserCredentials.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends
+            BaseIdentifiableObject.Builder<UserCredentials.Builder> {
+
+
+        @JsonProperty(USERNAME)
+        public abstract Builder username(@Nullable String username);
+
+
+        @JsonProperty(USER_ROLES)
+        public abstract Builder userRoles(@Nullable List<UserRole> userRoles);
+
+        public abstract UserCredentials build();
     }
 }

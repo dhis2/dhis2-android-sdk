@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
@@ -40,9 +40,9 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.option.OptionSet;
 
-import java.util.Date;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_TrackedEntityAttribute.Builder.class)
 public abstract class TrackedEntityAttribute extends BaseNameableObject {
 
     private static final String PATTERN = "pattern";
@@ -158,39 +158,57 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
     @JsonProperty(INHERIT)
     public abstract Boolean inherit();
 
-    @JsonCreator
-    public static TrackedEntityAttribute create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(PATTERN) String pattern,
-            @JsonProperty(SORT_ORDER_IN_LIST_NO_PROGRAM) int sortOrderInListNoProgram,
-            @JsonProperty(OPTION_SET) OptionSet optionSet,
-            @JsonProperty(VALUE_TYPE) ValueType valueType,
-            @JsonProperty(EXPRESSION) String expression,
-            @JsonProperty(SEARCH_SCOPE) TrackedEntityAttributeSearchScope searchScope,
-            @JsonProperty(PROGRAM_SCOPE) boolean programScope,
-            @JsonProperty(DISPLAY_IN_LIST_NO_PROGRAM) boolean displayInListNoProgram,
-            @JsonProperty(GENERATED) boolean generated,
-            @JsonProperty(DISPLAY_ON_VISIT_SCHEDULE) boolean displayOnVisitSchedule,
-            @JsonProperty(ORG_UNIT_SCOPE) boolean orgUnitScope,
-            @JsonProperty(UNIQUE) boolean unique,
-            @JsonProperty(INHERIT) boolean inherit,
-            @JsonProperty(DELETED) Boolean deleted
-    ) {
-        return new AutoValue_TrackedEntityAttribute(
-                uid, code, name, displayName, created, lastUpdated, deleted,
-                shortName, displayShortName, description, displayDescription,
-                pattern, sortOrderInListNoProgram, optionSet, valueType, expression, searchScope,
-                programScope, displayInListNoProgram, generated, displayOnVisitSchedule,
-                orgUnitScope, unique, inherit);
+
+    abstract TrackedEntityAttribute.Builder toBuilder();
+
+    public static TrackedEntityAttribute.Builder builder() {
+        return new AutoValue_TrackedEntityAttribute.Builder();
     }
 
+    @AutoValue.Builder
+    public static abstract class Builder extends
+            BaseNameableObject.Builder<TrackedEntityAttribute.Builder> {
+
+        @JsonProperty(PATTERN)
+        public abstract Builder pattern(@Nullable String pattern);
+
+        @JsonProperty(SORT_ORDER_IN_LIST_NO_PROGRAM)
+        public abstract Builder sortOrderInListNoProgram(@Nullable Integer sortOrder);
+
+        @JsonProperty(OPTION_SET)
+        public abstract Builder optionSet(@Nullable OptionSet optionSet);
+
+        @JsonProperty(VALUE_TYPE)
+        public abstract Builder valueType(@Nullable ValueType valueType);
+
+        @JsonProperty(EXPRESSION)
+        public abstract Builder expression(@Nullable String expression);
+
+        @JsonProperty(SEARCH_SCOPE)
+        public abstract Builder searchScope(@Nullable TrackedEntityAttributeSearchScope
+                trackedEntityAttributeSearchScope);
+
+        @JsonProperty(PROGRAM_SCOPE)
+        public abstract Builder programScope(@Nullable Boolean programScope);
+
+        @JsonProperty(DISPLAY_IN_LIST_NO_PROGRAM)
+        public abstract Builder displayInListNoProgram(@Nullable Boolean displayInListNoProgram);
+
+        @JsonProperty(GENERATED)
+        public abstract Builder generated(@Nullable Boolean generated);
+
+        @JsonProperty(DISPLAY_ON_VISIT_SCHEDULE)
+        public abstract Builder displayOnVisitSchedule(@Nullable Boolean displayOnVisibleSchedule);
+
+        @JsonProperty(ORG_UNIT_SCOPE)
+        public abstract Builder orgUnitScope(@Nullable Boolean orgUnitScope);
+
+        @JsonProperty(UNIQUE)
+        public abstract Builder unique(@Nullable Boolean unique);
+
+        @JsonProperty(INHERIT)
+        public abstract Builder inherit(@Nullable Boolean inherit);
+
+        public abstract TrackedEntityAttribute build();
+    }
 }

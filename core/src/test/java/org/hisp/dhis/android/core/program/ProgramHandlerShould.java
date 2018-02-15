@@ -27,6 +27,16 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
@@ -39,16 +49,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Date;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class ProgramHandlerShould {
@@ -163,13 +163,16 @@ public class ProgramHandlerShould {
 
         // verify that all the handlers is called once
 
-        verify(programStageHandler, times(1)).handleProgramStage(program.uid(), program.programStages());
-        verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
+        verify(programStageHandler, never()).handleProgramStage(program.uid(),
+                program.programStages());
+        verify(programTrackedEntityAttributeHandler, never()).handleProgramTrackedEntityAttributes(
                 program.programTrackedEntityAttributes()
         );
-        verify(programIndicatorHandler, times(1)).handleProgramIndicator(null, program.programIndicators());
-        verify(programRuleHandler, times(1)).handleProgramRules(program.programRules());
-        verify(programRuleVariableHandler, times(1)).handleProgramRuleVariables(program.programRuleVariables());
+        verify(programIndicatorHandler, never()).handleProgramIndicator(null,
+                program.programIndicators());
+        verify(programRuleHandler, never()).handleProgramRules(program.programRules());
+        verify(programRuleVariableHandler, never()).handleProgramRuleVariables(
+                program.programRuleVariables());
     }
 
     @Test

@@ -46,12 +46,12 @@ final class RuleFunctionCountIfValue extends RuleFunction {
 
         if (ruleVariableValue != null && valueToCompare != null && !valueToCompare.isEmpty()
                 && ruleVariableValue.value() != null) {
-            if (ruleVariableValue.candidates().size() > 0) {
-                count = countCandidates(ruleVariableValue, valueToCompare);
-            } else {
-                count = countValue(ruleVariableValue, valueToCompare);
+                if (ruleVariableValue.candidates().size() > 0) {
+                    count = countCandidates(ruleVariableValue, valueToCompare);
+                } else {
+                    count = countValue(ruleVariableValue, valueToCompare);
+                }
             }
-        }
         return count;
     }
 

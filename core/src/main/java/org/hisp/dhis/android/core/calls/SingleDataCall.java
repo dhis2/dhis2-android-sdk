@@ -14,6 +14,7 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoQuery;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 
@@ -38,6 +39,8 @@ public class SingleDataCall implements Call<Response> {
     private final int eventLimitByOrgUnit;
 
     private boolean isExecuted;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
     public SingleDataCall(
             @NonNull OrganisationUnitStore organisationUnitStore,
@@ -48,7 +51,8 @@ public class SingleDataCall implements Call<Response> {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull ResourceHandler resourceHandler,
             @NonNull EventHandler eventHandler,
-            int eventLimitByOrgUnit) {
+            int eventLimitByOrgUnit, boolean isTranslationOn,
+            @NonNull String translationLocale) {
 
         this.organisationUnitStore = organisationUnitStore;
 
@@ -60,8 +64,9 @@ public class SingleDataCall implements Call<Response> {
         this.databaseAdapter = databaseAdapter;
         this.resourceHandler = resourceHandler;
         this.eventHandler = eventHandler;
-
         this.eventLimitByOrgUnit = eventLimitByOrgUnit;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -81,13 +86,15 @@ public class SingleDataCall implements Call<Response> {
             isExecuted = true;
         }
 
-        Response response = null;
+        Response response;
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-
+            SystemInfoQuery systemInfoQuery = SystemInfoQuery.defaultQuery(isTranslationOn,
+                    translationLocale);
             response = new SystemInfoCall(
                     databaseAdapter, systemInfoStore,
-                    systemInfoService, resourceStore
+                    systemInfoService, resourceStore,
+                    systemInfoQuery
             ).call();
 
             if (!response.isSuccessful()) {
@@ -120,7 +127,7 @@ public class SingleDataCall implements Call<Response> {
         //TrackerPrograms: programType = WITH_REGISTRATION
         //Non TrackerPrograms: programType = WITHOUT_REGISTRATION
 
-        int pageSize = EventQuery.Builder.create().build().getPageSize();
+        int pageSize = EventQuery.Builder.create().build().pageSize();
 
         int numPages = (int) Math.ceil((double) eventLimitByOrgUnit / pageSize);
 
@@ -141,6 +148,8 @@ public class SingleDataCall implements Call<Response> {
                         .withOrgUnit(orgUnit.uid())
                         .withPage(page)
                         .withPageLimit(pageLimit)
+                        .withIsTranslationOn(isTranslationOn)
+                        .withTranslationLocale(translationLocale)
                         .build();
 
                 response = new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
@@ -150,7 +159,7 @@ public class SingleDataCall implements Call<Response> {
                     return response;
                 }
 
-                eventsDownloaded = eventsDownloaded + eventQuery.getPageSize();
+                eventsDownloaded = eventsDownloaded + eventQuery.pageSize();
             }
 
         }

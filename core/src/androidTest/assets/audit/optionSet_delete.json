@@ -1,0 +1,32 @@
+{
+  "createdAt": "2018-01-17T12:42:36.005",
+  "createdBy": "admin",
+  "klass": "org.hisp.dhis.option.OptionSet",
+  "uid": "VQ2lai3OfVG",
+  "code": "option set example",
+  "type": "DELETE",
+  "value": {
+    "code": "Option set example",
+    "name": "Option set example",
+    "created": "2018-01-17T12:36:10.354",
+    "lastUpdated": "2018-01-17T12:36:10.354",
+    "externalAccess": false,
+    "publicAccess": "rw------",
+    "user": {
+      "name": "John Traore",
+      "created": "2013-04-18T17:15:08.407",
+      "lastUpdated": "2017-06-02T13:04:58.319",
+      "externalAccess": false,
+      "displayName": "John Traore",
+      "id": "xE7jOejl9FI"
+    },
+    "displayName": "Option set example",
+    "lastUpdatedBy": {
+      "id": "xE7jOejl9FI",
+      "name": "John Traore"
+    },
+    "valueType": "TEXT",
+    "version": 0,
+    "id": "VQ2lai3OfVG"
+  }
+}

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.option;
 
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -35,7 +37,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 
 import java.io.IOException;
 import java.util.Date;
@@ -49,27 +50,26 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
     private final OptionSetService optionSetService;
 
     // database adapter and handler
-    private final OptionSetStore optionSetStore;
-    private final OptionStore optionStore;
+    private final OptionSetHandler optionSetHandler;
     private final DatabaseAdapter databaseAdapter;
-    private final ResourceStore resourceStore;
+    private final ResourceHandler resourceHander;
     private final Date serverDate;
-    private final Set<String> uids;
     private boolean isExecuted;
+    private final OptionSetQuery query;
+
 
     public OptionSetCall(OptionSetService optionSetService,
-                         OptionSetStore optionSetStore,
-                         DatabaseAdapter databaseAdapter,
-                         ResourceStore resourceStore,
-                         Set<String> uids,
-                         Date serverDate, OptionStore optionStore) {
+            OptionSetHandler optionSetHandler,
+            DatabaseAdapter databaseAdapter,
+            ResourceHandler resourceHandler,
+            Date serverDate, @NonNull OptionSetQuery query) {
         this.optionSetService = optionSetService;
-        this.optionSetStore = optionSetStore;
+        this.optionSetHandler = optionSetHandler;
         this.databaseAdapter = databaseAdapter;
-        this.resourceStore = resourceStore;
-        this.uids = uids;
+        this.resourceHander = resourceHandler;
         this.serverDate = new Date(serverDate.getTime());
-        this.optionStore = optionStore;
+        this.query = query;
+
     }
 
 
@@ -90,12 +90,13 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
             isExecuted = true;
         }
 
-        if (uids.size() > MAX_UIDS) {
+        if (query.uIds().size() > MAX_UIDS) {
             throw new IllegalArgumentException(
-                    "Can't handle the amount of option sets: " + uids.size() + ". " + "Max size is: " + MAX_UIDS);
+                    "Can't handle the amount of option sets: " + query.uIds().size() + ". "
+                            + "Max size is: " + MAX_UIDS);
 
         }
-        Response<Payload<OptionSet>> response = getOptionSets(uids);
+        Response<Payload<OptionSet>> response = getOptionSets(query.uIds());
 
         if (response != null && response.isSuccessful()) {
             saveOptionSets(response);
@@ -118,16 +119,13 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
                 )
         ).build();
 
-        return optionSetService.optionSets(false, optionSetFields, OptionSet.uid.in(uids)).execute();
+        return optionSetService.optionSets(false, optionSetFields, OptionSet.uid.in(uids),
+                query.isTranslationOn(), query.translationLocale()).execute();
     }
 
     private void saveOptionSets(Response<Payload<OptionSet>> response) {
         List<OptionSet> optionSets = response.body().items();
         if (optionSets != null && !optionSets.isEmpty()) {
-            OptionHandler optionHandler = new OptionHandler(optionStore);
-            OptionSetHandler optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
-            ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-
             Transaction transaction = databaseAdapter.beginNewTransaction();
             int size = optionSets.size();
 
@@ -136,7 +134,7 @@ public class OptionSetCall implements Call<Response<Payload<OptionSet>>> {
                     OptionSet optionSet = optionSets.get(i);
                     optionSetHandler.handleOptionSet(optionSet);
                 }
-                resourceHandler.handleResource(ResourceModel.Type.OPTION_SET, serverDate);
+                resourceHander.handleResource(ResourceModel.Type.OPTION_SET, serverDate);
 
                 transaction.setSuccessful();
             } finally {

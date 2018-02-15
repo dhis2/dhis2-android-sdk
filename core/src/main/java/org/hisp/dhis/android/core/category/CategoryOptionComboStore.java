@@ -3,18 +3,21 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.IdentifiableStore;
 
 import java.util.List;
 
-public interface CategoryOptionComboStore extends DeletableStore {
+public interface CategoryOptionComboStore extends IdentifiableStore {
 
     long insert(@NonNull CategoryOptionCombo element);
 
-    boolean delete(@NonNull CategoryOptionCombo element);
+    int delete(@NonNull String uid);
 
-    boolean update(@NonNull CategoryOptionCombo oldElement,
-            @NonNull CategoryOptionCombo newElement);
+    int update(@NonNull CategoryOptionCombo categoryOptionCombo);
 
     List<CategoryOptionCombo> queryAll();
+
+    List<CategoryOptionCombo> queryByCategoryComboUId(String uid);
+
+    CategoryOptionCombo queryByUId(String uid);
 }

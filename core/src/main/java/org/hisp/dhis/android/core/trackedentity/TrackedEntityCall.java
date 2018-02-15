@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Payload;
@@ -37,12 +36,10 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import retrofit2.Response;
 
@@ -50,25 +47,27 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
 
     private final TrackedEntityService service;
     private final DatabaseAdapter databaseAdapter;
-    private final TrackedEntityStore trackedEntityStore;
-    private final ResourceStore resourceStore;
-    private final Set<String> uidSet;
+    private final TrackedEntityHandler trackedEntityHandler;
+    private final ResourceHandler resourceHandler;
     private final Date serverDate;
     private final ResourceModel.Type resourceType = ResourceModel.Type.TRACKED_ENTITY;
-    private Boolean isExecuted = false;
 
-    public TrackedEntityCall(@Nullable Set<String> uidSet,
-                             @NonNull DatabaseAdapter databaseAdapter,
-                             @NonNull TrackedEntityStore trackedEntityStore,
-                             @NonNull ResourceStore resourceStore,
-                             @NonNull TrackedEntityService service,
-                             @NonNull Date serverDate) {
-        this.uidSet = uidSet;
+    private Boolean isExecuted = false;
+    private final TrackedEntityQuery query;
+
+    public TrackedEntityCall(
+            @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull TrackedEntityHandler trackedEntityHandler,
+            @NonNull ResourceHandler resourceHandler,
+            @NonNull TrackedEntityService service,
+            @NonNull Date serverDate,
+            @NonNull TrackedEntityQuery query) {
         this.databaseAdapter = databaseAdapter;
-        this.trackedEntityStore = trackedEntityStore;
-        this.resourceStore = resourceStore;
+        this.trackedEntityHandler = trackedEntityHandler;
+        this.resourceHandler = resourceHandler;
         this.service = service;
         this.serverDate = new Date(serverDate.getTime());
+        this.query = query;
     }
 
     @Override
@@ -87,16 +86,15 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
             isExecuted = true;
         }
 
-        if (uidSet.size() > MAX_UIDS) {
-            throw new IllegalArgumentException("Can't handle the amount of tracked entities: " + uidSet.size() + ". " +
-                    "Max size is: " + MAX_UIDS);
+        if (query.uIds().size() > MAX_UIDS) {
+            throw new IllegalArgumentException(
+                    "Can't handle the amount of tracked entities: " + query.uIds().size() + ". " +
+                            "Max size is: " + MAX_UIDS);
         }
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         String lastUpdated = resourceHandler.getLastUpdated(resourceType);
         Response<Payload<TrackedEntity>> response = getTrackedEntities(lastUpdated);
 
-        TrackedEntityHandler trackedEntityHandler = new TrackedEntityHandler(trackedEntityStore);
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
 
@@ -121,7 +119,8 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
         return response;
     }
 
-    private Response<Payload<TrackedEntity>> getTrackedEntities(String lastUpdated) throws IOException {
+    private Response<Payload<TrackedEntity>> getTrackedEntities(String lastUpdated)
+            throws IOException {
         return service.trackedEntities(
                 Fields.<TrackedEntity>builder().fields(
                         TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
@@ -130,9 +129,9 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
                         TrackedEntity.description, TrackedEntity.displayDescription,
                         TrackedEntity.deleted
                 ).build(),
-                TrackedEntity.uid.in(uidSet),
+                TrackedEntity.uid.in(query.uIds()),
                 TrackedEntity.lastUpdated.gt(lastUpdated),
                 false
-        ).execute();
+                , query.isTranslationOn(), query.translationLocale()).execute();
     }
 }

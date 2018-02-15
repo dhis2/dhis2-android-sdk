@@ -56,7 +56,6 @@ import java.util.Map;
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
 public class EventStoreImpl implements EventStore {
-
     private static final String INSERT_STATEMENT = "INSERT INTO " + EventModel.TABLE + " (" +
             Columns.UID + ", " +
             Columns.ENROLLMENT_UID + ", " +
@@ -360,11 +359,26 @@ public class EventStoreImpl implements EventStore {
             coordinates = Coordinates.create(latitude, longitude);
         }
 
-        event = Event.create(
-                uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                program, programStage, organisationUnit, eventDate, eventStatus,
-                coordinates, completedDate,
-                dueDate, false, null, categoryCombo, optionCombo, trackedEntityInstance);
+        event = Event.builder()
+                .uid(uid)
+                .enrollmentUid(enrollment)
+                .created(created)
+                .lastUpdated(lastUpdated)
+                .createdAtClient(createdAtClient)
+                .lastUpdatedAtClient(lastUpdatedAtClient)
+                .program(program)
+                .programStage(programStage)
+                .organisationUnit(organisationUnit)
+                .eventDate(eventDate)
+                .status(eventStatus)
+                .coordinates(coordinates)
+                .completedDate(completedDate)
+                .dueDate(dueDate)
+                .deleted(false)
+                .attributeOptionCombo(optionCombo)
+                .attributeCategoryOptions(categoryCombo)
+                .trackedEntityInstance(trackedEntityInstance)
+                .build();
 
         return event;
     }

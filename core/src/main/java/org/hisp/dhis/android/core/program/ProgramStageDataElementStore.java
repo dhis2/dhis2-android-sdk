@@ -31,11 +31,11 @@ package org.hisp.dhis.android.core.program;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.IdentifiableStore;
 
 import java.util.Date;
 
-public interface ProgramStageDataElementStore extends DeletableStore {
+public interface ProgramStageDataElementStore extends IdentifiableStore {
     long insert(
             @NonNull String uid, @Nullable String code, @Nullable String name,
             @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
@@ -52,8 +52,6 @@ public interface ProgramStageDataElementStore extends DeletableStore {
                @NonNull Boolean allowFutureDate, @NonNull String dataElement,
                @Nullable String programStageUid, @NonNull String whereProgramStageDataElementUid
     );
-
-    int delete(@NonNull String uid);
 
     int updateWithProgramStageSectionLink(@NonNull String programStageSectionUid,
                                           @NonNull String dataElementUid

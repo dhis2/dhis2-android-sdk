@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.core.event;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Coordinates;
@@ -45,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_Event.Builder.class)
 public abstract class Event {
     private static final String UID = "event";
     private static final String ENROLLMENT_UID = "enrollment";
@@ -163,32 +163,75 @@ public abstract class Event {
     @JsonProperty(TRACKED_ENTITY_INSTANCE)
     public abstract String trackedEntityInstance();
 
+    public abstract Event.Builder toBuilder();
 
-    @JsonCreator
-    public static Event create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(ENROLLMENT_UID) String enrollmentUid,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(CREATED_AT_CLIENT) String createdAtClient,
-            @JsonProperty(LAST_UPDATED_AT_CLIENT) String lastUpdatedAtClient,
-            @JsonProperty(PROGRAM) String program,
-            @JsonProperty(PROGRAM_STAGE) String programStage,
-            @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
-            @JsonProperty(EVENT_DATE) Date eventDate,
-            @JsonProperty(STATUS) EventStatus eventStatus,
-            @JsonProperty(COORDINATE) Coordinates coordinates,
-            @JsonProperty(COMPLETE_DATE) Date completedDate,
-            @JsonProperty(DUE_DATE) Date dueDate,
-            @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(TRACKED_ENTITY_DATA_VALUES) List<TrackedEntityDataValue> dataValues,
-            @JsonProperty(ATTRIBUTE_CATEGORY_OPTIONS) String attributeCategoryOptions,
-            @JsonProperty(ATTRIBUTE_OPTION_COMBO) String attributeOptionCombo,
-            @JsonProperty(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance) {
-        return new AutoValue_Event(uid, enrollmentUid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                program, programStage, organisationUnit, eventDate, eventStatus, coordinates,
-                completedDate, dueDate, deleted, safeUnmodifiableList(dataValues), attributeCategoryOptions,
-                attributeOptionCombo, trackedEntityInstance);
+    public static Event.Builder builder() {
+        return new AutoValue_Event.Builder();
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder {
+
+        @JsonProperty(UID)
+        public abstract Event.Builder uid(@NonNull String uid);
+
+        @JsonProperty(ENROLLMENT_UID)
+        public abstract Event.Builder enrollmentUid(@Nullable String enrollmentUid);
+
+        @JsonProperty(CREATED)
+        public abstract Event.Builder created(@Nullable Date created);
+
+        @JsonProperty(LAST_UPDATED)
+        public abstract Event.Builder lastUpdated(@Nullable Date lastUpdated);
+
+        @JsonProperty(CREATED_AT_CLIENT)
+        public abstract Event.Builder createdAtClient(@Nullable String createdAtClient);
+
+        @JsonProperty(LAST_UPDATED_AT_CLIENT)
+        public abstract Event.Builder lastUpdatedAtClient(@Nullable String lastUpdatedAtClient);
+
+        @JsonProperty(PROGRAM)
+        public abstract Event.Builder program(@Nullable String program);
+
+        @JsonProperty(PROGRAM_STAGE)
+        public abstract Event.Builder programStage(@Nullable String programStage);
+
+        @JsonProperty(ORGANISATION_UNIT)
+        public abstract Event.Builder organisationUnit(@Nullable String organisationUnit);
+
+        @JsonProperty(EVENT_DATE)
+        public abstract Event.Builder eventDate(@Nullable Date eventDate);
+
+        @JsonProperty(STATUS)
+        public abstract Event.Builder status(@Nullable EventStatus status);
+
+        @JsonProperty(COORDINATE)
+        public abstract Event.Builder coordinates(@Nullable Coordinates coordinates);
+
+        @JsonProperty(COMPLETE_DATE)
+        public abstract Event.Builder completedDate(@Nullable Date completedDate);
+
+        @JsonProperty(DUE_DATE)
+        public abstract Event.Builder dueDate(@Nullable Date dueDate);
+
+        @JsonProperty(DELETED)
+        public abstract Event.Builder deleted(@Nullable Boolean deleted);
+
+        @JsonProperty(TRACKED_ENTITY_DATA_VALUES)
+        public abstract Event.Builder trackedEntityDataValues(
+                @Nullable List<TrackedEntityDataValue> trackedEntityDataValues);
+
+        @JsonProperty(ATTRIBUTE_CATEGORY_OPTIONS)
+        public abstract Event.Builder attributeCategoryOptions(
+                @Nullable String attributeCategoryOptions);
+
+        @JsonProperty(ATTRIBUTE_OPTION_COMBO)
+        public abstract Event.Builder attributeOptionCombo(@Nullable String attributeOptionCombo);
+
+        @JsonProperty(TRACKED_ENTITY_INSTANCE)
+        public abstract Event.Builder trackedEntityInstance(@Nullable String trackedEntityInstance);
+
+        public abstract Event build();
     }
 
 }

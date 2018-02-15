@@ -5,6 +5,8 @@ import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import android.support.test.filters.LargeTest;
+
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
@@ -31,12 +33,10 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-    //This test is commented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     @Test
+    @LargeTest
     public void download_number_of_events_according_to_default_limit() throws Exception {
-        retrofit2.Response response = null;
+        retrofit2.Response response;
         response = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
@@ -55,10 +55,10 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
         verifyNumberOfDownloadedTrackedEntityDataValue(335);*/
     }
 
-
     @Test
+    @LargeTest
     public void download_event_with_category_combo_option() throws Exception {
-        retrofit2.Response response = null;
+        retrofit2.Response response;
         response = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 

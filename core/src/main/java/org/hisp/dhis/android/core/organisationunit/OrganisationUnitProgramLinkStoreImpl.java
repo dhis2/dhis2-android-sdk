@@ -78,7 +78,7 @@ public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitPro
         int count = 0;
 
         try {
-            cursor = databaseAdapter.query(select, null);
+            cursor = databaseAdapter.query(select);
 
             count = cursor.getCount();
         } finally {
@@ -94,4 +94,5 @@ public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitPro
     public int delete() {
         return databaseAdapter.delete(OrganisationUnitProgramLinkModel.TABLE);
     }
+
 }

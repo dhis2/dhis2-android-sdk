@@ -1,0 +1,23 @@
+{
+  "users": [
+    {
+      "created": "2015-03-31T13:31:09.324",
+      "lastUpdated": "2016-04-06T00:05:57.495",
+      "name": "John Barnes",
+      "id": "DXyJmlo9rge",
+      "displayName": "John Barnes",
+      "firstName": "John",
+      "surname": "Barnes",
+      "email": "john@hmail.com",
+      "userCredentials": {
+        "lastUpdated": "2017-11-29T11:23:52.498",
+        "code": "android",
+        "created": "2015-03-31T13:31:09.206",
+        "name": "John Barnes",
+        "id": "M0fCOxtkURr",
+        "displayName": "John Barnes",
+        "username": "android"
+      }
+    }
+  ]
+}

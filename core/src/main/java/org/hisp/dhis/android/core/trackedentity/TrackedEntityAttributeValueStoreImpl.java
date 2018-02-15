@@ -49,7 +49,8 @@ import java.util.Map;
 
 @SuppressWarnings({
         "PMD.NPathComplexity",
-        "PMD.AvoidInstantiatingObjectsInLoops"
+        "PMD.AvoidInstantiatingObjectsInLoops",
+        "PMD.AvoidDuplicateLiterals"
 })
 public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttributeValueStore {
 
@@ -256,4 +257,5 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
     public int delete() {
         return databaseAdapter.delete(TrackedEntityAttributeValueModel.TABLE);
     }
+
 }

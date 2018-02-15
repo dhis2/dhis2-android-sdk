@@ -80,6 +80,11 @@ public class ProgramStageStoreImpl extends Store implements ProgramStageStore {
                     ProgramStageModel.Columns.STANDARD_INTERVAL + ", " +
                     ProgramStageModel.Columns.PROGRAM;
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            ProgramStageModel.Columns.UID +
+            " FROM " + ProgramStageModel.TABLE +
+            " WHERE " + ProgramStageModel.Columns.UID + " =?;";
+
     private static final String QUERY_BY_UID_STATEMENT =
             "SELECT " + FIELDS + " FROM " + ProgramStageModel.TABLE + " WHERE " +
                     ProgramStageModel.Columns.UID + "=?";
@@ -272,6 +277,12 @@ public class ProgramStageStoreImpl extends Store implements ProgramStageStore {
         sqLiteBind(sqLiteStatement, 21, minDaysFromStart);
         sqLiteBind(sqLiteStatement, 22, standardInterval);
         sqLiteBind(sqLiteStatement, 23, program);
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount() > 0;
     }
 
     @Override

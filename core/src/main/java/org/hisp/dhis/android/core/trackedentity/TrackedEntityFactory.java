@@ -7,7 +7,6 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import retrofit2.Retrofit;
 
@@ -34,10 +33,10 @@ public class TrackedEntityFactory {
         this.trackedEntityHandler = new TrackedEntityHandler(trackedEntityStore);
     }
 
-    public TrackedEntityCall newEndPointCall(Set<String> trackedEntityUids, Date serverDate) {
-        return new TrackedEntityCall(
-                trackedEntityUids, databaseAdapter, getHandler(), resourceHandler,
-                trackedEntityService, serverDate);
+    public TrackedEntityCall newEndPointCall(TrackedEntityQuery trackedEntityQuery,
+            Date serverDate) {
+        return new TrackedEntityCall(databaseAdapter, getHandler(), resourceHandler,
+                trackedEntityService, serverDate, trackedEntityQuery);
     }
 
     public TrackedEntityHandler getHandler() {

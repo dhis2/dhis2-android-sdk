@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.option;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.IdentifiableStore;
 
 import java.util.Date;
 import java.util.List;
 
-public interface OptionStore extends DeletableStore {
+public interface OptionStore extends IdentifiableStore {
     long insert(
             @NonNull String uid, @NonNull String code, @NonNull String name,
             @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,

@@ -72,6 +72,12 @@ public class ProgramRuleVariableStoreImpl extends Store implements ProgramRuleVa
                     ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
                     ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE;
 
+
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            ProgramRuleVariableModel.Columns.UID +
+            " FROM " + ProgramRuleVariableModel.TABLE +
+            " WHERE " + ProgramRuleVariableModel.Columns.UID + " =?;";
+
     private static final String QUERY_BY_UID_STATEMENT = "SELECT " + FIELDS +
             " FROM " + ProgramRuleVariableModel.TABLE +
             " WHERE " + ProgramRuleVariableModel.Columns.UID + "= ?";
@@ -212,6 +218,12 @@ public class ProgramRuleVariableStoreImpl extends Store implements ProgramRuleVa
         sqLiteBind(sqLiteStatement, 12, programRuleVariableSourceType.name());
 
 
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount() > 0;
     }
 
     @Override

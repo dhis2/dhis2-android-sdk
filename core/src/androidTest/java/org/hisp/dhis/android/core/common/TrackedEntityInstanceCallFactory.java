@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.common;
 
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
+
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEndPointCall;
@@ -22,11 +25,9 @@ public class TrackedEntityInstanceCallFactory {
 
         ResourceHandler resourceHandler = HandlerFactory.createResourceHandler(databaseAdapter);
 
-        TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
-                new TrackedEntityInstanceEndPointCall(
-                        trackedEntityInstanceService, databaseAdapter, trackedEntityInstanceHandler,
-                        resourceHandler, new Date(), trackedEntityInstanceUid);
-
-        return trackedEntityInstanceEndPointCall;
+        return new TrackedEntityInstanceEndPointCall(
+                trackedEntityInstanceService, databaseAdapter, trackedEntityInstanceHandler,
+                resourceHandler, new Date(), trackedEntityInstanceUid,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
     }
 }

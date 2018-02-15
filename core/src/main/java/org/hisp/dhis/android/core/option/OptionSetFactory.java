@@ -7,7 +7,6 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import retrofit2.Retrofit;
 
@@ -39,9 +38,9 @@ public class OptionSetFactory {
         this.deletableStores.add(optionStore);
     }
 
-    public OptionSetCall newEndPointCall(Set<String> optionSetUids, Date serverDate) {
+    public OptionSetCall newEndPointCall(OptionSetQuery optionSetQuery, Date serverDate) {
         return new OptionSetCall(optionSetService, optionSetHandler, databaseAdapter,
-                resourceHandler, optionSetUids, serverDate);
+                resourceHandler, serverDate, optionSetQuery);
     }
 
     public OptionSetHandler getOptionSetHandler() {

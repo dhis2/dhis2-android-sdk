@@ -88,6 +88,11 @@ public class ProgramStoreImpl extends Store implements ProgramStore {
                     ProgramModel.Columns.TRACKED_ENTITY + ", " +
                     ProgramModel.Columns.CATEGORY_COMBO;
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            ProgramModel.Columns.UID +
+            " FROM " + ProgramModel.TABLE +
+            " WHERE " + ProgramModel.Columns.UID + " =?;";
+
     private static final String QUERY_STATEMENT = "SELECT " + FIELDS
             + " FROM " + ProgramModel.TABLE + " WHERE " +
             ProgramModel.Columns.UID + " =?";
@@ -266,6 +271,12 @@ public class ProgramStoreImpl extends Store implements ProgramStore {
         deleteStatement.clearBindings();
 
         return delete;
+    }
+
+    @Override
+    public Boolean exists(String programUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, programUId);
+        return cursor.getCount() > 0;
     }
 
     @Override

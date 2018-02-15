@@ -41,8 +41,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
-public class UserOrganisationUnitLinkStoreImpl extends Store implements
-        UserOrganisationUnitLinkStore {
+public class UserOrganisationUnitLinkStoreImpl extends Store
+        implements UserOrganisationUnitLinkStore {
+
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             UserOrganisationUnitLinkModel.TABLE + " (" +
             UserOrganisationUnitLinkModel.Columns.USER + ", " +
@@ -152,5 +153,4 @@ public class UserOrganisationUnitLinkStoreImpl extends Store implements
         }
         return userUId;
     }
-
 }

@@ -36,6 +36,11 @@ public class CategoryOptionComboStoreImpl extends Store implements CategoryOptio
                     CategoryOptionComboModel.Columns.LAST_UPDATED + "," +
                     CategoryOptionComboModel.Columns.CATEGORY_COMBO;
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            CategoryOptionComboModel.Columns.UID +
+            " FROM " + CategoryOptionComboModel.TABLE +
+            " WHERE " + CategoryOptionComboModel.Columns.UID + " =?;";
+
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + CategoryOptionComboModel.TABLE + " ("
                     + FIELDS + ") " +
@@ -235,5 +240,11 @@ public class CategoryOptionComboStoreImpl extends Store implements CategoryOptio
         return databaseAdapter.delete(CategoryOptionComboModel.TABLE);
     }
 
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount() > 0;
+    }
 }
 

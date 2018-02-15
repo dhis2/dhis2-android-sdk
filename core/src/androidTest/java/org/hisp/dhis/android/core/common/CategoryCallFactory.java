@@ -16,8 +16,9 @@ import java.util.Date;
 import retrofit2.Retrofit;
 
 public class CategoryCallFactory {
+
     @NonNull
-    public static CategoryEndpointCall create(Retrofit retrofit, DatabaseAdapter databaseAdapter){
+    public static CategoryEndpointCall create(Retrofit retrofit, DatabaseAdapter databaseAdapter) {
         CategoryService categoryService = retrofit.create(CategoryService.class);
 
         ResponseValidator<Category> categoryResponseValidator = new ResponseValidator<>();
@@ -28,10 +29,9 @@ public class CategoryCallFactory {
 
         CategoryQuery categoryQuery = CategoryQuery.defaultQuery();
 
-        CategoryEndpointCall categoryEndpointCall = new CategoryEndpointCall(categoryQuery,
+        return new CategoryEndpointCall(categoryQuery,
                 categoryService, categoryResponseValidator, categoryHandler, resourceHandler,
                 databaseAdapter, new Date());
 
-        return categoryEndpointCall;
     }
 }

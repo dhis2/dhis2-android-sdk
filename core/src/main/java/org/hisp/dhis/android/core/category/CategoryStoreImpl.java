@@ -18,8 +18,14 @@ import java.util.Map;
 
 @SuppressWarnings({
         "PMD.NPathComplexity",
+        "PMD.AvoidDuplicateLiterals"
 })
 public class CategoryStoreImpl extends Store implements CategoryStore {
+
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            CategoryModel.Columns.UID +
+            " FROM " + CategoryModel.TABLE +
+            " WHERE " + CategoryModel.Columns.UID + " =?;";
 
     private static final String QUERY_BY_UID_STATEMENT = "SELECT " +
             CategoryModel.Columns.UID + "," +
@@ -172,6 +178,12 @@ public class CategoryStoreImpl extends Store implements CategoryStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(CategoryModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String categoryUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, categoryUId);
+        return cursor.getCount() > 0;
     }
 
     private Map<String, Category> mapFromCursor(Cursor cursor) {

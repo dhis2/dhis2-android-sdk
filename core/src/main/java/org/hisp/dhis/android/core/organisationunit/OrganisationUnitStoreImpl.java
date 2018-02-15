@@ -66,6 +66,11 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
                     OrganisationUnitModel.Columns.LEVEL + ", " +
                     OrganisationUnitModel.Columns.PARENT;
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            OrganisationUnitModel.Columns.UID +
+            " FROM " + OrganisationUnitModel.TABLE +
+            " WHERE " + OrganisationUnitModel.Columns.UID + " =?;";
+
     private static final String INSERT_STATEMENT =
             "INSERT INTO " + OrganisationUnitModel.TABLE + " (" + FIELDS + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -172,6 +177,12 @@ public class OrganisationUnitStoreImpl implements OrganisationUnitStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(OrganisationUnitModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String organisationUnitUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, organisationUnitUId);
+        return cursor.getCount() > 0;
     }
 
     @Override

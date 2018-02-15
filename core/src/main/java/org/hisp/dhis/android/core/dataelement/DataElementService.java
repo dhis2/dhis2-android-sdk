@@ -1,5 +1,8 @@
 package org.hisp.dhis.android.core.dataelement;
 
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_LOCALE;
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLATION;
+
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Payload;
@@ -20,5 +23,7 @@ public interface DataElementService {
     Call<Payload<DataElement>> getDataElements(
             @NonNull @Query(FIELDS) @Which Fields<DataElement> fields,
             @NonNull @Query(FILTER) @Where Filter<DataElement, String> idFilter,
-            @NonNull @Query(FILTER) @Where Filter<DataElement, String> lastUpdate);
+            @NonNull @Query(FILTER) @Where Filter<DataElement, String> lastUpdate,
+            @Query(QUERY_TRANSLATION) boolean isTranslationOn,
+            @NonNull @Query(QUERY_LOCALE) String locale);
 }

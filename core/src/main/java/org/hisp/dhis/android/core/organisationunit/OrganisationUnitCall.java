@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.user.User;
 
 import java.io.IOException;
 import java.util.Date;
@@ -51,30 +50,27 @@ import retrofit2.Response;
 
 public class OrganisationUnitCall implements Call<Response<Payload<OrganisationUnit>>> {
 
-    private final User user;
     private final OrganisationUnitService organisationUnitService;
     private final DatabaseAdapter database;
     private final OrganisationUnitHandler organisationUnitHandler;
     private final ResourceHandler resourceHandler;
-    private final String uid;
 
     private final Date serverDate;
     private boolean isExecuted;
+    private final OrganisationUnitQuery query;
 
-    public OrganisationUnitCall(@NonNull User user,
-                                @NonNull OrganisationUnitService organisationUnitService,
+    public OrganisationUnitCall(@NonNull OrganisationUnitService organisationUnitService,
                                 @NonNull DatabaseAdapter database,
             @NonNull ResourceHandler resourceHandler,
                                 @NonNull Date serverDate,
             @NonNull OrganisationUnitHandler organisationUnitHandler,
-            @NonNull String uid) {
-        this.user = user;
+            @NonNull OrganisationUnitQuery query) {
         this.organisationUnitService = organisationUnitService;
         this.database = database;
         this.resourceHandler = resourceHandler;
         this.serverDate = new Date(serverDate.getTime());
         this.organisationUnitHandler = organisationUnitHandler;
-        this.uid = uid;
+        this.query = query;
     }
 
     @Override
@@ -104,8 +100,8 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             // sub-tree:
 
 
-            if (uid.isEmpty()) {
-                Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
+            if (query.uid().isEmpty()) {
+                Set<String> rootOrgUnitUids = findRoots(query.user().organisationUnits());
                 for (String uid : rootOrgUnitUids) {
                     response = getOrganisationUnitByUId(uid, lastUpdatedFilter);
                     if (!response.isSuccessful()) {
@@ -114,7 +110,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                     }
                 }
             } else {
-                response = getOrganisationUnitByUId(uid, lastUpdatedFilter);
+                response = getOrganisationUnitByUId(query.uid(), lastUpdatedFilter);
             }
             if (response != null && response.isSuccessful()) {
                 transaction.setSuccessful();
@@ -133,7 +129,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             organisationUnitHandler.handleOrganisationUnits(
                     response.body().items(),
                     OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
-                    user.uid(), serverDate);
+                    query.user().uid(), serverDate);
         }
         return response;
     }
@@ -144,14 +140,17 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
 
         Fields<OrganisationUnit> fields = Fields.<OrganisationUnit>builder().fields(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
+                OrganisationUnit.displayName, OrganisationUnit.created,
+                OrganisationUnit.lastUpdated,
                 OrganisationUnit.shortName, OrganisationUnit.displayShortName,
                 OrganisationUnit.description, OrganisationUnit.displayDescription,
-                OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
+                OrganisationUnit.displayDescription, OrganisationUnit.path,
+                OrganisationUnit.openingDate,
                 OrganisationUnit.closedDate, OrganisationUnit.level, OrganisationUnit.deleted,
                 OrganisationUnit.parent.with(OrganisationUnit.uid),
                 OrganisationUnit.programs.with(Program.uid)
         ).build();
-        return organisationUnitService.getOrganisationUnits(uid, fields, lastUpdatedFilter, true, false).execute();
+        return organisationUnitService.getOrganisationUnits(uid, fields, lastUpdatedFilter, true,
+                false, query.isTranslationOn(), query.translationLocale()).execute();
     }
 }

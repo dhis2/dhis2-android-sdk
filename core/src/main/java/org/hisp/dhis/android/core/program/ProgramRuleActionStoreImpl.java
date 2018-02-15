@@ -76,6 +76,11 @@ public class ProgramRuleActionStoreImpl extends Store implements ProgramRuleActi
                     ProgramRuleActionModel.Columns.DATA_ELEMENT + ", " +
                     ProgramRuleActionModel.Columns.PROGRAM_RULE;
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            ProgramRuleActionModel.Columns.UID +
+            " FROM " + ProgramRuleActionModel.TABLE +
+            " WHERE " + ProgramRuleActionModel.Columns.UID + " =?;";
+
     private static final String QUERY_BY_UID_STATEMENT =
             "SELECT " + FIELDS + " FROM " + ProgramRuleActionModel.TABLE +
                     " WHERE " + ProgramRuleActionModel.Columns.UID + " =?";
@@ -249,6 +254,12 @@ public class ProgramRuleActionStoreImpl extends Store implements ProgramRuleActi
     @Override
     public int delete() {
         return databaseAdapter.delete(ProgramRuleActionModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount() > 0;
     }
 
     private Map<String, List<ProgramRuleAction>> mapFromCursor(Cursor cursor) {

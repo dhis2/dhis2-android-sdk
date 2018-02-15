@@ -62,6 +62,11 @@ public class OptionSetStoreImpl implements OptionSetStore {
             OptionSetModel.Columns.VERSION + ", " +
                     OptionSetModel.Columns.VALUE_TYPE;
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            OptionSetModel.Columns.UID +
+            " FROM " + OptionSetModel.TABLE +
+            " WHERE " + OptionSetModel.Columns.UID + " =?;";
+
     private static final String QUERY_STATEMENT =
             "SELECT " + FIELDS + " FROM " + OptionSetModel.TABLE +
                     " WHERE " + OptionSetModel.Columns.UID + " =?";
@@ -168,6 +173,12 @@ public class OptionSetStoreImpl implements OptionSetStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(OptionSetModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount() > 0;
     }
 
     private Map<String, OptionSet> mapFromCursor(Cursor cursor) {

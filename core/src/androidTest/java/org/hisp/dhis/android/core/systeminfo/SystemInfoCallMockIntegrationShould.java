@@ -54,6 +54,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
@@ -122,8 +124,12 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
         SystemInfoStore systemInfoStore = new SystemInfoStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
+        SystemInfoQuery systemInfoQuery = SystemInfoQuery.defaultQuery(DEFAULT_IS_TRANSLATION_ON,
+                DEFAULT_TRANSLATION_LOCALE);
+
         systeminfoCall = new SystemInfoCall(
-                databaseAdapter(), systemInfoStore, systemInfoService, resourceStore
+                databaseAdapter(), systemInfoStore, systemInfoService, resourceStore,
+                systemInfoQuery
         );
     }
 

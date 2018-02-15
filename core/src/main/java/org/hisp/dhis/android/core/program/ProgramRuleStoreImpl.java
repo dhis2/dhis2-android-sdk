@@ -67,6 +67,11 @@ public class ProgramRuleStoreImpl extends Store implements ProgramRuleStore {
                     Columns.PROGRAM + ", " +
                     Columns.PROGRAM_STAGE;
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            ProgramRuleModel.Columns.UID +
+            " FROM " + ProgramRuleModel.TABLE +
+            " WHERE " + ProgramRuleModel.Columns.UID + " =?;";
+
     private static final String QUERY_BY_UID_STATEMENT =
             "SELECT " + FIELDS + " FROM " + ProgramRuleModel.TABLE + " WHERE " +
                     ProgramRuleModel.Columns.UID + "=?";
@@ -189,6 +194,12 @@ public class ProgramRuleStoreImpl extends Store implements ProgramRuleStore {
         sqLiteBind(sqLiteStatement, 8, condition);
         sqLiteBind(sqLiteStatement, 9, program);
         sqLiteBind(sqLiteStatement, 10, programStage);
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount() > 0;
     }
 
     @Override

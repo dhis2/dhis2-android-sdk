@@ -74,9 +74,15 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
                     TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE + ", " +
                     TrackedEntityAttributeModel.Columns.UNIQUE + ", " +
                     TrackedEntityAttributeModel.Columns.INHERIT;
+
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityAttributeModel.TABLE + " (" + FIELDS +
             ") " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            TrackedEntityAttributeModel.Columns.UID +
+            " FROM " + TrackedEntityAttributeModel.TABLE +
+            " WHERE " + TrackedEntityAttributeModel.Columns.UID + " =?;";
 
     private static final String UPDATE_STATEMENT =
             "UPDATE " + TrackedEntityAttributeModel.TABLE + " SET " +
@@ -236,6 +242,12 @@ public class TrackedEntityAttributeStoreImpl extends Store implements TrackedEnt
     @Override
     public int delete() {
         return databaseAdapter.delete(TrackedEntityAttributeModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount() > 0;
     }
 
     @Override

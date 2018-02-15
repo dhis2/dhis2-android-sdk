@@ -5,7 +5,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStoreImpl;
-import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserStore;
@@ -62,12 +61,13 @@ public class OrganisationUnitFactory {
         return userOrganisationUnitLinkStore;
     }
 
-    public OrganisationUnitCall newEndPointCall(Date serverDate, User user, String uId)
+    public OrganisationUnitCall newEndPointCall(Date serverDate,
+            OrganisationUnitQuery organisationUnitQuery)
             throws Exception {
         return new OrganisationUnitCall(
-                user, organisationUnitService, databaseAdapter,
+                organisationUnitService, databaseAdapter,
                 resourceHandler, serverDate,
-                organisationUnitHandler, uId);
+                organisationUnitHandler, organisationUnitQuery);
     }
 
     public UserStore getUserStore() {

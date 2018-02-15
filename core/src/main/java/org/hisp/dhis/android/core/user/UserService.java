@@ -28,8 +28,13 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.data.api.Fields;
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_LOCALE;
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLATION;
+
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.data.api.Which;
+import org.hisp.dhis.android.core.data.api.Fields;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -40,9 +45,13 @@ public interface UserService {
 
     @GET("me")
     Call<User> authenticate(@Header("Authorization") String credentials,
-            @Query("fields") @Which Fields<User> fields);
+            @Query("fields") @Which Fields<User> fields,
+            @Query("translation") boolean isTranslationOn,
+            @NonNull @Query("locale") String locale);
 
     @GET("me")
-    Call<User> getUser(@Query("fields") @Which Fields<User> fields);
+    Call<User> getUser(@Query("fields") @Which Fields<User> fields,
+            @Query(QUERY_TRANSLATION) boolean isTranslationOn,
+            @NonNull @Query(QUERY_LOCALE) String locale);
 
 }

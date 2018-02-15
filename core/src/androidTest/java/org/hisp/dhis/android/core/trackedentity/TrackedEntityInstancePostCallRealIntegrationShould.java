@@ -134,7 +134,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
 
     /*
-    * If you want run this test you need config the correct uids in the server side.
+    * If you want run this test you need config the correct uIds in the server side.
     * At this moment is necessary add into the "child programme" program the category combo : Implementing Partner
     * */
 

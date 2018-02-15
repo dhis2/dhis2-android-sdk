@@ -10,11 +10,17 @@ import java.util.Set;
 public class OptionSetMetadataAuditHandler implements MetadataAuditHandler {
 
     private final OptionSetFactory optionSetFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public OptionSetMetadataAuditHandler(OptionSetFactory optionSetFactory) {
+    public OptionSetMetadataAuditHandler(OptionSetFactory optionSetFactory, boolean isTranslationOn,
+            String translationLocale) {
         this.optionSetFactory = optionSetFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         OptionSet optionSet = (OptionSet) metadataAudit.getValue();
 
@@ -25,7 +31,10 @@ public class OptionSetMetadataAuditHandler implements MetadataAuditHandler {
             Set<String> uIds = new HashSet<>();
             uIds.add(metadataAudit.getUid());
 
-            optionSetFactory.newEndPointCall(uIds, metadataAudit.getCreatedAt()).call();
+            OptionSetQuery optionSetQuery = OptionSetQuery.defaultQuery(
+                    uIds, isTranslationOn, translationLocale);
+
+            optionSetFactory.newEndPointCall(optionSetQuery, metadataAudit.getCreatedAt()).call();
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {
                 optionSet = optionSet.toBuilder().deleted(true).build();

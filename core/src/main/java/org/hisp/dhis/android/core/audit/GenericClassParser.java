@@ -9,6 +9,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import java.io.IOException;
 
 public class GenericClassParser {
+
     public <T> T parse(String json, Class<?> type, Class<?> parameterType) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper()
                 .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())

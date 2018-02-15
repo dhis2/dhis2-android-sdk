@@ -63,6 +63,11 @@ public class OptionStoreImpl implements OptionStore {
                     OptionModel.Columns.LAST_UPDATED + ", " +
                     OptionModel.Columns.OPTION_SET;
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            OptionModel.Columns.UID +
+            " FROM " + OptionModel.TABLE +
+            " WHERE " + OptionModel.Columns.UID + " =?;";
+
     private static final String QUERY_BY_OPTION_SET_STATEMENT =
             "SELECT " + FIELDS + " FROM " + OptionModel.TABLE +
                     " WHERE " + OptionModel.Columns.OPTION_SET + " =?;";
@@ -201,6 +206,12 @@ public class OptionStoreImpl implements OptionStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(OptionModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount() > 0;
     }
 
     private Map<String, List<Option>> mapFromCursor(Cursor cursor) {

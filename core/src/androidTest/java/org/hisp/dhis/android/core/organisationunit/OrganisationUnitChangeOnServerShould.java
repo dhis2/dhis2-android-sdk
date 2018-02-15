@@ -5,6 +5,8 @@ import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -54,7 +56,8 @@ public class OrganisationUnitChangeOnServerShould extends AbsStoreTestCase {
                 HandlerFactory.createResourceHandler(databaseAdapter()));
 
         when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
-                new OrganisationUnitMetadataAuditHandler(organisationUnitFactory));
+                new OrganisationUnitMetadataAuditHandler(organisationUnitFactory,
+                        DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE));
 
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
 

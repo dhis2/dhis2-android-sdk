@@ -27,9 +27,10 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
     private final Date serverDate;
     private final ResourceHandler resourceHandler;
     private final EventHandler eventHandler;
-
     private boolean isExecuted;
 
+
+    @SuppressWarnings("ConstantConditions")
     public EventEndPointCall(@NonNull EventService eventService,
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull ResourceHandler resourceHandler,
@@ -44,10 +45,11 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
         this.eventQuery = eventQuery;
         this.serverDate = new Date(serverDate.getTime());
 
-        if (eventQuery != null && eventQuery.getUIds() != null &&
-                eventQuery.getUIds().size() > MAX_UIDS) {
+
+        if (eventQuery != null && eventQuery.uIds() != null &&
+                eventQuery.uIds().size() > MAX_UIDS) {
             throw new IllegalArgumentException(
-                    "Can't handle the amount of events: " + eventQuery.getUIds().size() + ". " +
+                    "Can't handle the amount of events: " + eventQuery.uIds().size() + ". " +
                             "Max size is: " + MAX_UIDS);
         }
     }
@@ -79,17 +81,19 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
                     eventQuery.getOrgUnit(), eventQuery.getProgram(),
                     eventQuery.getTrackedEntityInstance(), getSingleFields(),
                     Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
-                    Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize()).execute();
+                    Boolean.TRUE, eventQuery.page(), eventQuery.pageSize(),
+                    true, eventQuery.isTranslationOn(), eventQuery.translationLocale()).execute();
         } else {
-            CategoryCombo categoryCombo =  eventQuery.getCategoryCombo();
-            CategoryOption categoryOption =  eventQuery.getCategoryOption();
+            CategoryCombo categoryCombo = eventQuery.getCategoryCombo();
+            CategoryOption categoryOption = eventQuery.getCategoryOption();
 
             eventsByLastUpdated = eventService.getEvents(
                     eventQuery.getOrgUnit(), eventQuery.getProgram(),
                     eventQuery.getTrackedEntityInstance(), getSingleFields(),
-                    Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
-                    Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize(),
-                    categoryCombo.uid(), categoryOption.uid()).execute();
+                    Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.uIds()),
+                    Boolean.TRUE, eventQuery.page(), eventQuery.pageSize(),
+                    categoryCombo.uid(), categoryOption.uid(), true, eventQuery.isTranslationOn(),
+                    eventQuery.translationLocale()).execute();
         }
 
         if (eventsByLastUpdated.isSuccessful() && eventsByLastUpdated.body().items() != null) {

@@ -73,6 +73,11 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
                     DataElementModel.Columns.OPTION_SET + ", " +
                     DataElementModel.Columns.CATEGORY_COMBO;
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            DataElementModel.Columns.UID +
+            " FROM " + DataElementModel.TABLE +
+            " WHERE " + DataElementModel.Columns.UID + " =?;";
+
     private static final String INSERT_STATEMENT = "INSERT INTO "
             + DataElementModel.TABLE + " (" + FIELDS + ") " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -221,6 +226,12 @@ public class DataElementStoreImpl extends Store implements DataElementStore {
         Cursor cursor = databaseAdapter.query(QUERY_ALL);
 
         return mapDataElementsFromCursor(cursor);
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount() > 0;
     }
 
     private List<DataElement> mapDataElementsFromCursor(Cursor cursor) {

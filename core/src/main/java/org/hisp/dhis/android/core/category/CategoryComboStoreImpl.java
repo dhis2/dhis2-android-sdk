@@ -35,6 +35,10 @@ public class CategoryComboStoreImpl extends Store implements CategoryComboStore 
                     FIELDS + ") " +
                     "VALUES(?, ?, ?, ?, ?, ?, ?);";
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            CategoryComboModel.Columns.UID +
+            " FROM " + CategoryComboModel.TABLE +
+            " WHERE " + CategoryComboModel.Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + CategoryComboModel.TABLE +
             " WHERE " + CategoryComboModel.Columns.UID + " =?;";
@@ -207,6 +211,11 @@ public class CategoryComboStoreImpl extends Store implements CategoryComboStore 
         return categoryCombo;
     }
 
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount() > 0;
+    }
     @Override
     public int delete() {
         return databaseAdapter.delete(CategoryComboModel.TABLE);

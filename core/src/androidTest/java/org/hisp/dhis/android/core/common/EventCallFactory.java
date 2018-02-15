@@ -29,11 +29,10 @@ public class EventCallFactory {
                 .withPageLimit(pageLimit)
                 .build();
 
-        EventEndPointCall eventEndPointCall = new EventEndPointCall(eventService, databaseAdapter,
+        return new EventEndPointCall(eventService, databaseAdapter,
                 resourceHandler,
                 eventHandler, new Date(), eventQuery);
 
-        return eventEndPointCall;
     }
 
     public static EventEndPointCall create(Retrofit retrofit,
@@ -63,10 +62,9 @@ public class EventCallFactory {
                 .withCategoryComboAndCategoryOption(categoryCombo, categoryOption)
                 .build();
 
-        EventEndPointCall eventEndPointCall = new EventEndPointCall(eventService, databaseAdapter,
+        return new EventEndPointCall(eventService, databaseAdapter,
                 resourceHandler,
                 eventHandler, new Date(), eventQuery);
 
-        return eventEndPointCall;
     }
 }

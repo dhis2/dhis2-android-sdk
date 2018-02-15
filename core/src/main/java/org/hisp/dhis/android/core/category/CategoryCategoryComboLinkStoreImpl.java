@@ -204,4 +204,3 @@ public class CategoryCategoryComboLinkStoreImpl implements CategoryCategoryCombo
         sqLiteBind(updateStatement, 4, oldCategoryCategoryComboLinkMode.categoryCombo());
     }
 }
-

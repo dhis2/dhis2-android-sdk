@@ -1,5 +1,10 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_LOCALE;
+import static org.hisp.dhis.android.core.translation.api.Constants.QUERY_TRANSLATION;
+
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Which;
 import org.hisp.dhis.android.core.imports.WebResponse;
@@ -22,5 +27,7 @@ public interface TrackedEntityInstanceService {
     Call<TrackedEntityInstance> trackedEntityInstance(
             @Path("trackedEntityInstanceUid") String trackedEntityInstanceUid,
             @Query("fields") @Which Fields<TrackedEntityInstance> fields,
-            @Query("includeDeleted") boolean includeDeleted);
+            @Query("includeDeleted") boolean includeDeleted,
+            @Query(QUERY_TRANSLATION) boolean isTranslationOn,
+            @NonNull @Query(QUERY_LOCALE) String locale);
 }

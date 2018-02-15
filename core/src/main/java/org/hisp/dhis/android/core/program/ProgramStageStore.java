@@ -31,12 +31,12 @@ package org.hisp.dhis.android.core.program;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.IdentifiableStore;
 import org.hisp.dhis.android.core.common.FormType;
 
 import java.util.Date;
 
-public interface ProgramStageStore extends DeletableStore {
+public interface ProgramStageStore extends IdentifiableStore {
     long insert(
             @NonNull String uid, @Nullable String code, @NonNull String name, @NonNull String displayName,
             @NonNull Date created, @NonNull Date lastUpdated, @Nullable String executionDateLabel,

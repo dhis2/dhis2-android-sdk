@@ -39,7 +39,9 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.Store;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class UserStoreImpl extends Store implements UserStore {
@@ -64,6 +66,11 @@ public class UserStoreImpl extends Store implements UserStore {
                     UserModel.Columns.EMAIL + ", " +
                     UserModel.Columns.PHONE_NUMBER + ", " +
                     UserModel.Columns.NATIONALITY;
+
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            UserModel.Columns.UID +
+            " FROM " + UserModel.TABLE +
+            " WHERE " + UserModel.Columns.UID + " =?;";
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserModel.TABLE + " (" +
             FIELDS +
@@ -96,6 +103,9 @@ public class UserStoreImpl extends Store implements UserStore {
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + UserModel.TABLE +
             " WHERE " + UserModel.Columns.UID + " =?;";
+
+    private static final String QUERY_ALL_USERS = "SELECT " +
+            FIELDS + " FROM User ";
 
     private final DatabaseAdapter databaseAdapter;
     private final SQLiteStatement insertStatement;
@@ -178,6 +188,12 @@ public class UserStoreImpl extends Store implements UserStore {
         return mapFromCursor(cursor);
     }
 
+    @Override
+    public Boolean exists(String userUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, userUId);
+        return cursor.getCount() > 0;
+    }
+
     private void bindArguments(SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
                                @Nullable String name, @Nullable String displayName,
                                @Nullable Date created, @Nullable Date lastUpdated,
@@ -205,6 +221,34 @@ public class UserStoreImpl extends Store implements UserStore {
         sqLiteBind(sqLiteStatement, 17, email);
         sqLiteBind(sqLiteStatement, 18, phoneNumber);
         sqLiteBind(sqLiteStatement, 19, nationality);
+    }
+
+    public List<User> queryAll() {
+        Cursor cursor = databaseAdapter.query(QUERY_ALL_USERS);
+
+        return mapUsersFromCursor(cursor);
+    }
+
+
+    private List<User> mapUsersFromCursor(Cursor cursor) {
+        List<User> users = new ArrayList<>(cursor.getCount());
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+
+                do {
+                    User user = mapFromCursor(cursor);
+
+                    users.add(user);
+                }
+                while (cursor.moveToNext());
+            }
+
+        } finally {
+            cursor.close();
+        }
+        return users;
     }
 
 

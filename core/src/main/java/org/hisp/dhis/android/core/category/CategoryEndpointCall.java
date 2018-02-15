@@ -55,10 +55,15 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
 
         validateIsNotTryingToExcuteAgain();
 
-        Response<Payload<Category>> response = categoryService.getCategory(getFields(),
-                categoryQuery.paging(),
-                categoryQuery.page(), categoryQuery.pageSize(),
-                Category.uid.in(categoryQuery.uIds())).execute();
+        Response<Payload<Category>> response = categoryService.getCategory(
+                getFields(),
+                categoryQuery.isPaging(),
+                categoryQuery.page(),
+                categoryQuery.pageSize(),
+                categoryQuery.isTranslationOn(),
+                categoryQuery.translationLocale(),
+                Category.uid.in(categoryQuery.uIds())
+        ).execute();
 
         if (responseValidator.isValid(response)) {
             List<Category> categories = response.body().items();

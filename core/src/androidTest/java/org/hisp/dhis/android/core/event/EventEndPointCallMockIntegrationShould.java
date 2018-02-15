@@ -14,6 +14,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.responses.BasicMetadataMockResponseList;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
@@ -28,6 +29,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import retrofit2.Response;
 
 @RunWith(AndroidJUnit4.class)
 public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
@@ -131,16 +134,39 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
         verifyDownloadedEvents("event_1_with_all_data_values.json");
     }
 
+    @Test
+    @MediumTest
+    public void remove_event_removed_in_server_after_second_events_download()
+            throws Exception {
+        givenAMetadataInDatabase();
+
+        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+
+        dhis2MockServer.enqueueMockResponse("event_1_with_all_data_values.json");
+
+        eventEndPointCall.call();
+
+        eventEndPointCall = EventCallFactory.create(
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+
+        dhis2MockServer.enqueueMockResponse("event_1_with_delete_true.json");
+
+        eventEndPointCall.call();
+
+        verifyDownloadedEventsIsZero();
+    }
+
+    private void verifyDownloadedEventsIsZero() {
+
+        List<Event> downloadedEvents = getDownloadedEvents();
+
+        assertThat(downloadedEvents.size(), is(0));
+    }
+
     private void givenAMetadataInDatabase() throws Exception {
-        dhis2MockServer.enqueueMockResponse("system_info.json");
-        dhis2MockServer.enqueueMockResponse("user.json");
-        dhis2MockServer.enqueueMockResponse("organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
-        d2.syncMetaData().call();
+        dhis2MockServer.enqueueMockResponses(new BasicMetadataMockResponseList());
+        Response response = d2.syncMetaData().call();
     }
 
     private void verifyNumberOfDownloadedEvents(int numEvents) {
@@ -189,7 +215,8 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
                     event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.program(), event.programStage(), event.organisationUnit(),
                     event.eventDate(), event.status(), event.coordinates(), event.completedDate(),
-                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()), event.attributeCategoryOptions(),
+                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()),
+                    event.attributeCategoryOptions(),
                     event.attributeOptionCombo(), event.trackedEntityInstance());
 
             downloadedEvents.add(event);

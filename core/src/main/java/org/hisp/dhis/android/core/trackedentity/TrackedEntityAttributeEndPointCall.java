@@ -40,11 +40,11 @@ public class TrackedEntityAttributeEndPointCall implements
         this.trackedEntityAttributeHandler = trackedEntityAttributeHandler;
         this.resourceHandler = resourceHandler;
 
-        if (trackedEntityAttributeQuery.getUIds() != null
-                && trackedEntityAttributeQuery.getUIds().size() > MAX_UIDS) {
+        if (trackedEntityAttributeQuery.uIds() != null
+                && trackedEntityAttributeQuery.uIds().size() > MAX_UIDS) {
             throw new IllegalArgumentException(
                     "Can't handle the amount of trackedEntityAttributes: "
-                            + trackedEntityAttributeQuery.getUIds().size() + ". " +
+                            + trackedEntityAttributeQuery.uIds().size() + ". " +
                             "Max size is: " + MAX_UIDS);
         }
     }
@@ -70,9 +70,10 @@ public class TrackedEntityAttributeEndPointCall implements
 
         Response<Payload<TrackedEntityAttribute>> trackedEntityAttributeByUids =
                 trackedEntityAttributeService.getTrackedEntityAttributes(getFields(),
-                        TrackedEntityAttribute.uid.in(trackedEntityAttributeQuery.getUIds()),
-                        TrackedEntityAttribute.lastUpdated.gt(
-                                lastSyncedTrackedEntityAttributes)).execute();
+                        TrackedEntityAttribute.uid.in(trackedEntityAttributeQuery.uIds()),
+                        TrackedEntityAttribute.lastUpdated.gt(lastSyncedTrackedEntityAttributes),
+                        trackedEntityAttributeQuery.isTranslationOn(),
+                        trackedEntityAttributeQuery.translationLocale()).execute();
 
         if (trackedEntityAttributeByUids.isSuccessful()
                 && trackedEntityAttributeByUids.body().items() != null) {

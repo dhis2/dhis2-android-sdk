@@ -94,4 +94,5 @@ public class OrganisationUnitProgramLinkStoreImpl implements OrganisationUnitPro
     public int delete() {
         return databaseAdapter.delete(OrganisationUnitProgramLinkModel.TABLE);
     }
+
 }

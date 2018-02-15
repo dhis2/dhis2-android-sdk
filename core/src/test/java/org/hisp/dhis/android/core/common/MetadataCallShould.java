@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import static junit.framework.Assert.assertTrue;
-
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
@@ -44,11 +44,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.CategoryComboFactory;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryComboQuery;
-import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryFactory;
-import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -58,27 +54,26 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElementFactory;
+import org.hisp.dhis.android.core.deletedobject.DeletedObject;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectFactory;
+import org.hisp.dhis.android.core.deletedobject.DeletedObjectService;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFactory;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFactory;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramFactory;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeFactory;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityFactory;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserHandler;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRole;
 import org.hisp.dhis.android.core.user.UserService;
 import org.junit.After;
@@ -125,7 +120,7 @@ public class MetadataCallShould {
     private retrofit2.Call<Payload<OrganisationUnit>> organisationUnitCall;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<Program>> programCall;
+    private retrofit2.Call<Payload<DeletedObject>> deletableObjectCall;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<Payload<OptionSet>> optionSetCall;
@@ -146,9 +141,6 @@ public class MetadataCallShould {
     private ResourceHandler resourceHandler;
 
     @Mock
-    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
-
-    @Mock
     private UserHandler userHandler;
 
     @Mock
@@ -161,10 +153,15 @@ public class MetadataCallShould {
     private OptionSetService optionSetService;
 
     @Mock
+    private DeletedObjectService deletedObjectService;
+
+    @Mock
     private Date serverDateTime;
 
     @Mock
     private User user;
+    @Mock
+    private DeletedObject deletedObject;
 
     @Mock
     private UserCredentials userCredentials;
@@ -178,31 +175,18 @@ public class MetadataCallShould {
     @Mock
     private Payload<OrganisationUnit> organisationUnitPayload;
 
-    private CategoryComboService comboService;
-
     @Mock
-    private CategoryComboHandler mockCategoryComboHandler;
-
-    private OptionSetFactory optionSetFactory;
-    private TrackedEntityFactory trackedEntityFactory;
-    private CategoryFactory categoryFactory;
-    private CategoryComboFactory categoryComboFactory;
-    private OrganisationUnitFactory organisationUnitFactory;
-
-    @Mock
-    private TrackedEntityAttributeFactory trackedEntityAttributeFactory;
-    private ProgramFactory programFactory;
+    private Payload<DeletedObject> deletedObjectPayload;
 
     @Mock
     private DataElementFactory dataElementFactory;
-    private RelationshipTypeFactory relationshipTypeFactory;
 
     // object to test
     private MetadataCall metadataCall;
 
     private Response errorResponse;
 
-    Dhis2MockServer dhis2MockServer;
+    private Dhis2MockServer dhis2MockServer;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -216,25 +200,42 @@ public class MetadataCallShould {
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
         when(databaseAdapter.compileStatement(anyString())).thenReturn(sqliteStatement);
 
-        when(systemInfoService.getSystemInfo(any(Fields.class))).thenReturn(systemInfoCall);
-        when(userService.getUser(any(Fields.class))).thenReturn(userCall);
+        when(systemInfoService.getSystemInfo(any(Fields.class), anyBoolean(),
+                anyString())).thenReturn(systemInfoCall);
+
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(),
+                anyString(), anyString())).thenReturn(deletableObjectCall);
+
+        when(userService.getUser(any(Fields.class), anyBoolean(), anyString())).thenReturn(
+                userCall);
+
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(),
+                anyString(), anyString()))
+                .thenReturn(deletableObjectCall);
+
         when(organisationUnitService.getOrganisationUnits(
-                anyString(), any(Fields.class), any(Filter.class), anyBoolean(), anyBoolean())
+                anyString(), any(Fields.class), any(Filter.class), anyBoolean(), anyBoolean(),
+                anyBoolean(), anyString())
         ).thenReturn(organisationUnitCall);
 
         when(optionSetService.optionSets(
-                anyBoolean(), any(Fields.class), any(Filter.class))
+                anyBoolean(), any(Fields.class), any(Filter.class), anyBoolean(), anyString())
         ).thenReturn(optionSetCall);
+
+        when(deletedObjectService.getDeletedObjectsDeletedAt(any(Fields.class), anyBoolean(),
+                anyString(), anyString())).thenReturn(deletableObjectCall);
 
 
         when(systemInfo.serverDate()).thenReturn(serverDateTime);
         when(userCredentials.userRoles()).thenReturn(userRoles);
         when(organisationUnit.uid()).thenReturn("unit");
         when(organisationUnit.path()).thenReturn("path/to/org/unit");
+        when(deletedObject.uid()).thenReturn("uid");
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
         when(organisationUnitPayload.items()).thenReturn(
                 Collections.singletonList(organisationUnit));
+        when(deletedObjectPayload.items()).thenReturn(Collections.singletonList(deletedObject));
 
         when(resourceStore.getLastUpdated(any(ResourceModel.Type.class))).thenReturn("2017-01-01");
 
@@ -248,30 +249,37 @@ public class MetadataCallShould {
                 .build();
 
 
-        comboService = retrofit.create(CategoryComboService.class);
-
-        optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter, resourceHandler);
-        trackedEntityFactory = new TrackedEntityFactory(retrofit, databaseAdapter, resourceHandler);
+        OptionSetFactory optionSetFactory = new OptionSetFactory(retrofit, databaseAdapter,
+                resourceHandler);
+        TrackedEntityFactory trackedEntityFactory = new TrackedEntityFactory(retrofit,
+                databaseAdapter, resourceHandler);
         dataElementFactory = new DataElementFactory(retrofit, databaseAdapter, resourceHandler);
-        programFactory = new ProgramFactory(retrofit, databaseAdapter, optionSetFactory.
-                getOptionSetHandler(), dataElementFactory, resourceHandler);
+        ProgramFactory programFactory = new ProgramFactory(retrofit, databaseAdapter,
+                optionSetFactory.
+                        getOptionSetHandler(), dataElementFactory, resourceHandler);
 
-        relationshipTypeFactory =
-                new RelationshipTypeFactory(retrofit, databaseAdapter, resourceHandler);
-        organisationUnitFactory = new OrganisationUnitFactory(retrofit, databaseAdapter,
+        OrganisationUnitFactory organisationUnitFactory = new OrganisationUnitFactory(retrofit,
+                databaseAdapter,
                 resourceHandler);
 
-        categoryFactory = new CategoryFactory(retrofit, databaseAdapter, resourceHandler);
-        categoryComboFactory = new CategoryComboFactory(retrofit, databaseAdapter, resourceHandler);
+        CategoryFactory categoryFactory = new CategoryFactory(retrofit, databaseAdapter,
+                resourceHandler);
+        CategoryComboFactory categoryComboFactory = new CategoryComboFactory(retrofit,
+                databaseAdapter, resourceHandler);
+        DeletedObjectFactory deletedObjectFactory = new DeletedObjectFactory(retrofit,
+                databaseAdapter, resourceHandler);
+
         metadataCall = new MetadataCall(
                 databaseAdapter, systemInfoService, userService, userHandler,
                 systemInfoStore, resourceStore,
                 optionSetFactory, trackedEntityFactory, programFactory, organisationUnitFactory,
-                categoryFactory, categoryComboFactory);
+                categoryFactory, categoryComboFactory, deletedObjectFactory,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
         when(userCall.execute()).thenReturn(Response.success(user));
+        when(deletableObjectCall.execute()).thenReturn(Response.success(deletedObjectPayload));
     }
 
     @After
@@ -280,32 +288,8 @@ public class MetadataCallShould {
     }
 
     @Test
-    public void returns_category_combo_payload_when_execute_metadata_call() throws Exception {
-        dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("empty_categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
-
-        Response response = metadataCall.call();
-        // assert that last successful response is returned
-
-        Payload<String> payload = (Payload<String>) response.body();
-
-        assertTrue(!payload.items().isEmpty());
-    }
-
-    @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_system_info_call_fail() throws Exception {
-        dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("empty_categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
-
         final int expectedTransactions = 1;
         when(systemInfoCall.execute()).thenReturn(errorResponse);
 
@@ -321,13 +305,6 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_user_call_fail() throws Exception {
-        dhis2MockServer.enqueueMockResponse("empty_organisationUnits.json");
-        dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-        dhis2MockServer.enqueueMockResponse("programs.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entities.json");
-        dhis2MockServer.enqueueMockResponse("option_sets.json");
-
         final int expectedTransactions = 2;
         when(userCall.execute()).thenReturn(errorResponse);
 

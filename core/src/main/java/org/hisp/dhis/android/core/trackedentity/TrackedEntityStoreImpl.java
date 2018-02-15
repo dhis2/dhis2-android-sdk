@@ -65,6 +65,11 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
             TrackedEntityModel.Columns.DESCRIPTION + ", " +
             TrackedEntityModel.Columns.DISPLAY_DESCRIPTION;
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            TrackedEntityModel.Columns.UID +
+            " FROM " + TrackedEntityModel.TABLE +
+            " WHERE " + TrackedEntityModel.Columns.UID + " =?;";
+
     private static final String QUERY_STATEMENT = "SELECT " +
             FIELDS + " FROM " + TrackedEntityModel.TABLE;
 
@@ -175,6 +180,12 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
     @Override
     public int delete() {
         return databaseAdapter.delete(TrackedEntityModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String trackedEntityUId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, trackedEntityUId);
+        return cursor.getCount() > 0;
     }
 
     private Map<String, TrackedEntity> mapFromCursor(Cursor cursor) {

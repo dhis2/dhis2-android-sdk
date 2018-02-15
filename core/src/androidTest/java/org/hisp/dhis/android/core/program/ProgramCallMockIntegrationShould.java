@@ -66,6 +66,9 @@ import java.util.Set;
 
 import retrofit2.Response;
 
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
+
 @RunWith(AndroidJUnit4.class)
 public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     private static String[] PROGRAM_PROJECTION = {
@@ -130,6 +133,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         Set<String> uids = new HashSet<>();
         uids.add("uid1");
         uids.add("uids2");
+        ProgramQuery programQuery = ProgramQuery.defaultQuery(uids,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, "nM3u9s5a52V");
         database().insert(CategoryComboModel.TABLE, null, categoryCombo);
@@ -141,7 +146,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
 
-        programCall = programFactory.newEndPointCall(uids, new Date());
+        programCall = programFactory.newEndPointCall(programQuery, new Date());
     }
 
     @Test

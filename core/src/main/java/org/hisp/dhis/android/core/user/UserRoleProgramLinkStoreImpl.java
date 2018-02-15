@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel.Columns;
 
 public class UserRoleProgramLinkStoreImpl implements UserRoleProgramLinkStore {
+
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserRoleProgramLinkModel.TABLE + " (" +
             Columns.USER_ROLE + ", " + Columns.PROGRAM + ") " +
             "VALUES (?, ?);";

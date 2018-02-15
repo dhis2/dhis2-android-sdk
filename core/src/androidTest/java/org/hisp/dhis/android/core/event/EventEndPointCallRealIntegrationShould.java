@@ -36,7 +36,7 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
     @Test
     @LargeTest
     public void download_number_of_events_according_to_default_limit() throws Exception {
-        retrofit2.Response response = null;
+        retrofit2.Response response;
         response = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
@@ -55,11 +55,10 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
         verifyNumberOfDownloadedTrackedEntityDataValue(335);*/
     }
 
-
     @Test
     @LargeTest
     public void download_event_with_category_combo_option() throws Exception {
-        retrofit2.Response response = null;
+        retrofit2.Response response;
         response = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 

@@ -5,6 +5,8 @@ import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +42,6 @@ public class OptionChangeOnServerShould extends AbsStoreTestCase {
     private MetadataAuditListener metadataAuditListener;
 
     private Dhis2MockServer dhis2MockServer;
-    private D2 d2;
 
     private OptionSetFactory optionSetFactory;
 
@@ -48,7 +49,7 @@ public class OptionChangeOnServerShould extends AbsStoreTestCase {
     public void setup() throws IOException {
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         MockitoAnnotations.initMocks(this);
 
@@ -56,7 +57,8 @@ public class OptionChangeOnServerShould extends AbsStoreTestCase {
                 HandlerFactory.createResourceHandler(databaseAdapter()));
 
         when(metadataAuditHandlerFactory.getByClass(any(Class.class))).thenReturn(
-                new OptionMetadataAuditHandler(optionSetFactory));
+                new OptionMetadataAuditHandler(optionSetFactory, DEFAULT_IS_TRANSLATION_ON,
+                        DEFAULT_TRANSLATION_LOCALE));
 
         optionStore = new OptionStoreImpl(databaseAdapter());
         metadataAuditListener = new MetadataAuditListener(metadataAuditHandlerFactory);
@@ -188,8 +190,6 @@ public class OptionChangeOnServerShould extends AbsStoreTestCase {
     }
 
     private Option getOptionFromDatabase(String uid) {
-        Option option = new OptionStoreImpl(databaseAdapter()).queryByUid(uid);
-
-        return option;
+        return new OptionStoreImpl(databaseAdapter()).queryByUid(uid);
     }
 }

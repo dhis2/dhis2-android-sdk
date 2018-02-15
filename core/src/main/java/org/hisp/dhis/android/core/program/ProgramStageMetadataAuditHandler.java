@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.program;
 
+
 import android.util.Log;
 
 import org.hisp.dhis.android.core.audit.AuditType;
@@ -12,11 +13,17 @@ import java.util.Set;
 public class ProgramStageMetadataAuditHandler implements MetadataAuditHandler {
 
     private final ProgramFactory programFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public ProgramStageMetadataAuditHandler(ProgramFactory programFactory) {
+    public ProgramStageMetadataAuditHandler(ProgramFactory programFactory, boolean isTranslationOn,
+            String translationLocale) {
         this.programFactory = programFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         // MetadataAudit<ProgramStage> of CREATE type is ignored because program does not exists
         // in payload. When a program is created on server, two messages are sent with RabbitMQ.
@@ -43,8 +50,10 @@ public class ProgramStageMetadataAuditHandler implements MetadataAuditHandler {
                 Set<String> uIds = new HashSet<>();
 
                 uIds.add(programStageInDB.program());
+                ProgramQuery programQuery = ProgramQuery.defaultQuery(uIds, isTranslationOn,
+                        translationLocale);
 
-                programFactory.newEndPointCall(uIds, metadataAudit.getCreatedAt()).call();
+                programFactory.newEndPointCall(programQuery, metadataAudit.getCreatedAt()).call();
             }
         } else {
 

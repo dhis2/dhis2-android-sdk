@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user;
 
 
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.calls.Call;
@@ -52,15 +53,18 @@ public final class UserCall implements Call<Response<User>> {
     // server date time
     private final Date serverDate;
     private boolean isExecuted;
+    private final UserQuery query;
 
     public UserCall(UserService userService,
             DatabaseAdapter databaseAdapter,
             UserHandler userHandler,
-            Date serverDate) {
+            Date serverDate,
+            @NonNull UserQuery query) {
         this.userService = userService;
         this.databaseAdapter = databaseAdapter;
         this.userHandler = userHandler;
         this.serverDate = new Date(serverDate.getTime());
+        this.query = query;
     }
 
     @Override
@@ -123,7 +127,8 @@ public final class UserCall implements Call<Response<User>> {
                 ),
                 User.teiSearchOrganisationUnits.with(OrganisationUnit.uid)
         ).build();
-        return userService.getUser(fields).execute();
+        return userService.getUser(fields, query.isTranslationOn(),
+                query.translationLocale()).execute();
     }
 
 }

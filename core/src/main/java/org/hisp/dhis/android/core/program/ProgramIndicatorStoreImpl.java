@@ -72,6 +72,11 @@ public class ProgramIndicatorStoreImpl extends Store implements ProgramIndicator
                     ProgramIndicatorModel.Columns.DECIMALS + ", " +
                     ProgramIndicatorModel.Columns.PROGRAM;
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            ProgramIndicatorModel.Columns.UID +
+            " FROM " + ProgramIndicatorModel.TABLE +
+            " WHERE " + ProgramIndicatorModel.Columns.UID + " =?;";
+
     private static final String QUERY_BY_UID_STATEMENT =
             "SELECT " + FIELDS + " FROM " + ProgramIndicatorModel.TABLE + " WHERE " +
                     ProgramIndicatorModel.Columns.UID + "=?";
@@ -228,6 +233,12 @@ public class ProgramIndicatorStoreImpl extends Store implements ProgramIndicator
     @Override
     public int delete() {
         return databaseAdapter.delete(ProgramIndicatorModel.TABLE);
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount() > 0;
     }
 
     private Map<String, List<ProgramIndicator>> mapFromCursor(Cursor cursor) {

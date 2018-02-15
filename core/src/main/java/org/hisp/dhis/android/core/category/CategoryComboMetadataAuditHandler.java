@@ -10,11 +10,17 @@ import java.util.Set;
 public class CategoryComboMetadataAuditHandler implements MetadataAuditHandler {
 
     private final CategoryComboFactory categoryComboFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public CategoryComboMetadataAuditHandler(CategoryComboFactory categoryComboFactory) {
+    public CategoryComboMetadataAuditHandler(CategoryComboFactory categoryComboFactory,
+            boolean isTranslationOn, String translationLocale) {
         this.categoryComboFactory = categoryComboFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         CategoryCombo categoryCombo = (CategoryCombo) metadataAudit.getValue();
 
@@ -24,7 +30,8 @@ public class CategoryComboMetadataAuditHandler implements MetadataAuditHandler {
 
             Set<String> uIds = new HashSet<>();
             uIds.add(metadataAudit.getUid());
-            categoryComboFactory.newEndPointCall(CategoryComboQuery.defaultQuery(uIds),
+            categoryComboFactory.newEndPointCall(CategoryComboQuery.defaultQuery(uIds,
+                    isTranslationOn, translationLocale),
                     metadataAudit.getCreatedAt()).call();
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {

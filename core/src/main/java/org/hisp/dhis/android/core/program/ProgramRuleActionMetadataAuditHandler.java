@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.program;
 
+
 import android.util.Log;
 
 import org.hisp.dhis.android.core.audit.AuditType;
@@ -12,11 +13,17 @@ import java.util.Set;
 public class ProgramRuleActionMetadataAuditHandler implements MetadataAuditHandler {
 
     private final ProgramFactory programFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public ProgramRuleActionMetadataAuditHandler(ProgramFactory programFactory) {
+    public ProgramRuleActionMetadataAuditHandler(ProgramFactory programFactory,
+            boolean isTranslationOn, String translationLocale) {
         this.programFactory = programFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         // MetadataAudit<ProgramRuleAction> of CREATE type is ignored because programRule does
         // not exists
@@ -50,8 +57,9 @@ public class ProgramRuleActionMetadataAuditHandler implements MetadataAuditHandl
                 Set<String> uIds = new HashSet<>();
 
                 uIds.add(programRuleInDB.program().uid());
-
-                programFactory.newEndPointCall(uIds, metadataAudit.getCreatedAt()).call();
+                ProgramQuery programQuery = ProgramQuery.defaultQuery(uIds,
+                        isTranslationOn, translationLocale);
+                programFactory.newEndPointCall(programQuery, metadataAudit.getCreatedAt()).call();
             }
         } else {
 

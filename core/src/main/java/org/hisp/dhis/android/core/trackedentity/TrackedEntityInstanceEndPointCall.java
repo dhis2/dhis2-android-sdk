@@ -27,7 +27,8 @@ public class TrackedEntityInstanceEndPointCall implements
     private final ResourceHandler resourceHandler;
     private final Date serverDate;
     private final String trackedEntityInstanceUid;
-
+    private final boolean isTranslationOn;
+    private final String translationLocale;
     private boolean isExecuted;
 
     public TrackedEntityInstanceEndPointCall(
@@ -36,7 +37,8 @@ public class TrackedEntityInstanceEndPointCall implements
             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull Date serverDate,
-            @NonNull String trackedEntityInstanceUid) {
+            @NonNull String trackedEntityInstanceUid, boolean isTranslationOn,
+            @NonNull String translationLocale) {
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.databaseAdapter = databaseAdapter;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
@@ -49,6 +51,8 @@ public class TrackedEntityInstanceEndPointCall implements
         }
 
         this.trackedEntityInstanceUid = trackedEntityInstanceUid;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
     @Override
@@ -68,7 +72,7 @@ public class TrackedEntityInstanceEndPointCall implements
 
         Response<TrackedEntityInstance> response =
                 trackedEntityInstanceService.trackedEntityInstance(trackedEntityInstanceUid,
-                        fields(), true).execute();
+                        fields(), true, isTranslationOn, translationLocale).execute();
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {

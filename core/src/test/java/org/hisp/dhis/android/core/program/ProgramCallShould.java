@@ -29,9 +29,13 @@ package org.hisp.dhis.android.core.program;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_IS_TRANSLATION_ON;
+import static org.hisp.dhis.android.core.data.TestConstants.DEFAULT_TRANSLATION_LOCALE;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
@@ -41,6 +45,7 @@ import static org.mockito.Mockito.when;
 
 import android.database.Cursor;
 
+import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Payload;
@@ -48,14 +53,17 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.server.RetrofitFactory;
+import org.hisp.dhis.android.core.data.server.api.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,7 +85,9 @@ import java.util.Set;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
+import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 @RunWith(JUnit4.class)
 public class ProgramCallShould {
@@ -90,9 +100,6 @@ public class ProgramCallShould {
 
     @Mock
     private ProgramHandler programHandler;
-
-    @Mock
-    private OptionSetHandler optionSetHandler;
 
     @Mock
     private ResourceHandler resourceHandler;
@@ -113,9 +120,6 @@ public class ProgramCallShould {
     private ArgumentCaptor<Filter<Program, String>> idInFilter;
 
     @Mock
-    private Date date;
-
-    @Mock
     private Transaction transaction;
 
     @Mock
@@ -127,22 +131,33 @@ public class ProgramCallShould {
     @Mock
     private Date serverDate;
 
-    private Set<String> uids;
-
     // the call we are testing
     private Call<Response<Payload<Program>>> programSyncCall;
+
+    private Dhis2MockServer dhis2MockServer;
+
+    private Retrofit retrofit;
+
+    private Set<String> uids = new HashSet<>();
+    private ProgramQuery programQuery;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
+
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        retrofit = RetrofitFactory.build(dhis2MockServer.getBaseEndpoint());
+
         MockitoAnnotations.initMocks(this);
 
-        uids = new HashSet<>();
         uids.add("test_program_uid");
         uids.add("test_program1_uid");
 
+        programQuery = ProgramQuery.defaultQuery(uids,
+                DEFAULT_IS_TRANSLATION_ON, DEFAULT_TRANSLATION_LOCALE);
+
         programSyncCall = new ProgramCall(programService, databaseAdapter,
-                resourceHandler, uids, serverDate, programHandler);
+                resourceHandler, serverDate, programHandler,programQuery);
 
         when(program.uid()).thenReturn("test_program_uid");
 
@@ -161,11 +176,16 @@ public class ProgramCallShould {
 
 
         when(programService.getPrograms(any(Fields.class), any(Filter.class), any(Filter.class),
-                anyBoolean())
+                anyBoolean(),anyBoolean(),anyString())
         ).thenReturn(programCall);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        dhis2MockServer.shutdown();
     }
 
     @Test
@@ -175,7 +195,7 @@ public class ProgramCallShould {
 
         when(programService.getPrograms(
                 fieldsCaptor.capture(), lastUpdatedFilter.capture(), idInFilter.capture(),
-                anyBoolean())
+                anyBoolean(), anyBoolean(), anyString())
         ).thenReturn(programCall);
 
         programSyncCall.call();
@@ -489,5 +509,37 @@ public class ProgramCallShould {
 
         assertThat(programSyncCall.isExecuted()).isTrue();
 
+    }
+
+    @Test
+    public void append_translation_variables_to_the_query_string()
+            throws Exception {
+
+        whenCallProgramCall();
+
+        thenAssertTranslationParametersAreInclude();
+    }
+
+    private void whenCallProgramCall() throws Exception {
+        ProgramCall callWithMockWebservice = provideProgramCallWithMockWebservice();
+
+        dhis2MockServer.enqueueMockResponse("programs.json");
+        callWithMockWebservice.call();
+    }
+
+    private void thenAssertTranslationParametersAreInclude() throws InterruptedException {
+        RecordedRequest request = dhis2MockServer.takeRequest();
+
+        MatcherAssert.assertThat(request.getPath(), containsString(
+                "translation=" + DEFAULT_IS_TRANSLATION_ON + "&locale="
+                        + DEFAULT_TRANSLATION_LOCALE));
+    }
+
+    private ProgramCall provideProgramCallWithMockWebservice() {
+        ProgramService mockService = retrofit.create(ProgramService.class);
+
+        return new ProgramCall(mockService, databaseAdapter,
+                resourceHandler,serverDate,  programHandler,  programQuery
+        );
     }
 }

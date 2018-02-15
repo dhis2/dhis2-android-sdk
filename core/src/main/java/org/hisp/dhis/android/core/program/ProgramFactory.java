@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.program;
 
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementFactory;
@@ -17,7 +19,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import retrofit2.Retrofit;
 
@@ -135,10 +136,10 @@ public class ProgramFactory {
         this.deletableStores.add(programStore);
     }
 
-    public ProgramCall newEndPointCall(Set<String> programUids, Date serverDate) {
+    public ProgramCall newEndPointCall(@NonNull ProgramQuery query, Date serverDate) {
         return new ProgramCall(
-                programService, databaseAdapter, resourceHandler, programUids,
-                serverDate, programHandler);
+                programService, databaseAdapter, resourceHandler,
+                serverDate, programHandler, query);
     }
 
     public ProgramHandler getProgramHandler() {

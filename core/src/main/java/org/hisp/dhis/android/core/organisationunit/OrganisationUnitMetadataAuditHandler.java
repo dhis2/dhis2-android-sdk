@@ -13,11 +13,17 @@ import java.util.List;
 public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandler {
 
     private final OrganisationUnitFactory organisationUnitFactory;
+    private final boolean isTranslationOn;
+    private final String translationLocale;
 
-    public OrganisationUnitMetadataAuditHandler(OrganisationUnitFactory organisationUnitFactory) {
+    public OrganisationUnitMetadataAuditHandler(OrganisationUnitFactory organisationUnitFactory,
+            boolean isTranslationOn, String translationLocale) {
         this.organisationUnitFactory = organisationUnitFactory;
+        this.isTranslationOn = isTranslationOn;
+        this.translationLocale = translationLocale;
     }
 
+    @Override
     public void handle(MetadataAudit metadataAudit) throws Exception {
         OrganisationUnit organisationUnit = (OrganisationUnit) metadataAudit.getValue();
 
@@ -44,8 +50,11 @@ public class OrganisationUnitMetadataAuditHandler implements MetadataAuditHandle
                                 + metadataAudit);
                 return;
             }
-            organisationUnitFactory.newEndPointCall(metadataAudit.getCreatedAt(), user,
-                    metadataAudit.getUid()).call();
+            OrganisationUnitQuery organisationUnitQuery =
+                    OrganisationUnitQuery.defaultQuery(user, isTranslationOn, translationLocale,
+                            metadataAudit.getUid());
+            organisationUnitFactory.newEndPointCall(metadataAudit.getCreatedAt(),
+                    organisationUnitQuery).call();
         } else {
             if (metadataAudit.getType() == AuditType.DELETE) {
                 organisationUnit = organisationUnit.toBuilder().deleted(true).build();

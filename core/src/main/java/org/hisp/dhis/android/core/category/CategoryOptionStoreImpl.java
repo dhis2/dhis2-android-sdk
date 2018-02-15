@@ -16,6 +16,9 @@ import java.util.Date;
 import java.util.List;
 
 
+@SuppressWarnings({
+        "PMD.AvoidDuplicateLiterals"
+})
 public class CategoryOptionStoreImpl extends Store implements CategoryOptionStore {
 
     protected final DatabaseAdapter databaseAdapter;
@@ -43,9 +46,15 @@ public class CategoryOptionStoreImpl extends Store implements CategoryOptionStor
                     CategoryOptionModel.Columns.LAST_UPDATED + ") " +
                     "VALUES(?, ?, ?, ?, ?, ?);";
 
+    private static final String EXIST_BY_UID_STATEMENT = "SELECT " +
+            CategoryOptionModel.Columns.UID +
+            " FROM " + CategoryOptionModel.TABLE +
+            " WHERE " + CategoryOptionModel.Columns.UID + " =?;";
+
     private static final String EQUAL_QUESTION_MARK = "=?";
+
     private static final String DELETE_STATEMENT = "DELETE FROM " + CategoryOptionModel.TABLE +
-            " WHERE " + CategoryModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ";";
+            " WHERE " + CategoryOptionModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ";";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + CategoryOptionModel.TABLE + " SET " +
             CategoryOptionModel.Columns.UID + " " + EQUAL_QUESTION_MARK + ", " +
@@ -186,6 +195,12 @@ public class CategoryOptionStoreImpl extends Store implements CategoryOptionStor
                 .displayName(displayName).created(created).lastUpdated(lastUpdated).build();
 
         return categoryOption;
+    }
+
+    @Override
+    public Boolean exists(String uId) {
+        Cursor cursor = databaseAdapter.query(EXIST_BY_UID_STATEMENT, uId);
+        return cursor.getCount() > 0;
     }
 
     @Override

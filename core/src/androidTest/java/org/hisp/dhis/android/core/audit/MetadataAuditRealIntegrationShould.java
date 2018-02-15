@@ -12,6 +12,7 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
 public class MetadataAuditRealIntegrationShould extends AbsStoreTestCase {
@@ -21,6 +22,7 @@ public class MetadataAuditRealIntegrationShould extends AbsStoreTestCase {
     private D2 d2;
     private SyncedMetadata syncedMetadataFromServer;
 
+    @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
@@ -32,7 +34,7 @@ public class MetadataAuditRealIntegrationShould extends AbsStoreTestCase {
                         .setUsername(RealBrokerMother.user)
                         .setPassword(RealBrokerMother.password)
                         .setPort(RealBrokerMother.port)
-                        .build());
+                        .build(), Locale.ENGLISH);
     }
 
     // The goal of this test is verify the end to end the whole rabbitmq sync feature

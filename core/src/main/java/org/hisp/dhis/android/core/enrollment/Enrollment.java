@@ -139,7 +139,7 @@ public abstract class Enrollment {
     @JsonProperty(EVENTS)
     public abstract List<Event> events();
 
-    abstract Enrollment.Builder toBuilder();
+    public abstract Enrollment.Builder toBuilder();
 
     public static Enrollment.Builder builder() {
         return new AutoValue_Enrollment.Builder();

@@ -119,7 +119,7 @@ public abstract class TrackedEntityInstance {
     public abstract List<Enrollment> enrollments();
 
 
-    abstract TrackedEntityInstance.Builder toBuilder();
+    public abstract TrackedEntityInstance.Builder toBuilder();
 
     public static TrackedEntityInstance.Builder builder() {
         return new AutoValue_TrackedEntityInstance.Builder();

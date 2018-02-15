@@ -55,7 +55,8 @@ public class RelationshipStoreImpl extends Store implements RelationshipStore {
 
     private static final String DELETE_STATEMENT = "DELETE FROM " +
             RelationshipModel.TABLE + " WHERE " +
-            RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + "=?;";
+            RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_A + "=? OR " +
+            RelationshipModel.Columns.TRACKED_ENTITY_INSTANCE_B + "=?;";
 
     private static final String QUERY_BY_UID = "SELECT " + FIELDS + " FROM " +
             RelationshipModel.TABLE + " WHERE " +
@@ -96,6 +97,7 @@ public class RelationshipStoreImpl extends Store implements RelationshipStore {
         isNull(uid);
         // bind the where argument
         sqLiteBind(deleteStatement, 1, uid);
+        sqLiteBind(deleteStatement, 2, uid);
 
         // execute and clear bindings
         int delete = databaseAdapter.executeUpdateDelete(RelationshipModel.TABLE, deleteStatement);

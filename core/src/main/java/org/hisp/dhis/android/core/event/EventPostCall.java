@@ -24,8 +24,8 @@ public class EventPostCall implements Call<Response<WebResponse>> {
     private boolean isExecuted;
 
     public EventPostCall(@NonNull EventService eventService,
-                         @NonNull EventStore eventStore,
-                         @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore) {
+            @NonNull EventStore eventStore,
+            @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore) {
         this.eventService = eventService;
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
@@ -81,11 +81,8 @@ public class EventPostCall implements Call<Response<WebResponse>> {
             Event event = events.get(i);
             List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
 
-            eventRecreated.add(Event.create(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
-                    event.createdAtClient(), event.lastUpdatedAtClient(), event.program(), event.programStage(),
-                    event.organisationUnit(), event.eventDate(), event.status(), event.coordinates(),
-                    event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent,
-                    event.attributeCategoryOptions(), event.attributeOptionCombo(), event.trackedEntityInstance()));
+            eventRecreated.add(event.toBuilder()
+                    .trackedEntityDataValues(dataValuesForEvent).build());
         }
 
         return eventRecreated;

@@ -294,6 +294,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                             .lastUpdatedAtClient(lastUpdatedAtClient).organisationUnit(organisationUnit)
                             .program(program).dateOfEnrollment(enrollmentDate).dateOfIncident(incidentDate)
                             .followUp(followUp).enrollmentStatus(status).trackedEntityInstance(trackedEntityInstance)
+                            .deleted(false)
                             .coordinate(coordinates).build()
                     );
 

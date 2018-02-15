@@ -225,7 +225,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
     }
 
     @Override
-    public boolean exists(String uid) {
+    public Boolean exists(String uid) {
         Cursor cursor = databaseAdapter.query(CHECK_IF_EXIST_BY_UID_STATMENT, uid);
         return cursor.getCount() > 0;
     }

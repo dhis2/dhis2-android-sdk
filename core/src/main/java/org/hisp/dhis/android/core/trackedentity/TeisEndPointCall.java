@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import static org.hisp.dhis.android.core.resource.ResourceModel.Type.TRACKED_ENTITY_INSTANCE;
-
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -15,89 +13,90 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Response;
 
-public class TrackedEntityInstanceEndPointCall implements
-        Call<Response<Payload<TrackedEntityInstance>>> {
+
+public class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInstance>>> {
 
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final DatabaseAdapter databaseAdapter;
+    private final TeiQuery trackerQuery;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
     private final Date serverDate;
-    private final String trackedEntityInstanceUid;
 
     private boolean isExecuted;
 
-    public TrackedEntityInstanceEndPointCall(
-            @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
-            @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
-            @NonNull ResourceHandler resourceHandler,
-            @NonNull Date serverDate,
-            @NonNull String trackedEntityInstanceUid) {
-        this.trackedEntityInstanceService = trackedEntityInstanceService;
+    public TeisEndPointCall(@NonNull TrackedEntityInstanceService trackedEntityInstanceService,
+                            @NonNull DatabaseAdapter databaseAdapter, @NonNull TeiQuery trackerQuery,
+                            @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
+                            @NonNull ResourceHandler resourceHandler,
+                            @NonNull Date serverDate) {
+
         this.databaseAdapter = databaseAdapter;
+        this.trackedEntityInstanceService = trackedEntityInstanceService;
+        this.trackerQuery = trackerQuery;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
         this.resourceHandler = resourceHandler;
         this.serverDate = new Date(serverDate.getTime());
-
-        if (trackedEntityInstanceUid == null || trackedEntityInstanceUid.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "trackedEntityInstanceUid is required to realize a request");
-        }
-
-        this.trackedEntityInstanceUid = trackedEntityInstanceUid;
     }
 
     @Override
     public boolean isExecuted() {
-        return false;
+        synchronized (this) {
+            return isExecuted;
+        }
     }
 
     @Override
-    public Response call() throws Exception {
+    public Response<Payload<TrackedEntityInstance>> call() throws Exception {
         synchronized (this) {
             if (isExecuted) {
                 throw new IllegalStateException("Already executed");
             }
-
             isExecuted = true;
         }
 
-        Response<TrackedEntityInstance> response =
-                trackedEntityInstanceService.trackedEntityInstance(trackedEntityInstanceUid,
-                        fields(), true).execute();
+        Response<Payload<TrackedEntityInstance>> response;
 
-        if (response == null || !response.isSuccessful()) {
-            return response;
-        }
+        response = trackedEntityInstanceService.getTEIs(trackerQuery.getOrgUnit(), fields(),
+                Boolean.TRUE, trackerQuery.getPage(), trackerQuery.getPageSize()).execute();
 
-        Transaction transaction = databaseAdapter.beginNewTransaction();
+        if (response.isSuccessful() && response.body().items() != null) {
+            List<TrackedEntityInstance> trackedEntityInstances = response.body().items();
+            int size = trackedEntityInstances.size();
 
-        try {
-            TrackedEntityInstance trackedEntityInstance = response.body();
+            if (trackerQuery.getPageLimit() > 0) {
+                size =  trackerQuery.getPageLimit();
+            }
 
-            trackedEntityInstanceHandler.handle(trackedEntityInstance);
-
-            resourceHandler.handleResource(TRACKED_ENTITY_INSTANCE, serverDate);
-
-            transaction.setSuccessful();
-
-        } catch (SQLiteConstraintException sql) {
-            // This catch is necessary to ignore events with bad foreign keys exception
-            // More info: If the foreign key have the flag
-            // DEFERRABLE INITIALLY DEFERRED this exception will be throw in transaction
-            // .end()
-            // And the rollback will be executed only when the database is closed.
-            // It is a reported as unfixed bug: https://issuetracker.google
-            // .com/issues/37001653
-            Log.d(this.getClass().getSimpleName(), sql.getMessage());
-        } finally {
-            transaction.end();
+            for (int i = 0; i < size; i++) {
+                Transaction transaction = databaseAdapter.beginNewTransaction();
+                TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(i);
+                try {
+                    trackedEntityInstanceHandler.handle(trackedEntityInstance);
+                    transaction.setSuccessful();
+                } catch (SQLiteConstraintException sql) {
+                    /*
+                    This catch is necessary to ignore events with bad foreign keys exception
+                    More info: If the foreign key have the flag
+                    DEFERRABLE INITIALLY DEFERRED this exception will be throw in transaction
+                    .end()
+                    And the rollback will be executed only when the database is closed.
+                    It is a reported as unfixed bug: https://issuetracker.google
+                    .com/issues/37001653
+                    */
+                    Log.d(this.getClass().getSimpleName(), sql.getMessage());
+                } finally {
+                    transaction.end();
+                }
+            }
+            resourceHandler.handleResource(ResourceModel.Type.TRACKED_ENTITY_INSTANCE, serverDate);
         }
 
         return response;
@@ -146,4 +145,6 @@ public class TrackedEntityInstanceEndPointCall implements
                 )
         ).build();
     }
+
+
 }

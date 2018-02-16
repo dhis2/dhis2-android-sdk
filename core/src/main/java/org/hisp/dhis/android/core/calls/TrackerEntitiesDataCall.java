@@ -110,6 +110,8 @@ public class TrackerEntitiesDataCall implements Call<Response> {
         }
     }
 
+    //TODO We may need to refactor the code here. Right now it is not very optimize.
+    // We need a better sync mechanism, based on? lastupdated?
     private Response trackerCall(Date serverDate) throws Exception {
         Response<Payload<TrackedEntityInstance>> response = null;
 

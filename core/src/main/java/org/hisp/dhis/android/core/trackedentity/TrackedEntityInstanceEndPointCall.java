@@ -72,16 +72,21 @@ public class TrackedEntityInstanceEndPointCall implements
                 trackedEntityInstanceService.trackedEntityInstance(trackedEntityInstanceUid,
                         fields(), true).execute();
 
+        if (response == null || !response.isSuccessful()) {
+            return response;
+        }
+
         Transaction transaction = databaseAdapter.beginNewTransaction();
+
         try {
-            if (response != null && response.isSuccessful()) {
-                TrackedEntityInstance trackedEntityInstance = response.body();
+            TrackedEntityInstance trackedEntityInstance = response.body();
 
-                trackedEntityInstanceHandler.handle(trackedEntityInstance);
+            trackedEntityInstanceHandler.handle(trackedEntityInstance);
 
-                resourceHandler.handleResource(TRACKED_ENTITY_INSTANCE, serverDate);
-                transaction.setSuccessful();
-            }
+            resourceHandler.handleResource(TRACKED_ENTITY_INSTANCE, serverDate);
+
+            transaction.setSuccessful();
+
         } catch (SQLiteConstraintException sql) {
             // This catch is necessary to ignore events with bad foreign keys exception
             // More info: If the foreign key have the flag

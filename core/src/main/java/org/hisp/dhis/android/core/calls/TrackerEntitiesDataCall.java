@@ -2,14 +2,23 @@ package org.hisp.dhis.android.core.calls;
 
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.event.EventEndPointCall;
-import org.hisp.dhis.android.core.event.EventQuery;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TeiQuery;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEndPointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 
@@ -18,6 +27,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
+@SuppressWarnings("PMD")
 public class TrackerEntitiesDataCall implements Call<Response> {
 
     private boolean isExecuted;
@@ -26,11 +36,19 @@ public class TrackerEntitiesDataCall implements Call<Response> {
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final DatabaseAdapter databaseAdapter;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
+    private final ResourceHandler resourceHandler;
+    private final ResourceStore resourceStore;
+    private final SystemInfoService systemInfoService;
+    private final SystemInfoStore systemInfoStore;
 
     public TrackerEntitiesDataCall(@NonNull OrganisationUnitStore organisationUnitStore,
                                    @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
                                    @NonNull DatabaseAdapter databaseAdapter,
                                    @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
+                                   @NonNull ResourceHandler resourceHandler,
+                                   @NonNull ResourceStore resourceStore,
+                                   @NonNull SystemInfoService systemInfoService,
+                                   @NonNull SystemInfoStore systemInfoStore,
                                    int teiLimitByOrgUnit) {
 
         this.teiLimitByOrgUnit = teiLimitByOrgUnit;
@@ -38,6 +56,10 @@ public class TrackerEntitiesDataCall implements Call<Response> {
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.databaseAdapter = databaseAdapter;
         this.trackedEntityInstanceHandler =  trackedEntityInstanceHandler;
+        this.resourceHandler = resourceHandler;
+        this.resourceStore = resourceStore;
+        this.systemInfoService = systemInfoService;
+        this.systemInfoStore = systemInfoStore;
     }
 
     @Override
@@ -62,7 +84,25 @@ public class TrackerEntitiesDataCall implements Call<Response> {
 
         try {
 
+            response = new SystemInfoCall(
+                    databaseAdapter, systemInfoStore,
+                    systemInfoService, resourceStore
+            ).call();
 
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            SystemInfo systemInfo = (SystemInfo) response.body();
+            Date serverDate = systemInfo.serverDate();
+
+            response = trackerCall(serverDate);
+
+            if (response == null || !response.isSuccessful()) {
+                return response;
+            }
+
+            transaction.setSuccessful();
 
             return response;
         } finally {
@@ -70,8 +110,8 @@ public class TrackerEntitiesDataCall implements Call<Response> {
         }
     }
 
-    private Response trackerCall() throws Exception {
-        Response response = null;
+    private Response trackerCall(Date serverDate) throws Exception {
+        Response<Payload<TrackedEntityInstance>> response = null;
 
         List<OrganisationUnit> organisationUnits = organisationUnitStore.queryOrganisationUnits();
 
@@ -91,26 +131,54 @@ public class TrackerEntitiesDataCall implements Call<Response> {
                     pageLimit = teiLimitByOrgUnit - teisDownloaded;
                 }
 
-                EventQuery eventQuery = EventQuery.
+                TeiQuery teiQuery = TeiQuery.
                         Builder.create()
                         .withOrgUnit(orgUnit.uid())
                         .withPage(page)
                         .withPageLimit(pageLimit)
                         .build();
 
-                response = new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
-                        eventHandler, serverDate, eventQuery).call();
+                response = trackedEntityInstanceService.getTEIs(teiQuery.getOrgUnit(), fields(),
+                        Boolean.TRUE, teiQuery.getPage(), teiQuery.getPageLimit()).execute();
 
-                if (!response.isSuccessful()) {
-                    return response;
+                if (response.isSuccessful() && response.body().items() != null) {
+                    List<TrackedEntityInstance> trackedEntityInstances = response.body().items();
+                    int size = trackedEntityInstances.size();
+                    Response<TrackedEntityInstance> apiResponse = null;
+
+                    if (teiQuery.getPageLimit() > 0) {
+                        size =  teiQuery.getPageLimit();
+                    }
+
+                    for (int i = 0; i < size; i++) {
+                        apiResponse = new TrackedEntityInstanceEndPointCall(trackedEntityInstanceService,
+                                databaseAdapter, trackedEntityInstanceHandler, resourceHandler, serverDate,
+                                trackedEntityInstances.get(i).uid()).call();
+
+                        if (apiResponse == null || !apiResponse.isSuccessful()) {
+                            Log.d(this.getClass().getSimpleName(), trackedEntityInstances.get(i).uid() + " conflict");
+                        }
+                    }
+
                 }
 
-                eventsDownloaded = eventsDownloaded + eventQuery.getPageSize();
+                teisDownloaded = teisDownloaded + teiQuery.getPageSize();
             }
 
         }
 
         return response;
     }
+
+    private Fields<TrackedEntityInstance> fields() {
+        return Fields.<TrackedEntityInstance>builder().fields(
+                TrackedEntityInstance.uid, TrackedEntityInstance.created,
+                TrackedEntityInstance.lastUpdated,
+                TrackedEntityInstance.organisationUnit,
+                TrackedEntityInstance.trackedEntity,
+                TrackedEntityInstance.deleted
+        ).build();
+    }
+
 
 }

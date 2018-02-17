@@ -367,7 +367,7 @@ public class MetadataCallShould {
 
         when(resourceStore.getLastUpdated(any(ResourceModel.Type.class))).thenReturn("2017-01-01");
 
-        when(dataSetParentCallFactory.create(any(User.class), any(GenericCallData.class)))
+        when(dataSetParentCallFactory.create(any(User.class), any(GenericCallData.class), any(List.class)))
                 .thenReturn(dataSetParentCall);
         dataSetParentCallResponse = Response.success(dataElementPayload);
         when(dataSetParentCall.call()).thenReturn(dataSetParentCallResponse);

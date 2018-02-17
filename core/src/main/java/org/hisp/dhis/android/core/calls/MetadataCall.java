@@ -29,19 +29,19 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
+import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.ResponseValidator;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -277,12 +277,12 @@ public class MetadataCall implements Call<Response> {
             }
 
             User user = (User) response.body();
-            response = new OrganisationUnitCall(
+            Response<Payload<OrganisationUnit>> organisationUnitResponse = new OrganisationUnitCall(
                     user, organisationUnitService, databaseAdapter, organisationUnitStore,
                     resourceStore, data.serverDate(), userOrganisationUnitLinkStore,
                     organisationUnitProgramLinkStore).call();
-            if (!response.isSuccessful()) {
-                return response;
+            if (!organisationUnitResponse.isSuccessful()) {
+                return organisationUnitResponse;
             }
             response = downloadCategories(data.serverDate());
 
@@ -328,8 +328,8 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
-
-            response = dataSetParentCallFactory.create(user, data).call();
+            List<OrganisationUnit> organisationUnits = organisationUnitResponse.body().items();
+            response = dataSetParentCallFactory.create(user, data, organisationUnits).call();
             if (!response.isSuccessful()) {
                 return response;
             }

@@ -32,13 +32,14 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.user.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.List;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -83,9 +84,6 @@ public class DataSetParentLinkManagerShould {
     @Mock
     private OrganisationUnit ou2;
 
-    @Mock
-    private User user;
-
     private DataSetParentLinkManager linkManager;
 
     @Before
@@ -107,14 +105,13 @@ public class DataSetParentLinkManagerShould {
         when(ou1.dataSets()).thenReturn(Lists.newArrayList(dataSet1, dataSet2));
         when(ou2.uid()).thenReturn("test_ou_uid_uid2");
         when(ou2.dataSets()).thenReturn(Lists.newArrayList(dataSet2, dataSet3));
-
-        when(user.organisationUnits()).thenReturn(Lists.newArrayList(ou1, ou2));
     }
 
     @Test
     public void store_data_set_data_element_links() throws Exception {
         linkManager.saveDataSetDataElementAndIndicatorLinks(Lists.newArrayList(dataSet1, dataSet2));
-        linkManager.saveDataSetOrganisationUnitLinks(user);
+        linkManager.saveDataSetOrganisationUnitLinks(Lists.newArrayList(ou1, ou2));
+
         verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(decc1, dataSet1));
         verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(decc2, dataSet1));
         verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(decc2, dataSet2));

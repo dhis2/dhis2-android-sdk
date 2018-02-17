@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementEndpointCall;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorEndpointCall;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeEndpointCall;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
@@ -50,11 +51,14 @@ import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getIndi
 public class DataSetParentCall extends TransactionalCall {
     private final User user;
     private final DataSetParentLinkManager linkManager;
+    private final List<OrganisationUnit> organisationUnits;
 
-    private DataSetParentCall(User user, GenericCallData data, DataSetParentLinkManager linkManager) {
+    private DataSetParentCall(User user, GenericCallData data, DataSetParentLinkManager linkManager,
+                              List<OrganisationUnit> organisationUnits) {
         super(data);
         this.user = user;
         this.linkManager = linkManager;
+        this.organisationUnits = organisationUnits;
     }
 
     @Override
@@ -78,20 +82,20 @@ public class DataSetParentCall extends TransactionalCall {
         indicatorTypeEndpointCall.call();
 
         linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);
-        linkManager.saveDataSetOrganisationUnitLinks(user);
+        linkManager.saveDataSetOrganisationUnitLinks(organisationUnits);
 
         return dataElementResponse;
     }
 
     public interface Factory {
-        Call<Response> create(User user, GenericCallData data);
+        Call<Response> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits);
     }
 
     public static final Factory FACTORY = new Factory() {
         @Override
-        public Call<Response> create(User user, GenericCallData data) {
-            return new DataSetParentCall(user, data,
-                    DataSetParentLinkManager.create(data.databaseAdapter()));
+        public Call<Response> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits) {
+            return new DataSetParentCall(user, data, DataSetParentLinkManager.create(data.databaseAdapter()),
+                    organisationUnits);
         }
     };
 }

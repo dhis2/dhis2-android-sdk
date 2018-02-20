@@ -40,6 +40,6 @@ public class Dhis2Database {
 
     public static final String NAME = "Dhis2";
 
-    public static final int VERSION = 17;
+    public static final int VERSION = 18;
 
 }

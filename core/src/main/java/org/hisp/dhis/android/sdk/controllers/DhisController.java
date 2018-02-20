@@ -44,6 +44,7 @@ import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.network.RepoManager;
 import org.hisp.dhis.android.sdk.network.Session;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.LastUpdatedManager;
@@ -81,8 +82,7 @@ public final class DhisController {
     private final static String PASSWORD = "password";
     private final static String SERVER = "server";
     private final static String CREDENTIALS = "credentials";
-    public static final Float startServerVersionLatestApi =2.29f;
-    public static Float serverVersion;
+    public static final Float START_LATEST_API_VERSION =2.29f;
 
     /**
      * Variable hasUnSynchronizedDatavalues
@@ -179,7 +179,8 @@ public final class DhisController {
     static UserAccount signInUser(HttpUrl serverUrl, Credentials credentials) throws APIException {
         DhisApi dhisApi = RepoManager
                 .createService(serverUrl, credentials);
-        serverVersion = dhisApi.getSystemInfo().getVersionAsFloat();
+        SystemInfo systemInfo = dhisApi.getSystemInfo();
+        systemInfo.save();
         UserAccount user = (new UserController(dhisApi)
                 .logInUser(serverUrl, credentials));
 
@@ -242,9 +243,8 @@ public final class DhisController {
     }
 
     public boolean isLoggedInServerWithLatestApiVersion() {
-        if(serverVersion==null){
-            serverVersion = getDhisApi().getSystemInfo().getVersionAsFloat();
-        }
-        return serverVersion>=startServerVersionLatestApi;
+        SystemInfo systemInfo = MetaDataController.getSystemInfo();
+        Float serverVersion = systemInfo.getVersionAsFloat();
+        return serverVersion >= START_LATEST_API_VERSION;
     }
 }

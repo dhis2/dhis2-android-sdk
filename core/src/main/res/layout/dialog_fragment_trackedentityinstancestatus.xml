@@ -120,15 +120,37 @@
                     android:layout_gravity="center_vertical" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/detailTrigger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="horizontal">
+                <org.hisp.dhis.android.sdk.ui.views.FontTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/details"
+                    android:layout_gravity="center_vertical" />
+
+                <ImageView
+                    android:id="@+id/triangle"
+                    android:layout_width="8dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/ic_triangle_collapsed" />
+            </LinearLayout>
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1">
                 <org.hisp.dhis.android.sdk.ui.views.FontTextView
                     android:id="@+id/item_detailed_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:width="0dp"
+                    android:visibility="gone"
                     android:text="" />
 
                 </ScrollView>

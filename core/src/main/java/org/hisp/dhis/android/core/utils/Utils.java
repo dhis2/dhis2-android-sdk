@@ -118,7 +118,7 @@ public final class Utils {
         return  commaSeparatedArrayValues(values.toArray(new String[values.size()]));
     }
 
-    public static String generateFormatedStartDateStr() {
+    public static String generateFormattedStartDateStr() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
         Calendar cal = Calendar.getInstance();
@@ -129,7 +129,7 @@ public final class Utils {
         return formatter.format(previousYear);
     }
 
-    public static String generateFormatedEndDateStr() {
+    public static String generateFormattedEndDateStr() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         return formatter.format(new Date());
     }

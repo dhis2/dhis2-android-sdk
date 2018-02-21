@@ -42,7 +42,7 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
         GenericCallData data = GenericCallData.create(databaseAdapter(), resourceHandler, d2.retrofit());
 
         return DataValueEndpointCall.FACTORY.create(data, dataSetUids, orgUnitUids,
-                Utils.generateFormatedStartDateStr(), Utils.generateFormatedEndDateStr());
+                Utils.generateFormattedStartDateStr(), Utils.generateFormattedEndDateStr());
     }
 
     // @Test

@@ -98,8 +98,8 @@ public class DataSetParentCall extends TransactionalCall {
         indicatorTypeEndpointCall.call();
 
         DataValueEndpointCall dataValueEndpointCall = dataValueCallFactory.create(data, dataSetUids,
-                DataSetParentUidsHelper.getOrganisationUnitUids(user), Utils.generateFormatedStartDateStr(),
-                Utils.generateFormatedEndDateStr());
+                DataSetParentUidsHelper.getOrganisationUnitUids(user), Utils.generateFormattedStartDateStr(),
+                Utils.generateFormattedEndDateStr());
         dataValueEndpointCall.call();
 
         linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);

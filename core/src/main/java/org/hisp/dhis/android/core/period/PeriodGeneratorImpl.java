@@ -28,39 +28,25 @@
 
 package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 
 final class PeriodGeneratorImpl implements PeriodGenerator {
 
-    public List<PeriodModel> generatePeriods(Date startDate) {
+    private final DailyPeriodGenerator dailyPeriodGenerator;
+
+    PeriodGeneratorImpl(DailyPeriodGenerator dailyPeriodGenerator) {
+        this.dailyPeriodGenerator = dailyPeriodGenerator;
+    }
+
+    public List<PeriodModel> generatePeriods() {
         List<PeriodModel> periods = new ArrayList<>();
-
-        try {
-            periods.add(getYearly(2016));
-            periods.add(getYearly(2017));
-            periods.add(getYearly(2018));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+        periods.addAll(dailyPeriodGenerator.generatePeriodsForLastDays(60));
         return periods;
     }
 
-    private PeriodModel getYearly(int year) throws ParseException {
-        String startDateStr = year + "-01-01T00:00:00.000";
-        Date startDate = BaseIdentifiableObject.DATE_FORMAT.parse(startDateStr);
-        String endDateStr = year + "-12-31T23:59:59.999";
-        Date endDate = BaseIdentifiableObject.DATE_FORMAT.parse(endDateStr);
-
-        return PeriodModel.builder()
-                .periodId("" + year)
-                .periodType(PeriodType.Yearly)
-                .startDate(startDate)
-                .endDate(endDate).build();
+    static PeriodGeneratorImpl create() {
+        return new PeriodGeneratorImpl(new DailyPeriodGenerator(Calendar.getInstance()));
     }
 }

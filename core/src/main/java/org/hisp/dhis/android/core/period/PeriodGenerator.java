@@ -28,9 +28,8 @@
 
 package org.hisp.dhis.android.core.period;
 
-import java.util.Date;
 import java.util.List;
 
 interface PeriodGenerator {
-    List<PeriodModel> generatePeriods(Date startDate);
+    List<PeriodModel> generatePeriods();
 }

@@ -27,35 +27,22 @@
  */
 package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 public class PeriodHandler {
-    public static final String START_DATE_STR = "2017-01-01T00:00:00.000";
-
     private final ObjectWithoutUidStore<PeriodModel> store;
     private final PeriodGenerator generator;
-
-    private Date startDate;
 
     PeriodHandler(ObjectWithoutUidStore<PeriodModel> store, PeriodGenerator generator) {
         this.store = store;
         this.generator = generator;
-
-        try {
-            this.startDate = BaseIdentifiableObject.DATE_FORMAT.parse(START_DATE_STR);
-        } catch (ParseException e) {
-            this.startDate = new Date();
-        }
     }
 
     public void generateAndPersist() {
-        List<PeriodModel> periods = generator.generatePeriods(startDate);
+        List<PeriodModel> periods = generator.generatePeriods();
         for (PeriodModel p : periods) {
             store.updateOrInsertWhere(p);
         }
@@ -64,6 +51,6 @@ public class PeriodHandler {
     public static PeriodHandler create(DatabaseAdapter databaseAdapter) {
         return new PeriodHandler(
                 PeriodStore.create(databaseAdapter),
-                new MockPeriodGenerator());
+                PeriodGeneratorImpl.create());
     }
 }

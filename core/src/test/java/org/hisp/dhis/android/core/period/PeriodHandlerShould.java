@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.period;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,8 +35,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import java.util.Date;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -61,21 +58,18 @@ public class PeriodHandlerShould {
     // object to test
     private PeriodHandler periodHandler;
 
-    private Date startDate;
-
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        startDate = BaseIdentifiableObject.DATE_FORMAT.parse(PeriodHandler.START_DATE_STR);
         periodHandler = new PeriodHandler(store, generator);
-        when(generator.generatePeriods(startDate)).thenReturn(Lists.newArrayList(p1, p2));
+        when(generator.generatePeriods()).thenReturn(Lists.newArrayList(p1, p2));
     }
 
     @Test
     public void call_generator_to_generate_periods() throws Exception {
         periodHandler.generateAndPersist();
 
-        verify(generator).generatePeriods(startDate);
+        verify(generator).generatePeriods();
         verifyNoMoreInteractions(generator);
     }
 

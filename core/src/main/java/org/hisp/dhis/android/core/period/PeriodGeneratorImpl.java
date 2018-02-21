@@ -25,66 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.period;
 
-import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+final class PeriodGeneratorImpl implements PeriodGenerator {
 
-@RunWith(JUnit4.class)
-public class PeriodHandlerShould {
+    public List<PeriodModel> generatePeriods(Date startDate) {
+        List<PeriodModel> periods = new ArrayList<>();
 
-    @Mock
-    private ObjectWithoutUidStore<PeriodModel> store;
+        try {
+            periods.add(getYearly(2016));
+            periods.add(getYearly(2017));
+            periods.add(getYearly(2018));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-    @Mock
-    private PeriodGenerator generator;
-
-    @Mock
-    private PeriodModel p1;
-
-    @Mock
-    private PeriodModel p2;
-
-    // object to test
-    private PeriodHandler periodHandler;
-
-    private Date startDate;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        startDate = BaseIdentifiableObject.DATE_FORMAT.parse(PeriodHandler.START_DATE_STR);
-        periodHandler = new PeriodHandler(store, generator);
-        when(generator.generatePeriods(startDate)).thenReturn(Lists.newArrayList(p1, p2));
+        return periods;
     }
 
-    @Test
-    public void call_generator_to_generate_periods() throws Exception {
-        periodHandler.generateAndPersist();
+    private PeriodModel getYearly(int year) throws ParseException {
+        String startDateStr = year + "-01-01T00:00:00.000";
+        Date startDate = BaseIdentifiableObject.DATE_FORMAT.parse(startDateStr);
+        String endDateStr = year + "-12-31T23:59:59.999";
+        Date endDate = BaseIdentifiableObject.DATE_FORMAT.parse(endDateStr);
 
-        verify(generator).generatePeriods(startDate);
-        verifyNoMoreInteractions(generator);
-    }
-
-    @Test
-    public void call_store_to_persist_periods() throws Exception {
-        periodHandler.generateAndPersist();
-
-        verify(store).updateOrInsertWhere(p1);
-        verify(store).updateOrInsertWhere(p2);
-        verifyNoMoreInteractions(store);
+        return PeriodModel.builder()
+                .periodId("" + year)
+                .periodType(PeriodType.Yearly)
+                .startDate(startDate)
+                .endDate(endDate).build();
     }
 }

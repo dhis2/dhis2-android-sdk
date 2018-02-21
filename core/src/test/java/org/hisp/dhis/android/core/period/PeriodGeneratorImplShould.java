@@ -25,43 +25,48 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.period;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import org.assertj.core.util.Lists;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-class DailyPeriodGenerator {
-    private final Calendar calendar;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-    DailyPeriodGenerator(Calendar calendar) {
-        this.calendar = (Calendar) calendar.clone();
+@RunWith(JUnit4.class)
+public class PeriodGeneratorImplShould {
+
+    @Mock
+    private DailyPeriodGenerator dailyPeriodGenerator;
+
+    @Mock
+    private PeriodModel dailyPeriod;
+
+    // object to test
+    private PeriodGeneratorImpl periodGenerator;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        periodGenerator = new PeriodGeneratorImpl(dailyPeriodGenerator);
+        when(dailyPeriodGenerator.generatePeriodsForLastDays(60)).thenReturn(Lists.newArrayList(dailyPeriod));
     }
 
-    List<PeriodModel> generatePeriodsForLastDays(int days) throws RuntimeException {
+    @Test
+    public void request_60_daily_periods() throws Exception {
+        periodGenerator.generatePeriods();
+        verify(dailyPeriodGenerator).generatePeriodsForLastDays(60);
+    }
 
-        if (days < 1) throw new RuntimeException("Number of days must be positive.");
-
-        SimpleDateFormat idFormatter = new SimpleDateFormat("yyyyMMdd", Locale.US);
-
-        List<PeriodModel> periods = new ArrayList<>();
-        calendar.add(Calendar.DATE, -days + 1);
-
-        for (int i = 0; i < days; i++) {
-            Date date = calendar.getTime();
-            PeriodModel period = PeriodModel.builder()
-                    .periodId(idFormatter.format(date))
-                    .periodType(PeriodType.Daily)
-                    .startDate(date)
-                    .endDate(date)
-                    .build();
-            periods.add(period);
-            calendar.add(Calendar.DATE, 1);
-        }
-        return periods;
+    @Test
+    public void return_daily_periods() throws Exception {
+        periodGenerator.generatePeriods();
+        assertThat(periodGenerator.generatePeriods().contains(dailyPeriod)).isEqualTo(true);
     }
 }

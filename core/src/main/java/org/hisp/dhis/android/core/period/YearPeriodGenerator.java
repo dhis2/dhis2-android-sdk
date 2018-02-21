@@ -35,27 +35,31 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static java.util.Calendar.OCTOBER;
-
-class FinancialYearOctPeriodGenerator {
+class YearPeriodGenerator {
     private final Calendar calendar;
+    private final PeriodType periodType;
+    private final int firstMonth;
+    private final String suffix;
 
-    FinancialYearOctPeriodGenerator(Calendar calendar) {
+    YearPeriodGenerator(Calendar calendar, PeriodType periodType, int firstMonth, String suffix) {
         this.calendar = (Calendar) calendar.clone();
+        this.periodType = periodType;
+        this.firstMonth = firstMonth;
+        this.suffix = suffix;
     }
 
     List<PeriodModel> generatePeriodsForLastYears(int years) throws RuntimeException {
 
         if (years < 1) throw new RuntimeException("Number of days must be positive.");
 
-        SimpleDateFormat idFormatter = new SimpleDateFormat("yyyy'Oct'", Locale.US);
+        SimpleDateFormat idFormatter = new SimpleDateFormat("yyyy'" + suffix + "'", Locale.US);
 
         List<PeriodModel> periods = new ArrayList<>();
         calendar.set(Calendar.DATE, 1);
-        if (calendar.get(Calendar.MONTH) < OCTOBER) {
+        if (calendar.get(Calendar.MONTH) < firstMonth) {
             calendar.add(Calendar.YEAR, -1);
         }
-        calendar.set(Calendar.MONTH, OCTOBER);
+        calendar.set(Calendar.MONTH, firstMonth);
         calendar.add(Calendar.YEAR, -years + 1);
 
         for (int i = 0; i < years; i++) {
@@ -66,7 +70,7 @@ class FinancialYearOctPeriodGenerator {
 
             PeriodModel period = PeriodModel.builder()
                     .periodId(idFormatter.format(startDate))
-                    .periodType(PeriodType.FinancialOct)
+                    .periodType(periodType)
                     .startDate(startDate)
                     .endDate(endDate)
                     .build();

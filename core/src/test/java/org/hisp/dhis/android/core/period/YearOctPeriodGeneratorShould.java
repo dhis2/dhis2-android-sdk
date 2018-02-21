@@ -39,13 +39,17 @@ import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
-public class FinancialYearOctPeriodGeneratorShould {
+public class YearOctPeriodGeneratorShould {
+
+    private final PeriodType periodType = PeriodType.FinancialOct;
+    private final int firstMonth = Calendar.OCTOBER;
+    private final String suffix = "Oct";
 
     @Test
     public void generate_periods_for_one_year() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 1, 21);
-        FinancialYearOctPeriodGenerator generator = new FinancialYearOctPeriodGenerator(calendar);
+        YearPeriodGenerator generator = new YearPeriodGenerator(calendar, periodType, firstMonth, suffix);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2017, 9, 1);
@@ -61,7 +65,7 @@ public class FinancialYearOctPeriodGeneratorShould {
     public void generate_starting_period_on_oct_1() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2017, 9, 1);
-        FinancialYearOctPeriodGenerator generator = new FinancialYearOctPeriodGenerator(calendar);
+        YearPeriodGenerator generator = new YearPeriodGenerator(calendar, periodType, firstMonth, suffix);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2017, 9, 1);
@@ -77,7 +81,7 @@ public class FinancialYearOctPeriodGeneratorShould {
     public void generate_ending_period_on_sep_30() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2017, 8, 30);
-        FinancialYearOctPeriodGenerator generator = new FinancialYearOctPeriodGenerator(calendar);
+        YearPeriodGenerator generator = new YearPeriodGenerator(calendar, periodType, firstMonth, suffix);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2016, 9, 1);
@@ -93,7 +97,7 @@ public class FinancialYearOctPeriodGeneratorShould {
     public void generate_periods_for_two_year() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 1, 21);
-        FinancialYearOctPeriodGenerator generator = new FinancialYearOctPeriodGenerator(calendar);
+        YearPeriodGenerator generator = new YearPeriodGenerator(calendar, periodType, firstMonth, suffix);
 
         Calendar period1StartCalendar = (Calendar) calendar.clone();
         period1StartCalendar.set(2016, 9, 1);
@@ -112,7 +116,7 @@ public class FinancialYearOctPeriodGeneratorShould {
     @Test
     public void throw_exception_for_negative_years() throws Exception {
         try {
-            new FinancialYearOctPeriodGenerator(Calendar.getInstance()).generatePeriodsForLastYears(-12);
+            new YearPeriodGenerator(Calendar.getInstance(), periodType, firstMonth, suffix).generatePeriodsForLastYears(-12);
             fail("Exception was expected, but nothing was thrown.");
         } catch (RuntimeException e) {
             // No operation.
@@ -122,7 +126,7 @@ public class FinancialYearOctPeriodGeneratorShould {
     @Test
     public void throw_exception_for_zero_days() throws Exception {
         try {
-            new FinancialYearOctPeriodGenerator(Calendar.getInstance()).generatePeriodsForLastYears(0);
+            new YearPeriodGenerator(Calendar.getInstance(), periodType, firstMonth, suffix).generatePeriodsForLastYears(0);
             fail("Exception was expected, but nothing was thrown.");
         } catch (RuntimeException e) {
             // No operation.

@@ -53,6 +53,8 @@ public class SystemInfo extends BaseModel {
     @Column(name = "serverDate")
     DateTime serverDate;
 
+    @JsonProperty("version")
+    @Column(name = "version")
     String version;
 
     @JsonAnySetter

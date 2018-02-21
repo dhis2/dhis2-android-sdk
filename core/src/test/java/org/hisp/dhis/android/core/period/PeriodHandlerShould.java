@@ -25,11 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.period;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.period.PeriodGenerator;
+import org.hisp.dhis.android.core.period.PeriodHandler;
+import org.hisp.dhis.android.core.period.PeriodModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorEndpointCall;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeEndpointCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.period.PeriodHandler;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.utils.Utils;
 

@@ -26,11 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.period;
 
-import java.util.Date;
-import java.util.List;
-
-interface PeriodGenerator {
-    List<PeriodModel> generatePeriods(Date startDate);
+public enum PeriodType {
+    Daily, Weekly, WeeklyWednesday, WeeklyThursday, WeeklySaturday, WeeklySunday,
+    Monthly, BiMonthly, Quarterly, SixMonthly, SixMonthlyApril, Yearly, FinancialApril,
+    FinancialJuly, FinancialOct
 }

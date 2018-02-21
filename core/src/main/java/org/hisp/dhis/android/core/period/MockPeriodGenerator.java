@@ -26,10 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.period;
 
-public enum PeriodType {
-    Daily, Weekly, WeeklyWednesday, WeeklyThursday, WeeklySaturday, WeeklySunday,
-    Monthly, BiMonthly, Quarterly, SixMonthly, SixMonthlyApril, Yearly, FinancialApril,
-    FinancialJuly, FinancialOct
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/* TODO delete when actual generator is implemented */
+final class MockPeriodGenerator implements PeriodGenerator {
+
+    public List<PeriodModel> generatePeriods(Date startDate) {
+        List<PeriodModel> periods = new ArrayList<>();
+
+        try {
+            periods.add(getYearly(2016));
+            periods.add(getYearly(2017));
+            periods.add(getYearly(2018));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return periods;
+    }
+
+    private PeriodModel getYearly(int year) throws ParseException {
+        String startDateStr = year + "-01-01T00:00:00.000";
+        Date startDate = BaseIdentifiableObject.DATE_FORMAT.parse(startDateStr);
+        String endDateStr = year + "-12-31T23:59:59.999";
+        Date endDate = BaseIdentifiableObject.DATE_FORMAT.parse(endDateStr);
+
+        return PeriodModel.builder()
+                .periodId("" + year)
+                .periodType(PeriodType.Yearly)
+                .startDate(startDate)
+                .endDate(endDate).build();
+    }
 }

@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.period;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -54,7 +54,7 @@ public class PeriodHandler {
         }
     }
 
-    void generateAndPersist() {
+    public void generateAndPersist() {
         List<PeriodModel> periods = generator.generatePeriods(startDate);
         for (PeriodModel p : periods) {
             store.updateOrInsertWhere(p);

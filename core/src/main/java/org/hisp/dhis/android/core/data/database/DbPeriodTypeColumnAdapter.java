@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.dataset.PeriodType;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 public class DbPeriodTypeColumnAdapter extends EnumColumnAdapter<PeriodType> {
     @Override

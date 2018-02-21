@@ -26,42 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.period;
+
+import android.database.MatrixCursor;
+import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.period.PeriodModel;
+import org.hisp.dhis.android.core.period.PeriodType;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-/* TODO delete when actual generator is implemented */
-final class MockPeriodGenerator implements PeriodGenerator {
+import static com.google.common.truth.Truth.assertThat;
 
-    public List<PeriodModel> generatePeriods(Date startDate) {
-        List<PeriodModel> periods = new ArrayList<>();
+@RunWith(AndroidJUnit4.class)
+public class PeriodModelShould {
 
-        try {
-            periods.add(getYearly(2016));
-            periods.add(getYearly(2017));
-            periods.add(getYearly(2018));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    @Test
+    public void create_model_when_created_from_database_cursor() throws ParseException {
+        String periodId = "2018W1";
+        String periodType = "Weekly";
 
-        return periods;
-    }
-
-    private PeriodModel getYearly(int year) throws ParseException {
-        String startDateStr = year + "-01-01T00:00:00.000";
+        String startDateStr = "2018-01-01T00:00:00.000";
         Date startDate = BaseIdentifiableObject.DATE_FORMAT.parse(startDateStr);
-        String endDateStr = year + "-12-31T23:59:59.999";
+        String endDateStr = "2018-01-07T23:59:59.999";
         Date endDate = BaseIdentifiableObject.DATE_FORMAT.parse(endDateStr);
 
-        return PeriodModel.builder()
-                .periodId("" + year)
-                .periodType(PeriodType.Yearly)
-                .startDate(startDate)
-                .endDate(endDate).build();
+        MatrixCursor cursor = new MatrixCursor(PeriodModel.Columns.all());
+        cursor.addRow(new Object[]{
+                periodId,
+                periodType,
+                startDateStr,
+                endDateStr
+        });
+        cursor.moveToFirst();
+
+        PeriodModel model = PeriodModel.create(cursor);
+        cursor.close();
+
+        assertThat(model.periodId()).isEqualTo(periodId);
+        assertThat(model.periodType()).isEqualTo(PeriodType.Weekly);
+        assertThat(model.startDate()).isEqualTo(startDate);
+        assertThat(model.endDate()).isEqualTo(endDate);
     }
 }

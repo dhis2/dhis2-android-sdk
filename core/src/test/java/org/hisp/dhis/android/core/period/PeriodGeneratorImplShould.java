@@ -54,7 +54,7 @@ public class PeriodGeneratorImplShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        periodGenerator = new PeriodGeneratorImpl(dailyPeriodGenerator);
+        periodGenerator = new PeriodGeneratorImpl(dailyPeriodGenerator, weeklyPeriodGenerator, weeklyPeriodGenerator1, weeklyWednesdayPeriodGenerator, weeklyThursdayPeriodGenerator, weeklySaturdayPeriodGenerator, weeklySundayPeriodGenerator, monthlyPeriodGenerator, quarterPeriodGenerator, sixMonthlyPeriodGenerator, sixMonthlyAprilPeriodGenerator, yearlyPeriodGenerator, financialAprilPeriodGenerator, financialJulyPeriodGenerator, financialOctPeriodGenerator);
         when(dailyPeriodGenerator.generateLastPeriods(60)).thenReturn(Lists.newArrayList(dailyPeriod));
     }
 

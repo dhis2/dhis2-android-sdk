@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.period;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,9 +40,15 @@ import java.util.Locale;
 
 class WeeklyPeriodGenerator {
     private final Calendar calendar;
+    private final PeriodType periodType;
+    private final int weekStartDay;
+    private final String suffix;
 
-    WeeklyPeriodGenerator(Calendar calendar) {
+    WeeklyPeriodGenerator(Calendar calendar, PeriodType periodType, int weekStartDay, String suffix) {
         this.calendar = (Calendar) calendar.clone();
+        this.periodType = periodType;
+        this.weekStartDay = weekStartDay;
+        this.suffix = suffix;
     }
 
     List<PeriodModel> generatePeriodsForLastWeeks(int weeks) throws RuntimeException {
@@ -50,24 +59,29 @@ class WeeklyPeriodGenerator {
 
         List<PeriodModel> periods = new ArrayList<>();
         calendar.getTime();
+        calendar.setFirstDayOfWeek(weekStartDay);
+        calendar.setMinimalDaysInFirstWeek(4);
         calendar.add(Calendar.WEEK_OF_YEAR, -weeks + 1);
 
         for (int i = 0; i < weeks; i++) {
-            calendar.getTime();
-            calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            calendar.set(Calendar.DAY_OF_WEEK, weekStartDay);
             Date startDate = calendar.getTime();
-            calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+            calendar.set(Calendar.DAY_OF_WEEK, weekStartDay + 6);
             Date endDate = calendar.getTime();
+            calendar.set(Calendar.DAY_OF_WEEK, weekStartDay + 3);
+            Date fourthWeekDay = calendar.getTime();
+
+            String year = idFormatter.format(fourthWeekDay);
             Integer weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
 
             PeriodModel period = PeriodModel.builder()
-                    .periodId(idFormatter.format(startDate) + "W" + weekOfYear)
-                    .periodType(PeriodType.Weekly)
+                    .periodId(year + suffix + weekOfYear)
+                    .periodType(periodType)
                     .startDate(startDate)
                     .endDate(endDate)
                     .build();
             periods.add(period);
-            calendar.add(Calendar.DATE, 1);
+            calendar.add(Calendar.WEEK_OF_YEAR, 1);
         }
         return periods;
     }

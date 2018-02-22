@@ -46,49 +46,79 @@ public class WeeklyPeriodGeneratorShould {
     public void generate_weekly_periods_for_one_week() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 2, 8);
-        Calendar calendar1 = (Calendar) calendar.clone();
-        PeriodModel period = generateExpectedPeriod("2018W10", calendar1);
+        PeriodModel period = generateExpectedPeriod("2018W10", calendar, Calendar.MONDAY);
 
-        List<PeriodModel> generatedPeriods = new WeeklyPeriodGenerator(calendar).generatePeriodsForLastWeeks(1);
-        List<PeriodModel> expectedPeriods = Lists.newArrayList(period);
+        List<PeriodModel> generatedPeriods = new WeeklyPeriodGenerator(
+                calendar, PeriodType.Weekly, Calendar.MONDAY, "W").generatePeriodsForLastWeeks(1);
 
-        assertThat(generatedPeriods).isEqualTo(expectedPeriods);
+        assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
 
     @Test
     public void generate_weekly_periods() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018,2,8);
-        PeriodModel period1 = generateExpectedPeriod("2018W10", calendar);
+        PeriodModel period1 = generateExpectedPeriod("2018W10", calendar, Calendar.MONDAY);
         calendar.set(2018, 2, 15);
-        PeriodModel period2 = generateExpectedPeriod("2018W11", calendar);
+        PeriodModel period2 = generateExpectedPeriod("2018W11", calendar, Calendar.MONDAY);
 
-        List<PeriodModel> generatedPeriods = new WeeklyPeriodGenerator(calendar).generatePeriodsForLastWeeks(2);
-        List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2);
+        List<PeriodModel> generatedPeriods = new WeeklyPeriodGenerator(
+                calendar, PeriodType.Weekly, Calendar.MONDAY, "W").generatePeriodsForLastWeeks(2);
 
-        assertThat(generatedPeriods).isEqualTo(expectedPeriods);
+        assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2));
     }
 
     @Test
     public void generate_weekly_periods_for_changing_year() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2016,11,31);
-        PeriodModel period1 = generateExpectedPeriod("2016W52", calendar);
+        PeriodModel period1 = generateExpectedPeriod("2016W52", calendar, Calendar.MONDAY);
         calendar.set(2017, 0, 7);
-        PeriodModel period2 = generateExpectedPeriod("2017W1", calendar);
+        PeriodModel period2 = generateExpectedPeriod("2017W1", calendar, Calendar.MONDAY);
         calendar.set(2017, 0, 14);
-        PeriodModel period3 = generateExpectedPeriod("2017W2", calendar);
+        PeriodModel period3 = generateExpectedPeriod("2017W2", calendar, Calendar.MONDAY);
 
-        List<PeriodModel> generatedPeriods = new WeeklyPeriodGenerator(calendar).generatePeriodsForLastWeeks(3);
-        List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2, period3);
+        List<PeriodModel> generatedPeriods = new WeeklyPeriodGenerator(
+                calendar, PeriodType.Weekly, Calendar.MONDAY, "W").generatePeriodsForLastWeeks(3);
 
-        assertThat(generatedPeriods).isEqualTo(expectedPeriods);
+        assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2, period3));
+    }
+
+    @Test
+    public void generate_the_first_week_including_january_4() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2018, 0, 4);
+
+        List<PeriodModel> generatedPeriods = new WeeklyPeriodGenerator(
+                calendar, PeriodType.Weekly, Calendar.MONDAY, "W").generatePeriodsForLastWeeks(1);
+        List<PeriodModel> generatedWedPeriods = new WeeklyPeriodGenerator(
+                calendar, PeriodType.Weekly, Calendar.WEDNESDAY, "WedW").generatePeriodsForLastWeeks(1);
+        List<PeriodModel> generatedThuPeriods = new WeeklyPeriodGenerator(
+                calendar, PeriodType.Weekly, Calendar.THURSDAY, "ThuW").generatePeriodsForLastWeeks(1);
+        List<PeriodModel> generatedSatPeriods = new WeeklyPeriodGenerator(
+                calendar, PeriodType.Weekly, Calendar.SATURDAY, "SatW").generatePeriodsForLastWeeks(1);
+        List<PeriodModel> generatedSunPeriods = new WeeklyPeriodGenerator(
+                calendar, PeriodType.Weekly, Calendar.SUNDAY, "SunW").generatePeriodsForLastWeeks(1);
+
+        PeriodModel period = generateExpectedPeriod("2018W1", calendar, Calendar.MONDAY);
+        PeriodModel periodWednesday = generateExpectedPeriod("2018WedW1", calendar, Calendar.WEDNESDAY);
+        PeriodModel periodThursday = generateExpectedPeriod("2018ThuW1", calendar, Calendar.THURSDAY);
+        PeriodModel periodSaturday = generateExpectedPeriod("2018SatW1", calendar, Calendar.SATURDAY);
+        PeriodModel periodSunday = generateExpectedPeriod("2018SunW1", calendar, Calendar.SUNDAY);
+
+        assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
+        assertThat(generatedWedPeriods).isEqualTo(Lists.newArrayList(periodWednesday));
+        assertThat(generatedThuPeriods).isEqualTo(Lists.newArrayList(periodThursday));
+        assertThat(generatedSatPeriods).isEqualTo(Lists.newArrayList(periodSaturday));
+        assertThat(generatedSunPeriods).isEqualTo(Lists.newArrayList(periodSunday));
     }
 
     @Test
     public void throw_exception_for_negative_weeks() throws Exception {
         try {
-            new WeeklyPeriodGenerator(Calendar.getInstance()).generatePeriodsForLastWeeks(-12);
+            new WeeklyPeriodGenerator(
+                    Calendar.getInstance(), PeriodType.Weekly, Calendar.MONDAY, "W")
+                    .generatePeriodsForLastWeeks(-12);
             fail("Exception was expected, but nothing was thrown.");
         } catch (RuntimeException e) {
             // No operation.
@@ -98,18 +128,23 @@ public class WeeklyPeriodGeneratorShould {
     @Test
     public void throw_exception_for_zero_weeks() throws Exception {
         try {
-            new WeeklyPeriodGenerator(Calendar.getInstance()).generatePeriodsForLastWeeks(0);
+            new WeeklyPeriodGenerator(
+                    Calendar.getInstance(), PeriodType.Weekly, Calendar.MONDAY, "W")
+                    .generatePeriodsForLastWeeks(0);
             fail("Exception was expected, but nothing was thrown.");
         } catch (RuntimeException e) {
             // No operation.
         }
     }
 
-    private PeriodModel generateExpectedPeriod(String id, Calendar calendar) {
+    private PeriodModel generateExpectedPeriod(String id, Calendar cal, int weekStartDay) {
+        Calendar calendar = (Calendar) cal.clone();
         calendar.getTime();
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        calendar.setFirstDayOfWeek(weekStartDay);
+        calendar.setMinimalDaysInFirstWeek(4);
+        calendar.set(Calendar.DAY_OF_WEEK, weekStartDay);
         Date startDate = calendar.getTime();
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        calendar.set(Calendar.DAY_OF_WEEK, weekStartDay + 6);
         Date endDate = calendar.getTime();
 
         return PeriodModel.builder()

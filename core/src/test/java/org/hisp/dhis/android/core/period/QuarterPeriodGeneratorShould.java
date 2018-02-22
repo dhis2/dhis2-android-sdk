@@ -185,9 +185,8 @@ public class QuarterPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
         Calendar calendar = (Calendar) cal.clone();
         AbstractPeriodGenerator.setCalendarToStartTimeOfADay(calendar);
         Calendar endCalendar = (Calendar) calendar.clone();
-        AbstractPeriodGenerator.setCalendarToEndTimeOfADay(endCalendar);
         endCalendar.add(Calendar.MONTH, 3);
-        endCalendar.add(Calendar.DATE, -1);
+        endCalendar.add(Calendar.MILLISECOND, -1);
         return PeriodModel.builder()
                 .periodId(id)
                 .periodType(periodType)

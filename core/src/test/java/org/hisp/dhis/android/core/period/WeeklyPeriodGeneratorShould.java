@@ -146,7 +146,10 @@ public class WeeklyPeriodGeneratorShould {
         calendar.set(Calendar.DAY_OF_WEEK, weekStartDay);
         Date startDate = calendar.getTime();
         calendar.set(Calendar.DAY_OF_WEEK, weekStartDay + 6);
-        AbstractPeriodGenerator.setCalendarToEndTimeOfADay(calendar);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
         Date endDate = calendar.getTime();
 
         return PeriodModel.builder()

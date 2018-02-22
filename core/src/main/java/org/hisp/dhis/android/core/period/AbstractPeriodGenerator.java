@@ -58,7 +58,6 @@ abstract class AbstractPeriodGenerator {
         for (int i = 0; i < count; i++) {
             Date startDate = calendar.getTime();
             String periodId = generateId();
-            setCalendarToEndTimeOfADay(calendar);
             Date endDate = getEndDateAndUpdateCalendar();
 
             PeriodModel period = PeriodModel.builder()
@@ -79,13 +78,6 @@ abstract class AbstractPeriodGenerator {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-    }
-
-    static void setCalendarToEndTimeOfADay(Calendar calendar) {
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, 999);
     }
 
     protected abstract void setCalendarToStartDate();

@@ -95,9 +95,8 @@ public class MonthlyPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
         AbstractPeriodGenerator.setCalendarToStartTimeOfADay(calendar);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         Calendar endCalendar = (Calendar) calendar.clone();
-        AbstractPeriodGenerator.setCalendarToEndTimeOfADay(endCalendar);
         endCalendar.add(Calendar.MONTH, 1);
-        endCalendar.add(Calendar.DATE, -1);
+        endCalendar.add(Calendar.MILLISECOND, -1);
         return PeriodModel.builder()
                 .periodId(id)
                 .periodType(periodType)

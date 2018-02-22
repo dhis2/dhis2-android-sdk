@@ -70,7 +70,7 @@ class SixMonthlyPeriodGenerator extends AbstractPeriodGenerator {
     @Override
     protected Date getEndDateAndUpdateCalendar() {
         calendar.add(Calendar.MONTH, 6);
-        calendar.add(Calendar.DATE, -1);
+        calendar.add(Calendar.MILLISECOND, -1);
         return calendar.getTime();
     }
 }

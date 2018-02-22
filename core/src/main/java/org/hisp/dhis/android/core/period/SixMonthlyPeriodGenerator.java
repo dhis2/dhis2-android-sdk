@@ -28,24 +28,21 @@
 
 package org.hisp.dhis.android.core.period;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 class SixMonthlyPeriodGenerator extends AbstractPeriodGenerator {
     private final String idAdditionalString;
     private final int startMonth;
-    private final SimpleDateFormat idFormatter;
 
     SixMonthlyPeriodGenerator(Calendar calendar, PeriodType periodType, String idAdditionalString,
                               int startMonth) {
-        super(calendar, periodType);
+        super(calendar, "yyyy", periodType);
         this.idAdditionalString = idAdditionalString;
         this.startMonth = startMonth;
-        this.idFormatter = new SimpleDateFormat("yyyy", Locale.US);
     }
 
+    @Override
     protected void setCalendarToStartDate() {
         calendar.set(Calendar.DATE, 1);
         int month = calendar.get(Calendar.MONTH);
@@ -59,15 +56,18 @@ class SixMonthlyPeriodGenerator extends AbstractPeriodGenerator {
         }
     }
 
+    @Override
     protected void setCalendarToFirstPeriod(int count) {
         calendar.add(Calendar.MONTH, -(6 * (count - 1)));
     }
 
+    @Override
     protected String generateId() {
         int periodNumber = calendar.get(Calendar.MONTH) == startMonth ? 1 : 2;
         return idFormatter.format(calendar.getTime()) + idAdditionalString + "S" + periodNumber;
     }
 
+    @Override
     protected Date getEndDateAndUpdateCalendar() {
         calendar.add(Calendar.MONTH, 6);
         calendar.add(Calendar.DATE, -1);

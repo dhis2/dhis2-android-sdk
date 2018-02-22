@@ -28,19 +28,24 @@
 
 package org.hisp.dhis.android.core.period;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 abstract class AbstractPeriodGenerator {
     protected final Calendar calendar;
+    protected final SimpleDateFormat idFormatter;
     private final PeriodType periodType;
 
-    AbstractPeriodGenerator(Calendar calendar, PeriodType periodType) {
+
+    AbstractPeriodGenerator(Calendar calendar, String dateFormatStr, PeriodType periodType) {
         this.calendar = (Calendar) calendar.clone();
-        setCalendarToStartDate();
+        this.idFormatter = new SimpleDateFormat(dateFormatStr, Locale.US);
         this.periodType = periodType;
+        setCalendarToStartDate();
     }
 
     final List<PeriodModel> generateLastPeriods(int count) throws RuntimeException {
@@ -71,7 +76,9 @@ abstract class AbstractPeriodGenerator {
 
     protected abstract void setCalendarToFirstPeriod(int count);
 
-    protected abstract String generateId();
+    protected String generateId() {
+        return idFormatter.format(calendar.getTime());
+    }
 
     protected abstract Date getEndDateAndUpdateCalendar();
 }

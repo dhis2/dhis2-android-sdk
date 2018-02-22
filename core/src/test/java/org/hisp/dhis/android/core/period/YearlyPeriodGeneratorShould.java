@@ -55,7 +55,7 @@ public class YearlyPeriodGeneratorShould {
         periodStartCalendar.set(2017, 9, 1);
         PeriodModel period = generateExpectedPeriod("2017Oct", periodStartCalendar);
 
-        List<PeriodModel> generatedPeriods = generator.generatePeriodsForLastYears(1);
+        List<PeriodModel> generatedPeriods = generator.generateLastPeriods(1);
         List<PeriodModel> expectedPeriods = Lists.newArrayList(period);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
@@ -71,7 +71,7 @@ public class YearlyPeriodGeneratorShould {
         periodStartCalendar.set(2017, 9, 1);
         PeriodModel period = generateExpectedPeriod("2017Oct", periodStartCalendar);
 
-        List<PeriodModel> generatedPeriods = generator.generatePeriodsForLastYears(1);
+        List<PeriodModel> generatedPeriods = generator.generateLastPeriods(1);
         List<PeriodModel> expectedPeriods = Lists.newArrayList(period);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
@@ -87,7 +87,7 @@ public class YearlyPeriodGeneratorShould {
         periodStartCalendar.set(2016, 9, 1);
         PeriodModel period = generateExpectedPeriod("2016Oct", periodStartCalendar);
 
-        List<PeriodModel> generatedPeriods = generator.generatePeriodsForLastYears(1);
+        List<PeriodModel> generatedPeriods = generator.generateLastPeriods(1);
         List<PeriodModel> expectedPeriods = Lists.newArrayList(period);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
@@ -107,7 +107,7 @@ public class YearlyPeriodGeneratorShould {
         period2StartCalendar.set(2017, 9, 1);
         PeriodModel period2 = generateExpectedPeriod("2017Oct", period2StartCalendar);
 
-        List<PeriodModel> generatedPeriods = generator.generatePeriodsForLastYears(2);
+        List<PeriodModel> generatedPeriods = generator.generateLastPeriods(2);
         List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
@@ -116,7 +116,7 @@ public class YearlyPeriodGeneratorShould {
     @Test
     public void throw_exception_for_negative_years() throws Exception {
         try {
-            new YearlyPeriodGenerator(Calendar.getInstance(), periodType, firstMonth, suffix).generatePeriodsForLastYears(-12);
+            new YearlyPeriodGenerator(Calendar.getInstance(), periodType, firstMonth, suffix).generateLastPeriods(-12);
             fail("Exception was expected, but nothing was thrown.");
         } catch (RuntimeException e) {
             // No operation.
@@ -126,7 +126,7 @@ public class YearlyPeriodGeneratorShould {
     @Test
     public void throw_exception_for_zero_days() throws Exception {
         try {
-            new YearlyPeriodGenerator(Calendar.getInstance(), periodType, firstMonth, suffix).generatePeriodsForLastYears(0);
+            new YearlyPeriodGenerator(Calendar.getInstance(), periodType, firstMonth, suffix).generateLastPeriods(0);
             fail("Exception was expected, but nothing was thrown.");
         } catch (RuntimeException e) {
             // No operation.

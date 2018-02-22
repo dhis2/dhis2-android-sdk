@@ -28,55 +28,35 @@
 
 package org.hisp.dhis.android.core.period;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
-class YearlyPeriodGenerator {
-    private final Calendar calendar;
-    private final PeriodType periodType;
+class YearlyPeriodGenerator extends AbstractPeriodGenerator {
     private final int firstMonth;
-    private final String suffix;
 
     YearlyPeriodGenerator(Calendar calendar, PeriodType periodType, int firstMonth, String suffix) {
-        this.calendar = (Calendar) calendar.clone();
-        this.periodType = periodType;
+        super(calendar, "yyyy'" + suffix + "'", periodType);
         this.firstMonth = firstMonth;
-        this.suffix = suffix;
     }
 
-    List<PeriodModel> generatePeriodsForLastYears(int years) throws RuntimeException {
-
-        if (years < 1) throw new RuntimeException("Number of days must be positive.");
-
-        SimpleDateFormat idFormatter = new SimpleDateFormat("yyyy'" + suffix + "'", Locale.US);
-
-        List<PeriodModel> periods = new ArrayList<>();
+    @Override
+    protected void setCalendarToStartDate() {
         calendar.set(Calendar.DATE, 1);
         if (calendar.get(Calendar.MONTH) < firstMonth) {
             calendar.add(Calendar.YEAR, -1);
         }
         calendar.set(Calendar.MONTH, firstMonth);
-        calendar.add(Calendar.YEAR, -years + 1);
+    }
 
-        for (int i = 0; i < years; i++) {
-            Date startDate = calendar.getTime();
-            calendar.add(Calendar.YEAR, 1);
-            calendar.add(Calendar.DATE, -1);
-            Date endDate = calendar.getTime();
+    @Override
+    protected void setCalendarToFirstPeriod(int count) {
+        calendar.add(Calendar.YEAR, -count + 1);
+    }
 
-            PeriodModel period = PeriodModel.builder()
-                    .periodId(idFormatter.format(startDate))
-                    .periodType(periodType)
-                    .startDate(startDate)
-                    .endDate(endDate)
-                    .build();
-            periods.add(period);
-            calendar.add(Calendar.DATE, 1);
-        }
-        return periods;
+    @Override
+    protected Date getEndDateAndUpdateCalendar() {
+        calendar.add(Calendar.YEAR, 1);
+        calendar.add(Calendar.DATE, -1);
+        return calendar.getTime();
     }
 }

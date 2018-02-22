@@ -46,6 +46,45 @@ public class PeriodGeneratorImplShould {
     private DailyPeriodGenerator dailyPeriodGenerator;
 
     @Mock
+    private WeeklyPeriodGenerator weeklyPeriodGenerator;
+
+    @Mock
+    private WeeklyPeriodGenerator weeklyWednesdayPeriodGenerator;
+
+    @Mock
+    private WeeklyPeriodGenerator weeklyThursdayPeriodGenerator;
+
+    @Mock
+    private WeeklyPeriodGenerator weeklySaturdayPeriodGenerator;
+
+    @Mock
+    private WeeklyPeriodGenerator weeklySundayPeriodGenerator;
+
+    @Mock
+    private MonthlyPeriodGenerator monthlyPeriodGenerator;
+
+    @Mock
+    private QuarterPeriodGenerator quarterPeriodGenerator;
+
+    @Mock
+    private SixMonthlyPeriodGenerator sixMonthlyPeriodGenerator;
+
+    @Mock
+    private SixMonthlyPeriodGenerator sixMonthlyAprilPeriodGenerator;
+
+    @Mock
+    private YearlyPeriodGenerator yearlyPeriodGenerator;
+
+    @Mock
+    private YearlyPeriodGenerator financialAprilPeriodGenerator;
+
+    @Mock
+    private YearlyPeriodGenerator financialJulyPeriodGenerator;
+
+    @Mock
+    private YearlyPeriodGenerator financialOctPeriodGenerator;
+
+    @Mock
     private PeriodModel dailyPeriod;
 
     // object to test
@@ -54,7 +93,12 @@ public class PeriodGeneratorImplShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        periodGenerator = new PeriodGeneratorImpl(dailyPeriodGenerator, weeklyPeriodGenerator, weeklyPeriodGenerator1, weeklyWednesdayPeriodGenerator, weeklyThursdayPeriodGenerator, weeklySaturdayPeriodGenerator, weeklySundayPeriodGenerator, monthlyPeriodGenerator, quarterPeriodGenerator, sixMonthlyPeriodGenerator, sixMonthlyAprilPeriodGenerator, yearlyPeriodGenerator, financialAprilPeriodGenerator, financialJulyPeriodGenerator, financialOctPeriodGenerator);
+        periodGenerator = new PeriodGeneratorImpl(dailyPeriodGenerator, weeklyPeriodGenerator,
+                weeklyWednesdayPeriodGenerator, weeklyThursdayPeriodGenerator, weeklySaturdayPeriodGenerator,
+                weeklySundayPeriodGenerator, monthlyPeriodGenerator, quarterPeriodGenerator,
+                sixMonthlyPeriodGenerator, sixMonthlyAprilPeriodGenerator, yearlyPeriodGenerator,
+                financialAprilPeriodGenerator, financialJulyPeriodGenerator, financialOctPeriodGenerator);
+        
         when(dailyPeriodGenerator.generateLastPeriods(60)).thenReturn(Lists.newArrayList(dailyPeriod));
     }
 

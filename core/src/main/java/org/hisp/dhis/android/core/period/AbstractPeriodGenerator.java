@@ -55,7 +55,7 @@ abstract class AbstractPeriodGenerator {
         setCalendarToFirstPeriod(count);
 
         for (int i = 0; i < count; i++) {
-            Date startDate = calendar.getTime();
+            Date startDate = getStartDateAndUpdateCalendar();
             String periodId = generateId();
             Date endDate = getEndDateAndUpdateCalendar();
 
@@ -67,7 +67,7 @@ abstract class AbstractPeriodGenerator {
                     .build();
             periods.add(period);
 
-            calendar.add(Calendar.DATE, 1);
+            incrementCalendar();
         }
         return periods;
     }
@@ -80,5 +80,13 @@ abstract class AbstractPeriodGenerator {
         return idFormatter.format(calendar.getTime());
     }
 
+    protected Date getStartDateAndUpdateCalendar() {
+        return calendar.getTime();
+    }
+
     protected abstract Date getEndDateAndUpdateCalendar();
+
+    protected void incrementCalendar() {
+        calendar.add(Calendar.DATE, 1);
+    }
 }

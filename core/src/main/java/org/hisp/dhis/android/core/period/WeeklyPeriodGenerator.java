@@ -28,58 +28,54 @@
 
 package org.hisp.dhis.android.core.period;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
-class WeeklyPeriodGenerator {
-    private final Calendar calendar;
-    private final PeriodType periodType;
+class WeeklyPeriodGenerator extends AbstractPeriodGenerator {
     private final int weekStartDay;
     private final String suffix;
 
     WeeklyPeriodGenerator(Calendar calendar, PeriodType periodType, int weekStartDay, String suffix) {
-        this.calendar = (Calendar) calendar.clone();
-        this.periodType = periodType;
+        super(calendar, "yyyy", periodType);
         this.weekStartDay = weekStartDay;
         this.suffix = suffix;
     }
 
-    List<PeriodModel> generatePeriodsForLastWeeks(int weeks) throws RuntimeException {
+    @Override
+    protected void setCalendarToStartDate() {
+    }
 
-        if (weeks < 1) throw new RuntimeException("Number of weeks must be positive.");
-
-        SimpleDateFormat idFormatter = new SimpleDateFormat("yyyy", Locale.US);
-
-        List<PeriodModel> periods = new ArrayList<>();
+    @Override
+    protected void setCalendarToFirstPeriod(int count) {
         calendar.getTime();
         calendar.setFirstDayOfWeek(weekStartDay);
         calendar.setMinimalDaysInFirstWeek(4);
-        calendar.add(Calendar.WEEK_OF_YEAR, -weeks + 1);
+        calendar.add(Calendar.WEEK_OF_YEAR, -count + 1);
+    }
 
-        for (int i = 0; i < weeks; i++) {
-            calendar.set(Calendar.DAY_OF_WEEK, weekStartDay);
-            Date startDate = calendar.getTime();
-            calendar.set(Calendar.DAY_OF_WEEK, weekStartDay + 6);
-            Date endDate = calendar.getTime();
-            calendar.set(Calendar.DAY_OF_WEEK, weekStartDay + 3);
-            Date fourthWeekDay = calendar.getTime();
+    @Override
+    protected String generateId() {
+        calendar.set(Calendar.DAY_OF_WEEK, weekStartDay + 3);
+        Date fourthWeekDay = calendar.getTime();
+        String year = idFormatter.format(fourthWeekDay);
+        Integer weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+        return year + suffix + weekOfYear;
+    }
 
-            String year = idFormatter.format(fourthWeekDay);
-            Integer weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+    @Override
+    protected Date getStartDateAndUpdateCalendar() {
+        calendar.set(Calendar.DAY_OF_WEEK, weekStartDay);
+        return calendar.getTime();
+    }
 
-            PeriodModel period = PeriodModel.builder()
-                    .periodId(year + suffix + weekOfYear)
-                    .periodType(periodType)
-                    .startDate(startDate)
-                    .endDate(endDate)
-                    .build();
-            periods.add(period);
-            calendar.add(Calendar.WEEK_OF_YEAR, 1);
-        }
-        return periods;
+    @Override
+    protected Date getEndDateAndUpdateCalendar() {
+        calendar.set(Calendar.DAY_OF_WEEK, weekStartDay + 6);
+        return calendar.getTime();
+    }
+
+    @Override
+    protected void incrementCalendar() {
+        calendar.add(Calendar.WEEK_OF_YEAR, 1);
     }
 }

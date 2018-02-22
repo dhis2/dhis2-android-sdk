@@ -49,7 +49,7 @@ public class WeeklyPeriodGeneratorShould {
         PeriodModel period = generateExpectedPeriod("2018W10", calendar, Calendar.MONDAY);
 
         List<PeriodModel> generatedPeriods = new WeeklyPeriodGenerator(
-                calendar, PeriodType.Weekly, Calendar.MONDAY, "W").generatePeriodsForLastWeeks(1);
+                calendar, PeriodType.Weekly, Calendar.MONDAY, "W").generateLastPeriods(1);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -63,7 +63,7 @@ public class WeeklyPeriodGeneratorShould {
         PeriodModel period2 = generateExpectedPeriod("2018W11", calendar, Calendar.MONDAY);
 
         List<PeriodModel> generatedPeriods = new WeeklyPeriodGenerator(
-                calendar, PeriodType.Weekly, Calendar.MONDAY, "W").generatePeriodsForLastWeeks(2);
+                calendar, PeriodType.Weekly, Calendar.MONDAY, "W").generateLastPeriods(2);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2));
     }
@@ -79,7 +79,7 @@ public class WeeklyPeriodGeneratorShould {
         PeriodModel period3 = generateExpectedPeriod("2017W2", calendar, Calendar.MONDAY);
 
         List<PeriodModel> generatedPeriods = new WeeklyPeriodGenerator(
-                calendar, PeriodType.Weekly, Calendar.MONDAY, "W").generatePeriodsForLastWeeks(3);
+                calendar, PeriodType.Weekly, Calendar.MONDAY, "W").generateLastPeriods(3);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2, period3));
     }
@@ -90,15 +90,15 @@ public class WeeklyPeriodGeneratorShould {
         calendar.set(2018, 0, 4);
 
         List<PeriodModel> generatedPeriods = new WeeklyPeriodGenerator(
-                calendar, PeriodType.Weekly, Calendar.MONDAY, "W").generatePeriodsForLastWeeks(1);
+                calendar, PeriodType.Weekly, Calendar.MONDAY, "W").generateLastPeriods(1);
         List<PeriodModel> generatedWedPeriods = new WeeklyPeriodGenerator(
-                calendar, PeriodType.Weekly, Calendar.WEDNESDAY, "WedW").generatePeriodsForLastWeeks(1);
+                calendar, PeriodType.Weekly, Calendar.WEDNESDAY, "WedW").generateLastPeriods(1);
         List<PeriodModel> generatedThuPeriods = new WeeklyPeriodGenerator(
-                calendar, PeriodType.Weekly, Calendar.THURSDAY, "ThuW").generatePeriodsForLastWeeks(1);
+                calendar, PeriodType.Weekly, Calendar.THURSDAY, "ThuW").generateLastPeriods(1);
         List<PeriodModel> generatedSatPeriods = new WeeklyPeriodGenerator(
-                calendar, PeriodType.Weekly, Calendar.SATURDAY, "SatW").generatePeriodsForLastWeeks(1);
+                calendar, PeriodType.Weekly, Calendar.SATURDAY, "SatW").generateLastPeriods(1);
         List<PeriodModel> generatedSunPeriods = new WeeklyPeriodGenerator(
-                calendar, PeriodType.Weekly, Calendar.SUNDAY, "SunW").generatePeriodsForLastWeeks(1);
+                calendar, PeriodType.Weekly, Calendar.SUNDAY, "SunW").generateLastPeriods(1);
 
         PeriodModel period = generateExpectedPeriod("2018W1", calendar, Calendar.MONDAY);
         PeriodModel periodWednesday = generateExpectedPeriod("2018WedW1", calendar, Calendar.WEDNESDAY);
@@ -118,7 +118,7 @@ public class WeeklyPeriodGeneratorShould {
         try {
             new WeeklyPeriodGenerator(
                     Calendar.getInstance(), PeriodType.Weekly, Calendar.MONDAY, "W")
-                    .generatePeriodsForLastWeeks(-12);
+                    .generateLastPeriods(-12);
             fail("Exception was expected, but nothing was thrown.");
         } catch (RuntimeException e) {
             // No operation.
@@ -130,7 +130,7 @@ public class WeeklyPeriodGeneratorShould {
         try {
             new WeeklyPeriodGenerator(
                     Calendar.getInstance(), PeriodType.Weekly, Calendar.MONDAY, "W")
-                    .generatePeriodsForLastWeeks(0);
+                    .generateLastPeriods(0);
             fail("Exception was expected, but nothing was thrown.");
         } catch (RuntimeException e) {
             // No operation.

@@ -35,13 +35,14 @@ import org.junit.runners.JUnit4;
 import java.util.Calendar;
 import java.util.List;
 
-import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
-public class MonthlyPeriodGeneratorShould {
+public class MonthlyPeriodGeneratorShould extends PeriodGeneratorAbstractShould {
 
-    private final PeriodType periodType = PeriodType.Monthly;
+    public MonthlyPeriodGeneratorShould() {
+        super(PeriodType.Monthly);
+    }
 
     @Test
     public void generate_periods_for_one_month() throws Exception {
@@ -87,26 +88,6 @@ public class MonthlyPeriodGeneratorShould {
         List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2, period3);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
-    }
-
-    @Test
-    public void throw_exception_for_negative_years() throws Exception {
-        try {
-            new MonthlyPeriodGenerator(Calendar.getInstance(), periodType).generateLastPeriods(-12);
-            fail("Exception was expected, but nothing was thrown.");
-        } catch (RuntimeException e) {
-            // No operation.
-        }
-    }
-
-    @Test
-    public void throw_exception_for_zero_days() throws Exception {
-        try {
-            new MonthlyPeriodGenerator(Calendar.getInstance(), periodType).generateLastPeriods(0);
-            fail("Exception was expected, but nothing was thrown.");
-        } catch (RuntimeException e) {
-            // No operation.
-        }
     }
 
     private PeriodModel generateExpectedPeriod(String id, Calendar cal) {

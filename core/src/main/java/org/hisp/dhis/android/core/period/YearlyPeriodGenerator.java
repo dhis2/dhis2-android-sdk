@@ -35,13 +35,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-class YearPeriodGenerator {
+class YearlyPeriodGenerator {
     private final Calendar calendar;
     private final PeriodType periodType;
     private final int firstMonth;
     private final String suffix;
 
-    YearPeriodGenerator(Calendar calendar, PeriodType periodType, int firstMonth, String suffix) {
+    YearlyPeriodGenerator(Calendar calendar, PeriodType periodType, int firstMonth, String suffix) {
         this.calendar = (Calendar) calendar.clone();
         this.periodType = periodType;
         this.firstMonth = firstMonth;

@@ -56,20 +56,18 @@ class WeeklyPeriodGenerator extends AbstractPeriodGenerator {
 
     @Override
     protected String generateId() {
-        calendar.set(Calendar.DAY_OF_WEEK, weekStartDay + 3);
-        Date fourthWeekDay = calendar.getTime();
+        Calendar cal = (Calendar) calendar.clone();
+        cal.set(Calendar.DAY_OF_WEEK, weekStartDay + 3);
+        Date fourthWeekDay = cal.getTime();
         String year = idFormatter.format(fourthWeekDay);
-        Integer weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+        Integer weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
         return year + suffix + weekOfYear;
     }
 
     @Override
     protected Date getEndDateAndUpdateCalendar() {
-        calendar.set(Calendar.DAY_OF_WEEK, weekStartDay + 6);
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, 999);
+        calendar.add(Calendar.WEEK_OF_YEAR, 1);
+        calendar.add(Calendar.MILLISECOND, -1);
         return calendar.getTime();
     }
 }

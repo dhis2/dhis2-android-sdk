@@ -40,7 +40,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class DailyPeriodGeneratorShould extends PeriodGeneratorAbstractShould {
 
-    DailyPeriodGeneratorShould() {
+    public DailyPeriodGeneratorShould() {
         super(PeriodType.Daily);
     }
 
@@ -86,12 +86,17 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorAbstractShould {
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
     }
 
-    private PeriodModel generateExpectedPeriod(String id, Calendar calendar) {
+    private PeriodModel generateExpectedPeriod(String id, Calendar cal) {
+        Calendar calendar = (Calendar) cal.clone();
+        AbstractPeriodGenerator.setCalendarToStartTimeOfADay(calendar);
+        Calendar endCalendar = (Calendar) calendar.clone();
+        endCalendar.add(Calendar.DATE, 1);
+        endCalendar.add(Calendar.MILLISECOND, -1);
         return PeriodModel.builder()
                 .periodId(id)
-                .periodType(PeriodType.Daily)
+                .periodType(periodType)
                 .startDate(calendar.getTime())
-                .endDate(calendar.getTime())
+                .endDate(endCalendar.getTime())
                 .build();
     }
 }

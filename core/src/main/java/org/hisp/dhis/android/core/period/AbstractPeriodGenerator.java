@@ -69,7 +69,7 @@ abstract class AbstractPeriodGenerator {
                     .build();
             periods.add(period);
 
-            calendar.add(Calendar.DATE, 1);
+            calendar.add(Calendar.MILLISECOND, 1);
         }
         return periods;
     }

@@ -139,12 +139,14 @@ public class WeeklyPeriodGeneratorShould {
 
     private PeriodModel generateExpectedPeriod(String id, Calendar cal, int weekStartDay) {
         Calendar calendar = (Calendar) cal.clone();
+        AbstractPeriodGenerator.setCalendarToStartTimeOfADay(calendar);
         calendar.getTime();
         calendar.setFirstDayOfWeek(weekStartDay);
         calendar.setMinimalDaysInFirstWeek(4);
         calendar.set(Calendar.DAY_OF_WEEK, weekStartDay);
         Date startDate = calendar.getTime();
         calendar.set(Calendar.DAY_OF_WEEK, weekStartDay + 6);
+        AbstractPeriodGenerator.setCalendarToEndTimeOfADay(calendar);
         Date endDate = calendar.getTime();
 
         return PeriodModel.builder()

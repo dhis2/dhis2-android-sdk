@@ -113,11 +113,11 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         Calendar calendar = Calendar.getInstance();
         return new ParentPeriodGeneratorImpl(
                 new DailyPeriodGenerator(calendar),
-                new WeeklyPeriodGenerator(calendar, PeriodType.Weekly, Calendar.MONDAY, "W"),
-                new WeeklyPeriodGenerator(calendar, PeriodType.WeeklyWednesday, Calendar.WEDNESDAY, "WedW"),
-                new WeeklyPeriodGenerator(calendar, PeriodType.WeeklyThursday, Calendar.THURSDAY, "ThuW"),
-                new WeeklyPeriodGenerator(calendar, PeriodType.WeeklySaturday, Calendar.SATURDAY, "SatW"),
-                new WeeklyPeriodGenerator(calendar, PeriodType.WeeklySunday, Calendar.SUNDAY, "SunW"),
+                WeeklyPeriodGenerator.monday(calendar),
+                WeeklyPeriodGenerator.wednesday(calendar),
+                WeeklyPeriodGenerator.thursday(calendar),
+                WeeklyPeriodGenerator.saturday(calendar),
+                WeeklyPeriodGenerator.sunday(calendar),
                 new MonthlyPeriodGenerator(calendar),
                 NMonthlyPeriodGenerator.biMonthly(calendar),
                 NMonthlyPeriodGenerator.quarter(calendar),

@@ -35,7 +35,7 @@ class WeeklyPeriodGenerator extends AbstractPeriodGenerator {
     private final int weekStartDay;
     private final String suffix;
 
-    WeeklyPeriodGenerator(Calendar calendar, PeriodType periodType, int weekStartDay, String suffix) {
+    private WeeklyPeriodGenerator(Calendar calendar, PeriodType periodType, int weekStartDay, String suffix) {
         super(calendar, "yyyy", periodType);
         this.weekStartDay = weekStartDay;
         this.suffix = suffix;
@@ -69,5 +69,25 @@ class WeeklyPeriodGenerator extends AbstractPeriodGenerator {
         calendar.add(Calendar.WEEK_OF_YEAR, 1);
         calendar.add(Calendar.MILLISECOND, -1);
         return calendar.getTime();
+    }
+
+    static WeeklyPeriodGenerator monday(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.Weekly, Calendar.MONDAY, "W");
+    }
+
+    static WeeklyPeriodGenerator wednesday(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklyWednesday, Calendar.WEDNESDAY, "WedW");
+    }
+
+    static WeeklyPeriodGenerator thursday(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklyThursday, Calendar.THURSDAY, "ThuW");
+    }
+
+    static WeeklyPeriodGenerator saturday(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklySaturday, Calendar.SATURDAY, "SatW");
+    }
+
+    static WeeklyPeriodGenerator sunday(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklySunday, Calendar.SUNDAY, "SunW");
     }
 }

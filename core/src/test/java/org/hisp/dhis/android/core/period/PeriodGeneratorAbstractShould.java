@@ -42,7 +42,7 @@ public abstract class PeriodGeneratorAbstractShould {
     }
 
     @Test
-    public void throw_exception_for_negative_years() throws Exception {
+    public void throw_exception_for_negative_periods() throws Exception {
         try {
             new QuarterPeriodGenerator(Calendar.getInstance()).generateLastPeriods(-12);
             fail("Exception was expected, but nothing was thrown.");
@@ -52,7 +52,7 @@ public abstract class PeriodGeneratorAbstractShould {
     }
 
     @Test
-    public void throw_exception_for_zero_days() throws Exception {
+    public void throw_exception_for_zero_periods() throws Exception {
         try {
             new QuarterPeriodGenerator(Calendar.getInstance()).generateLastPeriods(0);
             fail("Exception was expected, but nothing was thrown.");

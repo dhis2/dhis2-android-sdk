@@ -39,9 +39,11 @@ import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
-public class QuarterPeriodGeneratorShould {
+public class QuarterPeriodGeneratorShould extends PeriodGeneratorAbstractShould {
 
-    private final PeriodType periodType = PeriodType.Quarterly;
+    public QuarterPeriodGeneratorShould() {
+        super(PeriodType.Quarterly);
+    }
 
     @Test
     public void generate_last_period_forQ1() throws Exception {

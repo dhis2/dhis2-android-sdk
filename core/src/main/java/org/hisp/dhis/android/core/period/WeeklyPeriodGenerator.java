@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.period;
 
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;

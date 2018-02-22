@@ -139,8 +139,11 @@ public class SixMonthlyPeriodGeneratorShould {
         }
     }
 
-    private PeriodModel generateExpectedPeriod(String id, Calendar calendar) {
+    private PeriodModel generateExpectedPeriod(String id, Calendar cal) {
+        Calendar calendar = (Calendar) cal.clone();
+        AbstractPeriodGenerator.setCalendarToStartTimeOfADay(calendar);
         Calendar endCalendar = (Calendar) calendar.clone();
+        AbstractPeriodGenerator.setCalendarToEndTimeOfADay(endCalendar);
         endCalendar.add(Calendar.MONTH, 6);
         endCalendar.add(Calendar.DATE, -1);
         return PeriodModel.builder()

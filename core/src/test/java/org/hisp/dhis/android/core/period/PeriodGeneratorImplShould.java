@@ -64,7 +64,10 @@ public class PeriodGeneratorImplShould {
     private MonthlyPeriodGenerator monthlyPeriodGenerator;
 
     @Mock
-    private QuarterPeriodGenerator quarterPeriodGenerator;
+    private NMonthlyPeriodGenerator quarterPeriodGenerator;
+
+    @Mock
+    private NMonthlyPeriodGenerator biMonthlyPeriodGenerator;
 
     @Mock
     private SixMonthlyPeriodGenerator sixMonthlyPeriodGenerator;
@@ -95,9 +98,10 @@ public class PeriodGeneratorImplShould {
         MockitoAnnotations.initMocks(this);
         periodGenerator = new PeriodGeneratorImpl(dailyPeriodGenerator, weeklyPeriodGenerator,
                 weeklyWednesdayPeriodGenerator, weeklyThursdayPeriodGenerator, weeklySaturdayPeriodGenerator,
-                weeklySundayPeriodGenerator, monthlyPeriodGenerator, quarterPeriodGenerator,
-                sixMonthlyPeriodGenerator, sixMonthlyAprilPeriodGenerator, yearlyPeriodGenerator,
-                financialAprilPeriodGenerator, financialJulyPeriodGenerator, financialOctPeriodGenerator);
+                weeklySundayPeriodGenerator, monthlyPeriodGenerator, biMonthlyPeriodGenerator,
+                quarterPeriodGenerator, sixMonthlyPeriodGenerator, sixMonthlyAprilPeriodGenerator,
+                yearlyPeriodGenerator, financialAprilPeriodGenerator, financialJulyPeriodGenerator,
+                financialOctPeriodGenerator);
         
         when(dailyPeriodGenerator.generateLastPeriods(60)).thenReturn(Lists.newArrayList(dailyPeriod));
     }

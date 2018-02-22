@@ -44,7 +44,8 @@ public abstract class PeriodGeneratorAbstractShould {
     @Test
     public void throw_exception_for_negative_periods() throws Exception {
         try {
-            new QuarterPeriodGenerator(Calendar.getInstance()).generateLastPeriods(-12);
+            // TODO NMonthly can't be used here
+            NMonthlyPeriodGenerator.quarter(Calendar.getInstance()).generateLastPeriods(-12);
             fail("Exception was expected, but nothing was thrown.");
         } catch (RuntimeException e) {
             // No operation.
@@ -54,7 +55,8 @@ public abstract class PeriodGeneratorAbstractShould {
     @Test
     public void throw_exception_for_zero_periods() throws Exception {
         try {
-            new QuarterPeriodGenerator(Calendar.getInstance()).generateLastPeriods(0);
+            // TODO NMonthly can't be used here
+            NMonthlyPeriodGenerator.quarter(Calendar.getInstance()).generateLastPeriods(0);
             fail("Exception was expected, but nothing was thrown.");
         } catch (RuntimeException e) {
             // No operation.

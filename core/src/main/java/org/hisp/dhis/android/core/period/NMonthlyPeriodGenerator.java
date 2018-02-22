@@ -31,35 +31,49 @@ package org.hisp.dhis.android.core.period;
 import java.util.Calendar;
 import java.util.Date;
 
-class QuarterPeriodGenerator extends AbstractPeriodGenerator {
+class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
 
-    QuarterPeriodGenerator(Calendar calendar) {
-        super(calendar, "yyyy", PeriodType.Quarterly);
+    private final int durationInMonths;
+    private final String idAdditionalString;
+
+    private NMonthlyPeriodGenerator(Calendar calendar, PeriodType periodType, int durationInMonths,
+                            String idAdditionalString) {
+        super(calendar, "yyyy", periodType);
+        this.durationInMonths = durationInMonths;
+        this.idAdditionalString = idAdditionalString;
     }
 
     @Override
     protected void setCalendarToStartDate() {
         calendar.set(Calendar.DATE, 1);
         int currentMonth = calendar.get(Calendar.MONTH);
-        int startMonth = currentMonth - (currentMonth % 3);
+        int startMonth = currentMonth - (currentMonth % durationInMonths);
         calendar.set(Calendar.MONTH, startMonth);
     }
 
     @Override
     protected void setCalendarToFirstPeriod(int count) {
-        calendar.add(Calendar.MONTH, -(3 * (count - 1)));
+        calendar.add(Calendar.MONTH, -(durationInMonths * (count - 1)));
     }
 
     @Override
     protected String generateId() {
-        int periodNumber = calendar.get(Calendar.MONTH) / 3 + 1;
-        return idFormatter.format(calendar.getTime()) + "Q" + periodNumber;
+        int periodNumber = calendar.get(Calendar.MONTH) / durationInMonths + 1;
+        return idFormatter.format(calendar.getTime()) + idAdditionalString + periodNumber;
     }
 
     @Override
     protected Date getEndDateAndUpdateCalendar() {
-        calendar.add(Calendar.MONTH, 3);
+        calendar.add(Calendar.MONTH, durationInMonths);
         calendar.add(Calendar.MILLISECOND, -1);
         return calendar.getTime();
+    }
+
+    static NMonthlyPeriodGenerator biMonthly(Calendar calendar) {
+        return new NMonthlyPeriodGenerator(calendar, PeriodType.BiMonthly, 2, "B");
+    }
+
+    static NMonthlyPeriodGenerator quarter(Calendar calendar) {
+        return new NMonthlyPeriodGenerator(calendar, PeriodType.Quarterly, 3, "Q");
     }
 }

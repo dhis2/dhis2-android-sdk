@@ -41,8 +41,8 @@ final class PeriodGeneratorImpl implements PeriodGenerator {
     private final WeeklyPeriodGenerator weeklySaturdayPeriodGenerator;
     private final WeeklyPeriodGenerator weeklySundayPeriodGenerator;
     private final MonthlyPeriodGenerator monthlyPeriodGenerator;
-    // TODO private final BiMonthlyPeriodGenerator biMonthlyPeriodGenerator;
-    private final QuarterPeriodGenerator quarterPeriodGenerator;
+    private final NMonthlyPeriodGenerator biMonthlyPeriodGenerator;
+    private final NMonthlyPeriodGenerator quarterPeriodGenerator;
     private final SixMonthlyPeriodGenerator sixMonthlyPeriodGenerator;
     private final SixMonthlyPeriodGenerator sixMonthlyAprilPeriodGenerator;
     private final YearlyPeriodGenerator yearlyPeriodGenerator;
@@ -57,7 +57,8 @@ final class PeriodGeneratorImpl implements PeriodGenerator {
                         WeeklyPeriodGenerator weeklySaturdayPeriodGenerator,
                         WeeklyPeriodGenerator weeklySundayPeriodGenerator,
                         MonthlyPeriodGenerator monthlyPeriodGenerator,
-                        QuarterPeriodGenerator quarterPeriodGenerator,
+                        NMonthlyPeriodGenerator biMonthlyPeriodGenerator,
+                        NMonthlyPeriodGenerator quarterPeriodGenerator,
                         SixMonthlyPeriodGenerator sixMonthlyPeriodGenerator,
                         SixMonthlyPeriodGenerator sixMonthlyAprilPeriodGenerator,
                         YearlyPeriodGenerator yearlyPeriodGenerator,
@@ -71,6 +72,7 @@ final class PeriodGeneratorImpl implements PeriodGenerator {
         this.weeklySaturdayPeriodGenerator = weeklySaturdayPeriodGenerator;
         this.weeklySundayPeriodGenerator = weeklySundayPeriodGenerator;
         this.monthlyPeriodGenerator = monthlyPeriodGenerator;
+        this.biMonthlyPeriodGenerator = biMonthlyPeriodGenerator;
         this.quarterPeriodGenerator = quarterPeriodGenerator;
         this.sixMonthlyPeriodGenerator = sixMonthlyPeriodGenerator;
         this.sixMonthlyAprilPeriodGenerator = sixMonthlyAprilPeriodGenerator;
@@ -91,6 +93,8 @@ final class PeriodGeneratorImpl implements PeriodGenerator {
         periods.addAll(weeklySundayPeriodGenerator.generateLastPeriods(13));
 
         periods.addAll(monthlyPeriodGenerator.generateLastPeriods(12));
+
+        periods.addAll(biMonthlyPeriodGenerator.generateLastPeriods(6));
 
         periods.addAll(quarterPeriodGenerator.generateLastPeriods(4));
 
@@ -115,7 +119,8 @@ final class PeriodGeneratorImpl implements PeriodGenerator {
                 new WeeklyPeriodGenerator(calendar, PeriodType.WeeklySaturday, Calendar.SATURDAY, "SatW"),
                 new WeeklyPeriodGenerator(calendar, PeriodType.WeeklySunday, Calendar.SUNDAY, "SunW"),
                 new MonthlyPeriodGenerator(calendar),
-                new QuarterPeriodGenerator(calendar),
+                NMonthlyPeriodGenerator.biMonthly(calendar),
+                NMonthlyPeriodGenerator.quarter(calendar),
                 new SixMonthlyPeriodGenerator(calendar, PeriodType.SixMonthly, "", Calendar.JANUARY),
                 new SixMonthlyPeriodGenerator(calendar, PeriodType.SixMonthlyApril, "", Calendar.APRIL),
                 new YearlyPeriodGenerator(calendar, PeriodType.Yearly, Calendar.JANUARY, ""),

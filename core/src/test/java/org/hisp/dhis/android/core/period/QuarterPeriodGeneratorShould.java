@@ -35,7 +35,6 @@ import org.junit.runners.JUnit4;
 import java.util.Calendar;
 import java.util.List;
 
-import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
@@ -49,7 +48,7 @@ public class QuarterPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
     public void generate_last_period_forQ1() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 1, 21);
-        QuarterPeriodGenerator generator = new QuarterPeriodGenerator(calendar);
+        NMonthlyPeriodGenerator generator = NMonthlyPeriodGenerator.quarter(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2018, 0, 1);
@@ -65,7 +64,7 @@ public class QuarterPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
     public void generate_last_period_forQ2() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 5, 11);
-        QuarterPeriodGenerator generator = new QuarterPeriodGenerator(calendar);
+        NMonthlyPeriodGenerator generator = NMonthlyPeriodGenerator.quarter(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2018, 3, 1);
@@ -81,7 +80,7 @@ public class QuarterPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
     public void generate_last_period_forQ3() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 6, 3);
-        QuarterPeriodGenerator generator = new QuarterPeriodGenerator(calendar);
+        NMonthlyPeriodGenerator generator = NMonthlyPeriodGenerator.quarter(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2018, 6, 1);
@@ -97,7 +96,7 @@ public class QuarterPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
     public void generate_last_period_forQ4() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 11, 3);
-        QuarterPeriodGenerator generator = new QuarterPeriodGenerator(calendar);
+        NMonthlyPeriodGenerator generator = NMonthlyPeriodGenerator.quarter(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2018, 9, 1);
@@ -113,7 +112,7 @@ public class QuarterPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
     public void generate_starting_period_on_first_day() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 0, 1);
-        QuarterPeriodGenerator generator = new QuarterPeriodGenerator(calendar);
+        NMonthlyPeriodGenerator generator = NMonthlyPeriodGenerator.quarter(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2018, 0, 1);
@@ -129,7 +128,7 @@ public class QuarterPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
     public void generate_ending_period_on_last_day() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 2, 31);
-        QuarterPeriodGenerator generator = new QuarterPeriodGenerator(calendar);
+        NMonthlyPeriodGenerator generator = NMonthlyPeriodGenerator.quarter(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2018, 0, 1);
@@ -145,7 +144,7 @@ public class QuarterPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
     public void generate_last_two_periods() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 1, 21);
-        QuarterPeriodGenerator generator = new QuarterPeriodGenerator(calendar);
+        NMonthlyPeriodGenerator generator = NMonthlyPeriodGenerator.quarter(calendar);
 
         Calendar period1StartCalendar = (Calendar) calendar.clone();
         period1StartCalendar.set(2017, 9, 1);
@@ -159,26 +158,6 @@ public class QuarterPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
         List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
-    }
-
-    @Test
-    public void throw_exception_for_negative_years() throws Exception {
-        try {
-            new QuarterPeriodGenerator(Calendar.getInstance()).generateLastPeriods(-12);
-            fail("Exception was expected, but nothing was thrown.");
-        } catch (RuntimeException e) {
-            // No operation.
-        }
-    }
-
-    @Test
-    public void throw_exception_for_zero_days() throws Exception {
-        try {
-            new QuarterPeriodGenerator(Calendar.getInstance()).generateLastPeriods(0);
-            fail("Exception was expected, but nothing was thrown.");
-        } catch (RuntimeException e) {
-            // No operation.
-        }
     }
 
     private PeriodModel generateExpectedPeriod(String id, Calendar cal) {

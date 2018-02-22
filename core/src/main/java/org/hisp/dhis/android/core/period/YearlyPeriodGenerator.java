@@ -33,10 +33,12 @@ import java.util.Date;
 
 class YearlyPeriodGenerator extends AbstractPeriodGenerator {
     private final int firstMonth;
+    private final String suffix;
 
     YearlyPeriodGenerator(Calendar calendar, PeriodType periodType, int firstMonth, String suffix) {
-        super(calendar, "yyyy'" + suffix + "'", periodType);
+        super(calendar, "yyyy", periodType);
         this.firstMonth = firstMonth;
+        this.suffix = suffix;
     }
 
     @Override
@@ -46,6 +48,12 @@ class YearlyPeriodGenerator extends AbstractPeriodGenerator {
             calendar.add(Calendar.YEAR, -1);
         }
         calendar.set(Calendar.MONTH, firstMonth);
+    }
+
+    @Override
+    protected String generateId() {
+        String year = idFormatter.format(calendar.getTime());
+        return year + suffix;
     }
 
     @Override

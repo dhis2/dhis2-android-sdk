@@ -42,7 +42,7 @@ final class PeriodGeneratorImpl implements PeriodGenerator {
 
     public List<PeriodModel> generatePeriods() {
         List<PeriodModel> periods = new ArrayList<>();
-        periods.addAll(dailyPeriodGenerator.generatePeriodsForLastDays(60));
+        periods.addAll(dailyPeriodGenerator.generateLastPeriods(60));
         return periods;
     }
 

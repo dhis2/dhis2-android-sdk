@@ -35,11 +35,14 @@ import org.junit.runners.JUnit4;
 import java.util.Calendar;
 import java.util.List;
 
-import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
-public class DailyPeriodGeneratorShould {
+public class DailyPeriodGeneratorShould extends PeriodGeneratorAbstractShould {
+
+    DailyPeriodGeneratorShould() {
+        super(PeriodType.Daily);
+    }
 
     @Test
     public void generate_daily_periods_for_one_day() throws Exception {
@@ -47,7 +50,7 @@ public class DailyPeriodGeneratorShould {
         calendar.set(2018, 1, 1);
         PeriodModel period = generateExpectedPeriod("20180201", calendar);
 
-        List<PeriodModel> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriodsForLastDays(1);
+        List<PeriodModel> generatedPeriods = new DailyPeriodGenerator(calendar).generateLastPeriods(1);
         List<PeriodModel> expectedPeriods = Lists.newArrayList(period);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
@@ -61,7 +64,7 @@ public class DailyPeriodGeneratorShould {
         calendar.set(2018, 2, 5);
         PeriodModel period2 = generateExpectedPeriod("20180305", calendar);
 
-        List<PeriodModel> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriodsForLastDays(2);
+        List<PeriodModel> generatedPeriods = new DailyPeriodGenerator(calendar).generateLastPeriods(2);
         List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
@@ -77,30 +80,10 @@ public class DailyPeriodGeneratorShould {
         calendar.set(2018, 0, 2);
         PeriodModel period3 = generateExpectedPeriod("20180102", calendar);
 
-        List<PeriodModel> generatedPeriods = new DailyPeriodGenerator(calendar).generatePeriodsForLastDays(3);
+        List<PeriodModel> generatedPeriods = new DailyPeriodGenerator(calendar).generateLastPeriods(3);
         List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2, period3);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
-    }
-
-    @Test
-    public void throw_exception_for_negative_days() throws Exception {
-        try {
-            new DailyPeriodGenerator(Calendar.getInstance()).generatePeriodsForLastDays(-12);
-            fail("Exception was expected, but nothing was thrown.");
-        } catch (RuntimeException e) {
-            // No operation.
-        }
-    }
-
-    @Test
-    public void throw_exception_for_zero_days() throws Exception {
-        try {
-            new DailyPeriodGenerator(Calendar.getInstance()).generatePeriodsForLastDays(0);
-            fail("Exception was expected, but nothing was thrown.");
-        } catch (RuntimeException e) {
-            // No operation.
-        }
     }
 
     private PeriodModel generateExpectedPeriod(String id, Calendar calendar) {

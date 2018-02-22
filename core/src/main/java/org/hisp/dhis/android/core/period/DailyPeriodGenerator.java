@@ -28,40 +28,28 @@
 
 package org.hisp.dhis.android.core.period;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
-class DailyPeriodGenerator {
-    private final Calendar calendar;
+class DailyPeriodGenerator extends AbstractPeriodGenerator {
 
     DailyPeriodGenerator(Calendar calendar) {
-        this.calendar = (Calendar) calendar.clone();
+        super(calendar, "yyyyMMdd", PeriodType.Daily);
     }
 
-    List<PeriodModel> generatePeriodsForLastDays(int days) throws RuntimeException {
+    @Override
+    protected void setCalendarToStartDate() {
+        // do nothing
+    }
 
-        if (days < 1) throw new RuntimeException("Number of days must be positive.");
+    @Override
+    protected void setCalendarToFirstPeriod(int count) {
+        calendar.add(Calendar.DATE, -count + 1);
+    }
 
-        SimpleDateFormat idFormatter = new SimpleDateFormat("yyyyMMdd", Locale.US);
-
-        List<PeriodModel> periods = new ArrayList<>();
-        calendar.add(Calendar.DATE, -days + 1);
-
-        for (int i = 0; i < days; i++) {
-            Date date = calendar.getTime();
-            PeriodModel period = PeriodModel.builder()
-                    .periodId(idFormatter.format(date))
-                    .periodType(PeriodType.Daily)
-                    .startDate(date)
-                    .endDate(date)
-                    .build();
-            periods.add(period);
-            calendar.add(Calendar.DATE, 1);
-        }
-        return periods;
+    @Override
+    protected Date getEndDateAndUpdateCalendar() {
+        // do nothing
+        return calendar.getTime();
     }
 }

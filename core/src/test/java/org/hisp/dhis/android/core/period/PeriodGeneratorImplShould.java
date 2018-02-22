@@ -55,13 +55,13 @@ public class PeriodGeneratorImplShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         periodGenerator = new PeriodGeneratorImpl(dailyPeriodGenerator);
-        when(dailyPeriodGenerator.generatePeriodsForLastDays(60)).thenReturn(Lists.newArrayList(dailyPeriod));
+        when(dailyPeriodGenerator.generateLastPeriods(60)).thenReturn(Lists.newArrayList(dailyPeriod));
     }
 
     @Test
     public void request_60_daily_periods() throws Exception {
         periodGenerator.generatePeriods();
-        verify(dailyPeriodGenerator).generatePeriodsForLastDays(60);
+        verify(dailyPeriodGenerator).generateLastPeriods(60);
     }
 
     @Test

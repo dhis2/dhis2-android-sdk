@@ -51,14 +51,14 @@ abstract class AbstractPeriodGenerator {
         if (count < 1) throw new RuntimeException("Number of last periods must be positive.");
 
         List<PeriodModel> periods = new ArrayList<>();
-        setCalendarToStartTimeOfADay();
+        setCalendarToStartTimeOfADay(calendar);
         setCalendarToStartDate();
         setCalendarToFirstPeriod(count);
 
         for (int i = 0; i < count; i++) {
             Date startDate = calendar.getTime();
             String periodId = generateId();
-            setCalendarToEndTimeOfADay();
+            setCalendarToEndTimeOfADay(calendar);
             Date endDate = getEndDateAndUpdateCalendar();
 
             PeriodModel period = PeriodModel.builder()
@@ -74,14 +74,14 @@ abstract class AbstractPeriodGenerator {
         return periods;
     }
 
-    void setCalendarToStartTimeOfADay() {
+    static void setCalendarToStartTimeOfADay(Calendar calendar) {
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
     }
 
-    void setCalendarToEndTimeOfADay() {
+    static void setCalendarToEndTimeOfADay(Calendar calendar) {
         calendar.set(Calendar.HOUR_OF_DAY, 23);
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 59);

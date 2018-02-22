@@ -35,7 +35,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-abstract class AbstractPeriodGenerator {
+abstract class AbstractPeriodGenerator implements PeriodGenerator {
     protected final Calendar calendar;
     protected final SimpleDateFormat idFormatter;
     private final PeriodType periodType;
@@ -47,7 +47,8 @@ abstract class AbstractPeriodGenerator {
         this.periodType = periodType;
     }
 
-    final List<PeriodModel> generateLastPeriods(int count) throws RuntimeException {
+    @Override
+    public final List<PeriodModel> generateLastPeriods(int count) throws RuntimeException {
         if (count < 1) throw new RuntimeException("Number of last periods must be positive.");
 
         List<PeriodModel> periods = new ArrayList<>();

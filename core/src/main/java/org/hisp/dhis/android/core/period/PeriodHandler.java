@@ -34,9 +34,9 @@ import java.util.List;
 
 public class PeriodHandler {
     private final ObjectWithoutUidStore<PeriodModel> store;
-    private final PeriodGenerator generator;
+    private final ParentPeriodGenerator generator;
 
-    PeriodHandler(ObjectWithoutUidStore<PeriodModel> store, PeriodGenerator generator) {
+    PeriodHandler(ObjectWithoutUidStore<PeriodModel> store, ParentPeriodGenerator generator) {
         this.store = store;
         this.generator = generator;
     }
@@ -52,6 +52,6 @@ public class PeriodHandler {
     public static PeriodHandler create(DatabaseAdapter databaseAdapter) {
         return new PeriodHandler(
                 PeriodStore.create(databaseAdapter),
-                PeriodGeneratorImpl.create());
+                ParentPeriodGeneratorImpl.create());
     }
 }

@@ -32,39 +32,39 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-final class PeriodGeneratorImpl implements PeriodGenerator {
+final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
 
-    private final DailyPeriodGenerator dailyPeriodGenerator;
-    private final WeeklyPeriodGenerator weeklyPeriodGenerator;
-    private final WeeklyPeriodGenerator weeklyWednesdayPeriodGenerator;
-    private final WeeklyPeriodGenerator weeklyThursdayPeriodGenerator;
-    private final WeeklyPeriodGenerator weeklySaturdayPeriodGenerator;
-    private final WeeklyPeriodGenerator weeklySundayPeriodGenerator;
-    private final MonthlyPeriodGenerator monthlyPeriodGenerator;
-    private final NMonthlyPeriodGenerator biMonthlyPeriodGenerator;
-    private final NMonthlyPeriodGenerator quarterPeriodGenerator;
-    private final SixMonthlyPeriodGenerator sixMonthlyPeriodGenerator;
-    private final SixMonthlyPeriodGenerator sixMonthlyAprilPeriodGenerator;
-    private final YearlyPeriodGenerator yearlyPeriodGenerator;
-    private final YearlyPeriodGenerator financialAprilPeriodGenerator;
-    private final YearlyPeriodGenerator financialJulyPeriodGenerator;
-    private final YearlyPeriodGenerator financialOctPeriodGenerator;
+    private final PeriodGenerator dailyPeriodGenerator;
+    private final PeriodGenerator weeklyPeriodGenerator;
+    private final PeriodGenerator weeklyWednesdayPeriodGenerator;
+    private final PeriodGenerator weeklyThursdayPeriodGenerator;
+    private final PeriodGenerator weeklySaturdayPeriodGenerator;
+    private final PeriodGenerator weeklySundayPeriodGenerator;
+    private final PeriodGenerator monthlyPeriodGenerator;
+    private final PeriodGenerator biMonthlyPeriodGenerator;
+    private final PeriodGenerator quarterPeriodGenerator;
+    private final PeriodGenerator sixMonthlyPeriodGenerator;
+    private final PeriodGenerator sixMonthlyAprilPeriodGenerator;
+    private final PeriodGenerator yearlyPeriodGenerator;
+    private final PeriodGenerator financialAprilPeriodGenerator;
+    private final PeriodGenerator financialJulyPeriodGenerator;
+    private final PeriodGenerator financialOctPeriodGenerator;
 
-    PeriodGeneratorImpl(DailyPeriodGenerator dailyPeriodGenerator,
-                        WeeklyPeriodGenerator weeklyPeriodGenerator,
-                        WeeklyPeriodGenerator weeklyWednesdayPeriodGenerator,
-                        WeeklyPeriodGenerator weeklyThursdayPeriodGenerator,
-                        WeeklyPeriodGenerator weeklySaturdayPeriodGenerator,
-                        WeeklyPeriodGenerator weeklySundayPeriodGenerator,
-                        MonthlyPeriodGenerator monthlyPeriodGenerator,
-                        NMonthlyPeriodGenerator biMonthlyPeriodGenerator,
-                        NMonthlyPeriodGenerator quarterPeriodGenerator,
-                        SixMonthlyPeriodGenerator sixMonthlyPeriodGenerator,
-                        SixMonthlyPeriodGenerator sixMonthlyAprilPeriodGenerator,
-                        YearlyPeriodGenerator yearlyPeriodGenerator,
-                        YearlyPeriodGenerator financialAprilPeriodGenerator,
-                        YearlyPeriodGenerator financialJulyPeriodGenerator,
-                        YearlyPeriodGenerator financialOctPeriodGenerator) {
+    ParentPeriodGeneratorImpl(PeriodGenerator dailyPeriodGenerator,
+                              PeriodGenerator weeklyPeriodGenerator,
+                              PeriodGenerator weeklyWednesdayPeriodGenerator,
+                              PeriodGenerator weeklyThursdayPeriodGenerator,
+                              PeriodGenerator weeklySaturdayPeriodGenerator,
+                              PeriodGenerator weeklySundayPeriodGenerator,
+                              PeriodGenerator monthlyPeriodGenerator,
+                              PeriodGenerator biMonthlyPeriodGenerator,
+                              PeriodGenerator quarterPeriodGenerator,
+                              PeriodGenerator sixMonthlyPeriodGenerator,
+                              PeriodGenerator sixMonthlyAprilPeriodGenerator,
+                              PeriodGenerator yearlyPeriodGenerator,
+                              PeriodGenerator financialAprilPeriodGenerator,
+                              PeriodGenerator financialJulyPeriodGenerator,
+                              PeriodGenerator financialOctPeriodGenerator) {
         this.dailyPeriodGenerator = dailyPeriodGenerator;
         this.weeklyPeriodGenerator = weeklyPeriodGenerator;
         this.weeklyWednesdayPeriodGenerator = weeklyWednesdayPeriodGenerator;
@@ -109,9 +109,9 @@ final class PeriodGeneratorImpl implements PeriodGenerator {
         return periods;
     }
 
-    static PeriodGeneratorImpl create() {
+    static ParentPeriodGeneratorImpl create() {
         Calendar calendar = Calendar.getInstance();
-        return new PeriodGeneratorImpl(
+        return new ParentPeriodGeneratorImpl(
                 new DailyPeriodGenerator(calendar),
                 new WeeklyPeriodGenerator(calendar, PeriodType.Weekly, Calendar.MONDAY, "W"),
                 new WeeklyPeriodGenerator(calendar, PeriodType.WeeklyWednesday, Calendar.WEDNESDAY, "WedW"),

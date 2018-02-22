@@ -25,60 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.period;
 
-import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import java.util.List;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-@RunWith(JUnit4.class)
-public class PeriodHandlerShould {
-
-    @Mock
-    private ObjectWithoutUidStore<PeriodModel> store;
-
-    @Mock
-    private ParentPeriodGenerator generator;
-
-    @Mock
-    private PeriodModel p1;
-
-    @Mock
-    private PeriodModel p2;
-
-    // object to test
-    private PeriodHandler periodHandler;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        periodHandler = new PeriodHandler(store, generator);
-        when(generator.generatePeriods()).thenReturn(Lists.newArrayList(p1, p2));
-    }
-
-    @Test
-    public void call_generator_to_generate_periods() throws Exception {
-        periodHandler.generateAndPersist();
-
-        verify(generator).generatePeriods();
-        verifyNoMoreInteractions(generator);
-    }
-
-    @Test
-    public void call_store_to_persist_periods() throws Exception {
-        periodHandler.generateAndPersist();
-
-        verify(store).updateOrInsertWhere(p1);
-        verify(store).updateOrInsertWhere(p2);
-        verifyNoMoreInteractions(store);
-    }
+interface ParentPeriodGenerator {
+    List<PeriodModel> generatePeriods();
 }

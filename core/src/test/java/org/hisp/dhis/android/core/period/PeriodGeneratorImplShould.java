@@ -43,60 +43,60 @@ import static org.mockito.Mockito.when;
 public class PeriodGeneratorImplShould {
 
     @Mock
-    private DailyPeriodGenerator dailyPeriodGenerator;
+    private PeriodGenerator dailyPeriodGenerator;
 
     @Mock
-    private WeeklyPeriodGenerator weeklyPeriodGenerator;
+    private PeriodGenerator weeklyPeriodGenerator;
 
     @Mock
-    private WeeklyPeriodGenerator weeklyWednesdayPeriodGenerator;
+    private PeriodGenerator weeklyWednesdayPeriodGenerator;
 
     @Mock
-    private WeeklyPeriodGenerator weeklyThursdayPeriodGenerator;
+    private PeriodGenerator weeklyThursdayPeriodGenerator;
 
     @Mock
-    private WeeklyPeriodGenerator weeklySaturdayPeriodGenerator;
+    private PeriodGenerator weeklySaturdayPeriodGenerator;
 
     @Mock
-    private WeeklyPeriodGenerator weeklySundayPeriodGenerator;
+    private PeriodGenerator weeklySundayPeriodGenerator;
 
     @Mock
-    private MonthlyPeriodGenerator monthlyPeriodGenerator;
+    private PeriodGenerator monthlyPeriodGenerator;
 
     @Mock
-    private NMonthlyPeriodGenerator quarterPeriodGenerator;
+    private PeriodGenerator quarterPeriodGenerator;
 
     @Mock
-    private NMonthlyPeriodGenerator biMonthlyPeriodGenerator;
+    private PeriodGenerator biMonthlyPeriodGenerator;
 
     @Mock
-    private SixMonthlyPeriodGenerator sixMonthlyPeriodGenerator;
+    private PeriodGenerator sixMonthlyPeriodGenerator;
 
     @Mock
-    private SixMonthlyPeriodGenerator sixMonthlyAprilPeriodGenerator;
+    private PeriodGenerator sixMonthlyAprilPeriodGenerator;
 
     @Mock
-    private YearlyPeriodGenerator yearlyPeriodGenerator;
+    private PeriodGenerator yearlyPeriodGenerator;
 
     @Mock
-    private YearlyPeriodGenerator financialAprilPeriodGenerator;
+    private PeriodGenerator financialAprilPeriodGenerator;
 
     @Mock
-    private YearlyPeriodGenerator financialJulyPeriodGenerator;
+    private PeriodGenerator financialJulyPeriodGenerator;
 
     @Mock
-    private YearlyPeriodGenerator financialOctPeriodGenerator;
+    private PeriodGenerator financialOctPeriodGenerator;
 
     @Mock
     private PeriodModel dailyPeriod;
 
     // object to test
-    private PeriodGeneratorImpl periodGenerator;
+    private ParentPeriodGeneratorImpl periodGenerator;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        periodGenerator = new PeriodGeneratorImpl(dailyPeriodGenerator, weeklyPeriodGenerator,
+        periodGenerator = new ParentPeriodGeneratorImpl(dailyPeriodGenerator, weeklyPeriodGenerator,
                 weeklyWednesdayPeriodGenerator, weeklyThursdayPeriodGenerator, weeklySaturdayPeriodGenerator,
                 weeklySundayPeriodGenerator, monthlyPeriodGenerator, biMonthlyPeriodGenerator,
                 quarterPeriodGenerator, sixMonthlyPeriodGenerator, sixMonthlyAprilPeriodGenerator,

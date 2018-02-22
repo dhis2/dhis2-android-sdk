@@ -33,8 +33,8 @@ import java.util.Date;
 
 class MonthlyPeriodGenerator extends AbstractPeriodGenerator {
 
-    MonthlyPeriodGenerator(Calendar calendar, PeriodType periodType) {
-        super(calendar, "yyyyMM", periodType);
+    MonthlyPeriodGenerator(Calendar calendar) {
+        super(calendar, "yyyyMM", PeriodType.Monthly);
     }
 
     @Override

@@ -48,7 +48,7 @@ public class MonthlyPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
     public void generate_periods_for_one_month() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 2, 11);
-        MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar, periodType);
+        MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar);
 
         PeriodModel period = generateExpectedPeriod("201803", calendar);
 
@@ -61,7 +61,7 @@ public class MonthlyPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
     public void generate_starting_period_on_feb_29() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2016, 1, 29);
-        MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar, periodType);
+        MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar);
 
         PeriodModel period = generateExpectedPeriod("201602", calendar);
 
@@ -82,7 +82,7 @@ public class MonthlyPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
         calendar.set(2018, 10, 11);
         PeriodModel period3 = generateExpectedPeriod("201811", calendar);
 
-        MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar, periodType);
+        MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar);
 
         List<PeriodModel> generatedPeriods = generator.generateLastPeriods(3);
         List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2, period3);

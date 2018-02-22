@@ -67,7 +67,7 @@ abstract class AbstractPeriodGenerator {
                     .build();
             periods.add(period);
 
-            incrementCalendar();
+            calendar.add(Calendar.DATE, 1);
         }
         return periods;
     }
@@ -85,8 +85,4 @@ abstract class AbstractPeriodGenerator {
     }
 
     protected abstract Date getEndDateAndUpdateCalendar();
-
-    protected void incrementCalendar() {
-        calendar.add(Calendar.DATE, 1);
-    }
 }

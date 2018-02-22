@@ -73,9 +73,4 @@ class WeeklyPeriodGenerator extends AbstractPeriodGenerator {
         calendar.set(Calendar.DAY_OF_WEEK, weekStartDay + 6);
         return calendar.getTime();
     }
-
-    @Override
-    protected void incrementCalendar() {
-        calendar.add(Calendar.WEEK_OF_YEAR, 1);
-    }
 }

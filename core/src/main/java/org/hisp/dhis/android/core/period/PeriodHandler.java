@@ -41,11 +41,12 @@ public class PeriodHandler {
         this.generator = generator;
     }
 
-    public void generateAndPersist() {
+    public List<PeriodModel> generateAndPersist() {
         List<PeriodModel> periods = generator.generatePeriods();
         for (PeriodModel p : periods) {
             store.updateOrInsertWhere(p);
         }
+        return periods;
     }
 
     public static PeriodHandler create(DatabaseAdapter databaseAdapter) {

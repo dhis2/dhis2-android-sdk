@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserRole;
 
@@ -128,5 +129,20 @@ final class DataSetParentUidsHelper {
             }
         }
         return uids;
+    }
+
+
+    static Set<String> getPeriodIds(List<PeriodModel> periods) {
+        Set<String> ids = new HashSet<>();
+
+        if (periods != null) {
+            for (PeriodModel period : periods) {
+                String periodId = period.periodId();
+                if (periodId != null) {
+                    ids.add(periodId);
+                }
+            }
+        }
+        return ids;
     }
 }

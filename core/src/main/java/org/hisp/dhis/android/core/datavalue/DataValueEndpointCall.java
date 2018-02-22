@@ -54,24 +54,23 @@ public final class DataValueEndpointCall extends GenericEndpointCallImpl<DataVal
                 DataValue.allFields,
                 DataValue.lastUpdated.gt(lastUpdated),
                 commaSeparatedArrayValuesFromSet(query.dataSetUids()),
+                commaSeparatedArrayValuesFromSet(query.periodIds()),
                 commaSeparatedArrayValuesFromSet(query.orgUnitUids()),
-                query.startDate(),
-                query.endDate(),
                 Boolean.FALSE);
     }
 
     public interface Factory {
-        DataValueEndpointCall create(GenericCallData data, Set<String> dataSetUids, Set<String> orgUnitUids,
-                                     String startDate, String endDate);
+        DataValueEndpointCall create(GenericCallData data, Set<String> dataSetUids, Set<String> periodIds,
+                                     Set<String> orgUnitUids);
     }
 
     public static final DataValueEndpointCall.Factory FACTORY = new DataValueEndpointCall.Factory() {
         @Override
-        public DataValueEndpointCall create(GenericCallData data, Set<String> dataSetUids, Set<String> orgUnitUids,
-                                            String startDate, String endDate) {
+        public DataValueEndpointCall create(GenericCallData data, Set<String> dataSetUids, Set<String> periodIds,
+                                            Set<String> orgUnitUids) {
             return new DataValueEndpointCall(data, data.retrofit().create(DataValueService.class),
-                    DataValueHandler.create(data.databaseAdapter()), DataValueQuery.create(dataSetUids,
-                    orgUnitUids, startDate, endDate));
+                    DataValueHandler.create(data.databaseAdapter()), DataValueQuery.create(dataSetUids, periodIds,
+                    orgUnitUids));
         }
     };
 }

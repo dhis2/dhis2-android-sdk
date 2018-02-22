@@ -45,17 +45,17 @@ abstract class AbstractPeriodGenerator {
         this.calendar = (Calendar) calendar.clone();
         this.idFormatter = new SimpleDateFormat(dateFormatStr, Locale.US);
         this.periodType = periodType;
-        setCalendarToStartDate();
     }
 
     final List<PeriodModel> generateLastPeriods(int count) throws RuntimeException {
         if (count < 1) throw new RuntimeException("Number of last periods must be positive.");
 
         List<PeriodModel> periods = new ArrayList<>();
+        setCalendarToStartDate();
         setCalendarToFirstPeriod(count);
 
         for (int i = 0; i < count; i++) {
-            Date startDate = getStartDateAndUpdateCalendar();
+            Date startDate = calendar.getTime();
             String periodId = generateId();
             Date endDate = getEndDateAndUpdateCalendar();
 
@@ -78,10 +78,6 @@ abstract class AbstractPeriodGenerator {
 
     protected String generateId() {
         return idFormatter.format(calendar.getTime());
-    }
-
-    protected Date getStartDateAndUpdateCalendar() {
-        return calendar.getTime();
     }
 
     protected abstract Date getEndDateAndUpdateCalendar();

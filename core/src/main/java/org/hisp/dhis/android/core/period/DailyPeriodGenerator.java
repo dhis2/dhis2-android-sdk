@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.period;
 
 import java.util.Calendar;
-import java.util.Date;
 
 class DailyPeriodGenerator extends AbstractPeriodGenerator {
 
@@ -43,12 +42,7 @@ class DailyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
-    protected void setCalendarToFirstPeriod(int count) {
-        calendar.add(Calendar.DATE, -count + 1);
-    }
-
-    @Override
-    protected void forwardToNextPeriod() {
-        calendar.add(Calendar.DATE, 1);
+    protected void movePeriods(int number) {
+        calendar.add(Calendar.DATE, number);
     }
 }

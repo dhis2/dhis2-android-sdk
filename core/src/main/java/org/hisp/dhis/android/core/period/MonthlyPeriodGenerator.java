@@ -42,12 +42,7 @@ class MonthlyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
-    protected void setCalendarToFirstPeriod(int count) {
-        calendar.add(Calendar.MONTH, -count + 1);
-    }
-
-    @Override
-    protected void forwardToNextPeriod() {
-        calendar.add(Calendar.MONTH, 1);
+    protected void movePeriods(int number) {
+        calendar.add(Calendar.MONTH, number);
     }
 }

@@ -56,19 +56,14 @@ final class SixMonthlyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
-    protected void setCalendarToFirstPeriod(int count) {
-        calendar.add(Calendar.MONTH, -(6 * (count - 1)));
+    protected void movePeriods(int number) {
+        calendar.add(Calendar.MONTH, 6 * number);
     }
 
     @Override
     protected String generateId() {
         int periodNumber = calendar.get(Calendar.MONTH) == startMonth ? 1 : 2;
         return idFormatter.format(calendar.getTime()) + idAdditionalString + "S" + periodNumber;
-    }
-
-    @Override
-    protected void forwardToNextPeriod() {
-        calendar.add(Calendar.MONTH, 6);
     }
 
     static SixMonthlyPeriodGenerator sixMonthly(Calendar calendar) {

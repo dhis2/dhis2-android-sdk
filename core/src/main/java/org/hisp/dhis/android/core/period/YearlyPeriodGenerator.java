@@ -56,13 +56,8 @@ final class YearlyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
-    protected void setCalendarToFirstPeriod(int count) {
-        calendar.add(Calendar.YEAR, -count + 1);
-    }
-
-    @Override
-    protected void forwardToNextPeriod() {
-        calendar.add(Calendar.YEAR, 1);
+    protected void movePeriods(int number) {
+        calendar.add(Calendar.YEAR, number);
     }
 
     static YearlyPeriodGenerator yearly(Calendar calendar) {

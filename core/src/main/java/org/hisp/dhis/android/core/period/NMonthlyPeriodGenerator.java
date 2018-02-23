@@ -51,19 +51,14 @@ final class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
-    protected void setCalendarToFirstPeriod(int count) {
-        calendar.add(Calendar.MONTH, -(durationInMonths * (count - 1)));
+    protected void movePeriods(int number) {
+        calendar.add(Calendar.MONTH, durationInMonths * number);
     }
 
     @Override
     protected String generateId() {
         int periodNumber = calendar.get(Calendar.MONTH) / durationInMonths + 1;
         return idFormatter.format(calendar.getTime()) + idAdditionalString + periodNumber;
-    }
-
-    @Override
-    protected void forwardToNextPeriod() {
-        calendar.add(Calendar.MONTH, durationInMonths);
     }
 
     static NMonthlyPeriodGenerator biMonthly(Calendar calendar) {

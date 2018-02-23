@@ -50,8 +50,8 @@ final class WeeklyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
-    protected void setCalendarToFirstPeriod(int count) {
-        calendar.add(Calendar.WEEK_OF_YEAR, -count + 1);
+    protected void movePeriods(int number) {
+        calendar.add(Calendar.WEEK_OF_YEAR, number);
     }
 
     @Override
@@ -62,11 +62,6 @@ final class WeeklyPeriodGenerator extends AbstractPeriodGenerator {
         String year = idFormatter.format(fourthWeekDay);
         Integer weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
         return year + suffix + weekOfYear;
-    }
-
-    @Override
-    protected void forwardToNextPeriod() {
-        calendar.add(Calendar.WEEK_OF_YEAR, 1);
     }
 
     static WeeklyPeriodGenerator monday(Calendar calendar) {

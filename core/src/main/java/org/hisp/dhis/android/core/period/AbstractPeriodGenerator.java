@@ -56,13 +56,13 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
         List<PeriodModel> periods = new ArrayList<>();
         setCalendarToStartTimeOfADay(calendar);
         setCalendarToStartDate();
-        setCalendarToFirstPeriod(count);
+        movePeriods(1 - count);
 
         for (int i = 0; i < count; i++) {
             Date startDate = calendar.getTime();
             String periodId = generateId();
 
-            this.forwardToNextPeriod();
+            this.movePeriods(1);
             calendar.add(Calendar.MILLISECOND, -1);
             Date endDate = calendar.getTime();
 
@@ -88,11 +88,9 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
 
     protected abstract void setCalendarToStartDate();
 
-    protected abstract void setCalendarToFirstPeriod(int count);
+    protected abstract void movePeriods(int number);
 
     protected String generateId() {
         return idFormatter.format(calendar.getTime());
     }
-
-    protected abstract void forwardToNextPeriod();
 }

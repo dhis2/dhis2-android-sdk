@@ -55,7 +55,7 @@ public final class ProgramAccessEndpointCall extends BaseEndpointCall<Program> {
         ProgramAccessEndpointCall create(GenericCallData data);
     }
 
-    static final ProgramAccessEndpointCall.Factory FACTORY = new ProgramAccessEndpointCall.Factory() {
+    public static final ProgramAccessEndpointCall.Factory FACTORY = new ProgramAccessEndpointCall.Factory() {
         @Override
         public ProgramAccessEndpointCall create(GenericCallData data) {
             return new ProgramAccessEndpointCall(data, data.retrofit().create(ProgramService.class));

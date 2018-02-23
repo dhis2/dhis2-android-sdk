@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.ResponseValidator;
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
@@ -56,6 +57,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkSt
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramAccessEndpointCall;
 import org.hisp.dhis.android.core.program.ProgramCall;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
@@ -294,7 +296,15 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
-            Set<String> programUids = getAssignedProgramUids(user);
+            Response<Payload<Program>> programAccessResponse = ProgramAccessEndpointCall.FACTORY
+                    .create(data).call();
+            response = programAccessResponse;
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            Set<String> programUids = getProgramUidsWithDataReadAccess(programAccessResponse.body().items());
             response = new ProgramCall(
                     programService, databaseAdapter, resourceStore, programUids, programStore,
                     data.serverDate(),
@@ -411,8 +421,9 @@ public class MetadataCall implements Call<Response> {
         return uids;
     }
 
-    private Set<String> getAssignedProgramUids(User user) {
-        if (user == null || user.userCredentials() == null
+    private Set<String> getProgramUidsWithDataReadAccess(List<Program> programsWithAccess) {
+        // TODO decide what to do with the organisation unit programs
+        /*if (user == null || user.userCredentials() == null
                 || user.userCredentials().userRoles() == null) {
             return null;
         }
@@ -420,6 +431,15 @@ public class MetadataCall implements Call<Response> {
         Set<String> programUids = new HashSet<>();
 
         getProgramUidsFromOrganisationUnits(user, programUids);
+
+        return programUids;*/
+        Set<String> programUids = new HashSet<>();
+        for (Program program: programsWithAccess) {
+            Access access = program.access();
+            if (access != null && access.data().read()) {
+                programUids.add(program.uid());
+            }
+        }
 
         return programUids;
     }

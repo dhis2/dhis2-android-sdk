@@ -34,77 +34,77 @@ import java.util.List;
 
 final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
 
-    private final PeriodGenerator dailyPeriodGenerator;
-    private final PeriodGenerator weeklyPeriodGenerator;
-    private final PeriodGenerator weeklyWednesdayPeriodGenerator;
-    private final PeriodGenerator weeklyThursdayPeriodGenerator;
-    private final PeriodGenerator weeklySaturdayPeriodGenerator;
-    private final PeriodGenerator weeklySundayPeriodGenerator;
-    private final PeriodGenerator monthlyPeriodGenerator;
-    private final PeriodGenerator biMonthlyPeriodGenerator;
-    private final PeriodGenerator quarterPeriodGenerator;
-    private final PeriodGenerator sixMonthlyPeriodGenerator;
-    private final PeriodGenerator sixMonthlyAprilPeriodGenerator;
-    private final PeriodGenerator yearlyPeriodGenerator;
-    private final PeriodGenerator financialAprilPeriodGenerator;
-    private final PeriodGenerator financialJulyPeriodGenerator;
-    private final PeriodGenerator financialOctPeriodGenerator;
+    private final PeriodGenerator daily;
+    private final PeriodGenerator weekly;
+    private final PeriodGenerator weeklyWednesday;
+    private final PeriodGenerator weeklyThursday;
+    private final PeriodGenerator weeklySaturday;
+    private final PeriodGenerator weeklySunday;
+    private final PeriodGenerator monthly;
+    private final PeriodGenerator biMonthly;
+    private final PeriodGenerator quarter;
+    private final PeriodGenerator sixMonthly;
+    private final PeriodGenerator sixMonthlyApril;
+    private final PeriodGenerator yearly;
+    private final PeriodGenerator financialApril;
+    private final PeriodGenerator financialJuly;
+    private final PeriodGenerator financialOct;
 
-    ParentPeriodGeneratorImpl(PeriodGenerator dailyPeriodGenerator,
-                              PeriodGenerator weeklyPeriodGenerator,
-                              PeriodGenerator weeklyWednesdayPeriodGenerator,
-                              PeriodGenerator weeklyThursdayPeriodGenerator,
-                              PeriodGenerator weeklySaturdayPeriodGenerator,
-                              PeriodGenerator weeklySundayPeriodGenerator,
-                              PeriodGenerator monthlyPeriodGenerator,
-                              PeriodGenerator biMonthlyPeriodGenerator,
-                              PeriodGenerator quarterPeriodGenerator,
-                              PeriodGenerator sixMonthlyPeriodGenerator,
-                              PeriodGenerator sixMonthlyAprilPeriodGenerator,
-                              PeriodGenerator yearlyPeriodGenerator,
-                              PeriodGenerator financialAprilPeriodGenerator,
-                              PeriodGenerator financialJulyPeriodGenerator,
-                              PeriodGenerator financialOctPeriodGenerator) {
-        this.dailyPeriodGenerator = dailyPeriodGenerator;
-        this.weeklyPeriodGenerator = weeklyPeriodGenerator;
-        this.weeklyWednesdayPeriodGenerator = weeklyWednesdayPeriodGenerator;
-        this.weeklyThursdayPeriodGenerator = weeklyThursdayPeriodGenerator;
-        this.weeklySaturdayPeriodGenerator = weeklySaturdayPeriodGenerator;
-        this.weeklySundayPeriodGenerator = weeklySundayPeriodGenerator;
-        this.monthlyPeriodGenerator = monthlyPeriodGenerator;
-        this.biMonthlyPeriodGenerator = biMonthlyPeriodGenerator;
-        this.quarterPeriodGenerator = quarterPeriodGenerator;
-        this.sixMonthlyPeriodGenerator = sixMonthlyPeriodGenerator;
-        this.sixMonthlyAprilPeriodGenerator = sixMonthlyAprilPeriodGenerator;
-        this.yearlyPeriodGenerator = yearlyPeriodGenerator;
-        this.financialAprilPeriodGenerator = financialAprilPeriodGenerator;
-        this.financialJulyPeriodGenerator = financialJulyPeriodGenerator;
-        this.financialOctPeriodGenerator = financialOctPeriodGenerator;
+    ParentPeriodGeneratorImpl(PeriodGenerator daily,
+                              PeriodGenerator weekly,
+                              PeriodGenerator weeklyWednesday,
+                              PeriodGenerator weeklyThursday,
+                              PeriodGenerator weeklySaturday,
+                              PeriodGenerator weeklySunday,
+                              PeriodGenerator monthly,
+                              PeriodGenerator biMonthly,
+                              PeriodGenerator quarter,
+                              PeriodGenerator sixMonthly,
+                              PeriodGenerator sixMonthlyApril,
+                              PeriodGenerator yearly,
+                              PeriodGenerator financialApril,
+                              PeriodGenerator financialJuly,
+                              PeriodGenerator financialOct) {
+        this.daily = daily;
+        this.weekly = weekly;
+        this.weeklyWednesday = weeklyWednesday;
+        this.weeklyThursday = weeklyThursday;
+        this.weeklySaturday = weeklySaturday;
+        this.weeklySunday = weeklySunday;
+        this.monthly = monthly;
+        this.biMonthly = biMonthly;
+        this.quarter = quarter;
+        this.sixMonthly = sixMonthly;
+        this.sixMonthlyApril = sixMonthlyApril;
+        this.yearly = yearly;
+        this.financialApril = financialApril;
+        this.financialJuly = financialJuly;
+        this.financialOct = financialOct;
     }
 
     public List<PeriodModel> generatePeriods() {
         List<PeriodModel> periods = new ArrayList<>();
-        periods.addAll(dailyPeriodGenerator.generateLastPeriods(60));
+        periods.addAll(daily.generateLastPeriods(60));
 
-        periods.addAll(weeklyPeriodGenerator.generateLastPeriods(13));
-        periods.addAll(weeklyWednesdayPeriodGenerator.generateLastPeriods(13));
-        periods.addAll(weeklyThursdayPeriodGenerator.generateLastPeriods(13));
-        periods.addAll(weeklySaturdayPeriodGenerator.generateLastPeriods(13));
-        periods.addAll(weeklySundayPeriodGenerator.generateLastPeriods(13));
+        periods.addAll(weekly.generateLastPeriods(13));
+        periods.addAll(weeklyWednesday.generateLastPeriods(13));
+        periods.addAll(weeklyThursday.generateLastPeriods(13));
+        periods.addAll(weeklySaturday.generateLastPeriods(13));
+        periods.addAll(weeklySunday.generateLastPeriods(13));
 
-        periods.addAll(monthlyPeriodGenerator.generateLastPeriods(12));
+        periods.addAll(monthly.generateLastPeriods(12));
 
-        periods.addAll(biMonthlyPeriodGenerator.generateLastPeriods(6));
+        periods.addAll(biMonthly.generateLastPeriods(6));
 
-        periods.addAll(quarterPeriodGenerator.generateLastPeriods(4));
+        periods.addAll(quarter.generateLastPeriods(4));
 
-        periods.addAll(sixMonthlyPeriodGenerator.generateLastPeriods(2));
-        periods.addAll(sixMonthlyAprilPeriodGenerator.generateLastPeriods(2));
+        periods.addAll(sixMonthly.generateLastPeriods(2));
+        periods.addAll(sixMonthlyApril.generateLastPeriods(2));
 
-        periods.addAll(yearlyPeriodGenerator.generateLastPeriods(5));
-        periods.addAll(financialAprilPeriodGenerator.generateLastPeriods(5));
-        periods.addAll(financialJulyPeriodGenerator.generateLastPeriods(5));
-        periods.addAll(financialOctPeriodGenerator.generateLastPeriods(5));
+        periods.addAll(yearly.generateLastPeriods(5));
+        periods.addAll(financialApril.generateLastPeriods(5));
+        periods.addAll(financialJuly.generateLastPeriods(5));
+        periods.addAll(financialOct.generateLastPeriods(5));
 
         return periods;
     }

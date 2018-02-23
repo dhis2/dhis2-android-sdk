@@ -35,7 +35,7 @@ class SixMonthlyPeriodGenerator extends AbstractPeriodGenerator {
     private final String idAdditionalString;
     private final int startMonth;
 
-    SixMonthlyPeriodGenerator(Calendar calendar, PeriodType periodType, String idAdditionalString,
+    private SixMonthlyPeriodGenerator(Calendar calendar, PeriodType periodType, String idAdditionalString,
                               int startMonth) {
         super(calendar, "yyyy", periodType);
         this.idAdditionalString = idAdditionalString;
@@ -72,5 +72,15 @@ class SixMonthlyPeriodGenerator extends AbstractPeriodGenerator {
         calendar.add(Calendar.MONTH, 6);
         calendar.add(Calendar.MILLISECOND, -1);
         return calendar.getTime();
+    }
+
+    static SixMonthlyPeriodGenerator sixMonthly(Calendar calendar) {
+        return new SixMonthlyPeriodGenerator(calendar, PeriodType.SixMonthly,
+                "", Calendar.JANUARY);
+    }
+
+    static SixMonthlyPeriodGenerator sixMonthlyApril(Calendar calendar) {
+        return new SixMonthlyPeriodGenerator(calendar, PeriodType.SixMonthlyApril,
+                "April", Calendar.APRIL);
     }
 }

@@ -13,8 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
 

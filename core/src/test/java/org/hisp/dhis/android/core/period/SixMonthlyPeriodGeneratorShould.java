@@ -44,7 +44,7 @@ public class SixMonthlyPeriodGeneratorShould {
     public void generate_last_period() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 1, 21);
-        SixMonthlyPeriodGenerator generator = SixMonthlyPeriodGenerator.sixMonthly(calendar);
+        NMonthlyPeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2018, 0, 1);
@@ -60,7 +60,7 @@ public class SixMonthlyPeriodGeneratorShould {
     public void generate_starting_period_on_first_day_for_january() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 0, 1);
-        SixMonthlyPeriodGenerator generator = SixMonthlyPeriodGenerator.sixMonthly(calendar);
+        NMonthlyPeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2018, 0, 1);
@@ -76,7 +76,7 @@ public class SixMonthlyPeriodGeneratorShould {
     public void generate_ending_period_on_last_day_for_january() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2017, 11, 31);
-        SixMonthlyPeriodGenerator generator = SixMonthlyPeriodGenerator.sixMonthly(calendar);
+        NMonthlyPeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2017, 6, 1);
@@ -92,7 +92,7 @@ public class SixMonthlyPeriodGeneratorShould {
     public void generate_last_two_periods() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 1, 21);
-        SixMonthlyPeriodGenerator generator = SixMonthlyPeriodGenerator.sixMonthly(calendar);
+        NMonthlyPeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
 
         Calendar period1StartCalendar = (Calendar) calendar.clone();
         period1StartCalendar.set(2017, 6, 1);

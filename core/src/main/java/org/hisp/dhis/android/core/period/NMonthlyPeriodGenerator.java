@@ -34,19 +34,25 @@ final class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
 
     private final int durationInMonths;
     private final String idAdditionalString;
+    private final int startMonth;
 
-    private NMonthlyPeriodGenerator(Calendar calendar, PeriodType periodType, int durationInMonths,
-                            String idAdditionalString) {
+    NMonthlyPeriodGenerator(Calendar calendar, PeriodType periodType, int durationInMonths,
+                                    String idAdditionalString, int startMonth) {
         super(calendar, "yyyy", periodType);
         this.durationInMonths = durationInMonths;
         this.idAdditionalString = idAdditionalString;
+        this.startMonth = startMonth;
     }
 
     @Override
     protected void setCalendarToStartDate() {
         calendar.set(Calendar.DATE, 1);
         int currentMonth = calendar.get(Calendar.MONTH);
-        int startMonth = currentMonth - (currentMonth % durationInMonths);
+        if (currentMonth < startMonth) {
+            calendar.add(Calendar.YEAR, -1);
+        }
+        int monthsFromStart = currentMonth - startMonth;
+        int startMonth = monthsFromStart - (monthsFromStart % durationInMonths);
         calendar.set(Calendar.MONTH, startMonth);
     }
 
@@ -59,13 +65,5 @@ final class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
     protected String generateId() {
         int periodNumber = calendar.get(Calendar.MONTH) / durationInMonths + 1;
         return idFormatter.format(calendar.getTime()) + idAdditionalString + periodNumber;
-    }
-
-    static NMonthlyPeriodGenerator biMonthly(Calendar calendar) {
-        return new NMonthlyPeriodGenerator(calendar, PeriodType.BiMonthly, 2, "B");
-    }
-
-    static NMonthlyPeriodGenerator quarter(Calendar calendar) {
-        return new NMonthlyPeriodGenerator(calendar, PeriodType.Quarterly, 3, "Q");
     }
 }

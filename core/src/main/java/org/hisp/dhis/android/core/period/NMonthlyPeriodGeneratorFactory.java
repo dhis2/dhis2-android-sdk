@@ -30,49 +30,24 @@ package org.hisp.dhis.android.core.period;
 
 import java.util.Calendar;
 
-final class SixMonthlyPeriodGenerator extends AbstractPeriodGenerator {
-    private final String idAdditionalString;
-    private final int startMonth;
-
-    private SixMonthlyPeriodGenerator(Calendar calendar, PeriodType periodType, String idAdditionalString,
-                              int startMonth) {
-        super(calendar, "yyyy", periodType);
-        this.idAdditionalString = idAdditionalString;
-        this.startMonth = startMonth;
+final class NMonthlyPeriodGeneratorFactory {
+    static NMonthlyPeriodGenerator biMonthly(Calendar calendar) {
+        return new NMonthlyPeriodGenerator(calendar, PeriodType.BiMonthly, 2,
+                "B", Calendar.JANUARY);
     }
 
-    @Override
-    protected void setCalendarToStartDate() {
-        calendar.set(Calendar.DATE, 1);
-        int month = calendar.get(Calendar.MONTH);
-        if (month < startMonth) {
-            calendar.add(Calendar.YEAR, -1);
-            calendar.set(Calendar.MONTH, startMonth + 6);
-        } else if (month < startMonth + 6) {
-            calendar.set(Calendar.MONTH, startMonth);
-        } else {
-            calendar.set(Calendar.MONTH, startMonth + 6);
-        }
+    static NMonthlyPeriodGenerator quarter(Calendar calendar) {
+        return new NMonthlyPeriodGenerator(calendar, PeriodType.Quarterly, 3,
+                "Q", Calendar.JANUARY);
     }
 
-    @Override
-    protected void movePeriods(int number) {
-        calendar.add(Calendar.MONTH, 6 * number);
+    static NMonthlyPeriodGenerator sixMonthly(Calendar calendar) {
+        return new NMonthlyPeriodGenerator(calendar, PeriodType.SixMonthly, 6,
+                "S", Calendar.JANUARY);
     }
 
-    @Override
-    protected String generateId() {
-        int periodNumber = calendar.get(Calendar.MONTH) == startMonth ? 1 : 2;
-        return idFormatter.format(calendar.getTime()) + idAdditionalString + "S" + periodNumber;
-    }
-
-    static SixMonthlyPeriodGenerator sixMonthly(Calendar calendar) {
-        return new SixMonthlyPeriodGenerator(calendar, PeriodType.SixMonthly,
-                "", Calendar.JANUARY);
-    }
-
-    static SixMonthlyPeriodGenerator sixMonthlyApril(Calendar calendar) {
-        return new SixMonthlyPeriodGenerator(calendar, PeriodType.SixMonthlyApril,
-                "April", Calendar.APRIL);
+    static NMonthlyPeriodGenerator sixMonthlyApril(Calendar calendar) {
+        return new NMonthlyPeriodGenerator(calendar, PeriodType.SixMonthlyApril, 6,
+                "AprilS", Calendar.APRIL);
     }
 }

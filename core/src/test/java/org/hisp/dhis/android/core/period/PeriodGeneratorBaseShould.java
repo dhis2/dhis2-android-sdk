@@ -27,39 +27,42 @@
  */
 package org.hisp.dhis.android.core.period;
 
-import org.junit.Test;
-
 import java.util.Calendar;
 
-import static junit.framework.TestCase.fail;
-
-public abstract class PeriodGeneratorAbstractShould {
+public abstract class PeriodGeneratorBaseShould {
 
     protected final PeriodType periodType;
+    protected final Calendar calendar;
+    private final int calendarCode;
+    private final int incrementsAmount;
 
-    PeriodGeneratorAbstractShould(PeriodType periodType) {
+    PeriodGeneratorBaseShould(PeriodType periodType, int calendarCode) {
+        this(periodType, calendarCode, 1);
+    }
+
+    PeriodGeneratorBaseShould(PeriodType periodType, int calendarCode, int incrementsAmount) {
         this.periodType = periodType;
+        this.calendar = Calendar.getInstance();
+        this.calendarCode = calendarCode;
+        this.incrementsAmount = incrementsAmount;
     }
 
-    @Test
-    public void throw_exception_for_negative_periods() throws Exception {
-        try {
-            // TODO NMonthly can't be used here
-            NMonthlyPeriodGeneratorFactory.quarter(Calendar.getInstance()).generateLastPeriods(-12);
-            fail("Exception was expected, but nothing was thrown.");
-        } catch (RuntimeException e) {
-            // No operation.
-        }
+    PeriodModel generateExpectedPeriod(String id, Calendar cal) {
+        Calendar startCalendar = (Calendar) cal.clone();
+        AbstractPeriodGenerator.setCalendarToStartTimeOfADay(startCalendar);
+        setStartCalendar(startCalendar);
+        Calendar endCalendar = (Calendar) startCalendar.clone();
+        endCalendar.add(calendarCode, incrementsAmount);
+        endCalendar.add(Calendar.MILLISECOND, -1);
+        return PeriodModel.builder()
+                .periodId(id)
+                .periodType(periodType)
+                .startDate(startCalendar.getTime())
+                .endDate(endCalendar.getTime())
+                .build();
     }
 
-    @Test
-    public void throw_exception_for_zero_periods() throws Exception {
-        try {
-            // TODO NMonthly can't be used here
-            NMonthlyPeriodGeneratorFactory.quarter(Calendar.getInstance()).generateLastPeriods(0);
-            fail("Exception was expected, but nothing was thrown.");
-        } catch (RuntimeException e) {
-            // No operation.
-        }
+    protected void setStartCalendar(Calendar calendar) {
+        // do nothing.
     }
 }

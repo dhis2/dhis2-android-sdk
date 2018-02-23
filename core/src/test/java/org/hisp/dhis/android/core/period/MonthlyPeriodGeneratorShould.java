@@ -38,20 +38,18 @@ import java.util.List;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
-public class MonthlyPeriodGeneratorShould extends PeriodGeneratorAbstractShould {
+public class MonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
 
     public MonthlyPeriodGeneratorShould() {
-        super(PeriodType.Monthly);
+        super(PeriodType.Monthly, Calendar.MONTH);
     }
 
     @Test
     public void generate_periods_for_one_month() throws Exception {
-        Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 2, 11);
-        MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar);
-
         PeriodModel period = generateExpectedPeriod("201803", calendar);
 
+        MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar);
         List<PeriodModel> generatedPeriods = generator.generateLastPeriods(1);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
@@ -59,12 +57,10 @@ public class MonthlyPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
 
     @Test
     public void generate_starting_period_on_feb_29() throws Exception {
-        Calendar calendar = Calendar.getInstance();
         calendar.set(2016, 1, 29);
-        MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar);
-
         PeriodModel period = generateExpectedPeriod("201602", calendar);
 
+        MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar);
         List<PeriodModel> generatedPeriods = generator.generateLastPeriods(1);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
@@ -72,36 +68,22 @@ public class MonthlyPeriodGeneratorShould extends PeriodGeneratorAbstractShould 
 
     @Test
     public void generate_periods_for_three_months() throws Exception {
-        Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 8, 11);
         PeriodModel period1 = generateExpectedPeriod("201809", calendar);
-
         calendar.set(2018, 9, 11);
         PeriodModel period2 = generateExpectedPeriod("201810", calendar);
-
         calendar.set(2018, 10, 11);
         PeriodModel period3 = generateExpectedPeriod("201811", calendar);
+        List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2, period3);
 
         MonthlyPeriodGenerator generator = new MonthlyPeriodGenerator(calendar);
-
         List<PeriodModel> generatedPeriods = generator.generateLastPeriods(3);
-        List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2, period3);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
     }
 
-    private PeriodModel generateExpectedPeriod(String id, Calendar cal) {
-        Calendar calendar = (Calendar) cal.clone();
-        AbstractPeriodGenerator.setCalendarToStartTimeOfADay(calendar);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        Calendar endCalendar = (Calendar) calendar.clone();
-        endCalendar.add(Calendar.MONTH, 1);
-        endCalendar.add(Calendar.MILLISECOND, -1);
-        return PeriodModel.builder()
-                .periodId(id)
-                .periodType(periodType)
-                .startDate(calendar.getTime())
-                .endDate(endCalendar.getTime())
-                .build();
+    @Override
+    protected void setStartCalendar(Calendar startCalendar) {
+        startCalendar.set(Calendar.DAY_OF_MONTH, 1);
     }
 }

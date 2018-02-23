@@ -38,27 +38,24 @@ import java.util.List;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
-public class DailyPeriodGeneratorShould extends PeriodGeneratorAbstractShould {
+public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
 
     public DailyPeriodGeneratorShould() {
-        super(PeriodType.Daily);
+        super(PeriodType.Daily, Calendar.DATE);
     }
 
     @Test
     public void generate_daily_periods_for_one_day() throws Exception {
-        Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 1, 1);
         PeriodModel period = generateExpectedPeriod("20180201", calendar);
 
         List<PeriodModel> generatedPeriods = new DailyPeriodGenerator(calendar).generateLastPeriods(1);
-        List<PeriodModel> expectedPeriods = Lists.newArrayList(period);
 
-        assertThat(generatedPeriods).isEqualTo(expectedPeriods);
+        assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
 
     @Test
     public void generate_daily_periods() throws Exception {
-        Calendar calendar = Calendar.getInstance();
         calendar.set(2018,2,4);
         PeriodModel period1 = generateExpectedPeriod("20180304", calendar);
         calendar.set(2018, 2, 5);
@@ -72,7 +69,6 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorAbstractShould {
 
     @Test
     public void generate_daily_periods_for_changing_year() throws Exception {
-        Calendar calendar = Calendar.getInstance();
         calendar.set(2017,11,31);
         PeriodModel period1 = generateExpectedPeriod("20171231", calendar);
         calendar.set(2018, 0, 1);
@@ -84,19 +80,5 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorAbstractShould {
         List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2, period3);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
-    }
-
-    private PeriodModel generateExpectedPeriod(String id, Calendar cal) {
-        Calendar calendar = (Calendar) cal.clone();
-        AbstractPeriodGenerator.setCalendarToStartTimeOfADay(calendar);
-        Calendar endCalendar = (Calendar) calendar.clone();
-        endCalendar.add(Calendar.DATE, 1);
-        endCalendar.add(Calendar.MILLISECOND, -1);
-        return PeriodModel.builder()
-                .periodId(id)
-                .periodType(periodType)
-                .startDate(calendar.getTime())
-                .endDate(endCalendar.getTime())
-                .build();
     }
 }

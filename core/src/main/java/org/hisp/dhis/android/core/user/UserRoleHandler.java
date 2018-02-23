@@ -67,12 +67,6 @@ public class UserRoleHandler {
                             userRole.name(), userRole.displayName(), userRole.created(),
                             userRole.lastUpdated());
                 }
-
-                List<Program> programs = userRole.programs();
-
-                insertOrUpdateUserRoleProgramLink(userRole, programs);
-
-
             }
         }
     }

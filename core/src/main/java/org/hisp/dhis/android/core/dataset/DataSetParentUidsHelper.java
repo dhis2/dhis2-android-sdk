@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserRole;
 
 import java.util.HashSet;
 import java.util.List;
@@ -48,7 +47,6 @@ final class DataSetParentUidsHelper {
 
         Set<String> dataSetUids = new HashSet<>();
 
-        getDataSetUidsFromUserRoles(user, dataSetUids);
         getDataSetUidsFromOrganisationUnits(user, dataSetUids);
 
         return dataSetUids;
@@ -60,16 +58,6 @@ final class DataSetParentUidsHelper {
         if (organisationUnits != null) {
             for (OrganisationUnit organisationUnit : organisationUnits) {
                 addDataSets(organisationUnit.dataSets(), dataSetUids);
-            }
-        }
-    }
-
-    private static void getDataSetUidsFromUserRoles(User user, Set<String> dataSetUids) {
-        List<UserRole> userRoles = user.userCredentials().userRoles();
-
-        if (userRoles != null) {
-            for (UserRole userRole : userRoles) {
-                addDataSets(userRole.dataSets(), dataSetUids);
             }
         }
     }

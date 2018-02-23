@@ -85,7 +85,6 @@ import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserRole;
 import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserService;
@@ -420,7 +419,6 @@ public class MetadataCall implements Call<Response> {
 
         Set<String> programUids = new HashSet<>();
 
-        getProgramUidsFromUserRoles(user, programUids);
         getProgramUidsFromOrganisationUnits(user, programUids);
 
         return programUids;
@@ -437,23 +435,6 @@ public class MetadataCall implements Call<Response> {
                 int programSize = organisationUnit.programs().size();
                 for (int j = 0; j < programSize; j++) {
                     Program program = organisationUnit.programs().get(j);
-
-                    programUids.add(program.uid());
-                }
-            }
-        }
-    }
-
-    private void getProgramUidsFromUserRoles(User user, Set<String> programUids) {
-        List<UserRole> userRoles = user.userCredentials().userRoles();
-        if (userRoles != null) {
-            int size = userRoles.size();
-            for (int i = 0; i < size; i++) {
-                UserRole userRole = userRoles.get(i);
-
-                int programSize = userRole.programs().size();
-                for (int j = 0; j < programSize; j++) {
-                    Program program = userRole.programs().get(j);
 
                     programUids.add(program.uid());
                 }

@@ -141,9 +141,7 @@ public final class UserCall implements Call<Response<User>> {
                         UserCredentials.created,
                         UserCredentials.lastUpdated,
                         UserCredentials.username,
-                        UserCredentials.userRoles.with(UserRole.uid,
-                                UserRole.programs.with(Program.uid),
-                                UserRole.dataSets.with(DataSet.uid))
+                        UserCredentials.userRoles.with(UserRole.uid)
                 ),
                 User.organisationUnits.with(
                         OrganisationUnit.uid,

@@ -47,7 +47,6 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetService;
@@ -346,8 +345,6 @@ public class MetadataCallShould {
                 anyBoolean(), any(Fields.class), any(Filter.class))
         ).thenReturn(optionSetCall);
 
-
-        when(userRole.dataSets()).thenReturn(new ArrayList<DataSet>());
         userRoles = new ArrayList<>();
         userRoles.add(userRole);
 

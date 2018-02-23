@@ -150,7 +150,6 @@ public class UserCallShould {
         when(userRole.displayName()).thenReturn("user_role_display_name");
         when(userRole.created()).thenReturn(created);
         when(userRole.lastUpdated()).thenReturn(lastUpdated);
-        when(userRole.programs()).thenReturn(Collections.singletonList(program));
 
         when(organisationUnit.uid()).thenReturn("organisation_unit_uid");
         when(organisationUnit.code()).thenReturn("organisation_unit_code");
@@ -222,11 +221,7 @@ public class UserCallShould {
                                 UserCredentials.created,
                                 UserCredentials.lastUpdated,
                                 UserCredentials.username,
-                                UserCredentials.userRoles.with(
-                                        UserRole.uid,
-                                        UserRole.programs.with(Program.uid),
-                                        UserRole.dataSets.with(DataSet.uid)
-                                )
+                                UserCredentials.userRoles.with(UserRole.uid)
                         ),
                         User.organisationUnits.with(
                                 OrganisationUnit.uid,
@@ -391,7 +386,8 @@ public class UserCallShould {
                 anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class)
         );
 
-        verify(userRoleProgramLinkStore, times(1)).insert(anyString(), anyString());
+        // TODO decide if this link has to be persisted or table can be completely deleted
+        // verify(userRoleProgramLinkStore, times(1)).insert(anyString(), anyString());
 
         verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
 

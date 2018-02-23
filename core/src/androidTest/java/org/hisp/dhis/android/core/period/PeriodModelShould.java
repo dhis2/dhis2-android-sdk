@@ -32,8 +32,6 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.PeriodModel;
-import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -48,7 +46,7 @@ public class PeriodModelShould {
     @Test
     public void create_model_when_created_from_database_cursor() throws ParseException {
         String periodId = "2018W1";
-        String periodType = "Weekly";
+        String periodType = PeriodType.Weekly.toString();
 
         String startDateStr = "2018-01-01T00:00:00.000";
         Date startDate = BaseIdentifiableObject.DATE_FORMAT.parse(startDateStr);

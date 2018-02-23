@@ -117,20 +117,4 @@ public final class Utils {
     public static String commaSeparatedArrayValuesFromSet(Set<String> values) {
         return  commaSeparatedArrayValues(values.toArray(new String[values.size()]));
     }
-
-    public static String generateFormattedStartDateStr() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.YEAR, -1);
-        cal.add(Calendar.MONTH, -1);
-        Date previousYear = cal.getTime();
-
-        return formatter.format(previousYear);
-    }
-
-    public static String generateFormattedEndDateStr() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        return formatter.format(new Date());
-    }
 }

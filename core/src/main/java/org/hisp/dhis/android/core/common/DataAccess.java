@@ -36,8 +36,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
-
 @AutoValue
 public abstract class DataAccess {
     private static final String READ = "read";

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.period;
 
 import java.util.Calendar;
 
-class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
+final class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
 
     private final int durationInMonths;
     private final String idAdditionalString;

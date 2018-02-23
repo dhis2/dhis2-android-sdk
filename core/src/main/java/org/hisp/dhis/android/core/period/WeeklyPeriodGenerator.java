@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.period;
 import java.util.Calendar;
 import java.util.Date;
 
-class WeeklyPeriodGenerator extends AbstractPeriodGenerator {
+final class WeeklyPeriodGenerator extends AbstractPeriodGenerator {
     private final int weekStartDay;
     private final String suffix;
 

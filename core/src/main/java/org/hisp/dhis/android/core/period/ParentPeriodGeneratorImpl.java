@@ -123,10 +123,10 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
                 NMonthlyPeriodGeneratorFactory.quarter(calendar),
                 NMonthlyPeriodGeneratorFactory.sixMonthly(calendar),
                 NMonthlyPeriodGeneratorFactory.sixMonthlyApril(calendar),
-                YearlyPeriodGenerator.yearly(calendar),
-                YearlyPeriodGenerator.financialApril(calendar),
-                YearlyPeriodGenerator.financialJuly(calendar),
-                YearlyPeriodGenerator.financialOct(calendar)
+                YearlyPeriodGeneratorFactory.yearly(calendar),
+                YearlyPeriodGeneratorFactory.financialApril(calendar),
+                YearlyPeriodGeneratorFactory.financialJuly(calendar),
+                YearlyPeriodGeneratorFactory.financialOct(calendar)
         );
     }
 }

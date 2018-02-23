@@ -30,33 +30,20 @@ package org.hisp.dhis.android.core.period;
 
 import java.util.Calendar;
 
-final class YearlyPeriodGenerator extends AbstractPeriodGenerator {
-    private final int firstMonth;
-    private final String suffix;
-
-    YearlyPeriodGenerator(Calendar calendar, PeriodType periodType, int firstMonth, String suffix) {
-        super(calendar, "yyyy", periodType);
-        this.firstMonth = firstMonth;
-        this.suffix = suffix;
+final class YearlyPeriodGeneratorFactory {
+    static YearlyPeriodGenerator yearly(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.Yearly, Calendar.JANUARY, "");
     }
 
-    @Override
-    protected void setCalendarToStartDate() {
-        calendar.set(Calendar.DATE, 1);
-        if (calendar.get(Calendar.MONTH) < firstMonth) {
-            calendar.add(Calendar.YEAR, -1);
-        }
-        calendar.set(Calendar.MONTH, firstMonth);
+    static YearlyPeriodGenerator financialApril(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialApril, Calendar.APRIL, "April");
     }
 
-    @Override
-    protected String generateId() {
-        String year = idFormatter.format(calendar.getTime());
-        return year + suffix;
+    static YearlyPeriodGenerator financialJuly(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialJuly, Calendar.JULY, "July");
     }
 
-    @Override
-    protected void movePeriods(int number) {
-        calendar.add(Calendar.YEAR, number);
+    static YearlyPeriodGenerator financialOct(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialOct, Calendar.OCTOBER, "Oct");
     }
 }

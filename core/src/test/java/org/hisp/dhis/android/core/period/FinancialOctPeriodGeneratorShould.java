@@ -44,7 +44,7 @@ public class FinancialOctPeriodGeneratorShould {
     public void generate_periods_for_one_year() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 1, 21);
-        YearlyPeriodGenerator generator = YearlyPeriodGenerator.financialOct(calendar);
+        YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2017, 9, 1);
@@ -60,7 +60,7 @@ public class FinancialOctPeriodGeneratorShould {
     public void generate_starting_period_on_oct_1() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2017, 9, 1);
-        YearlyPeriodGenerator generator = YearlyPeriodGenerator.financialOct(calendar);
+        YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2017, 9, 1);
@@ -76,7 +76,7 @@ public class FinancialOctPeriodGeneratorShould {
     public void generate_ending_period_on_sep_30() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2017, 8, 30);
-        YearlyPeriodGenerator generator = YearlyPeriodGenerator.financialOct(calendar);
+        YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2016, 9, 1);
@@ -92,7 +92,7 @@ public class FinancialOctPeriodGeneratorShould {
     public void generate_periods_for_two_year() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 1, 21);
-        YearlyPeriodGenerator generator = YearlyPeriodGenerator.financialOct(calendar);
+        YearlyPeriodGenerator generator = YearlyPeriodGeneratorFactory.financialOct(calendar);
 
         Calendar period1StartCalendar = (Calendar) calendar.clone();
         period1StartCalendar.set(2016, 9, 1);

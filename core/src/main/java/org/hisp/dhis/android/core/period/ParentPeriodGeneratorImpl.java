@@ -34,6 +34,14 @@ import java.util.List;
 
 final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
 
+    static final int DAILY_PERIODS = 60;
+    static final int WEEKLY_PERIODS = 13;
+    static final int MONTHLY_PERIODS = 12;
+    static final int BIMONTHLY_PERIODS = 6;
+    static final int QUARTER_PERIODS = 5;
+    static final int SIXMONTHLY_PERIODS = 5;
+    static final int YEARLY_PERIODS = 5;
+
     private final PeriodGenerator daily;
     private final PeriodGenerator weekly;
     private final PeriodGenerator weeklyWednesday;
@@ -84,27 +92,27 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
 
     public List<PeriodModel> generatePeriods() {
         List<PeriodModel> periods = new ArrayList<>();
-        periods.addAll(daily.generateLastPeriods(60));
+        periods.addAll(daily.generateLastPeriods(DAILY_PERIODS));
 
-        periods.addAll(weekly.generateLastPeriods(13));
-        periods.addAll(weeklyWednesday.generateLastPeriods(13));
-        periods.addAll(weeklyThursday.generateLastPeriods(13));
-        periods.addAll(weeklySaturday.generateLastPeriods(13));
-        periods.addAll(weeklySunday.generateLastPeriods(13));
+        periods.addAll(weekly.generateLastPeriods(WEEKLY_PERIODS));
+        periods.addAll(weeklyWednesday.generateLastPeriods(WEEKLY_PERIODS));
+        periods.addAll(weeklyThursday.generateLastPeriods(WEEKLY_PERIODS));
+        periods.addAll(weeklySaturday.generateLastPeriods(WEEKLY_PERIODS));
+        periods.addAll(weeklySunday.generateLastPeriods(WEEKLY_PERIODS));
 
-        periods.addAll(monthly.generateLastPeriods(12));
+        periods.addAll(monthly.generateLastPeriods(MONTHLY_PERIODS));
 
-        periods.addAll(biMonthly.generateLastPeriods(6));
+        periods.addAll(biMonthly.generateLastPeriods(BIMONTHLY_PERIODS));
 
-        periods.addAll(quarter.generateLastPeriods(4));
+        periods.addAll(quarter.generateLastPeriods(QUARTER_PERIODS));
 
-        periods.addAll(sixMonthly.generateLastPeriods(2));
-        periods.addAll(sixMonthlyApril.generateLastPeriods(2));
+        periods.addAll(sixMonthly.generateLastPeriods(SIXMONTHLY_PERIODS));
+        periods.addAll(sixMonthlyApril.generateLastPeriods(SIXMONTHLY_PERIODS));
 
-        periods.addAll(yearly.generateLastPeriods(5));
-        periods.addAll(financialApril.generateLastPeriods(5));
-        periods.addAll(financialJuly.generateLastPeriods(5));
-        periods.addAll(financialOct.generateLastPeriods(5));
+        periods.addAll(yearly.generateLastPeriods(YEARLY_PERIODS));
+        periods.addAll(financialApril.generateLastPeriods(YEARLY_PERIODS));
+        periods.addAll(financialJuly.generateLastPeriods(YEARLY_PERIODS));
+        periods.addAll(financialOct.generateLastPeriods(YEARLY_PERIODS));
 
         return periods;
     }

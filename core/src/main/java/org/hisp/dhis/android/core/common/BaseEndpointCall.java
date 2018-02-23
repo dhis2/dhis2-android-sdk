@@ -25,27 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.data.api.Where;
-import org.hisp.dhis.android.core.data.api.Which;
+package org.hisp.dhis.android.core.common;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import org.hisp.dhis.android.core.calls.Call;
 
-public interface DataSetService {
-    @GET("dataSets")
-    Call<Payload<DataSet>> getDataSets(@Query("fields") @Which Fields<DataSet> fields,
-                                       @Query("filter") @Where Filter<DataSet, String> lastUpdated,
-                                       @Query("filter") @Where Filter<DataSet, String> uids,
-                                       @Query("paging") Boolean paging);
+import retrofit2.Response;
 
-    @GET("dataSets")
-    Call<Payload<DataSet>> getDataSetsForAccess(@Query("fields") @Which Fields<DataSet> fields,
-                                       @Query("filter") @Where Filter<DataSet, String> lastUpdated,
-                                       @Query("paging") Boolean paging);
+public abstract class BaseEndpointCall<P> implements Call<Response<Payload<P>>> {
+
+    private boolean isExecuted;
+
+    @Override
+    public final boolean isExecuted() {
+        synchronized (this) {
+            return isExecuted;
+        }
+    }
+
+    @Override
+    public final Response<Payload<P>> call() throws Exception {
+        synchronized (this) {
+            if (isExecuted) {
+                throw new IllegalArgumentException("Already executed");
+            }
+
+            isExecuted = true;
+        }
+
+        return callBody();
+    }
+
+    protected abstract Response<Payload<P>> callBody() throws Exception;
 }

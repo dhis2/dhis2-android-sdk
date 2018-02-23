@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
 
 @AutoValue
 public abstract class Access {
@@ -48,11 +49,11 @@ public abstract class Access {
 
     public static final Field<Access, Boolean> read = Field.create(READ);
     public static final Field<Access, Boolean> write = Field.create(WRITE);
-    public static final Field<Access, Boolean> update = Field.create(WRITE);
-    public static final Field<Access, Boolean> delete = Field.create(WRITE);
-    public static final Field<Access, Boolean> externalize = Field.create(WRITE);
-    public static final Field<Access, Boolean> manage = Field.create(WRITE);
-    public static final Field<Access, Boolean> data = Field.create(WRITE);
+    public static final Field<Access, Boolean> update = Field.create(UPDATE);
+    public static final Field<Access, Boolean> delete = Field.create(DELETE);
+    public static final Field<Access, Boolean> externalize = Field.create(EXTERNALIZE);
+    public static final Field<Access, Boolean> manage = Field.create(MANAGE);
+    private static final NestedField<Access, DataAccess> data = NestedField.create(DATA);
 
     @NonNull
     @JsonProperty(READ)

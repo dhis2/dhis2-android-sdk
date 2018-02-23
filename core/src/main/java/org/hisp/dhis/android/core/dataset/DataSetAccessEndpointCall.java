@@ -28,42 +28,37 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.common.BaseEndpointCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.io.IOException;
-import java.util.Set;
+import retrofit2.Response;
 
-import retrofit2.Call;
-
-public final class DataSetEndpointCall extends GenericEndpointCallImpl<DataSet, UidsQuery> {
+public final class DataSetAccessEndpointCall extends BaseEndpointCall<DataSet> {
+    private final GenericCallData data;
     private final DataSetService dataSetService;
 
-    private DataSetEndpointCall(GenericCallData data, DataSetService dataSetService,
-                                GenericHandler<DataSet> dataSetHandler, UidsQuery uidsQuery) {
-        super(data, dataSetHandler, ResourceModel.Type.DATA_SET, uidsQuery);
+    private DataSetAccessEndpointCall(GenericCallData data, DataSetService dataSetService) {
+        this.data = data;
         this.dataSetService = dataSetService;
     }
 
     @Override
-    protected Call<Payload<DataSet>> getCall(UidsQuery query, String lastUpdated) throws IOException {
-        return dataSetService.getDataSets(DataSet.allFieldsExceptAccess, DataSet.lastUpdated.gt(lastUpdated),
-                DataSet.uid.in(query.uids()), Boolean.FALSE);
+    protected Response<Payload<DataSet>> callBody() throws Exception {
+        String lastUpdated = data.resourceHandler().getLastUpdated(ResourceModel.Type.DATA_SET);
+        return dataSetService.getDataSetsForAccess(DataSet.uidAndAccess, DataSet.lastUpdated.gt(lastUpdated),
+                Boolean.FALSE).execute();
     }
 
     public interface Factory {
-        DataSetEndpointCall create(GenericCallData data, Set<String> uids);
+        DataSetAccessEndpointCall create(GenericCallData data);
     }
 
-    static final DataSetEndpointCall.Factory FACTORY = new DataSetEndpointCall.Factory() {
+    static final DataSetAccessEndpointCall.Factory FACTORY = new DataSetAccessEndpointCall.Factory() {
         @Override
-        public DataSetEndpointCall create(GenericCallData data, Set<String> uids) {
-            return new DataSetEndpointCall(data, data.retrofit().create(DataSetService.class),
-                    DataSetHandler.create(data.databaseAdapter()),  UidsQuery.create(uids, 64));
+        public DataSetAccessEndpointCall create(GenericCallData data) {
+            return new DataSetAccessEndpointCall(data, data.retrofit().create(DataSetService.class));
         }
     };
 }

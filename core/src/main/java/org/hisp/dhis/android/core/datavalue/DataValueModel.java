@@ -48,7 +48,6 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-@SuppressWarnings("PMD")
 public abstract class DataValueModel extends BaseModel implements UpdateWhereStatementBinder {
 
     public static final String TABLE = "DataValue";
@@ -65,6 +64,8 @@ public abstract class DataValueModel extends BaseModel implements UpdateWhereSta
         public static final String LAST_UPDATED = "lastUpdated";
         public static final String COMMENT = "comment";
         public static final String FOLLOW_UP = "followUp";
+
+        private Columns() {}
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseModel.Columns.all(),

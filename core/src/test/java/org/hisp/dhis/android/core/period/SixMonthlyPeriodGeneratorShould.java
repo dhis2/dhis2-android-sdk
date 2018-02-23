@@ -35,22 +35,16 @@ import org.junit.runners.JUnit4;
 import java.util.Calendar;
 import java.util.List;
 
-import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
 public class SixMonthlyPeriodGeneratorShould {
 
-    private final PeriodType periodType = PeriodType.SixMonthly;
-    private final int firstMonth = Calendar.JANUARY;
-    private final String idAdditionalString = "";
-
     @Test
     public void generate_last_period() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 1, 21);
-        SixMonthlyPeriodGenerator generator = new SixMonthlyPeriodGenerator(calendar, periodType,
-                idAdditionalString, firstMonth);
+        SixMonthlyPeriodGenerator generator = SixMonthlyPeriodGenerator.sixMonthly(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2018, 0, 1);
@@ -66,8 +60,7 @@ public class SixMonthlyPeriodGeneratorShould {
     public void generate_starting_period_on_first_day_for_january() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 0, 1);
-        SixMonthlyPeriodGenerator generator = new SixMonthlyPeriodGenerator(calendar, periodType,
-                idAdditionalString, firstMonth);
+        SixMonthlyPeriodGenerator generator = SixMonthlyPeriodGenerator.sixMonthly(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2018, 0, 1);
@@ -83,8 +76,7 @@ public class SixMonthlyPeriodGeneratorShould {
     public void generate_ending_period_on_last_day_for_january() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2017, 11, 31);
-        SixMonthlyPeriodGenerator generator = new SixMonthlyPeriodGenerator(calendar, periodType,
-                idAdditionalString, firstMonth);
+        SixMonthlyPeriodGenerator generator = SixMonthlyPeriodGenerator.sixMonthly(calendar);
 
         Calendar periodStartCalendar = (Calendar) calendar.clone();
         periodStartCalendar.set(2017, 6, 1);
@@ -100,8 +92,7 @@ public class SixMonthlyPeriodGeneratorShould {
     public void generate_last_two_periods() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 1, 21);
-        SixMonthlyPeriodGenerator generator = new SixMonthlyPeriodGenerator(calendar, periodType,
-                idAdditionalString, firstMonth);
+        SixMonthlyPeriodGenerator generator = SixMonthlyPeriodGenerator.sixMonthly(calendar);
 
         Calendar period1StartCalendar = (Calendar) calendar.clone();
         period1StartCalendar.set(2017, 6, 1);
@@ -117,28 +108,6 @@ public class SixMonthlyPeriodGeneratorShould {
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
     }
 
-    @Test
-    public void throw_exception_for_negative_years() throws Exception {
-        try {
-            new SixMonthlyPeriodGenerator(Calendar.getInstance(), periodType, idAdditionalString,
-                    firstMonth).generateLastPeriods(-12);
-            fail("Exception was expected, but nothing was thrown.");
-        } catch (RuntimeException e) {
-            // No operation.
-        }
-    }
-
-    @Test
-    public void throw_exception_for_zero_days() throws Exception {
-        try {
-            new SixMonthlyPeriodGenerator(Calendar.getInstance(), periodType, idAdditionalString,
-                    firstMonth).generateLastPeriods(0);
-            fail("Exception was expected, but nothing was thrown.");
-        } catch (RuntimeException e) {
-            // No operation.
-        }
-    }
-
     private PeriodModel generateExpectedPeriod(String id, Calendar cal) {
         Calendar calendar = (Calendar) cal.clone();
         AbstractPeriodGenerator.setCalendarToStartTimeOfADay(calendar);
@@ -147,7 +116,7 @@ public class SixMonthlyPeriodGeneratorShould {
         endCalendar.add(Calendar.MILLISECOND, -1);
         return PeriodModel.builder()
                 .periodId(id)
-                .periodType(periodType)
+                .periodType(PeriodType.SixMonthly)
                 .startDate(calendar.getTime())
                 .endDate(endCalendar.getTime())
                 .build();

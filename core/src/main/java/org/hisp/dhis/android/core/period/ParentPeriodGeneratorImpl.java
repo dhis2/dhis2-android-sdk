@@ -123,10 +123,10 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
                 NMonthlyPeriodGenerator.quarter(calendar),
                 SixMonthlyPeriodGenerator.sixMonthly(calendar),
                 SixMonthlyPeriodGenerator.sixMonthlyApril(calendar),
-                new YearlyPeriodGenerator(calendar, PeriodType.Yearly, Calendar.JANUARY, ""),
-                new YearlyPeriodGenerator(calendar, PeriodType.FinancialApril, Calendar.APRIL, "April"),
-                new YearlyPeriodGenerator(calendar, PeriodType.FinancialJuly, Calendar.JULY, "July"),
-                new YearlyPeriodGenerator(calendar, PeriodType.FinancialOct, Calendar.OCTOBER, "Oct")
+                YearlyPeriodGenerator.yearly(calendar),
+                YearlyPeriodGenerator.financialApril(calendar),
+                YearlyPeriodGenerator.financialJuly(calendar),
+                YearlyPeriodGenerator.financialOct(calendar)
         );
     }
 }

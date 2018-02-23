@@ -35,7 +35,7 @@ class YearlyPeriodGenerator extends AbstractPeriodGenerator {
     private final int firstMonth;
     private final String suffix;
 
-    YearlyPeriodGenerator(Calendar calendar, PeriodType periodType, int firstMonth, String suffix) {
+    private YearlyPeriodGenerator(Calendar calendar, PeriodType periodType, int firstMonth, String suffix) {
         super(calendar, "yyyy", periodType);
         this.firstMonth = firstMonth;
         this.suffix = suffix;
@@ -66,5 +66,21 @@ class YearlyPeriodGenerator extends AbstractPeriodGenerator {
         calendar.add(Calendar.YEAR, 1);
         calendar.add(Calendar.MILLISECOND, -1);
         return calendar.getTime();
+    }
+
+    static YearlyPeriodGenerator yearly(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.Yearly, Calendar.JANUARY, "");
+    }
+
+    static YearlyPeriodGenerator financialApril(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialApril, Calendar.APRIL, "April");
+    }
+
+    static YearlyPeriodGenerator financialJuly(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialJuly, Calendar.JULY, "July");
+    }
+
+    static YearlyPeriodGenerator financialOct(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialOct, Calendar.OCTOBER, "Oct");
     }
 }

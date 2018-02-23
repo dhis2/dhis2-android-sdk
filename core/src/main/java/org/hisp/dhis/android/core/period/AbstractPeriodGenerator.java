@@ -49,7 +49,9 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
 
     @Override
     public final List<PeriodModel> generateLastPeriods(int count) throws RuntimeException {
-        if (count < 1) throw new RuntimeException("Number of last periods must be positive.");
+        if (count < 1) {
+            throw new RuntimeException("Number of last periods must be positive.");
+        }
 
         List<PeriodModel> periods = new ArrayList<>();
         setCalendarToStartTimeOfADay(calendar);

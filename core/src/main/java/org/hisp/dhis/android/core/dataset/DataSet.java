@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
@@ -64,6 +65,7 @@ public abstract class DataSet extends BaseNameableObject {
     private final static String RENDER_HORIZONTALLY = "renderHorizontally";
     private final static String DATA_SET_ELEMENTS = "dataSetElements";
     private final static String INDICATORS = "indicators";
+    private final static String ACCESS = "access";
 
     public static final Field<DataSet, String> uid = Field.create(UID);
     private static final Field<DataSet, String> code = Field.create(CODE);
@@ -94,6 +96,7 @@ public abstract class DataSet extends BaseNameableObject {
     private static final Field<DataSet, Boolean> renderHorizontally = Field.create(RENDER_HORIZONTALLY);
     private static final NestedField<DataSet, DataElementUids> dataSetElements = NestedField.create(DATA_SET_ELEMENTS);
     private static final NestedField<DataSet, ObjectWithUid> indicators = NestedField.create(INDICATORS);
+    private static final NestedField<DataSet, Access> access = NestedField.create(ACCESS);
 
     static final Fields<DataSet> allFields = Fields.<DataSet>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,

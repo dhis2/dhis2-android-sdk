@@ -1,0 +1,12 @@
+{
+  "read": true,
+  "update": true,
+  "externalize": false,
+  "delete": true,
+  "write": true,
+  "manage": true,
+  "data": {
+    "read": true,
+    "write": true
+  }
+}

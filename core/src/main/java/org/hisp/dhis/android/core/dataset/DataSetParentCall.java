@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.PeriodHandler;
 import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.List;
 import java.util.Set;

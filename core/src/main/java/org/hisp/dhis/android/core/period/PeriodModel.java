@@ -66,7 +66,7 @@ public abstract class PeriodModel extends BaseModel implements UpdateWhereStatem
         }
 
         static String[] whereUpdate() {
-            return new String[]{PERIOD_TYPE, START_DATE, END_DATE};
+            return new String[]{PERIOD_ID};
         }
     }
 

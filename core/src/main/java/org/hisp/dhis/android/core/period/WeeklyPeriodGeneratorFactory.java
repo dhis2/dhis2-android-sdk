@@ -29,38 +29,25 @@
 package org.hisp.dhis.android.core.period;
 
 import java.util.Calendar;
-import java.util.Date;
 
-final class WeeklyPeriodGenerator extends AbstractPeriodGenerator {
-    private final int weekStartDay;
-    private final String suffix;
-
-    WeeklyPeriodGenerator(Calendar calendar, PeriodType periodType, int weekStartDay, String suffix) {
-        super(calendar, "yyyy", periodType);
-        this.weekStartDay = weekStartDay;
-        this.suffix = suffix;
+final class WeeklyPeriodGeneratorFactory {
+    static WeeklyPeriodGenerator weekly(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.Weekly, Calendar.MONDAY, "W");
     }
 
-    @Override
-    protected void setCalendarToStartDate() {
-        calendar.getTime();
-        calendar.setFirstDayOfWeek(weekStartDay);
-        calendar.setMinimalDaysInFirstWeek(4);
-        calendar.set(Calendar.DAY_OF_WEEK, weekStartDay);
+    static WeeklyPeriodGenerator wednesday(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklyWednesday, Calendar.WEDNESDAY, "WedW");
     }
 
-    @Override
-    protected void movePeriods(int number) {
-        calendar.add(Calendar.WEEK_OF_YEAR, number);
+    static WeeklyPeriodGenerator thursday(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklyThursday, Calendar.THURSDAY, "ThuW");
     }
 
-    @Override
-    protected String generateId() {
-        Calendar cal = (Calendar) calendar.clone();
-        cal.set(Calendar.DAY_OF_WEEK, weekStartDay + 3);
-        Date fourthWeekDay = cal.getTime();
-        String year = idFormatter.format(fourthWeekDay);
-        Integer weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
-        return year + suffix + weekOfYear;
+    static WeeklyPeriodGenerator saturday(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklySaturday, Calendar.SATURDAY, "SatW");
+    }
+
+    static WeeklyPeriodGenerator sunday(Calendar calendar) {
+        return new WeeklyPeriodGenerator(calendar, PeriodType.WeeklySunday, Calendar.SUNDAY, "SunW");
     }
 }

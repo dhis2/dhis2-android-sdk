@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.period;
 
 import java.util.Calendar;
-import java.util.Date;
 
 class MonthlyPeriodGenerator extends AbstractPeriodGenerator {
 
@@ -48,9 +47,7 @@ class MonthlyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
-    protected Date getEndDateAndUpdateCalendar() {
+    protected void forwardToNextPeriod() {
         calendar.add(Calendar.MONTH, 1);
-        calendar.add(Calendar.MILLISECOND, -1);
-        return calendar.getTime();
     }
 }

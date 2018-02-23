@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.period;
 
 import java.util.Calendar;
-import java.util.Date;
 
 class YearlyPeriodGenerator extends AbstractPeriodGenerator {
     private final int firstMonth;
@@ -62,10 +61,8 @@ class YearlyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
-    protected Date getEndDateAndUpdateCalendar() {
+    protected void forwardToNextPeriod() {
         calendar.add(Calendar.YEAR, 1);
-        calendar.add(Calendar.MILLISECOND, -1);
-        return calendar.getTime();
     }
 
     static YearlyPeriodGenerator yearly(Calendar calendar) {

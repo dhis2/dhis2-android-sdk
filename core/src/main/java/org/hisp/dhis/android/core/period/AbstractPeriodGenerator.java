@@ -37,7 +37,7 @@ import java.util.Locale;
 
 abstract class AbstractPeriodGenerator implements PeriodGenerator {
     protected final Calendar calendar;
-    protected final SimpleDateFormat idFormatter;
+    final SimpleDateFormat idFormatter;
     private final PeriodType periodType;
 
 
@@ -59,7 +59,10 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
         for (int i = 0; i < count; i++) {
             Date startDate = calendar.getTime();
             String periodId = generateId();
-            Date endDate = getEndDateAndUpdateCalendar();
+
+            this.forwardToNextPeriod();
+            calendar.add(Calendar.MILLISECOND, -1);
+            Date endDate = calendar.getTime();
 
             PeriodModel period = PeriodModel.builder()
                     .periodType(periodType)
@@ -89,5 +92,5 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
         return idFormatter.format(calendar.getTime());
     }
 
-    protected abstract Date getEndDateAndUpdateCalendar();
+    protected abstract void forwardToNextPeriod();
 }

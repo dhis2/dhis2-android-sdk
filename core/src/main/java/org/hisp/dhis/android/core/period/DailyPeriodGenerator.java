@@ -48,9 +48,7 @@ class DailyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
-    protected Date getEndDateAndUpdateCalendar() {
+    protected void forwardToNextPeriod() {
         calendar.add(Calendar.DATE, 1);
-        calendar.add(Calendar.MILLISECOND, -1);
-        return calendar.getTime();
     }
 }

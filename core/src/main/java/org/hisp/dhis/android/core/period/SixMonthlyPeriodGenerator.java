@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.period;
 
 import java.util.Calendar;
-import java.util.Date;
 
 class SixMonthlyPeriodGenerator extends AbstractPeriodGenerator {
     private final String idAdditionalString;
@@ -68,10 +67,8 @@ class SixMonthlyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
-    protected Date getEndDateAndUpdateCalendar() {
+    protected void forwardToNextPeriod() {
         calendar.add(Calendar.MONTH, 6);
-        calendar.add(Calendar.MILLISECOND, -1);
-        return calendar.getTime();
     }
 
     static SixMonthlyPeriodGenerator sixMonthly(Calendar calendar) {

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -40,14 +41,22 @@ final class DataSetParentUidsHelper {
 
     private DataSetParentUidsHelper() {}
 
-    static Set<String> getAssignedDataSetUids(User user) {
-        if (user == null || user.userCredentials() == null || user.userCredentials().userRoles() == null) {
+    static Set<String> getAssignedDataSetUids(List<DataSet> dataSetsWithAccess) {
+        // TODO decide what to do with the organisation unit data sets
+        /*if (user == null || user.userCredentials() == null || user.userCredentials().userRoles() == null) {
             return null;
         }
 
         Set<String> dataSetUids = new HashSet<>();
 
-        getDataSetUidsFromOrganisationUnits(user, dataSetUids);
+        getDataSetUidsFromOrganisationUnits(user, dataSetUids);*/
+        Set<String> dataSetUids = new HashSet<>();
+        for (DataSet dataSet: dataSetsWithAccess) {
+            Access access = dataSet.access();
+            if (access != null && access.data().read()) {
+                dataSetUids.add(dataSet.uid());
+            }
+        }
 
         return dataSetUids;
     }

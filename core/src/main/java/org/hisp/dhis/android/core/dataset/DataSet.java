@@ -184,6 +184,10 @@ public abstract class DataSet extends BaseNameableObject {
     @JsonProperty(INDICATORS)
     public abstract List<ObjectWithUid> indicators();
 
+    @Nullable
+    @JsonProperty(ACCESS)
+    public abstract Access access();
+
     @JsonCreator
     public static DataSet create(
             @JsonProperty(UID) String uid,

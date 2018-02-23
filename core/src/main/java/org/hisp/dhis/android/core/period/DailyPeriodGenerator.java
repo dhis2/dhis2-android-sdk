@@ -37,7 +37,7 @@ class DailyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
-    protected void setCalendarToStartDate() {
+    protected void moveToStartOfCurrentPeriod() {
         // do nothing
     }
 

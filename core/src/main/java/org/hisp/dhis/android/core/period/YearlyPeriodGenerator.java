@@ -41,7 +41,7 @@ final class YearlyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
-    protected void setCalendarToStartDate() {
+    protected void moveToStartOfCurrentPeriod() {
         calendar.set(Calendar.DATE, 1);
         if (calendar.get(Calendar.MONTH) < firstMonth) {
             calendar.add(Calendar.YEAR, -1);

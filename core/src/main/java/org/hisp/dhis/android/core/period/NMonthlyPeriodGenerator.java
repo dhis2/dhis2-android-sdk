@@ -45,7 +45,7 @@ final class NMonthlyPeriodGenerator extends AbstractPeriodGenerator {
     }
 
     @Override
-    protected void setCalendarToStartDate() {
+    protected void moveToStartOfCurrentPeriod() {
         calendar.set(Calendar.DATE, 1);
         int currentMonth = calendar.get(Calendar.MONTH);
         if (currentMonth < startMonth) {

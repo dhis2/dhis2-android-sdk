@@ -47,7 +47,7 @@ public class AbstractPeriodGeneratorShould {
                 PeriodType.Yearly) {
 
             @Override
-            protected void setCalendarToStartDate() {
+            protected void moveToStartOfCurrentPeriod() {
 
             }
 

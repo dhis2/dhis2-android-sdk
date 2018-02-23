@@ -31,6 +31,9 @@ package org.hisp.dhis.android.core.period;
 import java.util.Calendar;
 
 final class WeeklyPeriodGeneratorFactory {
+    private WeeklyPeriodGeneratorFactory() {
+    }
+
     static WeeklyPeriodGenerator weekly(Calendar calendar) {
         return new WeeklyPeriodGenerator(calendar, PeriodType.Weekly, Calendar.MONDAY, "W");
     }

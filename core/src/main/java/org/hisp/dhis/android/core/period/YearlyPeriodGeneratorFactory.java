@@ -31,6 +31,9 @@ package org.hisp.dhis.android.core.period;
 import java.util.Calendar;
 
 final class YearlyPeriodGeneratorFactory {
+    private YearlyPeriodGeneratorFactory() {
+    }
+
     static YearlyPeriodGenerator yearly(Calendar calendar) {
         return new YearlyPeriodGenerator(calendar, PeriodType.Yearly, Calendar.JANUARY, "");
     }

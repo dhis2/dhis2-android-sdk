@@ -31,6 +31,9 @@ package org.hisp.dhis.android.core.period;
 import java.util.Calendar;
 
 final class NMonthlyPeriodGeneratorFactory {
+    private NMonthlyPeriodGeneratorFactory() {
+    }
+
     static NMonthlyPeriodGenerator biMonthly(Calendar calendar) {
         return new NMonthlyPeriodGenerator(calendar, PeriodType.BiMonthly, 2,
                 "B", Calendar.JANUARY);

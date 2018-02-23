@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.dataset;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.NameableModelAbstractShould;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.DataSetModel.Columns;
@@ -97,7 +99,8 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel
                 0, false, false,
                 false, false, false,
                 false, false, new ArrayList<DataElementUids>(),
-                new ArrayList<ObjectWithUid>(), DELETED);
+                new ArrayList<ObjectWithUid>(), Access.create(true, true, false, true,
+                        true, true, DataAccess.create(true, false)), DELETED);
     }
 
     @Override

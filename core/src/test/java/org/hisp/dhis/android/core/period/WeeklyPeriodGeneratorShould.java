@@ -41,9 +41,14 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class WeeklyPeriodGeneratorShould {
 
+    protected final Calendar calendar;
+
+    public WeeklyPeriodGeneratorShould() {
+        this.calendar = Calendar.getInstance();
+    }
+
     @Test
     public void generate_weekly_periods_for_one_week() throws Exception {
-        Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 2, 8);
         PeriodModel period = generateExpectedPeriod("2018W10", calendar, Calendar.MONDAY, PeriodType.Weekly);
 
@@ -55,7 +60,6 @@ public class WeeklyPeriodGeneratorShould {
 
     @Test
     public void generate_weekly_periods() throws Exception {
-        Calendar calendar = Calendar.getInstance();
         calendar.set(2018,2,8);
         PeriodModel period1 = generateExpectedPeriod("2018W10", calendar, Calendar.MONDAY, PeriodType.Weekly);
         calendar.set(2018, 2, 15);
@@ -69,7 +73,6 @@ public class WeeklyPeriodGeneratorShould {
 
     @Test
     public void generate_weekly_periods_for_changing_year() throws Exception {
-        Calendar calendar = Calendar.getInstance();
         calendar.set(2016,11,31);
         PeriodModel period1 = generateExpectedPeriod("2016W52", calendar, Calendar.MONDAY, PeriodType.Weekly);
         calendar.set(2017, 0, 7);
@@ -85,7 +88,6 @@ public class WeeklyPeriodGeneratorShould {
 
     @Test
     public void generate_the_first_week_including_january_4() throws Exception {
-        Calendar calendar = Calendar.getInstance();
         calendar.set(2018, 0, 4);
 
         List<PeriodModel> generatedPeriods = WeeklyPeriodGeneratorFactory
@@ -117,24 +119,26 @@ public class WeeklyPeriodGeneratorShould {
         assertThat(generatedSunPeriods).isEqualTo(Lists.newArrayList(periodSunday));
     }
 
-    private PeriodModel generateExpectedPeriod(String id, Calendar cal, int weekStartDay,
-                                               PeriodType periodType) {
-        Calendar calendar = (Calendar) cal.clone();
-        AbstractPeriodGenerator.setCalendarToStartTimeOfADay(calendar);
-        calendar.getTime();
-        calendar.setFirstDayOfWeek(weekStartDay);
-        calendar.setMinimalDaysInFirstWeek(4);
-        calendar.set(Calendar.DAY_OF_WEEK, weekStartDay);
-        Date startDate = calendar.getTime();
-        calendar.add(Calendar.WEEK_OF_YEAR, 1);
-        calendar.add(Calendar.MILLISECOND, -1);
-        Date endDate = calendar.getTime();
-
+    private PeriodModel generateExpectedPeriod(String id, Calendar cal, int weekStartDay, PeriodType periodType) {
+        Calendar startCalendar = (Calendar) cal.clone();
+        AbstractPeriodGenerator.setCalendarToStartTimeOfADay(startCalendar);
+        setFirstDayOfWeekAndMinimalDaysInFirstWeek(startCalendar, weekStartDay);
+        Calendar endCalendar = (Calendar) startCalendar.clone();
+        endCalendar.add(Calendar.WEEK_OF_YEAR, 1);
+        endCalendar.add(Calendar.MILLISECOND, -1);
         return PeriodModel.builder()
                 .periodId(id)
                 .periodType(periodType)
-                .startDate(startDate)
-                .endDate(endDate)
+                .startDate(startCalendar.getTime())
+                .endDate(endCalendar.getTime())
                 .build();
+    }
+
+    private void setFirstDayOfWeekAndMinimalDaysInFirstWeek(Calendar startCalendar, int weekStartDay) {
+        startCalendar.getTime();
+        startCalendar.setFirstDayOfWeek(weekStartDay);
+        startCalendar.setMinimalDaysInFirstWeek(4);
+        startCalendar.set(Calendar.DAY_OF_WEEK, weekStartDay);
+
     }
 }

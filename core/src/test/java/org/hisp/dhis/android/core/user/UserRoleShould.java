@@ -39,6 +39,7 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
+/* TODO refactor or delete */
 public class UserRoleShould {
     @Test
     public void map_from_json_string() throws IOException, ParseException {
@@ -184,16 +185,5 @@ public class UserRoleShould {
         assertThat(userRole.uid()).isEqualTo("Ufph3mGRmMo");
         assertThat(userRole.displayName()).isEqualTo("Superuser");
         assertThat(userRole.name()).isEqualTo("Superuser");
-
-        assertThat(userRole.programs().get(0).uid()).isEqualTo("uy2gU8kT1jF");
-        assertThat(userRole.programs().get(1).uid()).isEqualTo("q04UBOqq3rp");
-        assertThat(userRole.programs().get(2).uid()).isEqualTo("VBqh0ynB2wv");
-        assertThat(userRole.programs().get(3).uid()).isEqualTo("eBAyeGv0exc");
-        assertThat(userRole.programs().get(4).uid()).isEqualTo("kla3mAPgvCH");
-        assertThat(userRole.programs().get(5).uid()).isEqualTo("lxAQ7Zs9VYR");
-        assertThat(userRole.programs().get(6).uid()).isEqualTo("IpHINAT79UW");
-        assertThat(userRole.programs().get(7).uid()).isEqualTo("WSGAb5XwJ3Y");
-        assertThat(userRole.programs().get(8).uid()).isEqualTo("ur1Edk5Oe2n");
-        assertThat(userRole.programs().get(9).uid()).isEqualTo("fDd25txQckK");
     }
 }

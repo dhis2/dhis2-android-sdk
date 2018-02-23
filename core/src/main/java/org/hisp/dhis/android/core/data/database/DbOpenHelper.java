@@ -881,6 +881,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     UserRoleModel.Columns.LAST_UPDATED + " TEXT" +
                     ");";
 
+    // TODO decide if this link has to be persisted or table can be completely deleted
     private static final String CREATE_USER_ROLE_PROGRAM_TABLE = "CREATE TABLE " +
             UserRoleProgramLinkModel.TABLE + " (" +
             UserRoleProgramLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +

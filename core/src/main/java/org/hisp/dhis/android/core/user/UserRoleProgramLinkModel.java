@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 
+// TODO decide if this link has to be persisted or table can be completely deleted
 @AutoValue
 public abstract class UserRoleProgramLinkModel extends BaseModel {
     public static final String TABLE = "UserRoleProgramLink";

@@ -217,6 +217,7 @@ public abstract class DataSet extends BaseNameableObject {
             @JsonProperty(RENDER_HORIZONTALLY) Boolean renderHorizontally,
             @JsonProperty(DATA_SET_ELEMENTS) List<DataElementUids> dataSetElements,
             @JsonProperty(INDICATORS) List<ObjectWithUid> indicators,
+            @JsonProperty(ACCESS) Access access,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_DataSet(uid, code, name,
@@ -226,6 +227,6 @@ public abstract class DataSet extends BaseNameableObject {
                 notifyCompletingUser, openFuturePeriods, fieldCombinationRequired,
                 validCompleteOnly, noValueRequiresComment, skipOffline,
                 dataElementDecoration, renderAsTabs, renderHorizontally, dataSetElements,
-                indicators);
+                indicators, access);
     }
 }

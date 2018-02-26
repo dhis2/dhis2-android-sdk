@@ -297,7 +297,7 @@ public class MetadataCall implements Call<Response> {
             }
 
             Response<Payload<Program>> programAccessResponse = ProgramAccessEndpointCall.FACTORY
-                    .create(data).call();
+                    .create(data, programService).call();
             response = programAccessResponse;
 
             if (!response.isSuccessful()) {

@@ -141,6 +141,9 @@ public class MetadataCallShould {
     private retrofit2.Call<Payload<Program>> programCall;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private retrofit2.Call<Payload<Program>> programWithAccessCall;
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<Payload<TrackedEntity>> trackedEntityCall;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -263,6 +266,9 @@ public class MetadataCallShould {
     private Payload<OrganisationUnit> organisationUnitPayload;
 
     @Mock
+    private Payload<Program> programWithAccessPayload;
+
+    @Mock
     private Payload<Program> programPayload;
 
     @Mock
@@ -276,6 +282,15 @@ public class MetadataCallShould {
 
     @Mock
     private OptionSet optionSet;
+
+    @Mock
+    private DataAccess dataAccess;
+
+    @Mock
+    private Access access;
+
+    @Mock
+    private Program programWithAccess;
 
     @Mock
     private Program program;
@@ -335,6 +350,8 @@ public class MetadataCallShould {
         when(organisationUnitService.getOrganisationUnits(
                 anyString(), any(Fields.class), any(Filter.class), anyBoolean(), anyBoolean())
         ).thenReturn(organisationUnitCall);
+        when(programService.getProgramsForAccess(any(Fields.class), any(Filter.class), anyBoolean())
+        ).thenReturn(programWithAccessCall);
         when(programService.getPrograms(
                 any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
         ).thenReturn(programCall);
@@ -355,7 +372,11 @@ public class MetadataCallShould {
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
         when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
+        when(dataAccess.read()).thenReturn(true);
+        when(access.data()).thenReturn(dataAccess);
+        when(programWithAccess.access()).thenReturn(access);
         when(program.trackedEntity()).thenReturn(trackedEntity);
+        when(programWithAccessPayload.items()).thenReturn(Collections.singletonList(programWithAccess));
         when(programPayload.items()).thenReturn(Collections.singletonList(program));
         when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntity));
         when(trackedEntity.uid()).thenReturn("test_tracked_entity_uid");
@@ -410,6 +431,7 @@ public class MetadataCallShould {
         when(userCall.execute()).thenReturn(Response.success(user));
         when(organisationUnitCall.execute()).thenReturn(Response.success(organisationUnitPayload));
         when(programCall.execute()).thenReturn(Response.success(programPayload));
+        when(programWithAccessCall.execute()).thenReturn(Response.success(programWithAccessPayload));
         when(trackedEntityCall.execute()).thenReturn(Response.success(trackedEntityPayload));
         when(optionSetCall.execute()).thenReturn(Response.success(optionSetPayload));
     }

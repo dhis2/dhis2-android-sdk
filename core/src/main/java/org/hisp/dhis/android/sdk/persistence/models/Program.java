@@ -155,6 +155,11 @@ public class Program extends BaseMetaDataObject {
         this.trackedEntity = trackedEntity;
     }
 
+    @JsonProperty("trackedEntityType")
+    public void setTrackedEntityType(TrackedEntity trackedEntityType) {
+        trackedEntity = trackedEntityType;
+    }
+
     /**
      * Using lazy loading for one to many relationships
      *

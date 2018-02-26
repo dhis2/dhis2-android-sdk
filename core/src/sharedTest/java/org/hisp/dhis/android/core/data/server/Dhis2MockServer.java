@@ -84,12 +84,12 @@ public class Dhis2MockServer {
     public void enqueueMetadataResponses() throws IOException {
         enqueueMockResponse("system_info.json");
         enqueueMockResponse("user.json");
-        enqueueMockResponse("organisationUnits.json");
         enqueueMockResponse("categories.json");
         enqueueMockResponse("category_combos.json");
         enqueueMockResponse("programs_with_access.json");
         enqueueMockResponse("programs.json");
         enqueueMockResponse("tracked_entities.json");
+        enqueueMockResponse("organisationUnits.json");
         enqueueMockResponse("option_sets.json");
         enqueueMockResponse("data_sets_with_access.json");
         enqueueMockResponse("data_sets.json");
@@ -101,12 +101,12 @@ public class Dhis2MockServer {
     public void enqueueMetadataWithDescendentsResponses() throws IOException {
         enqueueMockResponse("system_info.json");
         enqueueMockResponse("admin/user.json");
-        enqueueMockResponse("admin/organisation_units.json");
         enqueueMockResponse("categories.json");
         enqueueMockResponse("category_combos.json");
         enqueueMockResponse("programs_with_access.json");
         enqueueMockResponse("programs.json");
         enqueueMockResponse("tracked_entities.json");
+        enqueueMockResponse("admin/organisation_units.json");
         enqueueMockResponse("option_sets.json");
         enqueueMockResponse("data_sets_with_access.json");
         enqueueMockResponse("data_sets.json");

@@ -488,7 +488,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_organisation_unit_call_fail() throws Exception {
-        final int expectedTransactions = 4;
+        final int expectedTransactions = 8;
         when(organisationUnitCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
@@ -503,7 +503,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_program_call_fail() throws Exception {
-        final int expectedTransactions = 6;
+        final int expectedTransactions = 5;
         when(programCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
@@ -518,7 +518,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_tracked_entity_call_fail() throws Exception {
-        final int expectedTransactions = 8;
+        final int expectedTransactions = 7;
         when(trackedEntityCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();

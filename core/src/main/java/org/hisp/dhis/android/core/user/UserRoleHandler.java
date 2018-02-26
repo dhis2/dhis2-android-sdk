@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.program.Program;
-
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;

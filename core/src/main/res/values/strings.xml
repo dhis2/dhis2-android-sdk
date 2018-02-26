@@ -284,4 +284,8 @@
     <string name="downloaded_with_errors">Download completed with errors</string>
     <string name="download_complete">Download complete</string>
     <string name="download_error_try_again">Download error - please try again</string>
+
+
+    <string name="default_synchronisation_error">"There was an error during Synchronisation with the server. Please contact your server admin"</string>
+    <string name="details">"Details"</string>
 </resources>

@@ -104,7 +104,7 @@ public class DataSetParentCall extends TransactionalCall {
         periodHandler.generateAndPersist();
 
         linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);
-        linkManager.saveDataSetOrganisationUnitLinks(organisationUnits);
+        linkManager.saveDataSetOrganisationUnitLinks(organisationUnits, dataSetUids);
 
         return dataElementResponse;
     }

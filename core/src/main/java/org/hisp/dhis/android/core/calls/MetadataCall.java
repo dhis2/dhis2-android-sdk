@@ -278,13 +278,7 @@ public class MetadataCall implements Call<Response> {
             }
 
             User user = (User) response.body();
-            Response<Payload<OrganisationUnit>> organisationUnitResponse = new OrganisationUnitCall(
-                    user, organisationUnitService, databaseAdapter, organisationUnitStore,
-                    resourceStore, data.serverDate(), userOrganisationUnitLinkStore,
-                    organisationUnitProgramLinkStore).call();
-            if (!organisationUnitResponse.isSuccessful()) {
-                return organisationUnitResponse;
-            }
+
             response = downloadCategories(data.serverDate());
 
             if (!response.isSuccessful()) {
@@ -329,6 +323,14 @@ public class MetadataCall implements Call<Response> {
             ).call();
             if (!response.isSuccessful()) {
                 return response;
+            }
+
+            Response<Payload<OrganisationUnit>> organisationUnitResponse = new OrganisationUnitCall(
+                    user, organisationUnitService, databaseAdapter, organisationUnitStore,
+                    resourceStore, data.serverDate(), userOrganisationUnitLinkStore,
+                    organisationUnitProgramLinkStore, programUids).call();
+            if (!organisationUnitResponse.isSuccessful()) {
+                return organisationUnitResponse;
             }
 
             Set<String> optionSetUids = getAssignedOptionSetUids(programs);
@@ -422,17 +424,6 @@ public class MetadataCall implements Call<Response> {
     }
 
     private Set<String> getProgramUidsWithDataReadAccess(List<Program> programsWithAccess) {
-        // TODO decide what to do with the organisation unit programs
-        /*if (user == null || user.userCredentials() == null
-                || user.userCredentials().userRoles() == null) {
-            return null;
-        }
-
-        Set<String> programUids = new HashSet<>();
-
-        getProgramUidsFromOrganisationUnits(user, programUids);
-
-        return programUids;*/
         Set<String> programUids = new HashSet<>();
         for (Program program: programsWithAccess) {
             Access access = program.access();
@@ -442,24 +433,6 @@ public class MetadataCall implements Call<Response> {
         }
 
         return programUids;
-    }
-
-    private void getProgramUidsFromOrganisationUnits(User user, Set<String> programUids) {
-        List<OrganisationUnit> organisationUnits = user.organisationUnits();
-
-        if (organisationUnits != null) {
-            int size = organisationUnits.size();
-            for (int i = 0; i < size; i++) {
-                OrganisationUnit organisationUnit = organisationUnits.get(i);
-
-                int programSize = organisationUnit.programs().size();
-                for (int j = 0; j < programSize; j++) {
-                    Program program = organisationUnit.programs().get(j);
-
-                    programUids.add(program.uid());
-                }
-            }
-        }
     }
 
     private Response<Payload<Category>> downloadCategories(Date serverDate) throws Exception {

@@ -724,9 +724,14 @@ public final class MetaDataController extends ResourceController {
 
     private static void getAssignedProgramsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "getAssignedProgramsDataFromServer");
-        UserAccount userAccount = dhisApi.getUserAccount();
+        UserAccount userAccount;
+        if(DhisController.getInstance().isLoggedInServerWithLatestApiVersion()){
+            userAccount = dhisApi.getUserAccount();
+        }else{
+            userAccount = dhisApi.getDeprecatedUserAccount();
+        }
         Map<String, Program> programMap = new HashMap<>();
-        List<Program> assignedProgramUids = userAccount.getPrograms();
+        List<Program> assignedProgramUids = userAccount.getUserPrograms();
 
         for (Program program : assignedProgramUids) {
             programMap.put(program.getUid(), program);

@@ -53,6 +53,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGenera
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGroup;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -80,10 +81,10 @@ public interface DhisApi {
     SystemInfo getSystemInfo();
 
     @GET("/23/me/")
-    UserAccount getCurrentUserAccountOnDeprecatedApi(@QueryMap Map<String, String> queryParams);
+    UserAccount getDeprecatedCurrentUserAccount(@QueryMap Map<String, String> queryParams);
 
-    @GET("/me/")
-    UserAccount getCurrentUserAccountOnLatestApi(@QueryMap Map<String, String> queryParams);
+    @GET("/29/me/")
+    UserAccount getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
 
     /////////////////////////////////////////////////////////////////////////
     // Methods for getting Dashboard and DashboardItems
@@ -212,6 +213,9 @@ public interface DhisApi {
     /////////////////////////////////////////////////////////////////////////
 
     @GET("/me?fields=organisationUnits[id,displayName,programs[id]],userCredentials[userRoles[programs[id]]],teiSearchOrganisationUnits")
+    UserAccount getDeprecatedUserAccount();
+
+    @GET("/29/me?fields=organisationUnits[id,displayName,programs[id]],userCredentials[userRoles[programs[id]]],teiSearchOrganisationUnits,programs")
     UserAccount getUserAccount();
 
     @GET("/" + ApiEndpointContainer.ORGANISATIONUNITS + "?paging=false")

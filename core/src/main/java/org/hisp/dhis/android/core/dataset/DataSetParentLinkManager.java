@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.List;
+import java.util.Set;
 
 class DataSetParentLinkManager {
     private final ObjectWithoutUidStore<DataSetDataElementLinkModel> dataSetDataElementStore;
@@ -88,23 +89,26 @@ class DataSetParentLinkManager {
         }
     }
 
-    void saveDataSetOrganisationUnitLinks(List<OrganisationUnit> organisationUnits) {
+    void saveDataSetOrganisationUnitLinks(List<OrganisationUnit> organisationUnits, Set<String> dataSetUids) {
         if (organisationUnits != null) {
             for (OrganisationUnit organisationUnit : organisationUnits) {
-                saveDataSetOrganisationUnitLink(organisationUnit);
+                saveDataSetOrganisationUnitLink(organisationUnit, dataSetUids);
+
             }
         }
     }
 
-    private void saveDataSetOrganisationUnitLink(OrganisationUnit organisationUnit) {
-        List<DataSet> dataSets = organisationUnit.dataSets();
-        assert dataSets != null;
-        for (DataSet dataSet : dataSets) {
-            dataSetOrganisationUnitStore.updateOrInsertWhere(
-                    DataSetOrganisationUnitLinkModel.create(
-                            dataSet.uid(),
-                            organisationUnit.uid()
-                    ));
+    private void saveDataSetOrganisationUnitLink(OrganisationUnit organisationUnit, Set<String> dataSetUids) {
+        List<DataSet> orgUnitDataSets = organisationUnit.dataSets();
+        assert orgUnitDataSets != null;
+        for (DataSet dataSet : orgUnitDataSets) {
+            if (dataSetUids.contains(dataSet.uid())) {
+                dataSetOrganisationUnitStore.updateOrInsertWhere(
+                        DataSetOrganisationUnitLinkModel.create(
+                                dataSet.uid(),
+                                organisationUnit.uid()
+                        ));
+            }
         }
     }
 }

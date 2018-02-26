@@ -42,14 +42,6 @@ final class DataSetParentUidsHelper {
     private DataSetParentUidsHelper() {}
 
     static Set<String> getAssignedDataSetUids(List<DataSet> dataSetsWithAccess) {
-        // TODO decide what to do with the organisation unit data sets
-        /*if (user == null || user.userCredentials() == null || user.userCredentials().userRoles() == null) {
-            return null;
-        }
-
-        Set<String> dataSetUids = new HashSet<>();
-
-        getDataSetUidsFromOrganisationUnits(user, dataSetUids);*/
         Set<String> dataSetUids = new HashSet<>();
         for (DataSet dataSet: dataSetsWithAccess) {
             Access access = dataSet.access();
@@ -59,24 +51,6 @@ final class DataSetParentUidsHelper {
         }
 
         return dataSetUids;
-    }
-
-    private static void getDataSetUidsFromOrganisationUnits(User user, Set<String> dataSetUids) {
-        List<OrganisationUnit> organisationUnits = user.organisationUnits();
-
-        if (organisationUnits != null) {
-            for (OrganisationUnit organisationUnit : organisationUnits) {
-                addDataSets(organisationUnit.dataSets(), dataSetUids);
-            }
-        }
-    }
-
-    private static void addDataSets(List<DataSet> dataSets, Set<String> dataSetUids) {
-        if (dataSets != null) {
-            for (DataSet dataSet : dataSets) {
-                dataSetUids.add(dataSet.uid());
-            }
-        }
     }
 
     static Set<String> getDataElementUids(List<DataSet> dataSets) {

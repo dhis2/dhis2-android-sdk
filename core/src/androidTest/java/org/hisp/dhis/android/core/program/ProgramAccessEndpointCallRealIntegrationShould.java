@@ -37,8 +37,9 @@ public class ProgramAccessEndpointCallRealIntegrationShould extends AbsStoreTest
         ResourceHandler resourceHandler =
                 new ResourceHandler(new ResourceStoreImpl(databaseAdapter()));
         GenericCallData data = GenericCallData.create(databaseAdapter(), resourceHandler, d2.retrofit());
+        ProgramService service = d2.retrofit().create(ProgramService.class);
 
-        return ProgramAccessEndpointCall.FACTORY.create(data);
+        return ProgramAccessEndpointCall.FACTORY.create(data, service);
     }
 
     @Test

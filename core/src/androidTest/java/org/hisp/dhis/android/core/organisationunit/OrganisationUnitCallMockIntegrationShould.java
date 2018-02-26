@@ -326,7 +326,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
 
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, databaseAdapter(),
                 organisationUnitStore, resourceStore, new Date(), userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore);
+                organisationUnitProgramLinkStore, null);
     }
 
     @Test

@@ -230,7 +230,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
         organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, userOrganisationUnitStore, organisationUnitProgramLinkStore
+                organisationUnitStore, userOrganisationUnitStore, organisationUnitProgramLinkStore, null
         );
 
         userCall = new UserCall(userService, databaseAdapter(),

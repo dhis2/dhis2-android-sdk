@@ -70,22 +70,4 @@ public class UserRoleHandler {
             }
         }
     }
-
-    private void insertOrUpdateUserRoleProgramLink(UserRole userRole, List<Program> programs) {
-        if (programs == null || userRole == null) {
-            return;
-        }
-
-        int programSize = programs.size();
-        for (int i = 0; i < programSize; i++) {
-
-            Program program = programs.get(i);
-            int updatedLinkRow = userRoleProgramLinkStore.update(
-                    userRole.uid(), program.uid(), userRole.uid(), program.uid());
-
-            if (updatedLinkRow <= 0) {
-                userRoleProgramLinkStore.insert(userRole.uid(), program.uid());
-            }
-        }
-    }
 }

@@ -14,6 +14,156 @@
           "write": true
         }
       }
+    },
+    {
+      "id": "IpHINAT79UW",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": true
+        }
+      }
+    },
+    {
+      "id": "kla3mAPgvCH",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": true
+        }
+      }
+    },
+    {
+      "id": "q04UBOqq3rp",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": true
+        }
+      }
+    },
+    {
+      "id": "eBAyeGv0exc",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": true
+        }
+      }
+    },
+    {
+      "id": "VBqh0ynB2wv",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": true
+        }
+      }
+    },
+    {
+      "id": "bMcwwoVnbSR",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": true
+        }
+      }
+    },
+    {
+      "id": "uy2gU8kT1jF",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": true
+        }
+      }
+    },
+    {
+      "id": "fDd25txQckK",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": true
+        }
+      }
+    },
+    {
+      "id": "ur1Edk5Oe2n",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": true
+        }
+      }
+    },
+    {
+      "id": "WSGAb5XwJ3Y",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true,
+        "data": {
+          "read": true,
+          "write": true
+        }
+      }
     }
   ]
 }

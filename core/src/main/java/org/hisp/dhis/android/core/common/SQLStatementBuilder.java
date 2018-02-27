@@ -80,6 +80,14 @@ public class SQLStatementBuilder {
                 " WHERE " + BaseIdentifiableObjectModel.Columns.UID + "=?;";
     }
 
+    String selectUids() {
+        return  "SELECT " + BaseIdentifiableObjectModel.Columns.UID + " FROM " + tableName;
+    }
+
+    String selectAll() {
+        return  "SELECT " + commaSeparatedColumns() + " FROM " + tableName;
+    }
+
     public String update() {
         return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
                 " WHERE " + BaseIdentifiableObjectModel.Columns.UID + "=?;";

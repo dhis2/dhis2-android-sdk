@@ -42,7 +42,7 @@ import static com.google.common.truth.Truth.assertThat;
 public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
-    private String dbName = "test2.db";
+    private String dbName = null;
 
     @Before
     public void setUp() throws IOException {

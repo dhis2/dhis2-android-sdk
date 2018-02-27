@@ -50,7 +50,6 @@ import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.datavalue.DataValueModel;
-import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
@@ -60,6 +59,7 @@ import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
+import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
@@ -84,7 +84,6 @@ import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserRoleModel;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -881,22 +880,6 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     UserRoleModel.Columns.LAST_UPDATED + " TEXT" +
                     ");";
 
-    // TODO decide if this link has to be persisted or table can be completely deleted
-    private static final String CREATE_USER_ROLE_PROGRAM_TABLE = "CREATE TABLE " +
-            UserRoleProgramLinkModel.TABLE + " (" +
-            UserRoleProgramLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            UserRoleProgramLinkModel.Columns.USER_ROLE + " TEXT NOT NULL," +
-            UserRoleProgramLinkModel.Columns.PROGRAM + " TEXT NOT NULL," +
-            " FOREIGN KEY (" + UserRoleProgramLinkModel.Columns.USER_ROLE + ") " +
-            " REFERENCES " + UserRoleModel.TABLE + " (" + UserRoleModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " FOREIGN KEY (" + UserRoleProgramLinkModel.Columns.PROGRAM + ") " +
-            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " UNIQUE (" + UserRoleProgramLinkModel.Columns.USER_ROLE + ", " +
-            UserRoleProgramLinkModel.Columns.PROGRAM + ")" +
-            ");";
-
     private static final String CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE =
             "CREATE TABLE " +
                     ProgramStageSectionProgramIndicatorLinkModel.TABLE + " (" +
@@ -1100,7 +1083,6 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_RESOURCE_TABLE);
         database.execSQL(CREATE_ORGANISATION_UNIT_PROGRAM_LINK_TABLE);
         database.execSQL(CREATE_USER_ROLE_TABLE);
-        database.execSQL(CREATE_USER_ROLE_PROGRAM_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE);
         database.execSQL(CREATE_CATEGORY_TABLE);
         database.execSQL(CREATE_CATEGORY_OPTION_TABLE);

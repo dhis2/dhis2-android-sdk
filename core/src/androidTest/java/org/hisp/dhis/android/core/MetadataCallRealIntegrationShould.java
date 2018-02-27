@@ -6,7 +6,6 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 
@@ -46,7 +45,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     //This test is uncommented because technically it is flaky.
     //It depends on a live server to operate and the login is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    @Test
+    //@Test
     public void response_successful_on_sync_meta_data_two_times() throws Exception {
         retrofit2.Response response = null;
         d2.logout().call();

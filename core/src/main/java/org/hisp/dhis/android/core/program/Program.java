@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
@@ -141,7 +142,7 @@ public abstract class Program extends BaseNameableObject {
             = NestedField.create(TRACKED_ENTITY);
     public static final NestedField<Program, CategoryCombo> categoryCombo
             = NestedField.create(CATEGORY_COMBO);
-    private static final NestedField<Program, Access> access
+    static final NestedField<Program, Access> access
             = NestedField.create(ACCESS);
     public static final NestedField<Program, ProgramIndicator> programIndicators
             = NestedField.create(PROGRAM_INDICATORS);
@@ -152,8 +153,8 @@ public abstract class Program extends BaseNameableObject {
     public static final NestedField<Program, ProgramRuleVariable> programRuleVariables
             = NestedField.create(PROGRAM_RULE_VARIABLES);
 
-    static final Fields<Program> uidAndAccess = Fields.<Program>builder().fields(
-            uid, access.with(Access.dataAccess)).build();
+    static final Fields<Program> uidAndAccessRead = Fields.<Program>builder().fields(
+            uid, access.with(Access.data.with(DataAccess.read))).build();
 
     @Nullable
     @JsonProperty(VERSION)

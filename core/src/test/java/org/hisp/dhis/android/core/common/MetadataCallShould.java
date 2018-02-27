@@ -372,6 +372,7 @@ public class MetadataCallShould {
         when(access.data()).thenReturn(dataAccess);
         when(programWithAccess.access()).thenReturn(access);
         when(program.trackedEntity()).thenReturn(trackedEntity);
+        when(program.access()).thenReturn(access);
         when(programWithAccessPayload.items()).thenReturn(Collections.singletonList(programWithAccess));
         when(programPayload.items()).thenReturn(Collections.singletonList(program));
         when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntity));

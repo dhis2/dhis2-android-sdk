@@ -47,7 +47,7 @@ public final class DataSetAccessEndpointCall extends BaseEndpointCall<DataSet> {
     @Override
     protected Response<Payload<DataSet>> callBody() throws Exception {
         String lastUpdated = data.resourceHandler().getLastUpdated(ResourceModel.Type.DATA_SET);
-        return dataSetService.getDataSetsForAccess(DataSet.uidAndAccess, DataSet.lastUpdated.gt(lastUpdated),
+        return dataSetService.getDataSetsForAccess(DataSet.uidAndAccessRead, DataSet.lastUpdated.gt(lastUpdated),
                 Boolean.FALSE).execute();
     }
 

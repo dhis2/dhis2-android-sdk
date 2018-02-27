@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -275,6 +277,11 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                         RelationshipType.uid, RelationshipType.code, RelationshipType.name,
                         RelationshipType.displayName, RelationshipType.created, RelationshipType.lastUpdated,
                         RelationshipType.aIsToB, RelationshipType.bIsToA, RelationshipType.deleted
+                ),
+                Program.access.with(
+                        Access.data.with(
+                                DataAccess.write
+                        )
                 )
         ).build();
     }

@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -106,10 +107,11 @@ public abstract class DataSet extends BaseNameableObject {
             openFuturePeriods, fieldCombinationRequired, validCompleteOnly, noValueRequiresComment,
             skipOffline, dataElementDecoration, renderAsTabs, renderHorizontally,
             dataSetElements.with(DataElementUids.allFields),
-            indicators.with(ObjectWithUid.uid)).build();
+            indicators.with(ObjectWithUid.uid),
+            access.with(Access.data.with(DataAccess.write))).build();
 
-    static final Fields<DataSet> uidAndAccess = Fields.<DataSet>builder().fields(
-            uid, access.with(Access.dataAccess)).build();
+    static final Fields<DataSet> uidAndAccessRead = Fields.<DataSet>builder().fields(
+            uid, access.with(Access.data.with(DataAccess.read))).build();
 
     @Nullable
     @JsonProperty(PERIOD_TYPE)

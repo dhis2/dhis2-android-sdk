@@ -1,0 +1,2 @@
+up:
+ - DROP TABLE IF EXISTS UserRoleProgramLink;

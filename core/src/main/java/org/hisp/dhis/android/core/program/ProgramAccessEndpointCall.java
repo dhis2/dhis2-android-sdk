@@ -47,7 +47,7 @@ public final class ProgramAccessEndpointCall extends BaseEndpointCall<Program> {
     @Override
     protected Response<Payload<Program>> callBody() throws Exception {
         String lastUpdated = data.resourceHandler().getLastUpdated(ResourceModel.Type.DATA_SET);
-        return programService.getProgramsForAccess(Program.uidAndAccess, Program.lastUpdated.gt(lastUpdated),
+        return programService.getProgramsForAccess(Program.uidAndAccessRead, Program.lastUpdated.gt(lastUpdated),
                 Boolean.FALSE).execute();
     }
 

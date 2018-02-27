@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.indicator.IndicatorEndpointCall;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeEndpointCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.PeriodHandler;
-import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
@@ -98,11 +97,7 @@ public class DataSetParentCall extends TransactionalCall {
                 = indicatorTypeCallFactory.create(data, DataSetParentUidsHelper.getIndicatorTypeUids(indicators));
         indicatorTypeEndpointCall.call();
 
-        List<PeriodModel> periods = periodHandler.generateAndPersist();
-
-        DataValueEndpointCall dataValueEndpointCall = dataValueCallFactory.create(data, dataSetUids,
-                DataSetParentUidsHelper.getPeriodIds(periods), DataSetParentUidsHelper.getOrganisationUnitUids(user));
-        dataValueEndpointCall.call();
+        periodHandler.generateAndPersist();
 
         linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);
         linkManager.saveDataSetOrganisationUnitLinks(organisationUnits);

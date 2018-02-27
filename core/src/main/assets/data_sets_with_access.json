@@ -3,15 +3,8 @@
     {
       "id": "lyLU2wR22tC",
       "access": {
-        "read": true,
-        "update": true,
-        "externalize": false,
-        "delete": true,
-        "write": true,
-        "manage": true,
         "data": {
-          "read": true,
-          "write": true
+          "read": true
         }
       }
     }

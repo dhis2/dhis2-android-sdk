@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -48,11 +49,11 @@ public abstract class DataAccess {
     public static final Fields<DataAccess> allFields = Fields.<DataAccess>builder().fields(
             read, write).build();
 
-    @NonNull
+    @Nullable
     @JsonProperty(READ)
     public abstract Boolean read();
 
-    @NonNull
+    @Nullable
     @JsonProperty(WRITE)
     public abstract Boolean write();
 

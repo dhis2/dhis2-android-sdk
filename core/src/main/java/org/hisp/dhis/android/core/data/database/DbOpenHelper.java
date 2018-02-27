@@ -347,6 +347,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
             ProgramModel.Columns.TRACKED_ENTITY + " TEXT," +
             ProgramModel.Columns.CATEGORY_COMBO + " TEXT," +
+            ProgramModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
             " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID
             + ")" +
@@ -924,6 +925,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             DataSetModel.Columns.DATA_ELEMENT_DECORATION + " INTEGER," +
                             DataSetModel.Columns.RENDER_AS_TABS + " INTEGER," +
                             DataSetModel.Columns.RENDER_HORIZONTALLY + " INTEGER," +
+                            DataSetModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
                             " FOREIGN KEY ( " + DataSetModel.Columns.CATEGORY_COMBO + ")" +
                             " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"

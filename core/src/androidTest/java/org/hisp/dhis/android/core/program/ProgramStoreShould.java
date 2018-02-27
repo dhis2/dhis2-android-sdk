@@ -47,6 +47,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -86,7 +87,8 @@ public class ProgramStoreShould extends AbsStoreTestCase {
             Columns.RELATIONSHIP_TEXT,
             Columns.RELATED_PROGRAM,
             Columns.TRACKED_ENTITY,
-            Columns.CATEGORY_COMBO
+            Columns.CATEGORY_COMBO,
+            Columns.ACCESS_DATA_WRITE
     };
 
     //BaseIdentifiableModel attributes:
@@ -280,7 +282,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 VERSION, toInteger(ONLY_ENROLL_ONCE), ENROLLMENT_DATE_LABEL, toInteger(DISPLAY_INCIDENT_DATE), INCIDENT_DATE_LABEL,
                 toInteger(REGISTRATION), toInteger(SELECT_ENROLLMENT_DATES_IN_FUTURE), toInteger(DATA_ENTRY_METHOD), toInteger(IGNORE_OVERDUE_EVENTS), toInteger(RELATIONSHIP_FROM_A),
                 toInteger(SELECT_INCIDENT_DATES_IN_FUTURE), toInteger(CAPTURE_COORDINATES), toInteger(USE_FIRST_STAGE_DURING_REGISTRATION), toInteger(DISPLAY_FRONT_PAGE_LIST), PROGRAM_TYPE, deferredRelationshipTypeUid, RELATIONSHIP_TEXT,
-                UID2, deferredTrackedEntityUid, deferredCategoryComboUid
+                UID2, deferredTrackedEntityUid, deferredCategoryComboUid, toInteger(ACCESS_DATA_WRITE)
         );
         assertThatCursor(cursor).hasRow(
                 UID2, CODE, NAME, DISPLAY_NAME, dateString,
@@ -288,7 +290,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 DISPLAY_DESCRIPTION, VERSION, toInteger(ONLY_ENROLL_ONCE), ENROLLMENT_DATE_LABEL, toInteger(DISPLAY_INCIDENT_DATE),
                 INCIDENT_DATE_LABEL, toInteger(REGISTRATION), toInteger(SELECT_ENROLLMENT_DATES_IN_FUTURE), toInteger(DATA_ENTRY_METHOD), toInteger(IGNORE_OVERDUE_EVENTS),
                 toInteger(RELATIONSHIP_FROM_A), toInteger(SELECT_INCIDENT_DATES_IN_FUTURE), toInteger(CAPTURE_COORDINATES), toInteger(USE_FIRST_STAGE_DURING_REGISTRATION), toInteger(DISPLAY_FRONT_PAGE_LIST), PROGRAM_TYPE,
-                RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, UID, TRACKED_ENTITY, CATEGORY_COMBO
+                RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, UID, TRACKED_ENTITY, CATEGORY_COMBO, toInteger(ACCESS_DATA_WRITE)
         );
         assertThatCursor(cursor).isExhausted();
     }
@@ -319,7 +321,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, toInteger(RELATIONSHIP_FROM_A), null,
-                null, null, null, PROGRAM_TYPE, null, null, null, null, null).isExhausted();
+                null, null, null, PROGRAM_TYPE, null, null, null, null, null, toInteger(false)).isExhausted();
     }
 
     @Test

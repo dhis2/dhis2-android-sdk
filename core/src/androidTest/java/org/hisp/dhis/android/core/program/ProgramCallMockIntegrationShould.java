@@ -110,7 +110,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
             ProgramModel.Columns.RELATIONSHIP_TEXT,
             ProgramModel.Columns.RELATED_PROGRAM,
             ProgramModel.Columns.TRACKED_ENTITY,
-            ProgramModel.Columns.CATEGORY_COMBO
+            ProgramModel.Columns.CATEGORY_COMBO,
+            ProgramModel.Columns.ACCESS_DATA_WRITE
     };
 
     private Dhis2MockServer dhis2MockServer;
@@ -265,7 +266,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 null,
                 null,
                 "nEenWmSyUEp",
-                "nM3u9s5a52V"
+                "nM3u9s5a52V",
+                0
         ).isExhausted();
     }
 

@@ -44,7 +44,7 @@ public final class DataValueEndpointCall extends GenericEndpointCallImpl<DataVal
 
     private DataValueEndpointCall(GenericCallData data, DataValueService dataValueService,
                                   GenericHandler<DataValue> dataValueHandler, DataValueQuery query) {
-        super(data, dataValueHandler, ResourceModel.Type.INDICATOR, query);
+        super(data, dataValueHandler, ResourceModel.Type.DATA_VALUE, query);
         this.dataValueService = dataValueService;
     }
 

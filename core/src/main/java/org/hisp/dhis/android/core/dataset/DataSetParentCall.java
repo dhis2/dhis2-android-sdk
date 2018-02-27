@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementEndpointCall;
-import org.hisp.dhis.android.core.datavalue.DataValueEndpointCall;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorEndpointCall;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeEndpointCall;
@@ -53,7 +52,6 @@ public class DataSetParentCall extends TransactionalCall {
     private final DataElementEndpointCall.Factory dataElementCallFactory;
     private final IndicatorEndpointCall.Factory indicatorCallFactory;
     private final IndicatorTypeEndpointCall.Factory indicatorTypeCallFactory;
-    private final DataValueEndpointCall.Factory dataValueCallFactory;
     private final List<OrganisationUnit> organisationUnits;
     private final PeriodHandler periodHandler;
 
@@ -62,7 +60,6 @@ public class DataSetParentCall extends TransactionalCall {
                               DataElementEndpointCall.Factory dataElementCallFactory,
                               IndicatorEndpointCall.Factory indicatorCallFactory,
                               IndicatorTypeEndpointCall.Factory indicatorTypeCallFactory,
-                              DataValueEndpointCall.Factory dataValueCallFactory,
                               List<OrganisationUnit> organisationUnits,
                               PeriodHandler periodHandler) {
         super(data);
@@ -72,7 +69,6 @@ public class DataSetParentCall extends TransactionalCall {
         this.dataElementCallFactory = dataElementCallFactory;
         this.indicatorCallFactory = indicatorCallFactory;
         this.indicatorTypeCallFactory = indicatorTypeCallFactory;
-        this.dataValueCallFactory = dataValueCallFactory;
         this.organisationUnits = organisationUnits;
         this.periodHandler = periodHandler;
     }
@@ -118,7 +114,6 @@ public class DataSetParentCall extends TransactionalCall {
                     DataElementEndpointCall.FACTORY,
                     IndicatorEndpointCall.FACTORY,
                     IndicatorTypeEndpointCall.FACTORY,
-                    DataValueEndpointCall.FACTORY,
                     organisationUnits,
                     PeriodHandler.create(data.databaseAdapter()));
         }

@@ -110,7 +110,7 @@ public class ProgramStoreImpl implements ProgramStore {
             ProgramModel.Columns.RELATIONSHIP_TEXT + " =?, " +
             ProgramModel.Columns.RELATED_PROGRAM + " =?, " +
             ProgramModel.Columns.TRACKED_ENTITY + " =?, " +
-            ProgramModel.Columns.CATEGORY_COMBO + " =? " +
+            ProgramModel.Columns.CATEGORY_COMBO + " =?, " +
             ProgramModel.Columns.ACCESS_DATA_WRITE + " =? " +
             " WHERE " +
             ProgramModel.Columns.UID + " = ?;";

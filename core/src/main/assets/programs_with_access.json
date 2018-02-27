@@ -3,165 +3,88 @@
     {
       "id": "lxAQ7Zs9VYR",
       "access": {
-        "read": true,
-        "update": true,
-        "externalize": false,
-        "delete": true,
-        "write": true,
-        "manage": true,
         "data": {
-          "read": true,
-          "write": true
+          "read": true
         }
       }
     },
     {
       "id": "IpHINAT79UW",
       "access": {
-        "read": true,
-        "update": true,
-        "externalize": false,
-        "delete": true,
-        "write": true,
-        "manage": true,
         "data": {
-          "read": true,
-          "write": true
+          "read": true
         }
       }
     },
     {
       "id": "kla3mAPgvCH",
       "access": {
-        "read": true,
-        "update": true,
-        "externalize": false,
-        "delete": true,
-        "write": true,
-        "manage": true,
         "data": {
-          "read": true,
-          "write": true
+          "read": true
         }
       }
     },
     {
       "id": "q04UBOqq3rp",
       "access": {
-        "read": true,
-        "update": true,
-        "externalize": false,
-        "delete": true,
-        "write": true,
-        "manage": true,
         "data": {
-          "read": true,
-          "write": true
+          "read": true
         }
       }
     },
     {
       "id": "eBAyeGv0exc",
       "access": {
-        "read": true,
-        "update": true,
-        "externalize": false,
-        "delete": true,
-        "write": true,
-        "manage": true,
         "data": {
-          "read": true,
-          "write": true
+          "read": true
         }
       }
     },
     {
       "id": "VBqh0ynB2wv",
       "access": {
-        "read": true,
-        "update": true,
-        "externalize": false,
-        "delete": true,
-        "write": true,
-        "manage": true,
         "data": {
-          "read": true,
-          "write": true
+          "read": true
         }
       }
     },
     {
       "id": "bMcwwoVnbSR",
       "access": {
-        "read": true,
-        "update": true,
-        "externalize": false,
-        "delete": true,
-        "write": true,
-        "manage": true,
         "data": {
-          "read": true,
-          "write": true
+          "read": true
         }
       }
     },
     {
       "id": "uy2gU8kT1jF",
       "access": {
-        "read": true,
-        "update": true,
-        "externalize": false,
-        "delete": true,
-        "write": true,
-        "manage": true,
         "data": {
-          "read": true,
-          "write": true
+          "read": true
         }
       }
     },
     {
       "id": "fDd25txQckK",
       "access": {
-        "read": true,
-        "update": true,
-        "externalize": false,
-        "delete": true,
-        "write": true,
-        "manage": true,
         "data": {
-          "read": true,
-          "write": true
+          "read": true
         }
       }
     },
     {
       "id": "ur1Edk5Oe2n",
       "access": {
-        "read": true,
-        "update": true,
-        "externalize": false,
-        "delete": true,
-        "write": true,
-        "manage": true,
         "data": {
-          "read": true,
-          "write": true
+          "read": true
         }
       }
     },
     {
       "id": "WSGAb5XwJ3Y",
       "access": {
-        "read": true,
-        "update": true,
-        "externalize": false,
-        "delete": true,
-        "write": true,
-        "manage": true,
         "data": {
-          "read": true,
-          "write": true
+          "read": true
         }
       }
     }

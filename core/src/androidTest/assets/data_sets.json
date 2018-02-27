@@ -37,7 +37,12 @@
         {
           "id": "ReUHfIn0pTQ"
         }
-      ]
+      ],
+      "access": {
+        "data": {
+          "write": true
+        }
+      }
     }
   ]
 }

@@ -29,13 +29,16 @@
 package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.dataset.DataSet;
 
 @AutoValue
 public abstract class Access {
@@ -55,27 +58,30 @@ public abstract class Access {
     public static final Field<Access, Boolean> manage = Field.create(MANAGE);
     private static final NestedField<Access, DataAccess> data = NestedField.create(DATA);
 
-    @NonNull
+    public static final Fields<Access> dataAccess = Fields.<Access>builder().fields(
+            data.with(DataAccess.allFields)).build();
+
+    @Nullable
     @JsonProperty(READ)
     public abstract Boolean read();
 
-    @NonNull
+    @Nullable
     @JsonProperty(WRITE)
     public abstract Boolean write();
 
-    @NonNull
+    @Nullable
     @JsonProperty(UPDATE)
     public abstract Boolean update();
 
-    @NonNull
+    @Nullable
     @JsonProperty(DELETE)
     public abstract Boolean delete();
 
-    @NonNull
+    @Nullable
     @JsonProperty(EXTERNALIZE)
     public abstract Boolean externalize();
 
-    @NonNull
+    @Nullable
     @JsonProperty(MANAGE)
     public abstract Boolean manage();
 

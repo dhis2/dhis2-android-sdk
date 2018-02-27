@@ -153,7 +153,7 @@ public abstract class Program extends BaseNameableObject {
             = NestedField.create(PROGRAM_RULE_VARIABLES);
 
     static final Fields<Program> uidAndAccess = Fields.<Program>builder().fields(
-            uid, access).build();
+            uid, access.with(Access.dataAccess)).build();
 
     @Nullable
     @JsonProperty(VERSION)

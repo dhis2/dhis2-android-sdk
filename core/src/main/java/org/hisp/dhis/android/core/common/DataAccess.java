@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
 @AutoValue
 public abstract class DataAccess {
@@ -43,6 +44,9 @@ public abstract class DataAccess {
 
     public static final Field<DataAccess, Boolean> read = Field.create(READ);
     public static final Field<DataAccess, Boolean> write = Field.create(WRITE);
+
+    public static final Fields<DataAccess> allFields = Fields.<DataAccess>builder().fields(
+            read, write).build();
 
     @NonNull
     @JsonProperty(READ)

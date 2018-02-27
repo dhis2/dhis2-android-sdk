@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.DataValueCall;
+import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
@@ -545,8 +545,8 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response> syncDataValues() {
-        return new DataValueCall(genericCallData, DataValueEndpointCall.FACTORY, dataSetStore, periodStore,
+    public Call<Response> syncAggregatedData() {
+        return new AggregatedDataCall(genericCallData, DataValueEndpointCall.FACTORY, dataSetStore, periodStore,
                 organisationUnitStore);
     }
 

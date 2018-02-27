@@ -94,7 +94,6 @@ public class Dhis2MockServer {
         enqueueMockResponse("data_elements.json");
         enqueueMockResponse("indicators.json");
         enqueueMockResponse("indicator_types.json");
-        enqueueMockResponse("data_values.json");
     }
 
     public void enqueueMetadataWithDescendentsResponses() throws IOException {
@@ -110,7 +109,6 @@ public class Dhis2MockServer {
         enqueueMockResponse("data_elements.json");
         enqueueMockResponse("indicators.json");
         enqueueMockResponse("indicator_types.json");
-        enqueueMockResponse("admin/data_values.json");
     }
 
     @NonNull

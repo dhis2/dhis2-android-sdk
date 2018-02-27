@@ -44,18 +44,18 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-public class DataValueCall extends TransactionalCall {
+public class AggregatedDataCall extends TransactionalCall {
 
     private final DataValueEndpointCall.Factory dataValueCallFactory;
     private final IdentifiableObjectStore<DataSetModel> dataSetStore;
     private final ObjectWithoutUidStore<PeriodModel> periodStore;
     private final OrganisationUnitStore organisationUnitStore;
 
-    public DataValueCall(@NonNull GenericCallData genericCallData,
-                         @NonNull DataValueEndpointCall.Factory dataValueCallFactory,
-                         @NonNull IdentifiableObjectStore<DataSetModel> dataSetStore,
-                         @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
-                         @NonNull OrganisationUnitStore organisationUnitStore) {
+    public AggregatedDataCall(@NonNull GenericCallData genericCallData,
+                              @NonNull DataValueEndpointCall.Factory dataValueCallFactory,
+                              @NonNull IdentifiableObjectStore<DataSetModel> dataSetStore,
+                              @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
+                              @NonNull OrganisationUnitStore organisationUnitStore) {
         super(genericCallData);
         this.dataValueCallFactory = dataValueCallFactory;
         this.dataSetStore = dataSetStore;

@@ -33,13 +33,10 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class UserRoleHandler {
     private final UserRoleStore userRoleStore;
-    private final UserRoleProgramLinkStore userRoleProgramLinkStore;
 
 
-    public UserRoleHandler(UserRoleStore userRoleStore,
-                           UserRoleProgramLinkStore userRoleProgramLinkStore) {
+    public UserRoleHandler(UserRoleStore userRoleStore) {
         this.userRoleStore = userRoleStore;
-        this.userRoleProgramLinkStore = userRoleProgramLinkStore;
     }
 
     public void handleUserRoles(List<UserRole> userRoles) {

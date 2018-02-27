@@ -87,7 +87,6 @@ import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserService;
 import org.hisp.dhis.android.core.user.UserStore;
@@ -115,7 +114,6 @@ public class MetadataCall implements Call<Response> {
     private final UserStore userStore;
     private final UserCredentialsStore userCredentialsStore;
     private final UserRoleStore userRoleStore;
-    private final UserRoleProgramLinkStore userRoleProgramLinkStore;
     private final OrganisationUnitStore organisationUnitStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final ProgramStore programStore;
@@ -160,7 +158,6 @@ public class MetadataCall implements Call<Response> {
                         @NonNull UserStore userStore,
                         @NonNull UserCredentialsStore userCredentialsStore,
                         @NonNull UserRoleStore userRoleStore,
-                        @NonNull UserRoleProgramLinkStore userRoleProgramLinkStore,
                         @NonNull OrganisationUnitStore organisationUnitStore,
                         @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
                         @NonNull ProgramStore programStore,
@@ -201,7 +198,6 @@ public class MetadataCall implements Call<Response> {
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.userRoleStore = userRoleStore;
-        this.userRoleProgramLinkStore = userRoleProgramLinkStore;
         this.organisationUnitStore = organisationUnitStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.programStore = programStore;
@@ -270,8 +266,7 @@ public class MetadataCall implements Call<Response> {
                     userCredentialsStore,
                     userRoleStore,
                     resourceStore,
-                    data.serverDate(),
-                    userRoleProgramLinkStore
+                    data.serverDate()
             ).call();
             if (!response.isSuccessful()) {
                 return response;

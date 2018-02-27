@@ -52,9 +52,6 @@ public class UserRoleHandlerShould {
     private UserRoleStore userRoleStore;
 
     @Mock
-    private UserRoleProgramLinkStore userRoleProgramLinkStore;
-
-    @Mock
     private UserRole userRole;
 
     @Mock
@@ -75,7 +72,7 @@ public class UserRoleHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        userRoleHandler = new UserRoleHandler(userRoleStore, userRoleProgramLinkStore);
+        userRoleHandler = new UserRoleHandler(userRoleStore);
 
         when(program.uid()).thenReturn("program_uid");
 
@@ -126,41 +123,6 @@ public class UserRoleHandlerShould {
                 any(Date.class), any(Date.class));
 
         verify(userRoleStore, never()).delete(anyString());
-    }
-
-    // TODO decide if this link has to be persisted or table can be completely deleted
-    // @Test
-    public void invoke_update_and_insert_when_handle_user_roles_not_updatable() throws Exception {
-        when(userRoleProgramLinkStore.update(anyString(), anyString(), anyString(), anyString())).thenReturn(0);
-
-        userRoleHandler.handleUserRoles(userRoles);
-
-        // verify that insert is called once
-        verify(userRoleProgramLinkStore, times(1)).insert(anyString(), anyString());
-
-        // verify that updateWithSection is called once since we try to updateWithSection before we insert
-        verify(userRoleProgramLinkStore, times(1)).update(anyString(), anyString(), anyString(), anyString());
-
-        // verify that delete is never called
-        verify(userRoleProgramLinkStore, never()).delete(anyString(), anyString());
-    }
-
-    // TODO decide if this link has to be persisted or table can be completely deleted
-    // @Test
-    public void invoke_only_update_when_handle_user_roles_inserted_with_uids() throws Exception {
-        when(userRole.uid()).thenReturn("new_user_role_uid");
-        when(program.uid()).thenReturn("new_program_uid");
-        when(userRoleProgramLinkStore.update(anyString(), anyString(), anyString(), anyString())).thenReturn(1);
-
-        userRoleHandler.handleUserRoles(userRoles);
-
-        // verify that updateWithSection is called once
-        verify(userRoleProgramLinkStore, times(1)).update(anyString(), anyString(), anyString(), anyString());
-
-        // verify that insert and delete is never called
-
-        verify(userRoleProgramLinkStore, never()).delete(anyString(), anyString());
-        verify(userRoleProgramLinkStore, never()).insert(anyString(), anyString());
     }
 
     @Test

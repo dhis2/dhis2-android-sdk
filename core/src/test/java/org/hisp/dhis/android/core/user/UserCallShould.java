@@ -120,9 +120,6 @@ public class UserCallShould {
 
     private Call<Response<User>> userSyncCall;
 
-    @Mock
-    private UserRoleProgramLinkStore userRoleProgramLinkStore;
-
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
@@ -131,7 +128,7 @@ public class UserCallShould {
         userSyncCall = new UserCall(
                 userService, databaseAdapter,
                 userStore, userCredentialsStore, userRoleStore, resourceStore,
-                serverDate, userRoleProgramLinkStore
+                serverDate
         );
 
         when(userCredentials.uid()).thenReturn("user_credentials_uid");

@@ -82,7 +82,6 @@ import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRole;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserService;
 import org.hisp.dhis.android.core.user.UserStore;
@@ -172,9 +171,6 @@ public class MetadataCallShould {
 
     @Mock
     private UserRoleStore userRoleStore;
-
-    @Mock
-    private UserRoleProgramLinkStore userRoleProgramLinkStore;
 
     @Mock
     private OrganisationUnitStore organisationUnitStore;
@@ -415,7 +411,7 @@ public class MetadataCallShould {
                 databaseAdapter, systemInfoService, userService,
                 programService, organisationUnitService, trackedEntityService, optionSetService,
                 systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
+                userCredentialsStore, userRoleStore, organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,

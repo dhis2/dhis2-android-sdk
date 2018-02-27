@@ -100,7 +100,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
- "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
+ "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity", "PMD.ExcessiveMethodLength"})
 public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
@@ -259,7 +259,7 @@ public class MetadataCall implements Call<Response> {
             GenericCallData data = GenericCallData.create(databaseAdapter,
                     new ResourceHandler(resourceStore), retrofit);
 
-            response = new UserCall(
+            Response<User> userResponse = new UserCall(
                     userService,
                     databaseAdapter,
                     userStore,
@@ -268,11 +268,11 @@ public class MetadataCall implements Call<Response> {
                     resourceStore,
                     data.serverDate()
             ).call();
+            response = userResponse;
             if (!response.isSuccessful()) {
                 return response;
             }
 
-            User user = (User) response.body();
 
             response = downloadCategories(data.serverDate());
 
@@ -320,6 +320,7 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
+            User user = (User) userResponse.body();
             Response<Payload<OrganisationUnit>> organisationUnitResponse = new OrganisationUnitCall(
                     user, organisationUnitService, databaseAdapter, organisationUnitStore,
                     resourceStore, data.serverDate(), userOrganisationUnitLinkStore,

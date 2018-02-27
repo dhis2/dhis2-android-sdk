@@ -109,7 +109,7 @@ public abstract class DataSet extends BaseNameableObject {
             indicators.with(ObjectWithUid.uid)).build();
 
     static final Fields<DataSet> uidAndAccess = Fields.<DataSet>builder().fields(
-            uid, access).build();
+            uid, access.with(Access.dataAccess)).build();
 
     @Nullable
     @JsonProperty(PERIOD_TYPE)

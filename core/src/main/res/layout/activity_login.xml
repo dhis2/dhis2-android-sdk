@@ -121,5 +121,19 @@
 
         </LinearLayout>
 
+        <org.hisp.dhis.android.sdk.ui.views.FontTextView
+            android:id="@+id/progress_text"
+            style="?android:attr/progressBarStyleLargeInverse"
+            android:layout_width="390dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/progress_bar"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_centerHorizontal="true"
+            android:text="@string/pull"
+            android:textColor="@color/white"
+            android:textSize="@dimen/medium_text_size"
+            android:visibility="visible"
+            app:font="@string/regular_font_name" />
     </RelativeLayout>
 </ScrollView>

@@ -25,37 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
+public class ObjectStyleHandlerImpl implements ObjectStyleHandler {
 
-    private final ObjectStyleHandler styleHandler;
+    private final ObjectWithoutUidStore<ObjectStyleModel> store;
 
-    DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
-                   ObjectStyleHandler styleHandler) {
-        super(dataSetStore);
-        this.styleHandler = styleHandler;
+    ObjectStyleHandlerImpl(ObjectWithoutUidStore<ObjectStyleModel> store) {
+        this.store = store;
     }
 
     @Override
-    protected DataSetModel pojoToModel(DataSet dataSet) {
-        return DataSetModel.factory.fromPojo(dataSet);
+    public void handle(ObjectStyle style, String uid, String objectTable) {
+        if (style != null) {
+            ObjectStyleModel model = ObjectStyleModel.fromPojo(style, uid, objectTable);
+            store.updateOrInsertWhere(model);
+        }
     }
 
-    public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataSetHandler(
-                DataSetStore.create(databaseAdapter),
-                ObjectStyleHandlerImpl.create(databaseAdapter));
-    }
-
-    @Override
-    protected void afterObjectPersisted(DataSet dataSet) {
-        styleHandler.handle(dataSet.style(), dataSet.uid(), DataSetModel.TABLE);
+    public static ObjectStyleHandlerImpl create(DatabaseAdapter databaseAdapter) {
+        return new ObjectStyleHandlerImpl(ObjectStyleStore.create(databaseAdapter));
     }
 }

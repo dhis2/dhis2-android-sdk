@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.Field;
@@ -57,6 +58,7 @@ public abstract class DataElement extends BaseNameableObject {
     private final static String DISPLAY_FORM_NAME = "displayFormName";
     private final static String OPTION_SET = "optionSet";
     private final static String CATEGORY_COMBO = "categoryCombo";
+    private final static String STYLE = "style";
 
     public static final Field<DataElement, String> uid = Field.create(UID);
     private static final Field<DataElement, String> code = Field.create(CODE);
@@ -81,13 +83,15 @@ public abstract class DataElement extends BaseNameableObject {
     private static final NestedField<DataElement, OptionSet> optionSet = NestedField.create(OPTION_SET);
     private static final NestedField<DataElement, ObjectWithUid> categoryCombo =
             NestedField.create(CATEGORY_COMBO);
+    private static final NestedField<DataElement, ObjectStyle> style =
+            NestedField.create(STYLE);
 
     public static final Fields<DataElement> allFields = Fields.<DataElement>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, deleted,
             valueType, zeroIsSignificant, aggregationType, formName, numberType, domainType, dimension, displayFormName,
             optionSet.with(OptionSet.uid, OptionSet.version),
-            categoryCombo.with(ObjectWithUid.uid)).build();
+            categoryCombo.with(ObjectWithUid.uid), style.with(ObjectStyle.allFields)).build();
 
     @Nullable
     @JsonProperty(VALUE_TYPE)
@@ -138,6 +142,10 @@ public abstract class DataElement extends BaseNameableObject {
         ObjectWithUid combo = categoryCombo();
         return combo == null ? CategoryComboModel.DEFAULT_UID : combo.uid();
     }
+    
+    @Nullable
+    @JsonProperty(STYLE)
+    public abstract ObjectStyle style();
 
     @JsonCreator
     public static DataElement create(
@@ -161,13 +169,14 @@ public abstract class DataElement extends BaseNameableObject {
             @JsonProperty(DISPLAY_FORM_NAME) String displayFormName,
             @JsonProperty(OPTION_SET) OptionSet optionSet,
             @JsonProperty(CATEGORY_COMBO) ObjectWithUid categoryCombo,
+            @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_DataElement(uid, code, name,
                 displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription, valueType,
                 zeroIsSignificant, aggregationType, formName, numberType,
-                domainType, dimension, displayFormName, optionSet, categoryCombo);
+                domainType, dimension, displayFormName, optionSet, categoryCombo, style);
 
     }
 }

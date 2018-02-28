@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.option;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -69,7 +70,8 @@ public class OptionSetCall extends GenericEndpointCallImpl<OptionSet, UidsQuery>
                         Option.lastUpdated,
                         Option.optionSet.with(
                                 OptionSet.uid
-                        )
+                        ),
+                        Option.style.with(ObjectStyle.allFields)
                 )
         ).build();
     }

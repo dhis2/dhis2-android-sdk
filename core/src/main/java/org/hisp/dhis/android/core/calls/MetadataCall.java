@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -132,6 +133,7 @@ public class MetadataCall implements Call<Response> {
     private final TrackedEntityStore trackedEntityStore;
     private final GenericHandler<OptionSet> optionSetHandler;
     private final GenericHandler<DataElement> dataElementHandler;
+    private final ObjectStyleHandler styleHandler;
 
     private final Retrofit retrofit;
     private final CategoryQuery categoryQuery;
@@ -184,6 +186,7 @@ public class MetadataCall implements Call<Response> {
                         @NonNull GenericHandler<OptionSet> optionSetHandler,
                         @NonNull GenericHandler<DataElement> dataElementHandler,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
+                        @NonNull ObjectStyleHandler styleHandler,
                         @NonNull Retrofit retrofit
                         ) {
         this.databaseAdapter = databaseAdapter;
@@ -224,6 +227,7 @@ public class MetadataCall implements Call<Response> {
         this.optionSetHandler = optionSetHandler;
         this.dataElementHandler = dataElementHandler;
         this.dataSetParentCallFactory = dataSetParentCallFactory;
+        this.styleHandler = styleHandler;
 
         this.retrofit = retrofit;
     }
@@ -304,7 +308,7 @@ public class MetadataCall implements Call<Response> {
                     programRuleStore,
                     programStageDataElementStore,
                     programStageSectionStore, programStageStore, relationshipStore,
-                    dataElementHandler
+                    dataElementHandler, styleHandler
             ).call();
             if (!response.isSuccessful()) {
                 return response;

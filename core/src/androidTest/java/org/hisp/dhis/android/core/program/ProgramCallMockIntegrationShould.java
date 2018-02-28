@@ -201,7 +201,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 programIndicatorHandler,
                 programRuleHandler,
                 programTrackedEntityAttributeHandler,
-                relationshipTypeHandler);
+                relationshipTypeHandler, styleHandler);
 
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);

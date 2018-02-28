@@ -69,6 +69,8 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -279,6 +281,7 @@ public final class D2 {
     private final OrganisationUnitHandler organisationUnitHandler;
     private final GenericHandler<DataElement> dataElementHandler;
     private final OptionSetHandler optionSetHandler;
+    private final ObjectStyleHandler styleHandler;
 
     //Generic Call Data
     private final GenericCallData genericCallData;
@@ -424,6 +427,7 @@ public final class D2 {
         // handlers
         this.optionSetHandler = OptionSetHandler.create(databaseAdapter);
         this.dataElementHandler = DataElementHandler.create(databaseAdapter, this.optionSetHandler);
+        this.styleHandler = ObjectStyleHandlerImpl.create(databaseAdapter);
 
         // data
         this.genericCallData = GenericCallData.create(databaseAdapter, new ResourceHandler(resourceStore), retrofit);
@@ -541,7 +545,7 @@ public final class D2 {
                 organisationUnitProgramLinkStore, categoryQuery,
                 categoryService, categoryHandler, categoryComboQuery, comboService,
                 categoryComboHandler, optionSetHandler, dataElementHandler, DataSetParentCall.FACTORY,
-                retrofit);
+                styleHandler, retrofit);
     }
 
     @NonNull

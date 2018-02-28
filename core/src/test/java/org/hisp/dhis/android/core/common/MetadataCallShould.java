@@ -320,6 +320,9 @@ public class MetadataCallShould {
     @Mock
     private Call<Response> dataSetParentCall;
 
+    @Mock
+    private ObjectStyleHandler styleHandler;
+
     private Response<Payload<DataElement>> dataSetParentCallResponse;
 
 
@@ -420,7 +423,7 @@ public class MetadataCallShould {
                 programStageSectionStore, programStageStore, relationshipStore, trackedEntityStore,
                 organisationUnitProgramLinkStore,categoryQuery, categoryService, categoryHandler,
                 CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetHandler, dataElementHandler, dataSetParentCallFactory, retrofit);
+                optionSetHandler, dataElementHandler, dataSetParentCallFactory, styleHandler, retrofit);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 

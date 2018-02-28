@@ -445,7 +445,10 @@ public class ProgramIndicatorService {
                     } else if (ProgramIndicator.CURRENT_DATE.equals(uid)) {
                         date = currentDate;
                     } else if (ProgramIndicator.EVENT_DATE.equals(uid)) {
-                        date = DateUtils.parseDate(enrollmentProgramInstance.getEvents().get(0).getEventDate());
+                        if(enrollmentProgramInstance.getEvents().size()>0) {
+                            date = DateUtils.parseDate(
+                                    enrollmentProgramInstance.getEvents().get(0).getEventDate());
+                        }
                     }
 
                     if (date != null) {

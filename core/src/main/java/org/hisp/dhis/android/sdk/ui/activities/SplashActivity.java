@@ -29,12 +29,16 @@
 
 package org.hisp.dhis.android.sdk.ui.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.Window;
 
 import org.hisp.dhis.android.sdk.R;
@@ -46,25 +50,19 @@ import org.hisp.dhis.android.sdk.services.StartPeriodicSynchronizerService;
  */
 public class SplashActivity extends Activity {
 
+    private static final int REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int REQUEST_ACCESS_FINE_STORAGE = 2;
+    private static final int REQUEST_ALL_PERMISSIONS = 3;
+    private int permissionsRequested = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_splash);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Class<? extends Activity> nextActivity = getNextActivity();
-                //if (Dhis2Manager.getInstance().getRecordManager().getLoggedIn())
-                //	nextActivity = PinActivity.class;
 
-                Intent i = new Intent(SplashActivity.this, nextActivity);
-                startActivity(i);
-                finish();
-            }
-        }, 1000);
-        startService(new Intent(this, StartPeriodicSynchronizerService.class));
+        checkPermissions();
     }
 
     private Class<? extends Activity> getNextActivity() {
@@ -93,5 +91,58 @@ public class SplashActivity extends Activity {
         }
 
         return nextClass;
+    }
+
+    private void checkPermissions() {
+        boolean hasPermissionLocation = (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+        boolean hasPermissionStorage = (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+
+        if (!hasPermissionLocation && !hasPermissionStorage) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_ALL_PERMISSIONS);
+        } else {
+            if (!hasPermissionLocation) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_ACCESS_FINE_LOCATION);
+            }
+            else if (!hasPermissionStorage) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_ACCESS_FINE_STORAGE);
+            } else {
+                continueWithNextActivity();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionsRequested++;
+        if (permissionsRequested == 1) {
+            continueWithNextActivity();
+        }
+    }
+
+    private void continueWithNextActivity() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Class<? extends Activity> nextActivity = getNextActivity();
+                //if (Dhis2Manager.getInstance().getRecordManager().getLoggedIn())
+                //	nextActivity = PinActivity.class;
+
+                Intent i = new Intent(SplashActivity.this, nextActivity);
+                startActivity(i);
+                finish();
+            }
+        }, 1000);
+        startService(new Intent(this, StartPeriodicSynchronizerService.class));
     }
 }

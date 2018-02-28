@@ -44,6 +44,7 @@ import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.network.RepoManager;
 import org.hisp.dhis.android.sdk.network.Session;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.LastUpdatedManager;
@@ -178,6 +179,8 @@ public final class DhisController {
     static UserAccount signInUser(HttpUrl serverUrl, Credentials credentials) throws APIException {
         DhisApi dhisApi = RepoManager
                 .createService(serverUrl, credentials);
+        SystemInfo systemInfo = dhisApi.getSystemInfo();
+        systemInfo.save();
         UserAccount user = (new UserController(dhisApi)
                 .logInUser(serverUrl, credentials));
 
@@ -206,7 +209,6 @@ public final class DhisController {
 
     private static void readSession() {
         getInstance().session = LastUpdatedManager.getInstance().get();
-        getInstance().dhisApi = null;
 
         if (isUserLoggedIn()) {
             getInstance().dhisApi = RepoManager.createService(

@@ -137,7 +137,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         TrackedEntityAttributeStore trackedEntityAttributeStore =
                 new TrackedEntityAttributeStoreImpl(databaseAdapter());
         TrackedEntityAttributeHandler trackedEntityAttributeHandler =
-                new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
+                new TrackedEntityAttributeHandler(trackedEntityAttributeStore,
+                        ObjectStyleHandlerImpl.create(databaseAdapter()));
 
         ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore =
                 new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter());

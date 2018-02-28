@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -282,7 +283,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                         Access.data.with(
                                 DataAccess.write
                         )
-                )
+                ),
+                Program.style.with(ObjectStyle.allFields)
         ).build();
     }
 

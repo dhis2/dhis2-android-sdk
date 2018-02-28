@@ -99,7 +99,7 @@ public abstract class DataSet extends BaseNameableObject {
     private static final NestedField<DataSet, ObjectWithUid> indicators = NestedField.create(INDICATORS);
     private static final NestedField<DataSet, Access> access = NestedField.create(ACCESS);
 
-    static final Fields<DataSet> allFieldsExceptAccess = Fields.<DataSet>builder().fields(
+    static final Fields<DataSet> allFields = Fields.<DataSet>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, deleted,
             periodType, categoryCombo.with(ObjectWithUid.uid), mobile, version,

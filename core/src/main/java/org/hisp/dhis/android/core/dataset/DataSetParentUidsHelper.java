@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.indicator.Indicator;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.user.User;
 
 import java.util.HashSet;
 import java.util.List;

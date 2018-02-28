@@ -37,6 +37,7 @@ import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -48,9 +49,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.R;
@@ -99,7 +105,9 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
     private ItemStatusDialogFragmentForm mForm;
     private TextView mDialogLabel;
     private ImageView mItemStatusImage;
+    private ImageView mTriangle;
     private FontTextView mDetails;
+    private LinearLayout detailsTrigger;
     private FontTextView mStatus;
     private int mDialogId;
 
@@ -129,7 +137,11 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mItemStatusImage = (ImageView) view.findViewById(R.id.itemstatus);
 
+        detailsTrigger = (LinearLayout) view.findViewById(R.id.detailTrigger);
+
         mDetails = (FontTextView) view.findViewById(R.id.item_detailed_info);
+
+        mTriangle = (ImageView) view.findViewById(R.id.triangle);
 
         mStatus = (FontTextView) view.findViewById(R.id.statusinfo);
 
@@ -143,6 +155,7 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
         closeDialogButton.setOnClickListener(this);
         syncDialogButton.setOnClickListener(this);
         mDetails.setOnClickListener(this);
+        detailsTrigger.setOnClickListener(this);
         registerForContextMenu(mDetails);
 
         setDialogLabel(R.string.status);
@@ -190,24 +203,26 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
             mForm = data;
             switch (mForm.getStatus()) {
                 case SENT:
+                    detailsTrigger.setVisibility(View.GONE);
                     mItemStatusImage.setImageResource(R.drawable.ic_from_server);
                     mStatus.setText(getString(R.string.status_sent_description));
                     break;
                 case ERROR: {
+                    detailsTrigger.setVisibility(View.VISIBLE);
                     FailedItem failedItem = TrackerController.getFailedItem(data.getType(), data.getItem().getLocalId());
                     if(failedItem.getHttpStatusCode()==-1) {
                         mItemStatusImage.setImageResource(R.drawable.ic_offline);
                     } else {
                         mItemStatusImage.setImageResource(R.drawable.ic_event_error);
                     }
-                    mStatus.setText(getString(R.string.status_error_description));
+                    mStatus.setText(getString(R.string.default_synchronisation_error));
                     if(failedItem!= null) {
                         String details = "";
                         if( failedItem.getErrorMessage() != null) {
-                            details += failedItem.getErrorMessage() + '\n';
+                            details += toPrettyFormat(failedItem.getErrorMessage().toString()) + '\n';
                         }
                         if ( failedItem.getImportSummary() != null && failedItem.getImportSummary().getDescription() != null ) {
-                            details += failedItem.getImportSummary().getDescription() + '\n';
+                            details += toPrettyFormat(failedItem.getImportSummary().getDescription()) + '\n';
                         }
                         if ( failedItem.getImportSummary() != null && failedItem.getImportSummary().getConflicts() != null ) {
                             for(Conflict conflict: failedItem.getImportSummary().getConflicts() ) {
@@ -221,6 +236,7 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
                 }
                     break;
                 case OFFLINE:
+                    detailsTrigger.setVisibility(View.GONE);
                     mStatus.setText(getString(R.string.status_offline_description));
                     mItemStatusImage.setImageResource(R.drawable.ic_offline);
                     break;
@@ -228,6 +244,16 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
         }
     }
 
+    public static String toPrettyFormat(String jsonString)
+    {
+        JsonParser parser = new JsonParser();
+        JsonObject json = parser.parse(jsonString).getAsJsonObject();
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String prettyJson = gson.toJson(json);
+
+        return prettyJson;
+    }
     @Override
     public void onLoaderReset(Loader<ItemStatusDialogFragmentForm> loader) {
 
@@ -316,6 +342,14 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
 
 
 
+            }
+        } else if (v.getId() == R.id.detailTrigger){
+            if(mDetails.getVisibility() == View.VISIBLE){
+                mDetails.setVisibility(View.GONE);
+                mTriangle.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_triangle_collapsed));
+            }else{
+                mDetails.setVisibility(View.VISIBLE);
+                mTriangle.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_triangle_expanded));
             }
         }
     }

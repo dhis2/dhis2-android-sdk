@@ -655,6 +655,7 @@ public final class MetaDataController extends ResourceController {
 
         }
         SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
+        serverSystemInfo.save();
         AppPreferencesImpl appPreferences = new AppPreferencesImpl(context);
         appPreferences.setApiVersion(serverSystemInfo.getVersion());
         DateTime serverDateTime = serverSystemInfo.getServerDate();
@@ -956,7 +957,13 @@ public final class MetaDataController extends ResourceController {
                 .getLastUpdated(ResourceType.PROGRAMRULES);
         List<ProgramRule> programRules = unwrapResponse(dhisApi
                 .getProgramRules(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.PROGRAMRULES);
-        saveResourceDataFromServer(ResourceType.PROGRAMRULES, dhisApi, programRules, getProgramRules(), serverDateTime);
+        List<ProgramRule> validProgramRules = new ArrayList<>();
+        for(ProgramRule programRule : programRules){
+            if(programRule.getCondition()!=null && !programRule.getCondition().isEmpty()) {
+                validProgramRules.add(programRule);
+            }
+        }
+        saveResourceDataFromServer(ResourceType.PROGRAMRULES, dhisApi, validProgramRules, getProgramRules(), serverDateTime);
     }
 
     private static void getProgramRuleVariablesDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {

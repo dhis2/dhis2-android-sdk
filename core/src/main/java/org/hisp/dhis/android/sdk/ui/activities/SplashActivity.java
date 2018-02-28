@@ -110,10 +110,12 @@ public class SplashActivity extends Activity {
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         REQUEST_ACCESS_FINE_LOCATION);
             }
-            if (!hasPermissionStorage) {
+            else if (!hasPermissionStorage) {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         REQUEST_ACCESS_FINE_STORAGE);
+            } else {
+                continueWithNextActivity();
             }
         }
     }

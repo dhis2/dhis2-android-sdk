@@ -40,6 +40,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
 
+@SuppressWarnings({"PMD.ExcessivePublicCount"})
 @AutoValue
 public abstract class ProgramModel extends BaseNameableObjectModel {
 

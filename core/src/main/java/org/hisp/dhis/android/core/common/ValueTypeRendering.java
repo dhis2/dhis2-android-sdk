@@ -47,7 +47,7 @@ public abstract class ValueTypeRendering {
     private static final NestedField<ValueTypeRendering, ValueTypeDeviceRendering> mobile
             = NestedField.create(MOBILE);
 
-    static final Fields<ValueTypeRendering> allFields =
+    public static final Fields<ValueTypeRendering> allFields =
             Fields.<ValueTypeRendering>builder().fields(
                     desktop.with(ValueTypeDeviceRendering.allFields),
                     mobile.with(ValueTypeDeviceRendering.allFields)).build();

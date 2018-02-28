@@ -87,13 +87,16 @@ public abstract class DataElement extends BaseNameableObject {
             NestedField.create(CATEGORY_COMBO);
     private static final NestedField<DataElement, ObjectStyle> style =
             NestedField.create(STYLE);
+    private static final NestedField<DataElement, ValueTypeRendering> renderType =
+            NestedField.create(RENDER_TYPE);
 
     public static final Fields<DataElement> allFields = Fields.<DataElement>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, deleted,
             valueType, zeroIsSignificant, aggregationType, formName, numberType, domainType, dimension, displayFormName,
             optionSet.with(OptionSet.uid, OptionSet.version),
-            categoryCombo.with(ObjectWithUid.uid), style.with(ObjectStyle.allFields)).build();
+            categoryCombo.with(ObjectWithUid.uid), style.with(ObjectStyle.allFields),
+            renderType.with(ValueTypeRendering.allFields)).build();
 
     @Nullable
     @JsonProperty(VALUE_TYPE)

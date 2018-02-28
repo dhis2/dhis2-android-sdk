@@ -80,7 +80,7 @@ public abstract class Access {
     @JsonProperty(MANAGE)
     public abstract Boolean manage();
 
-    @NonNull
+    @Nullable
     @JsonProperty(DATA)
     public abstract DataAccess data();
 

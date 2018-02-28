@@ -1,3 +1,2 @@
 up:
- - DROP TABLE IF EXISTS DataSet;
- - CREATE TABLE DataSet (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, periodType TEXT,categoryCombo TEXT NOT NULL,mobile INTEGER,version INTEGER,expiryDays INTEGER,timelyDays INTEGER,notifyCompletingUser INTEGER,openFuturePeriods INTEGER,fieldCombinationRequired INTEGER,validCompleteOnly INTEGER,noValueRequiresComment INTEGER,skipOffline INTEGER,dataElementDecoration INTEGER,renderAsTabs INTEGER,renderHorizontally INTEGER, accessDataWrite INTEGER,color TEXT,icon TEXT, FOREIGN KEY ( categoryCombo) REFERENCES CategoryCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+ - CREATE TABLE ObjectStyle (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT,objectTable TEXT,color TEXT,icon TEXT, UNIQUE (uid));

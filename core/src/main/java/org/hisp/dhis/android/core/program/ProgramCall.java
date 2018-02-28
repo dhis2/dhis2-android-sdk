@@ -205,7 +205,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                                 ProgramStageSection.dataElements.with(DataElement.uid),
                                 ProgramStageSection.programIndicators.with(ProgramIndicator.uid,
                                         ProgramIndicator.program.with(Program.uid)
-                                )
+                                ),
+                                ProgramStageSection.renderType.with(ProgramStageSectionRendering.allFields)
                         ),
                         ProgramStage.style.with(ObjectStyle.allFields)
                 ),

@@ -49,6 +49,7 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
     private static final String SORT_ORDER = "sortOrder";
     private static final String PROGRAM_INDICATORS = "programIndicators";
     private static final String DATA_ELEMENTS = "dataElements";
+    private static final String RENDER_TYPE = "renderType";
 
     public static final Field<ProgramStageSection, String> uid = Field.create(UID);
     public static final Field<ProgramStageSection, String> code = Field.create(CODE);
@@ -64,6 +65,9 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
 
     public static final NestedField<ProgramStageSection, DataElement> dataElements = NestedField.create(DATA_ELEMENTS);
 
+    static final NestedField<ProgramStageSection, ProgramStageSectionRendering> renderType
+            = NestedField.create(RENDER_TYPE);
+
     @Nullable
     @JsonProperty(SORT_ORDER)
     public abstract Integer sortOrder();
@@ -76,6 +80,10 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
     @JsonProperty(DATA_ELEMENTS)
     public abstract List<DataElement> dataElements();
 
+    @Nullable
+    @JsonProperty(RENDER_TYPE)
+    public abstract ProgramStageSectionRendering renderType();
+
     @JsonCreator
     public static ProgramStageSection create(
             @JsonProperty(UID) String uid,
@@ -87,12 +95,14 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
             @JsonProperty(SORT_ORDER) Integer sortOrder,
             @JsonProperty(PROGRAM_INDICATORS) List<ProgramIndicator> programIndicators,
             @JsonProperty(DATA_ELEMENTS) List<DataElement> dataElements,
+            @JsonProperty(RENDER_TYPE) ProgramStageSectionRendering renderType,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_ProgramStageSection(
                 uid, code, name, displayName, created, lastUpdated, deleted, sortOrder,
                 safeUnmodifiableList(programIndicators),
-                safeUnmodifiableList(dataElements)
+                safeUnmodifiableList(dataElements),
+                renderType
         );
     }
 }

@@ -114,8 +114,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                                 programStageDataElementHandler,
                                 programIndicatorHandler
                         ),
-                        programStageDataElementHandler
-                ),
+                        programStageDataElementHandler,
+                        styleHandler),
                 programIndicatorHandler,
                 new ProgramRuleHandler(programRuleStore, new ProgramRuleActionHandler(programRuleActionStore)),
                 new ProgramTrackedEntityAttributeHandler(programTrackedEntityAttributeStore,

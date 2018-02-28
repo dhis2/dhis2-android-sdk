@@ -184,18 +184,19 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 programIndicatorHandler
         );
 
+        ObjectStyleHandler styleHandler = ObjectStyleHandlerImpl.create(databaseAdapter());
+
         ProgramStageStore programStageStore = new ProgramStageStoreImpl(databaseAdapter());
         ProgramStageHandler programStageHandler = new ProgramStageHandler(
                 programStageStore,
                 programStageSectionHandler,
-                programStageDataElementHandler
-        );
+                programStageDataElementHandler,
+                styleHandler);
 
         RelationshipTypeStore relationshipStore = new RelationshipTypeStoreImpl(databaseAdapter());
         RelationshipTypeHandler relationshipTypeHandler = new RelationshipTypeHandler(relationshipStore);
         ProgramService programService = d2.retrofit().create(ProgramService.class);
         ProgramStore programStore = new ProgramStoreImpl(databaseAdapter());
-        ObjectStyleHandler styleHandler = ObjectStyleHandlerImpl.create(databaseAdapter());
 
 
         ProgramHandler programHandler = new ProgramHandler(

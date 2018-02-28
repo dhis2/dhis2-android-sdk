@@ -15,9 +15,9 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.dataSetUids;
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.orgUnitUids;
-import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.periodIds;
+import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSetUids;
+import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getOrgUnitUids;
+import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getPeriodIds;
 
 @RunWith(AndroidJUnit4.class)
 public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase {
@@ -41,7 +41,7 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
                 new ResourceHandler(new ResourceStoreImpl(databaseAdapter()));
         GenericCallData data = GenericCallData.create(databaseAdapter(), resourceHandler, d2.retrofit());
 
-        return DataValueEndpointCall.FACTORY.create(data, dataSetUids, periodIds, orgUnitUids);
+        return DataValueEndpointCall.FACTORY.create(data, getDataSetUids(), getPeriodIds(), getOrgUnitUids());
     }
 
     // @Test

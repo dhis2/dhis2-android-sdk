@@ -36,17 +36,26 @@ import java.util.Set;
  */
 public final class DataValueUtils {
 
-    public final static Set<String> dataSetUids = new HashSet<>();
-    public final static Set<String> periodIds = new HashSet<>();
-    public final static Set<String> orgUnitUids = new HashSet<>();
-
     DataValueUtils () {
+    }
+
+    public static Set<String> getDataSetUids() {
+        Set<String> dataSetUids = new HashSet<>();
         dataSetUids.add("BfMAe6Itzgt");
         dataSetUids.add("TuL8IOPzpHh");
+        return dataSetUids;
+    }
 
+    public static Set<String> getPeriodIds() {
+        Set<String> periodIds = new HashSet<>();
         periodIds.add("201712");
         periodIds.add("2017");
+        return periodIds;
+    }
 
+    public static Set<String> getOrgUnitUids() {
+        Set<String> orgUnitUids = new HashSet<>();
         orgUnitUids.add("DiszpKrYNg8");
+        return orgUnitUids;
     }
 }

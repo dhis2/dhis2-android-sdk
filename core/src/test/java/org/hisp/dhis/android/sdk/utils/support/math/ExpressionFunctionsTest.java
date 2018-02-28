@@ -452,7 +452,7 @@ public class ExpressionFunctionsTest {
     @Test
     public void countIfValueShouldReturnZeroForNonExistingVariable() {
         new ProgramRuleVariableMapSetter().set();
-        assertThat(countIfValue("nonexisting"), is(equalTo(0)));
+        assertThat(countIfValue("nonexisting","textToCompare"), is(equalTo(0)));
     }
 
     @Test
@@ -462,7 +462,7 @@ public class ExpressionFunctionsTest {
                         new Variable().withValue("1.0").withValues(
                                 Arrays.asList("1.0", null, "2.0", "1.0")).build())
                 .set();
-        assertThat(countIfValue("myvar"), is(equalTo(2)));
+        assertThat(countIfValue("myvar","1.0"), is(equalTo(2)));
     }
 
     @Test
@@ -470,7 +470,7 @@ public class ExpressionFunctionsTest {
         new ProgramRuleVariableMapSetter()
                 .addVariable("myvar", new Variable().withValue("1.0").build())
                 .set();
-        assertThat(countIfValue("myvar"), is(equalTo(1)));
+        assertThat(countIfValue("myvar","1.0"), is(equalTo(1)));
     }
 
     @Test

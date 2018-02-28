@@ -27,25 +27,47 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-public class ObjectStyleHandlerImpl implements ObjectStyleHandler {
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-    private final ObjectWithoutUidStore<ObjectStyleModel> store;
+@RunWith(JUnit4.class)
+public class ObjectStyleHandlerShould {
 
-    ObjectStyleHandlerImpl(ObjectWithoutUidStore<ObjectStyleModel> store) {
-        this.store = store;
+    @Mock
+    private ObjectWithoutUidStore<ObjectStyleModel> store;
+
+    // object to test
+    private ObjectStyleHandler styleHandler;
+
+    private static final String UID = "uid";
+    private static final String TABLE = "table";
+    private static final String COLOR = "red";
+    private static final String ICON = "batman";
+    private static final ObjectStyle STYLE = ObjectStyle.create(COLOR, ICON);
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        styleHandler = new ObjectStyleHandlerImpl(store);
     }
 
-    @Override
-    public void handle(ObjectStyle style, String uid, String objectTable) {
-        if (style != null) {
-            ObjectStyleModel model = ObjectStyleModel.fromPojo(style, uid, objectTable);
-            store.updateOrInsertWhere(model);
-        }
+    @Test
+    public void call_store_when_style_not_null() throws Exception {
+        styleHandler.handle(STYLE, UID, TABLE);
+        verify(store).updateOrInsertWhere(ObjectStyleModel.fromPojo(STYLE, UID, TABLE));
+        verifyNoMoreInteractions(store);
     }
 
-    public static ObjectStyleHandlerImpl create(DatabaseAdapter databaseAdapter) {
-        return new ObjectStyleHandlerImpl(ObjectStyleStore.create(databaseAdapter));
+    @Test
+    public void not_call_store_when_style_null() throws Exception {
+        styleHandler.handle(null, UID, TABLE);
+        verifyNoMoreInteractions(store);
     }
 }

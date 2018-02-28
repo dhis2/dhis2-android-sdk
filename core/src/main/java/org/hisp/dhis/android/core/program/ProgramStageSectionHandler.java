@@ -48,6 +48,14 @@ public class ProgramStageSectionHandler {
         this.programIndicatorHandler = programIndicatorHandler;
     }
 
+    private ProgramStageSectionRenderingType desktopRenderType(ProgramStageSectionRendering renderType) {
+        return renderType == null || renderType.desktop() == null ? null : renderType.desktop().type();
+    }
+
+    private ProgramStageSectionRenderingType mobileRenderType(ProgramStageSectionRendering renderType) {
+        return renderType == null || renderType.mobile() == null ? null : renderType.mobile().type();
+    }
+
     public void handleProgramStageSection(String programStageUid, List<ProgramStageSection> programStageSections) {
         if (programStageUid == null || programStageSections == null) {
             return;
@@ -58,13 +66,18 @@ public class ProgramStageSectionHandler {
             if (isDeleted(programStageSection)) {
                 programStageSectionStore.delete(programStageSection.uid());
             } else {
+                ProgramStageSectionRenderingType desktopRenderType
+                        = desktopRenderType(programStageSection.renderType());
+                ProgramStageSectionRenderingType mobileRenderType
+                        = mobileRenderType(programStageSection.renderType());
+
                 int updatedRow = programStageSectionStore.update(
                         programStageSection.uid(), programStageSection.code(),
                         programStageSection.name(), programStageSection.displayName(), programStageSection.created(),
                         programStageSection.lastUpdated(), programStageSection.sortOrder(),
                         programStageUid,
-                        programStageSection.renderType().desktop().type(),
-                        programStageSection.renderType().mobile().type(),
+                        desktopRenderType,
+                        mobileRenderType,
                         programStageSection.uid()
                 );
 
@@ -74,8 +87,8 @@ public class ProgramStageSectionHandler {
                             programStageSection.name(), programStageSection.displayName(),
                             programStageSection.created(), programStageSection.lastUpdated(),
                             programStageSection.sortOrder(), programStageUid,
-                            programStageSection.renderType().desktop().type(),
-                            programStageSection.renderType().mobile().type()
+                            desktopRenderType,
+                            mobileRenderType
                     );
                 }
             }

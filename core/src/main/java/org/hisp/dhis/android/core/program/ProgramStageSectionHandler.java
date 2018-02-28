@@ -62,7 +62,10 @@ public class ProgramStageSectionHandler {
                         programStageSection.uid(), programStageSection.code(),
                         programStageSection.name(), programStageSection.displayName(), programStageSection.created(),
                         programStageSection.lastUpdated(), programStageSection.sortOrder(),
-                        programStageUid, programStageSection.uid()
+                        programStageUid,
+                        programStageSection.renderType().desktop().type(),
+                        programStageSection.renderType().mobile().type(),
+                        programStageSection.uid()
                 );
 
                 if (updatedRow <= 0) {
@@ -70,7 +73,9 @@ public class ProgramStageSectionHandler {
                             programStageSection.uid(), programStageSection.code(),
                             programStageSection.name(), programStageSection.displayName(),
                             programStageSection.created(), programStageSection.lastUpdated(),
-                            programStageSection.sortOrder(), programStageUid
+                            programStageSection.sortOrder(), programStageUid,
+                            programStageSection.renderType().desktop().type(),
+                            programStageSection.renderType().mobile().type()
                     );
                 }
             }

@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -369,7 +370,8 @@ public class ProgramCallShould {
                                 TrackedEntityAttribute.unique, TrackedEntityAttribute.valueType,
                                 TrackedEntityAttribute.searchScope, TrackedEntityAttribute.optionSet.with(
                                         OptionSet.uid, OptionSet.version),
-                                TrackedEntityAttribute.style.with(ObjectStyle.allFields)
+                                TrackedEntityAttribute.style.with(ObjectStyle.allFields),
+                                TrackedEntityAttribute.renderType.with(ValueTypeRendering.allFields)
                         )
                 ),
                 Program.trackedEntity.with(

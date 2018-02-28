@@ -28,28 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.data.database.EnumColumnAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
-
-import java.util.Date;
-
-public interface ProgramStageSectionStore extends DeletableStore {
-    long insert(
-            @NonNull String uid, @Nullable String code, @NonNull String name,
-            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @Nullable Integer sortOrder, @Nullable String programStage,
-            @Nullable ProgramStageSectionRenderingType desktopRenderType,
-            @Nullable ProgramStageSectionRenderingType mobileRenderType
-    );
-
-    int update(@NonNull String uid, @Nullable String code, @NonNull String name,
-               @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-               @Nullable Integer sortOrder, @Nullable String programStage,
-               @Nullable ProgramStageSectionRenderingType desktopRenderType,
-               @Nullable ProgramStageSectionRenderingType mobileRenderType,
-               @NonNull String whereProgramStageSectionUid);
-
-    int delete(String uid);
+public class ProgramStageSectionRenderingTypeColumnAdapter extends EnumColumnAdapter<ProgramStageSectionRenderingType> {
+    @Override
+    protected Class<ProgramStageSectionRenderingType> getEnumClass() {
+        return ProgramStageSectionRenderingType.class;
+    }
 }

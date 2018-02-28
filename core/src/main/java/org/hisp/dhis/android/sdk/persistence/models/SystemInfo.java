@@ -82,4 +82,20 @@ public class SystemInfo extends BaseModel {
     public String getVersion() {
         return version;
     }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public Float getVersionAsFloat() {
+        try {
+            return removeNonNumericCharacters(version);
+        }catch (NullPointerException e){
+            return null;
+        }
+    }
+
+    private static Float removeNonNumericCharacters(String version) {
+            return Float.parseFloat(version.replaceAll("[^0-9.]", ""));
+    }
 }

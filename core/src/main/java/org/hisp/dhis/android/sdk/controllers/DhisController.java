@@ -62,6 +62,7 @@ public final class DhisController {
     private final static String PASSWORD = "password";
     private final static String SERVER = "server";
     private final static String CREDENTIALS = "credentials";
+    public static final Float START_LATEST_API_VERSION =2.29f;
 
     /**
      * Variable hasUnSynchronizedDatavalues
@@ -189,5 +190,11 @@ public final class DhisController {
             objectMapper.registerModule(new JodaModule());
         }
         return objectMapper;
+    }
+
+    public boolean isLoggedInServerWithLatestApiVersion() {
+        SystemInfo systemInfo = MetaDataController.getSystemInfo();
+        Float serverVersion = systemInfo.getVersionAsFloat();
+        return serverVersion >= START_LATEST_API_VERSION;
     }
 }

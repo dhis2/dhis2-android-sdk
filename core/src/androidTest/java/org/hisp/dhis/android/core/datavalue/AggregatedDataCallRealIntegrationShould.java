@@ -47,6 +47,22 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
     //It depends on a live server to operate and the login is hardcoded here.
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     //@Test
+    public void response_successful_on_sync_data_once() throws Exception {
+        retrofit2.Response response = null;
+        d2.logout().call();
+        response = d2.logIn("android", "Android123").call();
+        assertThat(response.isSuccessful()).isTrue();
+
+        //first metaData sync:
+        response = d2.syncMetaData().call();
+        assertThat(response.isSuccessful()).isTrue();
+
+        //first dataValues sync:
+        response = d2.syncAggregatedData().call();
+        assertThat(response.isSuccessful()).isTrue();
+    }
+
+    //@Test
     public void response_successful_on_sync_data_value_two_times() throws Exception {
         retrofit2.Response response = null;
         d2.logout().call();
@@ -68,12 +84,6 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
         //second dataValues sync:
         response = d2.syncAggregatedData().call();
         assertThat(response.isSuccessful()).isTrue();
-
-        //TODO: add aditional sync + break point.
-        //when debugger stops at the new break point manually change metadata online & resume.
-        //This way I can make sure that additive (updates) work as well.
-        //The changes could be to one of the programs, adding stuff to it.
-        // adding a new program..etc.
     }
 
     @Test

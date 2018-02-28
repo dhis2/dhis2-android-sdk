@@ -33,7 +33,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;

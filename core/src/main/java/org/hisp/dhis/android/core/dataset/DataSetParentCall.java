@@ -46,7 +46,6 @@ import java.util.Set;
 import retrofit2.Response;
 
 public class DataSetParentCall extends TransactionalCall {
-    private final User user;
     private final DataSetParentLinkManager linkManager;
     private final DataSetAccessEndpointCall.Factory dataSetAccessCallFactory;
     private final DataSetEndpointCall.Factory dataSetCallFactory;
@@ -56,7 +55,7 @@ public class DataSetParentCall extends TransactionalCall {
     private final List<OrganisationUnit> organisationUnits;
     private final PeriodHandler periodHandler;
 
-    private DataSetParentCall(User user, GenericCallData data, DataSetParentLinkManager linkManager,
+    private DataSetParentCall(GenericCallData data, DataSetParentLinkManager linkManager,
                               DataSetAccessEndpointCall.Factory dataSetAccessCallFactory,
                               DataSetEndpointCall.Factory dataSetCallFactory,
                               DataElementEndpointCall.Factory dataElementCallFactory,
@@ -65,7 +64,6 @@ public class DataSetParentCall extends TransactionalCall {
                               List<OrganisationUnit> organisationUnits,
                               PeriodHandler periodHandler) {
         super(data);
-        this.user = user;
         this.linkManager = linkManager;
         this.dataSetAccessCallFactory = dataSetAccessCallFactory;
         this.dataSetCallFactory = dataSetCallFactory;
@@ -116,7 +114,7 @@ public class DataSetParentCall extends TransactionalCall {
     public static final Factory FACTORY = new Factory() {
         @Override
         public Call<Response> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits) {
-            return new DataSetParentCall(user, data,
+            return new DataSetParentCall(data,
                     DataSetParentLinkManager.create(data.databaseAdapter()),
                     DataSetAccessEndpointCall.FACTORY,
                     DataSetEndpointCall.FACTORY,

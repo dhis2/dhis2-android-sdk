@@ -51,7 +51,7 @@ public final class DataSetEndpointCall extends GenericEndpointCallImpl<DataSet, 
 
     @Override
     protected Call<Payload<DataSet>> getCall(UidsQuery query, String lastUpdated) throws IOException {
-        return dataSetService.getDataSets(DataSet.allFieldsExceptAccess, DataSet.lastUpdated.gt(lastUpdated),
+        return dataSetService.getDataSets(DataSet.allFields, DataSet.lastUpdated.gt(lastUpdated),
                 DataSet.uid.in(query.uids()), Boolean.FALSE);
     }
 

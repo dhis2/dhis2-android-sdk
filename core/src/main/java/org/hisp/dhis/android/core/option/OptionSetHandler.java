@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionSetModel> {
@@ -41,7 +42,8 @@ public class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionS
 
     public static OptionSetHandler create(DatabaseAdapter databaseAdapter) {
         return new OptionSetHandler(OptionSetStore.create(databaseAdapter),
-                new OptionHandler(new OptionStoreImpl(databaseAdapter)));
+                new OptionHandler(new OptionStoreImpl(databaseAdapter),
+                        ObjectStyleHandlerImpl.create(databaseAdapter)));
     }
 
     @Override

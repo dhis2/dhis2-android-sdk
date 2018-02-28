@@ -64,14 +64,14 @@ public abstract class ObjectStyleModel extends BaseModel implements UpdateWhereS
         return AutoValue_ObjectStyleModel.createFromCursor(cursor);
     }
 
-    public static final ModelFactory<ObjectStyleModel, ObjectStyle> factory
-            = new LinkModelFactory<ObjectStyleModel>() {
+    public static final LinkModelFactory<ObjectStyleModel> factory = new LinkModelFactory<ObjectStyleModel>() {
+        
         @Override
         public ObjectStyleModel fromCursor(Cursor cursor) {
             return create(cursor);
         }
 
-        ObjectStyleModel create(ObjectStyle objectStyle, String uid, String objectTable) {
+        ObjectStyleModel fromPojo(ObjectStyle objectStyle, String uid, String objectTable) {
             return ObjectStyleModel.builder()
                     .uid(uid)
                     .objectTable(objectTable)

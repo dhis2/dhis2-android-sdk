@@ -18,10 +18,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramAccessEndpointCallRealIntegrationShould extends AbsStoreTestCase {
-    /**
-     * A quick integration test that is probably flaky, but will help with finding bugs related to the
-     * metadataSyncCall. It works against the dev server.
-     */
     private D2 d2;
     private ProgramAccessEndpointCall programAccessCall;
 
@@ -51,9 +47,5 @@ public class ProgramAccessEndpointCallRealIntegrationShould extends AbsStoreTest
 
         retrofit2.Response programResponse = programAccessCall.call();
         assertThat(programResponse.isSuccessful()).isTrue();
-    }
-
-    @Test
-    public void stub() {
     }
 }

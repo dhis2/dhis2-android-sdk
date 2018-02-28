@@ -269,8 +269,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                                 TrackedEntityAttribute.pattern, TrackedEntityAttribute.sortOrderInListNoProgram,
                                 TrackedEntityAttribute.unique, TrackedEntityAttribute.valueType,
                                 TrackedEntityAttribute.searchScope, TrackedEntityAttribute.optionSet.with(
-                                        OptionSet.uid, OptionSet.version
-                                )
+                                        OptionSet.uid, OptionSet.version),
+                                TrackedEntityAttribute.style.with(ObjectStyle.allFields)
                         )
                 ),
                 Program.trackedEntity.with(TrackedEntity.uid),

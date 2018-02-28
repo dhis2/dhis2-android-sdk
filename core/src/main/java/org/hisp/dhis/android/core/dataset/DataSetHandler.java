@@ -29,12 +29,20 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
 
-    DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore) {
+    private final ObjectWithoutUidStore<ObjectStyleModel> objectStyleStore;
+
+    DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
+                   ObjectWithoutUidStore<ObjectStyleModel> objectStyleStore) {
         super(dataSetStore);
+        this.objectStyleStore = objectStyleStore;
     }
 
     @Override
@@ -43,6 +51,17 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
     }
 
     public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataSetHandler(DataSetStore.create(databaseAdapter));
+        return new DataSetHandler(
+                DataSetStore.create(databaseAdapter),
+                ObjectStyleStore.create(databaseAdapter));
+    }
+
+    @Override
+    protected void afterObjectPersisted(DataSet dataSet) {
+        ObjectStyle style = dataSet.style();
+        if (style != null) {
+            ObjectStyleModel model = ObjectStyleModel.fromPojo(style, dataSet.uid(), DataSetModel.TABLE);
+            objectStyleStore.updateOrInsertWhere(model);
+        }
     }
 }

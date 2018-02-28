@@ -65,20 +65,19 @@ public abstract class ObjectStyleModel extends BaseModel implements UpdateWhereS
     }
 
     public static final LinkModelFactory<ObjectStyleModel> factory = new LinkModelFactory<ObjectStyleModel>() {
-
         @Override
         public ObjectStyleModel fromCursor(Cursor cursor) {
             return create(cursor);
         }
-
-        ObjectStyleModel fromPojo(ObjectStyle objectStyle, String uid, String objectTable) {
-            return ObjectStyleModel.builder()
-                    .uid(uid)
-                    .objectTable(objectTable)
-                    .color(objectStyle.color())
-                    .icon(objectStyle.icon()).build();
-        }
     };
+
+    public static ObjectStyleModel fromPojo(ObjectStyle objectStyle, String uid, String objectTable) {
+        return ObjectStyleModel.builder()
+                .uid(uid)
+                .objectTable(objectTable)
+                .color(objectStyle.color())
+                .icon(objectStyle.icon()).build();
+    }
 
     public static Builder builder() {
         return new $$AutoValue_ObjectStyleModel.Builder();

@@ -37,6 +37,6 @@ public class DataSetHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<DataSet, DataSetModel> genericHandler = new DataSetHandler(null, objectStyleStore);
+        IdentifiableHandlerImpl<DataSet, DataSetModel> genericHandler = new DataSetHandler(null, null);
     }
 }

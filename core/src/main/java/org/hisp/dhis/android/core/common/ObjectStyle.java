@@ -45,7 +45,7 @@ public abstract class ObjectStyle {
     private static final Field<ObjectStyle, String> color = Field.create(COLOR);
     private static final Field<ObjectStyle, String> icon = Field.create(ICON);
 
-    static final Fields<ObjectStyle> allFields = Fields.<ObjectStyle>builder().fields(color, icon).build();
+    public static final Fields<ObjectStyle> allFields = Fields.<ObjectStyle>builder().fields(color, icon).build();
 
     @Nullable
     @JsonProperty(COLOR)

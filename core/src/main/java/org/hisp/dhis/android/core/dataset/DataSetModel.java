@@ -39,7 +39,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.ModelFactory;
-import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -69,8 +68,6 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
         public static final String RENDER_AS_TABS = "renderAsTabs";
         public static final String RENDER_HORIZONTALLY = "renderHorizontally";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
-        public static final String COLOR = "color";
-        public static final String ICON = "icon";
 
         private Columns() {}
 
@@ -79,7 +76,7 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
                     PERIOD_TYPE, CATEGORY_COMBO, MOBILE, VERSION, EXPIRY_DAYS, TIMELY_DAYS,
                     NOTIFY_COMPLETING_USER, OPEN_FUTURE_PERIODS, FIELD_COMBINATION_REQUIRED,
                     VALID_COMPLETE_ONLY, NO_VALUE_REQUIRES_COMMENT, SKIP_OFFLINE, DATA_ELEMENT_DECORATION,
-                    RENDER_AS_TABS, RENDER_HORIZONTALLY, ACCESS_DATA_WRITE, COLOR, ICON);
+                    RENDER_AS_TABS, RENDER_HORIZONTALLY, ACCESS_DATA_WRITE);
         }
     }
 
@@ -123,8 +120,6 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
                     .renderAsTabs(dataSet.renderAsTabs())
                     .renderHorizontally(dataSet.renderHorizontally())
                     .accessDataWrite(dataSet.access().data().write())
-                    .color(ObjectStyle.getColor(dataSet.style()))
-                    .icon(ObjectStyle.getIcon(dataSet.style()))
                     .build();
         }
     };
@@ -198,14 +193,6 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
     @ColumnName(Columns.ACCESS_DATA_WRITE)
     public abstract Boolean accessDataWrite();
 
-    @Nullable
-    @ColumnName(Columns.COLOR)
-    public abstract String color();
-
-    @Nullable
-    @ColumnName(Columns.ICON)
-    public abstract String icon();
-
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         super.bindToStatement(sqLiteStatement);
@@ -225,8 +212,6 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
         sqLiteBind(sqLiteStatement, 24, renderAsTabs());
         sqLiteBind(sqLiteStatement, 25, renderHorizontally());
         sqLiteBind(sqLiteStatement, 26, accessDataWrite());
-        sqLiteBind(sqLiteStatement, 27, color());
-        sqLiteBind(sqLiteStatement, 28, icon());
     }
 
     @AutoValue.Builder
@@ -262,10 +247,6 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
         public abstract Builder renderHorizontally(Boolean renderHorizontally);
 
         public abstract Builder accessDataWrite(Boolean accessDataWrite);
-
-        public abstract Builder color(String color);
-
-        public abstract Builder icon(String icon);
 
         public abstract DataSetModel build();
     }

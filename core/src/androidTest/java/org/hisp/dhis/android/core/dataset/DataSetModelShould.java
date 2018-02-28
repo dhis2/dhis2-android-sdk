@@ -67,7 +67,7 @@ import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.fillNamea
 public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel, DataSet> {
 
     public DataSetModelShould() {
-        super(DataSetModel.Columns.all(), 28, DataSetModel.factory);
+        super(DataSetModel.Columns.all(), 26, DataSetModel.factory);
     }
 
     @Override
@@ -90,9 +90,7 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel
                 .dataElementDecoration(false)
                 .renderAsTabs(false)
                 .renderHorizontally(false)
-                .accessDataWrite(false)
-                .color(COLOR)
-                .icon(ICON);
+                .accessDataWrite(false);
         return dataSetModelBuilder.build();
     }
 
@@ -119,7 +117,7 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel
                 toInteger(model.validCompleteOnly()), toInteger(model.noValueRequiresComment()),
                 toInteger(model.skipOffline()), toInteger(model.dataElementDecoration()),
                 toInteger(model.renderAsTabs()), toInteger(model.renderHorizontally()),
-                toInteger(model.accessDataWrite()), model.color(), model.icon());
+                toInteger(model.accessDataWrite()));
     }
 
     @Test
@@ -142,7 +140,5 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel
         assertThat(columnsList.contains(Columns.RENDER_AS_TABS)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.RENDER_HORIZONTALLY)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.ACCESS_DATA_WRITE)).isEqualTo(true);
-        assertThat(columnsList.contains(Columns.COLOR)).isEqualTo(true);
-        assertThat(columnsList.contains(Columns.ICON)).isEqualTo(true);
     }
 }

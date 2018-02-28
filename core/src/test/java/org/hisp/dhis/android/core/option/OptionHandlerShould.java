@@ -143,4 +143,10 @@ public class OptionHandlerShould {
         verify(optionStore, never()).delete(anyString());
 
     }
+
+    @Test
+    public void call_style_handler() throws Exception {
+        optionHandler.handleOptions(options);
+        verify(styleHandler).handle(option.style(), option.uid(), OptionModel.TABLE);
+    }
 }

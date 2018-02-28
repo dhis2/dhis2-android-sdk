@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
@@ -192,6 +194,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         RelationshipTypeHandler relationshipTypeHandler = new RelationshipTypeHandler(relationshipStore);
         ProgramService programService = d2.retrofit().create(ProgramService.class);
         ProgramStore programStore = new ProgramStoreImpl(databaseAdapter());
+        ObjectStyleHandler styleHandler = ObjectStyleHandlerImpl.create(databaseAdapter());
 
 
         ProgramHandler programHandler = new ProgramHandler(
@@ -201,7 +204,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 programIndicatorHandler,
                 programRuleHandler,
                 programTrackedEntityAttributeHandler,
-                relationshipTypeHandler, styleHandler);
+                relationshipTypeHandler,
+                styleHandler);
 
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
@@ -225,7 +229,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
                 programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore, dataElementHandler
+                programStageSectionStore, programStageStore, relationshipStore, dataElementHandler, styleHandler
         );
     }
 

@@ -320,7 +320,7 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
-            User user = (User) userResponse.body();
+            User user = userResponse.body();
             Response<Payload<OrganisationUnit>> organisationUnitResponse = new OrganisationUnitCall(
                     user, organisationUnitService, databaseAdapter, organisationUnitStore,
                     resourceStore, data.serverDate(), userOrganisationUnitLinkStore,

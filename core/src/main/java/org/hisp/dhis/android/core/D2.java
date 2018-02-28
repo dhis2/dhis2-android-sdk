@@ -34,8 +34,8 @@ import android.support.annotation.VisibleForTesting;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.AggregatedDataCall;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
@@ -69,6 +69,8 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
@@ -265,6 +267,7 @@ public final class D2 {
     private final ObjectStore<DataSetIndicatorLinkModel> dataSetIndicatorLinkStore;
     private final ObjectWithoutUidStore<DataValueModel> dataValueStore;
     private final ObjectWithoutUidStore<PeriodModel> periodStore;
+    private final ObjectWithoutUidStore<ObjectStyleModel> objectStyleStore;
 
     //Handlers
     private final UserCredentialsHandler userCredentialsHandler;
@@ -380,6 +383,7 @@ public final class D2 {
         this.dataSetIndicatorLinkStore = DataSetIndicatorLinkStore.create(databaseAdapter());
         this.dataValueStore = DataValueStore.create(databaseAdapter());
         this.periodStore = PeriodStore.create(databaseAdapter());
+        this.objectStyleStore = ObjectStyleStore.create(databaseAdapter());
 
         //handlers
         userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
@@ -514,6 +518,7 @@ public final class D2 {
         deletableStoreList.add(dataSetIndicatorLinkStore);
         deletableStoreList.add(dataValueStore);
         deletableStoreList.add(periodStore);
+        deletableStoreList.add(objectStyleStore);
         return new LogOutUserCallable(
                 deletableStoreList
         );

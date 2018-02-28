@@ -60,4 +60,12 @@ public abstract class ObjectStyle {
                                      @JsonProperty(ICON) String icon) {
         return new AutoValue_ObjectStyle(color, icon);
     }
+
+    public static String getColor(ObjectStyle objectStyle) {
+        return objectStyle != null ? objectStyle.color() : null;
+    }
+
+    public static String getIcon(ObjectStyle objectStyle) {
+        return objectStyle != null ? objectStyle.icon() : null;
+    }
 }

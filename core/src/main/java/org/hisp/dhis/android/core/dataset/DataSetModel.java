@@ -39,6 +39,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.ModelFactory;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -122,8 +123,8 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
                     .renderAsTabs(dataSet.renderAsTabs())
                     .renderHorizontally(dataSet.renderHorizontally())
                     .accessDataWrite(dataSet.access().data().write())
-                    .color(dataSet.style().color())
-                    .icon(dataSet.style().icon())
+                    .color(ObjectStyle.getColor(dataSet.style()))
+                    .icon(ObjectStyle.getIcon(dataSet.style()))
                     .build();
         }
     };

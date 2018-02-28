@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
@@ -64,6 +65,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     private static final String MIN_DAYS_FROM_START = "minDaysFromStart";
     private static final String STANDARD_INTERVAL = "standardInterval";
     private static final String PROGRAM_STAGE_SECTIONS = "programStageSections";
+    private static final String STYLE = "style";
 
     public static final Field<ProgramStage, String> uid = Field.create(UID);
     public static final Field<ProgramStage, String> code = Field.create(CODE);
@@ -94,6 +96,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
             = NestedField.create(PROGRAM_STAGE_SECTIONS);
     public static final NestedField<ProgramStage, ProgramStageDataElement> programStageDataElements =
             NestedField.create(PROGRAM_STAGE_DATA_ELEMENTS);
+    public static final NestedField<ProgramStage, ObjectStyle> style = NestedField.create(STYLE);
 
     @Nullable
     @JsonProperty(EXECUTION_DATE_LABEL)
@@ -167,6 +170,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS)
     public abstract List<ProgramStageDataElement> programStageDataElements();
 
+    @Nullable
+    @JsonProperty(STYLE)
+    public abstract ObjectStyle style();
+
     @JsonCreator
     public static ProgramStage create(
             @JsonProperty(UID) String uid,
@@ -193,6 +200,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
             @JsonProperty(STANDARD_INTERVAL) Integer standardInterval,
             @JsonProperty(PROGRAM_STAGE_SECTIONS) List<ProgramStageSection> programStageSections,
             @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements,
+            @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(DELETED) Boolean deleted
     ) {
 
@@ -221,7 +229,8 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
                 minDaysFromStart,
                 standardInterval,
                 safeUnmodifiableList(programStageSections),
-                safeUnmodifiableList(programStageDataElements)
+                safeUnmodifiableList(programStageDataElements),
+                style
         );
     }
 }

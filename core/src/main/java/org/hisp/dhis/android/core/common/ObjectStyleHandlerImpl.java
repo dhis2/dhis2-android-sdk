@@ -33,7 +33,7 @@ public class ObjectStyleHandlerImpl implements ObjectStyleHandler {
 
     private final ObjectWithoutUidStore<ObjectStyleModel> store;
 
-    ObjectStyleHandlerImpl(ObjectWithoutUidStore<ObjectStyleModel> store) {
+    private ObjectStyleHandlerImpl(ObjectWithoutUidStore<ObjectStyleModel> store) {
         this.store = store;
     }
 

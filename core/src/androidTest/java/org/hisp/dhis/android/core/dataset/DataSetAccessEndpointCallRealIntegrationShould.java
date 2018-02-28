@@ -18,10 +18,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class DataSetAccessEndpointCallRealIntegrationShould extends AbsStoreTestCase {
-    /**
-     * A quick integration test that is probably flaky, but will help with finding bugs related to the
-     * metadataSyncCall. It works against the dev server.
-     */
     private D2 d2;
     private DataSetAccessEndpointCall dataSetAccessCall;
 
@@ -41,7 +37,7 @@ public class DataSetAccessEndpointCallRealIntegrationShould extends AbsStoreTest
         return DataSetAccessEndpointCall.FACTORY.create(data);
     }
 
-    // @Test
+    @Test
     public void download_data_sets() throws Exception {
         if (!d2.isUserLoggedIn().call()) {
             retrofit2.Response loginResponse = d2.logIn("android", "Android123").call();
@@ -50,9 +46,5 @@ public class DataSetAccessEndpointCallRealIntegrationShould extends AbsStoreTest
 
         retrofit2.Response dataSetResponse = dataSetAccessCall.call();
         assertThat(dataSetResponse.isSuccessful()).isTrue();
-    }
-
-    @Test
-    public void stub() {
     }
 }

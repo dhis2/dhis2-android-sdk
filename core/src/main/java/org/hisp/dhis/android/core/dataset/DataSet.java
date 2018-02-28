@@ -68,7 +68,7 @@ public abstract class DataSet extends BaseNameableObject {
     private final static String DATA_SET_ELEMENTS = "dataSetElements";
     private final static String INDICATORS = "indicators";
     private final static String ACCESS = "access";
-    private final static String OBJECT_STYLE = "style";
+    private final static String STYLE = "style";
 
     public static final Field<DataSet, String> uid = Field.create(UID);
     private static final Field<DataSet, String> code = Field.create(CODE);
@@ -100,7 +100,7 @@ public abstract class DataSet extends BaseNameableObject {
     private static final NestedField<DataSet, DataElementUids> dataSetElements = NestedField.create(DATA_SET_ELEMENTS);
     private static final NestedField<DataSet, ObjectWithUid> indicators = NestedField.create(INDICATORS);
     private static final NestedField<DataSet, Access> access = NestedField.create(ACCESS);
-    private static final NestedField<DataSet, ObjectStyle> style = NestedField.create(OBJECT_STYLE);
+    private static final NestedField<DataSet, ObjectStyle> style = NestedField.create(STYLE);
 
     static final Fields<DataSet> allFields = Fields.<DataSet>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
@@ -195,7 +195,7 @@ public abstract class DataSet extends BaseNameableObject {
     public abstract Access access();
 
     @Nullable
-    @JsonProperty(OBJECT_STYLE)
+    @JsonProperty(STYLE)
     public abstract ObjectStyle style();
 
     @JsonCreator
@@ -228,7 +228,7 @@ public abstract class DataSet extends BaseNameableObject {
             @JsonProperty(DATA_SET_ELEMENTS) List<DataElementUids> dataSetElements,
             @JsonProperty(INDICATORS) List<ObjectWithUid> indicators,
             @JsonProperty(ACCESS) Access access,
-            @JsonProperty(OBJECT_STYLE) ObjectStyle style,
+            @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_DataSet(uid, code, name,

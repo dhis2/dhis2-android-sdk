@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -270,7 +271,8 @@ public class ProgramCallShould {
                                                 Program.uid
                                         )
                                 )
-                        )
+                        ),
+                        ProgramStage.style.with(ObjectStyle.allFields)
                 ),
                 Program.programRules.with(
                         ProgramRule.uid, ProgramRule.code, ProgramRule.name, ProgramRule.displayName,
@@ -362,9 +364,8 @@ public class ProgramCallShould {
                                 TrackedEntityAttribute.pattern, TrackedEntityAttribute.sortOrderInListNoProgram,
                                 TrackedEntityAttribute.unique, TrackedEntityAttribute.valueType,
                                 TrackedEntityAttribute.searchScope, TrackedEntityAttribute.optionSet.with(
-                                        OptionSet.uid, OptionSet.version
-                                )
-
+                                        OptionSet.uid, OptionSet.version),
+                                TrackedEntityAttribute.style.with(ObjectStyle.allFields)
                         )
                 ),
                 Program.trackedEntity.with(
@@ -378,7 +379,13 @@ public class ProgramCallShould {
                         RelationshipType.uid, RelationshipType.code, RelationshipType.name,
                         RelationshipType.displayName, RelationshipType.created, RelationshipType.lastUpdated,
                         RelationshipType.aIsToB, RelationshipType.bIsToA, RelationshipType.deleted
-                )
+                ),
+                Program.access.with(
+                        Access.data.with(
+                                DataAccess.write
+                        )
+                ),
+                Program.style.with(ObjectStyle.allFields)
         );
     }
 

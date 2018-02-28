@@ -297,8 +297,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         ).isExhausted();
     }
 
-    // TODO decide if link has to be persisted or table can be completely deleted
-    // @Test
+    @Test
     public void persist_user_roles_in_data_base_when_call() throws Exception {
         userCall.call();
 

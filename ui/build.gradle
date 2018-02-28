@@ -42,6 +42,7 @@ android {
         versionCode cfg.versionCode
         versionName cfg.versionName
         buildConfigField "String", "main_app", '"'+cfg.package+'"'
+        vectorDrawables.useSupportLibrary = true
     }
 
     compileOptions {

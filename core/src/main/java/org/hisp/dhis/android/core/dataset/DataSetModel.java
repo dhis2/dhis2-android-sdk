@@ -122,8 +122,8 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
                     .renderAsTabs(dataSet.renderAsTabs())
                     .renderHorizontally(dataSet.renderHorizontally())
                     .accessDataWrite(dataSet.access().data().write())
-                    .color(dataSet.objectStyle().color())
-                    .icon(dataSet.objectStyle().icon())
+                    .color(dataSet.style().color())
+                    .icon(dataSet.style().icon())
                     .build();
         }
     };

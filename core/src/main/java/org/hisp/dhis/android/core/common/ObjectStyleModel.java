@@ -65,7 +65,7 @@ public abstract class ObjectStyleModel extends BaseModel implements UpdateWhereS
     }
 
     public static final LinkModelFactory<ObjectStyleModel> factory = new LinkModelFactory<ObjectStyleModel>() {
-        
+
         @Override
         public ObjectStyleModel fromCursor(Cursor cursor) {
             return create(cursor);

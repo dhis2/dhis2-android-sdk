@@ -100,7 +100,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
-    static int VERSION = 7;
+    static int VERSION = 8;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +

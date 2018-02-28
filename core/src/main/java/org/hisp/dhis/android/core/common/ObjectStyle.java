@@ -62,10 +62,10 @@ public abstract class ObjectStyle {
     }
 
     public static String getColor(ObjectStyle objectStyle) {
-        return objectStyle != null ? objectStyle.color() : null;
+        return objectStyle == null ?  null : objectStyle.color();
     }
 
     public static String getIcon(ObjectStyle objectStyle) {
-        return objectStyle != null ? objectStyle.icon() : null;
+        return objectStyle == null ?  null : objectStyle.icon();
     }
 }

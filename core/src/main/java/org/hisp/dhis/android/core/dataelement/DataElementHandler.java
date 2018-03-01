@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
 
@@ -58,7 +58,7 @@ public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, Dat
         return new DataElementHandler(
                 DataElementStore.create(databaseAdapter),
                 optionSetHandler,
-                ObjectStyleHandlerImpl.create(databaseAdapter));
+                ObjectStyleHandler.create(databaseAdapter));
     }
 
     @Override

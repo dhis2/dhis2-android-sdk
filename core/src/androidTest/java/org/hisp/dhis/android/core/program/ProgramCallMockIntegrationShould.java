@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
@@ -139,7 +139,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 new TrackedEntityAttributeStoreImpl(databaseAdapter());
         TrackedEntityAttributeHandler trackedEntityAttributeHandler =
                 new TrackedEntityAttributeHandler(trackedEntityAttributeStore,
-                        ObjectStyleHandlerImpl.create(databaseAdapter()));
+                        ObjectStyleHandler.create(databaseAdapter()));
 
         ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore =
                 new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter());
@@ -185,7 +185,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 programIndicatorHandler
         );
 
-        DictionaryTableHandler<ObjectStyle> styleHandler = ObjectStyleHandlerImpl.create(databaseAdapter());
+        DictionaryTableHandler<ObjectStyle> styleHandler = ObjectStyleHandler.create(databaseAdapter());
 
         ProgramStageStore programStageStore = new ProgramStageStoreImpl(databaseAdapter());
         ProgramStageHandler programStageHandler = new ProgramStageHandler(

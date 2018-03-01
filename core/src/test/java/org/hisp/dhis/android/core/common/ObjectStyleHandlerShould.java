@@ -55,7 +55,7 @@ public class ObjectStyleHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        styleHandler = new ObjectStyleHandlerImpl(store);
+        styleHandler = new ObjectStyleHandler(store);
     }
 
     @Test

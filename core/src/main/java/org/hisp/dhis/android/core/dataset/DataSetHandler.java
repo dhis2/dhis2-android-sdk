@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
@@ -52,7 +52,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
     public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
         return new DataSetHandler(
                 DataSetStore.create(databaseAdapter),
-                ObjectStyleHandlerImpl.create(databaseAdapter));
+                ObjectStyleHandler.create(databaseAdapter));
     }
 
     @Override

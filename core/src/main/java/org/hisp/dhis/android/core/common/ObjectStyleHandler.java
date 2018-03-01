@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class ObjectStyleHandlerImpl implements DictionaryTableHandler<ObjectStyle> {
+public class ObjectStyleHandler implements DictionaryTableHandler<ObjectStyle> {
 
     private final ObjectWithoutUidStore<ObjectStyleModel> store;
 
-    ObjectStyleHandlerImpl(ObjectWithoutUidStore<ObjectStyleModel> store) {
+    ObjectStyleHandler(ObjectWithoutUidStore<ObjectStyleModel> store) {
         this.store = store;
     }
 
@@ -45,7 +45,7 @@ public class ObjectStyleHandlerImpl implements DictionaryTableHandler<ObjectStyl
         }
     }
 
-    public static ObjectStyleHandlerImpl create(DatabaseAdapter databaseAdapter) {
-        return new ObjectStyleHandlerImpl(ObjectStyleStore.create(databaseAdapter));
+    public static ObjectStyleHandler create(DatabaseAdapter databaseAdapter) {
+        return new ObjectStyleHandler(ObjectStyleStore.create(databaseAdapter));
     }
 }

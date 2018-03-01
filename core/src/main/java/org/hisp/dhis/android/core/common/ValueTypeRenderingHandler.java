@@ -25,46 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.common;
 
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+public class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTypeRendering> {
 
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+    private final DictionaryTableHandler<ValueTypeDeviceRendering> desktopHandler;
+    private final DictionaryTableHandler<ValueTypeDeviceRendering> mobileHandler;
 
-@AutoValue
-public abstract class ValueTypeRendering {
-    public static final String DESKTOP = "DESKTOP";
-    public static final String MOBILE = "MOBILE";
+    ValueTypeRenderingHandler(DictionaryTableHandler<ValueTypeDeviceRendering> desktopHandler,
+                              DictionaryTableHandler<ValueTypeDeviceRendering> mobileHandler) {
+        this.desktopHandler = desktopHandler;
+        this.mobileHandler = mobileHandler;
+    }
 
-    private static final NestedField<ValueTypeRendering, ValueTypeDeviceRendering> desktop
-            = NestedField.create(DESKTOP);
-    private static final NestedField<ValueTypeRendering, ValueTypeDeviceRendering> mobile
-            = NestedField.create(MOBILE);
+    @Override
+    public void handle(ValueTypeRendering renderType, String uid, String objectTable) {
+        if (renderType != null) {
+            if (renderType.desktop() != null) {
+                desktopHandler.handle(renderType.desktop(), uid, objectTable);
+            }
+            if (renderType.mobile() != null) {
+                mobileHandler.handle(renderType.mobile(), uid, objectTable);
+            }
+        }
+    }
 
-    public static final Fields<ValueTypeRendering> allFields =
-            Fields.<ValueTypeRendering>builder().fields(
-                    desktop.with(ValueTypeDeviceRendering.allFields),
-                    mobile.with(ValueTypeDeviceRendering.allFields)).build();
-
-    @Nullable
-    @JsonProperty(DESKTOP)
-    public abstract ValueTypeDeviceRendering desktop();
-
-    @Nullable
-    @JsonProperty(MOBILE)
-    public abstract ValueTypeDeviceRendering mobile();
-
-    @JsonCreator
-    public static ValueTypeRendering create(
-            @JsonProperty(DESKTOP) ValueTypeDeviceRendering desktop,
-            @JsonProperty(MOBILE) ValueTypeDeviceRendering mobile) {
-
-        return new AutoValue_ValueTypeRendering(desktop, mobile);
+    public static ValueTypeRenderingHandler create(DatabaseAdapter databaseAdapter) {
+        return new ValueTypeRenderingHandler(
+                ValueTypeDeviceRenderingHandler.create(databaseAdapter, ValueTypeRendering.DESKTOP),
+                ValueTypeDeviceRenderingHandler.create(databaseAdapter, ValueTypeRendering.MOBILE));
     }
 }

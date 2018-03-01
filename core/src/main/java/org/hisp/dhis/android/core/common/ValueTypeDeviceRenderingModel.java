@@ -46,14 +46,14 @@ public abstract class ValueTypeDeviceRenderingModel extends BaseModel implements
     public static final String TABLE = "ValueTypeDeviceRendering";
 
     public abstract static class Columns extends BaseModel.Columns {
-        private static final String UID = BaseIdentifiableObjectModel.Columns.UID;
-        private static final String OBJECT_TABLE = "objectTable";
-        private static final String DEVICE_TYPE = "deviceType";
-        private static final String TYPE = "type";
-        private static final String MIN = "min";
-        private static final String MAX = "max";
-        private static final String STEP = "step";
-        private static final String DECIMAL_POINTS = "decimalPoints";
+        public static final String UID = BaseIdentifiableObjectModel.Columns.UID;
+        public static final String OBJECT_TABLE = "objectTable";
+        public static final String DEVICE_TYPE = "deviceType";
+        public static final String TYPE = "type";
+        public static final String MIN = "min";
+        public static final String MAX = "max";
+        public static final String STEP = "step";
+        public static final String DECIMAL_POINTS = "decimalPoints";
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseModel.Columns.all(),

@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingModel;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
@@ -1054,6 +1055,20 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             " UNIQUE (" + ObjectStyleModel.Columns.UID + ")"
             );
 
+    private static final String CREATE_VALUE_TYPE_DEVICE_RENDERING_TABLE =
+            SQLStatementBuilder.createModelTable(ValueTypeDeviceRenderingModel.TABLE,
+                    ValueTypeDeviceRenderingModel.Columns.UID + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.OBJECT_TABLE + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.DEVICE_TYPE + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.TYPE + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.MIN + " INTEGER," +
+                            ValueTypeDeviceRenderingModel.Columns.MAX + " INTEGER," +
+                            ValueTypeDeviceRenderingModel.Columns.STEP + " INTEGER," +
+                            ValueTypeDeviceRenderingModel.Columns.DECIMAL_POINTS + " INTEGER," +
+                            " UNIQUE (" + ValueTypeDeviceRenderingModel.Columns.UID + ", " +
+                            ValueTypeDeviceRenderingModel.Columns.DEVICE_TYPE + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1114,6 +1129,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_DATA_VALUE_TABLE);
         database.execSQL(CREATE_PERIOD_TABLE);
         database.execSQL(CREATE_OBJECT_STYLE_TABLE);
+        database.execSQL(CREATE_VALUE_TYPE_DEVICE_RENDERING_TABLE);
         return database;
     }
 

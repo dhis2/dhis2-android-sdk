@@ -89,7 +89,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                        ProgramStageStore programStageStore,
                        RelationshipTypeStore relationshipStore,
                        GenericHandler<DataElement> dataElementHandler,
-                       DictionaryTableHandler<ObjectStyle> styleHandler) {
+                       DictionaryTableHandler<ObjectStyle> styleHandler,
+                       DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;
         this.resourceStore = resourceStore;
@@ -120,7 +121,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 programIndicatorHandler,
                 new ProgramRuleHandler(programRuleStore, new ProgramRuleActionHandler(programRuleActionStore)),
                 new ProgramTrackedEntityAttributeHandler(programTrackedEntityAttributeStore,
-                        new TrackedEntityAttributeHandler(trackedEntityAttributeStore, styleHandler, renderTypeHandler)
+                        new TrackedEntityAttributeHandler(trackedEntityAttributeStore, styleHandler,
+                                renderTypeHandler)
                 ),
                 new RelationshipTypeHandler(relationshipStore), styleHandler);
     }

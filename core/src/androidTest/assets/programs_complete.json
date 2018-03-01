@@ -112,7 +112,24 @@
                       "inherit": false,
                       "unique": false,
                       "valueType": "TEXT",
-                      "orgunitScope": false
+                      "orgunitScope": false,
+                      "renderType": {
+                          "DESKTOP": {
+                              "type": "SPINNER",
+                              "min": 5,
+                              "max": 600,
+                              "step": 4,
+                              "decimalPoints": 3
+                          },
+                          "MOBILE": {
+                              "type": "SLIDER",
+                              "min": 555,
+                              "max": 88888,
+                              "step": 77,
+                              "decimalPoints": 1
+                          }
+                      }
+
                   }
               },
               {

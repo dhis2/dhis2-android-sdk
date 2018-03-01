@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.program;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
+import android.support.annotation.Nullable;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -82,6 +83,10 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
 
     private ProgramStageSectionStore store;
 
+    private final ProgramStageSectionRenderingType DESKTOP_RENDER_TYPE = ProgramStageSectionRenderingType.MATRIX;
+    private final ProgramStageSectionRenderingType MOBILE_RENDER_TYPE = ProgramStageSectionRenderingType.LISTING;
+
+
     public ProgramStageSectionStoreShould() {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
@@ -118,7 +123,9 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 SORT_ORDER,
-                PROGRAM_STAGE
+                PROGRAM_STAGE,
+                DESKTOP_RENDER_TYPE,
+                MOBILE_RENDER_TYPE
         );
 
         Cursor cursor = database().query(ProgramStageSectionModel.TABLE,
@@ -145,8 +152,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
 
         database().beginTransaction();
         long rowId = store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER,
-                deferredProgramStage
-        );
+                deferredProgramStage, DESKTOP_RENDER_TYPE, MOBILE_RENDER_TYPE);
         ContentValues programStage = CreateProgramStageUtils.create(3L, deferredProgramStage, PROGRAM);
         database().insert(ProgramStageModel.TABLE, null, programStage);
         database().setTransactionSuccessful();
@@ -195,7 +201,9 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 SORT_ORDER,
-                WRONG_UID // supplying wrong uid
+                WRONG_UID, // supplying wrong uid
+                DESKTOP_RENDER_TYPE,
+                MOBILE_RENDER_TYPE
         );
     }
 
@@ -220,7 +228,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
         // update program stage section with new display name
         int update = store.update(
                 UID, CODE, NAME, updatedDisplayName,
-                date, date, SORT_ORDER, PROGRAM_STAGE, UID
+                date, date, SORT_ORDER, PROGRAM_STAGE, DESKTOP_RENDER_TYPE, MOBILE_RENDER_TYPE, UID
         );
 
         // check that store returns 1 after successful update
@@ -262,26 +270,31 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_exception_when_insert_null_uid() {
-        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE);
+        store.insert(null, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE, DESKTOP_RENDER_TYPE,
+                MOBILE_RENDER_TYPE);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_exception_when_insert_null_program_stage() {
-        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, null);
+        store.insert(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, null, DESKTOP_RENDER_TYPE,
+                MOBILE_RENDER_TYPE);
     }
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_exception_when_update_null_uid() {
-        store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE, UID);
+        store.update(null, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE, DESKTOP_RENDER_TYPE,
+                MOBILE_RENDER_TYPE, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_exception_when_update_null_program_stage() {
-        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, null, UID);
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, null, DESKTOP_RENDER_TYPE,
+                MOBILE_RENDER_TYPE, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_exception_when_update_null_where_uid() {
-        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE, null);
+        store.update(UID, CODE, NAME, DISPLAY_NAME, date, date, SORT_ORDER, PROGRAM_STAGE, DESKTOP_RENDER_TYPE,
+                MOBILE_RENDER_TYPE, null);
     }
 
     @Test(expected = IllegalArgumentException.class)

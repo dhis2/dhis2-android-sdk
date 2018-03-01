@@ -100,7 +100,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
-    static int VERSION = 8;
+    static int VERSION = 9;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -469,6 +469,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             ProgramStageSectionModel.Columns.LAST_UPDATED + " TEXT," +
             ProgramStageSectionModel.Columns.SORT_ORDER + " INTEGER," +
             ProgramStageSectionModel.Columns.PROGRAM_STAGE + " TEXT NOT NULL," +
+            ProgramStageSectionModel.Columns.DESKTOP_RENDER_TYPE + " TEXT," +
+            ProgramStageSectionModel.Columns.MOBILE_RENDER_TYPE + " TEXT," +
             " FOREIGN KEY ( " + ProgramStageSectionModel.Columns.PROGRAM_STAGE + ")" +
             " REFERENCES " + ProgramStageModel.TABLE + " (" + ProgramStageModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +

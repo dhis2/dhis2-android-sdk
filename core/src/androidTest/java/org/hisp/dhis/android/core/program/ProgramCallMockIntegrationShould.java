@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
@@ -189,6 +190,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         );
 
         DictionaryTableHandler<ObjectStyle> styleHandler = ObjectStyleHandler.create(databaseAdapter());
+        DictionaryTableHandler<ValueTypeRendering> renderTypeHandler
+                = ValueTypeRenderingHandler.create(databaseAdapter());
 
         ProgramStageStore programStageStore = new ProgramStageStoreImpl(databaseAdapter());
         ProgramStageHandler programStageHandler = new ProgramStageHandler(
@@ -235,7 +238,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
                 programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore, dataElementHandler, styleHandler
+                programStageSectionStore, programStageStore, relationshipStore, dataElementHandler,
+                styleHandler, renderTypeHandler
         );
     }
 

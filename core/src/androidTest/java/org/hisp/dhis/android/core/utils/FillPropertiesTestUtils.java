@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.utils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.ValueTypeRenderingType;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -55,6 +56,10 @@ public class FillPropertiesTestUtils {
 
     public static final String COLOR = "#fff";
     public static final String ICON = "my-icon-name";
+
+    public static final String TABLE = "test_table";
+    public static final String DEVICE_TYPE = "test_device_type";
+    public static final ValueTypeRenderingType VALUE_TYPE_RENDERING_TYPE = ValueTypeRenderingType.DROPDOWN;
 
     public static final boolean DELETED = false;
 

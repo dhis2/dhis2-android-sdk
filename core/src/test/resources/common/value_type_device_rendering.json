@@ -1,0 +1,7 @@
+{
+  "type": "VERTICAL_RADIOBUTTONS",
+  "min": 0,
+  "max": 10,
+  "step": 1,
+  "decimalPoints": 0
+}

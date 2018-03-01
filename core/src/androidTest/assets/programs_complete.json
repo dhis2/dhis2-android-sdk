@@ -625,14 +625,14 @@
                           ],
                           "renderType": {
                               "DESKTOP": {
-                                  "type": "VERTICAL_RADIOBUTTONS",
+                                  "type": "SEQUENTIAL",
                                   "min": 0,
                                   "max": 10,
                                   "step": 1,
                                   "decimalPoints": 0
                               },
                               "MOBILE": {
-                                  "type": "SHARED_HEADER_RADIOBUTTONS",
+                                  "type": "MATRIX",
                                   "min": 3,
                                   "max": 15,
                                   "step": 2,

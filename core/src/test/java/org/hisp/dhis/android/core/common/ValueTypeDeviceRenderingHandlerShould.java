@@ -57,7 +57,7 @@ public class ValueTypeDeviceRenderingHandlerShould {
     }
 
     @Test
-    public void call_store_when_style_not_null() throws Exception {
+    public void call_store_when_render_type_not_null() throws Exception {
         deviceRenderTypeHandler.handle(VALUE_TYPE_DEVICE_RENDERING_MODEL, UID, TABLE);
         verify(store).updateOrInsertWhere(ValueTypeDeviceRenderingModel.fromPojo(VALUE_TYPE_DEVICE_RENDERING_MODEL,
                 UID, TABLE, VALUE_TYPE_RENDERING_TYPE.toString()));
@@ -65,7 +65,7 @@ public class ValueTypeDeviceRenderingHandlerShould {
     }
 
     @Test
-    public void not_call_store_when_style_null() throws Exception {
+    public void not_call_store_when_render_type_null() throws Exception {
         deviceRenderTypeHandler.handle(null, UID, TABLE);
         verifyNoMoreInteractions(store);
     }

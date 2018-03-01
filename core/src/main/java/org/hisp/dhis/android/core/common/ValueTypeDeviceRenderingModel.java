@@ -96,16 +96,6 @@ public abstract class ValueTypeDeviceRenderingModel extends BaseModel implements
         return new $$AutoValue_ValueTypeDeviceRenderingModel.Builder();
     }
 
-
-    private static final String UID = BaseIdentifiableObjectModel.Columns.UID;
-    private static final String OBJECT_TABLE = "objectTable";
-    private static final String DEVICE_TYPE = "deviceType";
-    private static final String TYPE = "type";
-    private static final String MIN = "min";
-    private static final String MAX = "max";
-    private static final String STEP = "step";
-    private static final String DECIMAL_POINTS = "decimalPoints";
-
     @Nullable
     @ColumnName(Columns.UID)
     public abstract String uid();

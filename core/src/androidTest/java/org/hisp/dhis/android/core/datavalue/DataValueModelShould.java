@@ -41,11 +41,11 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.CREATED_STR;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DELETED;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.LAST_UPDATED_STR;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED_STR;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED_STR;
 
 @RunWith(AndroidJUnit4.class)
 public class DataValueModelShould extends ModelAbstractShould<DataValueModel, DataValue> {

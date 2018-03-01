@@ -40,10 +40,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DEVICE_TYPE;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.TABLE;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.UID;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.VALUE_TYPE_RENDERING_TYPE;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DEVICE_TYPE;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.TABLE;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.VALUE_TYPE_RENDERING_TYPE;
 
 @RunWith(AndroidJUnit4.class)
 public class ValueTypeDeviceRenderingModelShould extends LinkModelAbstractShould<ValueTypeDeviceRenderingModel> {

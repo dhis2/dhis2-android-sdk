@@ -29,16 +29,17 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
 
-    private final ObjectStyleHandler styleHandler;
+    private final DictionaryTableHandler<ObjectStyle> styleHandler;
 
     DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
-                   ObjectStyleHandler styleHandler) {
+                   DictionaryTableHandler<ObjectStyle> styleHandler) {
         super(dataSetStore);
         this.styleHandler = styleHandler;
     }

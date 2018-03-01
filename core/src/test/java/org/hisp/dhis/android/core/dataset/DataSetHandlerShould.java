@@ -31,7 +31,8 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +50,7 @@ public class DataSetHandlerShould {
     private IdentifiableObjectStore<DataSetModel> dataSetStore;
 
     @Mock
-    private ObjectStyleHandler styleHandler;
+    private DictionaryTableHandler<ObjectStyle> styleHandler;
 
     @Mock
     private DataSet dataSet;

@@ -69,7 +69,8 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleStore;
@@ -281,7 +282,7 @@ public final class D2 {
     private final OrganisationUnitHandler organisationUnitHandler;
     private final GenericHandler<DataElement> dataElementHandler;
     private final OptionSetHandler optionSetHandler;
-    private final ObjectStyleHandler styleHandler;
+    private final DictionaryTableHandler<ObjectStyle> styleHandler;
 
     //Generic Call Data
     private final GenericCallData genericCallData;

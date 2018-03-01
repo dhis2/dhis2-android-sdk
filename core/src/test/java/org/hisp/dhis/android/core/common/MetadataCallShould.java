@@ -321,7 +321,7 @@ public class MetadataCallShould {
     private Call<Response> dataSetParentCall;
 
     @Mock
-    private ObjectStyleHandler styleHandler;
+    private DictionaryTableHandler<ObjectStyle> styleHandler;
 
     private Response<Payload<DataElement>> dataSetParentCallResponse;
 

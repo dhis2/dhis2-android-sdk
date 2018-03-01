@@ -27,17 +27,18 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class TrackedEntityAttributeHandler {
 
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
-    private final ObjectStyleHandler styleHandler;
+    private final DictionaryTableHandler<ObjectStyle> styleHandler;
 
     public TrackedEntityAttributeHandler(TrackedEntityAttributeStore trackedEntityAttributeStore,
-                                         ObjectStyleHandler styleHandler) {
+                                         DictionaryTableHandler<ObjectStyle> styleHandler) {
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.styleHandler = styleHandler;
     }

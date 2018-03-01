@@ -27,6 +27,6 @@
  */
 package org.hisp.dhis.android.core.common;
 
-public interface ObjectStyleHandler {
-    void handle(ObjectStyle style, String uid, String objectTable);
+public interface DictionaryTableHandler<P> {
+    void handle(P pojo, String uid, String objectTable);
 }

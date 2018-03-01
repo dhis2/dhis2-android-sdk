@@ -30,7 +30,8 @@ package org.hisp.dhis.android.core.dataelement;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.junit.Before;
@@ -53,7 +54,7 @@ public class DataElementHandlerShould {
     private GenericHandler<OptionSet> optionSetHandler;
 
     @Mock
-    private ObjectStyleHandler styleHandler;
+    private DictionaryTableHandler<ObjectStyle> styleHandler;
 
     @Mock
     private DataElement dataElement;

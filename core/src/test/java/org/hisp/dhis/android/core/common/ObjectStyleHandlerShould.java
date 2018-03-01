@@ -44,7 +44,7 @@ public class ObjectStyleHandlerShould {
     private ObjectWithoutUidStore<ObjectStyleModel> store;
 
     // object to test
-    private ObjectStyleHandler styleHandler;
+    private DictionaryTableHandler<ObjectStyle> styleHandler;
 
     private static final String UID = "uid";
     private static final String TABLE = "table";

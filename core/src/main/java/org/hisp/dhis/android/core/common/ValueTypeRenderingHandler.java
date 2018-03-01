@@ -43,12 +43,8 @@ public class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTy
     @Override
     public void handle(ValueTypeRendering renderType, String uid, String objectTable) {
         if (renderType != null) {
-            if (renderType.desktop() != null) {
-                desktopHandler.handle(renderType.desktop(), uid, objectTable);
-            }
-            if (renderType.mobile() != null) {
-                mobileHandler.handle(renderType.mobile(), uid, objectTable);
-            }
+            desktopHandler.handle(renderType.desktop(), uid, objectTable);
+            mobileHandler.handle(renderType.mobile(), uid, objectTable);
         }
     }
 

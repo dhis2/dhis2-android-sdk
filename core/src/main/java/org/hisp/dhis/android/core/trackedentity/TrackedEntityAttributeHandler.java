@@ -40,7 +40,8 @@ public class TrackedEntityAttributeHandler {
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     public TrackedEntityAttributeHandler(TrackedEntityAttributeStore trackedEntityAttributeStore,
-                                         DictionaryTableHandler<ObjectStyle> styleHandler, DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
+                                         DictionaryTableHandler<ObjectStyle> styleHandler,
+                                         DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.styleHandler = styleHandler;
         this.renderTypeHandler = renderTypeHandler;

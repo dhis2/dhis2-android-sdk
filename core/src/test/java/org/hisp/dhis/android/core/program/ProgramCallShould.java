@@ -174,6 +174,9 @@ public class ProgramCallShould {
     @Mock
     private DictionaryTableHandler<ObjectStyle> styleHandler;
 
+    @Mock
+    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
+
     // the call we are testing
     private Call<Response<Payload<Program>>> programSyncCall;
 
@@ -192,8 +195,7 @@ public class ProgramCallShould {
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
                 programStageDataElementStore, programStageSectionStore, programStageStore,
-                relationshipStore, dataElementHandler, styleHandler
-        );
+                relationshipStore, dataElementHandler, styleHandler, renderTypeHandler);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.access()).thenReturn(access);

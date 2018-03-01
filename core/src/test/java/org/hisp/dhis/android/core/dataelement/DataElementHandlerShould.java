@@ -71,7 +71,7 @@ public class DataElementHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        dataElementHandler = new DataElementHandler(dataSetStore, optionSetHandler, styleHandler);
+        dataElementHandler = new DataElementHandler(dataSetStore, optionSetHandler, styleHandler, renderTypeHandler);
         when(dataElement.uid()).thenReturn("test_data_element_uid");
         when(dataElement.optionSet()).thenReturn(optionSet);
         when(dataElement.categoryCombo()).thenReturn(categoryCombo);
@@ -92,6 +92,6 @@ public class DataElementHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<DataElement, DataElementModel> genericHandler = new DataElementHandler(
-                null,null, null);
+                null,null, null, renderTypeHandler);
     }
 }

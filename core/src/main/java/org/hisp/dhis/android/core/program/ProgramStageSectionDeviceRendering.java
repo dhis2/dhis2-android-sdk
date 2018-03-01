@@ -34,14 +34,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
-
 @AutoValue
 public abstract class ProgramStageSectionDeviceRendering {
     private static final String TYPE = "type";
-
-    public static final Field<ProgramStageSectionDeviceRendering, ProgramStageSectionRenderingType> type
-            = Field.create(TYPE);
 
     @Nullable
     @JsonProperty(TYPE)

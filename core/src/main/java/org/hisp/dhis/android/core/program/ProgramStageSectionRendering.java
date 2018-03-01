@@ -34,23 +34,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
-
 @AutoValue
 public abstract class ProgramStageSectionRendering {
     private static final String DESKTOP = "DESKTOP";
     private static final String MOBILE = "MOBILE";
-
-    private static final NestedField<ProgramStageSectionRendering, ProgramStageSectionDeviceRendering> desktop
-            = NestedField.create(DESKTOP);
-    private static final NestedField<ProgramStageSectionRendering, ProgramStageSectionDeviceRendering> mobile
-            = NestedField.create(MOBILE);
-
-    static final Fields<ProgramStageSectionRendering> allFields =
-            Fields.<ProgramStageSectionRendering>builder().fields(
-                    desktop.with(ProgramStageSectionDeviceRendering.type),
-                    mobile.with(ProgramStageSectionDeviceRendering.type)).build();
 
     @Nullable
     @JsonProperty(DESKTOP)

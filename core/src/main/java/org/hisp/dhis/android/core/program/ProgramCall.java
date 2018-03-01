@@ -31,9 +31,9 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -209,7 +209,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                                 ProgramStageSection.programIndicators.with(ProgramIndicator.uid,
                                         ProgramIndicator.program.with(Program.uid)
                                 ),
-                                ProgramStageSection.renderType.with(ProgramStageSectionRendering.allFields)
+                                ProgramStageSection.renderType
                         ),
                         ProgramStage.style.with(ObjectStyle.allFields)
                 ),
@@ -277,7 +277,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                                 TrackedEntityAttribute.searchScope, TrackedEntityAttribute.optionSet.with(
                                         OptionSet.uid, OptionSet.version),
                                 TrackedEntityAttribute.style.with(ObjectStyle.allFields),
-                                TrackedEntityAttribute.renderType.with(ValueTypeRendering.allFields)
+                                TrackedEntityAttribute.renderType
                         )
                 ),
                 Program.trackedEntity.with(TrackedEntity.uid),

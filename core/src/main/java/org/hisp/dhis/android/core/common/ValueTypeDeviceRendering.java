@@ -34,9 +34,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-
 @AutoValue
 public abstract class ValueTypeDeviceRendering {
     private static final String TYPE = "type";
@@ -44,15 +41,6 @@ public abstract class ValueTypeDeviceRendering {
     private static final String MAX = "max";
     private static final String STEP = "step";
     private static final String DECIMAL_POINTS = "decimalPoints";
-
-    private static final Field<ValueTypeDeviceRendering, ValueTypeRenderingType> type = Field.create(TYPE);
-    private static final Field<ValueTypeDeviceRendering, Integer> min = Field.create(MIN);
-    private static final Field<ValueTypeDeviceRendering, Integer> max = Field.create(MAX);
-    private static final Field<ValueTypeDeviceRendering, Integer> step = Field.create(STEP);
-    private static final Field<ValueTypeDeviceRendering, Integer> decimalPoints = Field.create(DECIMAL_POINTS);
-
-    static final Fields<ValueTypeDeviceRendering> allFields = Fields.<ValueTypeDeviceRendering>builder().fields(
-            type, min, max, step, decimalPoints).build();
 
     @Nullable
     @JsonProperty(TYPE)

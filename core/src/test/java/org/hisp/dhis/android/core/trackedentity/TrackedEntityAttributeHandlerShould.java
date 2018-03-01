@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,13 +66,17 @@ public class TrackedEntityAttributeHandlerShould {
     @Mock
     private DictionaryTableHandler<ObjectStyle> styleHandler;
 
+    @Mock
+    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
+
     // object to test
     private TrackedEntityAttributeHandler trackedEntityAttributeHandler;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(trackedEntityAttributeStore, styleHandler);
+        trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(trackedEntityAttributeStore,
+                styleHandler, renderTypeHandler);
 
         when(trackedEntityAttribute.uid()).thenReturn("test_tracked_entity_attribute_uid");
         when(optionSet.uid()).thenReturn("test_option_set_uid");

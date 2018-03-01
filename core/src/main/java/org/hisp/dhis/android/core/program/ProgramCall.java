@@ -120,7 +120,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 programIndicatorHandler,
                 new ProgramRuleHandler(programRuleStore, new ProgramRuleActionHandler(programRuleActionStore)),
                 new ProgramTrackedEntityAttributeHandler(programTrackedEntityAttributeStore,
-                        new TrackedEntityAttributeHandler(trackedEntityAttributeStore, styleHandler)
+                        new TrackedEntityAttributeHandler(trackedEntityAttributeStore, styleHandler, renderTypeHandler)
                 ),
                 new RelationshipTypeHandler(relationshipStore), styleHandler);
     }

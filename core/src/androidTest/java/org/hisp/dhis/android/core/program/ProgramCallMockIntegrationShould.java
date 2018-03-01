@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -137,9 +138,11 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
 
         TrackedEntityAttributeStore trackedEntityAttributeStore =
                 new TrackedEntityAttributeStoreImpl(databaseAdapter());
+
         TrackedEntityAttributeHandler trackedEntityAttributeHandler =
                 new TrackedEntityAttributeHandler(trackedEntityAttributeStore,
-                        ObjectStyleHandler.create(databaseAdapter()));
+                        ObjectStyleHandler.create(databaseAdapter()),
+                        ValueTypeRenderingHandler.create(databaseAdapter()));
 
         ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore =
                 new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter());

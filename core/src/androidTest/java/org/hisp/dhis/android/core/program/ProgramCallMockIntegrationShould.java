@@ -360,10 +360,25 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 ProgramStageSectionModel.Columns.CREATED,
                 ProgramStageSectionModel.Columns.LAST_UPDATED,
                 ProgramStageSectionModel.Columns.SORT_ORDER,
-                ProgramStageSectionModel.Columns.PROGRAM_STAGE
+                ProgramStageSectionModel.Columns.PROGRAM_STAGE,
+                ProgramStageSectionModel.Columns.DESKTOP_RENDER_TYPE,
+                ProgramStageSectionModel.Columns.MOBILE_RENDER_TYPE
         };
         Cursor programStageSectionCursor = database().query(ProgramStageSectionModel.TABLE, projection,
                 null, null, null, null, null);
+
+        assertThatCursor(programStageSectionCursor).hasRow(
+                "OeSqs7pkKqI",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "A03MvHHogjR",
+                ProgramStageSectionRenderingType.SEQUENTIAL.toString(),
+                ProgramStageSectionRenderingType.MATRIX.toString()
+        ).isExhausted();
 
         assertThatCursor(programStageSectionCursor).isExhausted();
     }

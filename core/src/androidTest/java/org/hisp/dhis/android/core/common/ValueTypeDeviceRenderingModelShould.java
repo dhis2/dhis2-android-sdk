@@ -54,7 +54,8 @@ public class ValueTypeDeviceRenderingModelShould extends LinkModelAbstractShould
 
     @Override
     protected ValueTypeDeviceRenderingModel buildModel() {
-        ValueTypeDeviceRenderingModel.Builder valueTypeDeviceRenderingModelBuilder = ValueTypeDeviceRenderingModel.builder();
+        ValueTypeDeviceRenderingModel.Builder valueTypeDeviceRenderingModelBuilder =
+                ValueTypeDeviceRenderingModel.builder();
         valueTypeDeviceRenderingModelBuilder
                 .uid(UID)
                 .objectTable(TABLE)

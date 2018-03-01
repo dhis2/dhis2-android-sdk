@@ -611,7 +611,36 @@
                           }
                       }
                   ],
-                  "programStageSections": [ ]
+                  "programStageSections": [
+                      {
+                          "lastUpdated": "2016-12-06T18:17:16.634",
+                          "id": "OeSqs7pkKqI",
+                          "href": "https://play.dhis2.org/dev/api/programStageSections/OeSqs7pkKqI",
+                          "created": "2015-03-31T11:57:11.440",
+                          "name": "Admission details",
+                          "displayName": "Admission details",
+                          "sortOrder": 1,
+                          "programIndicators": [],
+                          "dataElements": [
+                          ],
+                          "renderType": {
+                              "DESKTOP": {
+                                  "type": "VERTICAL_RADIOBUTTONS",
+                                  "min": 0,
+                                  "max": 10,
+                                  "step": 1,
+                                  "decimalPoints": 0
+                              },
+                              "MOBILE": {
+                                  "type": "SHARED_HEADER_RADIOBUTTONS",
+                                  "min": 3,
+                                  "max": 15,
+                                  "step": 2,
+                                  "decimalPoints": 1
+                              }
+                          }
+                      }
+                  ]
               },
               {
                   "lastUpdated": "2015-08-06T20:16:48.321",

@@ -119,7 +119,7 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
                 programStage, desktopRenderType, mobileRenderType);
 
         // bind the where argument
-        sqLiteBind(updateStatement, 9, whereProgramStageSectionUid);
+        sqLiteBind(updateStatement, 11, whereProgramStageSectionUid);
 
         // execute and clear bindings
         int update = databaseAdapter.executeUpdateDelete(ProgramStageSectionModel.TABLE, updateStatement);

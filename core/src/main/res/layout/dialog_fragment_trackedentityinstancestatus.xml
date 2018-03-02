@@ -67,7 +67,7 @@
             android:clickable="true"
             android:contentDescription="@string/description"
             android:padding="8dp"
-            android:src="@drawable/ic_refresh"/>
+            app:srcCompat="@drawable/ic_refresh"/>
 
         <ImageView
             android:id="@+id/close_dialog_button"
@@ -108,7 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/itemstatus"
-                    android:src="@drawable/ic_offline" />
+                    app:srcCompat="@drawable/ic_offline" />
 
                 <org.hisp.dhis.android.sdk.ui.views.FontTextView
                     android:id="@+id/statusinfo"
@@ -141,7 +141,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="5dp"
-                    android:src="@drawable/ic_triangle_collapsed" />
+                    app:srcCompat="@drawable/ic_triangle_collapsed" />
             </LinearLayout>
             <ScrollView
                 android:layout_width="match_parent"

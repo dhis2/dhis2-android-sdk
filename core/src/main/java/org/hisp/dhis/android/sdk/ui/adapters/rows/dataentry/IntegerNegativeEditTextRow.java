@@ -124,6 +124,9 @@ public class IntegerNegativeEditTextRow extends TextRow {
 
         holder.editText.setOnEditorActionListener(mOnEditorActionListener);
 
+        if (isShouldNeverBeEdited()) {
+            holder.editText.setEnabled(false);
+        }
         return view;
     }
 

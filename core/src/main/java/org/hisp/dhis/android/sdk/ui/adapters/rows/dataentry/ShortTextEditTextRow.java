@@ -114,6 +114,10 @@ public class ShortTextEditTextRow extends TextRow {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
         }
         holder.editText.setOnEditorActionListener(mOnEditorActionListener);
+        
+        if (isShouldNeverBeEdited()) {
+            holder.editText.setEnabled(false);
+        }
         return view;
     }
 }

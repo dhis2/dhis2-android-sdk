@@ -114,6 +114,9 @@ public class PhoneEditTextRow extends TextRow {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
         }
 
+        if (isShouldNeverBeEdited()) {
+            holder.editText.setEnabled(false);
+        }
         holder.editText.setOnEditorActionListener(mOnEditorActionListener);
 
         return view;

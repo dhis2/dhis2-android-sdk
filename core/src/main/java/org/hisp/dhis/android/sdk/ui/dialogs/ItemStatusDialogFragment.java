@@ -57,6 +57,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.R;
@@ -247,13 +248,16 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
     public static String toPrettyFormat(String jsonString)
     {
         JsonParser parser = new JsonParser();
-        JsonObject json = parser.parse(jsonString).getAsJsonObject();
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String prettyJson = gson.toJson(json);
-
-        return prettyJson;
+        try {
+            JsonObject json = parser.parse(jsonString).getAsJsonObject();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            jsonString = gson.toJson(json);
+        }catch (JsonSyntaxException e){
+            e.printStackTrace();
+        }
+        return jsonString;
     }
+
     @Override
     public void onLoaderReset(Loader<ItemStatusDialogFragmentForm> loader) {
 

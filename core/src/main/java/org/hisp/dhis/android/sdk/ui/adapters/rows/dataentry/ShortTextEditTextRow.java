@@ -74,12 +74,6 @@ public class ShortTextEditTextRow extends TextRow {
         //when recycling views we don't want to keep the focus on the edittext
         //holder.editText.clearFocus();
 
-        if (!isEditable()) {
-            holder.editText.setEnabled(false);
-        } else {
-            holder.editText.setEnabled(true);
-        }
-
         holder.textLabel.setText(mLabel);
         holder.listener.setBaseValue(mValue);
 //        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
@@ -114,6 +108,15 @@ public class ShortTextEditTextRow extends TextRow {
             holder.mandatoryIndicator.setVisibility(View.VISIBLE);
         }
         holder.editText.setOnEditorActionListener(mOnEditorActionListener);
+
+        if (!isEditable()) {
+            holder.editText.setEnabled(false);
+        } else {
+            holder.editText.setEnabled(true);
+        }
+        if (isShouldNeverBeEdited()) {
+            holder.editText.setEnabled(false);
+        }
         return view;
     }
 }

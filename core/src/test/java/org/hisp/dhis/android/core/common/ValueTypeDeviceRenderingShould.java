@@ -25,54 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+package org.hisp.dhis.android.core.common;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
-import com.google.auto.value.AutoValue;
+import org.junit.Test;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import java.io.IOException;
+import java.text.ParseException;
 
-@AutoValue
-public abstract class UserRoleProgramLinkModel extends BaseModel {
-    public static final String TABLE = "UserRoleProgramLink";
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    public static class Columns extends BaseModel.Columns {
-        public static final String USER_ROLE = "userRole";
-        public static final String PROGRAM = "program";
+public class ValueTypeDeviceRenderingShould extends BaseObjectShould implements ObjectShould {
+
+    public ValueTypeDeviceRenderingShould() {
+        super("common/value_type_device_rendering.json");
     }
 
-    public static UserRoleProgramLinkModel create(Cursor cursor) {
-        return AutoValue_UserRoleProgramLinkModel.createFromCursor(cursor);
-    }
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        ValueTypeDeviceRendering valueTypeDeviceRendering =
+                objectMapper.readValue(jsonStream, ValueTypeDeviceRendering.class);
 
-    public static Builder builder() {
-        return new $$AutoValue_UserRoleProgramLinkModel.Builder();
-    }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
-
-    @Nullable
-    @ColumnName(Columns.USER_ROLE)
-    public abstract String userRole();
-
-    @Nullable
-    @ColumnName(Columns.PROGRAM)
-    public abstract String program();
-
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
-
-        public abstract Builder userRole(@Nullable String user);
-
-        public abstract Builder program(@Nullable String organisationUnit);
-
-        public abstract UserRoleProgramLinkModel build();
+        assertThat(valueTypeDeviceRendering.type()).isEqualTo(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS);
+        assertThat(valueTypeDeviceRendering.min()).isEqualTo(0);
+        assertThat(valueTypeDeviceRendering.max()).isEqualTo(10);
+        assertThat(valueTypeDeviceRendering.step()).isEqualTo(1);
+        assertThat(valueTypeDeviceRendering.decimalPoints()).isEqualTo(0);
     }
 }

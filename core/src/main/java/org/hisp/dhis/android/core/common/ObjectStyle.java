@@ -25,18 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import android.support.annotation.NonNull;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import android.support.annotation.Nullable;
 
-public interface UserRoleProgramLinkStore extends DeletableStore {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-    long insert(@NonNull String userRole, @NonNull String program);
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-    int update(@NonNull String userRoleUid, @NonNull String programUid,
-               @NonNull String whereUserRoleUid, @NonNull String whereProgramUid);
+@AutoValue
+public abstract class ObjectStyle {
+    private static final String COLOR = "color";
+    private static final String ICON = "icon";
 
-    int delete(@NonNull String userRoleUid, @NonNull String programUid);
+    private static final Field<ObjectStyle, String> color = Field.create(COLOR);
+    private static final Field<ObjectStyle, String> icon = Field.create(ICON);
+
+    public static final Fields<ObjectStyle> allFields = Fields.<ObjectStyle>builder().fields(color, icon).build();
+
+    @Nullable
+    @JsonProperty(COLOR)
+    public abstract String color();
+
+    @Nullable
+    @JsonProperty(ICON)
+    public abstract String icon();
+
+    @JsonCreator
+    public static ObjectStyle create(@JsonProperty(COLOR) String color,
+                                     @JsonProperty(ICON) String icon) {
+        return new AutoValue_ObjectStyle(color, icon);
+    }
+
+    public static String getColor(ObjectStyle objectStyle) {
+        return objectStyle == null ?  null : objectStyle.color();
+    }
+
+    public static String getIcon(ObjectStyle objectStyle) {
+        return objectStyle == null ?  null : objectStyle.icon();
+    }
 }

@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -35,13 +38,16 @@ public class ProgramStageHandler {
     private final ProgramStageStore programStageStore;
     private final ProgramStageSectionHandler programStageSectionHandler;
     private final ProgramStageDataElementHandler programStageDataElementHandler;
+    private final DictionaryTableHandler<ObjectStyle> styleHandler;
 
     public ProgramStageHandler(ProgramStageStore programStageStore,
                                ProgramStageSectionHandler programStageSectionHandler,
-                               ProgramStageDataElementHandler programStageDataElementHandler) {
+                               ProgramStageDataElementHandler programStageDataElementHandler,
+                               DictionaryTableHandler<ObjectStyle> styleHandler) {
         this.programStageStore = programStageStore;
         this.programStageSectionHandler = programStageSectionHandler;
         this.programStageDataElementHandler = programStageDataElementHandler;
+        this.styleHandler = styleHandler;
     }
 
     public void handleProgramStage(String programUid, List<ProgramStage> programStages) {
@@ -93,7 +99,7 @@ public class ProgramStageHandler {
             programStageSectionHandler.handleProgramStageSection(programStage.uid(),
                     programStage.programStageSections());
 
-
+            styleHandler.handle(programStage.style(), programStage.uid(), ProgramStageModel.TABLE);
         }
     }
 }

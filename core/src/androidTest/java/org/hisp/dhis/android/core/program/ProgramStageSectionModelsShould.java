@@ -54,6 +54,9 @@ public class ProgramStageSectionModelsShould {
     private final Date date;
     private final String dateString;
 
+    private final ProgramStageSectionRenderingType DESKTOP_RENDER_TYPE = ProgramStageSectionRenderingType.MATRIX;
+    private final ProgramStageSectionRenderingType MOBILE_RENDER_TYPE = ProgramStageSectionRenderingType.LISTING;
+
     public ProgramStageSectionModelsShould() {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
@@ -64,11 +67,11 @@ public class ProgramStageSectionModelsShould {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.UID, Columns.CODE, Columns.NAME,
                 Columns.DISPLAY_NAME, Columns.CREATED, Columns.LAST_UPDATED,
-                Columns.SORT_ORDER, Columns.PROGRAM_STAGE
+                Columns.SORT_ORDER, Columns.PROGRAM_STAGE, Columns.DESKTOP_RENDER_TYPE, Columns.MOBILE_RENDER_TYPE
         });
         cursor.addRow(new Object[]{
                 ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
-                SORT_ORDER, PROGRAM_STAGE
+                SORT_ORDER, PROGRAM_STAGE, DESKTOP_RENDER_TYPE, MOBILE_RENDER_TYPE
         });
         cursor.moveToFirst();
 
@@ -84,6 +87,8 @@ public class ProgramStageSectionModelsShould {
         assertThat(model.lastUpdated()).isEqualTo(date);
         assertThat(model.sortOrder()).isEqualTo(SORT_ORDER);
         assertThat(model.programStage()).isEqualTo(PROGRAM_STAGE);
+        assertThat(model.desktopRenderType()).isEqualTo(DESKTOP_RENDER_TYPE);
+        assertThat(model.mobileRenderType()).isEqualTo(MOBILE_RENDER_TYPE);
     }
 
     @Test
@@ -98,6 +103,8 @@ public class ProgramStageSectionModelsShould {
                 .lastUpdated(date)
                 .sortOrder(SORT_ORDER)
                 .programStage(PROGRAM_STAGE)
+                .desktopRenderType(DESKTOP_RENDER_TYPE)
+                .mobileRenderType(MOBILE_RENDER_TYPE)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -110,5 +117,7 @@ public class ProgramStageSectionModelsShould {
         assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsInteger(Columns.SORT_ORDER)).isEqualTo(SORT_ORDER);
         assertThat(contentValues.getAsString(Columns.PROGRAM_STAGE)).isEqualTo(PROGRAM_STAGE);
+        assertThat(contentValues.getAsString(Columns.DESKTOP_RENDER_TYPE)).isEqualTo(DESKTOP_RENDER_TYPE.toString());
+        assertThat(contentValues.getAsString(Columns.MOBILE_RENDER_TYPE)).isEqualTo(MOBILE_RENDER_TYPE.toString());
     }
 }

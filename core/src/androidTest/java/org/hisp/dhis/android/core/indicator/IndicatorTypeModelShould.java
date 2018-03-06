@@ -41,14 +41,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.CODE;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DELETED;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DISPLAY_NAME;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.NAME;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.UID;
-import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.fillIdentifiableModelProperties;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
 public class IndicatorTypeModelShould extends IdentifiableModelAbstractShould<IndicatorTypeModel, IndicatorType> {

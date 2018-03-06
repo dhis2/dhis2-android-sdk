@@ -1,0 +1,4 @@
+up:
+ - DROP TABLE IF EXISTS ProgramStageSection;
+ - CREATE TABLE ProgramStageSection (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,code TEXT,name TEXT,displayName TEXT,created TEXT,lastUpdated TEXT,sortOrder INTEGER,programStage TEXT NOT NULL,desktopRenderType TEXT,mobileRenderType TEXT, FOREIGN KEY ( programStage) REFERENCES ProgramStage (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+ - CREATE TABLE ValueTypeDeviceRendering (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT,objectTable TEXT,deviceType TEXT,type TEXT,min INTEGER,max INTEGER,step INTEGER,decimalPoints INTEGER, UNIQUE (uid, deviceType));

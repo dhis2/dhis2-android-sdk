@@ -101,10 +101,13 @@ public class ProgramStageSectionHandlerShould {
 
         // verify that update and insert is never called
         verify(programStageSectionStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString());
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class));
 
         verify(programStageSectionStore, never()).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString());
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
+                anyString());
 
         // verify that handlers is called once
         verify(programStageDataElementHandler, times(1)).updateProgramStageDataElementWithProgramStageSectionLink(
@@ -121,7 +124,9 @@ public class ProgramStageSectionHandlerShould {
     public void invoke_only_update_when_handle_program_stage_section_inserted() throws Exception {
         when(programStageSectionStore.update(
                 anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString())
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
+                anyString())
         ).thenReturn(1);
 
         when(programStageSection.dataElements()).thenReturn(dataElements);
@@ -131,11 +136,14 @@ public class ProgramStageSectionHandlerShould {
 
         // verify that update is called once
         verify(programStageSectionStore, times(1)).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString());
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
+                anyString());
 
         // verify that insert and delete is never called
         verify(programStageSectionStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString());
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class));
 
         verify(programStageSectionStore, never()).delete(anyString());
 
@@ -153,7 +161,9 @@ public class ProgramStageSectionHandlerShould {
     public void invoke_update_and_insert_when_handle_program_stage_section_not_inserted() throws Exception {
         when(programStageSectionStore.update(
                 anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString())
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
+                anyString())
         ).thenReturn(0);
 
         when(programStageSection.dataElements()).thenReturn(dataElements);
@@ -163,11 +173,14 @@ public class ProgramStageSectionHandlerShould {
 
         // verify that update is called once since we update before we insert
         verify(programStageSectionStore, times(1)).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString());
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
+                anyString());
 
         // verify that insert is called once
         verify(programStageSectionStore, times(1)).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString());
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class));
 
         // verify that delete is never called
         verify(programStageSectionStore, never()).delete(anyString());
@@ -189,10 +202,13 @@ public class ProgramStageSectionHandlerShould {
 
         // verify that program stage section store is never invoked
         verify(programStageSectionStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString());
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class));
 
         verify(programStageSectionStore, never()).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString());
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
+                anyString());
 
         verify(programStageSectionStore, never()).delete(anyString());
 
@@ -211,10 +227,13 @@ public class ProgramStageSectionHandlerShould {
 
         // verify that program stage section store is never invoked
         verify(programStageSectionStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString());
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class));
 
         verify(programStageSectionStore, never()).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString());
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
+                anyString());
 
         verify(programStageSectionStore, never()).delete(anyString());
 
@@ -234,10 +253,13 @@ public class ProgramStageSectionHandlerShould {
 
         // verify that program stage section store is never invoked
         verify(programStageSectionStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString());
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class));
 
         verify(programStageSectionStore, never()).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(), anyString());
+                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
+                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
+                anyString());
 
         verify(programStageSectionStore, never()).delete(anyString());
 

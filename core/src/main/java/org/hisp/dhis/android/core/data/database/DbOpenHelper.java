@@ -42,7 +42,9 @@ import org.hisp.dhis.android.core.category.CategoryModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingModel;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
@@ -50,7 +52,6 @@ import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.datavalue.DataValueModel;
-import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
@@ -60,6 +61,7 @@ import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
+import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
@@ -84,7 +86,6 @@ import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserRoleModel;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -100,7 +101,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
-    static int VERSION = 5;
+    static int VERSION = 9;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -348,6 +349,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
             ProgramModel.Columns.TRACKED_ENTITY + " TEXT," +
             ProgramModel.Columns.CATEGORY_COMBO + " TEXT," +
+            ProgramModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
             " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID
             + ")" +
@@ -468,6 +470,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             ProgramStageSectionModel.Columns.LAST_UPDATED + " TEXT," +
             ProgramStageSectionModel.Columns.SORT_ORDER + " INTEGER," +
             ProgramStageSectionModel.Columns.PROGRAM_STAGE + " TEXT NOT NULL," +
+            ProgramStageSectionModel.Columns.DESKTOP_RENDER_TYPE + " TEXT," +
+            ProgramStageSectionModel.Columns.MOBILE_RENDER_TYPE + " TEXT," +
             " FOREIGN KEY ( " + ProgramStageSectionModel.Columns.PROGRAM_STAGE + ")" +
             " REFERENCES " + ProgramStageModel.TABLE + " (" + ProgramStageModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
@@ -881,21 +885,6 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     UserRoleModel.Columns.LAST_UPDATED + " TEXT" +
                     ");";
 
-    private static final String CREATE_USER_ROLE_PROGRAM_TABLE = "CREATE TABLE " +
-            UserRoleProgramLinkModel.TABLE + " (" +
-            UserRoleProgramLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            UserRoleProgramLinkModel.Columns.USER_ROLE + " TEXT NOT NULL," +
-            UserRoleProgramLinkModel.Columns.PROGRAM + " TEXT NOT NULL," +
-            " FOREIGN KEY (" + UserRoleProgramLinkModel.Columns.USER_ROLE + ") " +
-            " REFERENCES " + UserRoleModel.TABLE + " (" + UserRoleModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " FOREIGN KEY (" + UserRoleProgramLinkModel.Columns.PROGRAM + ") " +
-            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " UNIQUE (" + UserRoleProgramLinkModel.Columns.USER_ROLE + ", " +
-            UserRoleProgramLinkModel.Columns.PROGRAM + ")" +
-            ");";
-
     private static final String CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE =
             "CREATE TABLE " +
                     ProgramStageSectionProgramIndicatorLinkModel.TABLE + " (" +
@@ -940,6 +929,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             DataSetModel.Columns.DATA_ELEMENT_DECORATION + " INTEGER," +
                             DataSetModel.Columns.RENDER_AS_TABS + " INTEGER," +
                             DataSetModel.Columns.RENDER_HORIZONTALLY + " INTEGER," +
+                            DataSetModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
                             " FOREIGN KEY ( " + DataSetModel.Columns.CATEGORY_COMBO + ")" +
                             " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
@@ -1056,6 +1046,29 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             " UNIQUE (" + PeriodModel.Columns.PERIOD_ID + ")"
             );
 
+    private static final String CREATE_OBJECT_STYLE_TABLE =
+            SQLStatementBuilder.createModelTable(ObjectStyleModel.TABLE,
+                    ObjectStyleModel.Columns.UID + " TEXT," +
+                            ObjectStyleModel.Columns.OBJECT_TABLE + " TEXT," +
+                            ObjectStyleModel.Columns.COLOR + " TEXT," +
+                            ObjectStyleModel.Columns.ICON + " TEXT," +
+                            " UNIQUE (" + ObjectStyleModel.Columns.UID + ")"
+            );
+
+    private static final String CREATE_VALUE_TYPE_DEVICE_RENDERING_TABLE =
+            SQLStatementBuilder.createModelTable(ValueTypeDeviceRenderingModel.TABLE,
+                    ValueTypeDeviceRenderingModel.Columns.UID + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.OBJECT_TABLE + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.DEVICE_TYPE + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.TYPE + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.MIN + " INTEGER," +
+                            ValueTypeDeviceRenderingModel.Columns.MAX + " INTEGER," +
+                            ValueTypeDeviceRenderingModel.Columns.STEP + " INTEGER," +
+                            ValueTypeDeviceRenderingModel.Columns.DECIMAL_POINTS + " INTEGER," +
+                            " UNIQUE (" + ValueTypeDeviceRenderingModel.Columns.UID + ", " +
+                            ValueTypeDeviceRenderingModel.Columns.DEVICE_TYPE + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1099,7 +1112,6 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_RESOURCE_TABLE);
         database.execSQL(CREATE_ORGANISATION_UNIT_PROGRAM_LINK_TABLE);
         database.execSQL(CREATE_USER_ROLE_TABLE);
-        database.execSQL(CREATE_USER_ROLE_PROGRAM_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE);
         database.execSQL(CREATE_CATEGORY_TABLE);
         database.execSQL(CREATE_CATEGORY_OPTION_TABLE);
@@ -1116,6 +1128,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_DATA_SET_INDICATOR_LINK_TABLE);
         database.execSQL(CREATE_DATA_VALUE_TABLE);
         database.execSQL(CREATE_PERIOD_TABLE);
+        database.execSQL(CREATE_OBJECT_STYLE_TABLE);
+        database.execSQL(CREATE_VALUE_TYPE_DEVICE_RENDERING_TABLE);
         return database;
     }
 

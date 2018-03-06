@@ -26,11 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.utils;
+package org.hisp.dhis.android.core.data.utils;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
+import org.hisp.dhis.android.core.common.ValueTypeRenderingType;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -52,6 +54,19 @@ public class FillPropertiesTestUtils {
     public static final String DISPLAY_SHORT_NAME = "test_display_short_name";
     public static final String DESCRIPTION = "test_description";
     public static final String DISPLAY_DESCRIPTION = "test_display_description";
+
+    public static final String COLOR = "#fff";
+    public static final String ICON = "my-icon-name";
+
+    public static final String TABLE = "test_table";
+    public static final String DEVICE_TYPE = "test_device_type";
+    public static final ValueTypeRenderingType VALUE_TYPE_RENDERING_TYPE = ValueTypeRenderingType.DROPDOWN;
+    public static final Integer MIN = 0;
+    public static final Integer MAX = 10;
+    public static final Integer STEP = 1;
+    public static final Integer DECIMAL_POINTS = 0;
+    public static final ValueTypeDeviceRendering VALUE_TYPE_DEVICE_RENDERING_MODEL =
+            ValueTypeDeviceRendering.create(VALUE_TYPE_RENDERING_TYPE, MIN, MAX, STEP, DECIMAL_POINTS);
 
     public static final boolean DELETED = false;
 

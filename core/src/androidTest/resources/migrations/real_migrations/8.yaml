@@ -1,0 +1,2 @@
+up:
+ - CREATE TABLE ObjectStyle (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT,objectTable TEXT,color TEXT,icon TEXT, UNIQUE (uid));

@@ -34,8 +34,8 @@ import android.support.annotation.VisibleForTesting;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.AggregatedDataCall;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
@@ -65,12 +65,21 @@ import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingModel;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingStore;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
@@ -175,8 +184,6 @@ import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserRoleStoreImpl;
 import org.hisp.dhis.android.core.user.UserService;
@@ -225,7 +232,6 @@ public final class D2 {
     private final ResourceStore resourceStore;
     private final SystemInfoStore systemInfoStore;
     private final UserRoleStore userRoleStore;
-    private final UserRoleProgramLinkStore userRoleProgramLinkStore;
     private final ProgramStore programStore;
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
@@ -268,6 +274,8 @@ public final class D2 {
     private final ObjectStore<DataSetIndicatorLinkModel> dataSetIndicatorLinkStore;
     private final ObjectWithoutUidStore<DataValueModel> dataValueStore;
     private final ObjectWithoutUidStore<PeriodModel> periodStore;
+    private final ObjectWithoutUidStore<ObjectStyleModel> objectStyleStore;
+    private final ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> valueTypeDeviceRenderingStore;
 
     //Handlers
     private final UserCredentialsHandler userCredentialsHandler;
@@ -279,6 +287,8 @@ public final class D2 {
     private final OrganisationUnitHandler organisationUnitHandler;
     private final GenericHandler<DataElement> dataElementHandler;
     private final OptionSetHandler optionSetHandler;
+    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+    private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     //Generic Call Data
     private final GenericCallData genericCallData;
@@ -317,8 +327,6 @@ public final class D2 {
                 new SystemInfoStoreImpl(databaseAdapter);
         this.userRoleStore =
                 new UserRoleStoreImpl(databaseAdapter);
-        this.userRoleProgramLinkStore =
-                new UserRoleProgramLinkStoreImpl(databaseAdapter);
         this.programStore =
                 new ProgramStoreImpl(databaseAdapter);
         this.trackedEntityAttributeStore =
@@ -385,13 +393,15 @@ public final class D2 {
         this.dataSetIndicatorLinkStore = DataSetIndicatorLinkStore.create(databaseAdapter());
         this.dataValueStore = DataValueStore.create(databaseAdapter());
         this.periodStore = PeriodStore.create(databaseAdapter());
+        this.objectStyleStore = ObjectStyleStore.create(databaseAdapter());
+        this.valueTypeDeviceRenderingStore = ValueTypeDeviceRenderingStore.create(databaseAdapter());
 
         //handlers
         userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
         resourceHandler = new ResourceHandler(resourceStore);
 
         organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
-                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
+                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, null);
 
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
@@ -425,6 +435,8 @@ public final class D2 {
         // handlers
         this.optionSetHandler = OptionSetHandler.create(databaseAdapter);
         this.dataElementHandler = DataElementHandler.create(databaseAdapter, this.optionSetHandler);
+        this.styleHandler = ObjectStyleHandler.create(databaseAdapter);
+        this.renderTypeHandler = ValueTypeRenderingHandler.create(databaseAdapter);
 
         // data
         this.genericCallData = GenericCallData.create(databaseAdapter, new ResourceHandler(resourceStore), retrofit);
@@ -483,7 +495,6 @@ public final class D2 {
         deletableStoreList.add(resourceStore);
         deletableStoreList.add(systemInfoStore);
         deletableStoreList.add(userRoleStore);
-        deletableStoreList.add(userRoleProgramLinkStore);
         deletableStoreList.add(programStore);
         deletableStoreList.add(trackedEntityAttributeStore);
         deletableStoreList.add(programTrackedEntityAttributeStore);
@@ -520,6 +531,8 @@ public final class D2 {
         deletableStoreList.add(dataSetIndicatorLinkStore);
         deletableStoreList.add(dataValueStore);
         deletableStoreList.add(periodStore);
+        deletableStoreList.add(objectStyleStore);
+        deletableStoreList.add(valueTypeDeviceRenderingStore);
         return new LogOutUserCallable(
                 deletableStoreList
         );
@@ -531,7 +544,7 @@ public final class D2 {
                 databaseAdapter, systemInfoService, userService, programService, organisationUnitService,
                 trackedEntityService, optionSetService,
                 systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
+                userCredentialsStore, userRoleStore, organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
@@ -542,7 +555,7 @@ public final class D2 {
                 organisationUnitProgramLinkStore, categoryQuery,
                 categoryService, categoryHandler, categoryComboQuery, comboService,
                 categoryComboHandler, optionSetHandler, dataElementHandler, DataSetParentCall.FACTORY,
-                retrofit);
+                styleHandler, renderTypeHandler, retrofit);
     }
 
     @NonNull

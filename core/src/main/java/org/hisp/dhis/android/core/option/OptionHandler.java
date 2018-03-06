@@ -27,15 +27,21 @@
  */
 package org.hisp.dhis.android.core.option;
 
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class OptionHandler {
     private final OptionStore optionStore;
+    private final DictionaryTableHandler<ObjectStyle> styleHandler;
 
-    public OptionHandler(OptionStore optionStore) {
+
+    public OptionHandler(OptionStore optionStore, DictionaryTableHandler<ObjectStyle> styleHandler) {
         this.optionStore = optionStore;
+        this.styleHandler = styleHandler;
     }
 
     public void handleOptions(List<Option> options) {
@@ -62,6 +68,8 @@ public class OptionHandler {
                     optionStore.insert(option.uid(), option.code(), option.name(), option.displayName(),
                             option.created(), option.lastUpdated(), option.optionSet().uid());
                 }
+
+                styleHandler.handle(option.style(), option.uid(), OptionModel.TABLE);
             }
         }
     }

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.utils.Utils;
 
-import java.util.Arrays;
+import static org.hisp.dhis.android.core.utils.Utils.commaAndSpaceSeparatedArrayValues;
 
 public class SQLStatementBuilder {
     final String tableName;
@@ -46,12 +46,7 @@ public class SQLStatementBuilder {
     }
 
     private String commaSeparatedColumns() {
-        return commaSeparatedArrayValues(columns);
-    }
-
-    private static String commaSeparatedArrayValues(String... values) {
-        String withBrackets = Arrays.toString(values);
-        return withBrackets.substring(1, withBrackets.length() - 1);
+        return commaAndSpaceSeparatedArrayValues(columns);
     }
 
     private String commaSeparatedInterrogationMarks() {
@@ -59,7 +54,7 @@ public class SQLStatementBuilder {
         for (int i = 0; i < columns.length; i++) {
             array[i] = "?";
         }
-        return commaSeparatedArrayValues(array);
+        return commaAndSpaceSeparatedArrayValues(array);
     }
 
     private String commaSeparatedColumnEqualInterrogationMark(String... cols) {
@@ -67,7 +62,7 @@ public class SQLStatementBuilder {
         for (int i = 0; i < cols.length; i++) {
             array[i] = cols[i] + "=?";
         }
-        return commaSeparatedArrayValues(array);
+        return commaAndSpaceSeparatedArrayValues(array);
     }
 
     private String andSeparatedColumnEqualInterrogationMark(String... cols) {
@@ -83,6 +78,14 @@ public class SQLStatementBuilder {
     String deleteById() {
         return "DELETE FROM " + tableName +
                 " WHERE " + BaseIdentifiableObjectModel.Columns.UID + "=?;";
+    }
+
+    String selectUids() {
+        return  "SELECT " + BaseIdentifiableObjectModel.Columns.UID + " FROM " + tableName;
+    }
+
+    String selectAll() {
+        return  "SELECT " + commaSeparatedColumns() + " FROM " + tableName;
     }
 
     public String update() {
@@ -101,7 +104,7 @@ public class SQLStatementBuilder {
     @SuppressWarnings("PMD.UseVarargs")
     private static String createTableWrapper(String tableName, String[] columnsWithAttributes) {
         return "CREATE TABLE " + tableName + " (" +
-                commaSeparatedArrayValues(columnsWithAttributes) + ");";
+                commaAndSpaceSeparatedArrayValues(columnsWithAttributes) + ");";
     }
 
     private static String[] idColumn() {

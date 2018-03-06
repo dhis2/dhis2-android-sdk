@@ -25,55 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
 
-import java.util.Collection;
+package org.hisp.dhis.android.core.datavalue;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-public abstract class GenericHandlerImpl<
-        P extends BaseIdentifiableObject,
-        M extends BaseIdentifiableObjectModel & StatementBinder> implements GenericHandler<P> {
+import java.io.IOException;
+import java.text.ParseException;
 
-    private final IdentifiableObjectStore<M> store;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    public GenericHandlerImpl(IdentifiableObjectStore<M> store) {
-        this.store = store;
+public class DataValueShould extends BaseObjectShould implements ObjectShould {
+
+    public DataValueShould() {
+        super("datavalue/data_value.json");
     }
 
     @Override
-    public final void handle(P p) {
-        if (p == null) {
-            return;
-        }
-        deleteOrPersist(p);
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        DataValue dataValue = objectMapper.readValue(jsonStream, DataValue.class);
+
+        assertThat(dataValue.dataElement()).isEqualTo("s46m5MS0hxu");
+        assertThat(dataValue.period()).isEqualTo("201712");
+        assertThat(dataValue.organisationUnit()).isEqualTo("DiszpKrYNg8");
+        assertThat(dataValue.categoryOptionCombo()).isEqualTo("Prlt0C1RF0s");
+        assertThat(dataValue.attributeOptionCombo()).isEqualTo("bRowv6yZOF2");
+        assertThat(dataValue.value()).isEqualTo("12");
+        assertThat(dataValue.storedBy()).isEqualTo("bodata1");
+        assertThat(dataValue.created()).isEqualTo(
+                BaseIdentifiableObject.parseDate("2011-01-11T00:00:00.000+0000"));
+        assertThat(dataValue.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.parseDate("2011-01-11T00:00:00.000+0000"));
+        assertThat(dataValue.comment()).isEqualTo("");
+        assertThat(dataValue.followUp()).isEqualTo(false);
     }
-
-    @Override
-    public final void handleMany(Collection<P> pCollection) {
-        for(P p : pCollection) {
-            handle(p);
-        }
-    }
-
-    private void deleteOrPersist(P p) {
-        M m = pojoToModel(p);
-        String modelUid = m.uid();
-        if (isDeleted(p) && modelUid != null) {
-            store.delete(modelUid);
-        } else {
-            store.updateOrInsert(m);
-        }
-
-        this.afterObjectPersisted(p);
-    }
-
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void afterObjectPersisted(P p) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
-    }
-
-    protected abstract M pojoToModel(P p);
 }

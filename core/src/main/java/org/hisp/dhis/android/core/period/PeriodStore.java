@@ -26,48 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.period;
 
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+public final class PeriodStore {
 
-import org.hisp.dhis.android.core.common.PeriodType;
-import org.hisp.dhis.android.core.data.api.Field;
+    private PeriodStore() {}
 
-import java.util.Date;
-
-@AutoValue
-public abstract class Period {
-    private static final String PERIOD_TYPE = "periodType";
-    private static final String START_DATE = "startDate";
-    private static final String END_DATE = "endDate";
-
-    public static final Field<Period, PeriodType> periodType = Field.create(PERIOD_TYPE);
-    public static final Field<Period, Date> startDate = Field.create(START_DATE);
-    public static final Field<Period, Date> endDate = Field.create(END_DATE);
-
-    @Nullable
-    @JsonProperty(PERIOD_TYPE)
-    public abstract PeriodType periodType();
-
-    @Nullable
-    @JsonProperty(START_DATE)
-    public abstract Date startDate();
-
-    @Nullable
-    @JsonProperty(END_DATE)
-    public abstract Date endDate();
-
-    @JsonCreator
-    public static Period create(
-            @JsonProperty(PERIOD_TYPE) PeriodType periodType,
-            @JsonProperty(START_DATE) Date startDate,
-            @JsonProperty(END_DATE) Date endDate) {
-
-        return new AutoValue_Period(periodType, startDate, endDate);
-
+    public static ObjectWithoutUidStore<PeriodModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodModel.TABLE,
+                PeriodModel.Columns.all(), PeriodModel.Columns.whereUpdate());
     }
 }

@@ -30,7 +30,11 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
+import java.util.Set;
+
 public interface ObjectStore<M extends Model & StatementBinder> extends DeletableStore {
 
     void insert(@NonNull M m) throws RuntimeException;
+
+    Set<M> selectAll(LinkModelFactory<M> modelFactory) throws RuntimeException;
 }

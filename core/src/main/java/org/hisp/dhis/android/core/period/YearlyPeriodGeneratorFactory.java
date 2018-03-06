@@ -26,10 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.period;
 
-public enum PeriodType {
-    Daily, Weekly, WeeklyWednesday, WeeklyThursday, WeeklySaturday, WeeklySunday,
-    Monthly, BiMonthly, Quarterly, SixMonthly, SixMonthlyApril, Yearly, FinancialApril,
-    FinancialJuly, FinancialOct
+import java.util.Calendar;
+
+final class YearlyPeriodGeneratorFactory {
+    private YearlyPeriodGeneratorFactory() {
+    }
+
+    static YearlyPeriodGenerator yearly(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.Yearly, Calendar.JANUARY, "");
+    }
+
+    static YearlyPeriodGenerator financialApril(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialApril, Calendar.APRIL, "April");
+    }
+
+    static YearlyPeriodGenerator financialJuly(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialJuly, Calendar.JULY, "July");
+    }
+
+    static YearlyPeriodGenerator financialOct(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialOct, Calendar.OCTOBER, "Oct");
+    }
 }

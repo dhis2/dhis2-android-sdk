@@ -82,18 +82,18 @@ public class Dhis2MockServer {
     }
 
     public void enqueueMetadataResponses() throws IOException {
-        this.enqueueMockResponse("system_info.json");
-        this.enqueueMockResponse("user.json");
-        this.enqueueMockResponse("organisationUnits.json");
-        this.enqueueMockResponse("categories.json");
-        this.enqueueMockResponse("category_combos.json");
-        this.enqueueMockResponse("programs.json");
-        this.enqueueMockResponse("tracked_entities.json");
-        this.enqueueMockResponse("option_sets.json");
-        this.enqueueMockResponse("data_sets.json");
-        this.enqueueMockResponse("data_elements.json");
-        this.enqueueMockResponse("indicators.json");
-        this.enqueueMockResponse("indicator_types.json");
+        enqueueMockResponse("system_info.json");
+        enqueueMockResponse("user.json");
+        enqueueMockResponse("organisationUnits.json");
+        enqueueMockResponse("categories.json");
+        enqueueMockResponse("category_combos.json");
+        enqueueMockResponse("programs.json");
+        enqueueMockResponse("tracked_entities.json");
+        enqueueMockResponse("option_sets.json");
+        enqueueMockResponse("data_sets.json");
+        enqueueMockResponse("data_elements.json");
+        enqueueMockResponse("indicators.json");
+        enqueueMockResponse("indicator_types.json");
     }
 
     public void enqueueMetadataWithDescendentsResponses() throws IOException {

@@ -28,10 +28,14 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -40,8 +44,7 @@ public class ObjectStoreImpl<M extends Model & StatementBinder> implements Objec
     protected final SQLiteStatement insertStatement;
     protected final SQLStatementBuilder builder;
 
-    ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
-                       SQLStatementBuilder builder) {
+    ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement, SQLStatementBuilder builder) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = insertStatement;
         this.builder = builder;
@@ -70,5 +73,28 @@ public class ObjectStoreImpl<M extends Model & StatementBinder> implements Objec
         if (numberOfAffectedRows != 1) {
             throw new RuntimeException("Unexpected number of affected rows: " + numberOfAffectedRows);
         }
+    }
+
+    @Override
+    public Set<M> selectAll(@NonNull LinkModelFactory<M> modelFactory) throws RuntimeException {
+        Cursor cursor = databaseAdapter.query(builder.selectAll());
+        return mapObjectsFromCursor(cursor, modelFactory);
+    }
+
+    private Set<M> mapObjectsFromCursor(Cursor cursor, LinkModelFactory<M> modelFactory) {
+        Set<M> objects = new HashSet<>(cursor.getCount());
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    objects.add(modelFactory.fromCursor(cursor));
+                }
+                while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+        return objects;
     }
 }

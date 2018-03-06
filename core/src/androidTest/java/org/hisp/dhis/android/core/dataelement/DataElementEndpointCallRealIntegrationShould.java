@@ -46,7 +46,7 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
         uids.add("P3jJH5Tu5VC");
         uids.add("FQ2o8UBlcrS");
 
-        return DataElementEndpointCall.create(data, uids);
+        return DataElementEndpointCall.FACTORY.create(data, uids);
     }
 
     // @Test

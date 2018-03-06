@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
@@ -63,9 +64,11 @@ import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
@@ -82,6 +85,9 @@ import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
+import org.hisp.dhis.android.core.datavalue.DataValueEndpointCall;
+import org.hisp.dhis.android.core.datavalue.DataValueModel;
+import org.hisp.dhis.android.core.datavalue.DataValueStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -109,6 +115,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkSt
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
+import org.hisp.dhis.android.core.period.PeriodModel;
+import org.hisp.dhis.android.core.period.PeriodStore;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
@@ -257,6 +265,8 @@ public final class D2 {
     private final IdentifiableObjectStore<IndicatorModel> indicatorStore;
     private final IdentifiableObjectStore<IndicatorTypeModel> indicatorTypeStore;
     private final ObjectStore<DataSetIndicatorLinkModel> dataSetIndicatorLinkStore;
+    private final ObjectWithoutUidStore<DataValueModel> dataValueStore;
+    private final ObjectWithoutUidStore<PeriodModel> periodStore;
 
     //Handlers
     private final UserCredentialsHandler userCredentialsHandler;
@@ -266,10 +276,11 @@ public final class D2 {
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
     private final OrganisationUnitHandler organisationUnitHandler;
-
-    // handlers
     private final GenericHandler<DataElement> dataElementHandler;
     private final OptionSetHandler optionSetHandler;
+
+    //Generic Call Data
+    private final GenericCallData genericCallData;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter) {
@@ -371,6 +382,8 @@ public final class D2 {
         this.indicatorStore = IndicatorStore.create(databaseAdapter());
         this.indicatorTypeStore = IndicatorTypeStore.create(databaseAdapter());
         this.dataSetIndicatorLinkStore = DataSetIndicatorLinkStore.create(databaseAdapter());
+        this.dataValueStore = DataValueStore.create(databaseAdapter());
+        this.periodStore = PeriodStore.create(databaseAdapter());
 
         //handlers
         userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
@@ -411,6 +424,9 @@ public final class D2 {
         // handlers
         this.optionSetHandler = OptionSetHandler.create(databaseAdapter);
         this.dataElementHandler = DataElementHandler.create(databaseAdapter, this.optionSetHandler);
+
+        // data
+        this.genericCallData = GenericCallData.create(databaseAdapter, new ResourceHandler(resourceStore), retrofit);
     }
 
     @NonNull
@@ -501,6 +517,8 @@ public final class D2 {
         deletableStoreList.add(indicatorStore);
         deletableStoreList.add(indicatorTypeStore);
         deletableStoreList.add(dataSetIndicatorLinkStore);
+        deletableStoreList.add(dataValueStore);
+        deletableStoreList.add(periodStore);
         return new LogOutUserCallable(
                 deletableStoreList
         );
@@ -524,6 +542,12 @@ public final class D2 {
                 categoryService, categoryHandler, categoryComboQuery, comboService,
                 categoryComboHandler, optionSetHandler, dataElementHandler, DataSetParentCall.FACTORY,
                 retrofit);
+    }
+
+    @NonNull
+    public Call<Response> syncAggregatedData() {
+        return new AggregatedDataCall(genericCallData, DataValueEndpointCall.FACTORY, dataSetStore, periodStore,
+                organisationUnitStore);
     }
 
     @NonNull

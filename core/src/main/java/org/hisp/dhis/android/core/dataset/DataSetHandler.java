@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class DataSetHandler extends GenericHandlerImpl<DataSet, DataSetModel> {
+public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
 
     DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore) {
         super(dataSetStore);

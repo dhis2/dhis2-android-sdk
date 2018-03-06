@@ -43,8 +43,10 @@ public class FillPropertiesTestUtils {
     public static final String CODE = "test_code";
     public static final String NAME = "test_name";
     public static final String DISPLAY_NAME = "test_display_name";
-    public static final Date CREATED = parseDate("2012-10-20T18:20:27.132");
-    public static final Date LAST_UPDATED = parseDate("2017-12-20T15:08:27.882");
+    public static final String CREATED_STR = "2012-10-20T18:20:27.132";
+    public static final Date CREATED = parseDate(CREATED_STR);
+    public static final String LAST_UPDATED_STR = "2017-12-20T15:08:27.882";
+    public static final Date LAST_UPDATED = parseDate(LAST_UPDATED_STR);
 
     public static final String SHORT_NAME = "test_short_name";
     public static final String DISPLAY_SHORT_NAME = "test_display_short_name";

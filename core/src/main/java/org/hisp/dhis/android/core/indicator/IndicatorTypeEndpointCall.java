@@ -32,33 +32,41 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.io.IOException;
 import java.util.Set;
 
-public final class IndicatorTypeEndpointCall extends GenericEndpointCallImpl<IndicatorType> {
+import retrofit2.Call;
+
+public final class IndicatorTypeEndpointCall extends GenericEndpointCallImpl<IndicatorType, UidsQuery> {
     private final IndicatorTypeService indicatorTypeService;
 
     private IndicatorTypeEndpointCall(GenericCallData data, IndicatorTypeService indicatorTypeService,
-                                      GenericHandler<IndicatorType> indicatorTypeHandler,
-                                      Set<String> uids) {
-        super(data, indicatorTypeHandler, ResourceModel.Type.INDICATOR_TYPE, uids, null);
+                                      GenericHandler<IndicatorType> indicatorTypeHandler, UidsQuery query) {
+        super(data, indicatorTypeHandler, ResourceModel.Type.INDICATOR_TYPE, query);
         this.indicatorTypeService = indicatorTypeService;
     }
 
     @Override
-    protected retrofit2.Call<Payload<IndicatorType>> getCall(Set<String> uids, String lastUpdated)
-            throws IOException {
+    protected Call<Payload<IndicatorType>> getCall(UidsQuery query, String lastUpdated) throws IOException {
         return indicatorTypeService.getIndicatorTypes(
                 IndicatorType.allFields,
                 IndicatorType.lastUpdated.gt(lastUpdated),
-                IndicatorType.uid.in(uids),
+                IndicatorType.uid.in(query.uids()),
                 Boolean.FALSE);
     }
 
-    public static IndicatorTypeEndpointCall create(GenericCallData data, Set<String> uids) {
-        return new IndicatorTypeEndpointCall(data, data.retrofit().create(IndicatorTypeService.class),
-                IndicatorTypeHandler.create(data.databaseAdapter()), uids);
+    public interface Factory {
+        IndicatorTypeEndpointCall create(GenericCallData data, Set<String> uids);
     }
+
+    public static final IndicatorTypeEndpointCall.Factory FACTORY = new IndicatorTypeEndpointCall.Factory() {
+        @Override
+        public IndicatorTypeEndpointCall create(GenericCallData data, Set<String> uids) {
+            return new IndicatorTypeEndpointCall(data, data.retrofit().create(IndicatorTypeService.class),
+                    IndicatorTypeHandler.create(data.databaseAdapter()), UidsQuery.create(uids, null));
+        }
+    };
 }

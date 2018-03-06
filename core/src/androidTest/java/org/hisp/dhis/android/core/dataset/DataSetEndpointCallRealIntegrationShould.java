@@ -46,13 +46,15 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
         uids.add("Lpw6GcnTrmS");
         uids.add("TuL8IOPzpHh");
 
-        return DataSetEndpointCall.create(data, uids);
+        return DataSetEndpointCall.FACTORY.create(data, uids);
     }
 
     // @Test
     public void download_data_sets() throws Exception {
-        retrofit2.Response loginResponse = d2.logIn("android", "Android123").call();
-        assertThat(loginResponse.isSuccessful()).isTrue();
+        if (!d2.isUserLoggedIn().call()) {
+            retrofit2.Response loginResponse = d2.logIn("android", "Android123").call();
+            assertThat(loginResponse.isSuccessful()).isTrue();
+        }
 
         /*  This test won't pass independently of DataElementEndpointCall and
             CategoryComboEndpointCall, as the foreign keys constraints won't be satisfied.

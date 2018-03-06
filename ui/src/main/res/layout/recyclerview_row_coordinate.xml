@@ -116,7 +116,7 @@
             android:layout_weight="1"
             android:background="@drawable/button_background_light"
             android:contentDescription="@string/enter_coordinates"
-            android:src="@drawable/ic_my_location" />
+            app:srcCompat="@drawable/ic_my_location" />
     </LinearLayout>
 
 </LinearLayout>

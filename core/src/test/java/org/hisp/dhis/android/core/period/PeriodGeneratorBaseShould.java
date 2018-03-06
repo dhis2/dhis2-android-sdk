@@ -25,49 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period;
 
-package org.hisp.dhis.android.core.dataset;
+import java.util.Calendar;
 
-import android.support.annotation.Nullable;
+public abstract class PeriodGeneratorBaseShould {
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+    protected final PeriodType periodType;
+    protected final Calendar calendar;
+    private final int calendarCode;
+    private final int incrementsAmount;
 
-import org.hisp.dhis.android.core.common.PeriodType;
-import org.hisp.dhis.android.core.data.api.Field;
+    PeriodGeneratorBaseShould(PeriodType periodType, int calendarCode) {
+        this(periodType, calendarCode, 1);
+    }
 
-import java.util.Date;
+    PeriodGeneratorBaseShould(PeriodType periodType, int calendarCode, int incrementsAmount) {
+        this.periodType = periodType;
+        this.calendar = Calendar.getInstance();
+        this.calendarCode = calendarCode;
+        this.incrementsAmount = incrementsAmount;
+    }
 
-@AutoValue
-public abstract class Period {
-    private static final String PERIOD_TYPE = "periodType";
-    private static final String START_DATE = "startDate";
-    private static final String END_DATE = "endDate";
+    PeriodModel generateExpectedPeriod(String id, Calendar cal) {
+        Calendar startCalendar = (Calendar) cal.clone();
+        AbstractPeriodGenerator.setCalendarToStartTimeOfADay(startCalendar);
+        setStartCalendar(startCalendar);
+        Calendar endCalendar = (Calendar) startCalendar.clone();
+        endCalendar.add(calendarCode, incrementsAmount);
+        endCalendar.add(Calendar.MILLISECOND, -1);
+        return PeriodModel.builder()
+                .periodId(id)
+                .periodType(periodType)
+                .startDate(startCalendar.getTime())
+                .endDate(endCalendar.getTime())
+                .build();
+    }
 
-    public static final Field<Period, PeriodType> periodType = Field.create(PERIOD_TYPE);
-    public static final Field<Period, Date> startDate = Field.create(START_DATE);
-    public static final Field<Period, Date> endDate = Field.create(END_DATE);
-
-    @Nullable
-    @JsonProperty(PERIOD_TYPE)
-    public abstract PeriodType periodType();
-
-    @Nullable
-    @JsonProperty(START_DATE)
-    public abstract Date startDate();
-
-    @Nullable
-    @JsonProperty(END_DATE)
-    public abstract Date endDate();
-
-    @JsonCreator
-    public static Period create(
-            @JsonProperty(PERIOD_TYPE) PeriodType periodType,
-            @JsonProperty(START_DATE) Date startDate,
-            @JsonProperty(END_DATE) Date endDate) {
-
-        return new AutoValue_Period(periodType, startDate, endDate);
-
+    protected void setStartCalendar(Calendar calendar) {
+        // do nothing.
     }
 }

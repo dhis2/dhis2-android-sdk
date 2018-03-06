@@ -26,19 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import java.util.Calendar;
 
-@SuppressWarnings("PMD")
-public class PeriodStore {
+final class YearlyPeriodGeneratorFactory {
+    private YearlyPeriodGeneratorFactory() {
+    }
 
-    private PeriodStore() {}
+    static YearlyPeriodGenerator yearly(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.Yearly, Calendar.JANUARY, "");
+    }
 
-    public static ObjectWithoutUidStore<PeriodModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodModel.TABLE,
-                PeriodModel.Columns.all(), PeriodModel.Columns.whereUpdate());
+    static YearlyPeriodGenerator financialApril(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialApril, Calendar.APRIL, "April");
+    }
+
+    static YearlyPeriodGenerator financialJuly(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialJuly, Calendar.JULY, "July");
+    }
+
+    static YearlyPeriodGenerator financialOct(Calendar calendar) {
+        return new YearlyPeriodGenerator(calendar, PeriodType.FinancialOct, Calendar.OCTOBER, "Oct");
     }
 }

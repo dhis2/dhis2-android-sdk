@@ -125,14 +125,18 @@ public abstract class DataElement extends BaseNameableObject {
     @JsonProperty(OPTION_SET)
     public abstract OptionSet optionSet();
 
+    String optionSetUid() {
+        OptionSet optionSet = optionSet();
+        return optionSet == null ? null : optionSet.uid();
+    }
+
     @Nullable
     @JsonProperty(CATEGORY_COMBO)
     public abstract ObjectWithUid categoryCombo();
 
-    @SuppressWarnings("PMD")
-    public String categoryComboUid() {
-        return categoryCombo() != null ? categoryCombo().uid() :
-                CategoryComboModel.DEFAULT_UID;
+    String categoryComboUid() {
+        ObjectWithUid combo = categoryCombo();
+        return combo == null ? CategoryComboModel.DEFAULT_UID : combo.uid();
     }
 
     @JsonCreator

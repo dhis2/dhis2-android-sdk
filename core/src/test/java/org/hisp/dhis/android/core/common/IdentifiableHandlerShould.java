@@ -44,7 +44,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class GenericHandlerShould {
+public class IdentifiableHandlerShould {
 
     private interface TestCall<A> {
         void call(A a);
@@ -68,7 +68,7 @@ public class GenericHandlerShould {
     @Mock
     private NameableMockModelInterface model;
 
-    private GenericHandler<BaseIdentifiableObject, NameableMockModelInterface> genericHandler;
+    private GenericHandler<BaseIdentifiableObject> genericHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -78,7 +78,7 @@ public class GenericHandlerShould {
         when(pojo2.uid()).thenReturn("uid2");
         when(model.uid()).thenReturn("uid");
 
-        genericHandler = new GenericHandlerImpl<BaseIdentifiableObject, NameableMockModelInterface>(store) {
+        genericHandler = new IdentifiableHandlerImpl<BaseIdentifiableObject, NameableMockModelInterface>(store) {
             @Override
             protected NameableMockModelInterface pojoToModel(BaseIdentifiableObject BaseIdentifiableObject) {
                 return model;

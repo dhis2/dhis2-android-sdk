@@ -29,28 +29,26 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
+import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.ResponseValidator;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
-import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
@@ -133,8 +131,8 @@ public class MetadataCall implements Call<Response> {
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
-    private final GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
-    private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
+    private final GenericHandler<OptionSet> optionSetHandler;
+    private final GenericHandler<DataElement> dataElementHandler;
 
     private final Retrofit retrofit;
     private final CategoryQuery categoryQuery;
@@ -185,8 +183,8 @@ public class MetadataCall implements Call<Response> {
                         @NonNull CategoryComboQuery categoryComboQuery,
                         @NonNull CategoryComboService categoryComboService,
                         @NonNull CategoryComboHandler categoryComboHandler,
-                        @NonNull GenericHandler<OptionSet, OptionSetModel> optionSetHandler,
-                        @NonNull GenericHandler<DataElement, DataElementModel> dataElementHandler,
+                        @NonNull GenericHandler<OptionSet> optionSetHandler,
+                        @NonNull GenericHandler<DataElement> dataElementHandler,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
                         @NonNull Retrofit retrofit
                         ) {
@@ -279,12 +277,12 @@ public class MetadataCall implements Call<Response> {
             }
 
             User user = (User) response.body();
-            response = new OrganisationUnitCall(
+            Response<Payload<OrganisationUnit>> organisationUnitResponse = new OrganisationUnitCall(
                     user, organisationUnitService, databaseAdapter, organisationUnitStore,
                     resourceStore, data.serverDate(), userOrganisationUnitLinkStore,
                     organisationUnitProgramLinkStore).call();
-            if (!response.isSuccessful()) {
-                return response;
+            if (!organisationUnitResponse.isSuccessful()) {
+                return organisationUnitResponse;
             }
             response = downloadCategories(data.serverDate());
 
@@ -330,8 +328,8 @@ public class MetadataCall implements Call<Response> {
             if (!response.isSuccessful()) {
                 return response;
             }
-
-            response = dataSetParentCallFactory.create(user, data).call();
+            List<OrganisationUnit> organisationUnits = organisationUnitResponse.body().items();
+            response = dataSetParentCallFactory.create(user, data, organisationUnits).call();
             if (!response.isSuccessful()) {
                 return response;
             }

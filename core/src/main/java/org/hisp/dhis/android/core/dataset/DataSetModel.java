@@ -39,15 +39,14 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.ModelFactory;
-import org.hisp.dhis.android.core.common.PeriodType;
 import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-@SuppressWarnings("PMD")
 public abstract class DataSetModel extends BaseNameableObjectModel implements StatementBinder {
 
     public static final String TABLE = "DataSet";
@@ -68,6 +67,8 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
         public static final String DATA_ELEMENT_DECORATION = "dataElementDecoration";
         public static final String RENDER_AS_TABS = "renderAsTabs";
         public static final String RENDER_HORIZONTALLY = "renderHorizontally";
+
+        private Columns() {}
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(),

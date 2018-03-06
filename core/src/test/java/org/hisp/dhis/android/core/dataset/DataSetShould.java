@@ -31,7 +31,8 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.common.PeriodType;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -52,7 +53,7 @@ public class DataSetShould extends BaseObjectShould implements ObjectShould {
 
         assertThat(dataSet.code()).isEqualTo("DS_394131");
         assertThat(dataSet.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-09T12:35:36.743"));
+                BaseIdentifiableObject.parseDate("2015-08-09T12:35:36.743"));
         assertThat(dataSet.uid()).isEqualTo("lyLU2wR22tC");
         assertThat(dataSet.created()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2012-06-10T00:36:10.036"));
@@ -73,6 +74,7 @@ public class DataSetShould extends BaseObjectShould implements ObjectShould {
         assertThat(dataSet.periodType()).isEqualTo(PeriodType.Monthly);
         assertThat(dataSet.openFuturePeriods()).isEqualTo(0);
         assertThat(dataSet.expiryDays()).isEqualTo(0);
-        assertThat(dataSet.categoryCombo().uid()).isEqualTo("O4VaNks6tta");
+        assertThat(dataSet.categoryComboUid()).isEqualTo("O4VaNks6tta");
+        assertThat(dataSet.indicators().get(0)).isEqualTo(ObjectWithUid.create("OEWO2PpiUKx"));
     }
 }

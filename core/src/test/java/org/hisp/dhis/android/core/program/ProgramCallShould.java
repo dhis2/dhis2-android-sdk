@@ -38,10 +38,7 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -119,12 +116,6 @@ public class ProgramCallShould {
     private ProgramRuleStore programRuleStore;
 
     @Mock
-    private OptionStore optionStore;
-
-    @Mock
-    private OptionSetStore optionSetStore;
-
-    @Mock
     private ProgramStageDataElementStore programStageDataElementStore;
 
     @Mock
@@ -155,9 +146,6 @@ public class ProgramCallShould {
     private ArgumentCaptor<Filter<Program, String>> idInFilter;
 
     @Mock
-    private Date date;
-
-    @Mock
     private Transaction transaction;
 
     @Mock
@@ -170,9 +158,7 @@ public class ProgramCallShould {
     private Date serverDate;
 
     @Mock
-    private GenericHandler<DataElement, DataElementModel> dataElementHandler;
-
-    private Set<String> uids;
+    private GenericHandler<DataElement> dataElementHandler;
 
     // the call we are testing
     private Call<Response<Payload<Program>>> programSyncCall;
@@ -183,7 +169,7 @@ public class ProgramCallShould {
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
-        uids = new HashSet<>();
+        Set<String> uids = new HashSet<>();
         uids.add("test_program_uid");
         uids.add("test_program1_uid");
 

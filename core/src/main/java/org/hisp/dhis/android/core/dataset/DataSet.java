@@ -37,10 +37,10 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.PeriodType;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
 import java.util.List;
@@ -63,6 +63,7 @@ public abstract class DataSet extends BaseNameableObject {
     private final static String RENDER_AS_TABS = "renderAsTabs";
     private final static String RENDER_HORIZONTALLY = "renderHorizontally";
     private final static String DATA_SET_ELEMENTS = "dataSetElements";
+    private final static String INDICATORS = "indicators";
 
     public static final Field<DataSet, String> uid = Field.create(UID);
     private static final Field<DataSet, String> code = Field.create(CODE);
@@ -92,6 +93,7 @@ public abstract class DataSet extends BaseNameableObject {
     private static final Field<DataSet, Boolean> renderAsTabs = Field.create(RENDER_AS_TABS);
     private static final Field<DataSet, Boolean> renderHorizontally = Field.create(RENDER_HORIZONTALLY);
     private static final NestedField<DataSet, DataElementUids> dataSetElements = NestedField.create(DATA_SET_ELEMENTS);
+    private static final NestedField<DataSet, ObjectWithUid> indicators = NestedField.create(INDICATORS);
 
     static final Fields<DataSet> allFields = Fields.<DataSet>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
@@ -100,7 +102,8 @@ public abstract class DataSet extends BaseNameableObject {
             expiryDays, timelyDays, notifyCompletingUser,
             openFuturePeriods, fieldCombinationRequired, validCompleteOnly, noValueRequiresComment,
             skipOffline, dataElementDecoration, renderAsTabs, renderHorizontally,
-            dataSetElements.with(DataElementUids.allFields)).build();
+            dataSetElements.with(DataElementUids.allFields),
+            indicators.with(ObjectWithUid.uid)).build();
 
     @Nullable
     @JsonProperty(PERIOD_TYPE)
@@ -110,10 +113,9 @@ public abstract class DataSet extends BaseNameableObject {
     @JsonProperty(CATEGORY_COMBO)
     public abstract ObjectWithUid categoryCombo();
 
-    @SuppressWarnings("PMD")
-    public String categoryComboUid() {
-        return categoryCombo() != null ? categoryCombo().uid() :
-                CategoryComboModel.DEFAULT_UID;
+    String categoryComboUid() {
+        ObjectWithUid combo = categoryCombo();
+        return combo == null ? CategoryComboModel.DEFAULT_UID : combo.uid();
     }
 
     @Nullable
@@ -171,6 +173,10 @@ public abstract class DataSet extends BaseNameableObject {
     @Nullable
     @JsonProperty(DATA_SET_ELEMENTS)
     public abstract List<DataElementUids> dataSetElements();
+    
+    @Nullable
+    @JsonProperty(INDICATORS)
+    public abstract List<ObjectWithUid> indicators();
 
     @JsonCreator
     public static DataSet create(
@@ -200,6 +206,7 @@ public abstract class DataSet extends BaseNameableObject {
             @JsonProperty(RENDER_AS_TABS) Boolean renderAsTabs,
             @JsonProperty(RENDER_HORIZONTALLY) Boolean renderHorizontally,
             @JsonProperty(DATA_SET_ELEMENTS) List<DataElementUids> dataSetElements,
+            @JsonProperty(INDICATORS) List<ObjectWithUid> indicators,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_DataSet(uid, code, name,
@@ -208,6 +215,7 @@ public abstract class DataSet extends BaseNameableObject {
                 periodType, categoryCombo, mobile, version, expiryDays, timelyDays,
                 notifyCompletingUser, openFuturePeriods, fieldCombinationRequired,
                 validCompleteOnly, noValueRequiresComment, skipOffline,
-                dataElementDecoration, renderAsTabs, renderHorizontally, dataSetElements);
+                dataElementDecoration, renderAsTabs, renderHorizontally, dataSetElements,
+                indicators);
     }
 }

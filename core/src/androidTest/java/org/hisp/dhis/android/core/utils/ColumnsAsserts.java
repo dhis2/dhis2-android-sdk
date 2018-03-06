@@ -41,7 +41,7 @@ import static com.google.common.truth.Truth.assertThat;
  */
 public class ColumnsAsserts {
 
-    public static void testIdentifiableModelColumns(List<String> columnsList) {
+    private static void testIdentifiableModelColumns(List<String> columnsList) {
         assertThat(columnsList.contains(BaseIdentifiableObjectModel.Columns.UID)).isEqualTo(true);
         assertThat(columnsList.contains(BaseIdentifiableObjectModel.Columns.CODE)).isEqualTo(true);
         assertThat(columnsList.contains(BaseIdentifiableObjectModel.Columns.NAME)).isEqualTo(true);
@@ -54,7 +54,7 @@ public class ColumnsAsserts {
         testIdentifiableModelColumns(Arrays.asList(columns));
     }
 
-    public static void testNameableModelColumns(List<String> columnsList) {
+    private static void testNameableModelColumns(List<String> columnsList) {
         assertThat(columnsList.contains(BaseNameableObjectModel.Columns.SHORT_NAME)).isEqualTo(true);
         assertThat(columnsList.contains(BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME)).isEqualTo(true);
         assertThat(columnsList.contains(BaseNameableObjectModel.Columns.DESCRIPTION)).isEqualTo(true);

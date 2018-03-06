@@ -25,50 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.indicator;
 
-import java.util.Collection;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+@RunWith(JUnit4.class)
+public class IndicatorTypeHandlerShould {
 
-public abstract class GenericHandlerImpl<
-        P extends BaseIdentifiableObject,
-        M extends BaseIdentifiableObjectModel & StatementBinder> implements GenericHandler<P, M> {
-
-    private final IdentifiableObjectStore<M> store;
-
-    public GenericHandlerImpl(IdentifiableObjectStore<M> store) {
-        this.store = store;
+    @Test
+    public void extend_generic_handler_impl() {
+        IdentifiableHandlerImpl<IndicatorType, IndicatorTypeModel> genericHandler
+                = new IndicatorTypeHandler(null);
     }
-
-    @Override
-    public final void handle(P p) {
-        if (p == null) {
-            return;
-        }
-        deleteOrPersist(p);
-    }
-
-    @Override
-    public final void handleMany(Collection<P> pCollection) {
-        for(P p : pCollection) {
-            handle(p);
-        }
-    }
-
-    private void deleteOrPersist(P p) {
-        M m = pojoToModel(p);
-        if (isDeleted(p) && m.uid() != null) {
-            store.delete(m.uid());
-        } else {
-            store.updateOrInsert(m);
-        }
-
-        this.afterObjectPersisted(p);
-    }
-
-    @SuppressWarnings("PMD")
-    protected void afterObjectPersisted(P p) {}
-
-    protected abstract M pojoToModel(P p);
 }

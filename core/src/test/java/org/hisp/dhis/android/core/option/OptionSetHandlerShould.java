@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,8 +73,8 @@ public class OptionSetHandlerShould {
     }
 
     @Test
-    public void extend_generic_handler_impl() {
-        GenericHandlerImpl<OptionSet, OptionSetModel> genericHandler =
+    public void extend_identifiable_handler_impl() {
+        IdentifiableHandlerImpl<OptionSet, OptionSetModel> genericHandler =
                 new OptionSetHandler(null,null);
     }
 }

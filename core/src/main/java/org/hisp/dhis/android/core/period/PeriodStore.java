@@ -26,10 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.period;
 
-public enum PeriodType {
-    Daily, Weekly, WeeklyWednesday, WeeklyThursday, WeeklySaturday, WeeklySunday,
-    Monthly, BiMonthly, Quarterly, SixMonthly, SixMonthlyApril, Yearly, FinancialApril,
-    FinancialJuly, FinancialOct
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+public final class PeriodStore {
+
+    private PeriodStore() {}
+
+    public static ObjectWithoutUidStore<PeriodModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodModel.TABLE,
+                PeriodModel.Columns.all(), PeriodModel.Columns.whereUpdate());
+    }
 }

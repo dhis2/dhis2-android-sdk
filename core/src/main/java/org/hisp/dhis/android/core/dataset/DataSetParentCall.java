@@ -33,51 +33,89 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementEndpointCall;
+import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.indicator.IndicatorEndpointCall;
+import org.hisp.dhis.android.core.indicator.IndicatorTypeEndpointCall;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.period.PeriodHandler;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Response;
-
-import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getAssignedDataSetUids;
-import static org.hisp.dhis.android.core.dataset.DataSetParentUidsHelper.getDataElementUids;
 
 public class DataSetParentCall extends TransactionalCall {
     private final User user;
     private final DataSetParentLinkManager linkManager;
+    private final DataSetEndpointCall.Factory dataSetCallFactory;
+    private final DataElementEndpointCall.Factory dataElementCallFactory;
+    private final IndicatorEndpointCall.Factory indicatorCallFactory;
+    private final IndicatorTypeEndpointCall.Factory indicatorTypeCallFactory;
+    private final List<OrganisationUnit> organisationUnits;
+    private final PeriodHandler periodHandler;
 
-    private DataSetParentCall(User user, GenericCallData data, DataSetParentLinkManager linkManager) {
+    private DataSetParentCall(User user, GenericCallData data, DataSetParentLinkManager linkManager,
+                              DataSetEndpointCall.Factory dataSetCallFactory,
+                              DataElementEndpointCall.Factory dataElementCallFactory,
+                              IndicatorEndpointCall.Factory indicatorCallFactory,
+                              IndicatorTypeEndpointCall.Factory indicatorTypeCallFactory,
+                              List<OrganisationUnit> organisationUnits,
+                              PeriodHandler periodHandler) {
         super(data);
         this.user = user;
         this.linkManager = linkManager;
+        this.dataSetCallFactory = dataSetCallFactory;
+        this.dataElementCallFactory = dataElementCallFactory;
+        this.indicatorCallFactory = indicatorCallFactory;
+        this.indicatorTypeCallFactory = indicatorTypeCallFactory;
+        this.organisationUnits = organisationUnits;
+        this.periodHandler = periodHandler;
     }
 
     @Override
     public Response callBody() throws Exception {
-        DataSetEndpointCall dataSetEndpointCall
-                = DataSetEndpointCall.create(data, getAssignedDataSetUids(user));
+        Set<String> dataSetUids = DataSetParentUidsHelper.getAssignedDataSetUids(user);
+        DataSetEndpointCall dataSetEndpointCall = dataSetCallFactory.create(data, dataSetUids);
         Response<Payload<DataSet>> dataSetResponse = dataSetEndpointCall.call();
 
         List<DataSet> dataSets = dataSetResponse.body().items();
         DataElementEndpointCall dataElementEndpointCall =
-                DataElementEndpointCall.create(data, getDataElementUids(dataSets));
+                dataElementCallFactory.create(data, DataSetParentUidsHelper.getDataElementUids(dataSets));
         Response<Payload<DataElement>> dataElementResponse = dataElementEndpointCall.call();
 
-        linkManager.saveDataSetDataElementLinks(dataSets);
-        linkManager.saveDataSetOrganisationUnitLinks(user);
+        IndicatorEndpointCall indicatorEndpointCall
+                = indicatorCallFactory.create(data, DataSetParentUidsHelper.getIndicatorUids(dataSets));
+        Response<Payload<Indicator>> indicatorResponse = indicatorEndpointCall.call();
+
+        List<Indicator> indicators = indicatorResponse.body().items();
+        IndicatorTypeEndpointCall indicatorTypeEndpointCall
+                = indicatorTypeCallFactory.create(data, DataSetParentUidsHelper.getIndicatorTypeUids(indicators));
+        indicatorTypeEndpointCall.call();
+
+        periodHandler.generateAndPersist();
+
+        linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);
+        linkManager.saveDataSetOrganisationUnitLinks(organisationUnits);
 
         return dataElementResponse;
     }
 
     public interface Factory {
-        Call<Response> create(User user, GenericCallData data);
+        Call<Response> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits);
     }
 
     public static final Factory FACTORY = new Factory() {
         @Override
-        public Call<Response> create(User user, GenericCallData data) {
+        public Call<Response> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits) {
             return new DataSetParentCall(user, data,
-                    DataSetParentLinkManager.create(data.databaseAdapter()));
+                    DataSetParentLinkManager.create(data.databaseAdapter()),
+                    DataSetEndpointCall.FACTORY,
+                    DataElementEndpointCall.FACTORY,
+                    IndicatorEndpointCall.FACTORY,
+                    IndicatorTypeEndpointCall.FACTORY,
+                    organisationUnits,
+                    PeriodHandler.create(data.databaseAdapter()));
         }
     };
 }

@@ -28,11 +28,10 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +49,7 @@ public class DataElementHandlerShould {
     private IdentifiableObjectStore<DataElementModel> dataSetStore;
 
     @Mock
-    private GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
+    private GenericHandler<OptionSet> optionSetHandler;
 
     @Mock
     private DataElement dataElement;
@@ -80,8 +79,8 @@ public class DataElementHandlerShould {
     }
 
     @Test
-    public void extend_generic_handler_impl() {
-        GenericHandlerImpl<DataElement, DataElementModel> genericHandler = new DataElementHandler(
+    public void extend_identifiable_handler_impl() {
+        IdentifiableHandlerImpl<DataElement, DataElementModel> genericHandler = new DataElementHandler(
                 null,null);
     }
 }

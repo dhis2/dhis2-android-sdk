@@ -32,26 +32,30 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.io.IOException;
 import java.util.Set;
 
-public class OptionSetCall extends GenericEndpointCallImpl<OptionSet> {
+import retrofit2.Call;
+
+public class OptionSetCall extends GenericEndpointCallImpl<OptionSet, UidsQuery> {
     private final OptionSetService optionSetService;
+    private final UidsQuery uidsQuery;
 
     public OptionSetCall(GenericCallData data, OptionSetService optionSetService,
-                       GenericHandler<OptionSet, OptionSetModel> optionSetHandler, Set<String> uids) {
-        super(data, optionSetHandler, ResourceModel.Type.OPTION_SET, uids, 64);
+                         GenericHandler<OptionSet> optionSetHandler, Set<String> uids) {
+        super(data, optionSetHandler, ResourceModel.Type.OPTION_SET, UidsQuery.create(uids, 64));
+        this.uidsQuery = UidsQuery.create(uids, 64);
         this.optionSetService = optionSetService;
     }
 
     @Override
-    protected retrofit2.Call<Payload<OptionSet>> getCall(Set<String> uids, String lastUpdated)
-            throws IOException {
+    protected Call<Payload<OptionSet>> getCall(UidsQuery query, String lastUpdated) throws IOException {
         return optionSetService.optionSets(false,
-                getFields(), OptionSet.uid.in(uids));
+                getFields(), OptionSet.uid.in(uidsQuery.uids()));
     }
 
     private Fields<OptionSet> getFields() {

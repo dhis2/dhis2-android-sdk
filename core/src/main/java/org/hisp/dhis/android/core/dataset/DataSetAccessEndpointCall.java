@@ -25,18 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import android.support.annotation.NonNull;
+package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.BaseEndpointCall;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
-public interface UserRoleProgramLinkStore extends DeletableStore {
+import retrofit2.Response;
 
-    long insert(@NonNull String userRole, @NonNull String program);
+public final class DataSetAccessEndpointCall extends BaseEndpointCall<DataSet> {
+    private final GenericCallData data;
+    private final DataSetService dataSetService;
 
-    int update(@NonNull String userRoleUid, @NonNull String programUid,
-               @NonNull String whereUserRoleUid, @NonNull String whereProgramUid);
+    private DataSetAccessEndpointCall(GenericCallData data, DataSetService dataSetService) {
+        this.data = data;
+        this.dataSetService = dataSetService;
+    }
 
-    int delete(@NonNull String userRoleUid, @NonNull String programUid);
+    @Override
+    protected Response<Payload<DataSet>> callBody() throws Exception {
+        String lastUpdated = data.resourceHandler().getLastUpdated(ResourceModel.Type.DATA_SET);
+        return dataSetService.getDataSetsForAccess(DataSet.uidAndAccessRead, DataSet.lastUpdated.gt(lastUpdated),
+                Boolean.FALSE).execute();
+    }
+
+    public interface Factory {
+        DataSetAccessEndpointCall create(GenericCallData data);
+    }
+
+    static final DataSetAccessEndpointCall.Factory FACTORY = new DataSetAccessEndpointCall.Factory() {
+        @Override
+        public DataSetAccessEndpointCall create(GenericCallData data) {
+            return new DataSetAccessEndpointCall(data, data.retrofit().create(DataSetService.class));
+        }
+    };
 }

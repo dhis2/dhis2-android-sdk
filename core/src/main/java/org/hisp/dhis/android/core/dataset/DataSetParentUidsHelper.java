@@ -27,11 +27,9 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.indicator.Indicator;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserRole;
 
 import java.util.HashSet;
 import java.util.List;
@@ -41,45 +39,16 @@ final class DataSetParentUidsHelper {
 
     private DataSetParentUidsHelper() {}
 
-    static Set<String> getAssignedDataSetUids(User user) {
-        if (user == null || user.userCredentials() == null || user.userCredentials().userRoles() == null) {
-            return null;
-        }
-
+    static Set<String> getAssignedDataSetUids(List<DataSet> dataSetsWithAccess) {
         Set<String> dataSetUids = new HashSet<>();
-
-        getDataSetUidsFromUserRoles(user, dataSetUids);
-        getDataSetUidsFromOrganisationUnits(user, dataSetUids);
-
-        return dataSetUids;
-    }
-
-    private static void getDataSetUidsFromOrganisationUnits(User user, Set<String> dataSetUids) {
-        List<OrganisationUnit> organisationUnits = user.organisationUnits();
-
-        if (organisationUnits != null) {
-            for (OrganisationUnit organisationUnit : organisationUnits) {
-                addDataSets(organisationUnit.dataSets(), dataSetUids);
-            }
-        }
-    }
-
-    private static void getDataSetUidsFromUserRoles(User user, Set<String> dataSetUids) {
-        List<UserRole> userRoles = user.userCredentials().userRoles();
-
-        if (userRoles != null) {
-            for (UserRole userRole : userRoles) {
-                addDataSets(userRole.dataSets(), dataSetUids);
-            }
-        }
-    }
-
-    private static void addDataSets(List<DataSet> dataSets, Set<String> dataSetUids) {
-        if (dataSets != null) {
-            for (DataSet dataSet : dataSets) {
+        for (DataSet dataSet: dataSetsWithAccess) {
+            Access access = dataSet.access();
+            if (access != null && access.data().read()) {
                 dataSetUids.add(dataSet.uid());
             }
         }
+
+        return dataSetUids;
     }
 
     static Set<String> getDataElementUids(List<DataSet> dataSets) {

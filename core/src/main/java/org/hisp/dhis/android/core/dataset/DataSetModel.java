@@ -67,6 +67,7 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
         public static final String DATA_ELEMENT_DECORATION = "dataElementDecoration";
         public static final String RENDER_AS_TABS = "renderAsTabs";
         public static final String RENDER_HORIZONTALLY = "renderHorizontally";
+        public static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
         private Columns() {}
 
@@ -75,7 +76,7 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
                     PERIOD_TYPE, CATEGORY_COMBO, MOBILE, VERSION, EXPIRY_DAYS, TIMELY_DAYS,
                     NOTIFY_COMPLETING_USER, OPEN_FUTURE_PERIODS, FIELD_COMBINATION_REQUIRED,
                     VALID_COMPLETE_ONLY, NO_VALUE_REQUIRES_COMMENT, SKIP_OFFLINE, DATA_ELEMENT_DECORATION,
-                    RENDER_AS_TABS, RENDER_HORIZONTALLY);
+                    RENDER_AS_TABS, RENDER_HORIZONTALLY, ACCESS_DATA_WRITE);
         }
     }
 
@@ -118,6 +119,7 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
                     .dataElementDecoration(dataSet.dataElementDecoration())
                     .renderAsTabs(dataSet.renderAsTabs())
                     .renderHorizontally(dataSet.renderHorizontally())
+                    .accessDataWrite(dataSet.access().data().write())
                     .build();
         }
     };
@@ -187,6 +189,10 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
     @ColumnName(Columns.RENDER_HORIZONTALLY)
     public abstract Boolean renderHorizontally();
 
+    @Nullable
+    @ColumnName(Columns.ACCESS_DATA_WRITE)
+    public abstract Boolean accessDataWrite();
+
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         super.bindToStatement(sqLiteStatement);
@@ -205,6 +211,7 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
         sqLiteBind(sqLiteStatement, 23, dataElementDecoration());
         sqLiteBind(sqLiteStatement, 24, renderAsTabs());
         sqLiteBind(sqLiteStatement, 25, renderHorizontally());
+        sqLiteBind(sqLiteStatement, 26, accessDataWrite());
     }
 
     @AutoValue.Builder
@@ -238,6 +245,8 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
         public abstract Builder renderAsTabs(Boolean renderAsTabs);
 
         public abstract Builder renderHorizontally(Boolean renderHorizontally);
+
+        public abstract Builder accessDataWrite(Boolean accessDataWrite);
 
         public abstract DataSetModel build();
     }

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -41,6 +42,7 @@ public class ProgramHandler {
     private final ProgramRuleHandler programRuleHandler;
     private final ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
     private final RelationshipTypeHandler relationshipHandler;
+    private final ObjectStyleHandler styleHandler;
 
     public ProgramHandler(ProgramStore programStore,
                           ProgramRuleVariableHandler programRuleVariableHandler,
@@ -48,7 +50,8 @@ public class ProgramHandler {
                           ProgramIndicatorHandler programIndicatorHandler,
                           ProgramRuleHandler programRuleHandler,
                           ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler,
-                          RelationshipTypeHandler relationshipHandler) {
+                          RelationshipTypeHandler relationshipHandler,
+                          ObjectStyleHandler styleHandler) {
         this.programStore = programStore;
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programStageHandler = programStageHandler;
@@ -56,6 +59,7 @@ public class ProgramHandler {
         this.programRuleHandler = programRuleHandler;
         this.programTrackedEntityAttributeHandler = programTrackedEntityAttributeHandler;
         this.relationshipHandler = relationshipHandler;
+        this.styleHandler = styleHandler;
     }
 
     public void handleProgram(Program program) {
@@ -92,7 +96,8 @@ public class ProgramHandler {
                     program.selectIncidentDatesInFuture(), program.captureCoordinates(),
                     program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
                     program.programType(), relationshipTypeUid, program.relationshipText(),
-                    relatedProgramUid, trackedEntityUid, categoryCombo, program.uid());
+                    relatedProgramUid, trackedEntityUid, categoryCombo,
+                    program.access().data().write(), program.uid());
 
             if (updatedRow <= 0) {
                 programStore.insert(
@@ -105,7 +110,7 @@ public class ProgramHandler {
                         program.selectIncidentDatesInFuture(), program.captureCoordinates(),
                         program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
                         program.programType(), relationshipTypeUid, program.relationshipText(),
-                        relatedProgramUid, trackedEntityUid, categoryCombo);
+                        relatedProgramUid, trackedEntityUid, categoryCombo, program.access().data().write());
             }
         }
         // programStageHandler will invoke programStageSectionHandler, programStageDataElementHandler,
@@ -117,5 +122,6 @@ public class ProgramHandler {
         programRuleHandler.handleProgramRules(program.programRules());
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
         relationshipHandler.handleRelationshipType(program.relationshipType());
+        styleHandler.handle(program.style(), program.uid(), ProgramModel.TABLE);
     }
 }

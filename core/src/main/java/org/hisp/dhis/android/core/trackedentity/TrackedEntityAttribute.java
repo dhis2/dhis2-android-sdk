@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
@@ -58,6 +59,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
     private static final String ORG_UNIT_SCOPE = "orgunitScope";
     private static final String UNIQUE = "unique";
     private static final String INHERIT = "inherit";
+    private final static String STYLE = "style";
 
     public static final Field<TrackedEntityAttribute, String> uid
             = Field.create(UID);
@@ -105,6 +107,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
             = Field.create(UNIQUE);
     public static final Field<TrackedEntityAttribute, Boolean> inherit
             = Field.create(INHERIT);
+    public static final NestedField<TrackedEntityAttribute, ObjectStyle> style
+            = NestedField.create(STYLE);
 
     @Nullable
     @JsonProperty(PATTERN)
@@ -158,6 +162,10 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
     @JsonProperty(INHERIT)
     public abstract Boolean inherit();
 
+    @Nullable
+    @JsonProperty(STYLE)
+    public abstract ObjectStyle style();
+
     @JsonCreator
     public static TrackedEntityAttribute create(
             @JsonProperty(UID) String uid,
@@ -183,6 +191,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
             @JsonProperty(ORG_UNIT_SCOPE) boolean orgUnitScope,
             @JsonProperty(UNIQUE) boolean unique,
             @JsonProperty(INHERIT) boolean inherit,
+            @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(DELETED) Boolean deleted
     ) {
         return new AutoValue_TrackedEntityAttribute(
@@ -190,7 +199,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
                 shortName, displayShortName, description, displayDescription,
                 pattern, sortOrderInListNoProgram, optionSet, valueType, expression, searchScope,
                 programScope, displayInListNoProgram, generated, displayOnVisitSchedule,
-                orgUnitScope, unique, inherit);
+                orgUnitScope, unique, inherit, style);
     }
 
 }

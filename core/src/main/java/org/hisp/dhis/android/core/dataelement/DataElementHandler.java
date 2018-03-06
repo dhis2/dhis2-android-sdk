@@ -30,16 +30,21 @@ package org.hisp.dhis.android.core.dataelement;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
 
 public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, DataElementModel> {
     private final GenericHandler<OptionSet> optionSetHandler;
+    private final ObjectStyleHandler styleHandler;
 
-    DataElementHandler(IdentifiableObjectStore<DataElementModel> dataSetStore,
-                       GenericHandler<OptionSet> optionSetHandler) {
-        super(dataSetStore);
+    DataElementHandler(IdentifiableObjectStore<DataElementModel> dataElementStore,
+                       GenericHandler<OptionSet> optionSetHandler,
+                       ObjectStyleHandler objectStyleStore) {
+        super(dataElementStore);
         this.optionSetHandler = optionSetHandler;
+        this.styleHandler = objectStyleStore;
     }
 
     @Override
@@ -49,11 +54,15 @@ public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, Dat
 
     public static DataElementHandler create(DatabaseAdapter databaseAdapter,
                                             GenericHandler<OptionSet> optionSetHandler) {
-        return new DataElementHandler(DataElementStore.create(databaseAdapter), optionSetHandler);
+        return new DataElementHandler(
+                DataElementStore.create(databaseAdapter),
+                optionSetHandler,
+                ObjectStyleHandlerImpl.create(databaseAdapter));
     }
 
     @Override
     protected void afterObjectPersisted(DataElement dateElement) {
         optionSetHandler.handle(dateElement.optionSet());
+        styleHandler.handle(dateElement.style(), dateElement.uid(), DataElementModel.TABLE);
     }
 }

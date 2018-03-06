@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
@@ -43,6 +44,7 @@ import java.util.Date;
 @AutoValue
 public abstract class Option extends BaseIdentifiableObject {
     private static final String OPTION_SET = "optionSet";
+    private final static String STYLE = "style";
 
     public static final Field<Option, String> uid = Field.create(UID);
     public static final Field<Option, String> code = Field.create(CODE);
@@ -52,10 +54,15 @@ public abstract class Option extends BaseIdentifiableObject {
     public static final Field<Option, String> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<Option, Boolean> deleted = Field.create(DELETED);
     public static final NestedField<Option, OptionSet> optionSet = NestedField.create(OPTION_SET);
+    public static final NestedField<Option, ObjectStyle> style = NestedField.create(STYLE);
 
     @Nullable
     @JsonProperty(OPTION_SET)
     public abstract OptionSet optionSet();
+
+    @Nullable
+    @JsonProperty(STYLE)
+    public abstract ObjectStyle style();
 
     @JsonCreator
     public static Option create(
@@ -66,8 +73,9 @@ public abstract class Option extends BaseIdentifiableObject {
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
             @JsonProperty(OPTION_SET) OptionSet optionSet,
+            @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_Option(uid, code, name, displayName, created, lastUpdated, deleted, optionSet);
+        return new AutoValue_Option(uid, code, name, displayName, created, lastUpdated, deleted, optionSet, style);
     }
 
 }

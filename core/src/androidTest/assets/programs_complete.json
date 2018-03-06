@@ -29,6 +29,15 @@
           "selectEnrollmentDatesInFuture": false,
           "registration": true,
           "useFirstStageDuringRegistration": true,
+          "access": {
+              "data": {
+                  "write": false
+              }
+          },
+          "style": {
+              "color": "#fff",
+              "icon": "my-icon-name"
+          },
           "trackedEntity": {
               "id": "nEenWmSyUEp"
           },

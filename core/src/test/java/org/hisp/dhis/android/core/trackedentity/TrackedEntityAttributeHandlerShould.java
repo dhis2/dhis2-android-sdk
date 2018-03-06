@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.junit.Before;
@@ -60,13 +61,16 @@ public class TrackedEntityAttributeHandlerShould {
     @Mock
     private OptionSet optionSet;
 
+    @Mock
+    private ObjectStyleHandler styleHandler;
+
     // object to test
     private TrackedEntityAttributeHandler trackedEntityAttributeHandler;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
+        trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(trackedEntityAttributeStore, styleHandler);
 
         when(trackedEntityAttribute.uid()).thenReturn("test_tracked_entity_attribute_uid");
         when(optionSet.uid()).thenReturn("test_option_set_uid");

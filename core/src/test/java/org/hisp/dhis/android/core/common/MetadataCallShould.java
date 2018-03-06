@@ -47,7 +47,6 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetService;
@@ -83,7 +82,6 @@ import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRole;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserService;
 import org.hisp.dhis.android.core.user.UserStore;
@@ -142,6 +140,9 @@ public class MetadataCallShould {
     private retrofit2.Call<Payload<Program>> programCall;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private retrofit2.Call<Payload<Program>> programWithAccessCall;
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<Payload<TrackedEntity>> trackedEntityCall;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -170,9 +171,6 @@ public class MetadataCallShould {
 
     @Mock
     private UserRoleStore userRoleStore;
-
-    @Mock
-    private UserRoleProgramLinkStore userRoleProgramLinkStore;
 
     @Mock
     private OrganisationUnitStore organisationUnitStore;
@@ -264,6 +262,9 @@ public class MetadataCallShould {
     private Payload<OrganisationUnit> organisationUnitPayload;
 
     @Mock
+    private Payload<Program> programWithAccessPayload;
+
+    @Mock
     private Payload<Program> programPayload;
 
     @Mock
@@ -277,6 +278,15 @@ public class MetadataCallShould {
 
     @Mock
     private OptionSet optionSet;
+
+    @Mock
+    private DataAccess dataAccess;
+
+    @Mock
+    private Access access;
+
+    @Mock
+    private Program programWithAccess;
 
     @Mock
     private Program program;
@@ -310,6 +320,9 @@ public class MetadataCallShould {
     @Mock
     private Call<Response> dataSetParentCall;
 
+    @Mock
+    private ObjectStyleHandler styleHandler;
+
     private Response<Payload<DataElement>> dataSetParentCallResponse;
 
 
@@ -336,6 +349,8 @@ public class MetadataCallShould {
         when(organisationUnitService.getOrganisationUnits(
                 anyString(), any(Fields.class), any(Filter.class), anyBoolean(), anyBoolean())
         ).thenReturn(organisationUnitCall);
+        when(programService.getProgramsForAccess(any(Fields.class), any(Filter.class), anyBoolean())
+        ).thenReturn(programWithAccessCall);
         when(programService.getPrograms(
                 any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
         ).thenReturn(programCall);
@@ -346,8 +361,6 @@ public class MetadataCallShould {
                 anyBoolean(), any(Fields.class), any(Filter.class))
         ).thenReturn(optionSetCall);
 
-
-        when(userRole.dataSets()).thenReturn(new ArrayList<DataSet>());
         userRoles = new ArrayList<>();
         userRoles.add(userRole);
 
@@ -358,7 +371,12 @@ public class MetadataCallShould {
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
         when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
+        when(dataAccess.read()).thenReturn(true);
+        when(access.data()).thenReturn(dataAccess);
+        when(programWithAccess.access()).thenReturn(access);
         when(program.trackedEntity()).thenReturn(trackedEntity);
+        when(program.access()).thenReturn(access);
+        when(programWithAccessPayload.items()).thenReturn(Collections.singletonList(programWithAccess));
         when(programPayload.items()).thenReturn(Collections.singletonList(program));
         when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntity));
         when(trackedEntity.uid()).thenReturn("test_tracked_entity_uid");
@@ -397,7 +415,7 @@ public class MetadataCallShould {
                 databaseAdapter, systemInfoService, userService,
                 programService, organisationUnitService, trackedEntityService, optionSetService,
                 systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
+                userCredentialsStore, userRoleStore, organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
@@ -405,7 +423,7 @@ public class MetadataCallShould {
                 programStageSectionStore, programStageStore, relationshipStore, trackedEntityStore,
                 organisationUnitProgramLinkStore,categoryQuery, categoryService, categoryHandler,
                 CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetHandler, dataElementHandler, dataSetParentCallFactory, retrofit);
+                optionSetHandler, dataElementHandler, dataSetParentCallFactory, styleHandler, retrofit);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
@@ -413,6 +431,7 @@ public class MetadataCallShould {
         when(userCall.execute()).thenReturn(Response.success(user));
         when(organisationUnitCall.execute()).thenReturn(Response.success(organisationUnitPayload));
         when(programCall.execute()).thenReturn(Response.success(programPayload));
+        when(programWithAccessCall.execute()).thenReturn(Response.success(programWithAccessPayload));
         when(trackedEntityCall.execute()).thenReturn(Response.success(trackedEntityPayload));
         when(optionSetCall.execute()).thenReturn(Response.success(optionSetPayload));
     }
@@ -469,7 +488,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_organisation_unit_call_fail() throws Exception {
-        final int expectedTransactions = 4;
+        final int expectedTransactions = 8;
         when(organisationUnitCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
@@ -484,7 +503,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_program_call_fail() throws Exception {
-        final int expectedTransactions = 6;
+        final int expectedTransactions = 5;
         when(programCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
@@ -499,7 +518,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_tracked_entity_call_fail() throws Exception {
-        final int expectedTransactions = 8;
+        final int expectedTransactions = 7;
         when(trackedEntityCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();

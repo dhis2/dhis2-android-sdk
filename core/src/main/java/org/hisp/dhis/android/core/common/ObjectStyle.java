@@ -25,54 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.support.annotation.NonNull;
+package org.hisp.dhis.android.core.common;
+
 import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
 @AutoValue
-public abstract class UserRoleProgramLinkModel extends BaseModel {
-    public static final String TABLE = "UserRoleProgramLink";
+public abstract class ObjectStyle {
+    private static final String COLOR = "color";
+    private static final String ICON = "icon";
 
-    public static class Columns extends BaseModel.Columns {
-        public static final String USER_ROLE = "userRole";
-        public static final String PROGRAM = "program";
-    }
+    private static final Field<ObjectStyle, String> color = Field.create(COLOR);
+    private static final Field<ObjectStyle, String> icon = Field.create(ICON);
 
-    public static UserRoleProgramLinkModel create(Cursor cursor) {
-        return AutoValue_UserRoleProgramLinkModel.createFromCursor(cursor);
-    }
-
-    public static Builder builder() {
-        return new $$AutoValue_UserRoleProgramLinkModel.Builder();
-    }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
+    public static final Fields<ObjectStyle> allFields = Fields.<ObjectStyle>builder().fields(color, icon).build();
 
     @Nullable
-    @ColumnName(Columns.USER_ROLE)
-    public abstract String userRole();
+    @JsonProperty(COLOR)
+    public abstract String color();
 
     @Nullable
-    @ColumnName(Columns.PROGRAM)
-    public abstract String program();
+    @JsonProperty(ICON)
+    public abstract String icon();
 
+    @JsonCreator
+    public static ObjectStyle create(@JsonProperty(COLOR) String color,
+                                     @JsonProperty(ICON) String icon) {
+        return new AutoValue_ObjectStyle(color, icon);
+    }
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static String getColor(ObjectStyle objectStyle) {
+        return objectStyle == null ?  null : objectStyle.color();
+    }
 
-        public abstract Builder userRole(@Nullable String user);
-
-        public abstract Builder program(@Nullable String organisationUnit);
-
-        public abstract UserRoleProgramLinkModel build();
+    public static String getIcon(ObjectStyle objectStyle) {
+        return objectStyle == null ?  null : objectStyle.icon();
     }
 }

@@ -35,8 +35,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
@@ -73,6 +77,8 @@ public abstract class Program extends BaseNameableObject {
     private static final String PROGRAM_STAGES = "programStages";
     private static final String PROGRAM_RULES = "programRules";
     private static final String PROGRAM_RULE_VARIABLES = "programRuleVariables";
+    private final static String ACCESS = "access";
+    private final static String STYLE = "style";
 
     public static final Field<Program, String> uid
             = Field.create(UID);
@@ -138,6 +144,8 @@ public abstract class Program extends BaseNameableObject {
             = NestedField.create(TRACKED_ENTITY);
     public static final NestedField<Program, CategoryCombo> categoryCombo
             = NestedField.create(CATEGORY_COMBO);
+    static final NestedField<Program, Access> access
+            = NestedField.create(ACCESS);
     public static final NestedField<Program, ProgramIndicator> programIndicators
             = NestedField.create(PROGRAM_INDICATORS);
     public static final NestedField<Program, ProgramStage> programStages
@@ -146,6 +154,10 @@ public abstract class Program extends BaseNameableObject {
             = NestedField.create(PROGRAM_RULES);
     public static final NestedField<Program, ProgramRuleVariable> programRuleVariables
             = NestedField.create(PROGRAM_RULE_VARIABLES);
+    public static final NestedField<Program, ObjectStyle> style = NestedField.create(STYLE);
+
+    static final Fields<Program> uidAndAccessRead = Fields.<Program>builder().fields(
+            uid, access.with(Access.data.with(DataAccess.read))).build();
 
     @Nullable
     @JsonProperty(VERSION)
@@ -232,6 +244,10 @@ public abstract class Program extends BaseNameableObject {
     public abstract CategoryCombo categoryCombo();
 
     @Nullable
+    @JsonProperty(ACCESS)
+    public abstract Access access();
+
+    @Nullable
     @JsonProperty(PROGRAM_INDICATORS)
     public abstract List<ProgramIndicator> programIndicators();
 
@@ -246,6 +262,10 @@ public abstract class Program extends BaseNameableObject {
     @Nullable
     @JsonProperty(PROGRAM_RULE_VARIABLES)
     public abstract List<ProgramRuleVariable> programRuleVariables();
+
+    @Nullable
+    @JsonProperty(STYLE)
+    public abstract ObjectStyle style();
 
     @JsonCreator
     public static Program create(
@@ -280,10 +300,12 @@ public abstract class Program extends BaseNameableObject {
             @JsonProperty(RELATED_PROGRAM) Program relatedProgram,
             @JsonProperty(TRACKED_ENTITY) TrackedEntity trackedEntity,
             @JsonProperty(CATEGORY_COMBO) CategoryCombo categoryCombo,
+            @JsonProperty(ACCESS) Access access,
             @JsonProperty(PROGRAM_INDICATORS) List<ProgramIndicator> programIndicators,
             @JsonProperty(PROGRAM_STAGES) List<ProgramStage> programStages,
             @JsonProperty(PROGRAM_RULES) List<ProgramRule> programRules,
             @JsonProperty(PROGRAM_RULE_VARIABLES) List<ProgramRuleVariable> programRuleVariables,
+            @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_Program(
@@ -319,9 +341,11 @@ public abstract class Program extends BaseNameableObject {
                 relatedProgram,
                 trackedEntity,
                 categoryCombo,
+                access,
                 safeUnmodifiableList(programIndicators),
                 safeUnmodifiableList(programStages),
                 safeUnmodifiableList(programRules),
-                safeUnmodifiableList(programRuleVariables));
+                safeUnmodifiableList(programRuleVariables),
+                style);
     }
 }

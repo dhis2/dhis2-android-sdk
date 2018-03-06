@@ -27,21 +27,16 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.program.Program;
-
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class UserRoleHandler {
     private final UserRoleStore userRoleStore;
-    private final UserRoleProgramLinkStore userRoleProgramLinkStore;
 
 
-    public UserRoleHandler(UserRoleStore userRoleStore,
-                           UserRoleProgramLinkStore userRoleProgramLinkStore) {
+    public UserRoleHandler(UserRoleStore userRoleStore) {
         this.userRoleStore = userRoleStore;
-        this.userRoleProgramLinkStore = userRoleProgramLinkStore;
     }
 
     public void handleUserRoles(List<UserRole> userRoles) {
@@ -67,30 +62,6 @@ public class UserRoleHandler {
                             userRole.name(), userRole.displayName(), userRole.created(),
                             userRole.lastUpdated());
                 }
-
-                List<Program> programs = userRole.programs();
-
-                insertOrUpdateUserRoleProgramLink(userRole, programs);
-
-
-            }
-        }
-    }
-
-    private void insertOrUpdateUserRoleProgramLink(UserRole userRole, List<Program> programs) {
-        if (programs == null || userRole == null) {
-            return;
-        }
-
-        int programSize = programs.size();
-        for (int i = 0; i < programSize; i++) {
-
-            Program program = programs.get(i);
-            int updatedLinkRow = userRoleProgramLinkStore.update(
-                    userRole.uid(), program.uid(), userRole.uid(), program.uid());
-
-            if (updatedLinkRow <= 0) {
-                userRoleProgramLinkStore.insert(userRole.uid(), program.uid());
             }
         }
     }

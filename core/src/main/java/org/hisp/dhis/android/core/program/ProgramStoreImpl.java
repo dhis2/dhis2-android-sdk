@@ -73,11 +73,12 @@ public class ProgramStoreImpl implements ProgramStore {
             ProgramModel.Columns.RELATIONSHIP_TEXT + ", " +
             ProgramModel.Columns.RELATED_PROGRAM + ", " +
             ProgramModel.Columns.TRACKED_ENTITY + ", " +
-            ProgramModel.Columns.CATEGORY_COMBO + ") " +
+            ProgramModel.Columns.CATEGORY_COMBO + ", " +
+            ProgramModel.Columns.ACCESS_DATA_WRITE + ") " +
             "VALUES (" +
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + ProgramModel.TABLE + " SET " +
             ProgramModel.Columns.UID + " =?, " +
@@ -109,7 +110,8 @@ public class ProgramStoreImpl implements ProgramStore {
             ProgramModel.Columns.RELATIONSHIP_TEXT + " =?, " +
             ProgramModel.Columns.RELATED_PROGRAM + " =?, " +
             ProgramModel.Columns.TRACKED_ENTITY + " =?, " +
-            ProgramModel.Columns.CATEGORY_COMBO + " =? " +
+            ProgramModel.Columns.CATEGORY_COMBO + " =?, " +
+            ProgramModel.Columns.ACCESS_DATA_WRITE + " =? " +
             " WHERE " +
             ProgramModel.Columns.UID + " = ?;";
 
@@ -161,7 +163,8 @@ public class ProgramStoreImpl implements ProgramStore {
             @Nullable String relationshipText,
             @Nullable String relatedProgram,
             @Nullable String trackedEntity,
-            @Nullable String categoryCombo
+            @Nullable String categoryCombo,
+            @Nullable Boolean accessDataWrite
     ) {
 
         isNull(uid);
@@ -170,7 +173,7 @@ public class ProgramStoreImpl implements ProgramStore {
                 incidentDateLabel, registration, selectEnrollmentDatesInFuture, dataEntryMethod,
                 ignoreOverdueEvents, relationshipFromA, selectIncidentDatesInFuture, captureCoordinates,
                 useFirstStageDuringRegistration, displayInFrontPageList, programType,
-                relationshipType, relationshipText, relatedProgram, trackedEntity, categoryCombo);
+                relationshipType, relationshipText, relatedProgram, trackedEntity, categoryCombo, accessDataWrite);
 
         Long insert = databaseAdapter.executeInsert(ProgramModel.TABLE, insertStatement);
         insertStatement.clearBindings();
@@ -209,6 +212,7 @@ public class ProgramStoreImpl implements ProgramStore {
                       @Nullable String relatedProgram,
                       @Nullable String trackedEntity,
                       @Nullable String categoryCombo,
+                      @Nullable Boolean accessDataWrite,
                       @NonNull String whereProgramUid) {
         isNull(uid);
         isNull(whereProgramUid);
@@ -217,10 +221,11 @@ public class ProgramStoreImpl implements ProgramStore {
                 incidentDateLabel, registration, selectEnrollmentDatesInFuture, dataEntryMethod,
                 ignoreOverdueEvents, relationshipFromA, selectIncidentDatesInFuture, captureCoordinates,
                 useFirstStageDuringRegistration, displayInFrontPageList, programType,
-                relationshipType, relationshipText, relatedProgram, trackedEntity, categoryCombo);
+                relationshipType, relationshipText, relatedProgram, trackedEntity, categoryCombo,
+                accessDataWrite);
 
         // bind the where argument
-        sqLiteBind(updateStatement, 31, whereProgramUid);
+        sqLiteBind(updateStatement, 32, whereProgramUid);
 
         // execute and clear bindings
         int update = databaseAdapter.executeUpdateDelete(ProgramModel.TABLE, updateStatement);
@@ -273,7 +278,8 @@ public class ProgramStoreImpl implements ProgramStore {
                                @Nullable String relationshipText,
                                @Nullable String relatedProgram,
                                @Nullable String trackedEntity,
-                               @Nullable String categoryCombo) {
+                               @Nullable String categoryCombo,
+                               @Nullable boolean accessDataWrite) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -304,6 +310,7 @@ public class ProgramStoreImpl implements ProgramStore {
         sqLiteBind(sqLiteStatement, 28, relatedProgram);
         sqLiteBind(sqLiteStatement, 29, trackedEntity);
         sqLiteBind(sqLiteStatement, 30, categoryCombo);
+        sqLiteBind(sqLiteStatement, 31, accessDataWrite);
     }
 
     @Override

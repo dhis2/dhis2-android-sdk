@@ -61,6 +61,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
     private final ResourceStore resourceStore;
+    private final Set<String> programUids;
 
     private final Date serverDate;
     private boolean isExecuted;
@@ -72,7 +73,8 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                                 @NonNull ResourceStore resourceStore,
                                 @NonNull Date serverDate,
                                 @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                                @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore) {
+                                @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
+                                @NonNull Set<String> programUids) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
         this.database = database;
@@ -81,6 +83,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         this.serverDate = new Date(serverDate.getTime());
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
+        this.programUids = programUids;
     }
 
     @Override
@@ -104,7 +107,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
 
         OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore);
+                organisationUnitProgramLinkStore, programUids);
 
         Transaction transaction = database.beginNewTransaction();
         try {

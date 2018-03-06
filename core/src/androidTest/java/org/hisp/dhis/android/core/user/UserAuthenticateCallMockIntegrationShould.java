@@ -232,8 +232,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 databaseAdapter());
         AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(
                 databaseAdapter());
-        UserOrganisationUnitLinkStore userOrganisationUnitLinkStore =
-                new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
         UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(
@@ -241,7 +239,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
         OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, new UserOrganisationUnitLinkStoreImpl(databaseAdapter()),
-                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter()));
+                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter()), null);
 
         authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userStore,
                 userCredentialsHandler, resourceHandler,

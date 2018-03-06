@@ -175,8 +175,6 @@ import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserRoleStoreImpl;
 import org.hisp.dhis.android.core.user.UserService;
@@ -225,7 +223,6 @@ public final class D2 {
     private final ResourceStore resourceStore;
     private final SystemInfoStore systemInfoStore;
     private final UserRoleStore userRoleStore;
-    private final UserRoleProgramLinkStore userRoleProgramLinkStore;
     private final ProgramStore programStore;
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
@@ -317,8 +314,6 @@ public final class D2 {
                 new SystemInfoStoreImpl(databaseAdapter);
         this.userRoleStore =
                 new UserRoleStoreImpl(databaseAdapter);
-        this.userRoleProgramLinkStore =
-                new UserRoleProgramLinkStoreImpl(databaseAdapter);
         this.programStore =
                 new ProgramStoreImpl(databaseAdapter);
         this.trackedEntityAttributeStore =
@@ -391,7 +386,7 @@ public final class D2 {
         resourceHandler = new ResourceHandler(resourceStore);
 
         organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
-                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
+                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, null);
 
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
@@ -483,7 +478,6 @@ public final class D2 {
         deletableStoreList.add(resourceStore);
         deletableStoreList.add(systemInfoStore);
         deletableStoreList.add(userRoleStore);
-        deletableStoreList.add(userRoleProgramLinkStore);
         deletableStoreList.add(programStore);
         deletableStoreList.add(trackedEntityAttributeStore);
         deletableStoreList.add(programTrackedEntityAttributeStore);
@@ -531,7 +525,7 @@ public final class D2 {
                 databaseAdapter, systemInfoService, userService, programService, organisationUnitService,
                 trackedEntityService, optionSetService,
                 systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, userRoleProgramLinkStore, organisationUnitStore,
+                userCredentialsStore, userRoleStore, organisationUnitStore,
                 userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,

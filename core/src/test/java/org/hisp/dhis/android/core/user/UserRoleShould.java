@@ -75,104 +75,7 @@ public class UserRoleShould {
                 "            \"id\": \"awtnYWiVEd5\"\n" +
                 "        }\n" +
                 "    ],\n" +
-                "    \"translations\": [ ],\n" +
-                "    \"dataSets\": [\n" +
-                "        {\n" +
-                "            \"id\": \"EDzMBk0RRji\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"VTdjfLXXmoi\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"aLpVgfXiz0f\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"N4fIX1HL3TQ\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"pBOMPrpg1QX\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"SF8FDSqw30D\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"EKWVBc5C0ms\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"BfMAe6Itzgt\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"ULowA8V3ucd\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"QX4ZTUbOt3a\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"eZDhcZi6FLP\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"OsPTWNqq26W\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"TuL8IOPzpHh\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"PLq9sJluXvc\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"V8MHeZHIrcP\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"Y8gAn9DfAGU\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"ce7DSxx5H2I\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"YZhd4nu3mzY\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"Rl58JxmKJo2\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"YFTk3VdO9av\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"lyLU2wR22tC\"\n" +
-                "        }\n" +
-                "    ],\n" +
-                "    \"programs\": [\n" +
-                "        {\n" +
-                "            \"id\": \"uy2gU8kT1jF\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"q04UBOqq3rp\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"VBqh0ynB2wv\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"eBAyeGv0exc\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"kla3mAPgvCH\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"lxAQ7Zs9VYR\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"IpHINAT79UW\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"WSGAb5XwJ3Y\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"ur1Edk5Oe2n\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"fDd25txQckK\"\n" +
-                "        }\n" +
-                "    ]\n" +
+                "    \"translations\": [ ]\n" +
                 "\n" +
                 "}", UserRole.class);
 
@@ -184,16 +87,5 @@ public class UserRoleShould {
         assertThat(userRole.uid()).isEqualTo("Ufph3mGRmMo");
         assertThat(userRole.displayName()).isEqualTo("Superuser");
         assertThat(userRole.name()).isEqualTo("Superuser");
-
-        assertThat(userRole.programs().get(0).uid()).isEqualTo("uy2gU8kT1jF");
-        assertThat(userRole.programs().get(1).uid()).isEqualTo("q04UBOqq3rp");
-        assertThat(userRole.programs().get(2).uid()).isEqualTo("VBqh0ynB2wv");
-        assertThat(userRole.programs().get(3).uid()).isEqualTo("eBAyeGv0exc");
-        assertThat(userRole.programs().get(4).uid()).isEqualTo("kla3mAPgvCH");
-        assertThat(userRole.programs().get(5).uid()).isEqualTo("lxAQ7Zs9VYR");
-        assertThat(userRole.programs().get(6).uid()).isEqualTo("IpHINAT79UW");
-        assertThat(userRole.programs().get(7).uid()).isEqualTo("WSGAb5XwJ3Y");
-        assertThat(userRole.programs().get(8).uid()).isEqualTo("ur1Edk5Oe2n");
-        assertThat(userRole.programs().get(9).uid()).isEqualTo("fDd25txQckK");
     }
 }

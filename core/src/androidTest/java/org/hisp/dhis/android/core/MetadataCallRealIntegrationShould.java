@@ -48,6 +48,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     //@Test
     public void response_successful_on_sync_meta_data_two_times() throws Exception {
         retrofit2.Response response = null;
+        d2.logout().call();
         response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
 

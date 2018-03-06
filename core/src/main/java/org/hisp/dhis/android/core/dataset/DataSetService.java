@@ -44,4 +44,8 @@ public interface DataSetService {
                                        @Query("filter") @Where Filter<DataSet, String> uids,
                                        @Query("paging") Boolean paging);
 
+    @GET("dataSets")
+    Call<Payload<DataSet>> getDataSetsForAccess(@Query("fields") @Which Fields<DataSet> fields,
+                                       @Query("filter") @Where Filter<DataSet, String> lastUpdated,
+                                       @Query("paging") Boolean paging);
 }

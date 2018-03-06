@@ -25,54 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+package org.hisp.dhis.android.core.dataset;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.common.BaseEndpointCall;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import retrofit2.Response;
 
-@AutoValue
-public abstract class UserRoleProgramLinkModel extends BaseModel {
-    public static final String TABLE = "UserRoleProgramLink";
+public final class DataSetAccessEndpointCall extends BaseEndpointCall<DataSet> {
+    private final GenericCallData data;
+    private final DataSetService dataSetService;
 
-    public static class Columns extends BaseModel.Columns {
-        public static final String USER_ROLE = "userRole";
-        public static final String PROGRAM = "program";
+    private DataSetAccessEndpointCall(GenericCallData data, DataSetService dataSetService) {
+        this.data = data;
+        this.dataSetService = dataSetService;
     }
 
-    public static UserRoleProgramLinkModel create(Cursor cursor) {
-        return AutoValue_UserRoleProgramLinkModel.createFromCursor(cursor);
+    @Override
+    protected Response<Payload<DataSet>> callBody() throws Exception {
+        String lastUpdated = data.resourceHandler().getLastUpdated(ResourceModel.Type.DATA_SET);
+        return dataSetService.getDataSetsForAccess(DataSet.uidAndAccessRead, DataSet.lastUpdated.gt(lastUpdated),
+                Boolean.FALSE).execute();
     }
 
-    public static Builder builder() {
-        return new $$AutoValue_UserRoleProgramLinkModel.Builder();
+    public interface Factory {
+        DataSetAccessEndpointCall create(GenericCallData data);
     }
 
-    @NonNull
-    public abstract ContentValues toContentValues();
-
-    @Nullable
-    @ColumnName(Columns.USER_ROLE)
-    public abstract String userRole();
-
-    @Nullable
-    @ColumnName(Columns.PROGRAM)
-    public abstract String program();
-
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
-
-        public abstract Builder userRole(@Nullable String user);
-
-        public abstract Builder program(@Nullable String organisationUnit);
-
-        public abstract UserRoleProgramLinkModel build();
-    }
+    static final DataSetAccessEndpointCall.Factory FACTORY = new DataSetAccessEndpointCall.Factory() {
+        @Override
+        public DataSetAccessEndpointCall create(GenericCallData data) {
+            return new DataSetAccessEndpointCall(data, data.retrofit().create(DataSetService.class));
+        }
+    };
 }

@@ -33,3 +33,4 @@ build
 # Secret keys
 secrets.properties
 
+core/src/main/java/org/hisp/dhis/android/core/trackedentity/TeisEndPointCall.java

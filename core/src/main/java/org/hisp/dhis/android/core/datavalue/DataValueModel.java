@@ -74,7 +74,8 @@ public abstract class DataValueModel extends BaseModel implements UpdateWhereSta
         }
 
         public static String[] whereUpdate() {
-            return new String[]{DATA_ELEMENT, PERIOD, ORGANISATION_UNIT};
+            return new String[]{DATA_ELEMENT, PERIOD, ORGANISATION_UNIT, CATEGORY_OPTION_COMBO,
+            ATTRIBUTE_OPTION_COMBO};
         }
     }
 
@@ -177,6 +178,8 @@ public abstract class DataValueModel extends BaseModel implements UpdateWhereSta
         sqLiteBind(sqLiteStatement, 12, dataElement());
         sqLiteBind(sqLiteStatement, 13, period());
         sqLiteBind(sqLiteStatement, 14, organisationUnit());
+        sqLiteBind(sqLiteStatement, 15, categoryOptionCombo());
+        sqLiteBind(sqLiteStatement, 16, attributeOptionCombo());
     }
 
     @AutoValue.Builder

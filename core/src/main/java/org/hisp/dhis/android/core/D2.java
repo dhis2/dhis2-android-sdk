@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
+import org.hisp.dhis.android.core.calls.TrackerEntitiesDataCall;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
@@ -559,10 +560,18 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response<Payload<TrackedEntityInstance>>> syncTEI(String trackedEntityInstanceUid) {
+    public Call<Response<Payload<TrackedEntityInstance>>>
+    downloadTrackedEntityInstance(String trackedEntityInstanceUid) {
         return new TrackedEntityInstanceEndPointCall(
                 trackedEntityInstanceService, databaseAdapter, trackedEntityInstanceHandler,
                 resourceHandler, new Date(), trackedEntityInstanceUid);
+    }
+
+    @NonNull
+    public Call<Response> downloadTrackedEntityInstances(int teiLimitByOrgUnit) {
+        return new TrackerEntitiesDataCall(organisationUnitStore, trackedEntityInstanceService, databaseAdapter,
+                trackedEntityInstanceHandler, resourceHandler, resourceStore, systemInfoService,
+                systemInfoStore, teiLimitByOrgUnit);
     }
 
     @NonNull

@@ -66,7 +66,9 @@ public enum ValueType {
 
     //New values:
     AGE(Date.class),
-    URL(String.class);
+    URL(String.class),
+
+    IMAGE(String.class);
 
     private static final Set<ValueType> INTEGER_TYPES = new HashSet<>(Arrays.asList(INTEGER,
             INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE));
@@ -78,7 +80,7 @@ public enum ValueType {
             TRUE_ONLY));
 
     private static final Set<ValueType> TEXT_TYPES = new HashSet<>(Arrays.asList(TEXT, LONG_TEXT,
-            LETTER, COORDINATE, TIME));
+            LETTER, COORDINATE, TIME, IMAGE));
 
     private static final Set<ValueType> DATE_TYPES = new HashSet<>(Arrays.asList(DATE, DATETIME));
 

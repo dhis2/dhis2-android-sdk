@@ -40,6 +40,7 @@ import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.network.RepoManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.network.Credentials;
 import org.hisp.dhis.android.sdk.network.Session;
@@ -121,6 +122,8 @@ public final class DhisController {
     static UserAccount signInUser(HttpUrl serverUrl, Credentials credentials) throws APIException {
         DhisApi dhisApi = RepoManager
                 .createService(serverUrl, credentials);
+        SystemInfo systemInfo = dhisApi.getSystemInfo();
+        systemInfo.save();
         UserAccount user = (new UserController(dhisApi)
                 .logInUser(serverUrl, credentials));
 

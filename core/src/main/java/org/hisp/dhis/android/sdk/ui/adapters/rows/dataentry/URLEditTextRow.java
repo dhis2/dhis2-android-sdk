@@ -227,7 +227,7 @@ public class URLEditTextRow extends Row {
 
     public boolean validateURL(String url) {
         String regExp = "^(http|https)://[a-z0-9]+([-.][a-z0-9]+)*[.][a-z]{2,6}(:[0-9]{1,5})?([/].*)?$";
-        if(url.matches(regExp) && url.length()>0){
+        if(url.matches(regExp) || url.length()==0){
             return true;
         }else{
             return false;

@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.persistence.models.meta.State;
 import org.joda.time.DateTime;
@@ -147,21 +148,32 @@ public final class UserAccount extends BaseModel implements IdentifiableObject {
     @JsonProperty("teiSearchOrganisationUnits")
     List<OrganisationUnit> teiSearchOrganisationUnits;
 
+    @JsonProperty("programs")
+    List<String> programUIds;
+
     public UserAccount() {
         state = State.SYNCED;
     }
 
 
-    /* Exposing getPrograms() instead of making UserCredentials model public */
-    public List<Program> getPrograms() {
+    @JsonIgnore
+    public List<Program> getUserPrograms() {
         Map<String, Program> programMap = new HashMap<>();
-        if (userCredentials != null && userCredentials.getUserRoles() != null) {
+        if(DhisController.getInstance().isLoggedInServerWithLatestApiVersion()){
+            for(String programUid : programUIds){
+                Program program = new Program();
+                program.setUid(programUid);
+                programMap.put(programUid, program);
+            }
+        }else {
+            if (userCredentials != null && userCredentials.getUserRoles() != null) {
 
             /* go through all UserRoles and extract assigned programs */
-            for (UserRole userRole : userCredentials.getUserRoles()) {
-                if (userRole.getPrograms() != null) {
-                    for (Program program : userRole.getPrograms()) {
-                        programMap.put(program.getUid(), program);
+                for (UserRole userRole : userCredentials.getUserRoles()) {
+                    if (userRole.getPrograms() != null) {
+                        for (Program program : userRole.getPrograms()) {
+                            programMap.put(program.getUid(), program);
+                        }
                     }
                 }
             }
@@ -419,5 +431,13 @@ public final class UserAccount extends BaseModel implements IdentifiableObject {
 
     public void setTeiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits) {
         this.teiSearchOrganisationUnits = teiSearchOrganisationUnits;
+    }
+
+    public void setProgramUIds(List<String> programs) {
+        this.programUIds = programs;
+    }
+
+    public List<String> getProgramUIds() {
+        return programUIds;
     }
 }

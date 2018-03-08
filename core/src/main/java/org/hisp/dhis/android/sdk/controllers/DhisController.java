@@ -126,7 +126,7 @@ public final class DhisController {
                 .createService(serverUrl, credentials);
         SystemInfo systemInfo = dhisApi.getSystemInfo();
         systemInfo.save();
-        serverVersion = systemInfo.getVersionAsFloat();
+        serverVersion = systemInfo.getVersionNumber();
         UserAccount user = (new UserController(dhisApi)
                 .logInUser(serverUrl, credentials));
 
@@ -196,7 +196,7 @@ public final class DhisController {
 
     public boolean isLoggedInServerWithLatestApiVersion() {
         if(serverVersion==null){
-            serverVersion = getDhisApi().getSystemInfo().getVersionAsFloat();
+            serverVersion = getDhisApi().getSystemInfo().getVersionNumber();
         }
         return serverVersion>=START_LATEST_API_VERSION;
     }

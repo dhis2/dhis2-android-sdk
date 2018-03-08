@@ -63,7 +63,6 @@ public final class DhisController {
     private final static String SERVER = "server";
     private final static String CREDENTIALS = "credentials";
     public static final Float START_LATEST_API_VERSION =2.29f;
-    public static Float serverVersion;
 
     /**
      * Variable hasUnSynchronizedDatavalues
@@ -126,7 +125,6 @@ public final class DhisController {
                 .createService(serverUrl, credentials);
         SystemInfo systemInfo = dhisApi.getSystemInfo();
         systemInfo.save();
-        serverVersion = systemInfo.getVersionNumber();
         UserAccount user = (new UserController(dhisApi)
                 .logInUser(serverUrl, credentials));
 
@@ -195,9 +193,8 @@ public final class DhisController {
     }
 
     public boolean isLoggedInServerWithLatestApiVersion() {
-        if(serverVersion==null){
-            serverVersion = getDhisApi().getSystemInfo().getVersionNumber();
-        }
-        return serverVersion>=START_LATEST_API_VERSION;
+        SystemInfo systemInfo = MetaDataController.getSystemInfo();
+        Float serverVersion = systemInfo.getVersionNumber();
+        return serverVersion >= START_LATEST_API_VERSION;
     }
 }

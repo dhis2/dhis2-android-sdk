@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.apache.commons.validator.routines.UrlValidator;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
@@ -226,8 +227,7 @@ public class URLEditTextRow extends Row {
     }
 
     public boolean validateURL(String url) {
-        String regExp = "^(http|https)://[a-z0-9]+([-.][a-z0-9]+)*[.][a-z]{2,6}(:[0-9]{1,5})?([/].*)?$";
-        if(url.matches(regExp) || url.length()==0){
+        if(UrlValidator.getInstance().isValid(url) || url.length()==0){
             return true;
         }else{
             return false;

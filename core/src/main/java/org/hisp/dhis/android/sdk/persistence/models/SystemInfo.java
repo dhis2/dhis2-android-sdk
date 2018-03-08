@@ -87,15 +87,17 @@ public class SystemInfo extends BaseModel {
         this.version = version;
     }
 
-    public Float getVersionAsFloat() {
-        try {
-            return removeNonNumericCharacters(version);
-        }catch (NullPointerException e){
-            return null;
+    public Float getVersionNumber() {
+        Float versionNumber = null;
+
+        if (version != null) {
+            versionNumber = removeNonNumericCharacters(version);
         }
+
+        return versionNumber;
     }
 
     private static Float removeNonNumericCharacters(String version) {
-            return Float.parseFloat(version.replaceAll("[^0-9.]", ""));
+        return Float.parseFloat(version.replaceAll("[^0-9.]", ""));
     }
 }

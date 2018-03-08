@@ -194,7 +194,7 @@ public final class DhisController {
 
     public boolean isLoggedInServerWithLatestApiVersion() {
         SystemInfo systemInfo = MetaDataController.getSystemInfo();
-        Float serverVersion = systemInfo.getVersionAsFloat();
+        Float serverVersion = systemInfo.getVersionNumber();
         return serverVersion >= START_LATEST_API_VERSION;
     }
 }

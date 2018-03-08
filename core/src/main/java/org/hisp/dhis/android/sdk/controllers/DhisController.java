@@ -125,6 +125,7 @@ public final class DhisController {
         DhisApi dhisApi = RepoManager
                 .createService(serverUrl, credentials);
         SystemInfo systemInfo = dhisApi.getSystemInfo();
+        systemInfo.save();
         serverVersion = systemInfo.getVersionAsFloat();
         UserAccount user = (new UserController(dhisApi)
                 .logInUser(serverUrl, credentials));

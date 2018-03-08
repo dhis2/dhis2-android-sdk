@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.joda.time.DateTime;
 
+
 /**
  * @author Simen Skogly Russnes on 26.02.15.
  */
@@ -53,6 +54,8 @@ public class SystemInfo extends BaseModel {
     @Column(name = "serverDate")
     DateTime serverDate;
 
+    @JsonProperty("version")
+    @Column(name = "version")
     String version;
 
     @JsonAnySetter

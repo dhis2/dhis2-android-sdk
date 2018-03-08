@@ -627,6 +627,7 @@ public final class MetaDataController extends ResourceController {
      */
     private static void updateMetaDataItems(Context context,SyncStrategy syncStrategy, DhisApi dhisApi) throws APIException {
         SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
+        serverSystemInfo.save();
         DateTime serverDateTime = serverSystemInfo.getServerDate();
         //some items depend on each other. Programs depend on AssignedPrograms because we need
         //the ids of programs to load.

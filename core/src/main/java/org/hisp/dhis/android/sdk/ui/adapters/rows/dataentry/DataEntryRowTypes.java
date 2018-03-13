@@ -50,5 +50,8 @@ public enum DataEntryRowTypes {
     QUESTION_COORDINATES,
     PERCENTAGE,
     AGE,
-    NOT_SUPPORTED
+    NOT_SUPPORTED,
+    TIME,
+    DATETIME,
+    URL
 }

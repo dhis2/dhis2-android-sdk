@@ -53,6 +53,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AutoCompleteRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CheckBoxRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DateTimePickerRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.QuestionCoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DatePickerRow;
@@ -64,6 +65,8 @@ import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.RadioButtonsRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.StatusRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.TimePickerRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.URLEditTextRow;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
 import org.hisp.dhis.android.sdk.utils.api.ValueType;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
@@ -307,10 +310,14 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
             row = new DatePickerRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, programStageDataElement.getAllowFutureDate(), event);
         } else if (dataElement.getValueType().equals(ValueType.PERCENTAGE)) {
             row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.PERCENTAGE, event);
-        } else if (dataElement.getValueType().equals(ValueType.TIME)) {
-            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.NOT_SUPPORTED, event);
         } else if (dataElement.getValueType().equals(ValueType.COORDINATE)) {
             row = new QuestionCoordinatesRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.QUESTION_COORDINATES, event);
+        } else if (dataElement.getValueType().equals(ValueType.TIME)) {
+            row = new TimePickerRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, true, DataEntryRowTypes.TIME, event);
+        } else if (dataElement.getValueType().equals(ValueType.DATETIME)) {
+            row = new DateTimePickerRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, true);
+        } else if (dataElement.getValueType().equals(ValueType.URL)) {
+            row = new URLEditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, true, DataEntryRowTypes.URL, event);
         } else {
             row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.NOT_SUPPORTED, event);
         }

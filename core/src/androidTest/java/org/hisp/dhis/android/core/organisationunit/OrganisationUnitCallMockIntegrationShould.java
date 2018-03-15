@@ -33,14 +33,15 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.program.ProgramModel;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.user.User;
@@ -59,6 +60,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -288,45 +290,59 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         database().insert(UserModel.TABLE, null, userContentValues);
 
         // inserting programs for creating OrgUnitProgramLinks
+
+        String programUid = "uy2gU8kT1jF";
+        String programUid1 = "q04UBOqq3rp";
+        String programUid2 = "VBqh0ynB2wv";
+        String programUid3 = "eBAyeGv0exc";
+        String programUid4 = "kla3mAPgvCH";
+        String programUid5 = "lxAQ7Zs9VYR";
+        String programUid6 = "IpHINAT79UW";
+        String programUid7 = "WSGAb5XwJ3Y";
+        String programUid8 = "ur1Edk5Oe2n";
+
         ContentValues program = new ContentValues();
-        program.put(ProgramModel.Columns.UID, "uy2gU8kT1jF");
+        program.put(ProgramModel.Columns.UID, programUid);
         database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues program1 = new ContentValues();
-        program1.put(ProgramModel.Columns.UID, "q04UBOqq3rp");
+        program1.put(ProgramModel.Columns.UID, programUid1);
         database().insert(ProgramModel.TABLE, null, program1);
 
         ContentValues program2 = new ContentValues();
-        program2.put(ProgramModel.Columns.UID, "VBqh0ynB2wv");
+        program2.put(ProgramModel.Columns.UID, programUid2);
         database().insert(ProgramModel.TABLE, null, program2);
 
         ContentValues program3 = new ContentValues();
-        program3.put(ProgramModel.Columns.UID, "eBAyeGv0exc");
+        program3.put(ProgramModel.Columns.UID, programUid3);
         database().insert(ProgramModel.TABLE, null, program3);
 
         ContentValues program4 = new ContentValues();
-        program4.put(ProgramModel.Columns.UID, "kla3mAPgvCH");
+        program4.put(ProgramModel.Columns.UID, programUid4);
         database().insert(ProgramModel.TABLE, null, program4);
 
         ContentValues program5 = new ContentValues();
-        program5.put(ProgramModel.Columns.UID, "lxAQ7Zs9VYR");
+        program5.put(ProgramModel.Columns.UID, programUid5);
         database().insert(ProgramModel.TABLE, null, program5);
 
         ContentValues program6 = new ContentValues();
-        program6.put(ProgramModel.Columns.UID, "IpHINAT79UW");
+        program6.put(ProgramModel.Columns.UID, programUid6);
         database().insert(ProgramModel.TABLE, null, program6);
 
         ContentValues program7 = new ContentValues();
-        program7.put(ProgramModel.Columns.UID, "WSGAb5XwJ3Y");
+        program7.put(ProgramModel.Columns.UID, programUid7);
         database().insert(ProgramModel.TABLE, null, program7);
 
         ContentValues program8 = new ContentValues();
-        program8.put(ProgramModel.Columns.UID, "ur1Edk5Oe2n");
+        program8.put(ProgramModel.Columns.UID, programUid8);
         database().insert(ProgramModel.TABLE, null, program8);
+
+        Set<String> programUids = Sets.newHashSet(Lists.newArrayList(programUid, programUid1, programUid2,
+                programUid3, programUid4, programUid5, programUid6, programUid7, programUid8));
 
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, databaseAdapter(),
                 organisationUnitStore, resourceStore, new Date(), userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore);
+                organisationUnitProgramLinkStore, programUids);
     }
 
     @Test

@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.dataset;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.NameableModelAbstractShould;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.DataSetModel.Columns;
@@ -62,7 +64,7 @@ import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.fillNamea
 public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel, DataSet> {
 
     public DataSetModelShould() {
-        super(DataSetModel.Columns.all(), 25, DataSetModel.factory);
+        super(DataSetModel.Columns.all(), 26, DataSetModel.factory);
     }
 
     @Override
@@ -84,7 +86,8 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel
                 .skipOffline(false)
                 .dataElementDecoration(false)
                 .renderAsTabs(false)
-                .renderHorizontally(false);
+                .renderHorizontally(false)
+                .accessDataWrite(false);
         return dataSetModelBuilder.build();
     }
 
@@ -97,7 +100,8 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel
                 0, false, false,
                 false, false, false,
                 false, false, new ArrayList<DataElementUids>(),
-                new ArrayList<ObjectWithUid>(), DELETED);
+                new ArrayList<ObjectWithUid>(), Access.create(true, true, false, true,
+                        true, true, DataAccess.create(true, false)), DELETED);
     }
 
     @Override
@@ -108,7 +112,8 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel
                 model.openFuturePeriods(), toInteger(model.fieldCombinationRequired()),
                 toInteger(model.validCompleteOnly()), toInteger(model.noValueRequiresComment()),
                 toInteger(model.skipOffline()), toInteger(model.dataElementDecoration()),
-                toInteger(model.renderAsTabs()), toInteger(model.renderHorizontally()));
+                toInteger(model.renderAsTabs()), toInteger(model.renderHorizontally()),
+                toInteger(model.accessDataWrite()));
     }
 
     @Test
@@ -130,5 +135,6 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel
         assertThat(columnsList.contains(Columns.DATA_ELEMENT_DECORATION)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.RENDER_AS_TABS)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.RENDER_HORIZONTALLY)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.ACCESS_DATA_WRITE)).isEqualTo(true);
     }
 }

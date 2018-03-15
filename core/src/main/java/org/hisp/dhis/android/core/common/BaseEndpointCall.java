@@ -25,18 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import android.support.annotation.NonNull;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.calls.Call;
 
-public interface UserRoleProgramLinkStore extends DeletableStore {
+import retrofit2.Response;
 
-    long insert(@NonNull String userRole, @NonNull String program);
+public abstract class BaseEndpointCall<P> implements Call<Response<Payload<P>>> {
 
-    int update(@NonNull String userRoleUid, @NonNull String programUid,
-               @NonNull String whereUserRoleUid, @NonNull String whereProgramUid);
+    private boolean isExecuted;
 
-    int delete(@NonNull String userRoleUid, @NonNull String programUid);
+    @Override
+    public final boolean isExecuted() {
+        synchronized (this) {
+            return isExecuted;
+        }
+    }
+
+    @Override
+    public final Response<Payload<P>> call() throws Exception {
+        synchronized (this) {
+            if (isExecuted) {
+                throw new IllegalArgumentException("Already executed");
+            }
+
+            isExecuted = true;
+        }
+
+        return callBody();
+    }
+
+    protected abstract Response<Payload<P>> callBody() throws Exception;
 }

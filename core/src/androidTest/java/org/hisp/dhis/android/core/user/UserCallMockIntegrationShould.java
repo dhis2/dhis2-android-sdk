@@ -37,11 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -90,7 +85,6 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
 
     private MockWebServer mockWebServer;
     private UserCall userCall;
-    private OrganisationUnitHandler organisationUnitHandler;
 
     @Override
     @Before
@@ -218,24 +212,14 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
 
         UserService userService = retrofit.create(UserService.class);
 
-        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(databaseAdapter());
-        UserOrganisationUnitLinkStore userOrganisationUnitStore =
-                new UserOrganisationUnitLinkStoreImpl(databaseAdapter());
         UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
         UserRoleStore userRoleStore = new UserRoleStoreImpl(databaseAdapter());
         UserStore userStore = new UserStoreImpl(databaseAdapter());
-        UserRoleProgramLinkStore userRoleProgramLinkStore = new UserRoleProgramLinkStoreImpl(databaseAdapter());
-        OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore =
-                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
-        organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, userOrganisationUnitStore, organisationUnitProgramLinkStore
-        );
 
         userCall = new UserCall(userService, databaseAdapter(),
-                userStore, userCredentialsStore, userRoleStore, resourceStore, new Date(),
-                userRoleProgramLinkStore);
+                userStore, userCredentialsStore, userRoleStore, resourceStore, new Date());
 
         ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
         ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);
@@ -326,11 +310,6 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
                 UserRoleModel.Columns.LAST_UPDATED
         };
 
-        String[] userRoleProgramLinkModelProjection = {
-                UserRoleProgramLinkModel.Columns.USER_ROLE,
-                UserRoleProgramLinkModel.Columns.PROGRAM
-        };
-
         Cursor userRoleCursor = database().query(UserRoleModel.TABLE, userRoleProjection,
                 UserRoleModel.Columns.UID + "=?", new String[]{"cUlTcejWree"}, null, null, null);
 
@@ -341,17 +320,6 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
                 null,
                 null,
                 null
-        ).isExhausted();
-
-        Cursor linkModelCursor = database().query(UserRoleProgramLinkModel.TABLE, userRoleProgramLinkModelProjection,
-                UserRoleProgramLinkModel.Columns.USER_ROLE + "=?" +
-                        " AND " +
-                        UserRoleProgramLinkModel.Columns.PROGRAM + "=?", new String[]{"cUlTcejWree", "ur1Edk5Oe2n"},
-                null, null, null);
-
-        assertThatCursor(linkModelCursor).hasRow(
-                "cUlTcejWree",
-                "ur1Edk5Oe2n"
         ).isExhausted();
     }
 

@@ -22,6 +22,11 @@
       "selectEnrollmentDatesInFuture": false,
       "registration": false,
       "useFirstStageDuringRegistration": false,
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
       "programRuleVariables": [
         {
           "created": "2016-04-12T15:57:18.645",
@@ -270,6 +275,11 @@
       "selectEnrollmentDatesInFuture": false,
       "registration": true,
       "useFirstStageDuringRegistration": true,
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
       "trackedEntity": {
         "id": "nEenWmSyUEp"
       },
@@ -1429,6 +1439,11 @@
       "selectEnrollmentDatesInFuture": false,
       "registration": false,
       "useFirstStageDuringRegistration": false,
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
       "programRuleVariables": [],
       "programTrackedEntityAttributes": [],
       "programIndicators": [],
@@ -1679,6 +1694,11 @@
       "selectEnrollmentDatesInFuture": false,
       "registration": false,
       "useFirstStageDuringRegistration": false,
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
       "programRuleVariables": [],
       "programTrackedEntityAttributes": [],
       "programIndicators": [],
@@ -1924,6 +1944,11 @@
       "selectEnrollmentDatesInFuture": false,
       "registration": false,
       "useFirstStageDuringRegistration": false,
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
       "programRuleVariables": [
         {
           "created": "2015-08-07T18:38:12.931",
@@ -2786,6 +2811,11 @@
       "selectEnrollmentDatesInFuture": false,
       "registration": false,
       "useFirstStageDuringRegistration": false,
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
       "programRuleVariables": [],
       "programTrackedEntityAttributes": [],
       "programIndicators": [
@@ -2947,6 +2977,11 @@
       "selectEnrollmentDatesInFuture": false,
       "registration": false,
       "useFirstStageDuringRegistration": false,
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
       "programRuleVariables": [],
       "programTrackedEntityAttributes": [],
       "programIndicators": [],
@@ -3109,6 +3144,11 @@
       "selectEnrollmentDatesInFuture": false,
       "registration": true,
       "useFirstStageDuringRegistration": false,
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
       "trackedEntity": {
         "id": "nEenWmSyUEp"
       },
@@ -5127,6 +5167,11 @@
       "selectEnrollmentDatesInFuture": false,
       "registration": true,
       "useFirstStageDuringRegistration": false,
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
       "trackedEntity": {
         "id": "nEenWmSyUEp"
       },
@@ -7402,6 +7447,11 @@
       "selectEnrollmentDatesInFuture": false,
       "registration": true,
       "useFirstStageDuringRegistration": false,
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
       "trackedEntity": {
         "id": "nEenWmSyUEp"
       },
@@ -8735,6 +8785,11 @@
       "selectEnrollmentDatesInFuture": false,
       "registration": true,
       "useFirstStageDuringRegistration": false,
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
       "trackedEntity": {
         "id": "nEenWmSyUEp"
       },

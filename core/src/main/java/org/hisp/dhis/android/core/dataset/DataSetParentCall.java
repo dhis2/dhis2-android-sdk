@@ -46,8 +46,8 @@ import java.util.Set;
 import retrofit2.Response;
 
 public class DataSetParentCall extends TransactionalCall {
-    private final User user;
     private final DataSetParentLinkManager linkManager;
+    private final DataSetAccessEndpointCall.Factory dataSetAccessCallFactory;
     private final DataSetEndpointCall.Factory dataSetCallFactory;
     private final DataElementEndpointCall.Factory dataElementCallFactory;
     private final IndicatorEndpointCall.Factory indicatorCallFactory;
@@ -55,7 +55,8 @@ public class DataSetParentCall extends TransactionalCall {
     private final List<OrganisationUnit> organisationUnits;
     private final PeriodHandler periodHandler;
 
-    private DataSetParentCall(User user, GenericCallData data, DataSetParentLinkManager linkManager,
+    private DataSetParentCall(GenericCallData data, DataSetParentLinkManager linkManager,
+                              DataSetAccessEndpointCall.Factory dataSetAccessCallFactory,
                               DataSetEndpointCall.Factory dataSetCallFactory,
                               DataElementEndpointCall.Factory dataElementCallFactory,
                               IndicatorEndpointCall.Factory indicatorCallFactory,
@@ -63,8 +64,8 @@ public class DataSetParentCall extends TransactionalCall {
                               List<OrganisationUnit> organisationUnits,
                               PeriodHandler periodHandler) {
         super(data);
-        this.user = user;
         this.linkManager = linkManager;
+        this.dataSetAccessCallFactory = dataSetAccessCallFactory;
         this.dataSetCallFactory = dataSetCallFactory;
         this.dataElementCallFactory = dataElementCallFactory;
         this.indicatorCallFactory = indicatorCallFactory;
@@ -75,7 +76,12 @@ public class DataSetParentCall extends TransactionalCall {
 
     @Override
     public Response callBody() throws Exception {
-        Set<String> dataSetUids = DataSetParentUidsHelper.getAssignedDataSetUids(user);
+        DataSetAccessEndpointCall dataSetAccessEndpointCall = dataSetAccessCallFactory.create(data);
+        Response<Payload<DataSet>> dataSetAccessResponse = dataSetAccessEndpointCall.call();
+        List<DataSet> dataSetsWithAccess = dataSetAccessResponse.body().items();
+
+        Set<String> dataSetUids = DataSetParentUidsHelper.getAssignedDataSetUids(dataSetsWithAccess);
+
         DataSetEndpointCall dataSetEndpointCall = dataSetCallFactory.create(data, dataSetUids);
         Response<Payload<DataSet>> dataSetResponse = dataSetEndpointCall.call();
 
@@ -96,7 +102,7 @@ public class DataSetParentCall extends TransactionalCall {
         periodHandler.generateAndPersist();
 
         linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);
-        linkManager.saveDataSetOrganisationUnitLinks(organisationUnits);
+        linkManager.saveDataSetOrganisationUnitLinks(organisationUnits, dataSetUids);
 
         return dataElementResponse;
     }
@@ -108,8 +114,9 @@ public class DataSetParentCall extends TransactionalCall {
     public static final Factory FACTORY = new Factory() {
         @Override
         public Call<Response> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits) {
-            return new DataSetParentCall(user, data,
+            return new DataSetParentCall(data,
                     DataSetParentLinkManager.create(data.databaseAdapter()),
+                    DataSetAccessEndpointCall.FACTORY,
                     DataSetEndpointCall.FACTORY,
                     DataElementEndpointCall.FACTORY,
                     IndicatorEndpointCall.FACTORY,

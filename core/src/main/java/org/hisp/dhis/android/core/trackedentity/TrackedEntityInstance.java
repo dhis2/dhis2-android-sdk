@@ -54,7 +54,7 @@ public abstract class TrackedEntityInstance {
     private static final String ORGANISATION_UNIT = "orgUnit";
     private static final String TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
     private static final String RELATIONSHIPS = "relationships";
-    private static final String TRACKED_ENTITY = "trackedEntity";
+    private static final String TRACKED_ENTITY = "trackedEntityType";
     private static final String DELETED = "deleted";
     private static final String ENROLLMENTS = "enrollments";
 

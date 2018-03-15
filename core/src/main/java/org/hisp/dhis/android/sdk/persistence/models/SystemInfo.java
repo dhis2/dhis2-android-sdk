@@ -82,7 +82,7 @@ public class SystemInfo extends BaseModel {
         return version;
     }
 
-    public float getVersionAsFloat() {
+    public float getVersionNumber() {
         return removeNonNumericCharacters(version);
     }
 

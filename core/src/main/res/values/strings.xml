@@ -284,4 +284,6 @@
     <string name="logged_in_at">At server:</string>
     <string name="event_expired">"The event can't be edited, The expiry date day is over."</string>
     <string name="pull">Starting pull...</string>
+    <string name="error_url">Invalid url</string>
+    <string name="enter_url">Please enter a valid url</string>
 </resources>

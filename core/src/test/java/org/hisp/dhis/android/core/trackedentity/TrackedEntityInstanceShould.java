@@ -47,7 +47,7 @@ public class TrackedEntityInstanceShould {
         TrackedEntityInstance trackedEntityInstance = objectMapper.readValue("{\n" +
                 "\n" +
                 "    \"lastUpdated\": \"2014-03-28T12:39:39.372+0000\",\n" +
-                "    \"trackedEntity\": \"nEenWmSyUEp\",\n" +
+                "    \"trackedEntityType\": \"nEenWmSyUEp\",\n" +
                 "    \"created\": \"2014-03-28T12:39:39.372+0000\",\n" +
                 "    \"orgUnit\": \"DiszpKrYNg8\",\n" +
                 "    \"trackedEntityInstance\": \"CVUuL8RIpPI\",\n" +

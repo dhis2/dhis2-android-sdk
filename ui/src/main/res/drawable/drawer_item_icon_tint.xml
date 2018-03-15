@@ -27,13 +27,7 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/button_dropdown"
-    android:layout_width="64dp"
-    android:layout_height="match_parent"
-    android:layout_weight="1"
-    android:adjustViewBounds="true"
-    android:background="@drawable/button_background_light"
-    android:contentDescription="@string/stub_description"
-    app:srcCompat="@drawable/ic_dropdown_grey" />
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/color_primary_default" android:state_checked="true" />
+    <item android:color="@color/color_text_secondary" />
+</selector>

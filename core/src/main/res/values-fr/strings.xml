@@ -284,4 +284,8 @@
     <string name="downloaded_with_errors">Téléchargement completé avec des erreurs</string>
     <string name="download_complete">Téléchargement completé</string>
     <string name="download_error_try_again">Erreur de téléchargement - veillez reessayer</string>
+
+    <string name="default_synchronisation_error">"Une erreur s'est produite lors de la synchronisation avec le serveur. Contactez l'administrateur de votre serveur"</string>
+    <string name="details">"Détails"</string>
+    <string name="pull">Démarrage du téléchargement...</string>
 </resources>

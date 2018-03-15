@@ -32,6 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -97,8 +98,8 @@ public class WrapperFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        Drawable buttonDrawable = DrawableCompat.wrap(ContextCompat
-                .getDrawable(getActivity(), R.drawable.ic_menu));
+        Drawable buttonDrawable = DrawableCompat.wrap(VectorDrawableCompat.create(getContext().getResources(),
+                R.drawable.ic_menu, getContext().getTheme()));
         DrawableCompat.setTint(buttonDrawable, ContextCompat
                 .getColor(getContext(), android.R.color.white));
 

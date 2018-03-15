@@ -43,6 +43,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.otto.Subscribe;
@@ -51,6 +52,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.DhisService;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.job.NetworkJob;
 import org.hisp.dhis.android.sdk.network.APIException;
@@ -75,7 +77,9 @@ public class LoginActivity extends Activity implements OnClickListener {
     private EditText serverEditText;
     private Button loginButton;
     private ProgressBar progressBar;
+    private TextView progressText;
     private View viewsContainer;
+    private boolean isPulling;
 
     private AppPreferences mPrefs;
 
@@ -98,6 +102,9 @@ public class LoginActivity extends Activity implements OnClickListener {
     public void onResume() {
         super.onResume();
         Dhis2Application.bus.register(this);
+        if (isPulling) {
+            DhisService.loadInitialData(LoginActivity.this);
+        }
     }
 
     /**
@@ -139,6 +146,8 @@ public class LoginActivity extends Activity implements OnClickListener {
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
+        progressText = (TextView) findViewById(R.id.progress_text);
+        progressText.setVisibility(View.GONE);
         loginButton.setOnClickListener(this);
     }
 
@@ -187,8 +196,29 @@ public class LoginActivity extends Activity implements OnClickListener {
 
     @Subscribe
     public void onReceivedUiEvent(UiEvent uiEvent) {
-        if (uiEvent.getEventType().equals(UiEvent.UiEventType.SYNCING_END)) {
+        if (uiEvent.getEventType().equals(UiEvent.UiEventType.INITIAL_SYNCING_END)) {
+            isPulling = false;
             launchMainActivity();
+        }
+    }
+
+    @Subscribe
+    public void onLoadingMessageEvent(final LoadingMessageEvent event) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                setText(event);
+            }
+        });
+    }
+
+    private void setText(LoadingMessageEvent event)
+    {
+        if(event!=null) {
+            if (event.message != null) {
+                progressText.setText(event.message);
+            }
         }
     }
 
@@ -206,6 +236,8 @@ public class LoginActivity extends Activity implements OnClickListener {
                 LoadingController.enableLoading(this, ResourceType.PROGRAMRULEVARIABLES);
                 LoadingController.enableLoading(this, ResourceType.PROGRAMRULEACTIONS);
                 LoadingController.enableLoading(this, ResourceType.RELATIONSHIPTYPES);
+                LoadingController.enableLoading(this, ResourceType.EVENTS);
+                isPulling=true;
                 DhisService.loadInitialData(LoginActivity.this);
             } else {
                 onLoginFail(result.getResponseHolder().getApiException());
@@ -223,6 +255,7 @@ public class LoginActivity extends Activity implements OnClickListener {
         viewsContainer.startAnimation(anim);
         viewsContainer.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
+        progressText.setVisibility(View.VISIBLE);
     }
 
     private void showLoginFailedDialog(String error) {
@@ -256,14 +289,9 @@ public class LoginActivity extends Activity implements OnClickListener {
     private void showLoginDialog() {
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.in_down);
         progressBar.setVisibility(View.GONE);
+        progressText.setVisibility(View.GONE);
         viewsContainer.setVisibility(View.VISIBLE);
         viewsContainer.startAnimation(anim);
-    }
-
-    private void handleUser() {
-        mPrefs.putServerUrl(serverEditText.getText().toString());
-        mPrefs.putUserName(usernameEditText.getText().toString());
-        launchMainActivity();
     }
 
     public void launchMainActivity() {

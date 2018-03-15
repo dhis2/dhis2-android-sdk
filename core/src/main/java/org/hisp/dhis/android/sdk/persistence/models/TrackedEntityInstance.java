@@ -29,11 +29,10 @@
 
 package org.hisp.dhis.android.sdk.persistence.models;
 
-import android.util.Log;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
@@ -42,6 +41,7 @@ import com.raizlabs.android.dbflow.sql.language.Update;
 
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.utils.serializers.TrackedEntityInstanceTrackedEntitySerializer;
 import org.hisp.dhis.android.sdk.utils.api.CodeGenerator;
 
 import java.io.Serializable;
@@ -52,6 +52,7 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(databaseName = Dhis2Database.NAME)
+@JsonSerialize(using = TrackedEntityInstanceTrackedEntitySerializer.class)
 public class TrackedEntityInstance extends BaseSerializableModel implements Serializable {
 
     @JsonIgnore
@@ -172,6 +173,11 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
 
     public void setTrackedEntity(String trackedEntity) {
         this.trackedEntity = trackedEntity;
+    }
+
+    @JsonProperty("trackedEntityType")
+    public void setTrackedEntityType(String trackedEntityType) {
+        this.trackedEntity = trackedEntityType;
     }
 
     public String getOrgUnit() {

@@ -53,6 +53,8 @@ public class SystemInfo extends BaseModel {
     @Column(name = "serverDate")
     DateTime serverDate;
 
+    @JsonProperty("version")
+    @Column(name = "version")
     String version;
 
     @JsonAnySetter
@@ -80,7 +82,7 @@ public class SystemInfo extends BaseModel {
         return version;
     }
 
-    public float getVersionAsFloat() {
+    public float getVersionNumber() {
         return removeNonNumericCharacters(version);
     }
 

@@ -59,14 +59,13 @@ final class UserController {
         QUERY_PARAMS.put("fields", "id,created,lastUpdated,name,displayName," +
                 "firstName,surname,gender,birthday,introduction," +
                 "education,employer,interests,jobTitle,languages,email,phoneNumber," +
-                "teiSearchOrganisationUnits[id],organisationUnits[id]");
+                "teiSearchOrganisationUnits[id],organisationUnits[id],programs");
         UserAccount userAccount;
         if(DhisController.getInstance().isLoggedInServerWithLatestApiVersion()){
-            userAccount = dhisApi
-                    .getCurrentUserAccountOnLatestApi(QUERY_PARAMS);
+            userAccount = dhisApi.getCurrentUserAccount(QUERY_PARAMS);
         }else{
             userAccount= dhisApi
-                    .getCurrentUserAccountOnDeprecatedApi(QUERY_PARAMS);
+                    .getDeprecatedCurrentUserAccount(QUERY_PARAMS);
         }
 
         // if we got here, it means http

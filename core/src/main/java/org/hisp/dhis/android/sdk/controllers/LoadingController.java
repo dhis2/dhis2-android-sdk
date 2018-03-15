@@ -105,7 +105,14 @@ public final class LoadingController {
         UiUtils.postProgressMessage(context.getString(org.hisp.dhis.android.sdk.R.string.finishing_up),
                 LoadingMessageEvent.EventType.STARTUP);
         if (!MetaDataController.isDataLoaded(context)) {
+            Log.d(CLASS_TAG, "loading initial metadata");
             loadMetaData(context, SyncStrategy.DOWNLOAD_ALL, dhisApi);
+            Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.INITIAL_SYNCING_END));
+            String message = "";
+            message = context.getString(R.string.finishing_up);
+            UiUtils.postProgressMessage(message, LoadingMessageEvent.EventType.STARTUP);
+            loadDataValues(context, SyncStrategy.DOWNLOAD_ALL, dhisApi);
+            Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.INITIAL_SYNCING_END));
         } else if (!TrackerController.isDataLoaded(context)) {
             Log.d(CLASS_TAG, "loading initial datavalues");
             String message = "";

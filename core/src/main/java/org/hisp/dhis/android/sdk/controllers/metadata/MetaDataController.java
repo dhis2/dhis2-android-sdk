@@ -964,8 +964,9 @@ public final class MetaDataController extends ResourceController {
                 .getProgramRules(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.PROGRAMRULES);
         List<ProgramRule> validProgramRules = new ArrayList<>();
         for(ProgramRule programRule : programRules){
-            if(programRule.getCondition()!=null && programRule.getCondition().isEmpty())
+            if(programRule.getCondition()!=null && !programRule.getCondition().isEmpty()) {
                 validProgramRules.add(programRule);
+            }
         }
         saveResourceDataFromServer(ResourceType.PROGRAMRULES, dhisApi, validProgramRules, getProgramRules(), serverDateTime);
     }

@@ -287,4 +287,5 @@
 
     <string name="default_synchronisation_error">"Hubo un error durante la sincronización con el servidor. Póngase en contacto con el administrador del servidor"</string>
     <string name="details">"Detalles"</string>
+    <string name="pull">Iniciando Descarga...</string>
 </resources>

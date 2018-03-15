@@ -209,7 +209,6 @@ public final class DhisController {
 
     private static void readSession() {
         getInstance().session = LastUpdatedManager.getInstance().get();
-        getInstance().dhisApi = null;
 
         if (isUserLoggedIn()) {
             getInstance().dhisApi = RepoManager.createService(

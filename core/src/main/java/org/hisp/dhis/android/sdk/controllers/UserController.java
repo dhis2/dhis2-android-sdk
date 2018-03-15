@@ -35,7 +35,6 @@ import com.squareup.okhttp.HttpUrl;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.network.SessionManager;
 import org.hisp.dhis.android.sdk.network.APIException;
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.network.Credentials;
 import org.hisp.dhis.android.sdk.network.Session;
@@ -60,9 +59,14 @@ final class UserController {
         QUERY_PARAMS.put("fields", "id,created,lastUpdated,name,displayName," +
                 "firstName,surname,gender,birthday,introduction," +
                 "education,employer,interests,jobTitle,languages,email,phoneNumber," +
-                "teiSearchOrganisationUnits[id],organisationUnits[id]");
-        UserAccount userAccount = dhisApi
-                .getCurrentUserAccount(QUERY_PARAMS);
+                "teiSearchOrganisationUnits[id],organisationUnits[id],programs");
+        UserAccount userAccount;
+        if(DhisController.getInstance().isLoggedInServerWithLatestApiVersion()){
+            userAccount = dhisApi.getCurrentUserAccount(QUERY_PARAMS);
+        }else{
+            userAccount= dhisApi
+                    .getDeprecatedCurrentUserAccount(QUERY_PARAMS);
+        }
 
         // if we got here, it means http
         // request was executed successfully
@@ -86,18 +90,5 @@ final class UserController {
         Delete.tables(
                 UserAccount.class
         );
-    }
-
-    public UserAccount updateUserAccount() throws APIException {
-        final Map<String, String> QUERY_PARAMS = new HashMap<>();
-        QUERY_PARAMS.put("fields", "id,created,lastUpdated,name,displayName," +
-                "firstName,surname,gender,birthday,introduction," +
-                "education,employer,interests,jobTitle,languages,email,phoneNumber," +
-                "organisationUnits[id]");
-        UserAccount userAccount =
-                dhisApi.getCurrentUserAccount(QUERY_PARAMS);
-        // update userAccount in database
-        userAccount.save();
-        return userAccount;
     }
 }

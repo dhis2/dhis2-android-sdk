@@ -44,4 +44,9 @@ public interface ProgramService {
                                        @Query("filter") @Where Filter<Program, String> uids,
                                        @Query("paging") Boolean paging);
 
+    @GET("programs")
+    Call<Payload<Program>> getProgramsForAccess(@Query("fields") @Which Fields<Program> fields,
+                                                @Query("filter") @Where Filter<Program, String> lastUpdated,
+                                                @Query("paging") Boolean paging);
+
 }

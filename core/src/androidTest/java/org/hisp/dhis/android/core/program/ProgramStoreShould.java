@@ -86,7 +86,8 @@ public class ProgramStoreShould extends AbsStoreTestCase {
             Columns.RELATIONSHIP_TEXT,
             Columns.RELATED_PROGRAM,
             Columns.TRACKED_ENTITY,
-            Columns.CATEGORY_COMBO
+            Columns.CATEGORY_COMBO,
+            Columns.ACCESS_DATA_WRITE
     };
 
     //BaseIdentifiableModel attributes:
@@ -129,6 +130,8 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     private static final Long CATEGORY_COMBO_ID = 4L;
 
     private static final String CATEGORY_COMBO = "CategoryComboUid";
+    
+    private static final Boolean ACCESS_DATA_WRITE = true;
 
     private final Date date;
     private final String dateString;
@@ -190,7 +193,8 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 RELATIONSHIP_TEXT,
                 null,
                 TRACKED_ENTITY,
-                CATEGORY_COMBO
+                CATEGORY_COMBO,
+                ACCESS_DATA_WRITE
         );
 
         Cursor cursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null, null);
@@ -226,8 +230,9 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 RELATIONSHIP_TEXT,
                 null,
                 TRACKED_ENTITY,
-                CATEGORY_COMBO
-        ).isExhausted();
+                CATEGORY_COMBO,
+                toInteger(ACCESS_DATA_WRITE)
+                ).isExhausted();
     }
 
     @Test
@@ -252,7 +257,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE, INCIDENT_DATE_LABEL,
                 REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD, IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A,
                 SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES, USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE,
-                deferredRelationshipTypeUid, RELATIONSHIP_TEXT, UID2, deferredTrackedEntityUid, deferredCategoryComboUid
+                deferredRelationshipTypeUid, RELATIONSHIP_TEXT, UID2, deferredTrackedEntityUid, deferredCategoryComboUid, ACCESS_DATA_WRITE
         );
 
         long rowId2 = store.insert(
@@ -261,7 +266,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 VERSION, ONLY_ENROLL_ONCE, ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE, INCIDENT_DATE_LABEL,
                 REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD, IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A,
                 SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES, USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE,
-                RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, UID, TRACKED_ENTITY, CATEGORY_COMBO
+                RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, UID, TRACKED_ENTITY, CATEGORY_COMBO, ACCESS_DATA_WRITE
         );
         database().setTransactionSuccessful();
         database().endTransaction();
@@ -276,7 +281,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 VERSION, toInteger(ONLY_ENROLL_ONCE), ENROLLMENT_DATE_LABEL, toInteger(DISPLAY_INCIDENT_DATE), INCIDENT_DATE_LABEL,
                 toInteger(REGISTRATION), toInteger(SELECT_ENROLLMENT_DATES_IN_FUTURE), toInteger(DATA_ENTRY_METHOD), toInteger(IGNORE_OVERDUE_EVENTS), toInteger(RELATIONSHIP_FROM_A),
                 toInteger(SELECT_INCIDENT_DATES_IN_FUTURE), toInteger(CAPTURE_COORDINATES), toInteger(USE_FIRST_STAGE_DURING_REGISTRATION), toInteger(DISPLAY_FRONT_PAGE_LIST), PROGRAM_TYPE, deferredRelationshipTypeUid, RELATIONSHIP_TEXT,
-                UID2, deferredTrackedEntityUid, deferredCategoryComboUid
+                UID2, deferredTrackedEntityUid, deferredCategoryComboUid, toInteger(ACCESS_DATA_WRITE)
         );
         assertThatCursor(cursor).hasRow(
                 UID2, CODE, NAME, DISPLAY_NAME, dateString,
@@ -284,7 +289,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 DISPLAY_DESCRIPTION, VERSION, toInteger(ONLY_ENROLL_ONCE), ENROLLMENT_DATE_LABEL, toInteger(DISPLAY_INCIDENT_DATE),
                 INCIDENT_DATE_LABEL, toInteger(REGISTRATION), toInteger(SELECT_ENROLLMENT_DATES_IN_FUTURE), toInteger(DATA_ENTRY_METHOD), toInteger(IGNORE_OVERDUE_EVENTS),
                 toInteger(RELATIONSHIP_FROM_A), toInteger(SELECT_INCIDENT_DATES_IN_FUTURE), toInteger(CAPTURE_COORDINATES), toInteger(USE_FIRST_STAGE_DURING_REGISTRATION), toInteger(DISPLAY_FRONT_PAGE_LIST), PROGRAM_TYPE,
-                RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, UID, TRACKED_ENTITY, CATEGORY_COMBO
+                RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, UID, TRACKED_ENTITY, CATEGORY_COMBO, toInteger(ACCESS_DATA_WRITE)
         );
         assertThatCursor(cursor).isExhausted();
     }
@@ -293,14 +298,14 @@ public class ProgramStoreShould extends AbsStoreTestCase {
     public void throw_sqlite_constraint_exception_when__persistProgramWithInvalidRelationshipTypeForeignKey() {
         store.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, RELATIONSHIP_FROM_A, null, null, null, null, PROGRAM_TYPE,
-                "wrong", null, null, TRACKED_ENTITY, CATEGORY_COMBO);
+                "wrong", null, null, TRACKED_ENTITY, CATEGORY_COMBO, ACCESS_DATA_WRITE);
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void throw_sqlite_constraint_exception_when__persistProgramWithInvalidTrackedEntityForeignKey() {
         store.insert(UID, null, NAME, null, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, RELATIONSHIP_FROM_A, null, null, null, null, PROGRAM_TYPE,
-                RELATIONSHIP_TYPE, null, null, "wrong", CATEGORY_COMBO);
+                RELATIONSHIP_TYPE, null, null, "wrong", CATEGORY_COMBO, ACCESS_DATA_WRITE);
     }
 
     @Test
@@ -308,14 +313,14 @@ public class ProgramStoreShould extends AbsStoreTestCase {
         long rowId = store.insert(
                 UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, RELATIONSHIP_FROM_A, null,
-                null, null, null, PROGRAM_TYPE, null, null, null, null, null);
+                null, null, null, PROGRAM_TYPE, null, null, null, null, null, false);
 
         Cursor cursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, NAME, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, toInteger(RELATIONSHIP_FROM_A), null,
-                null, null, null, PROGRAM_TYPE, null, null, null, null, null).isExhausted();
+                null, null, null, PROGRAM_TYPE, null, null, null, null, null, toInteger(false)).isExhausted();
     }
 
     @Test
@@ -350,7 +355,8 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 RELATIONSHIP_TEXT,
                 null,
                 TRACKED_ENTITY,
-                CATEGORY_COMBO
+                CATEGORY_COMBO,
+                ACCESS_DATA_WRITE
         );
 
         database().delete(RelationshipTypeModel.TABLE,
@@ -392,7 +398,8 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 RELATIONSHIP_TEXT,
                 null,
                 TRACKED_ENTITY,
-                CATEGORY_COMBO
+                CATEGORY_COMBO,
+                ACCESS_DATA_WRITE
         );
 
         database().delete(TrackedEntityModel.TABLE,
@@ -429,7 +436,8 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD, IGNORE_OVERDUE_EVENTS,
                 RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
                 USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE,
-                null, null, null, null, null, UID
+                null, null, null, null, null,
+                ACCESS_DATA_WRITE, UID
         );
 
         // check that store returns 1 when successfully update
@@ -475,7 +483,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
                 IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
                 USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE,
-                RELATIONSHIP_TEXT, null, TRACKED_ENTITY, CATEGORY_COMBO);
+                RELATIONSHIP_TEXT, null, TRACKED_ENTITY, CATEGORY_COMBO, ACCESS_DATA_WRITE);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -485,7 +493,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
                 IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
                 USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE,
-                RELATIONSHIP_TEXT, null, TRACKED_ENTITY, CATEGORY_COMBO, UID);
+                RELATIONSHIP_TEXT, null, TRACKED_ENTITY, CATEGORY_COMBO, ACCESS_DATA_WRITE, UID);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -495,7 +503,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 INCIDENT_DATE_LABEL, REGISTRATION, SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD,
                 IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A, SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES,
                 USE_FIRST_STAGE_DURING_REGISTRATION, DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE,
-                RELATIONSHIP_TEXT, null, TRACKED_ENTITY, CATEGORY_COMBO,null);
+                RELATIONSHIP_TEXT, null, TRACKED_ENTITY, CATEGORY_COMBO,ACCESS_DATA_WRITE,null);
     }
 
     @Test(expected = IllegalArgumentException.class)

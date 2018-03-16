@@ -26,39 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.program;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.common.BaseEndpointCall;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Field;
+import retrofit2.Response;
 
-import java.util.Date;
+public final class ProgramAccessEndpointCall extends BaseEndpointCall<Program> {
+    private final GenericCallData data;
+    private final ProgramService programService;
 
-// TODO: Tests
-@AutoValue
-public abstract class UserRole extends BaseIdentifiableObject {
-
-    public static final Field<UserRole, String> uid = Field.create(UID);
-    public static final Field<UserRole, String> code = Field.create(CODE);
-    public static final Field<UserRole, String> name = Field.create(NAME);
-    public static final Field<UserRole, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<UserRole, String> created = Field.create(CREATED);
-    public static final Field<UserRole, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<UserRole, Boolean> deleted = Field.create(DELETED);
-
-    @JsonCreator
-    public static UserRole create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(DELETED) Boolean deleted) {
-
-        return new AutoValue_UserRole(uid, code, name, displayName, created, lastUpdated, deleted);
+    private ProgramAccessEndpointCall(GenericCallData data, ProgramService programService) {
+        this.data = data;
+        this.programService = programService;
     }
+
+    @Override
+    protected Response<Payload<Program>> callBody() throws Exception {
+        String lastUpdated = data.resourceHandler().getLastUpdated(ResourceModel.Type.DATA_SET);
+        return programService.getProgramsForAccess(Program.uidAndAccessRead, Program.lastUpdated.gt(lastUpdated),
+                Boolean.FALSE).execute();
+    }
+
+    public interface Factory {
+        ProgramAccessEndpointCall create(GenericCallData data, ProgramService service);
+    }
+
+    public static final ProgramAccessEndpointCall.Factory FACTORY = new ProgramAccessEndpointCall.Factory() {
+        @Override
+        public ProgramAccessEndpointCall create(GenericCallData data, ProgramService service) {
+            return new ProgramAccessEndpointCall(data, service);
+        }
+    };
 }

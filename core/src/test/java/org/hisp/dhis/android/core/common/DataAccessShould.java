@@ -26,39 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.common;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+import org.junit.Test;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Field;
+import java.io.IOException;
+import java.text.ParseException;
 
-import java.util.Date;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-// TODO: Tests
-@AutoValue
-public abstract class UserRole extends BaseIdentifiableObject {
+public class DataAccessShould extends BaseObjectShould implements ObjectShould {
 
-    public static final Field<UserRole, String> uid = Field.create(UID);
-    public static final Field<UserRole, String> code = Field.create(CODE);
-    public static final Field<UserRole, String> name = Field.create(NAME);
-    public static final Field<UserRole, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<UserRole, String> created = Field.create(CREATED);
-    public static final Field<UserRole, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<UserRole, Boolean> deleted = Field.create(DELETED);
+    public DataAccessShould() {
+        super("common/data_access.json");
+    }
 
-    @JsonCreator
-    public static UserRole create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(DELETED) Boolean deleted) {
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        DataAccess dataAccess = objectMapper.readValue(jsonStream, DataAccess.class);
 
-        return new AutoValue_UserRole(uid, code, name, displayName, created, lastUpdated, deleted);
+        assertThat(dataAccess.read()).isEqualTo(true);
+        assertThat(dataAccess.write()).isEqualTo(false);
     }
 }

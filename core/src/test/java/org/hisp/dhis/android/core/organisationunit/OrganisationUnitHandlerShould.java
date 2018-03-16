@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import org.assertj.core.util.Lists;
+import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
@@ -70,6 +72,8 @@ public class OrganisationUnitHandlerShould {
     @Mock
     private Program program;
 
+    private String PROGRAM_UID = "test_program_uid";
+
     // object to test
     private OrganisationUnitHandler organisationUnitHandler;
 
@@ -85,10 +89,10 @@ public class OrganisationUnitHandlerShould {
         MockitoAnnotations.initMocks(this);
         organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore);
+                organisationUnitProgramLinkStore, Sets.newHashSet(Lists.newArrayList(PROGRAM_UID)));
 
         when(organisationUnit.uid()).thenReturn("test_organisation_unit_uid");
-        when(user.uid()).thenReturn("test_user_uid");
+        when(user.uid()).thenReturn(PROGRAM_UID);
 
         organisationUnits = new ArrayList<>();
         organisationUnits.add(organisationUnit);

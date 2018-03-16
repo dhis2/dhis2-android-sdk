@@ -66,7 +66,8 @@ public interface ProgramStore extends DeletableStore {
             @Nullable String relationshipText,
             @Nullable String relatedProgram,
             @Nullable String trackedEntity,
-            @Nullable String categoryCombo
+            @Nullable String categoryCombo,
+            @Nullable Boolean accessDataWrite
     );
 
     int update(
@@ -100,6 +101,7 @@ public interface ProgramStore extends DeletableStore {
             @Nullable String relatedProgram,
             @Nullable String trackedEntity,
             @Nullable String categoryCombo,
+            @Nullable Boolean accessDataWrite,
             @NonNull String whereProgramUid);
 
     int delete(@NonNull String uid);

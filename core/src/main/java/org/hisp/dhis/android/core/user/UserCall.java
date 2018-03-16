@@ -56,7 +56,6 @@ public final class UserCall implements Call<Response<User>> {
     private final UserCredentialsStore userCredentialsStore;
     private final UserRoleStore userRoleStore;
     private final UserStore userStore;
-    private final UserRoleProgramLinkStore userRoleProgramLinkStore;
     private final ResourceStore resourceStore;
     // server date time
     private final Date serverDate;
@@ -68,8 +67,7 @@ public final class UserCall implements Call<Response<User>> {
                     UserCredentialsStore userCredentialsStore,
                     UserRoleStore userRoleStore,
                     ResourceStore resourceStore,
-                    Date serverDate,
-                    UserRoleProgramLinkStore userRoleProgramLinkStore) {
+                    Date serverDate) {
         this.userService = userService;
         this.databaseAdapter = databaseAdapter;
         this.userCredentialsStore = userCredentialsStore;
@@ -77,7 +75,6 @@ public final class UserCall implements Call<Response<User>> {
         this.userStore = userStore;
         this.resourceStore = resourceStore;
         this.serverDate = new Date(serverDate.getTime());
-        this.userRoleProgramLinkStore = userRoleProgramLinkStore;
     }
 
     @Override
@@ -99,7 +96,7 @@ public final class UserCall implements Call<Response<User>> {
         if (response.isSuccessful()) {
             UserHandler userHandler = new UserHandler(userStore);
             UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
-            UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore, userRoleProgramLinkStore);
+            UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore);
             ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
             Transaction transaction = databaseAdapter.beginNewTransaction();
@@ -141,9 +138,7 @@ public final class UserCall implements Call<Response<User>> {
                         UserCredentials.created,
                         UserCredentials.lastUpdated,
                         UserCredentials.username,
-                        UserCredentials.userRoles.with(UserRole.uid,
-                                UserRole.programs.with(Program.uid),
-                                UserRole.dataSets.with(DataSet.uid))
+                        UserCredentials.userRoles.with(UserRole.uid)
                 ),
                 User.organisationUnits.with(
                         OrganisationUnit.uid,

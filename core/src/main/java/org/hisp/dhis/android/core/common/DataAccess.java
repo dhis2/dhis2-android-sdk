@@ -26,39 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.common;
+
+import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import java.util.Date;
-
-// TODO: Tests
 @AutoValue
-public abstract class UserRole extends BaseIdentifiableObject {
+public abstract class DataAccess {
+    private static final String READ = "read";
+    private static final String WRITE = "write";
 
-    public static final Field<UserRole, String> uid = Field.create(UID);
-    public static final Field<UserRole, String> code = Field.create(CODE);
-    public static final Field<UserRole, String> name = Field.create(NAME);
-    public static final Field<UserRole, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<UserRole, String> created = Field.create(CREATED);
-    public static final Field<UserRole, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<UserRole, Boolean> deleted = Field.create(DELETED);
+    public static final Field<DataAccess, Boolean> read = Field.create(READ);
+    public static final Field<DataAccess, Boolean> write = Field.create(WRITE);
+
+    public static final Fields<DataAccess> allFields = Fields.<DataAccess>builder().fields(
+            read, write).build();
+
+    @Nullable
+    @JsonProperty(READ)
+    public abstract Boolean read();
+
+    @Nullable
+    @JsonProperty(WRITE)
+    public abstract Boolean write();
 
     @JsonCreator
-    public static UserRole create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(DELETED) Boolean deleted) {
-
-        return new AutoValue_UserRole(uid, code, name, displayName, created, lastUpdated, deleted);
+    public static DataAccess create(@JsonProperty(READ) Boolean read,
+                                    @JsonProperty(WRITE) Boolean write) {
+        return new AutoValue_DataAccess(read, write);
     }
 }

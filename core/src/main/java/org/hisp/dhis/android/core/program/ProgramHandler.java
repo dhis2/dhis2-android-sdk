@@ -92,7 +92,8 @@ public class ProgramHandler {
                     program.selectIncidentDatesInFuture(), program.captureCoordinates(),
                     program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
                     program.programType(), relationshipTypeUid, program.relationshipText(),
-                    relatedProgramUid, trackedEntityUid, categoryCombo, program.uid());
+                    relatedProgramUid, trackedEntityUid, categoryCombo,
+                    program.access().data().write(), program.uid());
 
             if (updatedRow <= 0) {
                 programStore.insert(
@@ -105,7 +106,7 @@ public class ProgramHandler {
                         program.selectIncidentDatesInFuture(), program.captureCoordinates(),
                         program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
                         program.programType(), relationshipTypeUid, program.relationshipText(),
-                        relatedProgramUid, trackedEntityUid, categoryCombo);
+                        relatedProgramUid, trackedEntityUid, categoryCombo, program.access().data().write());
             }
         }
         // programStageHandler will invoke programStageSectionHandler, programStageDataElementHandler,

@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingModel;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
@@ -100,7 +101,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
-    static int VERSION = 8;
+    static int VERSION = 9;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -469,6 +470,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             ProgramStageSectionModel.Columns.LAST_UPDATED + " TEXT," +
             ProgramStageSectionModel.Columns.SORT_ORDER + " INTEGER," +
             ProgramStageSectionModel.Columns.PROGRAM_STAGE + " TEXT NOT NULL," +
+            ProgramStageSectionModel.Columns.DESKTOP_RENDER_TYPE + " TEXT," +
+            ProgramStageSectionModel.Columns.MOBILE_RENDER_TYPE + " TEXT," +
             " FOREIGN KEY ( " + ProgramStageSectionModel.Columns.PROGRAM_STAGE + ")" +
             " REFERENCES " + ProgramStageModel.TABLE + " (" + ProgramStageModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
@@ -1052,6 +1055,20 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             " UNIQUE (" + ObjectStyleModel.Columns.UID + ")"
             );
 
+    private static final String CREATE_VALUE_TYPE_DEVICE_RENDERING_TABLE =
+            SQLStatementBuilder.createModelTable(ValueTypeDeviceRenderingModel.TABLE,
+                    ValueTypeDeviceRenderingModel.Columns.UID + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.OBJECT_TABLE + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.DEVICE_TYPE + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.TYPE + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.MIN + " INTEGER," +
+                            ValueTypeDeviceRenderingModel.Columns.MAX + " INTEGER," +
+                            ValueTypeDeviceRenderingModel.Columns.STEP + " INTEGER," +
+                            ValueTypeDeviceRenderingModel.Columns.DECIMAL_POINTS + " INTEGER," +
+                            " UNIQUE (" + ValueTypeDeviceRenderingModel.Columns.UID + ", " +
+                            ValueTypeDeviceRenderingModel.Columns.DEVICE_TYPE + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1112,6 +1129,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_DATA_VALUE_TABLE);
         database.execSQL(CREATE_PERIOD_TABLE);
         database.execSQL(CREATE_OBJECT_STYLE_TABLE);
+        database.execSQL(CREATE_VALUE_TYPE_DEVICE_RENDERING_TABLE);
         return database;
     }
 

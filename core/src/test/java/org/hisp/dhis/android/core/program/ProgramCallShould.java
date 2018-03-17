@@ -33,10 +33,11 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -171,7 +172,10 @@ public class ProgramCallShould {
     private GenericHandler<DataElement> dataElementHandler;
 
     @Mock
-    private ObjectStyleHandler styleHandler;
+    private DictionaryTableHandler<ObjectStyle> styleHandler;
+
+    @Mock
+    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     // the call we are testing
     private Call<Response<Payload<Program>>> programSyncCall;
@@ -191,8 +195,7 @@ public class ProgramCallShould {
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
                 programStageDataElementStore, programStageSectionStore, programStageStore,
-                relationshipStore, dataElementHandler, styleHandler
-        );
+                relationshipStore, dataElementHandler, styleHandler, renderTypeHandler);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.access()).thenReturn(access);
@@ -241,9 +244,7 @@ public class ProgramCallShould {
                 Program.relationshipFromA, Program.relationshipText,
                 Program.selectEnrollmentDatesInFuture, Program.selectIncidentDatesInFuture,
                 Program.useFirstStageDuringRegistration,
-                Program.relatedProgram.with(
-                        Program.uid
-                ),
+                Program.relatedProgram.with(Program.uid),
                 Program.programStages.with(
                         ProgramStage.uid, ProgramStage.code, ProgramStage.name, ProgramStage.displayName,
                         ProgramStage.created, ProgramStage.lastUpdated, ProgramStage.allowGenerateNextVisit,
@@ -259,22 +260,19 @@ public class ProgramCallShould {
                                 ProgramStageDataElement.allowProvidedElsewhere, ProgramStageDataElement.compulsory,
                                 ProgramStageDataElement.deleted, ProgramStageDataElement.displayInReports,
                                 ProgramStageDataElement.sortOrder,
-                                ProgramStageDataElement.programStage.with(
-                                        ProgramStage.uid
-                                ),
+                                ProgramStageDataElement.programStage.with(ProgramStage.uid),
                                 ProgramStageDataElement.dataElement.with(DataElement.allFields)
                         ),
                         ProgramStage.programStageSections.with(
                                 ProgramStageSection.uid, ProgramStageSection.code, ProgramStageSection.name,
                                 ProgramStageSection.displayName, ProgramStageSection.created,
                                 ProgramStageSection.lastUpdated, ProgramStageSection.sortOrder,
-                                ProgramStageSection.deleted, ProgramStageSection.dataElements.with(DataElement.uid),
-                                ProgramStageSection.programIndicators.with(
-                                        ProgramIndicator.uid,
-                                        ProgramIndicator.program.with(
-                                                Program.uid
-                                        )
-                                )
+                                ProgramStageSection.deleted,
+                                ProgramStageSection.dataElements.with(DataElement.uid),
+                                ProgramStageSection.programIndicators.with(ProgramIndicator.uid,
+                                        ProgramIndicator.program.with(Program.uid)
+                                ),
+                                ProgramStageSection.renderType
                         ),
                         ProgramStage.style.with(ObjectStyle.allFields)
                 ),
@@ -282,36 +280,20 @@ public class ProgramCallShould {
                         ProgramRule.uid, ProgramRule.code, ProgramRule.name, ProgramRule.displayName,
                         ProgramRule.created, ProgramRule.lastUpdated, ProgramRule.deleted,
                         ProgramRule.priority, ProgramRule.condition,
-                        ProgramRule.program.with(
-                                Program.uid
-                        ),
-                        ProgramRule.programStage.with(
-                                ProgramStage.uid
-                        ),
+                        ProgramRule.program.with(Program.uid),
+                        ProgramRule.programStage.with(ProgramStage.uid),
                         ProgramRule.programRuleActions.with(
                                 ProgramRuleAction.uid, ProgramRuleAction.code, ProgramRuleAction.name,
                                 ProgramRuleAction.displayName, ProgramRuleAction.created,
                                 ProgramRuleAction.lastUpdated, ProgramRuleAction.content, ProgramRuleAction.data,
                                 ProgramRuleAction.deleted, ProgramRuleAction.location,
                                 ProgramRuleAction.programRuleActionType,
-                                ProgramRuleAction.programRule.with(
-                                        ProgramRule.uid
-                                ),
-                                ProgramRuleAction.dataElement.with(
-                                        DataElement.uid
-                                ),
-                                ProgramRuleAction.programIndicator.with(
-                                        ProgramIndicator.uid
-                                ),
-                                ProgramRuleAction.programStage.with(
-                                        ProgramStage.uid
-                                ),
-                                ProgramRuleAction.programStageSection.with(
-                                        ProgramStageSection.uid
-                                ),
-                                ProgramRuleAction.trackedEntityAttribute.with(
-                                        TrackedEntityAttribute.uid
-                                )
+                                ProgramRuleAction.programRule.with(ProgramRule.uid),
+                                ProgramRuleAction.dataElement.with(DataElement.uid),
+                                ProgramRuleAction.programIndicator.with(ProgramIndicator.uid),
+                                ProgramRuleAction.programStage.with(ProgramStage.uid),
+                                ProgramRuleAction.programStageSection.with(ProgramStageSection.uid),
+                                ProgramRuleAction.trackedEntityAttribute.with(TrackedEntityAttribute.uid)
                         )
                 ),
                 Program.programRuleVariables.with(
@@ -319,18 +301,10 @@ public class ProgramCallShould {
                         ProgramRuleVariable.displayName, ProgramRuleVariable.created, ProgramRuleVariable.lastUpdated,
                         ProgramRuleVariable.deleted, ProgramRuleVariable.programRuleVariableSourceType,
                         ProgramRuleVariable.useCodeForOptionSet,
-                        ProgramRuleVariable.program.with(
-                                Program.uid
-                        ),
-                        ProgramRuleVariable.dataElement.with(
-                                DataElement.uid
-                        ),
-                        ProgramRuleVariable.programStage.with(
-                                ProgramStage.uid
-                        ),
-                        ProgramRuleVariable.trackedEntityAttribute.with(
-                                TrackedEntityAttribute.uid
-                        )
+                        ProgramRuleVariable.program.with(Program.uid),
+                        ProgramRuleVariable.dataElement.with(DataElement.uid),
+                        ProgramRuleVariable.programStage.with(ProgramStage.uid),
+                        ProgramRuleVariable.trackedEntityAttribute.with(TrackedEntityAttribute.uid)
                 ),
                 Program.programIndicators.with(
                         ProgramIndicator.uid, ProgramIndicator.code, ProgramIndicator.name,
@@ -340,9 +314,7 @@ public class ProgramCallShould {
                         ProgramIndicator.displayDescription, ProgramIndicator.decimals,
                         ProgramIndicator.deleted, ProgramIndicator.dimensionItem,
                         ProgramIndicator.displayInForm,
-                        ProgramIndicator.expression, ProgramIndicator.filter, ProgramIndicator.program.with(
-                                Program.uid
-                        )
+                        ProgramIndicator.expression, ProgramIndicator.filter, ProgramIndicator.program.with(Program.uid)
                 ),
                 Program.programTrackedEntityAttributes.with(
                         ProgramTrackedEntityAttribute.uid, ProgramTrackedEntityAttribute.code,
@@ -352,9 +324,7 @@ public class ProgramCallShould {
                         ProgramTrackedEntityAttribute.description, ProgramTrackedEntityAttribute.displayDescription,
                         ProgramTrackedEntityAttribute.allowFutureDate, ProgramTrackedEntityAttribute.deleted,
                         ProgramTrackedEntityAttribute.displayInList, ProgramTrackedEntityAttribute.mandatory,
-                        ProgramTrackedEntityAttribute.program.with(
-                                Program.uid
-                        ),
+                        ProgramTrackedEntityAttribute.program.with(Program.uid),
                         ProgramTrackedEntityAttribute.trackedEntityAttribute.with(
                                 TrackedEntityAttribute.uid, TrackedEntityAttribute.code,
                                 TrackedEntityAttribute.created, TrackedEntityAttribute.lastUpdated,
@@ -369,16 +339,12 @@ public class ProgramCallShould {
                                 TrackedEntityAttribute.unique, TrackedEntityAttribute.valueType,
                                 TrackedEntityAttribute.searchScope, TrackedEntityAttribute.optionSet.with(
                                         OptionSet.uid, OptionSet.version),
-                                TrackedEntityAttribute.style.with(ObjectStyle.allFields)
+                                TrackedEntityAttribute.style.with(ObjectStyle.allFields),
+                                TrackedEntityAttribute.renderType
                         )
                 ),
-                Program.trackedEntity.with(
-                        TrackedEntity.uid
-                ),
-                Program.categoryCombo.with(
-                        CategoryCombo.uid
-                ),
-
+                Program.trackedEntity.with(TrackedEntity.uid),
+                Program.categoryCombo.with(CategoryCombo.uid),
                 Program.relationshipType.with(
                         RelationshipType.uid, RelationshipType.code, RelationshipType.name,
                         RelationshipType.displayName, RelationshipType.created, RelationshipType.lastUpdated,

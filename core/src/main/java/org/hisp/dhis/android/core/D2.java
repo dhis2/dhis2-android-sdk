@@ -65,16 +65,21 @@ import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingModel;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingStore;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
@@ -270,6 +275,7 @@ public final class D2 {
     private final ObjectWithoutUidStore<DataValueModel> dataValueStore;
     private final ObjectWithoutUidStore<PeriodModel> periodStore;
     private final ObjectWithoutUidStore<ObjectStyleModel> objectStyleStore;
+    private final ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> valueTypeDeviceRenderingStore;
 
     //Handlers
     private final UserCredentialsHandler userCredentialsHandler;
@@ -281,7 +287,8 @@ public final class D2 {
     private final OrganisationUnitHandler organisationUnitHandler;
     private final GenericHandler<DataElement> dataElementHandler;
     private final OptionSetHandler optionSetHandler;
-    private final ObjectStyleHandler styleHandler;
+    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+    private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     //Generic Call Data
     private final GenericCallData genericCallData;
@@ -387,6 +394,7 @@ public final class D2 {
         this.dataValueStore = DataValueStore.create(databaseAdapter());
         this.periodStore = PeriodStore.create(databaseAdapter());
         this.objectStyleStore = ObjectStyleStore.create(databaseAdapter());
+        this.valueTypeDeviceRenderingStore = ValueTypeDeviceRenderingStore.create(databaseAdapter());
 
         //handlers
         userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
@@ -427,7 +435,8 @@ public final class D2 {
         // handlers
         this.optionSetHandler = OptionSetHandler.create(databaseAdapter);
         this.dataElementHandler = DataElementHandler.create(databaseAdapter, this.optionSetHandler);
-        this.styleHandler = ObjectStyleHandlerImpl.create(databaseAdapter);
+        this.styleHandler = ObjectStyleHandler.create(databaseAdapter);
+        this.renderTypeHandler = ValueTypeRenderingHandler.create(databaseAdapter);
 
         // data
         this.genericCallData = GenericCallData.create(databaseAdapter, new ResourceHandler(resourceStore), retrofit);
@@ -523,6 +532,7 @@ public final class D2 {
         deletableStoreList.add(dataValueStore);
         deletableStoreList.add(periodStore);
         deletableStoreList.add(objectStyleStore);
+        deletableStoreList.add(valueTypeDeviceRenderingStore);
         return new LogOutUserCallable(
                 deletableStoreList
         );
@@ -545,7 +555,7 @@ public final class D2 {
                 organisationUnitProgramLinkStore, categoryQuery,
                 categoryService, categoryHandler, categoryComboQuery, comboService,
                 categoryComboHandler, optionSetHandler, dataElementHandler, DataSetParentCall.FACTORY,
-                styleHandler, retrofit);
+                styleHandler, renderTypeHandler, retrofit);
     }
 
     @NonNull

@@ -27,19 +27,24 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class TrackedEntityAttributeHandler {
 
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
-    private final ObjectStyleHandler styleHandler;
+    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+    private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     public TrackedEntityAttributeHandler(TrackedEntityAttributeStore trackedEntityAttributeStore,
-                                         ObjectStyleHandler styleHandler) {
+                                         DictionaryTableHandler<ObjectStyle> styleHandler,
+                                         DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.styleHandler = styleHandler;
+        this.renderTypeHandler = renderTypeHandler;
     }
 
     public void handleTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
@@ -93,6 +98,8 @@ public class TrackedEntityAttributeHandler {
         }
 
         styleHandler.handle(trackedEntityAttribute.style(), trackedEntityAttribute.uid(),
+                TrackedEntityAttributeModel.TABLE);
+        renderTypeHandler.handle(trackedEntityAttribute.renderType(), trackedEntityAttribute.uid(),
                 TrackedEntityAttributeModel.TABLE);
     }
 }

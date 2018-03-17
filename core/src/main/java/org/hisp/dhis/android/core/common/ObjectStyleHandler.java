@@ -27,6 +27,25 @@
  */
 package org.hisp.dhis.android.core.common;
 
-public interface ObjectStyleHandler {
-    void handle(ObjectStyle style, String uid, String objectTable);
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+public class ObjectStyleHandler implements DictionaryTableHandler<ObjectStyle> {
+
+    private final ObjectWithoutUidStore<ObjectStyleModel> store;
+
+    ObjectStyleHandler(ObjectWithoutUidStore<ObjectStyleModel> store) {
+        this.store = store;
+    }
+
+    @Override
+    public void handle(ObjectStyle style, String uid, String objectTable) {
+        if (style != null) {
+            ObjectStyleModel model = ObjectStyleModel.fromPojo(style, uid, objectTable);
+            store.updateOrInsertWhere(model);
+        }
+    }
+
+    public static ObjectStyleHandler create(DatabaseAdapter databaseAdapter) {
+        return new ObjectStyleHandler(ObjectStyleStore.create(databaseAdapter));
+    }
 }

@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -60,6 +61,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
     private static final String UNIQUE = "unique";
     private static final String INHERIT = "inherit";
     private final static String STYLE = "style";
+    private final static String RENDER_TYPE = "renderType";
 
     public static final Field<TrackedEntityAttribute, String> uid
             = Field.create(UID);
@@ -109,6 +111,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
             = Field.create(INHERIT);
     public static final NestedField<TrackedEntityAttribute, ObjectStyle> style
             = NestedField.create(STYLE);
+    public static final NestedField<TrackedEntityAttribute, ValueTypeRendering> renderType
+            = NestedField.create(RENDER_TYPE);
 
     @Nullable
     @JsonProperty(PATTERN)
@@ -166,6 +170,10 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
     @JsonProperty(STYLE)
     public abstract ObjectStyle style();
 
+    @Nullable
+    @JsonProperty(RENDER_TYPE)
+    public abstract ValueTypeRendering renderType();
+
     @JsonCreator
     public static TrackedEntityAttribute create(
             @JsonProperty(UID) String uid,
@@ -192,6 +200,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
             @JsonProperty(UNIQUE) boolean unique,
             @JsonProperty(INHERIT) boolean inherit,
             @JsonProperty(STYLE) ObjectStyle style,
+            @JsonProperty(RENDER_TYPE) ValueTypeRendering renderType,
             @JsonProperty(DELETED) Boolean deleted
     ) {
         return new AutoValue_TrackedEntityAttribute(
@@ -199,7 +208,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
                 shortName, displayShortName, description, displayDescription,
                 pattern, sortOrderInListNoProgram, optionSet, valueType, expression, searchScope,
                 programScope, displayInListNoProgram, generated, displayOnVisitSchedule,
-                orgUnitScope, unique, inherit, style);
+                orgUnitScope, unique, inherit, style, renderType);
     }
 
 }

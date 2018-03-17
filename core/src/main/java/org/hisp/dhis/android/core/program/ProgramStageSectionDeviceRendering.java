@@ -25,38 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.program;
 
-public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
+import android.support.annotation.Nullable;
 
-    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-    DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
-                   DictionaryTableHandler<ObjectStyle> styleHandler) {
-        super(dataSetStore);
-        this.styleHandler = styleHandler;
-    }
+@AutoValue
+public abstract class ProgramStageSectionDeviceRendering {
+    private static final String TYPE = "type";
 
-    @Override
-    protected DataSetModel pojoToModel(DataSet dataSet) {
-        return DataSetModel.factory.fromPojo(dataSet);
-    }
+    @Nullable
+    @JsonProperty(TYPE)
+    public abstract ProgramStageSectionRenderingType type();
 
-    public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataSetHandler(
-                DataSetStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter));
-    }
+    @JsonCreator
+    public static ProgramStageSectionDeviceRendering create(
+            @JsonProperty(TYPE) ProgramStageSectionRenderingType type) {
 
-    @Override
-    protected void afterObjectPersisted(DataSet dataSet) {
-        styleHandler.handle(dataSet.style(), dataSet.uid(), DataSetModel.TABLE);
+        return new AutoValue_ProgramStageSectionDeviceRendering(type);
     }
 }

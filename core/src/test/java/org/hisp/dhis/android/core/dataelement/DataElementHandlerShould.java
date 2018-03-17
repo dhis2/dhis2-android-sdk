@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.dataelement;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +55,10 @@ public class DataElementHandlerShould {
     private GenericHandler<OptionSet> optionSetHandler;
 
     @Mock
-    private ObjectStyleHandler styleHandler;
+    private DictionaryTableHandler<ObjectStyle> styleHandler;
+
+    @Mock
+    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     @Mock
     private DataElement dataElement;
@@ -70,7 +75,7 @@ public class DataElementHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        dataElementHandler = new DataElementHandler(dataSetStore, optionSetHandler, styleHandler);
+        dataElementHandler = new DataElementHandler(dataSetStore, optionSetHandler, styleHandler, renderTypeHandler);
         when(dataElement.uid()).thenReturn("test_data_element_uid");
         when(dataElement.optionSet()).thenReturn(optionSet);
         when(dataElement.categoryCombo()).thenReturn(categoryCombo);
@@ -89,8 +94,14 @@ public class DataElementHandlerShould {
     }
 
     @Test
+    public void call_render_type_handler() throws Exception {
+        dataElementHandler.handle(dataElement);
+        verify(renderTypeHandler).handle(dataElement.renderType(), dataElement.uid(), DataElementModel.TABLE);
+    }
+
+    @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<DataElement, DataElementModel> genericHandler = new DataElementHandler(
-                null,null, null);
+                null,null, null, renderTypeHandler);
     }
 }

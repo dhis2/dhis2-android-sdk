@@ -39,12 +39,16 @@ public interface ProgramStageSectionStore extends DeletableStore {
     long insert(
             @NonNull String uid, @Nullable String code, @NonNull String name,
             @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @Nullable Integer sortOrder, @Nullable String programStage
+            @Nullable Integer sortOrder, @Nullable String programStage,
+            @Nullable ProgramStageSectionRenderingType desktopRenderType,
+            @Nullable ProgramStageSectionRenderingType mobileRenderType
     );
 
     int update(@NonNull String uid, @Nullable String code, @NonNull String name,
                @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
                @Nullable Integer sortOrder, @Nullable String programStage,
+               @Nullable ProgramStageSectionRenderingType desktopRenderType,
+               @Nullable ProgramStageSectionRenderingType mobileRenderType,
                @NonNull String whereProgramStageSectionUid);
 
     int delete(String uid);

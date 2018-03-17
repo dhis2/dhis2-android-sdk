@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
@@ -59,6 +60,7 @@ public abstract class DataElement extends BaseNameableObject {
     private final static String OPTION_SET = "optionSet";
     private final static String CATEGORY_COMBO = "categoryCombo";
     private final static String STYLE = "style";
+    private final static String RENDER_TYPE = "renderType";
 
     public static final Field<DataElement, String> uid = Field.create(UID);
     private static final Field<DataElement, String> code = Field.create(CODE);
@@ -85,13 +87,16 @@ public abstract class DataElement extends BaseNameableObject {
             NestedField.create(CATEGORY_COMBO);
     private static final NestedField<DataElement, ObjectStyle> style =
             NestedField.create(STYLE);
+    private static final NestedField<DataElement, ValueTypeRendering> renderType =
+            NestedField.create(RENDER_TYPE);
 
     public static final Fields<DataElement> allFields = Fields.<DataElement>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, deleted,
             valueType, zeroIsSignificant, aggregationType, formName, numberType, domainType, dimension, displayFormName,
             optionSet.with(OptionSet.uid, OptionSet.version),
-            categoryCombo.with(ObjectWithUid.uid), style.with(ObjectStyle.allFields)).build();
+            categoryCombo.with(ObjectWithUid.uid), style.with(ObjectStyle.allFields),
+            renderType).build();
 
     @Nullable
     @JsonProperty(VALUE_TYPE)
@@ -147,6 +152,10 @@ public abstract class DataElement extends BaseNameableObject {
     @JsonProperty(STYLE)
     public abstract ObjectStyle style();
 
+    @Nullable
+    @JsonProperty(RENDER_TYPE)
+    public abstract ValueTypeRendering renderType();
+
     @JsonCreator
     public static DataElement create(
             @JsonProperty(UID) String uid,
@@ -170,13 +179,15 @@ public abstract class DataElement extends BaseNameableObject {
             @JsonProperty(OPTION_SET) OptionSet optionSet,
             @JsonProperty(CATEGORY_COMBO) ObjectWithUid categoryCombo,
             @JsonProperty(STYLE) ObjectStyle style,
+            @JsonProperty(RENDER_TYPE) ValueTypeRendering renderType,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_DataElement(uid, code, name,
                 displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription, valueType,
                 zeroIsSignificant, aggregationType, formName, numberType,
-                domainType, dimension, displayFormName, optionSet, categoryCombo, style);
+                domainType, dimension, displayFormName, optionSet, categoryCombo, style,
+                renderType);
 
     }
 }

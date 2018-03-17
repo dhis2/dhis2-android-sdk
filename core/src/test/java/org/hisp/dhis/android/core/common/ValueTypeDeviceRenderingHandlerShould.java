@@ -36,38 +36,37 @@ import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.TABLE;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.VALUE_TYPE_RENDERING_TYPE;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.VALUE_TYPE_DEVICE_RENDERING_MODEL;
 
 @RunWith(JUnit4.class)
-public class ObjectStyleHandlerShould {
+public class ValueTypeDeviceRenderingHandlerShould {
 
     @Mock
-    private ObjectWithoutUidStore<ObjectStyleModel> store;
+    private ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> store;
 
     // object to test
-    private DictionaryTableHandler<ObjectStyle> styleHandler;
-
-    private static final String UID = "uid";
-    private static final String TABLE = "table";
-    private static final String COLOR = "red";
-    private static final String ICON = "batman";
-    private static final ObjectStyle STYLE = ObjectStyle.create(COLOR, ICON);
+    private DictionaryTableHandler<ValueTypeDeviceRendering> deviceRenderTypeHandler;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        styleHandler = new ObjectStyleHandler(store);
+        deviceRenderTypeHandler = new ValueTypeDeviceRenderingHandler(store, VALUE_TYPE_RENDERING_TYPE.toString());
     }
 
     @Test
-    public void call_store_when_style_not_null() throws Exception {
-        styleHandler.handle(STYLE, UID, TABLE);
-        verify(store).updateOrInsertWhere(ObjectStyleModel.fromPojo(STYLE, UID, TABLE));
+    public void call_store_when_render_type_not_null() throws Exception {
+        deviceRenderTypeHandler.handle(VALUE_TYPE_DEVICE_RENDERING_MODEL, UID, TABLE);
+        verify(store).updateOrInsertWhere(ValueTypeDeviceRenderingModel.fromPojo(VALUE_TYPE_DEVICE_RENDERING_MODEL,
+                UID, TABLE, VALUE_TYPE_RENDERING_TYPE.toString()));
         verifyNoMoreInteractions(store);
     }
 
     @Test
-    public void not_call_store_when_style_null() throws Exception {
-        styleHandler.handle(null, UID, TABLE);
+    public void not_call_store_when_render_type_null() throws Exception {
+        deviceRenderTypeHandler.handle(null, UID, TABLE);
         verifyNoMoreInteractions(store);
     }
 }

@@ -25,38 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.common;
 
-public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
+import org.junit.Test;
 
-    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+import java.io.IOException;
+import java.text.ParseException;
 
-    DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
-                   DictionaryTableHandler<ObjectStyle> styleHandler) {
-        super(dataSetStore);
-        this.styleHandler = styleHandler;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
+public class ValueTypeRenderingShould extends BaseObjectShould implements ObjectShould {
+
+    public ValueTypeRenderingShould() {
+        super("common/value_type_rendering.json");
     }
 
     @Override
-    protected DataSetModel pojoToModel(DataSet dataSet) {
-        return DataSetModel.factory.fromPojo(dataSet);
-    }
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        ValueTypeRendering valueTypeRendering = objectMapper.readValue(jsonStream, ValueTypeRendering.class);
 
-    public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataSetHandler(
-                DataSetStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter));
-    }
-
-    @Override
-    protected void afterObjectPersisted(DataSet dataSet) {
-        styleHandler.handle(dataSet.style(), dataSet.uid(), DataSetModel.TABLE);
+        assertThat(valueTypeRendering.desktop()).isEqualTo(ValueTypeDeviceRendering.create(
+                ValueTypeRenderingType.VERTICAL_RADIOBUTTONS, 0, 10, 1, 0));
+        assertThat(valueTypeRendering.mobile()).isEqualTo(ValueTypeDeviceRendering.create(
+                ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS, 3, 15, 2, 1));
     }
 }

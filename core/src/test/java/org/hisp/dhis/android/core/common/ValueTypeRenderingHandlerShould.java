@@ -36,38 +36,63 @@ import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class ObjectStyleHandlerShould {
-
-    @Mock
-    private ObjectWithoutUidStore<ObjectStyleModel> store;
-
-    // object to test
-    private DictionaryTableHandler<ObjectStyle> styleHandler;
+public class ValueTypeRenderingHandlerShould {
 
     private static final String UID = "uid";
     private static final String TABLE = "table";
-    private static final String COLOR = "red";
-    private static final String ICON = "batman";
-    private static final ObjectStyle STYLE = ObjectStyle.create(COLOR, ICON);
+    
+    @Mock
+    private DictionaryTableHandler<ValueTypeDeviceRendering> desktopHandler;
+    
+    @Mock
+    private DictionaryTableHandler<ValueTypeDeviceRendering> mobileHandler;
+    
+    @Mock
+    private ValueTypeDeviceRendering desktopRenderType;
+    
+    @Mock
+    private ValueTypeDeviceRendering mobileRenderType;
+    
+    @Mock
+    private ValueTypeRendering renderType;
+
+    // object to test
+    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        styleHandler = new ObjectStyleHandler(store);
+        when(renderType.desktop()).thenReturn(desktopRenderType);
+        when(renderType.mobile()).thenReturn(mobileRenderType);
+        renderTypeHandler = new ValueTypeRenderingHandler(desktopHandler, mobileHandler);
     }
 
     @Test
-    public void call_store_when_style_not_null() throws Exception {
-        styleHandler.handle(STYLE, UID, TABLE);
-        verify(store).updateOrInsertWhere(ObjectStyleModel.fromPojo(STYLE, UID, TABLE));
-        verifyNoMoreInteractions(store);
+    public void call_desktop_handler_when_render_type_not_null() throws Exception {
+        renderTypeHandler.handle(renderType, UID, TABLE);
+        verify(desktopHandler).handle(desktopRenderType, UID, TABLE);
+        verifyNoMoreInteractions(desktopHandler);
     }
 
     @Test
-    public void not_call_store_when_style_null() throws Exception {
-        styleHandler.handle(null, UID, TABLE);
-        verifyNoMoreInteractions(store);
+    public void call_mobile_handler_when_render_type_not_null() throws Exception {
+        renderTypeHandler.handle(renderType, UID, TABLE);
+        verify(mobileHandler).handle(mobileRenderType, UID, TABLE);
+        verifyNoMoreInteractions(mobileHandler);
+    }
+
+    @Test
+    public void not_call_desktop_handler_when_render_type_null() throws Exception {
+        renderTypeHandler.handle(null, UID, TABLE);
+        verifyNoMoreInteractions(desktopHandler);
+    }
+
+    @Test
+    public void not_call_mobile_handler_when_render_type_null() throws Exception {
+        renderTypeHandler.handle(null, UID, TABLE);
+        verifyNoMoreInteractions(mobileHandler);
     }
 }

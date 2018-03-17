@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
-
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -38,6 +35,9 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -53,8 +53,10 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
             ProgramStageSectionModel.Columns.CREATED + ", " +
             ProgramStageSectionModel.Columns.LAST_UPDATED + ", " +
             ProgramStageSectionModel.Columns.SORT_ORDER + ", " +
-            ProgramStageSectionModel.Columns.PROGRAM_STAGE + ") " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            ProgramStageSectionModel.Columns.PROGRAM_STAGE + ", " +
+            ProgramStageSectionModel.Columns.DESKTOP_RENDER_TYPE + ", " +
+            ProgramStageSectionModel.Columns.MOBILE_RENDER_TYPE + ") " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + ProgramStageSectionModel.TABLE + " SET " +
             ProgramStageSectionModel.Columns.UID + " =?, " +
@@ -64,7 +66,9 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
             ProgramStageSectionModel.Columns.CREATED + " =?, " +
             ProgramStageSectionModel.Columns.LAST_UPDATED + " =?, " +
             ProgramStageSectionModel.Columns.SORT_ORDER + " =?, " +
-            ProgramStageSectionModel.Columns.PROGRAM_STAGE + " =? " +
+            ProgramStageSectionModel.Columns.PROGRAM_STAGE + " =?, " +
+            ProgramStageSectionModel.Columns.DESKTOP_RENDER_TYPE + " =?, " +
+            ProgramStageSectionModel.Columns.MOBILE_RENDER_TYPE + " =? " +
             " WHERE " + ProgramStageSectionModel.Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramStageSectionModel.TABLE +
@@ -87,10 +91,13 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
     public long insert(@NonNull String uid, @Nullable String code,
                        @NonNull String name, @NonNull String displayName,
                        @NonNull Date created, @NonNull Date lastUpdated,
-                       @Nullable Integer sortOrder, @Nullable String programStage) {
+                       @Nullable Integer sortOrder, @Nullable String programStage,
+                       @Nullable ProgramStageSectionRenderingType desktopRenderType,
+                       @Nullable ProgramStageSectionRenderingType mobileRenderType) {
         isNull(uid);
         isNull(programStage);
-        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, sortOrder, programStage);
+        bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, sortOrder,
+                programStage, desktopRenderType, mobileRenderType);
 
         Long insert = databaseAdapter.executeInsert(ProgramStageSectionModel.TABLE, insertStatement);
         insertStatement.clearBindings();
@@ -101,14 +108,18 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
     @Override
     public int update(@NonNull String uid, @Nullable String code, @NonNull String name, @NonNull String displayName,
                       @NonNull Date created, @NonNull Date lastUpdated, @Nullable Integer sortOrder,
-                      @Nullable String programStage, @NonNull String whereProgramStageSectionUid) {
+                      @Nullable String programStage,
+                      @Nullable ProgramStageSectionRenderingType desktopRenderType,
+                      @Nullable ProgramStageSectionRenderingType mobileRenderType,
+                      @NonNull String whereProgramStageSectionUid) {
         isNull(uid);
         isNull(programStage);
         isNull(whereProgramStageSectionUid);
-        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, sortOrder, programStage);
+        bindArguments(updateStatement, uid, code, name, displayName, created, lastUpdated, sortOrder,
+                programStage, desktopRenderType, mobileRenderType);
 
         // bind the where argument
-        sqLiteBind(updateStatement, 9, whereProgramStageSectionUid);
+        sqLiteBind(updateStatement, 11, whereProgramStageSectionUid);
 
         // execute and clear bindings
         int update = databaseAdapter.executeUpdateDelete(ProgramStageSectionModel.TABLE, updateStatement);
@@ -130,7 +141,9 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,
                                @NonNull String name, @NonNull String displayName,
                                @NonNull Date created, @NonNull Date lastUpdated, @Nullable Integer sortOrder,
-                               @Nullable String programStage) {
+                               @Nullable String programStage,
+                               @Nullable ProgramStageSectionRenderingType desktopRenderType,
+                               @Nullable ProgramStageSectionRenderingType mobileRenderType) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -139,6 +152,8 @@ public class ProgramStageSectionStoreImpl implements ProgramStageSectionStore {
         sqLiteBind(sqLiteStatement, 6, lastUpdated);
         sqLiteBind(sqLiteStatement, 7, sortOrder);
         sqLiteBind(sqLiteStatement, 8, programStage);
+        sqLiteBind(sqLiteStatement, 9, desktopRenderType);
+        sqLiteBind(sqLiteStatement, 10, mobileRenderType);
     }
 
     @Override

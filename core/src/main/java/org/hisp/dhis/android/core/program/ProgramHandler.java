@@ -27,7 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -42,7 +43,7 @@ public class ProgramHandler {
     private final ProgramRuleHandler programRuleHandler;
     private final ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
     private final RelationshipTypeHandler relationshipHandler;
-    private final ObjectStyleHandler styleHandler;
+    private final DictionaryTableHandler<ObjectStyle> styleHandler;
 
     public ProgramHandler(ProgramStore programStore,
                           ProgramRuleVariableHandler programRuleVariableHandler,
@@ -51,7 +52,7 @@ public class ProgramHandler {
                           ProgramRuleHandler programRuleHandler,
                           ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler,
                           RelationshipTypeHandler relationshipHandler,
-                          ObjectStyleHandler styleHandler) {
+                          DictionaryTableHandler<ObjectStyle> styleHandler) {
         this.programStore = programStore;
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programStageHandler = programStageHandler;

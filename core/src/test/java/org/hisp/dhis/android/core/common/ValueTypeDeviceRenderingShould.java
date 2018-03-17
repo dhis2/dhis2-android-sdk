@@ -25,27 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.junit.Test;
 
-public class ObjectStyleHandlerImpl implements ObjectStyleHandler {
+import java.io.IOException;
+import java.text.ParseException;
 
-    private final ObjectWithoutUidStore<ObjectStyleModel> store;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    ObjectStyleHandlerImpl(ObjectWithoutUidStore<ObjectStyleModel> store) {
-        this.store = store;
+public class ValueTypeDeviceRenderingShould extends BaseObjectShould implements ObjectShould {
+
+    public ValueTypeDeviceRenderingShould() {
+        super("common/value_type_device_rendering.json");
     }
 
     @Override
-    public void handle(ObjectStyle style, String uid, String objectTable) {
-        if (style != null) {
-            ObjectStyleModel model = ObjectStyleModel.fromPojo(style, uid, objectTable);
-            store.updateOrInsertWhere(model);
-        }
-    }
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        ValueTypeDeviceRendering valueTypeDeviceRendering =
+                objectMapper.readValue(jsonStream, ValueTypeDeviceRendering.class);
 
-    public static ObjectStyleHandlerImpl create(DatabaseAdapter databaseAdapter) {
-        return new ObjectStyleHandlerImpl(ObjectStyleStore.create(databaseAdapter));
+        assertThat(valueTypeDeviceRendering.type()).isEqualTo(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS);
+        assertThat(valueTypeDeviceRendering.min()).isEqualTo(0);
+        assertThat(valueTypeDeviceRendering.max()).isEqualTo(10);
+        assertThat(valueTypeDeviceRendering.step()).isEqualTo(1);
+        assertThat(valueTypeDeviceRendering.decimalPoints()).isEqualTo(0);
     }
 }

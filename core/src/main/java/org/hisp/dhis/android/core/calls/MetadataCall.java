@@ -43,8 +43,10 @@ import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -133,7 +135,8 @@ public class MetadataCall implements Call<Response> {
     private final TrackedEntityStore trackedEntityStore;
     private final GenericHandler<OptionSet> optionSetHandler;
     private final GenericHandler<DataElement> dataElementHandler;
-    private final ObjectStyleHandler styleHandler;
+    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+    private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     private final Retrofit retrofit;
     private final CategoryQuery categoryQuery;
@@ -186,7 +189,8 @@ public class MetadataCall implements Call<Response> {
                         @NonNull GenericHandler<OptionSet> optionSetHandler,
                         @NonNull GenericHandler<DataElement> dataElementHandler,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
-                        @NonNull ObjectStyleHandler styleHandler,
+                        @NonNull DictionaryTableHandler<ObjectStyle> styleHandler,
+                        @NonNull DictionaryTableHandler<ValueTypeRendering> renderTypeHandler,
                         @NonNull Retrofit retrofit
                         ) {
         this.databaseAdapter = databaseAdapter;
@@ -228,6 +232,7 @@ public class MetadataCall implements Call<Response> {
         this.dataElementHandler = dataElementHandler;
         this.dataSetParentCallFactory = dataSetParentCallFactory;
         this.styleHandler = styleHandler;
+        this.renderTypeHandler = renderTypeHandler;
 
         this.retrofit = retrofit;
     }
@@ -308,7 +313,7 @@ public class MetadataCall implements Call<Response> {
                     programRuleStore,
                     programStageDataElementStore,
                     programStageSectionStore, programStageStore, relationshipStore,
-                    dataElementHandler, styleHandler
+                    dataElementHandler, styleHandler, renderTypeHandler
             ).call();
             if (!response.isSuccessful()) {
                 return response;

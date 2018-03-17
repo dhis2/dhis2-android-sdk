@@ -25,38 +25,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.common;
 
-public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
+import android.support.annotation.Nullable;
 
-    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-    DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
-                   DictionaryTableHandler<ObjectStyle> styleHandler) {
-        super(dataSetStore);
-        this.styleHandler = styleHandler;
-    }
+@AutoValue
+public abstract class ValueTypeDeviceRendering {
+    private static final String TYPE = "type";
+    private static final String MIN = "min";
+    private static final String MAX = "max";
+    private static final String STEP = "step";
+    private static final String DECIMAL_POINTS = "decimalPoints";
 
-    @Override
-    protected DataSetModel pojoToModel(DataSet dataSet) {
-        return DataSetModel.factory.fromPojo(dataSet);
-    }
+    @Nullable
+    @JsonProperty(TYPE)
+    public abstract ValueTypeRenderingType type();
 
-    public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataSetHandler(
-                DataSetStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter));
-    }
+    @Nullable
+    @JsonProperty(MIN)
+    public abstract Integer min();
 
-    @Override
-    protected void afterObjectPersisted(DataSet dataSet) {
-        styleHandler.handle(dataSet.style(), dataSet.uid(), DataSetModel.TABLE);
+    @Nullable
+    @JsonProperty(MAX)
+    public abstract Integer max();
+
+    @Nullable
+    @JsonProperty(STEP)
+    public abstract Integer step();
+
+    @Nullable
+    @JsonProperty(DECIMAL_POINTS)
+    public abstract Integer decimalPoints();
+
+    @JsonCreator
+    public static ValueTypeDeviceRendering create(
+            @JsonProperty(TYPE) ValueTypeRenderingType type,
+            @JsonProperty(MIN) Integer min,
+            @JsonProperty(MAX) Integer max,
+            @JsonProperty(STEP) Integer step,
+            @JsonProperty(DECIMAL_POINTS) Integer decimalPoints) {
+
+        return new AutoValue_ValueTypeDeviceRendering(type, min, max, step, decimalPoints);
     }
 }

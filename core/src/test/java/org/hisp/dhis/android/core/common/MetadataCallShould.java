@@ -321,10 +321,12 @@ public class MetadataCallShould {
     private Call<Response> dataSetParentCall;
 
     @Mock
-    private ObjectStyleHandler styleHandler;
+    private DictionaryTableHandler<ObjectStyle> styleHandler;
+
+    @Mock
+    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     private Response<Payload<DataElement>> dataSetParentCallResponse;
-
 
 
     // object to test
@@ -399,31 +401,23 @@ public class MetadataCallShould {
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-
-
         categoryService = retrofit.create(CategoryService.class);
         comboService = retrofit.create(CategoryComboService.class);
 
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
 
-
-
-
-
         metadataCall = new MetadataCall(
-                databaseAdapter, systemInfoService, userService,
-                programService, organisationUnitService, trackedEntityService, optionSetService,
-                systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, organisationUnitStore,
-                userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
-                programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
-                programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
-                programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore, trackedEntityStore,
-                organisationUnitProgramLinkStore,categoryQuery, categoryService, categoryHandler,
-                CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetHandler, dataElementHandler, dataSetParentCallFactory, styleHandler, retrofit);
+                databaseAdapter, systemInfoService, userService, programService, organisationUnitService,
+                trackedEntityService, optionSetService, systemInfoStore, resourceStore, userStore, userCredentialsStore,
+                userRoleStore, organisationUnitStore,userOrganisationUnitLinkStore, programStore,
+                trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
+                programIndicatorStore,programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
+                programRuleStore, programStageDataElementStore, programStageSectionStore, programStageStore,
+                relationshipStore, trackedEntityStore, organisationUnitProgramLinkStore,categoryQuery, categoryService,
+                categoryHandler, CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
+                optionSetHandler, dataElementHandler, dataSetParentCallFactory, styleHandler, renderTypeHandler,
+                retrofit);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 

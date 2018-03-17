@@ -25,38 +25,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
-
-    private final DictionaryTableHandler<ObjectStyle> styleHandler;
-
-    DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
-                   DictionaryTableHandler<ObjectStyle> styleHandler) {
-        super(dataSetStore);
-        this.styleHandler = styleHandler;
-    }
-
-    @Override
-    protected DataSetModel pojoToModel(DataSet dataSet) {
-        return DataSetModel.factory.fromPojo(dataSet);
-    }
-
-    public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataSetHandler(
-                DataSetStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter));
-    }
-
-    @Override
-    protected void afterObjectPersisted(DataSet dataSet) {
-        styleHandler.handle(dataSet.style(), dataSet.uid(), DataSetModel.TABLE);
-    }
+public interface DictionaryTableHandler<P> {
+    void handle(P pojo, String uid, String objectTable);
 }

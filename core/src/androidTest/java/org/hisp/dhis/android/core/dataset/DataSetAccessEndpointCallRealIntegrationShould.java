@@ -25,7 +25,7 @@ public class DataSetAccessEndpointCallRealIntegrationShould extends AbsStoreTest
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        d2 = D2Factory.create("https://play.dhis2.org/dev/api/", databaseAdapter());
+        d2 = D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
         dataSetAccessCall = createCall();
     }
 

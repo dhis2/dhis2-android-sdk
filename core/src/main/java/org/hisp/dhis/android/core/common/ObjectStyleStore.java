@@ -25,34 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
+package org.hisp.dhis.android.core.common;
+
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionSetModel> {
-    private final OptionHandler optionHandler;
+public final class ObjectStyleStore {
 
-    OptionSetHandler(IdentifiableObjectStore<OptionSetModel> optionSetStore, OptionHandler optionHandler) {
-        super(optionSetStore);
-        this.optionHandler = optionHandler;
-    }
+    private ObjectStyleStore() {}
 
-    public static OptionSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new OptionSetHandler(OptionSetStore.create(databaseAdapter),
-                new OptionHandler(new OptionStoreImpl(databaseAdapter),
-                        ObjectStyleHandlerImpl.create(databaseAdapter)));
-    }
-
-    @Override
-    protected OptionSetModel pojoToModel(OptionSet optionSet) {
-        return OptionSetModel.create(optionSet);
-    }
-
-    @Override
-    protected void afterObjectPersisted(OptionSet optionSet) {
-        optionHandler.handleOptions(optionSet.options());
+    public static ObjectWithoutUidStore<ObjectStyleModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, ObjectStyleModel.TABLE,
+                ObjectStyleModel.Columns.all(), ObjectStyleModel.Columns.whereUpdate());
     }
 }

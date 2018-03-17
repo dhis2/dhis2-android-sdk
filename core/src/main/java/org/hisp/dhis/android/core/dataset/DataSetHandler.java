@@ -29,12 +29,18 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
 
-    DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore) {
+    private final ObjectStyleHandler styleHandler;
+
+    DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
+                   ObjectStyleHandler styleHandler) {
         super(dataSetStore);
+        this.styleHandler = styleHandler;
     }
 
     @Override
@@ -43,6 +49,13 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
     }
 
     public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataSetHandler(DataSetStore.create(databaseAdapter));
+        return new DataSetHandler(
+                DataSetStore.create(databaseAdapter),
+                ObjectStyleHandlerImpl.create(databaseAdapter));
+    }
+
+    @Override
+    protected void afterObjectPersisted(DataSet dataSet) {
+        styleHandler.handle(dataSet.style(), dataSet.uid(), DataSetModel.TABLE);
     }
 }

@@ -25,34 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.common;
 
-public class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionSetModel> {
-    private final OptionHandler optionHandler;
+import android.support.annotation.Nullable;
 
-    OptionSetHandler(IdentifiableObjectStore<OptionSetModel> optionSetStore, OptionHandler optionHandler) {
-        super(optionSetStore);
-        this.optionHandler = optionHandler;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
+
+@AutoValue
+public abstract class ObjectStyle {
+    private static final String COLOR = "color";
+    private static final String ICON = "icon";
+
+    private static final Field<ObjectStyle, String> color = Field.create(COLOR);
+    private static final Field<ObjectStyle, String> icon = Field.create(ICON);
+
+    public static final Fields<ObjectStyle> allFields = Fields.<ObjectStyle>builder().fields(color, icon).build();
+
+    @Nullable
+    @JsonProperty(COLOR)
+    public abstract String color();
+
+    @Nullable
+    @JsonProperty(ICON)
+    public abstract String icon();
+
+    @JsonCreator
+    public static ObjectStyle create(@JsonProperty(COLOR) String color,
+                                     @JsonProperty(ICON) String icon) {
+        return new AutoValue_ObjectStyle(color, icon);
     }
 
-    public static OptionSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new OptionSetHandler(OptionSetStore.create(databaseAdapter),
-                new OptionHandler(new OptionStoreImpl(databaseAdapter),
-                        ObjectStyleHandlerImpl.create(databaseAdapter)));
+    public static String getColor(ObjectStyle objectStyle) {
+        return objectStyle == null ?  null : objectStyle.color();
     }
 
-    @Override
-    protected OptionSetModel pojoToModel(OptionSet optionSet) {
-        return OptionSetModel.create(optionSet);
-    }
-
-    @Override
-    protected void afterObjectPersisted(OptionSet optionSet) {
-        optionHandler.handleOptions(optionSet.options());
+    public static String getIcon(ObjectStyle objectStyle) {
+        return objectStyle == null ?  null : objectStyle.icon();
     }
 }

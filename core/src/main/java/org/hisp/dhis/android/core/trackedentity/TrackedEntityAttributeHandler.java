@@ -27,14 +27,19 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class TrackedEntityAttributeHandler {
 
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final ObjectStyleHandler styleHandler;
 
-    public TrackedEntityAttributeHandler(TrackedEntityAttributeStore trackedEntityAttributeStore) {
+    public TrackedEntityAttributeHandler(TrackedEntityAttributeStore trackedEntityAttributeStore,
+                                         ObjectStyleHandler styleHandler) {
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
+        this.styleHandler = styleHandler;
     }
 
     public void handleTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
@@ -86,5 +91,8 @@ public class TrackedEntityAttributeHandler {
                         trackedEntityAttribute.inherit());
             }
         }
+
+        styleHandler.handle(trackedEntityAttribute.style(), trackedEntityAttribute.uid(),
+                TrackedEntityAttributeModel.TABLE);
     }
 }

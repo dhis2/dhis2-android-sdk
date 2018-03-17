@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataelement;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.junit.Before;
@@ -52,6 +53,9 @@ public class DataElementHandlerShould {
     private GenericHandler<OptionSet> optionSetHandler;
 
     @Mock
+    private ObjectStyleHandler styleHandler;
+
+    @Mock
     private DataElement dataElement;
 
     @Mock
@@ -66,7 +70,7 @@ public class DataElementHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        dataElementHandler = new DataElementHandler(dataSetStore, optionSetHandler);
+        dataElementHandler = new DataElementHandler(dataSetStore, optionSetHandler, styleHandler);
         when(dataElement.uid()).thenReturn("test_data_element_uid");
         when(dataElement.optionSet()).thenReturn(optionSet);
         when(dataElement.categoryCombo()).thenReturn(categoryCombo);
@@ -79,8 +83,14 @@ public class DataElementHandlerShould {
     }
 
     @Test
+    public void call_style_handler() throws Exception {
+        dataElementHandler.handle(dataElement);
+        verify(styleHandler).handle(dataElement.style(), dataElement.uid(), DataElementModel.TABLE);
+    }
+
+    @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<DataElement, DataElementModel> genericHandler = new DataElementHandler(
-                null,null);
+                null,null, null);
     }
 }

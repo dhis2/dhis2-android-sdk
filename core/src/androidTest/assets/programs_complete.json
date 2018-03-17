@@ -34,6 +34,10 @@
                   "write": false
               }
           },
+          "style": {
+              "color": "#fff",
+              "icon": "my-icon-name"
+          },
           "trackedEntity": {
               "id": "nEenWmSyUEp"
           },

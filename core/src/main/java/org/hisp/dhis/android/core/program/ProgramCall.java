@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -85,7 +87,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                        ProgramStageSectionStore programStageSectionStore,
                        ProgramStageStore programStageStore,
                        RelationshipTypeStore relationshipStore,
-                       GenericHandler<DataElement> dataElementHandler) {
+                       GenericHandler<DataElement> dataElementHandler,
+                       ObjectStyleHandler styleHandler) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;
         this.resourceStore = resourceStore;
@@ -111,14 +114,14 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                                 programStageDataElementHandler,
                                 programIndicatorHandler
                         ),
-                        programStageDataElementHandler
-                ),
+                        programStageDataElementHandler,
+                        styleHandler),
                 programIndicatorHandler,
                 new ProgramRuleHandler(programRuleStore, new ProgramRuleActionHandler(programRuleActionStore)),
                 new ProgramTrackedEntityAttributeHandler(programTrackedEntityAttributeStore,
-                        new TrackedEntityAttributeHandler(trackedEntityAttributeStore)
+                        new TrackedEntityAttributeHandler(trackedEntityAttributeStore, styleHandler)
                 ),
-                new RelationshipTypeHandler(relationshipStore));
+                new RelationshipTypeHandler(relationshipStore), styleHandler);
     }
 
     @Override
@@ -203,7 +206,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                                 ProgramStageSection.programIndicators.with(ProgramIndicator.uid,
                                         ProgramIndicator.program.with(Program.uid)
                                 )
-                        )
+                        ),
+                        ProgramStage.style.with(ObjectStyle.allFields)
                 ),
                 Program.programRules.with(
                         ProgramRule.uid, ProgramRule.code, ProgramRule.name, ProgramRule.displayName,
@@ -267,8 +271,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                                 TrackedEntityAttribute.pattern, TrackedEntityAttribute.sortOrderInListNoProgram,
                                 TrackedEntityAttribute.unique, TrackedEntityAttribute.valueType,
                                 TrackedEntityAttribute.searchScope, TrackedEntityAttribute.optionSet.with(
-                                        OptionSet.uid, OptionSet.version
-                                )
+                                        OptionSet.uid, OptionSet.version),
+                                TrackedEntityAttribute.style.with(ObjectStyle.allFields)
                         )
                 ),
                 Program.trackedEntity.with(TrackedEntity.uid),
@@ -282,7 +286,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                         Access.data.with(
                                 DataAccess.write
                         )
-                )
+                ),
+                Program.style.with(ObjectStyle.allFields)
         ).build();
     }
 

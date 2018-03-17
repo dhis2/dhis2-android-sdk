@@ -25,34 +25,49 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-public class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionSetModel> {
-    private final OptionHandler optionHandler;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-    OptionSetHandler(IdentifiableObjectStore<OptionSetModel> optionSetStore, OptionHandler optionHandler) {
-        super(optionSetStore);
-        this.optionHandler = optionHandler;
+@RunWith(JUnit4.class)
+public class ObjectStyleHandlerShould {
+
+    @Mock
+    private ObjectWithoutUidStore<ObjectStyleModel> store;
+
+    // object to test
+    private ObjectStyleHandler styleHandler;
+
+    private static final String UID = "uid";
+    private static final String TABLE = "table";
+    private static final String COLOR = "red";
+    private static final String ICON = "batman";
+    private static final ObjectStyle STYLE = ObjectStyle.create(COLOR, ICON);
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        styleHandler = new ObjectStyleHandlerImpl(store);
     }
 
-    public static OptionSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new OptionSetHandler(OptionSetStore.create(databaseAdapter),
-                new OptionHandler(new OptionStoreImpl(databaseAdapter),
-                        ObjectStyleHandlerImpl.create(databaseAdapter)));
+    @Test
+    public void call_store_when_style_not_null() throws Exception {
+        styleHandler.handle(STYLE, UID, TABLE);
+        verify(store).updateOrInsertWhere(ObjectStyleModel.fromPojo(STYLE, UID, TABLE));
+        verifyNoMoreInteractions(store);
     }
 
-    @Override
-    protected OptionSetModel pojoToModel(OptionSet optionSet) {
-        return OptionSetModel.create(optionSet);
-    }
-
-    @Override
-    protected void afterObjectPersisted(OptionSet optionSet) {
-        optionHandler.handleOptions(optionSet.options());
+    @Test
+    public void not_call_store_when_style_null() throws Exception {
+        styleHandler.handle(null, UID, TABLE);
+        verifyNoMoreInteractions(store);
     }
 }

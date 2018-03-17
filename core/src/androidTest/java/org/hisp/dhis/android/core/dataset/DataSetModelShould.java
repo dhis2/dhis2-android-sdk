@@ -33,6 +33,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.NameableModelAbstractShould;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.DataSetModel.Columns;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -48,12 +49,14 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.CODE;
+import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.COLOR;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.CREATED;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DELETED;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DESCRIPTION;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DISPLAY_DESCRIPTION;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DISPLAY_NAME;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.DISPLAY_SHORT_NAME;
+import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.ICON;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.NAME;
 import static org.hisp.dhis.android.core.utils.FillPropertiesTestUtils.SHORT_NAME;
@@ -101,7 +104,8 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel
                 false, false, false,
                 false, false, new ArrayList<DataElementUids>(),
                 new ArrayList<ObjectWithUid>(), Access.create(true, true, false, true,
-                        true, true, DataAccess.create(true, false)), DELETED);
+                        true, true, DataAccess.create(true, false)),
+                ObjectStyle.create(COLOR, ICON), DELETED);
     }
 
     @Override

@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.category.CategoryModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.constant.ConstantModel;
@@ -99,7 +100,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
-    static int VERSION = 7;
+    static int VERSION = 8;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -1042,6 +1043,15 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             " UNIQUE (" + PeriodModel.Columns.PERIOD_ID + ")"
             );
 
+    private static final String CREATE_OBJECT_STYLE_TABLE =
+            SQLStatementBuilder.createModelTable(ObjectStyleModel.TABLE,
+                    ObjectStyleModel.Columns.UID + " TEXT," +
+                            ObjectStyleModel.Columns.OBJECT_TABLE + " TEXT," +
+                            ObjectStyleModel.Columns.COLOR + " TEXT," +
+                            ObjectStyleModel.Columns.ICON + " TEXT," +
+                            " UNIQUE (" + ObjectStyleModel.Columns.UID + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1101,6 +1111,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_DATA_SET_INDICATOR_LINK_TABLE);
         database.execSQL(CREATE_DATA_VALUE_TABLE);
         database.execSQL(CREATE_PERIOD_TABLE);
+        database.execSQL(CREATE_OBJECT_STYLE_TABLE);
         return database;
     }
 

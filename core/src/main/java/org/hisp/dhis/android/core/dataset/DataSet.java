@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -67,6 +68,7 @@ public abstract class DataSet extends BaseNameableObject {
     private final static String DATA_SET_ELEMENTS = "dataSetElements";
     private final static String INDICATORS = "indicators";
     private final static String ACCESS = "access";
+    private final static String STYLE = "style";
 
     public static final Field<DataSet, String> uid = Field.create(UID);
     private static final Field<DataSet, String> code = Field.create(CODE);
@@ -98,6 +100,7 @@ public abstract class DataSet extends BaseNameableObject {
     private static final NestedField<DataSet, DataElementUids> dataSetElements = NestedField.create(DATA_SET_ELEMENTS);
     private static final NestedField<DataSet, ObjectWithUid> indicators = NestedField.create(INDICATORS);
     private static final NestedField<DataSet, Access> access = NestedField.create(ACCESS);
+    private static final NestedField<DataSet, ObjectStyle> style = NestedField.create(STYLE);
 
     static final Fields<DataSet> allFields = Fields.<DataSet>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
@@ -108,7 +111,8 @@ public abstract class DataSet extends BaseNameableObject {
             skipOffline, dataElementDecoration, renderAsTabs, renderHorizontally,
             dataSetElements.with(DataElementUids.allFields),
             indicators.with(ObjectWithUid.uid),
-            access.with(Access.data.with(DataAccess.write))).build();
+            access.with(Access.data.with(DataAccess.write)),
+            style.with(ObjectStyle.allFields)).build();
 
     static final Fields<DataSet> uidAndAccessRead = Fields.<DataSet>builder().fields(
             uid, access.with(Access.data.with(DataAccess.read))).build();
@@ -190,6 +194,10 @@ public abstract class DataSet extends BaseNameableObject {
     @JsonProperty(ACCESS)
     public abstract Access access();
 
+    @Nullable
+    @JsonProperty(STYLE)
+    public abstract ObjectStyle style();
+
     @JsonCreator
     public static DataSet create(
             @JsonProperty(UID) String uid,
@@ -220,6 +228,7 @@ public abstract class DataSet extends BaseNameableObject {
             @JsonProperty(DATA_SET_ELEMENTS) List<DataElementUids> dataSetElements,
             @JsonProperty(INDICATORS) List<ObjectWithUid> indicators,
             @JsonProperty(ACCESS) Access access,
+            @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_DataSet(uid, code, name,
@@ -229,6 +238,6 @@ public abstract class DataSet extends BaseNameableObject {
                 notifyCompletingUser, openFuturePeriods, fieldCombinationRequired,
                 validCompleteOnly, noValueRequiresComment, skipOffline,
                 dataElementDecoration, renderAsTabs, renderHorizontally, dataSetElements,
-                indicators, access);
+                indicators, access, style);
     }
 }

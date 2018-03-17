@@ -53,6 +53,9 @@ public class FillPropertiesTestUtils {
     public static final String DESCRIPTION = "test_description";
     public static final String DISPLAY_DESCRIPTION = "test_display_description";
 
+    public static final String COLOR = "#fff";
+    public static final String ICON = "my-icon-name";
+
     public static final boolean DELETED = false;
 
     private static Date parseDate(String dateStr) {

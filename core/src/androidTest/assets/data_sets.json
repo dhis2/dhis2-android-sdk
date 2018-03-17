@@ -42,6 +42,10 @@
         "data": {
           "write": true
         }
+      },
+      "style": {
+        "color": "#000",
+        "icon": "my-icon-name"
       }
     }
   ]

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
@@ -92,6 +93,9 @@ public class ProgramHandlerShould {
     private TrackedEntity trackedEntity;
 
     @Mock
+    private ObjectStyleHandler styleHandler;
+
+    @Mock
     private RelationshipTypeHandler relationshipTypeHandler;
 
     // object to test
@@ -105,7 +109,7 @@ public class ProgramHandlerShould {
                 programStore, programRuleVariableHandler,
                 programStageHandler, programIndicatorHandler,
                 programRuleHandler, programTrackedEntityAttributeHandler,
-                relationshipTypeHandler);
+                relationshipTypeHandler, styleHandler);
         when(relationshipType.uid()).thenReturn("relationshipTypeUid");
 
         when(program.uid()).thenReturn("test_program_uid");

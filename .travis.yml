@@ -26,7 +26,7 @@ branches:
   - develop
 
 script:
-- travis_wait 60 "./build.sh"
+- travis_wait 70 "./build.sh"
 
 before_script:
 - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a

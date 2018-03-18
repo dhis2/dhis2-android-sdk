@@ -2,10 +2,7 @@ package org.hisp.dhis.android.core.calls;
 
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -17,8 +14,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TeiQuery;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEndPointCall;
+import org.hisp.dhis.android.core.trackedentity.TeisEndPointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 
@@ -113,7 +109,7 @@ public class TrackerEntitiesDataCall implements Call<Response> {
     //TODO We may need to refactor the code here. Right now it is not very optimize.
     // We need a better sync mechanism, based on? lastupdated?
     private Response trackerCall(Date serverDate) throws Exception {
-        Response<Payload<TrackedEntityInstance>> response = null;
+        Response response = null;
 
         List<OrganisationUnit> organisationUnits = organisationUnitStore.queryOrganisationUnits();
 
@@ -140,28 +136,11 @@ public class TrackerEntitiesDataCall implements Call<Response> {
                         .withPageLimit(pageLimit)
                         .build();
 
-                response = trackedEntityInstanceService.getTEIs(teiQuery.getOrgUnit(), fields(),
-                        Boolean.TRUE, teiQuery.getPage(), teiQuery.getPageLimit()).execute();
+                response = new TeisEndPointCall(trackedEntityInstanceService, databaseAdapter,
+                        teiQuery, trackedEntityInstanceHandler, resourceHandler, serverDate).call();
 
-                if (response.isSuccessful() && response.body().items() != null) {
-                    List<TrackedEntityInstance> trackedEntityInstances = response.body().items();
-                    int size = trackedEntityInstances.size();
-                    Response<TrackedEntityInstance> apiResponse = null;
-
-                    if (teiQuery.getPageLimit() > 0) {
-                        size =  teiQuery.getPageLimit();
-                    }
-
-                    for (int i = 0; i < size; i++) {
-                        apiResponse = new TrackedEntityInstanceEndPointCall(trackedEntityInstanceService,
-                                databaseAdapter, trackedEntityInstanceHandler, resourceHandler, serverDate,
-                                trackedEntityInstances.get(i).uid()).call();
-
-                        if (apiResponse == null || !apiResponse.isSuccessful()) {
-                            Log.d(this.getClass().getSimpleName(), trackedEntityInstances.get(i).uid() + " conflict");
-                        }
-                    }
-
+                if (!response.isSuccessful()) {
+                    return response;
                 }
 
                 teisDownloaded = teisDownloaded + teiQuery.getPageSize();
@@ -170,16 +149,6 @@ public class TrackerEntitiesDataCall implements Call<Response> {
         }
 
         return response;
-    }
-
-    private Fields<TrackedEntityInstance> fields() {
-        return Fields.<TrackedEntityInstance>builder().fields(
-                TrackedEntityInstance.uid, TrackedEntityInstance.created,
-                TrackedEntityInstance.lastUpdated,
-                TrackedEntityInstance.organisationUnit,
-                TrackedEntityInstance.trackedEntity,
-                TrackedEntityInstance.deleted
-        ).build();
     }
 
 

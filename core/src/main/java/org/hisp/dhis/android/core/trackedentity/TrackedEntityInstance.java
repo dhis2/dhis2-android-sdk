@@ -59,8 +59,8 @@ public abstract class TrackedEntityInstance {
     private static final String ENROLLMENTS = "enrollments";
 
     public static final Field<TrackedEntityInstance, String> uid = Field.create(UID);
-    public static final Field<TrackedEntityInstance, Date> created = Field.create(CREATED);
-    public static final Field<TrackedEntityInstance, Date> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<TrackedEntityInstance, String> created = Field.create(CREATED);
+    public static final Field<TrackedEntityInstance, String> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<TrackedEntityInstance, String> createdAtClient = Field.create(CREATED_AT_CLIENT);
     public static final Field<TrackedEntityInstance, String> lastUpdatedAtClient = Field.create(LAST_UPDATED_AT_CLIENT);
     public static final Field<TrackedEntityInstance, String> organisationUnit = Field.create(ORGANISATION_UNIT);

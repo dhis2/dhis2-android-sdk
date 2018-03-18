@@ -2,10 +2,7 @@ package org.hisp.dhis.android.core.calls;
 
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -18,8 +15,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TeiQuery;
 import org.hisp.dhis.android.core.trackedentity.TeisEndPointCall;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEndPointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 

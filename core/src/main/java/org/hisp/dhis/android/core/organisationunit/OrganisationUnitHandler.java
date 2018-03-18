@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
@@ -41,13 +42,16 @@ public class OrganisationUnitHandler {
     private final OrganisationUnitStore organisationUnitStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
+    private final Set<String> programUids;
 
     public OrganisationUnitHandler(@NonNull OrganisationUnitStore organisationUnitStore,
                                    @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                                   @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore) {
+                                   @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
+                                   @Nullable Set<String> programUids) {
         this.organisationUnitStore = organisationUnitStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
+        this.programUids = programUids;
     }
 
     public void handleOrganisationUnits(@NonNull List<OrganisationUnit> organisationUnits,
@@ -106,7 +110,9 @@ public class OrganisationUnitHandler {
                 }
                 addUserOrganisationUnitLink(scope, userUid, organisationUnit);
 
-                addOrganisationUnitProgramLink(organisationUnit);
+                if (programUids != null) {
+                    addOrganisationUnitProgramLink(organisationUnit);
+                }
             }
         }
     }
@@ -123,20 +129,16 @@ public class OrganisationUnitHandler {
     }
 
     private void addOrganisationUnitProgramLink(@NonNull OrganisationUnit organisationUnit) {
-        if (organisationUnit.programs() != null) {
-            List<Program> programs = organisationUnit.programs();
-            int programSize = programs.size();
-
-            for (int j = 0; j < programSize; j++) {
-                Program program = programs.get(j);
-
-                if (!organisationUnitProgramLinkStore.exists(organisationUnit.uid(),
-                        program.uid())) {
-                    organisationUnitProgramLinkStore.insert(
-                            organisationUnit.uid(),
-                            program.uid()
-                    );
-                }
+        List<Program> orgUnitPrograms = organisationUnit.programs();
+        assert orgUnitPrograms != null;
+        assert programUids != null;
+        for (Program program : orgUnitPrograms) {
+            if (programUids.contains(program.uid()) &&
+                    !organisationUnitProgramLinkStore.exists(organisationUnit.uid(), program.uid())) {
+                organisationUnitProgramLinkStore.insert(
+                        organisationUnit.uid(),
+                        program.uid()
+                );
             }
         }
     }

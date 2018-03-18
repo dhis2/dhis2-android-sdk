@@ -27,20 +27,30 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetModel;
 
-public class DataElementHandler extends GenericHandlerImpl<DataElement, DataElementModel> {
-    private final GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
+public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, DataElementModel> {
+    private final GenericHandler<OptionSet> optionSetHandler;
+    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+    private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
-    DataElementHandler(IdentifiableObjectStore<DataElementModel> dataSetStore,
-                       GenericHandler<OptionSet, OptionSetModel> optionSetHandler) {
-        super(dataSetStore);
+    DataElementHandler(IdentifiableObjectStore<DataElementModel> dataElementStore,
+                       GenericHandler<OptionSet> optionSetHandler,
+                       DictionaryTableHandler<ObjectStyle> styleHandler,
+                       DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
+        super(dataElementStore);
         this.optionSetHandler = optionSetHandler;
+        this.styleHandler = styleHandler;
+        this.renderTypeHandler = renderTypeHandler;
     }
 
     @Override
@@ -49,12 +59,18 @@ public class DataElementHandler extends GenericHandlerImpl<DataElement, DataElem
     }
 
     public static DataElementHandler create(DatabaseAdapter databaseAdapter,
-                                            GenericHandler<OptionSet, OptionSetModel> optionSetHandler) {
-        return new DataElementHandler(DataElementStore.create(databaseAdapter), optionSetHandler);
+                                            GenericHandler<OptionSet> optionSetHandler) {
+        return new DataElementHandler(
+                DataElementStore.create(databaseAdapter),
+                optionSetHandler,
+                ObjectStyleHandler.create(databaseAdapter),
+                ValueTypeRenderingHandler.create(databaseAdapter));
     }
 
     @Override
     protected void afterObjectPersisted(DataElement dateElement) {
         optionSetHandler.handle(dateElement.optionSet());
+        styleHandler.handle(dateElement.style(), dateElement.uid(), DataElementModel.TABLE);
+        renderTypeHandler.handle(dateElement.renderType(), dateElement.uid(), DataElementModel.TABLE);
     }
 }

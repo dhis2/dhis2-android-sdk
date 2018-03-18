@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
+import java.util.Set;
+
 public interface IdentifiableObjectStore<M extends BaseIdentifiableObjectModel & StatementBinder>
         extends ObjectStore<M> {
 
@@ -38,4 +40,6 @@ public interface IdentifiableObjectStore<M extends BaseIdentifiableObjectModel &
     void update(@NonNull M m) throws RuntimeException;
 
     void updateOrInsert(@NonNull M m) throws RuntimeException;
+
+    Set<String> selectUids() throws RuntimeException;
 }

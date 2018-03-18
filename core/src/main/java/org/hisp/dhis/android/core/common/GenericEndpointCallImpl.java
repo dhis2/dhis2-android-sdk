@@ -34,28 +34,24 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import retrofit2.Response;
 
-public abstract class GenericEndpointCallImpl<P extends BaseIdentifiableObject>
+public abstract class GenericEndpointCallImpl<P, Q extends BaseQuery>
         implements Call<Response<Payload<P>>> {
     private final GenericCallData data;
-    private final GenericHandler<P, ?> handler;
+    private final GenericHandler<P> handler;
     private boolean isExecuted;
 
     private final ResourceModel.Type resourceType;
-    private final Set<String> uids;
-    private final Integer limit;
+    public final Q query;
 
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, ?> handler,
-                                   ResourceModel.Type resourceType, Set<String> uids,
-                                   Integer limit) {
+    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P> handler,
+                                   ResourceModel.Type resourceType, Q query) {
         this.data = data;
         this.handler = handler;
         this.resourceType = resourceType;
-        this.uids = uids;
-        this.limit = limit;
+        this.query = query;
     }
 
     @Override
@@ -75,14 +71,12 @@ public abstract class GenericEndpointCallImpl<P extends BaseIdentifiableObject>
             isExecuted = true;
         }
 
-        if (limit != null && uids.size() > MAX_UIDS) {
-            throw new IllegalArgumentException(
-                    "Can't handle the amount of objects of type " + resourceType +
-                            ": " + uids.size() + ". " + "Max size is: " + MAX_UIDS);
+        if (!query.isValid()) {
+            throw new IllegalArgumentException("Invalid query");
         }
 
         String lastUpdated = data.resourceHandler().getLastUpdated(resourceType);
-        Response<Payload<P>> response = getCall(uids, lastUpdated).execute();
+        Response<Payload<P>> response = getCall(query, lastUpdated).execute();
 
         if (isValidResponse(response)) {
             persist(response);
@@ -90,10 +84,9 @@ public abstract class GenericEndpointCallImpl<P extends BaseIdentifiableObject>
         return response;
     }
 
-    protected abstract retrofit2.Call<Payload<P>> getCall(Set<String> uids,
-                                                          String lastUpdated) throws IOException;
+    protected abstract retrofit2.Call<Payload<P>> getCall(Q query, String lastUpdated) throws IOException;
 
-    private Response<Payload<P>> persist(Response<Payload<P>> response) {
+    private void persist(Response<Payload<P>> response) {
         if (response == null) {
             throw new RuntimeException("Trying to process call without download data");
         }
@@ -110,7 +103,6 @@ public abstract class GenericEndpointCallImpl<P extends BaseIdentifiableObject>
                 transaction.end();
             }
         }
-        return response;
     }
 
     private boolean isValidResponse(Response<Payload<P>> response) {

@@ -29,6 +29,15 @@
           "selectEnrollmentDatesInFuture": false,
           "registration": true,
           "useFirstStageDuringRegistration": true,
+          "access": {
+              "data": {
+                  "write": false
+              }
+          },
+          "style": {
+              "color": "#fff",
+              "icon": "my-icon-name"
+          },
           "trackedEntity": {
               "id": "nEenWmSyUEp"
           },
@@ -103,7 +112,24 @@
                       "inherit": false,
                       "unique": false,
                       "valueType": "TEXT",
-                      "orgunitScope": false
+                      "orgunitScope": false,
+                      "renderType": {
+                          "DESKTOP": {
+                              "type": "SPINNER",
+                              "min": 5,
+                              "max": 600,
+                              "step": 4,
+                              "decimalPoints": 3
+                          },
+                          "MOBILE": {
+                              "type": "SLIDER",
+                              "min": 555,
+                              "max": 88888,
+                              "step": 77,
+                              "decimalPoints": 1
+                          }
+                      }
+
                   }
               },
               {
@@ -585,7 +611,22 @@
                           }
                       }
                   ],
-                  "programStageSections": [ ]
+                  "programStageSections": [
+                      {
+                          "id": "OeSqs7pkKqI",
+                          "dataElements": [
+
+                          ],
+                          "renderType": {
+                              "DESKTOP": {
+                                  "type": "SEQUENTIAL"
+                              },
+                              "MOBILE": {
+                                  "type": "MATRIX"
+                              }
+                          }
+                      }
+                  ]
               },
               {
                   "lastUpdated": "2015-08-06T20:16:48.321",

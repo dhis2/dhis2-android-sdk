@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.option;
 
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +58,9 @@ public class OptionHandlerShould {
     @Mock
     private OptionSet optionSet;
 
+    @Mock
+    private DictionaryTableHandler<ObjectStyle> styleHandler;
+
     // object to test
     private OptionHandler optionHandler;
 
@@ -65,7 +70,7 @@ public class OptionHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        optionHandler = new OptionHandler(optionStore);
+        optionHandler = new OptionHandler(optionStore, styleHandler);
 
         when(optionSet.uid()).thenReturn("test_option_set_uid");
         when(option.uid()).thenReturn("test_option_uid");
@@ -138,5 +143,11 @@ public class OptionHandlerShould {
         // verify that delete is never called
         verify(optionStore, never()).delete(anyString());
 
+    }
+
+    @Test
+    public void call_style_handler() throws Exception {
+        optionHandler.handleOptions(options);
+        verify(styleHandler).handle(option.style(), option.uid(), OptionModel.TABLE);
     }
 }

@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,6 +66,9 @@ public class ProgramStageHandlerShould {
     @Mock
     private ProgramStage programStage;
 
+    @Mock
+    private DictionaryTableHandler<ObjectStyle> styleHandler;
+
     private List<ProgramStage> programStages;
 
     // object to test
@@ -75,8 +80,8 @@ public class ProgramStageHandlerShould {
 
         programStageHandler = new ProgramStageHandler(
                 programStageStore, programStageSectionHandler,
-                programStageDataElementHandler
-        );
+                programStageDataElementHandler,
+                styleHandler);
 
         when(programStage.uid()).thenReturn("test_program_stage_uid");
         programStages = new ArrayList<>();

@@ -61,6 +61,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
     private final ResourceStore resourceStore;
+    private final Set<String> programUids;
 
     private final Date serverDate;
     private boolean isExecuted;
@@ -72,7 +73,8 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                                 @NonNull ResourceStore resourceStore,
                                 @NonNull Date serverDate,
                                 @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                                @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore) {
+                                @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
+                                @NonNull Set<String> programUids) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
         this.database = database;
@@ -81,6 +83,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         this.serverDate = new Date(serverDate.getTime());
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
+        this.programUids = programUids;
     }
 
     @Override
@@ -99,11 +102,12 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             isExecuted = true;
         }
         Response<Payload<OrganisationUnit>> response = null;
+        Response<Payload<OrganisationUnit>> totalResponse = null;
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore);
+                organisationUnitProgramLinkStore, programUids);
 
         Transaction transaction = database.beginNewTransaction();
         try {
@@ -115,12 +119,18 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             for (String uid : rootOrgUnitUids) {
                 response = getOrganisationUnit(uid, lastUpdatedFilter);
                 if (response.isSuccessful()) {
+                    if (totalResponse == null) {
+                        totalResponse = response;
+                    } else  {
+                        totalResponse.body().items().addAll(response.body().items());
+                    }
                     organisationUnitHandler.handleOrganisationUnits(
                             response.body().items(),
                             OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
                             user.uid()
                     );
                 } else {
+                    totalResponse = response;
                     break; //stop early unsuccessful:
                 }
             }
@@ -131,7 +141,7 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         } finally {
             transaction.end();
         }
-        return response;
+        return totalResponse;
     }
 
     private Response<Payload<OrganisationUnit>> getOrganisationUnit(

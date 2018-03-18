@@ -41,7 +41,12 @@ import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -110,7 +115,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
             ProgramModel.Columns.RELATIONSHIP_TEXT,
             ProgramModel.Columns.RELATED_PROGRAM,
             ProgramModel.Columns.TRACKED_ENTITY,
-            ProgramModel.Columns.CATEGORY_COMBO
+            ProgramModel.Columns.CATEGORY_COMBO,
+            ProgramModel.Columns.ACCESS_DATA_WRITE
     };
 
     private Dhis2MockServer dhis2MockServer;
@@ -133,8 +139,11 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
 
         TrackedEntityAttributeStore trackedEntityAttributeStore =
                 new TrackedEntityAttributeStoreImpl(databaseAdapter());
+
         TrackedEntityAttributeHandler trackedEntityAttributeHandler =
-                new TrackedEntityAttributeHandler(trackedEntityAttributeStore);
+                new TrackedEntityAttributeHandler(trackedEntityAttributeStore,
+                        ObjectStyleHandler.create(databaseAdapter()),
+                        ValueTypeRenderingHandler.create(databaseAdapter()));
 
         ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore =
                 new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter());
@@ -163,9 +172,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         ProgramRuleStore programRuleStore = new ProgramRuleStoreImpl(databaseAdapter());
         ProgramRuleHandler programRuleHandler = new ProgramRuleHandler(programRuleStore, programRuleActionHandler);
 
-        GenericHandler<OptionSet, OptionSetModel> optionSetHandler =
-                OptionSetHandler.create(databaseAdapter());
-        GenericHandler<DataElement, DataElementModel> dataElementHandler =
+        GenericHandler<OptionSet> optionSetHandler = OptionSetHandler.create(databaseAdapter());
+        GenericHandler<DataElement> dataElementHandler =
                 DataElementHandler.create(databaseAdapter(), optionSetHandler);
         ProgramStageDataElementStore programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter());
@@ -181,12 +189,16 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 programIndicatorHandler
         );
 
+        DictionaryTableHandler<ObjectStyle> styleHandler = ObjectStyleHandler.create(databaseAdapter());
+        DictionaryTableHandler<ValueTypeRendering> renderTypeHandler
+                = ValueTypeRenderingHandler.create(databaseAdapter());
+
         ProgramStageStore programStageStore = new ProgramStageStoreImpl(databaseAdapter());
         ProgramStageHandler programStageHandler = new ProgramStageHandler(
                 programStageStore,
                 programStageSectionHandler,
-                programStageDataElementHandler
-        );
+                programStageDataElementHandler,
+                styleHandler);
 
         RelationshipTypeStore relationshipStore = new RelationshipTypeStoreImpl(databaseAdapter());
         RelationshipTypeHandler relationshipTypeHandler = new RelationshipTypeHandler(relationshipStore);
@@ -201,7 +213,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 programIndicatorHandler,
                 programRuleHandler,
                 programTrackedEntityAttributeHandler,
-                relationshipTypeHandler);
+                relationshipTypeHandler,
+                styleHandler);
 
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
@@ -225,7 +238,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
                 programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore, dataElementHandler
+                programStageSectionStore, programStageStore, relationshipStore, dataElementHandler,
+                styleHandler, renderTypeHandler
         );
     }
 
@@ -266,7 +280,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 null,
                 null,
                 "nEenWmSyUEp",
-                "nM3u9s5a52V"
+                "nM3u9s5a52V",
+                0
         ).isExhausted();
     }
 
@@ -345,10 +360,25 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 ProgramStageSectionModel.Columns.CREATED,
                 ProgramStageSectionModel.Columns.LAST_UPDATED,
                 ProgramStageSectionModel.Columns.SORT_ORDER,
-                ProgramStageSectionModel.Columns.PROGRAM_STAGE
+                ProgramStageSectionModel.Columns.PROGRAM_STAGE,
+                ProgramStageSectionModel.Columns.DESKTOP_RENDER_TYPE,
+                ProgramStageSectionModel.Columns.MOBILE_RENDER_TYPE
         };
         Cursor programStageSectionCursor = database().query(ProgramStageSectionModel.TABLE, projection,
                 null, null, null, null, null);
+
+        assertThatCursor(programStageSectionCursor).hasRow(
+                "OeSqs7pkKqI",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "A03MvHHogjR",
+                ProgramStageSectionRenderingType.SEQUENTIAL.toString(),
+                ProgramStageSectionRenderingType.MATRIX.toString()
+        ).isExhausted();
 
         assertThatCursor(programStageSectionCursor).isExhausted();
     }

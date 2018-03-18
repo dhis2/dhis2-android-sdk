@@ -6,7 +6,6 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.dataset.DataSetEndpointCall;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.Before;
@@ -47,7 +46,7 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
         uids.add("P3jJH5Tu5VC");
         uids.add("FQ2o8UBlcrS");
 
-        return DataElementEndpointCall.create(data, uids);
+        return DataElementEndpointCall.FACTORY.create(data, uids);
     }
 
     // @Test

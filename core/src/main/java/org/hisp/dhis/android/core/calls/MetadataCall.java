@@ -29,28 +29,30 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
+import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
+import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryHandler;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.ResponseValidator;
+import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
-import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
@@ -58,6 +60,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkSt
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramAccessEndpointCall;
 import org.hisp.dhis.android.core.program.ProgramCall;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
@@ -87,8 +90,6 @@ import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserRole;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserService;
 import org.hisp.dhis.android.core.user.UserStore;
@@ -102,7 +103,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
- "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
+ "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity", "PMD.ExcessiveMethodLength"})
 public class MetadataCall implements Call<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoService systemInfoService;
@@ -116,7 +117,6 @@ public class MetadataCall implements Call<Response> {
     private final UserStore userStore;
     private final UserCredentialsStore userCredentialsStore;
     private final UserRoleStore userRoleStore;
-    private final UserRoleProgramLinkStore userRoleProgramLinkStore;
     private final OrganisationUnitStore organisationUnitStore;
     private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final ProgramStore programStore;
@@ -133,8 +133,10 @@ public class MetadataCall implements Call<Response> {
     private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
-    private final GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
-    private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
+    private final GenericHandler<OptionSet> optionSetHandler;
+    private final GenericHandler<DataElement> dataElementHandler;
+    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+    private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     private final Retrofit retrofit;
     private final CategoryQuery categoryQuery;
@@ -161,7 +163,6 @@ public class MetadataCall implements Call<Response> {
                         @NonNull UserStore userStore,
                         @NonNull UserCredentialsStore userCredentialsStore,
                         @NonNull UserRoleStore userRoleStore,
-                        @NonNull UserRoleProgramLinkStore userRoleProgramLinkStore,
                         @NonNull OrganisationUnitStore organisationUnitStore,
                         @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
                         @NonNull ProgramStore programStore,
@@ -185,9 +186,11 @@ public class MetadataCall implements Call<Response> {
                         @NonNull CategoryComboQuery categoryComboQuery,
                         @NonNull CategoryComboService categoryComboService,
                         @NonNull CategoryComboHandler categoryComboHandler,
-                        @NonNull GenericHandler<OptionSet, OptionSetModel> optionSetHandler,
-                        @NonNull GenericHandler<DataElement, DataElementModel> dataElementHandler,
+                        @NonNull GenericHandler<OptionSet> optionSetHandler,
+                        @NonNull GenericHandler<DataElement> dataElementHandler,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
+                        @NonNull DictionaryTableHandler<ObjectStyle> styleHandler,
+                        @NonNull DictionaryTableHandler<ValueTypeRendering> renderTypeHandler,
                         @NonNull Retrofit retrofit
                         ) {
         this.databaseAdapter = databaseAdapter;
@@ -202,7 +205,6 @@ public class MetadataCall implements Call<Response> {
         this.userStore = userStore;
         this.userCredentialsStore = userCredentialsStore;
         this.userRoleStore = userRoleStore;
-        this.userRoleProgramLinkStore = userRoleProgramLinkStore;
         this.organisationUnitStore = organisationUnitStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.programStore = programStore;
@@ -229,6 +231,8 @@ public class MetadataCall implements Call<Response> {
         this.optionSetHandler = optionSetHandler;
         this.dataElementHandler = dataElementHandler;
         this.dataSetParentCallFactory = dataSetParentCallFactory;
+        this.styleHandler = styleHandler;
+        this.renderTypeHandler = renderTypeHandler;
 
         this.retrofit = retrofit;
     }
@@ -264,28 +268,21 @@ public class MetadataCall implements Call<Response> {
             GenericCallData data = GenericCallData.create(databaseAdapter,
                     new ResourceHandler(resourceStore), retrofit);
 
-            response = new UserCall(
+            Response<User> userResponse = new UserCall(
                     userService,
                     databaseAdapter,
                     userStore,
                     userCredentialsStore,
                     userRoleStore,
                     resourceStore,
-                    data.serverDate(),
-                    userRoleProgramLinkStore
+                    data.serverDate()
             ).call();
+            response = userResponse;
             if (!response.isSuccessful()) {
                 return response;
             }
 
-            User user = (User) response.body();
-            response = new OrganisationUnitCall(
-                    user, organisationUnitService, databaseAdapter, organisationUnitStore,
-                    resourceStore, data.serverDate(), userOrganisationUnitLinkStore,
-                    organisationUnitProgramLinkStore).call();
-            if (!response.isSuccessful()) {
-                return response;
-            }
+
             response = downloadCategories(data.serverDate());
 
             if (!response.isSuccessful()) {
@@ -297,7 +294,15 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
-            Set<String> programUids = getAssignedProgramUids(user);
+            Response<Payload<Program>> programAccessResponse = ProgramAccessEndpointCall.FACTORY
+                    .create(data, programService).call();
+            response = programAccessResponse;
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            Set<String> programUids = getProgramUidsWithDataReadAccess(programAccessResponse.body().items());
             response = new ProgramCall(
                     programService, databaseAdapter, resourceStore, programUids, programStore,
                     data.serverDate(),
@@ -308,7 +313,7 @@ public class MetadataCall implements Call<Response> {
                     programRuleStore,
                     programStageDataElementStore,
                     programStageSectionStore, programStageStore, relationshipStore,
-                    dataElementHandler
+                    dataElementHandler, styleHandler, renderTypeHandler
             ).call();
             if (!response.isSuccessful()) {
                 return response;
@@ -324,14 +329,23 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
+            User user = userResponse.body();
+            Response<Payload<OrganisationUnit>> organisationUnitResponse = new OrganisationUnitCall(
+                    user, organisationUnitService, databaseAdapter, organisationUnitStore,
+                    resourceStore, data.serverDate(), userOrganisationUnitLinkStore,
+                    organisationUnitProgramLinkStore, programUids).call();
+            if (!organisationUnitResponse.isSuccessful()) {
+                return organisationUnitResponse;
+            }
+
             Set<String> optionSetUids = getAssignedOptionSetUids(programs);
             response = new OptionSetCall(
                     data, optionSetService, optionSetHandler, optionSetUids).call();
             if (!response.isSuccessful()) {
                 return response;
             }
-
-            response = dataSetParentCallFactory.create(user, data).call();
+            List<OrganisationUnit> organisationUnits = organisationUnitResponse.body().items();
+            response = dataSetParentCallFactory.create(user, data, organisationUnits).call();
             if (!response.isSuccessful()) {
                 return response;
             }
@@ -414,53 +428,16 @@ public class MetadataCall implements Call<Response> {
         return uids;
     }
 
-    private Set<String> getAssignedProgramUids(User user) {
-        if (user == null || user.userCredentials() == null
-                || user.userCredentials().userRoles() == null) {
-            return null;
-        }
-
+    private Set<String> getProgramUidsWithDataReadAccess(List<Program> programsWithAccess) {
         Set<String> programUids = new HashSet<>();
-
-        getProgramUidsFromUserRoles(user, programUids);
-        getProgramUidsFromOrganisationUnits(user, programUids);
+        for (Program program: programsWithAccess) {
+            Access access = program.access();
+            if (access != null && access.data().read()) {
+                programUids.add(program.uid());
+            }
+        }
 
         return programUids;
-    }
-
-    private void getProgramUidsFromOrganisationUnits(User user, Set<String> programUids) {
-        List<OrganisationUnit> organisationUnits = user.organisationUnits();
-
-        if (organisationUnits != null) {
-            int size = organisationUnits.size();
-            for (int i = 0; i < size; i++) {
-                OrganisationUnit organisationUnit = organisationUnits.get(i);
-
-                int programSize = organisationUnit.programs().size();
-                for (int j = 0; j < programSize; j++) {
-                    Program program = organisationUnit.programs().get(j);
-
-                    programUids.add(program.uid());
-                }
-            }
-        }
-    }
-
-    private void getProgramUidsFromUserRoles(User user, Set<String> programUids) {
-        List<UserRole> userRoles = user.userCredentials().userRoles();
-        if (userRoles != null) {
-            int size = userRoles.size();
-            for (int i = 0; i < size; i++) {
-                UserRole userRole = userRoles.get(i);
-
-                int programSize = userRole.programs().size();
-                for (int j = 0; j < programSize; j++) {
-                    Program program = userRole.programs().get(j);
-
-                    programUids.add(program.uid());
-                }
-            }
-        }
     }
 
     private Response<Payload<Category>> downloadCategories(Date serverDate) throws Exception {

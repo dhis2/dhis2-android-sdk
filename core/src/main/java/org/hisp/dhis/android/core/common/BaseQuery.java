@@ -9,6 +9,10 @@ public abstract class BaseQuery {
 
     public abstract boolean paging();
 
+    boolean isValid() {
+        return true;
+    }
+
     protected static abstract class Builder<T extends BaseQuery.Builder> {
         public abstract T page(int page);
 

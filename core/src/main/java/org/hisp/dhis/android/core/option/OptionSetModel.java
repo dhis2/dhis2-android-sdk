@@ -47,13 +47,14 @@ import org.hisp.dhis.android.core.utils.Utils;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-@SuppressWarnings("PMD")
 public abstract class OptionSetModel extends BaseIdentifiableObjectModel implements StatementBinder {
     public static final String TABLE = "OptionSet";
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String VERSION = "version";
         public static final String VALUE_TYPE = "valueType";
+
+        private Columns() {}
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(),

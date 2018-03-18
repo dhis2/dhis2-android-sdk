@@ -36,10 +36,12 @@ public class SQLStatementWrapper {
     public final SQLiteStatement insert;
     public final SQLiteStatement update;
     final SQLiteStatement deleteById;
+    final String selectUids;
 
     SQLStatementWrapper(SQLStatementBuilder builder, DatabaseAdapter databaseAdapter) {
         this.insert = databaseAdapter.compileStatement(builder.insert());
         this.update = databaseAdapter.compileStatement(builder.update());
         this.deleteById = databaseAdapter.compileStatement(builder.deleteById());
+        this.selectUids = builder.selectUids();
     }
 }

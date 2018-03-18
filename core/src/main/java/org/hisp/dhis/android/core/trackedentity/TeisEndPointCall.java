@@ -62,9 +62,12 @@ public class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInst
             isExecuted = true;
         }
 
+        String lastSyncedTEIs = resourceHandler.getLastUpdated(ResourceModel.Type.TRACKED_ENTITY_INSTANCE);
+
         Response<Payload<TrackedEntityInstance>> response;
 
-        response = trackedEntityInstanceService.getTEIs(trackerQuery.getOrgUnit(), fields(),
+        response = trackedEntityInstanceService.getTEIs(trackerQuery.getOrgUnit(),
+                TrackedEntityInstance.lastUpdated.gt(lastSyncedTEIs), fields(),
                 Boolean.TRUE, trackerQuery.getPage(), trackerQuery.getPageSize()).execute();
 
         if (response.isSuccessful() && response.body().items() != null) {

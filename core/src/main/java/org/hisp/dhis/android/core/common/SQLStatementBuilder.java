@@ -30,31 +30,23 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.utils.Utils;
 
-import java.util.Arrays;
-
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import static org.hisp.dhis.android.core.utils.Utils.commaAndSpaceSeparatedArrayValues;
 
 public class SQLStatementBuilder {
     final String tableName;
     public final String[] columns;
     private final String[] updateWhereColumns;
+    private final static String TEXT = " TEXT";
 
-    @SuppressFBWarnings
-    @SuppressWarnings("PMD")
+    @SuppressWarnings("PMD.UseVarargs")
     SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
         this.tableName = tableName;
-        this.columns = columns;
-        this.updateWhereColumns = updateWhereColumns;
+        this.columns = columns.clone();
+        this.updateWhereColumns = updateWhereColumns.clone();
     }
 
     private String commaSeparatedColumns() {
-        return commaSeparatedArrayValues(columns);
-    }
-
-    @SuppressWarnings("PMD")
-    private static String commaSeparatedArrayValues(String[] values) {
-        String withBrackets = Arrays.toString(values);
-        return withBrackets.substring(1, withBrackets.length() - 1);
+        return commaAndSpaceSeparatedArrayValues(columns);
     }
 
     private String commaSeparatedInterrogationMarks() {
@@ -62,20 +54,18 @@ public class SQLStatementBuilder {
         for (int i = 0; i < columns.length; i++) {
             array[i] = "?";
         }
-        return commaSeparatedArrayValues(array);
+        return commaAndSpaceSeparatedArrayValues(array);
     }
 
-    @SuppressWarnings("PMD")
-    private String commaSeparatedColumnEqualInterrogationMark(String[] cols) {
+    private String commaSeparatedColumnEqualInterrogationMark(String... cols) {
         String[] array = new String[cols.length];
         for (int i = 0; i < cols.length; i++) {
             array[i] = cols[i] + "=?";
         }
-        return commaSeparatedArrayValues(array);
+        return commaAndSpaceSeparatedArrayValues(array);
     }
 
-    @SuppressWarnings("PMD")
-    private String andSeparatedColumnEqualInterrogationMark(String[] cols) {
+    private String andSeparatedColumnEqualInterrogationMark(String... cols) {
         return commaSeparatedColumnEqualInterrogationMark(cols)
                 .replace(",", " AND ");
     }
@@ -90,6 +80,14 @@ public class SQLStatementBuilder {
                 " WHERE " + BaseIdentifiableObjectModel.Columns.UID + "=?;";
     }
 
+    String selectUids() {
+        return  "SELECT " + BaseIdentifiableObjectModel.Columns.UID + " FROM " + tableName;
+    }
+
+    String selectAll() {
+        return  "SELECT " + commaSeparatedColumns() + " FROM " + tableName;
+    }
+
     public String update() {
         return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
                 " WHERE " + BaseIdentifiableObjectModel.Columns.UID + "=?;";
@@ -102,34 +100,34 @@ public class SQLStatementBuilder {
         return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
                 " WHERE " + whereClause + ";";
     }
-    @SuppressWarnings("PMD")
+
+    @SuppressWarnings("PMD.UseVarargs")
     private static String createTableWrapper(String tableName, String[] columnsWithAttributes) {
         return "CREATE TABLE " + tableName + " (" +
-                commaSeparatedArrayValues(columnsWithAttributes) + ");";
+                commaAndSpaceSeparatedArrayValues(columnsWithAttributes) + ");";
     }
 
     private static String[] idColumn() {
         return new String[]{BaseModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT"};
     }
 
-    @SuppressWarnings("PMD")
     private static String[] identifiableColumns() {
         return Utils.appendInNewArray(idColumn(),
-                BaseIdentifiableObjectModel.Columns.UID + " TEXT NOT NULL UNIQUE",
-                BaseIdentifiableObjectModel.Columns.CODE + " TEXT",
-                BaseIdentifiableObjectModel.Columns.NAME + " TEXT",
-                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME + " TEXT",
-                BaseIdentifiableObjectModel.Columns.CREATED + " TEXT",
-                BaseIdentifiableObjectModel.Columns.LAST_UPDATED + " TEXT"
+                BaseIdentifiableObjectModel.Columns.UID + TEXT + " NOT NULL UNIQUE",
+                BaseIdentifiableObjectModel.Columns.CODE + TEXT,
+                BaseIdentifiableObjectModel.Columns.NAME + TEXT,
+                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME + TEXT,
+                BaseIdentifiableObjectModel.Columns.CREATED + TEXT,
+                BaseIdentifiableObjectModel.Columns.LAST_UPDATED + TEXT
         );
     }
 
     private static String[] nameableColumns() {
         return Utils.appendInNewArray(identifiableColumns(),
-                BaseNameableObjectModel.Columns.SHORT_NAME + " TEXT",
-                BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME + " TEXT",
-                BaseNameableObjectModel.Columns.DESCRIPTION + " TEXT",
-                BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION + " TEXT"
+                BaseNameableObjectModel.Columns.SHORT_NAME + TEXT,
+                BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME + TEXT,
+                BaseNameableObjectModel.Columns.DESCRIPTION + TEXT,
+                BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION + TEXT
         );
     }
 

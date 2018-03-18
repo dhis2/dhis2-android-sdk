@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.database.Cursor;
 
+import org.assertj.core.util.Lists;
+import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -197,7 +199,9 @@ public class OrganisationUnitCallUnitShould {
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
                 organisationUnitStore,
                 resourceStore,
-                serverDate, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore);
+                serverDate, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, Sets.newHashSet(
+                        Lists.newArrayList("program_1_uid", "program_2_uid")
+        ));
 
         //Return only one organisationUnit.
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));

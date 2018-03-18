@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.user.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +54,9 @@ public class DataSetParentLinkManagerShould {
     private ObjectWithoutUidStore<DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitStore;
 
     @Mock
+    private ObjectWithoutUidStore<DataSetIndicatorLinkModel> dataSetIndicatorStore;
+
+    @Mock
     private DataSet dataSet1;
 
     @Mock
@@ -62,11 +65,17 @@ public class DataSetParentLinkManagerShould {
     @Mock
     private DataSet dataSet3;
 
+    private final String DATA_SET_1_UID = "test_data_set_uid1";
+    private final String DATA_SET_2_UID = "test_data_set_uid2";
+    private final String DATA_SET_3_UID = "test_data_set_uid3";
+
     private DataElementUids decc1 = DataElementUids.create(ObjectWithUid.create("de1"));
-
     private DataElementUids decc2 = DataElementUids.create(ObjectWithUid.create("de2"));
-
     private DataElementUids decc3 = DataElementUids.create(ObjectWithUid.create("de3"));
+
+    private ObjectWithUid i1 = ObjectWithUid.create("i1");
+    private ObjectWithUid i2 = ObjectWithUid.create("i2");
+    private ObjectWithUid i3 = ObjectWithUid.create("i3");
 
     @Mock
     private OrganisationUnit ou1;
@@ -74,39 +83,44 @@ public class DataSetParentLinkManagerShould {
     @Mock
     private OrganisationUnit ou2;
 
-    @Mock
-    private User user;
-
     private DataSetParentLinkManager linkManager;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        linkManager = new DataSetParentLinkManager(
-                dataSetDataElementStore, dataSetOrganisationUnitStore);
+        linkManager = new DataSetParentLinkManager(dataSetDataElementStore,
+                dataSetOrganisationUnitStore, dataSetIndicatorStore);
 
-        when(dataSet1.uid()).thenReturn("test_data_uid_uid1");
-        when(dataSet2.uid()).thenReturn("test_data_uid_uid2");
-        when(dataSet3.uid()).thenReturn("test_data_uid_uid3");
+        when(dataSet1.uid()).thenReturn(DATA_SET_1_UID);
+        when(dataSet2.uid()).thenReturn(DATA_SET_2_UID);
+        when(dataSet3.uid()).thenReturn(DATA_SET_3_UID);
         when(dataSet1.dataSetElements()).thenReturn(Lists.newArrayList(decc1, decc2));
         when(dataSet2.dataSetElements()).thenReturn(Lists.newArrayList(decc2, decc3));
+
+        when(dataSet1.indicators()).thenReturn(Lists.newArrayList(i1, i2));
+        when(dataSet2.indicators()).thenReturn(Lists.newArrayList(i2, i3));
 
         when(ou1.uid()).thenReturn("test_ou_uid_uid1");
         when(ou1.dataSets()).thenReturn(Lists.newArrayList(dataSet1, dataSet2));
         when(ou2.uid()).thenReturn("test_ou_uid_uid2");
         when(ou2.dataSets()).thenReturn(Lists.newArrayList(dataSet2, dataSet3));
-
-        when(user.organisationUnits()).thenReturn(Lists.newArrayList(ou1, ou2));
     }
 
     @Test
     public void store_data_set_data_element_links() throws Exception {
-        linkManager.saveDataSetDataElementLinks(Lists.newArrayList(dataSet1, dataSet2));
-        linkManager.saveDataSetOrganisationUnitLinks(user);
+        linkManager.saveDataSetDataElementAndIndicatorLinks(Lists.newArrayList(dataSet1, dataSet2));
+        linkManager.saveDataSetOrganisationUnitLinks(Lists.newArrayList(ou1, ou2), Sets.newHashSet(
+                Lists.newArrayList(DATA_SET_1_UID, DATA_SET_2_UID, DATA_SET_3_UID)));
+
         verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(decc1, dataSet1));
         verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(decc2, dataSet1));
         verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(decc2, dataSet2));
         verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(decc3, dataSet2));
+
+        verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(i1, dataSet1));
+        verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(i2, dataSet1));
+        verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(i2, dataSet2));
+        verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(i3, dataSet2));
 
         verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(ou1, dataSet1));
         verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(ou1, dataSet2));
@@ -119,6 +133,10 @@ public class DataSetParentLinkManagerShould {
     private DataSetDataElementLinkModel dataElementExpectedLink(DataElementUids decc, DataSet dataSet) {
         return DataSetDataElementLinkModel.builder()
                 .dataSet(dataSet.uid()).dataElement(decc.dataElement().uid()).build();
+    }
+
+    private DataSetIndicatorLinkModel indicatorExpectedLink(ObjectWithUid i1, DataSet dataSet) {
+        return DataSetIndicatorLinkModel.create(dataSet.uid(), i1.uid());
     }
 
     private DataSetOrganisationUnitLinkModel orgUnitExpectedLink(OrganisationUnit ou, DataSet dataSet) {

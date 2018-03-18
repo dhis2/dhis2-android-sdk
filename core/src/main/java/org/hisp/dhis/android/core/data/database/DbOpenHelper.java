@@ -42,19 +42,26 @@ import org.hisp.dhis.android.core.category.CategoryModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingModel;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.datavalue.DataValueModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
+import org.hisp.dhis.android.core.indicator.IndicatorModel;
+import org.hisp.dhis.android.core.indicator.IndicatorTypeModel;
 import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
+import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
@@ -79,7 +86,6 @@ import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserRoleModel;
-import org.hisp.dhis.android.core.user.UserRoleProgramLinkModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -95,7 +101,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
     @VisibleForTesting
-    static int VERSION = 4;
+    static int VERSION = 9;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -343,6 +349,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
             ProgramModel.Columns.TRACKED_ENTITY + " TEXT," +
             ProgramModel.Columns.CATEGORY_COMBO + " TEXT," +
+            ProgramModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
             " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID
             + ")" +
@@ -384,7 +391,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             DataElementModel.Columns.DIMENSION + " TEXT," +
             DataElementModel.Columns.DISPLAY_FORM_NAME + " TEXT," +
             DataElementModel.Columns.OPTION_SET + " TEXT," +
-            DataElementModel.Columns.CATEGORY_COMBO + " TEXT," +" FOREIGN KEY ( "
+            DataElementModel.Columns.CATEGORY_COMBO + " TEXT," + " FOREIGN KEY ( "
                     + DataElementModel.Columns.OPTION_SET + ")" +
                     " REFERENCES " + OptionSetModel.TABLE + " (" + OptionSetModel.Columns.UID + ")" +
                     " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
@@ -463,6 +470,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             ProgramStageSectionModel.Columns.LAST_UPDATED + " TEXT," +
             ProgramStageSectionModel.Columns.SORT_ORDER + " INTEGER," +
             ProgramStageSectionModel.Columns.PROGRAM_STAGE + " TEXT NOT NULL," +
+            ProgramStageSectionModel.Columns.DESKTOP_RENDER_TYPE + " TEXT," +
+            ProgramStageSectionModel.Columns.MOBILE_RENDER_TYPE + " TEXT," +
             " FOREIGN KEY ( " + ProgramStageSectionModel.Columns.PROGRAM_STAGE + ")" +
             " REFERENCES " + ProgramStageModel.TABLE + " (" + ProgramStageModel.Columns.UID + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
@@ -876,21 +885,6 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     UserRoleModel.Columns.LAST_UPDATED + " TEXT" +
                     ");";
 
-    private static final String CREATE_USER_ROLE_PROGRAM_TABLE = "CREATE TABLE " +
-            UserRoleProgramLinkModel.TABLE + " (" +
-            UserRoleProgramLinkModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            UserRoleProgramLinkModel.Columns.USER_ROLE + " TEXT NOT NULL," +
-            UserRoleProgramLinkModel.Columns.PROGRAM + " TEXT NOT NULL," +
-            " FOREIGN KEY (" + UserRoleProgramLinkModel.Columns.USER_ROLE + ") " +
-            " REFERENCES " + UserRoleModel.TABLE + " (" + UserRoleModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " FOREIGN KEY (" + UserRoleProgramLinkModel.Columns.PROGRAM + ") " +
-            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " UNIQUE (" + UserRoleProgramLinkModel.Columns.USER_ROLE + ", " +
-            UserRoleProgramLinkModel.Columns.PROGRAM + ")" +
-            ");";
-
     private static final String CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE =
             "CREATE TABLE " +
                     ProgramStageSectionProgramIndicatorLinkModel.TABLE + " (" +
@@ -935,6 +929,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             DataSetModel.Columns.DATA_ELEMENT_DECORATION + " INTEGER," +
                             DataSetModel.Columns.RENDER_AS_TABS + " INTEGER," +
                             DataSetModel.Columns.RENDER_HORIZONTALLY + " INTEGER," +
+                            DataSetModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
                             " FOREIGN KEY ( " + DataSetModel.Columns.CATEGORY_COMBO + ")" +
                             " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
@@ -967,6 +962,111 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
                             " UNIQUE (" + DataSetOrganisationUnitLinkModel.Columns.DATA_SET + ", " +
                             DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ")"
+            );
+
+    private static final String CREATE_INDICATOR_TABLE =
+            SQLStatementBuilder.createNameableModelTable(IndicatorModel.TABLE,
+                    IndicatorModel.Columns.ANNUALIZED + " INTEGER," +
+                            IndicatorModel.Columns.INDICATOR_TYPE + " TEXT," +
+                            IndicatorModel.Columns.NUMERATOR + " TEXT," +
+                            IndicatorModel.Columns.NUMERATOR_DESCRIPTION + " TEXT," +
+                            IndicatorModel.Columns.DENOMINATOR + " TEXT," +
+                            IndicatorModel.Columns.DENOMINATOR_DESCRIPTION + " TEXT," +
+                            IndicatorModel.Columns.URL + " TEXT," +
+                            " FOREIGN KEY ( " + IndicatorModel.Columns.INDICATOR_TYPE + ")" +
+                            " REFERENCES " + IndicatorTypeModel.TABLE + " (" + IndicatorTypeModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
+            );
+
+    private static final String CREATE_INDICATOR_TYPE_TABLE =
+            SQLStatementBuilder.createNameableModelTable(IndicatorTypeModel.TABLE,
+                    IndicatorTypeModel.Columns.NUMBER + " INTEGER," +
+                            IndicatorTypeModel.Columns.FACTOR + " INTEGER"
+            );
+
+    private static final String CREATE_DATA_SET_INDICATOR_LINK_TABLE =
+            SQLStatementBuilder.createModelTable(DataSetIndicatorLinkModel.TABLE,
+                    DataSetIndicatorLinkModel.Columns.DATA_SET + " TEXT NOT NULL," +
+                            DataSetIndicatorLinkModel.Columns.INDICATOR + " TEXT NOT NULL," +
+                            " FOREIGN KEY (" + DataSetIndicatorLinkModel.Columns.DATA_SET + ") " +
+                            " REFERENCES " + DataSetModel.TABLE + " (" + DataSetModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " FOREIGN KEY (" + DataSetIndicatorLinkModel.Columns.INDICATOR + ") " +
+                            " REFERENCES " + IndicatorModel.TABLE + " (" + IndicatorModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " UNIQUE (" + DataSetIndicatorLinkModel.Columns.DATA_SET + ", " +
+                            DataSetIndicatorLinkModel.Columns.INDICATOR + ")"
+            );
+
+    private static final String CREATE_DATA_VALUE_TABLE =
+            SQLStatementBuilder.createModelTable(DataValueModel.TABLE,
+                    DataValueModel.Columns.DATA_ELEMENT + " TEXT NOT NULL," +
+                            DataValueModel.Columns.PERIOD + " TEXT NOT NULL," +
+                            DataValueModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+                            DataValueModel.Columns.CATEGORY_OPTION_COMBO + " TEXT NOT NULL," +
+                            DataValueModel.Columns.ATTRIBUTE_OPTION_COMBO + " TEXT NOT NULL," +
+                            DataValueModel.Columns.VALUE + " TEXT," +
+                            DataValueModel.Columns.STORED_BY + " TEXT," +
+                            DataValueModel.Columns.CREATED + " TEXT," +
+                            DataValueModel.Columns.LAST_UPDATED + " TEXT," +
+                            DataValueModel.Columns.COMMENT + " TEXT," +
+                            DataValueModel.Columns.FOLLOW_UP + " INTEGER," +
+                            " FOREIGN KEY (" + DataValueModel.Columns.DATA_ELEMENT + ") " +
+                            " REFERENCES " + DataElementModel.TABLE + " (" + DataElementModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " FOREIGN KEY (" + DataValueModel.Columns.PERIOD + ") " +
+                            " REFERENCES " + PeriodModel.TABLE + " (" +
+                            PeriodModel.Columns.PERIOD_ID + ")" +
+                            " FOREIGN KEY (" + DataValueModel.Columns.ORGANISATION_UNIT + ") " +
+                            " REFERENCES " + OrganisationUnitModel.TABLE + " (" +
+                            OrganisationUnitModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " FOREIGN KEY (" + DataValueModel.Columns.CATEGORY_OPTION_COMBO + ") " +
+                            " REFERENCES " + CategoryOptionComboModel.TABLE + " (" +
+                            CategoryOptionComboModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " FOREIGN KEY (" + DataValueModel.Columns.ATTRIBUTE_OPTION_COMBO + ") " +
+                            " REFERENCES " + CategoryOptionComboModel.TABLE + " (" +
+                            CategoryOptionComboModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " UNIQUE (" +
+                            DataValueModel.Columns.DATA_ELEMENT + ", " +
+                            DataValueModel.Columns.PERIOD + ", " +
+                            DataValueModel.Columns.ORGANISATION_UNIT + ", " +
+                            DataValueModel.Columns.CATEGORY_OPTION_COMBO + ", " +
+                            DataValueModel.Columns.ATTRIBUTE_OPTION_COMBO + ")"
+            );
+
+    private static final String CREATE_PERIOD_TABLE =
+            SQLStatementBuilder.createModelTable(PeriodModel.TABLE,
+                    PeriodModel.Columns.PERIOD_ID + " TEXT," +
+                            PeriodModel.Columns.PERIOD_TYPE + " TEXT," +
+                            PeriodModel.Columns.START_DATE + " TEXT," +
+                            PeriodModel.Columns.END_DATE + " TEXT," +
+                            " UNIQUE (" + PeriodModel.Columns.PERIOD_ID + ")"
+            );
+
+    private static final String CREATE_OBJECT_STYLE_TABLE =
+            SQLStatementBuilder.createModelTable(ObjectStyleModel.TABLE,
+                    ObjectStyleModel.Columns.UID + " TEXT," +
+                            ObjectStyleModel.Columns.OBJECT_TABLE + " TEXT," +
+                            ObjectStyleModel.Columns.COLOR + " TEXT," +
+                            ObjectStyleModel.Columns.ICON + " TEXT," +
+                            " UNIQUE (" + ObjectStyleModel.Columns.UID + ")"
+            );
+
+    private static final String CREATE_VALUE_TYPE_DEVICE_RENDERING_TABLE =
+            SQLStatementBuilder.createModelTable(ValueTypeDeviceRenderingModel.TABLE,
+                    ValueTypeDeviceRenderingModel.Columns.UID + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.OBJECT_TABLE + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.DEVICE_TYPE + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.TYPE + " TEXT," +
+                            ValueTypeDeviceRenderingModel.Columns.MIN + " INTEGER," +
+                            ValueTypeDeviceRenderingModel.Columns.MAX + " INTEGER," +
+                            ValueTypeDeviceRenderingModel.Columns.STEP + " INTEGER," +
+                            ValueTypeDeviceRenderingModel.Columns.DECIMAL_POINTS + " INTEGER," +
+                            " UNIQUE (" + ValueTypeDeviceRenderingModel.Columns.UID + ", " +
+                            ValueTypeDeviceRenderingModel.Columns.DEVICE_TYPE + ")"
             );
 
     /**
@@ -1012,7 +1112,6 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_RESOURCE_TABLE);
         database.execSQL(CREATE_ORGANISATION_UNIT_PROGRAM_LINK_TABLE);
         database.execSQL(CREATE_USER_ROLE_TABLE);
-        database.execSQL(CREATE_USER_ROLE_PROGRAM_TABLE);
         database.execSQL(CREATE_PROGRAM_STAGE_SECTION_PROGRAM_INDICATOR_LINK_TABLE);
         database.execSQL(CREATE_CATEGORY_TABLE);
         database.execSQL(CREATE_CATEGORY_OPTION_TABLE);
@@ -1024,6 +1123,13 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_DATA_SET_TABLE);
         database.execSQL(CREATE_DATA_SET_DATA_ELEMENT_LINK_TABLE);
         database.execSQL(CREATE_DATA_SET_ORGANISATION_UNIT_LINK_TABLE);
+        database.execSQL(CREATE_INDICATOR_TABLE);
+        database.execSQL(CREATE_INDICATOR_TYPE_TABLE);
+        database.execSQL(CREATE_DATA_SET_INDICATOR_LINK_TABLE);
+        database.execSQL(CREATE_DATA_VALUE_TABLE);
+        database.execSQL(CREATE_PERIOD_TABLE);
+        database.execSQL(CREATE_OBJECT_STYLE_TABLE);
+        database.execSQL(CREATE_VALUE_TYPE_DEVICE_RENDERING_TABLE);
         return database;
     }
 

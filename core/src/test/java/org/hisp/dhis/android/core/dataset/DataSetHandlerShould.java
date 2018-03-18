@@ -27,16 +27,60 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.GenericHandlerImpl;
+import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class DataSetHandlerShould {
 
+    @Mock
+    private IdentifiableObjectStore<DataSetModel> dataSetStore;
+
+    @Mock
+    private DictionaryTableHandler<ObjectStyle> styleHandler;
+
+    @Mock
+    private DataSet dataSet;
+
+    @Mock
+    private Access access;
+
+    @Mock
+    private DataAccess dataAccess;
+
+    // object to test
+    private DataSetHandler dataSetHandler;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        dataSetHandler = new DataSetHandler(dataSetStore, styleHandler);
+        when(dataSet.access()).thenReturn(access);
+        when(access.data()).thenReturn(dataAccess);
+        when(dataAccess.write()).thenReturn(true);
+    }
+
     @Test
-    public void extend_generic_handler_impl() {
-        GenericHandlerImpl<DataSet, DataSetModel> genericHandler = new DataSetHandler(null);
+    public void extend_identifiable_handler_impl() {
+        IdentifiableHandlerImpl<DataSet, DataSetModel> genericHandler = new DataSetHandler(null, null);
+    }
+
+    @Test
+    public void call_style_handler() throws Exception {
+        dataSetHandler.handle(dataSet);
+        verify(styleHandler).handle(dataSet.style(), dataSet.uid(), DataSetModel.TABLE);
     }
 }

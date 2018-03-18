@@ -33,6 +33,7 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
@@ -46,6 +47,8 @@ public abstract class ProgramStageSectionModel extends BaseIdentifiableObjectMod
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String SORT_ORDER = "sortOrder";
         public static final String PROGRAM_STAGE = "programStage";
+        public static final String DESKTOP_RENDER_TYPE = "desktopRenderType";
+        public static final String MOBILE_RENDER_TYPE = "mobileRenderType";
     }
 
     public static ProgramStageSectionModel create(Cursor cursor) {
@@ -67,12 +70,24 @@ public abstract class ProgramStageSectionModel extends BaseIdentifiableObjectMod
     @ColumnName(Columns.PROGRAM_STAGE)
     public abstract String programStage();
 
+    @Nullable
+    @ColumnAdapter(ProgramStageSectionRenderingTypeColumnAdapter.class)
+    public abstract ProgramStageSectionRenderingType desktopRenderType();
+
+    @Nullable
+    @ColumnAdapter(ProgramStageSectionRenderingTypeColumnAdapter.class)
+    public abstract ProgramStageSectionRenderingType mobileRenderType();
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
 
         public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
         public abstract Builder programStage(@Nullable String programStage);
+
+        public abstract Builder desktopRenderType(@Nullable ProgramStageSectionRenderingType desktopRenderType);
+
+        public abstract Builder mobileRenderType(@Nullable ProgramStageSectionRenderingType mobileRenderType);
 
         public abstract ProgramStageSectionModel build();
     }

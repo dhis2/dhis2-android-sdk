@@ -28,9 +28,13 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
@@ -75,6 +79,29 @@ public class IdentifiableObjectStoreImpl<M extends BaseIdentifiableObjectModel &
         } catch (Exception e){
             insert(m);
         }
+    }
+
+    @Override
+    public Set<String> selectUids() throws RuntimeException {
+        Cursor cursor = databaseAdapter.query(statements.selectUids);
+        return mapObjectsWithUidFromCursor(cursor);
+    }
+
+    private Set<String> mapObjectsWithUidFromCursor(Cursor cursor) {
+        Set<String> uids = new HashSet<>(cursor.getCount());
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    uids.add(cursor.getString(0));
+                }
+                while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+        return uids;
     }
 }
 

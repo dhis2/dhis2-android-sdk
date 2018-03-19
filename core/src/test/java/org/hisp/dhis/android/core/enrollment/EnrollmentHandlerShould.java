@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventHandler;
 import org.junit.Before;
@@ -37,6 +38,9 @@ public class EnrollmentHandlerShould {
     @Mock
     private Event event;
 
+    @Mock
+    private DatabaseAdapter databaseAdapter;
+
     // object to test
     private EnrollmentHandler enrollmentHandler;
 
@@ -46,7 +50,7 @@ public class EnrollmentHandlerShould {
         when(enrollment.uid()).thenReturn("test_enrollment_uid");
         when(enrollment.events()).thenReturn(Collections.singletonList(event));
 
-        enrollmentHandler = new EnrollmentHandler(enrollmentStore, eventHandler);
+        enrollmentHandler = new EnrollmentHandler(databaseAdapter, enrollmentStore, eventHandler);
     }
 
     @Test

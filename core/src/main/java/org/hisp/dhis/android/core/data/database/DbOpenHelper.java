@@ -53,6 +53,7 @@ import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.datavalue.DataValueModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
+import org.hisp.dhis.android.core.enrollment.Note.NoteModel;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
 import org.hisp.dhis.android.core.indicator.IndicatorModel;
@@ -1069,6 +1070,21 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             ValueTypeDeviceRenderingModel.Columns.DEVICE_TYPE + ")"
             );
 
+    private static final String CREATE_NOTE_TABLE =
+            SQLStatementBuilder.createModelTable(NoteModel.TABLE,
+                    NoteModel.Columns.ENROLLMENT + " TEXT," +
+                            NoteModel.Columns.VALUE + " TEXT," +
+                            NoteModel.Columns.STORED_BY + " TEXT," +
+                            NoteModel.Columns.STORED_DATE + " TEXT," +
+                            " FOREIGN KEY (" + NoteModel.Columns.ENROLLMENT + ") " +
+                            " REFERENCES " + EnrollmentModel.TABLE + " (" + EnrollmentModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " UNIQUE (" + NoteModel.Columns.ENROLLMENT + ", " +
+                            NoteModel.Columns.VALUE + ", " +
+                            NoteModel.Columns.STORED_BY + ", " +
+                            NoteModel.Columns.STORED_DATE + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1130,6 +1146,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_PERIOD_TABLE);
         database.execSQL(CREATE_OBJECT_STYLE_TABLE);
         database.execSQL(CREATE_VALUE_TYPE_DEVICE_RENDERING_TABLE);
+        database.execSQL(CREATE_NOTE_TABLE);
         return database;
     }
 

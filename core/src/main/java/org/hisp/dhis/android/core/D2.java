@@ -285,7 +285,7 @@ public final class D2 {
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
     private final OrganisationUnitHandler organisationUnitHandler;
-    private final GenericHandler<DataElement> dataElementHandler;
+    private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
     private final OptionSetHandler optionSetHandler;
     private final DictionaryTableHandler<ObjectStyle> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;

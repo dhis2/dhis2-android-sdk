@@ -37,11 +37,6 @@ public class IndicatorTypeHandler extends IdentifiableHandlerImpl<IndicatorType,
         super(indicatorTypeStore);
     }
 
-    @Override
-    protected IndicatorTypeModel pojoToModel(IndicatorType type) {
-        return IndicatorTypeModel.factory.fromPojo(type);
-    }
-
     public static IndicatorTypeHandler create(DatabaseAdapter databaseAdapter) {
         return new IndicatorTypeHandler(IndicatorTypeStore.create(databaseAdapter));
     }

@@ -37,10 +37,6 @@ public class DataValueHandler extends ObjectWithoutUidHandlerImpl<DataValue, Dat
         super(dataValueStore);
     }
 
-    protected DataValueModel pojoToModel(DataValue dataValue) {
-        return DataValueModel.factory.fromPojo(dataValue);
-    }
-
     public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
         return new DataValueHandler(DataValueStore.create(databaseAdapter));
     }

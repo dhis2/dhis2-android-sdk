@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
@@ -88,7 +89,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                        ProgramStageSectionStore programStageSectionStore,
                        ProgramStageStore programStageStore,
                        RelationshipTypeStore relationshipStore,
-                       GenericHandler<DataElement> dataElementHandler,
+                       GenericHandler<DataElement, DataElementModel> dataElementHandler,
                        DictionaryTableHandler<ObjectStyle> styleHandler,
                        DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         this.programService = programService;

@@ -37,11 +37,6 @@ public final class IndicatorHandler extends IdentifiableHandlerImpl<Indicator, I
         super(indicatorStore);
     }
 
-    @Override
-    protected IndicatorModel pojoToModel(Indicator indicator) {
-        return IndicatorModel.factory.fromPojo(indicator);
-    }
-
     public static IndicatorHandler create(DatabaseAdapter databaseAdapter) {
         return new IndicatorHandler(IndicatorStore.create(databaseAdapter));
     }

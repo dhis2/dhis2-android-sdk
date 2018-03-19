@@ -47,11 +47,6 @@ public class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionS
     }
 
     @Override
-    protected OptionSetModel pojoToModel(OptionSet optionSet) {
-        return OptionSetModel.create(optionSet);
-    }
-
-    @Override
     protected void afterObjectPersisted(OptionSet optionSet) {
         optionHandler.handleOptions(optionSet.options());
     }

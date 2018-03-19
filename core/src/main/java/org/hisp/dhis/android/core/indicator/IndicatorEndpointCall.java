@@ -38,12 +38,12 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.io.IOException;
 import java.util.Set;
 
-public final class IndicatorEndpointCall extends GenericEndpointCallImpl<Indicator, UidsQuery> {
+public final class IndicatorEndpointCall extends GenericEndpointCallImpl<Indicator, IndicatorModel, UidsQuery> {
     private final IndicatorService indicatorService;
 
     private IndicatorEndpointCall(GenericCallData data, IndicatorService indicatorService,
-                                  GenericHandler<Indicator> indicatorHandler, UidsQuery uidsQuery) {
-        super(data, indicatorHandler, ResourceModel.Type.INDICATOR, uidsQuery);
+                                  GenericHandler<Indicator, IndicatorModel> indicatorHandler, UidsQuery uidsQuery) {
+        super(data, indicatorHandler, ResourceModel.Type.INDICATOR, new IndicatorModelBuilder(), uidsQuery);
         this.indicatorService = indicatorService;
     }
 

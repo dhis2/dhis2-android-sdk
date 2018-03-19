@@ -25,33 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.option;
 
-public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-    private final DictionaryTableHandler<ObjectStyle> styleHandler;
-
-    DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
-                   DictionaryTableHandler<ObjectStyle> styleHandler) {
-        super(dataSetStore);
-        this.styleHandler = styleHandler;
-    }
-
-    public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataSetHandler(
-                DataSetStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter));
-    }
+public class OptionSetModelBuilder extends ModelBuilder<OptionSet, OptionSetModel> {
 
     @Override
-    protected void afterObjectPersisted(DataSet dataSet) {
-        styleHandler.handle(dataSet.style(), dataSet.uid(), DataSetModel.TABLE);
+    public OptionSetModel buildModel(OptionSet optionSet) {
+        return OptionSetModel.builder()
+                .uid(optionSet.uid())
+                .code(optionSet.code())
+                .name(optionSet.name())
+                .displayName(optionSet.displayName())
+                .created(optionSet.created())
+                .lastUpdated(optionSet.lastUpdated())
+                .version(optionSet.version())
+                .valueType(optionSet.valueType())
+                .build();
     }
 }

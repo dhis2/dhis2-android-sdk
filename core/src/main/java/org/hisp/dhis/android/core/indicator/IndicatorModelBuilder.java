@@ -25,33 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.indicator;
 
-public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-    private final DictionaryTableHandler<ObjectStyle> styleHandler;
-
-    DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
-                   DictionaryTableHandler<ObjectStyle> styleHandler) {
-        super(dataSetStore);
-        this.styleHandler = styleHandler;
-    }
-
-    public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataSetHandler(
-                DataSetStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter));
-    }
+public class IndicatorModelBuilder extends ModelBuilder<Indicator, IndicatorModel> {
 
     @Override
-    protected void afterObjectPersisted(DataSet dataSet) {
-        styleHandler.handle(dataSet.style(), dataSet.uid(), DataSetModel.TABLE);
+    public IndicatorModel buildModel(Indicator indicator) {
+        return IndicatorModel.builder()
+                .uid(indicator.uid())
+                .code(indicator.code())
+                .name(indicator.name())
+                .displayName(indicator.displayName())
+                .created(indicator.created())
+                .lastUpdated(indicator.lastUpdated())
+                .shortName(indicator.shortName())
+                .displayShortName(indicator.displayShortName())
+                .description(indicator.description())
+                .displayDescription(indicator.displayDescription())
+                .annualized(indicator.annualized())
+                .indicatorType(indicator.indicatorTypeUid())
+                .numerator(indicator.numerator())
+                .numeratorDescription(indicator.numeratorDescription())
+                .denominator(indicator.denominator())
+                .denominatorDescription(indicator.denominatorDescription())
+                .url(indicator.url())
+                .build();
     }
 }

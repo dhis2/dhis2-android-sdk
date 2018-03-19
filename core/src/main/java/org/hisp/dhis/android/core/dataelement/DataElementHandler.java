@@ -37,14 +37,16 @@ import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetModel;
+import org.hisp.dhis.android.core.option.OptionSetModelBuilder;
 
 public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, DataElementModel> {
-    private final GenericHandler<OptionSet> optionSetHandler;
+    private final GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
     private final DictionaryTableHandler<ObjectStyle> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     DataElementHandler(IdentifiableObjectStore<DataElementModel> dataElementStore,
-                       GenericHandler<OptionSet> optionSetHandler,
+                       GenericHandler<OptionSet, OptionSetModel> optionSetHandler,
                        DictionaryTableHandler<ObjectStyle> styleHandler,
                        DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         super(dataElementStore);
@@ -53,13 +55,8 @@ public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, Dat
         this.renderTypeHandler = renderTypeHandler;
     }
 
-    @Override
-    protected DataElementModel pojoToModel(DataElement dataElement) {
-        return DataElementModel.factory.fromPojo(dataElement);
-    }
-
     public static DataElementHandler create(DatabaseAdapter databaseAdapter,
-                                            GenericHandler<OptionSet> optionSetHandler) {
+                                            GenericHandler<OptionSet, OptionSetModel> optionSetHandler) {
         return new DataElementHandler(
                 DataElementStore.create(databaseAdapter),
                 optionSetHandler,
@@ -69,7 +66,7 @@ public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, Dat
 
     @Override
     protected void afterObjectPersisted(DataElement dateElement) {
-        optionSetHandler.handle(dateElement.optionSet());
+        optionSetHandler.handle(dateElement.optionSet(), new OptionSetModelBuilder());
         styleHandler.handle(dateElement.style(), dateElement.uid(), DataElementModel.TABLE);
         renderTypeHandler.handle(dateElement.renderType(), dateElement.uid(), DataElementModel.TABLE);
     }

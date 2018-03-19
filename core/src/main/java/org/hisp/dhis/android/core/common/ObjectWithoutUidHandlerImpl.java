@@ -37,8 +37,8 @@ public abstract class ObjectWithoutUidHandlerImpl<
     }
 
     @Override
-    protected void deleteOrPersist(P p) {
-        M m = pojoToModel(p);
+    protected void deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder) {
+        M m = modelBuilder.buildModel(p);
         store.updateOrInsertWhere(m);
         this.afterObjectPersisted(p);
     }

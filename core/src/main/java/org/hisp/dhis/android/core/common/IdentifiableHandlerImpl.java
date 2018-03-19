@@ -40,8 +40,8 @@ public abstract class IdentifiableHandlerImpl<
     }
 
     @Override
-    protected void deleteOrPersist(P p) {
-        M m = pojoToModel(p);
+    protected void deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder) {
+        M m = modelBuilder.buildModel(p);
         String modelUid = m.uid();
         if (isDeleted(p) && modelUid != null) {
             store.delete(modelUid);

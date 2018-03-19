@@ -37,14 +37,14 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.StatementBinder;
+import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class NoteModel extends BaseModel implements StatementBinder {
+public abstract class NoteModel extends BaseModel implements UpdateWhereStatementBinder {
 
     public static final String TABLE = "Note";
 
@@ -59,13 +59,17 @@ public abstract class NoteModel extends BaseModel implements StatementBinder {
         public static String[] all() {
             return Utils.appendInNewArray(BaseModel.Columns.all(), ENROLLMENT, VALUE, STORED_BY, STORED_DATE);
         }
+
+        static String[] whereUpdate() {
+            return new String[]{ENROLLMENT, VALUE, STORED_BY, STORED_DATE};
+        }
     }
 
     static NoteModel create(Cursor cursor) {
         return AutoValue_NoteModel.createFromCursor(cursor);
     }
 
-    public static NoteModel fromPojo(Note note, Enrollment enrollment) {
+    public static NoteModel create(Note note, Enrollment enrollment) {
         return NoteModel.builder()
                 .enrollment(enrollment.uid())
                 .value(note.value())
@@ -100,6 +104,14 @@ public abstract class NoteModel extends BaseModel implements StatementBinder {
         sqLiteBind(sqLiteStatement, 2, value());
         sqLiteBind(sqLiteStatement, 3, storedBy());
         sqLiteBind(sqLiteStatement, 4, storedDate());
+    }
+
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 5, enrollment());
+        sqLiteBind(sqLiteStatement, 6, value());
+        sqLiteBind(sqLiteStatement, 7, storedBy());
+        sqLiteBind(sqLiteStatement, 8, storedDate());
     }
 
     @AutoValue.Builder

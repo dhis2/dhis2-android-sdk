@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.enrollment.Note.Note;
 import org.hisp.dhis.android.core.event.Event;
 
 import java.util.Date;
@@ -61,6 +62,7 @@ public abstract class Enrollment {
     private static final String COORDINATE = "coordinate";
     private static final String DELETED = "deleted";
     private static final String EVENTS = "events";
+    private static final String NOTES = "notes";
 
     public static final Field<Enrollment, String> uid = Field.create(UID);
     public static final Field<Enrollment, String> created = Field.create(CREATED);
@@ -78,6 +80,7 @@ public abstract class Enrollment {
     public static final Field<Enrollment, Coordinates> coordinate = Field.create(COORDINATE);
 
     public static final NestedField<Enrollment, Event> events = NestedField.create(EVENTS);
+    public static final NestedField<Enrollment, Note> notes = NestedField.create(NOTES);
 
     @JsonProperty(UID)
     public abstract String uid();
@@ -138,6 +141,10 @@ public abstract class Enrollment {
     @JsonProperty(EVENTS)
     public abstract List<Event> events();
 
+    @Nullable
+    @JsonProperty(NOTES)
+    public abstract List<Note> notes();
+
     @JsonCreator
     public static Enrollment create(
             @JsonProperty(UID) String uid,
@@ -154,10 +161,11 @@ public abstract class Enrollment {
             @JsonProperty(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
             @JsonProperty(COORDINATE) Coordinates coordinate,
             @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(EVENTS) List<Event> events) {
+            @JsonProperty(EVENTS) List<Event> events,
+            @JsonProperty(NOTES) List<Note> notes) {
         return new AutoValue_Enrollment(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 organisationUnit, program, dateOfEnrollment, dateOfIncident, followUp, enrollmentStatus,
-                trackedEntityInstance, coordinate, deleted, safeUnmodifiableList(events));
+                trackedEntityInstance, coordinate, deleted, safeUnmodifiableList(events), notes);
     }
 
 }

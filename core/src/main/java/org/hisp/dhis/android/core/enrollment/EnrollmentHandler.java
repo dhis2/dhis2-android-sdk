@@ -1,22 +1,28 @@
 package org.hisp.dhis.android.core.enrollment;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
-
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.enrollment.Note.NoteHandler;
+import org.hisp.dhis.android.core.enrollment.Note.NoteStore;
 import org.hisp.dhis.android.core.event.EventHandler;
 
 import java.util.List;
 
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
 public class EnrollmentHandler {
     private final EnrollmentStore enrollmentStore;
     private final EventHandler eventHandler;
+    private final NoteHandler noteHandler;
 
-    public EnrollmentHandler(@NonNull EnrollmentStore enrollmentStore,
-            @NonNull EventHandler eventHandler) {
+    public EnrollmentHandler(@NonNull DatabaseAdapter databaseAdapter,
+                             @NonNull EnrollmentStore enrollmentStore,
+                             @NonNull EventHandler eventHandler) {
         this.enrollmentStore = enrollmentStore;
         this.eventHandler = eventHandler;
+        this.noteHandler = new NoteHandler(NoteStore.create(databaseAdapter));
     }
 
     public void handle(@NonNull List<Enrollment> enrollments) {
@@ -70,6 +76,7 @@ public class EnrollmentHandler {
             }
 
             eventHandler.handle(enrollment.events());
+            noteHandler.handleMany(enrollment);
         }
     }
 }

@@ -47,7 +47,7 @@ public abstract class Note {
     private static final Field<Note, String> storedBy = Field.create(STORED_BY);
     private static final Field<Note, String> storedDate= Field.create(STORED_DATE);
 
-    static final Fields<Note> allFields = Fields.<Note>builder().fields(
+    public static final Fields<Note> allFields = Fields.<Note>builder().fields(
             value, storedBy, storedDate).build();
 
     @Nullable

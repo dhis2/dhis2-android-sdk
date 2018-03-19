@@ -10,6 +10,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.Note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -144,7 +145,8 @@ public class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInst
                                         TrackedEntityDataValue.storedBy,
                                         TrackedEntityDataValue.value
                                 )
-                        )
+                        ),
+                        Enrollment.notes.with(Note.allFields)
                 )
         ).build();
     }

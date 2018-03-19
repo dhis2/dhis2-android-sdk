@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import static org.hisp.dhis.android.core.resource.ResourceModel.Type.TRACKED_ENTITY_INSTANCE;
-
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -12,6 +10,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.Note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -19,6 +18,8 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import java.util.Date;
 
 import retrofit2.Response;
+
+import static org.hisp.dhis.android.core.resource.ResourceModel.Type.TRACKED_ENTITY_INSTANCE;
 
 public class TrackedEntityInstanceEndPointCall implements
         Call<Response<Payload<TrackedEntityInstance>>> {
@@ -142,7 +143,8 @@ public class TrackedEntityInstanceEndPointCall implements
                                         TrackedEntityDataValue.storedBy,
                                         TrackedEntityDataValue.value
                                 )
-                        )
+                        ),
+                        Enrollment.notes.with(Note.allFields)
                 )
         ).build();
     }

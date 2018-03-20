@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingModel.Columns;
@@ -49,7 +50,7 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.VALU
 public class ValueTypeDeviceRenderingModelShould extends LinkModelAbstractShould<ValueTypeDeviceRenderingModel> {
 
     public ValueTypeDeviceRenderingModelShould() {
-        super(Columns.all(), 8, ValueTypeDeviceRenderingModel.factory);
+        super(Columns.all(), 8);
     }
 
     @Override
@@ -66,6 +67,11 @@ public class ValueTypeDeviceRenderingModelShould extends LinkModelAbstractShould
                 .step(1)
                 .decimalPoints(0);
         return valueTypeDeviceRenderingModelBuilder.build();
+    }
+
+    @Override
+    protected ValueTypeDeviceRenderingModel cursorToModel(Cursor cursor) {
+        return ValueTypeDeviceRenderingModel.create(cursor);
     }
 
     @Override

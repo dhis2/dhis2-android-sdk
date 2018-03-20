@@ -69,29 +69,6 @@ public abstract class ValueTypeDeviceRenderingModel extends BaseModel implements
         return AutoValue_ValueTypeDeviceRenderingModel.createFromCursor(cursor);
     }
 
-    public static final LinkModelFactory<ValueTypeDeviceRenderingModel> factory
-            = new LinkModelFactory<ValueTypeDeviceRenderingModel>() {
-        @Override
-        public ValueTypeDeviceRenderingModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
-
-    public static ValueTypeDeviceRenderingModel fromPojo(ValueTypeDeviceRendering deviceRendering,
-                                                         String uid, String objectTable,
-                                                         String deviceType) {
-        return ValueTypeDeviceRenderingModel.builder()
-                .uid(uid)
-                .objectTable(objectTable)
-                .deviceType(deviceType)
-                .type(deviceRendering.type())
-                .min(deviceRendering.min())
-                .max(deviceRendering.max())
-                .step(deviceRendering.step())
-                .decimalPoints(deviceRendering.decimalPoints())
-                .build();
-    }
-
     public static Builder builder() {
         return new $$AutoValue_ValueTypeDeviceRenderingModel.Builder();
     }

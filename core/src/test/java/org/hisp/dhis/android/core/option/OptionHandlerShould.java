@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -150,6 +150,6 @@ public class OptionHandlerShould {
     @Test
     public void call_style_handler() throws Exception {
         optionHandler.handleOptions(options);
-        verify(styleHandler).handle(option.style(), option.uid(), OptionModel.TABLE);
+        verify(styleHandler).handle(option.style(), any(ObjectStyleModelBuilder.class));
     }
 }

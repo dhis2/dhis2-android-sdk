@@ -32,8 +32,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 public class ValueTypeDeviceRenderingHandler extends ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
         ValueTypeDeviceRenderingModel> {
 
-
-    ValueTypeDeviceRenderingHandler(ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> store) {
+    private ValueTypeDeviceRenderingHandler(ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> store) {
         super(store);
     }
 

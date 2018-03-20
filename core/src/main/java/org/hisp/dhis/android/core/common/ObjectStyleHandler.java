@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class ObjectStyleHandler extends ObjectWithoutUidHandlerImpl<ObjectStyle, ObjectStyleModel> {
 
-    ObjectStyleHandler(ObjectWithoutUidStore<ObjectStyleModel> store) {
+    private ObjectStyleHandler(ObjectWithoutUidStore<ObjectStyleModel> store) {
         super(store);
     }
 

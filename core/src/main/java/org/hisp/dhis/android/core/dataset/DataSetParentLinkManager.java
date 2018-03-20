@@ -70,10 +70,7 @@ class DataSetParentLinkManager {
         assert dataSetElements != null;
         for (DataElementUids dataSetDataElement : dataSetElements) {
             dataSetDataElementStore.updateOrInsertWhere(
-                    DataSetDataElementLinkModel.create(
-                            dataSet.uid(),
-                            dataSetDataElement.dataElement().uid()
-                    ));
+                    new DataSetDataElementLinkModelBuilder(dataSet).buildModel(dataSetDataElement));
         }
     }
 

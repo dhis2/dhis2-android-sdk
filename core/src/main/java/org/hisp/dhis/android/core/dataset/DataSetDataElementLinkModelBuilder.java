@@ -28,52 +28,21 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-import android.support.test.runner.AndroidJUnit4;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-import org.hisp.dhis.android.core.common.LinkModelAbstractShould;
-import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel.Columns;
-import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
-import org.hisp.dhis.android.core.utils.Utils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+public class DataSetDataElementLinkModelBuilder extends ModelBuilder<DataElementUids, DataSetDataElementLinkModel> {
 
-import java.util.Arrays;
-import java.util.List;
+    private final DataSetDataElementLinkModel.Builder builder;
 
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(AndroidJUnit4.class)
-public class DataSetDataElementLinkModelShould extends LinkModelAbstractShould<DataSetDataElementLinkModel> {
-
-    public DataSetDataElementLinkModelShould() {
-        super(DataSetDataElementLinkModel.Columns.all(), 2);
+    DataSetDataElementLinkModelBuilder(DataSet dataSet) {
+        this.builder = DataSetDataElementLinkModel.builder()
+                .dataSet(dataSet.uid());
     }
 
     @Override
-    protected DataSetDataElementLinkModel buildModel() {
-        return DataSetDataElementLinkModel.builder()
-                .dataSet("data_set_uid")
-                .dataElement("data_element_uid")
+    public DataSetDataElementLinkModel buildModel(DataElementUids pojo) {
+        return builder
+                .dataElement(pojo.dataElement().uid())
                 .build();
-    }
-
-    @Override
-    protected DataSetDataElementLinkModel cursorToModel(Cursor cursor) {
-        return DataSetDataElementLinkModel.create(cursor);
-    }
-
-    @Override
-    protected Object[] getModelAsObjectArray() {
-        return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
-                model.dataSet(), model.dataElement());
-    }
-
-    @Test
-    public void have_data_set_data_element_model_columns() {
-        List<String> columnsList = Arrays.asList(Columns.all());
-
-        assertThat(columnsList.contains(Columns.DATA_SET)).isEqualTo(true);
-        assertThat(columnsList.contains(Columns.DATA_ELEMENT)).isEqualTo(true);
     }
 }

@@ -64,11 +64,14 @@ public class IdentifiableHandlerShould {
 
     @Mock
     private BaseIdentifiableObject pojo2;
-    
+
     @Mock
     private NameableMockModelInterface model;
 
-    private GenericHandler<BaseIdentifiableObject> genericHandler;
+    @Mock
+    private ModelBuilder<BaseIdentifiableObject, NameableMockModelInterface> modelBuilder;
+
+    private GenericHandler<BaseIdentifiableObject, NameableMockModelInterface> genericHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -80,11 +83,6 @@ public class IdentifiableHandlerShould {
 
         genericHandler = new IdentifiableHandlerImpl<BaseIdentifiableObject, NameableMockModelInterface>(store) {
             @Override
-            protected NameableMockModelInterface pojoToModel(BaseIdentifiableObject BaseIdentifiableObject) {
-                return model;
-            }
-
-            @Override
             protected void afterObjectPersisted(BaseIdentifiableObject BaseIdentifiableObject) {
                 testCall.call(BaseIdentifiableObject);
             }
@@ -93,7 +91,7 @@ public class IdentifiableHandlerShould {
 
     @Test
     public void do_nothing_for_null() throws Exception {
-        genericHandler.handle(null);
+        genericHandler.handle(null, null);
 
         verify(store, never()).delete(anyString());
         verify(store, never()).update(any(NameableMockModelInterface.class));
@@ -105,7 +103,7 @@ public class IdentifiableHandlerShould {
     public void delete_when_deleted_is_true() throws Exception {
         when(pojo.deleted()).thenReturn(Boolean.TRUE);
 
-        genericHandler.handle(pojo);
+        genericHandler.handle(pojo, modelBuilder);
 
         verify(store).delete(pojo.uid());
         verify(store, never()).update(any(NameableMockModelInterface.class));
@@ -117,7 +115,7 @@ public class IdentifiableHandlerShould {
     public void call_update_or_insert_when_deleted_is_false() throws Exception {
         when(pojo.deleted()).thenReturn(Boolean.FALSE);
 
-        genericHandler.handle(pojo);
+        genericHandler.handle(pojo, modelBuilder);
 
         verify(store).updateOrInsert(any(NameableMockModelInterface.class));
         verify(store, never()).update(any(NameableMockModelInterface.class));
@@ -127,13 +125,13 @@ public class IdentifiableHandlerShould {
 
     @Test
     public void call_after_object_persisted() throws Exception {
-        genericHandler.handle(pojo);
+        genericHandler.handle(pojo, modelBuilder);
         verify(testCall).call(pojo);
     }
 
     @Test
     public void handle_multiple_pojos() throws Exception {
-        genericHandler.handleMany(Arrays.asList(pojo, pojo2));
+        genericHandler.handleMany(Arrays.asList(pojo, pojo2), modelBuilder);
 
         verify(store, times(2)).updateOrInsert(any(NameableMockModelInterface.class));
         verify(store, never()).update(any(NameableMockModelInterface.class));

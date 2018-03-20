@@ -40,8 +40,8 @@ import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.Payload;
@@ -56,15 +56,12 @@ import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.option.OptionSetModel;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
@@ -140,84 +137,38 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         TrackedEntityAttributeStore trackedEntityAttributeStore =
                 new TrackedEntityAttributeStoreImpl(databaseAdapter());
 
-        TrackedEntityAttributeHandler trackedEntityAttributeHandler =
-                new TrackedEntityAttributeHandler(trackedEntityAttributeStore,
-                        ObjectStyleHandler.create(databaseAdapter()),
-                        ValueTypeRenderingHandler.create(databaseAdapter()));
-
         ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore =
                 new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter());
 
-        ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler =
-                new ProgramTrackedEntityAttributeHandler(
-                        programTrackedEntityAttributeStore,
-                        trackedEntityAttributeHandler
-                );
-
         ProgramRuleVariableStore programRuleVariableStore =
                 new ProgramRuleVariableStoreImpl(databaseAdapter());
-        ProgramRuleVariableHandler programRuleVariableHandler =
-                new ProgramRuleVariableHandler(programRuleVariableStore);
 
         ProgramIndicatorStore programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter());
         ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore =
                 new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter());
-        ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(
-                programIndicatorStore,
-                programStageSectionProgramIndicatorLinkStore
-        );
 
         ProgramRuleActionStore programRuleActionStore = new ProgramRuleActionStoreImpl(databaseAdapter());
-        ProgramRuleActionHandler programRuleActionHandler = new ProgramRuleActionHandler(programRuleActionStore);
         ProgramRuleStore programRuleStore = new ProgramRuleStoreImpl(databaseAdapter());
-        ProgramRuleHandler programRuleHandler = new ProgramRuleHandler(programRuleStore, programRuleActionHandler);
 
-        GenericHandler<OptionSet> optionSetHandler = OptionSetHandler.create(databaseAdapter());
-        GenericHandler<DataElement> dataElementHandler =
+        GenericHandler<OptionSet, OptionSetModel> optionSetHandler = OptionSetHandler.create(databaseAdapter());
+        GenericHandler<DataElement, DataElementModel> dataElementHandler =
                 DataElementHandler.create(databaseAdapter(), optionSetHandler);
         ProgramStageDataElementStore programStageDataElementStore =
                 new ProgramStageDataElementStoreImpl(databaseAdapter());
 
-        ProgramStageDataElementHandler programStageDataElementHandler = new ProgramStageDataElementHandler(
-                programStageDataElementStore, dataElementHandler
-        );
-
         ProgramStageSectionStore programStageSectionStore = new ProgramStageSectionStoreImpl(databaseAdapter());
-        ProgramStageSectionHandler programStageSectionHandler = new ProgramStageSectionHandler(
-                programStageSectionStore,
-                programStageDataElementHandler,
-                programIndicatorHandler
-        );
 
         DictionaryTableHandler<ObjectStyle> styleHandler = ObjectStyleHandler.create(databaseAdapter());
         DictionaryTableHandler<ValueTypeRendering> renderTypeHandler
                 = ValueTypeRenderingHandler.create(databaseAdapter());
 
         ProgramStageStore programStageStore = new ProgramStageStoreImpl(databaseAdapter());
-        ProgramStageHandler programStageHandler = new ProgramStageHandler(
-                programStageStore,
-                programStageSectionHandler,
-                programStageDataElementHandler,
-                styleHandler);
 
         RelationshipTypeStore relationshipStore = new RelationshipTypeStoreImpl(databaseAdapter());
-        RelationshipTypeHandler relationshipTypeHandler = new RelationshipTypeHandler(relationshipStore);
         ProgramService programService = d2.retrofit().create(ProgramService.class);
         ProgramStore programStore = new ProgramStoreImpl(databaseAdapter());
 
-
-        ProgramHandler programHandler = new ProgramHandler(
-                programStore,
-                programRuleVariableHandler,
-                programStageHandler,
-                programIndicatorHandler,
-                programRuleHandler,
-                programTrackedEntityAttributeHandler,
-                relationshipTypeHandler,
-                styleHandler);
-
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         Set<String> uids = new HashSet<>();
         uids.add("uid1");

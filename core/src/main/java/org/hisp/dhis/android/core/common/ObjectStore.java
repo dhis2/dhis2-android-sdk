@@ -36,5 +36,5 @@ public interface ObjectStore<M extends Model & StatementBinder> extends Deletabl
 
     void insert(@NonNull M m) throws RuntimeException;
 
-    Set<M> selectAll(LinkModelFactory<M> modelFactory) throws RuntimeException;
+    Set<M> selectAll(CursorModelFactory<M> modelFactory) throws RuntimeException;
 }

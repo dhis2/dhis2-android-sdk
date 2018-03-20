@@ -27,16 +27,18 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetModel;
+import org.hisp.dhis.android.core.option.OptionSetModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +46,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -85,19 +88,19 @@ public class DataElementHandlerShould {
 
     @Test
     public void call_option_set_handler() throws Exception {
-        dataElementHandler.handle(dataElement);
-        verify(optionSetHandler).handle(optionSet);
+        dataElementHandler.handle(dataElement, any(DataElementModelBuilder.class));
+        verify(optionSetHandler).handle(optionSet, any(OptionSetModelBuilder.class));
     }
 
     @Test
     public void call_style_handler() throws Exception {
-        dataElementHandler.handle(dataElement);
-        verify(styleHandler).handle(dataElement.style(), dataElement.uid(), DataElementModel.TABLE);
+        dataElementHandler.handle(dataElement, any(DataElementModelBuilder.class));
+        verify(styleHandler).handle(dataElement.style(), any(ObjectStyleModelBuilder.class));
     }
 
     @Test
     public void call_render_type_handler() throws Exception {
-        dataElementHandler.handle(dataElement);
+        dataElementHandler.handle(dataElement, any(DataElementModelBuilder.class));
         verify(renderTypeHandler).handle(dataElement.renderType(), dataElement.uid(), DataElementModel.TABLE);
     }
 

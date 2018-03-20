@@ -32,31 +32,25 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 public class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTypeRendering> {
 
     private final ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
-            ValueTypeDeviceRenderingModel> desktopHandler;
-    private final ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
-            ValueTypeDeviceRenderingModel> mobileHandler;
+            ValueTypeDeviceRenderingModel> deviceRenderingHandler;
 
     ValueTypeRenderingHandler(ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
-            ValueTypeDeviceRenderingModel> desktopHandler,
-                              ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
-                                      ValueTypeDeviceRenderingModel> mobileHandler) {
-        this.desktopHandler = desktopHandler;
-        this.mobileHandler = mobileHandler;
+            ValueTypeDeviceRenderingModel> deviceRenderingHandler) {
+        this.deviceRenderingHandler = deviceRenderingHandler;
     }
 
     @Override
     public void handle(ValueTypeRendering renderType, String uid, String objectTable) {
         if (renderType != null) {
-            desktopHandler.handle(renderType.desktop(),
+            deviceRenderingHandler.handle(renderType.desktop(),
                     new ValueTypeDeviceRenderingModelBuilder(uid, objectTable, ValueTypeRendering.DESKTOP));
-            mobileHandler.handle(renderType.mobile(),
+            deviceRenderingHandler.handle(renderType.mobile(),
                     new ValueTypeDeviceRenderingModelBuilder(uid, objectTable, ValueTypeRendering.MOBILE));
         }
     }
 
     public static ValueTypeRenderingHandler create(DatabaseAdapter databaseAdapter) {
         return new ValueTypeRenderingHandler(
-                ValueTypeDeviceRenderingHandler.create(databaseAdapter),
                 ValueTypeDeviceRenderingHandler.create(databaseAdapter));
     }
 }

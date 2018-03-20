@@ -37,10 +37,9 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -69,6 +68,9 @@ public class IdentifiableHandlerShould {
     private NameableMockModelInterface model;
 
     @Mock
+    private NameableMockModelInterface model2;
+
+    @Mock
     private ModelBuilder<BaseIdentifiableObject, NameableMockModelInterface> modelBuilder;
 
     private GenericHandler<BaseIdentifiableObject, NameableMockModelInterface> genericHandler;
@@ -80,6 +82,9 @@ public class IdentifiableHandlerShould {
         when(pojo.uid()).thenReturn("uid");
         when(pojo2.uid()).thenReturn("uid2");
         when(model.uid()).thenReturn("uid");
+        when(model2.uid()).thenReturn("uid2");
+        when(modelBuilder.buildModel(pojo)).thenReturn(model);
+        when(modelBuilder.buildModel(pojo2)).thenReturn(model2);
 
         genericHandler = new IdentifiableHandlerImpl<BaseIdentifiableObject, NameableMockModelInterface>(store) {
             @Override
@@ -92,11 +97,7 @@ public class IdentifiableHandlerShould {
     @Test
     public void do_nothing_for_null() throws Exception {
         genericHandler.handle(null, null);
-
-        verify(store, never()).delete(anyString());
-        verify(store, never()).update(any(NameableMockModelInterface.class));
-        verify(store, never()).insert(any(NameableMockModelInterface.class));
-        verify(store, never()).updateOrInsert(any(NameableMockModelInterface.class));
+        verifyNoMoreInteractions(store);
     }
 
     @Test
@@ -106,9 +107,7 @@ public class IdentifiableHandlerShould {
         genericHandler.handle(pojo, modelBuilder);
 
         verify(store).delete(pojo.uid());
-        verify(store, never()).update(any(NameableMockModelInterface.class));
-        verify(store, never()).insert(any(NameableMockModelInterface.class));
-        verify(store, never()).updateOrInsert(any(NameableMockModelInterface.class));
+        verifyNoMoreInteractions(store);
     }
 
     @Test
@@ -118,9 +117,7 @@ public class IdentifiableHandlerShould {
         genericHandler.handle(pojo, modelBuilder);
 
         verify(store).updateOrInsert(any(NameableMockModelInterface.class));
-        verify(store, never()).update(any(NameableMockModelInterface.class));
-        verify(store, never()).insert(any(NameableMockModelInterface.class));
-        verify(store, never()).delete(anyString());
+        verifyNoMoreInteractions(store);
     }
 
     @Test
@@ -134,9 +131,7 @@ public class IdentifiableHandlerShould {
         genericHandler.handleMany(Arrays.asList(pojo, pojo2), modelBuilder);
 
         verify(store, times(2)).updateOrInsert(any(NameableMockModelInterface.class));
-        verify(store, never()).update(any(NameableMockModelInterface.class));
-        verify(store, never()).insert(any(NameableMockModelInterface.class));
-        verify(store, never()).delete(anyString());
+        verifyNoMoreInteractions(store);
 
         verify(testCall).call(pojo);
         verify(testCall).call(pojo2);

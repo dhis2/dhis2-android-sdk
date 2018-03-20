@@ -29,8 +29,9 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
@@ -94,7 +95,7 @@ public class ProgramHandlerShould {
     private TrackedEntity trackedEntity;
 
     @Mock
-    private DictionaryTableHandler<ObjectStyle> styleHandler;
+    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
     private RelationshipTypeHandler relationshipTypeHandler;

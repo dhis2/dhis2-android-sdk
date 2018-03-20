@@ -28,7 +28,9 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -64,7 +66,7 @@ public class TrackedEntityAttributeHandlerShould {
     private OptionSet optionSet;
 
     @Mock
-    private DictionaryTableHandler<ObjectStyle> styleHandler;
+    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
     private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;

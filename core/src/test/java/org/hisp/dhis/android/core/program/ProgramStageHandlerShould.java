@@ -28,8 +28,9 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,7 +68,7 @@ public class ProgramStageHandlerShould {
     private ProgramStage programStage;
 
     @Mock
-    private DictionaryTableHandler<ObjectStyle> styleHandler;
+    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     private List<ProgramStage> programStages;
 

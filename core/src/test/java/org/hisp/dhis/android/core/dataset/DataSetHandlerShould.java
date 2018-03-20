@@ -29,10 +29,12 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +52,7 @@ public class DataSetHandlerShould {
     private IdentifiableObjectStore<DataSetModel> dataSetStore;
 
     @Mock
-    private DictionaryTableHandler<ObjectStyle> styleHandler;
+    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
     private DataSet dataSet;

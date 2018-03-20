@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
@@ -158,7 +159,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
 
         ProgramStageSectionStore programStageSectionStore = new ProgramStageSectionStoreImpl(databaseAdapter());
 
-        DictionaryTableHandler<ObjectStyle> styleHandler = ObjectStyleHandler.create(databaseAdapter());
+        GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler = ObjectStyleHandler.create(databaseAdapter());
         DictionaryTableHandler<ValueTypeRendering> renderTypeHandler
                 = ValueTypeRenderingHandler.create(databaseAdapter());
 

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.LinkModelAbstractShould;
@@ -47,13 +48,18 @@ public class DataSetOrganisationUnitLinkModelShould extends
         LinkModelAbstractShould<DataSetOrganisationUnitLinkModel> {
 
     public DataSetOrganisationUnitLinkModelShould() {
-        super(Columns.all(), 2, DataSetOrganisationUnitLinkModel.factory);
+        super(Columns.all(), 2);
     }
 
     @Override
     protected DataSetOrganisationUnitLinkModel buildModel() {
         return DataSetOrganisationUnitLinkModel.create("data_set_uid",
                 "organisation_unit_uid");
+    }
+
+    @Override
+    protected DataSetOrganisationUnitLinkModel cursorToModel(Cursor cursor) {
+        return DataSetOrganisationUnitLinkModel.create(cursor);
     }
 
     @Override

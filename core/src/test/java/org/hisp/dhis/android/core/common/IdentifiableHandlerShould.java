@@ -37,7 +37,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -130,7 +129,8 @@ public class IdentifiableHandlerShould {
     public void handle_multiple_pojos() throws Exception {
         genericHandler.handleMany(Arrays.asList(pojo, pojo2), modelBuilder);
 
-        verify(store, times(2)).updateOrInsert(any(NameableMockModelInterface.class));
+        verify(store).updateOrInsert(model);
+        verify(store).updateOrInsert(model2);
         verifyNoMoreInteractions(store);
 
         verify(testCall).call(pojo);

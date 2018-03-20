@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModelBuilder;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
@@ -67,22 +68,21 @@ class DataSetParentLinkManager {
 
     private void saveDataSetDataElementLink(DataSet dataSet) {
         List<DataElementUids> dataSetElements = dataSet.dataSetElements();
-        assert dataSetElements != null;
-        for (DataElementUids dataSetDataElement : dataSetElements) {
-            dataSetDataElementStore.updateOrInsertWhere(
-                    new DataSetDataElementLinkModelBuilder(dataSet).buildModel(dataSetDataElement));
+        if (dataSetElements != null) {
+            for (DataElementUids dataSetDataElement : dataSetElements) {
+                dataSetDataElementStore.updateOrInsertWhere(
+                        new DataSetDataElementLinkModelBuilder(dataSet).buildModel(dataSetDataElement));
+            }
         }
     }
 
     private void saveDataSetIndicatorLink(DataSet dataSet) {
         List<ObjectWithUid> indicators = dataSet.indicators();
-        assert indicators != null;
-        for (ObjectWithUid indicator : indicators) {
-            dataSetIndicatorStore.updateOrInsertWhere(
-                    DataSetIndicatorLinkModel.create(
-                            dataSet.uid(),
-                            indicator.uid()
-                    ));
+        if (indicators != null) {
+            for (ObjectWithUid indicator : indicators) {
+                dataSetIndicatorStore.updateOrInsertWhere(
+                        new DataSetIndicatorLinkModelBuilder(dataSet).buildModel(indicator));
+            }
         }
     }
 

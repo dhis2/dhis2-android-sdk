@@ -28,53 +28,23 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import android.database.Cursor;
-import android.support.test.runner.AndroidJUnit4;
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataset.DataSet;
 
-import org.hisp.dhis.android.core.common.LinkModelAbstractShould;
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel.Columns;
-import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
-import org.hisp.dhis.android.core.utils.Utils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<ObjectWithUid, DataSetIndicatorLinkModel> {
 
-import java.util.Arrays;
-import java.util.List;
+    private final DataSetIndicatorLinkModel.Builder builder;
 
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(AndroidJUnit4.class)
-public class DataSetIndicatorLinkModelShould extends
-        LinkModelAbstractShould<DataSetIndicatorLinkModel> {
-
-    public DataSetIndicatorLinkModelShould() {
-        super(Columns.all(), 2);
+    public DataSetIndicatorLinkModelBuilder(DataSet dataSet) {
+        this.builder = DataSetIndicatorLinkModel.builder()
+                .dataSet(dataSet.uid());
     }
 
     @Override
-    protected DataSetIndicatorLinkModel buildModel() {
-        return DataSetIndicatorLinkModel.builder()
-                .dataSet("data_set_uid")
-                .indicator("indicator_uid")
+    public DataSetIndicatorLinkModel buildModel(ObjectWithUid pojo) {
+        return builder
+                .indicator(pojo.uid())
                 .build();
-    }
-
-    @Override
-    protected DataSetIndicatorLinkModel cursorToModel(Cursor cursor) {
-        return DataSetIndicatorLinkModel.create(cursor);
-    }
-
-    @Override
-    protected Object[] getModelAsObjectArray() {
-        return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
-                model.dataSet(), model.indicator());
-    }
-
-    @Test
-    public void have_data_set_indicator_model_columns() {
-        List<String> columnsList = Arrays.asList(Columns.all());
-
-        assertThat(columnsList.contains(Columns.DATA_SET)).isEqualTo(true);
-        assertThat(columnsList.contains(Columns.INDICATOR)).isEqualTo(true);
     }
 }

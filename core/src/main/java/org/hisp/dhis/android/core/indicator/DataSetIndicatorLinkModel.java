@@ -37,7 +37,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.LinkModelFactory;
 import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -63,22 +62,6 @@ public abstract class DataSetIndicatorLinkModel extends BaseModel implements Upd
 
     public static DataSetIndicatorLinkModel create(Cursor cursor) {
         return AutoValue_DataSetIndicatorLinkModel.createFromCursor(cursor);
-    }
-
-    public static final LinkModelFactory<DataSetIndicatorLinkModel> factory
-            = new LinkModelFactory<DataSetIndicatorLinkModel>() {
-        @Override
-        public DataSetIndicatorLinkModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
-
-    public static DataSetIndicatorLinkModel create(
-            String dataSetUid, String indicatorUid) {
-        return DataSetIndicatorLinkModel.builder()
-                .dataSet(dataSetUid)
-                .indicator(indicatorUid)
-                .build();
     }
 
     public static Builder builder() {

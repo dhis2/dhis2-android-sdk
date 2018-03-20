@@ -69,9 +69,9 @@ class DataSetParentLinkManager {
     private void saveDataSetDataElementLink(DataSet dataSet) {
         List<DataElementUids> dataSetElements = dataSet.dataSetElements();
         if (dataSetElements != null) {
+            DataSetDataElementLinkModelBuilder builder = new DataSetDataElementLinkModelBuilder(dataSet);
             for (DataElementUids dataSetDataElement : dataSetElements) {
-                dataSetDataElementStore.updateOrInsertWhere(
-                        new DataSetDataElementLinkModelBuilder(dataSet).buildModel(dataSetDataElement));
+                dataSetDataElementStore.updateOrInsertWhere(builder.buildModel(dataSetDataElement));
             }
         }
     }
@@ -79,9 +79,9 @@ class DataSetParentLinkManager {
     private void saveDataSetIndicatorLink(DataSet dataSet) {
         List<ObjectWithUid> indicators = dataSet.indicators();
         if (indicators != null) {
+            DataSetIndicatorLinkModelBuilder builder = new DataSetIndicatorLinkModelBuilder(dataSet);
             for (ObjectWithUid indicator : indicators) {
-                dataSetIndicatorStore.updateOrInsertWhere(
-                        new DataSetIndicatorLinkModelBuilder(dataSet).buildModel(indicator));
+                dataSetIndicatorStore.updateOrInsertWhere(builder.buildModel(indicator));
             }
         }
     }
@@ -90,7 +90,6 @@ class DataSetParentLinkManager {
         if (organisationUnits != null) {
             for (OrganisationUnit organisationUnit : organisationUnits) {
                 saveDataSetOrganisationUnitLink(organisationUnit, dataSetUids);
-
             }
         }
     }
@@ -98,10 +97,10 @@ class DataSetParentLinkManager {
     private void saveDataSetOrganisationUnitLink(OrganisationUnit organisationUnit, Set<String> dataSetUids) {
         List<DataSet> orgUnitDataSets = organisationUnit.dataSets();
         assert orgUnitDataSets != null;
+        DataSetOrganisationUnitLinkModelBuilder builder = new DataSetOrganisationUnitLinkModelBuilder(organisationUnit);
         for (DataSet dataSet : orgUnitDataSets) {
             if (dataSetUids.contains(dataSet.uid())) {
-                dataSetOrganisationUnitStore.updateOrInsertWhere(
-                        new DataSetOrganisationUnitLinkModelBuilder(organisationUnit).buildModel(dataSet));
+                dataSetOrganisationUnitStore.updateOrInsertWhere(builder.buildModel(dataSet));
             }
         }
     }

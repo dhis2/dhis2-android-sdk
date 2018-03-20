@@ -101,10 +101,7 @@ class DataSetParentLinkManager {
         for (DataSet dataSet : orgUnitDataSets) {
             if (dataSetUids.contains(dataSet.uid())) {
                 dataSetOrganisationUnitStore.updateOrInsertWhere(
-                        DataSetOrganisationUnitLinkModel.create(
-                                dataSet.uid(),
-                                organisationUnit.uid()
-                        ));
+                        new DataSetOrganisationUnitLinkModelBuilder(organisationUnit).buildModel(dataSet));
             }
         }
     }

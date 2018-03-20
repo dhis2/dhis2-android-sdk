@@ -53,8 +53,10 @@ public class DataSetOrganisationUnitLinkModelShould extends
 
     @Override
     protected DataSetOrganisationUnitLinkModel buildModel() {
-        return DataSetOrganisationUnitLinkModel.create("data_set_uid",
-                "organisation_unit_uid");
+        return DataSetOrganisationUnitLinkModel.builder()
+                .dataSet("data_set_uid")
+                .organisationUnit("organisation_unit_uid")
+                .build();
     }
 
     @Override

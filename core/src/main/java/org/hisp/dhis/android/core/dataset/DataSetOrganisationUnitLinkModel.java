@@ -67,22 +67,6 @@ public abstract class DataSetOrganisationUnitLinkModel extends BaseModel impleme
         return AutoValue_DataSetOrganisationUnitLinkModel.createFromCursor(cursor);
     }
 
-    public static final LinkModelFactory<DataSetOrganisationUnitLinkModel> factory
-            = new LinkModelFactory<DataSetOrganisationUnitLinkModel>() {
-        @Override
-        public DataSetOrganisationUnitLinkModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
-
-    public static DataSetOrganisationUnitLinkModel create(
-            String dataSetUid, String organisationUnitUid) {
-        return DataSetOrganisationUnitLinkModel.builder()
-                .dataSet(dataSetUid)
-                .organisationUnit(organisationUnitUid)
-                .build();
-    }
-
     public static Builder builder() {
         return new $$AutoValue_DataSetOrganisationUnitLinkModel.Builder();
     }

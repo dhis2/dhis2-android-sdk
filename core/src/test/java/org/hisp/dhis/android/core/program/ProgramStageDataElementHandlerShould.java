@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.dataelement.DataElementModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +57,7 @@ public class ProgramStageDataElementHandlerShould {
     private ProgramStageDataElementStore programStageDataElementStore;
 
     @Mock
-    private GenericHandler<DataElement> dataElementHandler;
+    private GenericHandler<DataElement, DataElementModel> dataElementHandler;
 
     @Mock
     private ProgramStageDataElement programStageDataElement;
@@ -105,7 +107,7 @@ public class ProgramStageDataElementHandlerShould {
                 anyString(), anyString(), anyString());
 
         // verify that data element handler is never invoked
-        verify(dataElementHandler, never()).handle(any(DataElement.class));
+        verify(dataElementHandler, never()).handle(any(DataElement.class), any(DataElementModelBuilder.class));
     }
 
     @Test
@@ -130,7 +132,8 @@ public class ProgramStageDataElementHandlerShould {
         );
 
         // verify that data element handler is invoked once
-        verify(dataElementHandler, times(1)).handle(any(DataElement.class));
+        verify(dataElementHandler, times(1)).handle(any(DataElement.class),
+                any(DataElementModelBuilder.class));
     }
 
     @Test
@@ -156,7 +159,8 @@ public class ProgramStageDataElementHandlerShould {
         verify(programStageDataElementStore, never()).delete(anyString());
 
         // verify that data element handler is called once
-        verify(dataElementHandler, times(1)).handle(any(DataElement.class));
+        verify(dataElementHandler, times(1)).handle(any(DataElement.class),
+                any(DataElementModelBuilder.class));
     }
 
     @Test
@@ -182,6 +186,7 @@ public class ProgramStageDataElementHandlerShould {
         verify(programStageDataElementStore, never()).delete(anyString());
 
         // verify that data element handler is never called
-        verify(dataElementHandler, times(1)).handle(any(DataElement.class));
+        verify(dataElementHandler, times(1)).handle(any(DataElement.class),
+                any(DataElementModelBuilder.class));
     }
 }

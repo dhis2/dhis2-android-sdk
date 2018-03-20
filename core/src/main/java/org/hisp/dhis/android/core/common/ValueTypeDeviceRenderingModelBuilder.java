@@ -25,20 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-public class ValueTypeDeviceRenderingHandler extends ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
+public class ValueTypeDeviceRenderingModelBuilder extends ModelBuilder<ValueTypeDeviceRendering,
         ValueTypeDeviceRenderingModel> {
 
+    private final ValueTypeDeviceRenderingModel.Builder builder;
 
-    ValueTypeDeviceRenderingHandler(ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> store) {
-        super(store);
+    ValueTypeDeviceRenderingModelBuilder(String uid, String objectTable, String deviceType) {
+        this.builder = ValueTypeDeviceRenderingModel.builder()
+                .uid(uid)
+                .objectTable(objectTable)
+                .deviceType(deviceType);
     }
 
-    public static ValueTypeDeviceRenderingHandler create(DatabaseAdapter databaseAdapter) {
-        return new ValueTypeDeviceRenderingHandler(
-                ValueTypeDeviceRenderingStore.create(databaseAdapter));
+    @Override
+    public ValueTypeDeviceRenderingModel buildModel(ValueTypeDeviceRendering deviceRendering) {
+        return builder
+                .type(deviceRendering.type())
+                .min(deviceRendering.min())
+                .max(deviceRendering.max())
+                .step(deviceRendering.step())
+                .decimalPoints(deviceRendering.decimalPoints())
+                .build();
     }
 }

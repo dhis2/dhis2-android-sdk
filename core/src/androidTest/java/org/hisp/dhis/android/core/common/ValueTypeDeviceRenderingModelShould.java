@@ -87,7 +87,8 @@ public class ValueTypeDeviceRenderingModelShould extends LinkModelAbstractShould
 
     @Test
     public void create_model_from_pojo() {
-        assertThat(ValueTypeDeviceRenderingModel.fromPojo(buildPojo(), UID, TABLE, DEVICE_TYPE)).isEqualTo(model);
+        assertThat(ValueTypeDeviceRenderingModel.fromPojo(buildPojo(), UID, TABLE, DEVICE_TYPE))
+                .isEqualTo(model);
     }
 
     @Test

@@ -31,11 +31,15 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTypeRendering> {
 
-    private final DictionaryTableHandler<ValueTypeDeviceRendering> desktopHandler;
-    private final DictionaryTableHandler<ValueTypeDeviceRendering> mobileHandler;
+    private final ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
+            ValueTypeDeviceRenderingModel> desktopHandler;
+    private final ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
+            ValueTypeDeviceRenderingModel> mobileHandler;
 
-    ValueTypeRenderingHandler(DictionaryTableHandler<ValueTypeDeviceRendering> desktopHandler,
-                              DictionaryTableHandler<ValueTypeDeviceRendering> mobileHandler) {
+    ValueTypeRenderingHandler(ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
+            ValueTypeDeviceRenderingModel> desktopHandler,
+                              ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
+                                      ValueTypeDeviceRenderingModel> mobileHandler) {
         this.desktopHandler = desktopHandler;
         this.mobileHandler = mobileHandler;
     }
@@ -43,14 +47,16 @@ public class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTy
     @Override
     public void handle(ValueTypeRendering renderType, String uid, String objectTable) {
         if (renderType != null) {
-            desktopHandler.handle(renderType.desktop(), uid, objectTable);
-            mobileHandler.handle(renderType.mobile(), uid, objectTable);
+            desktopHandler.handle(renderType.desktop(),
+                    new ValueTypeDeviceRenderingModelBuilder(uid, objectTable, ValueTypeRendering.DESKTOP));
+            mobileHandler.handle(renderType.mobile(),
+                    new ValueTypeDeviceRenderingModelBuilder(uid, objectTable, ValueTypeRendering.MOBILE));
         }
     }
 
     public static ValueTypeRenderingHandler create(DatabaseAdapter databaseAdapter) {
         return new ValueTypeRenderingHandler(
-                ValueTypeDeviceRenderingHandler.create(databaseAdapter, ValueTypeRendering.DESKTOP),
-                ValueTypeDeviceRenderingHandler.create(databaseAdapter, ValueTypeRendering.MOBILE));
+                ValueTypeDeviceRenderingHandler.create(databaseAdapter),
+                ValueTypeDeviceRenderingHandler.create(databaseAdapter));
     }
 }

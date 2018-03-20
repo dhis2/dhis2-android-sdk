@@ -47,6 +47,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -69,10 +70,16 @@ public class DataElementHandlerShould {
     private DataElement dataElement;
 
     @Mock
+    private DataElementModel dataElementModel;
+
+    @Mock
     private ObjectWithUid categoryCombo;
 
     @Mock
     private OptionSet optionSet;
+
+    @Mock
+    private DataElementModelBuilder modelBuilder;
 
     // object to test
     private DataElementHandler dataElementHandler;
@@ -84,23 +91,24 @@ public class DataElementHandlerShould {
         when(dataElement.uid()).thenReturn("test_data_element_uid");
         when(dataElement.optionSet()).thenReturn(optionSet);
         when(dataElement.categoryCombo()).thenReturn(categoryCombo);
+        when(modelBuilder.buildModel(dataElement)).thenReturn(dataElementModel);
     }
 
     @Test
     public void call_option_set_handler() throws Exception {
-        dataElementHandler.handle(dataElement, any(DataElementModelBuilder.class));
-        verify(optionSetHandler).handle(optionSet, any(OptionSetModelBuilder.class));
+        dataElementHandler.handle(dataElement, modelBuilder);
+        verify(optionSetHandler).handle(eq(optionSet), any(OptionSetModelBuilder.class));
     }
 
     @Test
     public void call_style_handler() throws Exception {
-        dataElementHandler.handle(dataElement, any(DataElementModelBuilder.class));
-        verify(styleHandler).handle(dataElement.style(), any(ObjectStyleModelBuilder.class));
+        dataElementHandler.handle(dataElement, modelBuilder);
+        verify(styleHandler).handle(eq(dataElement.style()), any(ObjectStyleModelBuilder.class));
     }
 
     @Test
     public void call_render_type_handler() throws Exception {
-        dataElementHandler.handle(dataElement, any(DataElementModelBuilder.class));
+        dataElementHandler.handle(dataElement, modelBuilder);
         verify(renderTypeHandler).handle(dataElement.renderType(), dataElement.uid(), DataElementModel.TABLE);
     }
 

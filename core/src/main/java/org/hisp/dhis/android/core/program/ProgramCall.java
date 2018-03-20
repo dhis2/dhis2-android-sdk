@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -90,7 +91,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                        ProgramStageStore programStageStore,
                        RelationshipTypeStore relationshipStore,
                        GenericHandler<DataElement, DataElementModel> dataElementHandler,
-                       DictionaryTableHandler<ObjectStyle> styleHandler,
+                       GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                        DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;

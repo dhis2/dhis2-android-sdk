@@ -25,17 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+public class ObjectStyleModelBuilder extends ModelBuilder<ObjectStyle, ObjectStyleModel> {
 
-public class ObjectStyleHandler extends ObjectWithoutUidHandlerImpl<ObjectStyle,ObjectStyleModel> {
+    private final ObjectStyleModel.Builder builder;
 
-    ObjectStyleHandler(ObjectWithoutUidStore<ObjectStyleModel> store) {
-        super(store);
+    public ObjectStyleModelBuilder(String uid, String objectTable) {
+        builder = ObjectStyleModel.builder()
+                .uid(uid)
+                .objectTable(objectTable);
     }
 
-    public static ObjectStyleHandler create(DatabaseAdapter databaseAdapter) {
-        return new ObjectStyleHandler(ObjectStyleStore.create(databaseAdapter));
+    @Override
+    public ObjectStyleModel buildModel(ObjectStyle objectStyle) {
+        return builder
+                .color(objectStyle.color())
+                .icon(objectStyle.icon()).build();
     }
 }

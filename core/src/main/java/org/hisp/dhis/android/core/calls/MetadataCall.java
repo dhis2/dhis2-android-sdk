@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -137,7 +138,7 @@ public class MetadataCall implements Call<Response> {
     private final TrackedEntityStore trackedEntityStore;
     private final GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
     private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
-    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     private final Retrofit retrofit;
@@ -191,7 +192,7 @@ public class MetadataCall implements Call<Response> {
                         @NonNull GenericHandler<OptionSet, OptionSetModel> optionSetHandler,
                         @NonNull GenericHandler<DataElement, DataElementModel> dataElementHandler,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
-                        @NonNull DictionaryTableHandler<ObjectStyle> styleHandler,
+                        @NonNull GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                         @NonNull DictionaryTableHandler<ValueTypeRendering> renderTypeHandler,
                         @NonNull Retrofit retrofit
                         ) {

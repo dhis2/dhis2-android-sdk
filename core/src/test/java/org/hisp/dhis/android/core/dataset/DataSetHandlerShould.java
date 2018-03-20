@@ -80,7 +80,7 @@ public class DataSetHandlerShould {
 
     @Test
     public void call_style_handler() throws Exception {
-        dataSetHandler.handle(dataSet);
+        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
         verify(styleHandler).handle(dataSet.style(), dataSet.uid(), DataSetModel.TABLE);
     }
 }

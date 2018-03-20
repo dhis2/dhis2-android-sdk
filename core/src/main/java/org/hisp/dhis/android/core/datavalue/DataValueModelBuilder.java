@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
 
 public class DataValueModelBuilder extends ModelBuilder<DataValue, DataValueModel> {
 

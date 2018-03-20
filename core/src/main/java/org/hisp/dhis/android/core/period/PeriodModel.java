@@ -38,6 +38,7 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
@@ -73,6 +74,14 @@ public abstract class PeriodModel extends BaseModel implements UpdateWhereStatem
     public static PeriodModel create(Cursor cursor) {
         return AutoValue_PeriodModel.createFromCursor(cursor);
     }
+
+    public static final CursorModelFactory<PeriodModel> factory
+            = new CursorModelFactory<PeriodModel>() {
+        @Override
+        public PeriodModel fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
 
     public static Builder builder() {
         return new $AutoValue_PeriodModel.Builder();

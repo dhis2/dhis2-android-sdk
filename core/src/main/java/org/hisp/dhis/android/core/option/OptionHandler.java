@@ -55,6 +55,7 @@ public class OptionHandler {
         deleteOrPersistOptions(options);
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     private void deleteOrPersistOptions(List<Option> options) {
         int size = options.size();
 

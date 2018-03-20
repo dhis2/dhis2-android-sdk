@@ -64,6 +64,7 @@ public class ProgramStageDataElementHandler {
      */
     private void deleteOrPersistProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
         int size = programStageDataElements.size();
+        DataElementModelBuilder dataElementModelBuilder = new DataElementModelBuilder();
         for (int i = 0; i < size; i++) {
             ProgramStageDataElement programStageDataElement = programStageDataElements.get(i);
 
@@ -95,7 +96,7 @@ public class ProgramStageDataElementHandler {
                     );
                 }
             }
-            dataElementHandler.handle(programStageDataElement.dataElement(), new DataElementModelBuilder());
+            dataElementHandler.handle(programStageDataElement.dataElement(), dataElementModelBuilder);
         }
     }
 

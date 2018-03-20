@@ -52,6 +52,7 @@ public class ProgramStageHandler {
         this.styleHandler = styleHandler;
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     public void handleProgramStage(String programUid, List<ProgramStage> programStages) {
         if (programStages == null || programUid == null) {
             return;

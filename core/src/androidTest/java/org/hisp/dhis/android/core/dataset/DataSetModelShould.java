@@ -96,7 +96,7 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSet, Dat
     }
 
     @Override
-    protected DataSet cursorToModel(Cursor cursor) {
+    protected DataSetModel cursorToModel(Cursor cursor) {
         return DataSetModel.create(cursor);
     }
 

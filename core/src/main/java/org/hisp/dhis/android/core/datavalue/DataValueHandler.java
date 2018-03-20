@@ -27,17 +27,13 @@
  */
 package org.hisp.dhis.android.core.datavalue;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class DataValueHandler extends ObjectWithoutUidHandlerImpl<DataValue, DataValueModel> {
+public final class DataValueHandler {
 
-    DataValueHandler(ObjectWithoutUidStore<DataValueModel> dataValueStore) {
-        super(dataValueStore);
-    }
-
-    public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataValueHandler(DataValueStore.create(databaseAdapter));
+    public static GenericHandler<DataValue, DataValueModel> create(DatabaseAdapter databaseAdapter) {
+        return new ObjectWithoutUidHandlerImpl<>(DataValueStore.create(databaseAdapter));
     }
 }

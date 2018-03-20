@@ -29,13 +29,8 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class ObjectStyleHandler extends ObjectWithoutUidHandlerImpl<ObjectStyle, ObjectStyleModel> {
-
-    private ObjectStyleHandler(ObjectWithoutUidStore<ObjectStyleModel> store) {
-        super(store);
-    }
-
-    public static ObjectStyleHandler create(DatabaseAdapter databaseAdapter) {
-        return new ObjectStyleHandler(ObjectStyleStore.create(databaseAdapter));
+public final class ObjectStyleHandler {
+    public static GenericHandler<ObjectStyle, ObjectStyleModel> create(DatabaseAdapter databaseAdapter) {
+        return new ObjectWithoutUidHandlerImpl<>(ObjectStyleStore.create(databaseAdapter));
     }
 }

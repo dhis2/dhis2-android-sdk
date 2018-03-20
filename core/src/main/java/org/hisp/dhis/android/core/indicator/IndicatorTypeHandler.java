@@ -27,17 +27,13 @@
  */
 package org.hisp.dhis.android.core.indicator;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class IndicatorTypeHandler extends IdentifiableHandlerImpl<IndicatorType, IndicatorTypeModel> {
+public final class IndicatorTypeHandler {
 
-    IndicatorTypeHandler(IdentifiableObjectStore<IndicatorTypeModel> indicatorTypeStore) {
-        super(indicatorTypeStore);
-    }
-
-    public static IndicatorTypeHandler create(DatabaseAdapter databaseAdapter) {
-        return new IndicatorTypeHandler(IndicatorTypeStore.create(databaseAdapter));
+    public static GenericHandler<IndicatorType, IndicatorTypeModel> create(DatabaseAdapter databaseAdapter) {
+        return new IdentifiableHandlerImpl<>(IndicatorTypeStore.create(databaseAdapter));
     }
 }

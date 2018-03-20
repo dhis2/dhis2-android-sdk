@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.common;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-public abstract class IdentifiableHandlerImpl<
+public class IdentifiableHandlerImpl<
         P extends BaseIdentifiableObject,
         M extends BaseIdentifiableObjectModel & StatementBinder> extends GenericHandlerBaseImpl<P, M> {
 

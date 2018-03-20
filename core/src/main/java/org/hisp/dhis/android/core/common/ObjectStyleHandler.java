@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class ObjectStyleHandler extends ObjectWithoutUidHandlerImpl<ObjectStyle, ObjectStyleModel> {
+public final class ObjectStyleHandler extends ObjectWithoutUidHandlerImpl<ObjectStyle, ObjectStyleModel> {
 
     private ObjectStyleHandler(ObjectWithoutUidStore<ObjectStyleModel> store) {
         super(store);

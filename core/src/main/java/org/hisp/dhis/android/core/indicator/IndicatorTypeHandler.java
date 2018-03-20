@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class IndicatorTypeHandler extends IdentifiableHandlerImpl<IndicatorType, IndicatorTypeModel> {
+public final class IndicatorTypeHandler extends IdentifiableHandlerImpl<IndicatorType, IndicatorTypeModel> {
 
     private IndicatorTypeHandler(IdentifiableObjectStore<IndicatorTypeModel> indicatorTypeStore) {
         super(indicatorTypeStore);

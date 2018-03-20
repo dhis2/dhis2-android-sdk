@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class DataValueHandler extends ObjectWithoutUidHandlerImpl<DataValue, DataValueModel> {
 
-    private DataValueHandler(ObjectWithoutUidStore<DataValueModel> dataValueStore) {
+    DataValueHandler(ObjectWithoutUidStore<DataValueModel> dataValueStore) {
         super(dataValueStore);
     }
 

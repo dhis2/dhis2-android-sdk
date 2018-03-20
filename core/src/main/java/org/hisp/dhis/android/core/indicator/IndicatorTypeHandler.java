@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class IndicatorTypeHandler extends IdentifiableHandlerImpl<IndicatorType, IndicatorTypeModel> {
 
-    private IndicatorTypeHandler(IdentifiableObjectStore<IndicatorTypeModel> indicatorTypeStore) {
+    IndicatorTypeHandler(IdentifiableObjectStore<IndicatorTypeModel> indicatorTypeStore) {
         super(indicatorTypeStore);
     }
 

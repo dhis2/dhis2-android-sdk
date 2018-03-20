@@ -35,6 +35,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -71,9 +72,9 @@ public class ValueTypeRenderingHandlerShould {
     @Test
     public void call_device_handler_when_render_type_not_null() throws Exception {
         renderTypeHandler.handle(renderType, UID, TABLE);
-        verify(deviceRenderingHandler).handle(desktopRenderType,
+        verify(deviceRenderingHandler).handle(eq(desktopRenderType),
                 any(ValueTypeDeviceRenderingModelBuilder.class));
-        verify(deviceRenderingHandler).handle(mobileRenderType,
+        verify(deviceRenderingHandler).handle(eq(mobileRenderType),
                 any(ValueTypeDeviceRenderingModelBuilder.class));
         verifyNoMoreInteractions(deviceRenderingHandler);
     }

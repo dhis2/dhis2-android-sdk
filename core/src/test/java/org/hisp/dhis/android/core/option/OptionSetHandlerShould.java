@@ -39,6 +39,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -69,7 +70,7 @@ public class OptionSetHandlerShould {
 
     @Test
     public void handle_option_sets() throws Exception {
-        optionSetHandler.handle(optionSet, any(OptionSetModelBuilder.class));
+        optionSetHandler.handle(eq(optionSet), any(OptionSetModelBuilder.class));
         verify(optionHandler).handleOptions(options);
     }
 

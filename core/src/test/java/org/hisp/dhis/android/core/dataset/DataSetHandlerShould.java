@@ -43,6 +43,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -84,6 +85,6 @@ public class DataSetHandlerShould {
     @Test
     public void call_style_handler() throws Exception {
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
-        verify(styleHandler).handle(dataSet.style(), any(ObjectStyleModelBuilder.class));
+        verify(styleHandler).handle(eq(dataSet.style()), any(ObjectStyleModelBuilder.class));
     }
 }

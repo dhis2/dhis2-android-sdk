@@ -33,6 +33,8 @@ import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -42,12 +44,12 @@ import org.hisp.dhis.android.core.option.OptionSetModelBuilder;
 
 public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, DataElementModel> {
     private final GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
-    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     DataElementHandler(IdentifiableObjectStore<DataElementModel> dataElementStore,
                        GenericHandler<OptionSet, OptionSetModel> optionSetHandler,
-                       DictionaryTableHandler<ObjectStyle> styleHandler,
+                       GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                        DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         super(dataElementStore);
         this.optionSetHandler = optionSetHandler;
@@ -67,7 +69,8 @@ public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, Dat
     @Override
     protected void afterObjectPersisted(DataElement dateElement) {
         optionSetHandler.handle(dateElement.optionSet(), new OptionSetModelBuilder());
-        styleHandler.handle(dateElement.style(), dateElement.uid(), DataElementModel.TABLE);
+        styleHandler.handle(dateElement.style(),
+                new ObjectStyleModelBuilder(dateElement.uid(), DataElementModel.TABLE));
         renderTypeHandler.handle(dateElement.renderType(), dateElement.uid(), DataElementModel.TABLE);
     }
 }

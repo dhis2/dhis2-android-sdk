@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.indicator;
 
+import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.NameableModelAbstractShould;
@@ -56,7 +57,7 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
-public class IndicatorModelShould extends NameableModelAbstractShould<IndicatorModel, Indicator> {
+public class IndicatorModelShould extends NameableModelAbstractShould<Indicator, IndicatorModel> {
 
     private final Boolean annualized = false;
     private final String indicatorType = "bWuNrMHEoZ0";
@@ -67,7 +68,7 @@ public class IndicatorModelShould extends NameableModelAbstractShould<IndicatorM
     private final String url = "dhis2.org";
 
     public IndicatorModelShould() {
-            super(IndicatorModel.Columns.all(), 17, IndicatorModel.factory);
+            super(IndicatorModel.Columns.all(), 17, new IndicatorModelBuilder());
     }
 
     @Override
@@ -83,6 +84,11 @@ public class IndicatorModelShould extends NameableModelAbstractShould<IndicatorM
                 .denominatorDescription(denominatorDescription)
                 .url(url);
         return indicatorModelBuilder.build();
+    }
+
+    @Override
+    protected IndicatorModel cursorToModel(Cursor cursor) {
+        return IndicatorModel.create(cursor);
     }
 
     @Override

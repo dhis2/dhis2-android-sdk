@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class ObjectStyleHandler {
 
-    ObjectStyleHandler() {}
+    private ObjectStyleHandler() {}
 
     public static GenericHandler<ObjectStyle, ObjectStyleModel> create(DatabaseAdapter databaseAdapter) {
         return new ObjectWithoutUidHandlerImpl<>(ObjectStyleStore.create(databaseAdapter));

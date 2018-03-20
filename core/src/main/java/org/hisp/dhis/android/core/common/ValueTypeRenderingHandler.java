@@ -31,10 +31,10 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTypeRendering> {
 
-    private final ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
+    private final GenericHandler<ValueTypeDeviceRendering,
             ValueTypeDeviceRenderingModel> deviceRenderingHandler;
 
-    ValueTypeRenderingHandler(ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
+    ValueTypeRenderingHandler(GenericHandler<ValueTypeDeviceRendering,
             ValueTypeDeviceRenderingModel> deviceRenderingHandler) {
         this.deviceRenderingHandler = deviceRenderingHandler;
     }

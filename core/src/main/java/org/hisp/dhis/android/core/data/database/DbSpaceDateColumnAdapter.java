@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.data.database;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
-public final class DbDateColumnAdapter extends GenericDbDateColumnAdapter {
+public final class DbSpaceDateColumnAdapter extends GenericDbDateColumnAdapter {
 
-    public DbDateColumnAdapter() {
-        super(BaseIdentifiableObject.DATE_FORMAT);
+    public DbSpaceDateColumnAdapter(){
+        super(BaseIdentifiableObject.SPACE_DATE_FORMAT);
     }
 }

@@ -28,11 +28,48 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.SafeDateFormat;
 
-public final class DbDateColumnAdapter extends GenericDbDateColumnAdapter {
+import java.text.ParseException;
+import java.util.Date;
 
-    public DbDateColumnAdapter() {
-        super(BaseIdentifiableObject.DATE_FORMAT);
+public abstract class GenericDbDateColumnAdapter implements ColumnTypeAdapter<Date> {
+
+    private SafeDateFormat format;
+
+    GenericDbDateColumnAdapter(SafeDateFormat format) {
+        this.format = format;
+    }
+
+    @Override
+    public Date fromCursor(Cursor cursor, String columnName) {
+        // infer index from column name
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String sourceDate = cursor.getString(columnIndex);
+
+        Date date = null;
+        if (sourceDate != null) {
+            try {
+                date = format.parse(sourceDate);
+            } catch (ParseException parseException) {
+                // wrap checked exception into unchecked
+                throw new RuntimeException(parseException);
+            }
+        }
+
+        return date;
+    }
+
+    @Override
+    public void toContentValues(ContentValues contentValues, String columnName, Date date) {
+        if (date != null) {
+            contentValues.put(columnName, BaseIdentifiableObject.DATE_FORMAT.format(date));
+        }
     }
 }

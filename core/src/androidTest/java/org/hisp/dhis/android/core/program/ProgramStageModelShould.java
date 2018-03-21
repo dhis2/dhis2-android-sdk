@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramStageModel.Columns;
+import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -82,9 +83,10 @@ public class ProgramStageModelShould {
 
     @Test
     public void create_model_when_created_from_database_cursor() {
-        MatrixCursor cursor = new MatrixCursor(ProgramStageModel.Columns.all());
+        String[] columnsWithId = Utils.appendInNewArray(ProgramStageModel.Columns.all(), ProgramModel.Columns.ID);
+        MatrixCursor cursor = new MatrixCursor(columnsWithId);
         cursor.addRow(new Object[]{
-                ID, UID, CODE, NAME, DISPLAY_NAME,
+                UID, CODE, NAME, DISPLAY_NAME,
                 dateString, dateString,
                 EXECUTION_DATE_LABEL,
                 ALLOW_GENERATE_NEXT_VISIT,
@@ -103,7 +105,8 @@ public class ProgramStageModelShould {
                 MIN_DAYS_FROM_START,
                 STANDARD_INTERVAL,
                 PROGRAM,
-                PERIOD_TYPE
+                PERIOD_TYPE,
+                ID
         });
         cursor.moveToFirst();
 

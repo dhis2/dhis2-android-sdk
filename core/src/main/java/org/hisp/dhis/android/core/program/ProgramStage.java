@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.period.PeriodType;
 
@@ -100,6 +101,16 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     public static final NestedField<ProgramStage, ProgramStageDataElement> programStageDataElements =
             NestedField.create(PROGRAM_STAGE_DATA_ELEMENTS);
     public static final NestedField<ProgramStage, ObjectStyle> style = NestedField.create(STYLE);
+
+    static final Fields<ProgramStage> allFields = Fields.<ProgramStage>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, allowGenerateNextVisit, autoGenerateEvent,
+            blockEntryForm, captureCoordinates, deleted, displayGenerateEventBox, executionDateLabel, formType,
+            generatedByEnrollmentDate, hideDueDate, minDaysFromStart, openAfterEnrollment, repeatable,
+            reportDateToUse, sortOrder, standardInterval, validCompleteOnly,
+            programStageDataElements.with(ProgramStageDataElement.allFields),
+            programStageSections.with(ProgramStageSection.allFields),
+            style.with(ObjectStyle.allFields),
+            periodType).build();
 
     @Nullable
     @JsonProperty(EXECUTION_DATE_LABEL)

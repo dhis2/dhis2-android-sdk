@@ -35,12 +35,21 @@ public class ProgramStageModelBuilder extends ModelBuilder<ProgramStage, Program
     private final ProgramStageModel.Builder builder;
 
     ProgramStageModelBuilder(Program program) {
-        this.builder = ProgramStageModel.builder();
+        this.builder = ProgramStageModel.builder()
+            .program(program.uid());
     }
-
+    
     @Override
     public ProgramStageModel buildModel(ProgramStage programStage) {
-        return builder.executionDateLabel(programStage.executionDateLabel())
+        return builder
+                .uid(programStage.uid())
+                .code(programStage.code())
+                .name(programStage.name())
+                .displayName(programStage.displayName())
+                .created(programStage.created())
+                .lastUpdated(programStage.lastUpdated())
+                
+                .executionDateLabel(programStage.executionDateLabel())
                 .allowGenerateNextVisit(programStage.allowGenerateNextVisit())
                 .validCompleteOnly(programStage.validCompleteOnly())
                 .reportDateToUse(programStage.reportDateToUse())

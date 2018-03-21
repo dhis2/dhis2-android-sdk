@@ -60,7 +60,7 @@ public class DataBaseMigrationShould {
     public static final String databaseSqlVersion1 = "db_version_1.sql";
     public static final String databaseSqlVersion2_with_data = "db_version_2_with_data.sql";
     public static final String databaseSqlVersion2 = "db_version_2.sql";
-    public static final String databaseSqlVersionLast = "db_version_11.sql";
+    public static final String databaseSqlVersionLast = "db_version_" + DbOpenHelper.VERSION + ".sql";
     static String dbName= null;
     private SQLiteDatabase databaseInMemory;
 

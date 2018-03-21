@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
@@ -67,6 +68,11 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
 
     static final NestedField<ProgramStageSection, ProgramStageSectionRendering> renderType
             = NestedField.create(RENDER_TYPE);
+
+    static final Fields<ProgramStageSection> allFields = Fields.<ProgramStageSection>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, sortOrder, deleted, dataElements.with(DataElement.uid),
+            programIndicators.with(ProgramIndicator.uid, ProgramIndicator.program.with(Program.uid)), renderType
+    ).build();
 
     @Nullable
     @JsonProperty(SORT_ORDER)

@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -69,6 +70,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
 import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.ProgramStageCall;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
@@ -140,6 +142,7 @@ public class MetadataCall implements Call<Response> {
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
     private final DataSetParentCall.Factory dataSetParentCallFactory;
+    private final ProgramStageCall.Factory programStageCallFactory;
 
     private boolean isExecuted;
 
@@ -179,6 +182,7 @@ public class MetadataCall implements Call<Response> {
                         @NonNull CategoryComboHandler categoryComboHandler,
                         @NonNull GenericHandler<OptionSet, OptionSetModel> optionSetHandler,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
+                        @NonNull ProgramStageCall.Factory programStageCallFactory,
                         @NonNull GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                         @NonNull DictionaryTableHandler<ValueTypeRendering> renderTypeHandler,
                         @NonNull Retrofit retrofit
@@ -217,6 +221,7 @@ public class MetadataCall implements Call<Response> {
         this.categoryComboHandler = categoryComboHandler;
         this.optionSetHandler = optionSetHandler;
         this.dataSetParentCallFactory = dataSetParentCallFactory;
+        this.programStageCallFactory = programStageCallFactory;
         this.styleHandler = styleHandler;
         this.renderTypeHandler = renderTypeHandler;
 
@@ -303,6 +308,15 @@ public class MetadataCall implements Call<Response> {
             }
 
             List<Program> programs = ((Response<Payload<Program>>) response).body().items();
+            Set<String> assignedProgramStageUids = getAssignedTrackedEntityUids(programs);
+            response = programStageCallFactory.create(data, assignedProgramStageUids).call();
+
+            if (!response.isSuccessful()) {
+                return response;
+            }
+
+            List<ProgramStage> programStages = ((Response<Payload<ProgramStage>>) response).body().items();
+
             Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
             response = new TrackedEntityCall(
                     trackedEntityUids, databaseAdapter, trackedEntityStore,
@@ -321,7 +335,7 @@ public class MetadataCall implements Call<Response> {
                 return organisationUnitResponse;
             }
 
-            Set<String> optionSetUids = getAssignedOptionSetUids(programs);
+            Set<String> optionSetUids = getAssignedOptionSetUids(programs, programStages);
             response = new OptionSetCall(
                     data, optionSetService, optionSetHandler, optionSetUids).call();
             if (!response.isSuccessful()) {
@@ -341,8 +355,8 @@ public class MetadataCall implements Call<Response> {
     }
 
     /// Utilty methods:
-    private Set<String> getAssignedOptionSetUids(List<Program> programs) {
-        if (programs == null) {
+    private Set<String> getAssignedOptionSetUids(List<Program> programs, List<ProgramStage> programStages) {
+        if (programs == null && programStages == null) {
             return null;
         }
         Set<String> uids = new HashSet<>();
@@ -351,13 +365,13 @@ public class MetadataCall implements Call<Response> {
             Program program = programs.get(i);
 
             getOptionSetUidsForAttributes(uids, program);
-            getOptionSetUidsForDataElements(uids, program);
         }
+
+        getOptionSetUidsForDataElements(uids, programStages);
         return uids;
     }
 
-    private void getOptionSetUidsForDataElements(Set<String> uids, Program program) {
-        List<ProgramStage> programStages = program.programStages();
+    private void getOptionSetUidsForDataElements(Set<String> uids, List<ProgramStage> programStages) {
         int programStagesSize = programStages.size();
 
         for (int j = 0; j < programStagesSize; j++) {
@@ -409,6 +423,18 @@ public class MetadataCall implements Call<Response> {
             }
         }
         return uids;
+    }
+
+    private Set<String> getAssignedProgramStageUids(List<Program> programs) {
+        Set<String> programStageUids = new HashSet<>();
+
+        for (Program program : programs) {
+            for (ObjectWithUid programStage : program.programStages()) {
+                programStageUids.add(programStage.uid());
+            }
+        }
+
+        return programStageUids;
     }
 
     private Set<String> getProgramUidsWithDataReadAccess(List<Program> programsWithAccess) {

@@ -26,48 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.Note;
+package org.hisp.dhis.android.core.enrollment.note;
 
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+public class NoteModelBuilder extends ModelBuilder<Note, NoteModel> {
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+    private final NoteModel.Builder builder;
 
-@AutoValue
-public abstract class Note {
-    private final static String VALUE = "value";
-    private final static String STORED_BY = "storedBy";
-    private final static String STORED_DATE = "storedDate";
+    public NoteModelBuilder(Enrollment enrollment) {
+        this.builder = NoteModel.builder()
+                .enrollment(enrollment.uid());
+    }
 
-    private static final Field<Note, String> value = Field.create(VALUE);
-    private static final Field<Note, String> storedBy = Field.create(STORED_BY);
-    private static final Field<Note, String> storedDate= Field.create(STORED_DATE);
-
-    public static final Fields<Note> allFields = Fields.<Note>builder().fields(
-            value, storedBy, storedDate).build();
-
-    @Nullable
-    @JsonProperty(VALUE)
-    public abstract String value();
-
-    @Nullable
-    @JsonProperty(STORED_BY)
-    public abstract String storedBy();
-
-    @Nullable
-    @JsonProperty(STORED_DATE)
-    public abstract String storedDate();
-
-    @JsonCreator
-    public static Note create(
-            @JsonProperty(VALUE) String value,
-            @JsonProperty(STORED_BY) String storedBy,
-            @JsonProperty(STORED_DATE) String storedDate) {
-
-        return new AutoValue_Note(value, storedBy, storedDate);
+    @Override
+    public NoteModel buildModel(Note pojo) {
+        return builder
+                .value(pojo.value())
+                .storedBy(pojo.storedBy())
+                .storedDate(pojo.storedDate())
+                .build();
     }
 }

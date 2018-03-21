@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.Note;
+package org.hisp.dhis.android.core.enrollment.note;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
@@ -38,7 +38,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -67,15 +66,6 @@ public abstract class NoteModel extends BaseModel implements UpdateWhereStatemen
 
     static NoteModel create(Cursor cursor) {
         return AutoValue_NoteModel.createFromCursor(cursor);
-    }
-
-    public static NoteModel create(Note note, Enrollment enrollment) {
-        return NoteModel.builder()
-                .enrollment(enrollment.uid())
-                .value(note.value())
-                .storedBy(note.storedBy())
-                .storedDate(note.storedDate())
-                .build();
     }
 
     public static Builder builder() {

@@ -25,31 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment.Note;
+
+package org.hisp.dhis.android.core.enrollment.note;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.List;
+public final class NoteStore {
 
-public class NoteHandler {
+    private NoteStore() {}
 
-    private ObjectWithoutUidStore<NoteModel> noteStore;
-
-    public NoteHandler(ObjectWithoutUidStore<NoteModel> noteStore) {
-        this.noteStore = noteStore;
-    }
-
-    public void handle(Note note, Enrollment enrollment) {
-        noteStore.updateOrInsertWhere(NoteModel.create(note, enrollment));
-    }
-
-    public void handleMany(Enrollment enrollment) {
-        List<Note> notes = enrollment.notes();
-        if (notes != null) {
-            for (Note note : notes) {
-                handle(note, enrollment);
-            }
-        }
+    public static ObjectWithoutUidStore<NoteModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteModel.TABLE,
+                NoteModel.Columns.all(), NoteModel.Columns.whereUpdate());
     }
 }

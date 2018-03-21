@@ -37,7 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
-import org.hisp.dhis.android.core.enrollment.Note.Note;
+import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 
 import java.util.Date;

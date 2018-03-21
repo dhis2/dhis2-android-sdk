@@ -26,18 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.Note;
+package org.hisp.dhis.android.core.enrollment.note;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.support.annotation.Nullable;
 
-public final class NoteStore {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-    private NoteStore() {}
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-    public static ObjectWithoutUidStore<NoteModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteModel.TABLE,
-                NoteModel.Columns.all(), NoteModel.Columns.whereUpdate());
+@AutoValue
+public abstract class Note {
+    private final static String VALUE = "value";
+    private final static String STORED_BY = "storedBy";
+    private final static String STORED_DATE = "storedDate";
+
+    private static final Field<Note, String> value = Field.create(VALUE);
+    private static final Field<Note, String> storedBy = Field.create(STORED_BY);
+    private static final Field<Note, String> storedDate= Field.create(STORED_DATE);
+
+    public static final Fields<Note> allFields = Fields.<Note>builder().fields(
+            value, storedBy, storedDate).build();
+
+    @Nullable
+    @JsonProperty(VALUE)
+    public abstract String value();
+
+    @Nullable
+    @JsonProperty(STORED_BY)
+    public abstract String storedBy();
+
+    @Nullable
+    @JsonProperty(STORED_DATE)
+    public abstract String storedDate();
+
+    @JsonCreator
+    public static Note create(
+            @JsonProperty(VALUE) String value,
+            @JsonProperty(STORED_BY) String storedBy,
+            @JsonProperty(STORED_DATE) String storedDate) {
+
+        return new AutoValue_Note(value, storedBy, storedDate);
     }
 }

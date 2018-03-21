@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.Payload;
@@ -129,7 +130,7 @@ public class ProgramCallShould {
     private ProgramStageSectionStore programStageSectionStore;
 
     @Mock
-    private ProgramStageStore programStageStore;
+    private IdentifiableObjectStore<ProgramStageModel> programStageStore;
 
     @Mock
     private RelationshipTypeStore relationshipStore;

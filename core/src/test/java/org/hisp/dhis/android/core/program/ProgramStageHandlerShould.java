@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.junit.Before;
@@ -39,24 +39,22 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class ProgramStageHandlerShould {
     @Mock
-    private ProgramStageStore programStageStore;
+    private IdentifiableObjectStore<ProgramStageModel> programStageStore;
 
     @Mock
     private ProgramStageSectionHandler programStageSectionHandler;
@@ -102,15 +100,7 @@ public class ProgramStageHandlerShould {
         verify(programStageStore, times(1)).delete(anyString());
 
         // verify that update and insert is never called
-        verify(programStageStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString());
-
-        verify(programStageStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString(), anyString());
+        verifyNoMoreInteractions(programStageStore);
 
         // verify that the handlers is invoked
         verify(programStageSectionHandler, times(1)).handleProgramStageSection(
@@ -124,12 +114,7 @@ public class ProgramStageHandlerShould {
     }
 
     @Test
-    public void invoke_only_update_when_handle_program_stage_inserted() throws Exception {
-        when(programStageStore.update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString(), anyString()))
-                .thenReturn(1);
+    public void invoke_only_update_or_insert_when_handle_program_stage() throws Exception {
 
         // now there is two program stages
         programStages.add(programStage);
@@ -137,19 +122,10 @@ public class ProgramStageHandlerShould {
         programStageHandler.handleProgramStage("test_program_uid", programStages);
 
         // verify that update is called twice
-        verify(programStageStore, times(2)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString(), anyString());
+        verify(programStageStore, times(2)).updateOrInsert(any(ProgramStageModel.class));
 
         // verify that delete and insert is never invoked
-        verify(programStageStore, never()).delete(anyString());
-
-        // verify that update and insert is never called
-        verify(programStageStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString());
+        verifyNoMoreInteractions(programStageStore);
 
         // verify that the handlers is invoked twice
         verify(programStageSectionHandler, times(2)).handleProgramStageSection(
@@ -159,43 +135,6 @@ public class ProgramStageHandlerShould {
         verify(programStageDataElementHandler, times(2)).handleProgramStageDataElements(
                 anyListOf(ProgramStageDataElement.class)
         );
-
-    }
-
-    @Test
-    public void invoke_update_and_insert_when_handle_program_stage_not_inserted() throws Exception {
-        // simulate that programStageStore didn't update anything
-        when(programStageStore.update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString(), anyString()))
-                .thenReturn(0);
-
-        programStageHandler.handleProgramStage("test_program_uid", programStages);
-
-        verify(programStageStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString());
-
-        // verify that update is called once since we update before we insert
-        verify(programStageStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString(), anyString());
-
-        // verify that delete is never called
-        verify(programStageStore, never()).delete(anyString());
-
-        // verify that the handlers is invoked once
-        verify(programStageSectionHandler, times(1)).handleProgramStageSection(
-                anyString(), anyListOf(ProgramStageSection.class)
-        );
-
-        verify(programStageDataElementHandler, times(1)).handleProgramStageDataElements(
-                anyListOf(ProgramStageDataElement.class)
-        );
-
     }
 
     @Test
@@ -203,15 +142,7 @@ public class ProgramStageHandlerShould {
         programStageHandler.handleProgramStage(null, programStages);
 
         // verify that programStageStore is never invoked
-        verify(programStageStore, never()).delete(anyString());
-        verify(programStageStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString());
-        verify(programStageStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString(), anyString());
+        verifyNoMoreInteractions(programStageStore);
 
 
         // verify that the handlers is never invoked
@@ -230,16 +161,7 @@ public class ProgramStageHandlerShould {
         programStageHandler.handleProgramStage("test_program_uid", null);
 
         // verify that programStageStore is never invoked
-        verify(programStageStore, never()).delete(anyString());
-        verify(programStageStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString());
-        verify(programStageStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString(), anyString());
-
+        verifyNoMoreInteractions(programStageStore);
 
         // verify that the handlers is never invoked
         verify(programStageSectionHandler, never()).handleProgramStageSection(
@@ -257,15 +179,7 @@ public class ProgramStageHandlerShould {
         programStageHandler.handleProgramStage(null, null);
 
         // verify that programStageStore is never invoked
-        verify(programStageStore, never()).delete(anyString());
-        verify(programStageStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString());
-        verify(programStageStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyBoolean(), anyBoolean(), anyString(),
-                anyBoolean(), anyBoolean(), anyBoolean(), any(FormType.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyInt(), anyBoolean(), anyBoolean(), anyInt(), anyInt(), anyString(), anyString());
+        verifyNoMoreInteractions(programStageStore);
 
 
         // verify that the handlers is never invoked

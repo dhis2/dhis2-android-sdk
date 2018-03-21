@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.Payload;
@@ -88,7 +89,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                        ProgramRuleStore programRuleStore,
                        ProgramStageDataElementStore programStageDataElementStore,
                        ProgramStageSectionStore programStageSectionStore,
-                       ProgramStageStore programStageStore,
+                       IdentifiableObjectStore<ProgramStageModel> programStageStore,
                        RelationshipTypeStore relationshipStore,
                        GenericHandler<DataElement, DataElementModel> dataElementHandler,
                        GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,

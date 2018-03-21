@@ -63,9 +63,9 @@ import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
 import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
+import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
 import org.hisp.dhis.android.core.program.ProgramStageSectionStore;
-import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
@@ -214,7 +214,7 @@ public class MetadataCallShould {
     private ProgramStageSectionStore programStageSectionStore;
 
     @Mock
-    private ProgramStageStore programStageStore;
+    private IdentifiableObjectStore<ProgramStageModel> programStageStore;
 
     @Mock
     private RelationshipTypeStore relationshipStore;

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
@@ -37,12 +38,12 @@ import java.util.List;
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class ProgramStageHandler {
-    private final ProgramStageStore programStageStore;
+    private final IdentifiableObjectStore<ProgramStageModel> programStageStore;
     private final ProgramStageSectionHandler programStageSectionHandler;
     private final ProgramStageDataElementHandler programStageDataElementHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
-    public ProgramStageHandler(ProgramStageStore programStageStore,
+    public ProgramStageHandler(IdentifiableObjectStore<ProgramStageModel> programStageStore,
                                ProgramStageSectionHandler programStageSectionHandler,
                                ProgramStageDataElementHandler programStageDataElementHandler,
                                GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
@@ -62,32 +63,8 @@ public class ProgramStageHandler {
             if (isDeleted(programStage)) {
                 programStageStore.delete(programStage.uid());
             } else {
-                int updatedRow = programStageStore.update(
-                        programStage.uid(), programStage.code(), programStage.name(),
-                        programStage.displayName(), programStage.created(), programStage.lastUpdated(),
-                        programStage.executionDateLabel(), programStage.allowGenerateNextVisit(),
-                        programStage.validCompleteOnly(), programStage.reportDateToUse(),
-                        programStage.openAfterEnrollment(), programStage.repeatable(),
-                        programStage.captureCoordinates(), programStage.formType(),
-                        programStage.displayGenerateEventBox(),
-                        programStage.generatedByEnrollmentDate(), programStage.autoGenerateEvent(),
-                        programStage.sortOrder(), programStage.hideDueDate(),
-                        programStage.blockEntryForm(), programStage.minDaysFromStart(),
-                        programStage.standardInterval(), programUid, programStage.uid()
-                );
-                if (updatedRow <= 0) {
-                    programStageStore.insert(programStage.uid(), programStage.code(), programStage.name(),
-                            programStage.displayName(), programStage.created(), programStage.lastUpdated(),
-                            programStage.executionDateLabel(), programStage.allowGenerateNextVisit(),
-                            programStage.validCompleteOnly(), programStage.reportDateToUse(),
-                            programStage.openAfterEnrollment(), programStage.repeatable(),
-                            programStage.captureCoordinates(), programStage.formType(),
-                            programStage.displayGenerateEventBox(),
-                            programStage.generatedByEnrollmentDate(), programStage.autoGenerateEvent(),
-                            programStage.sortOrder(), programStage.hideDueDate(),
-                            programStage.blockEntryForm(), programStage.minDaysFromStart(),
-                            programStage.standardInterval(), programUid);
-                }
+                ProgramStageModel model = ProgramStageModel.fromPojo(programStage, programUid);
+                programStageStore.updateOrInsert(model);
             }
 
 

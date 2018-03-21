@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -39,10 +40,15 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.common.LinkModelFactory;
+import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbFormTypeColumnAdapter;
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
+public abstract class ProgramStageModel extends BaseIdentifiableObjectModel implements StatementBinder {
 
     public static final String TABLE = "ProgramStage";
 
@@ -64,10 +70,43 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
         public static final String MIN_DAYS_FROM_START = "minDaysFromStart";
         public static final String STANDARD_INTERVAL = "standardInterval";
         public static final String PROGRAM = "program";
+
+        private Columns() {}
+
+        public static String[] all() {
+            return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(),
+                    EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT, VALID_COMPLETE_ONLY,
+                    REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT, REPEATABLE, CAPTURE_COORDINATES,
+                    FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX, GENERATED_BY_ENROLMENT_DATE,
+                    AUTO_GENERATE_EVENT, SORT_ORDER, HIDE_DUE_DATE, BLOCK_ENTRY_FORM,
+                    MIN_DAYS_FROM_START, STANDARD_INTERVAL, PROGRAM);
+        }
     }
 
     public static ProgramStageModel create(Cursor cursor) {
         return AutoValue_ProgramStageModel.createFromCursor(cursor);
+    }
+
+    public static ProgramStageModel fromPojo(ProgramStage programStage, String programUid) {
+        return ProgramStageModel.builder()
+                .executionDateLabel(programStage.executionDateLabel())
+                .allowGenerateNextVisit(programStage.allowGenerateNextVisit())
+                .validCompleteOnly(programStage.validCompleteOnly())
+                .reportDateToUse(programStage.reportDateToUse())
+                .openAfterEnrollment(programStage.openAfterEnrollment())
+                .repeatable(programStage.repeatable())
+                .captureCoordinates(programStage.captureCoordinates())
+                .formType(programStage.formType())
+                .displayGenerateEventBox(programStage.displayGenerateEventBox())
+                .generatedByEnrollmentDate(programStage.generatedByEnrollmentDate())
+                .autoGenerateEvent(programStage.autoGenerateEvent())
+                .sortOrder(programStage.sortOrder())
+                .hideDueDate(programStage.hideDueDate())
+                .blockEntryForm(programStage.blockEntryForm())
+                .minDaysFromStart(programStage.minDaysFromStart())
+                .standardInterval(programStage.standardInterval())
+                .program(programUid)
+                .build();
     }
 
     public static Builder builder() {
@@ -145,6 +184,28 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
     @Nullable
     @ColumnName(Columns.PROGRAM)
     public abstract String program();
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 7, executionDateLabel());
+        sqLiteBind(sqLiteStatement, 8, allowGenerateNextVisit());
+        sqLiteBind(sqLiteStatement, 9, validCompleteOnly());
+        sqLiteBind(sqLiteStatement, 10, reportDateToUse());
+        sqLiteBind(sqLiteStatement, 11, openAfterEnrollment());
+        sqLiteBind(sqLiteStatement, 12, repeatable());
+        sqLiteBind(sqLiteStatement, 13, captureCoordinates());
+        sqLiteBind(sqLiteStatement, 14, formType().name());
+        sqLiteBind(sqLiteStatement, 15, displayGenerateEventBox());
+        sqLiteBind(sqLiteStatement, 16, generatedByEnrollmentDate());
+        sqLiteBind(sqLiteStatement, 17, autoGenerateEvent());
+        sqLiteBind(sqLiteStatement, 18, sortOrder());
+        sqLiteBind(sqLiteStatement, 19, hideDueDate());
+        sqLiteBind(sqLiteStatement, 20, blockEntryForm());
+        sqLiteBind(sqLiteStatement, 21, minDaysFromStart());
+        sqLiteBind(sqLiteStatement, 22, standardInterval());
+        sqLiteBind(sqLiteStatement, 23, program());
+    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {

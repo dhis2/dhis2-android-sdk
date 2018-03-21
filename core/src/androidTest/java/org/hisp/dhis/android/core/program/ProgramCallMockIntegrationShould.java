@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
@@ -163,7 +164,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         DictionaryTableHandler<ValueTypeRendering> renderTypeHandler
                 = ValueTypeRenderingHandler.create(databaseAdapter());
 
-        ProgramStageStore programStageStore = new ProgramStageStoreImpl(databaseAdapter());
+        IdentifiableObjectStore<ProgramStageModel> programStageStore = ProgramStageStore.create(databaseAdapter());
 
         RelationshipTypeStore relationshipStore = new RelationshipTypeStoreImpl(databaseAdapter());
         ProgramService programService = d2.retrofit().create(ProgramService.class);

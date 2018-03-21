@@ -42,8 +42,10 @@ public abstract class GenericHandlerBaseImpl<
 
     @Override
     public final void handleMany(Collection<P> pCollection, ModelBuilder<P, M> modelBuilder) {
-        for(P p : pCollection) {
-            handle(p, modelBuilder);
+        if (pCollection != null) {
+            for(P p : pCollection) {
+                handle(p, modelBuilder);
+            }
         }
     }
 

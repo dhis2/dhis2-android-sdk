@@ -33,12 +33,16 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
+import org.hisp.dhis.android.core.data.database.DbSpaceDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
+
+import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
@@ -86,7 +90,8 @@ public abstract class NoteModel extends BaseModel implements UpdateWhereStatemen
 
     @Nullable
     @ColumnName(Columns.STORED_DATE)
-    public abstract String storedDate();
+    @ColumnAdapter(DbSpaceDateColumnAdapter.class)
+    public abstract Date storedDate();
 
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
@@ -112,7 +117,7 @@ public abstract class NoteModel extends BaseModel implements UpdateWhereStatemen
 
         public abstract Builder storedBy(String storedBy);
 
-        public abstract Builder storedDate(String storedDate);
+        public abstract Builder storedDate(Date storedDate);
 
         public abstract NoteModel build();
     }

@@ -33,7 +33,6 @@ import android.database.Cursor;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.SafeDateFormat;
 
 import java.text.ParseException;
@@ -41,10 +40,10 @@ import java.util.Date;
 
 public abstract class GenericDbDateColumnAdapter implements ColumnTypeAdapter<Date> {
 
-    private SafeDateFormat format;
+    private final SafeDateFormat dateFormat;
 
-    GenericDbDateColumnAdapter(SafeDateFormat format) {
-        this.format = format;
+    GenericDbDateColumnAdapter(SafeDateFormat dateFormat) {
+        this.dateFormat = dateFormat;
     }
 
     @Override
@@ -56,7 +55,7 @@ public abstract class GenericDbDateColumnAdapter implements ColumnTypeAdapter<Da
         Date date = null;
         if (sourceDate != null) {
             try {
-                date = format.parse(sourceDate);
+                date = dateFormat.parse(sourceDate);
             } catch (ParseException parseException) {
                 // wrap checked exception into unchecked
                 throw new RuntimeException(parseException);
@@ -69,7 +68,7 @@ public abstract class GenericDbDateColumnAdapter implements ColumnTypeAdapter<Da
     @Override
     public void toContentValues(ContentValues contentValues, String columnName, Date date) {
         if (date != null) {
-            contentValues.put(columnName, BaseIdentifiableObject.DATE_FORMAT.format(date));
+            contentValues.put(columnName, dateFormat.format(date));
         }
     }
 }

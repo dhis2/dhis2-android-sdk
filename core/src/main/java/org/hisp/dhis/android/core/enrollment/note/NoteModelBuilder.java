@@ -28,8 +28,12 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+
+import java.text.ParseException;
+import java.util.Date;
 
 public class NoteModelBuilder extends ModelBuilder<Note, NoteModel> {
 
@@ -42,10 +46,18 @@ public class NoteModelBuilder extends ModelBuilder<Note, NoteModel> {
 
     @Override
     public NoteModel buildModel(Note pojo) {
+
+        Date storedDate;
+        try {
+            storedDate = BaseIdentifiableObject.parseSpaceDate(pojo.storedDate());
+        } catch (ParseException ignored) {
+            storedDate = null;
+        }
+
         return builder
                 .value(pojo.value())
                 .storedBy(pojo.storedBy())
-                .storedDate(pojo.storedDate())
+                .storedDate(storedDate)
                 .build();
     }
 }

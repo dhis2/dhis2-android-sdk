@@ -149,6 +149,4 @@ public class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInst
                 )
         ).build();
     }
-
-
 }

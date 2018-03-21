@@ -42,6 +42,8 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbFormTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -69,6 +71,7 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
         public static final String MIN_DAYS_FROM_START = "minDaysFromStart";
         public static final String STANDARD_INTERVAL = "standardInterval";
         public static final String PROGRAM = "program";
+        public static final String PERIOD_TYPE = "periodType";
 
         private Columns() {}
 
@@ -78,7 +81,7 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
                     REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT, REPEATABLE, CAPTURE_COORDINATES,
                     FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX, GENERATED_BY_ENROLMENT_DATE,
                     AUTO_GENERATE_EVENT, SORT_ORDER, HIDE_DUE_DATE, BLOCK_ENTRY_FORM,
-                    MIN_DAYS_FROM_START, STANDARD_INTERVAL, PROGRAM);
+                    MIN_DAYS_FROM_START, STANDARD_INTERVAL, PROGRAM, PERIOD_TYPE);
         }
     }
 
@@ -162,6 +165,11 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
     @ColumnName(Columns.PROGRAM)
     public abstract String program();
 
+    @Nullable
+    @ColumnName(Columns.PERIOD_TYPE)
+    @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
+    public abstract PeriodType periodType();
+
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         super.bindToStatement(sqLiteStatement);
@@ -182,6 +190,7 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
         sqLiteBind(sqLiteStatement, 21, minDaysFromStart());
         sqLiteBind(sqLiteStatement, 22, standardInterval());
         sqLiteBind(sqLiteStatement, 23, program());
+        sqLiteBind(sqLiteStatement, 24, periodType());
     }
 
     @AutoValue.Builder
@@ -220,6 +229,8 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
         public abstract Builder standardInterval(@Nullable Integer standardInterval);
 
         public abstract Builder program(@Nullable String program);
+
+        public abstract Builder periodType(@Nullable PeriodType periodType);
 
         public abstract ProgramStageModel build();
 

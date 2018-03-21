@@ -65,6 +65,7 @@ public class ProgramStageModelBuilder extends ModelBuilder<ProgramStage, Program
                 .blockEntryForm(programStage.blockEntryForm())
                 .minDaysFromStart(programStage.minDaysFromStart())
                 .standardInterval(programStage.standardInterval())
+                .periodType(programStage.periodType())
                 .build();
     }
 }

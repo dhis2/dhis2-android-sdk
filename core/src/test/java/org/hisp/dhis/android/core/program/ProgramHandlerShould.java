@@ -181,7 +181,8 @@ public class ProgramHandlerShould {
 
         // verify that all the handlers is called once
 
-        verify(programStageHandler, times(1)).handleProgramStage(program.uid(), program.programStages());
+        verify(programStageHandler, times(1)).handleMany(anyListOf(ProgramStage.class),
+                any(ProgramStageModelBuilder.class));
         verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
                 program.programTrackedEntityAttributes()
         );
@@ -222,7 +223,8 @@ public class ProgramHandlerShould {
 
         // verify that all the handlers is called once
 
-        verify(programStageHandler, times(1)).handleProgramStage(program.uid(), program.programStages());
+        verify(programStageHandler, times(1)).handleMany(anyListOf(ProgramStage.class),
+                any(ProgramStageModelBuilder.class));
         verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
                 program.programTrackedEntityAttributes()
         );
@@ -263,7 +265,8 @@ public class ProgramHandlerShould {
 
         // verify that all the handlers is called once
 
-        verify(programStageHandler, times(1)).handleProgramStage(program.uid(), program.programStages());
+        verify(programStageHandler, times(1)).handleMany(anyListOf(ProgramStage.class),
+                any(ProgramStageModelBuilder.class));
         verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
                 program.programTrackedEntityAttributes()
         );
@@ -294,7 +297,8 @@ public class ProgramHandlerShould {
                 anyString(), anyString(), anyString(), anyBoolean(), anyString());
 
         // verify that handlers is never called
-        verify(programStageHandler, never()).handleProgramStage(anyString(), anyListOf(ProgramStage.class));
+        verify(programStageHandler, never()).handleMany(anyListOf(ProgramStage.class),
+                any(ProgramStageModelBuilder.class));
         verify(programTrackedEntityAttributeHandler, never()).handleProgramTrackedEntityAttributes(
                 anyListOf(ProgramTrackedEntityAttribute.class)
         );

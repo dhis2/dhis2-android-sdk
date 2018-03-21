@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.Payload;
@@ -45,7 +44,6 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
@@ -124,15 +122,6 @@ public class ProgramCallShould {
     private ProgramRuleStore programRuleStore;
 
     @Mock
-    private ProgramStageDataElementStore programStageDataElementStore;
-
-    @Mock
-    private ProgramStageSectionStore programStageSectionStore;
-
-    @Mock
-    private IdentifiableObjectStore<ProgramStageModel> programStageStore;
-
-    @Mock
     private RelationshipTypeStore relationshipStore;
 
     @Mock
@@ -172,9 +161,6 @@ public class ProgramCallShould {
     private Date serverDate;
 
     @Mock
-    private GenericHandler<DataElement, DataElementModel> dataElementHandler;
-
-    @Mock
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
@@ -197,8 +183,7 @@ public class ProgramCallShould {
                 resourceStore, uids, programStore, serverDate, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
-                programStageDataElementStore, programStageSectionStore, programStageStore,
-                relationshipStore, dataElementHandler, styleHandler, renderTypeHandler);
+                relationshipStore, styleHandler, renderTypeHandler);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.access()).thenReturn(access);

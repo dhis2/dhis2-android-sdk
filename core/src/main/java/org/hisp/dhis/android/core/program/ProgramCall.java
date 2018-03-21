@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.Payload;
@@ -42,7 +41,6 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
@@ -61,7 +59,7 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-@SuppressWarnings({"PMD.TooManyFields", "PMD.ExcessiveMethodLength", "PMD.ExcessiveImports"})
+@SuppressWarnings({"PMD.TooManyFields", "PMD.ExcessiveMethodLength"})
 public class ProgramCall implements Call<Response<Payload<Program>>> {
     private final ProgramService programService;
 
@@ -87,11 +85,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                        ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore,
                        ProgramRuleActionStore programRuleActionStore,
                        ProgramRuleStore programRuleStore,
-                       ProgramStageDataElementStore programStageDataElementStore,
-                       ProgramStageSectionStore programStageSectionStore,
-                       IdentifiableObjectStore<ProgramStageModel> programStageStore,
                        RelationshipTypeStore relationshipStore,
-                       GenericHandler<DataElement, DataElementModel> dataElementHandler,
                        GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                        DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         this.programService = programService;
@@ -107,20 +101,9 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
         ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore);
 
-        ProgramStageDataElementHandler programStageDataElementHandler = new ProgramStageDataElementHandler(
-                programStageDataElementStore, dataElementHandler
-        );
-
         this.programHandler = new ProgramHandler(programStore,
                 new ProgramRuleVariableHandler(programRuleVariableStore),
-                new ProgramStageHandler(
-                        programStageStore,
-                        new ProgramStageSectionHandler(programStageSectionStore,
-                                programStageDataElementHandler,
-                                programIndicatorHandler
-                        ),
-                        programStageDataElementHandler,
-                        styleHandler),
+                ProgramStageHandler.create(databaseAdapter),
                 programIndicatorHandler,
                 new ProgramRuleHandler(programRuleStore, new ProgramRuleActionHandler(programRuleActionStore)),
                 new ProgramTrackedEntityAttributeHandler(programTrackedEntityAttributeStore,

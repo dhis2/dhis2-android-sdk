@@ -40,7 +40,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.common.LinkModelFactory;
 import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbFormTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -85,28 +84,6 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
 
     public static ProgramStageModel create(Cursor cursor) {
         return AutoValue_ProgramStageModel.createFromCursor(cursor);
-    }
-
-    public static ProgramStageModel fromPojo(ProgramStage programStage, String programUid) {
-        return ProgramStageModel.builder()
-                .executionDateLabel(programStage.executionDateLabel())
-                .allowGenerateNextVisit(programStage.allowGenerateNextVisit())
-                .validCompleteOnly(programStage.validCompleteOnly())
-                .reportDateToUse(programStage.reportDateToUse())
-                .openAfterEnrollment(programStage.openAfterEnrollment())
-                .repeatable(programStage.repeatable())
-                .captureCoordinates(programStage.captureCoordinates())
-                .formType(programStage.formType())
-                .displayGenerateEventBox(programStage.displayGenerateEventBox())
-                .generatedByEnrollmentDate(programStage.generatedByEnrollmentDate())
-                .autoGenerateEvent(programStage.autoGenerateEvent())
-                .sortOrder(programStage.sortOrder())
-                .hideDueDate(programStage.hideDueDate())
-                .blockEntryForm(programStage.blockEntryForm())
-                .minDaysFromStart(programStage.minDaysFromStart())
-                .standardInterval(programStage.standardInterval())
-                .program(programUid)
-                .build();
     }
 
     public static Builder builder() {

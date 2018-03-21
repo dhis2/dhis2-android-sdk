@@ -47,7 +47,6 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetModel;
@@ -62,10 +61,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
 import org.hisp.dhis.android.core.program.ProgramService;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
-import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
-import org.hisp.dhis.android.core.program.ProgramStageSectionStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
@@ -208,15 +204,6 @@ public class MetadataCallShould {
     private ProgramRuleStore programRuleStore;
 
     @Mock
-    private ProgramStageDataElementStore programStageDataElementStore;
-
-    @Mock
-    private ProgramStageSectionStore programStageSectionStore;
-
-    @Mock
-    private IdentifiableObjectStore<ProgramStageModel> programStageStore;
-
-    @Mock
     private RelationshipTypeStore relationshipStore;
 
     @Mock
@@ -312,9 +299,6 @@ public class MetadataCallShould {
 
     @Mock
     private GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
-
-    @Mock
-    private GenericHandler<DataElement, DataElementModel> dataElementHandler;
 
     @Mock
     private DataSetParentCall.Factory dataSetParentCallFactory;
@@ -415,10 +399,10 @@ public class MetadataCallShould {
                 userRoleStore, organisationUnitStore,userOrganisationUnitLinkStore, programStore,
                 trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
                 programIndicatorStore,programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, programStageDataElementStore, programStageSectionStore, programStageStore,
+                programRuleStore,
                 relationshipStore, trackedEntityStore, organisationUnitProgramLinkStore,categoryQuery, categoryService,
                 categoryHandler, CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetHandler, dataElementHandler, dataSetParentCallFactory, styleHandler, renderTypeHandler,
+                optionSetHandler, dataSetParentCallFactory, styleHandler, renderTypeHandler,
                 retrofit);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);

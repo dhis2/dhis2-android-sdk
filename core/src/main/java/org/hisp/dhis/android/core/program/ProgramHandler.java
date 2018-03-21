@@ -118,7 +118,7 @@ public class ProgramHandler {
         }
         // programStageHandler will invoke programStageSectionHandler, programStageDataElementHandler,
         // programIndicatorHandler, dataElement handler and optionSetHandler
-        programStageHandler.handleProgramStage(program.uid(), program.programStages());
+        programStageHandler.handleMany(program.programStages(), new ProgramStageModelBuilder(program));
         programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(
                 program.programTrackedEntityAttributes());
         programIndicatorHandler.handleProgramIndicator(null, program.programIndicators());

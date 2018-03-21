@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.program;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModelBuilder;
 
@@ -103,5 +105,12 @@ public class ProgramStageDataElementHandler {
     void updateProgramStageDataElementWithProgramStageSectionLink(@NonNull String programStageSectionUid,
                                                                   @NonNull String dataElementUid) {
         programStageDataElementStore.updateWithProgramStageSectionLink(programStageSectionUid, dataElementUid);
+    }
+
+    public static ProgramStageDataElementHandler create(DatabaseAdapter databaseAdapter) {
+        return new ProgramStageDataElementHandler(
+                new ProgramStageDataElementStoreImpl(databaseAdapter),
+                DataElementHandler.create(databaseAdapter)
+        );
     }
 }

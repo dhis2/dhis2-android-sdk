@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
@@ -52,11 +51,7 @@ import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
-import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
@@ -152,19 +147,9 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         ProgramRuleActionStore programRuleActionStore = new ProgramRuleActionStoreImpl(databaseAdapter());
         ProgramRuleStore programRuleStore = new ProgramRuleStoreImpl(databaseAdapter());
 
-        GenericHandler<OptionSet, OptionSetModel> optionSetHandler = OptionSetHandler.create(databaseAdapter());
-        GenericHandler<DataElement, DataElementModel> dataElementHandler =
-                DataElementHandler.create(databaseAdapter(), optionSetHandler);
-        ProgramStageDataElementStore programStageDataElementStore =
-                new ProgramStageDataElementStoreImpl(databaseAdapter());
-
-        ProgramStageSectionStore programStageSectionStore = new ProgramStageSectionStoreImpl(databaseAdapter());
-
         GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler = ObjectStyleHandler.create(databaseAdapter());
         DictionaryTableHandler<ValueTypeRendering> renderTypeHandler
                 = ValueTypeRenderingHandler.create(databaseAdapter());
-
-        IdentifiableObjectStore<ProgramStageModel> programStageStore = ProgramStageStore.create(databaseAdapter());
 
         RelationshipTypeStore relationshipStore = new RelationshipTypeStoreImpl(databaseAdapter());
         ProgramService programService = d2.retrofit().create(ProgramService.class);
@@ -190,9 +175,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 programService, databaseAdapter(), resourceStore, uids, programStore, new Date(),
                 trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
                 programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, programStageDataElementStore,
-                programStageSectionStore, programStageStore, relationshipStore, dataElementHandler,
-                styleHandler, renderTypeHandler
+                programRuleStore, relationshipStore, styleHandler, renderTypeHandler
         );
     }
 

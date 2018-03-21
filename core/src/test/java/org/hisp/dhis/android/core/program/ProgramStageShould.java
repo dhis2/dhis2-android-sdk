@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -74,6 +75,7 @@ public class ProgramStageShould  extends BaseObjectShould implements ObjectShoul
         assertThat(programStage.reportDateToUse()).isEqualTo("false");
         assertThat(programStage.standardInterval()).isNull();
         assertThat(programStage.programStageSections()).isEmpty();
+        assertThat(programStage.periodType()).isEqualTo(PeriodType.Monthly);
 
         assertThat(programStage.programStageDataElements().get(0).uid()).isEqualTo("EQCf1l2Mdr8");
         assertThat(programStage.programStageDataElements().get(1).uid()).isEqualTo("muxw4SGzUwJ");

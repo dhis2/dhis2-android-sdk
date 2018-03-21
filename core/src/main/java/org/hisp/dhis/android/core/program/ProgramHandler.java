@@ -40,7 +40,7 @@ public class ProgramHandler {
     private final ProgramStore programStore;
 
     private final ProgramRuleVariableHandler programRuleVariableHandler;
-    private final ProgramStageHandler programStageHandler;
+    private final GenericHandler<ProgramStage, ProgramStageModel> programStageHandler;
     private final ProgramIndicatorHandler programIndicatorHandler;
     private final ProgramRuleHandler programRuleHandler;
     private final ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
@@ -49,7 +49,7 @@ public class ProgramHandler {
 
     public ProgramHandler(ProgramStore programStore,
                           ProgramRuleVariableHandler programRuleVariableHandler,
-                          ProgramStageHandler programStageHandler,
+                          GenericHandler<ProgramStage, ProgramStageModel> programStageHandler,
                           ProgramIndicatorHandler programIndicatorHandler,
                           ProgramRuleHandler programRuleHandler,
                           ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler,

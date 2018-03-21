@@ -39,7 +39,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
-import org.hisp.dhis.android.core.data.database.DbSpaceDateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
@@ -90,7 +90,7 @@ public abstract class NoteModel extends BaseModel implements UpdateWhereStatemen
 
     @Nullable
     @ColumnName(Columns.STORED_DATE)
-    @ColumnAdapter(DbSpaceDateColumnAdapter.class)
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date storedDate();
 
     @Override

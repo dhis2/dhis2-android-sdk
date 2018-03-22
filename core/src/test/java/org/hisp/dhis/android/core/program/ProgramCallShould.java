@@ -262,7 +262,8 @@ public class ProgramCallShould {
                                 ),
                                 ProgramStageSection.renderType
                         ),
-                        ProgramStage.style.with(ObjectStyle.allFields)
+                        ProgramStage.style.with(ObjectStyle.allFields),
+                        ProgramStage.periodType
                 ),
                 Program.programRules.with(
                         ProgramRule.uid, ProgramRule.code, ProgramRule.name, ProgramRule.displayName,

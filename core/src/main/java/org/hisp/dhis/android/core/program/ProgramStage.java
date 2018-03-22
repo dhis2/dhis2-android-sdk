@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
 import java.util.List;
@@ -66,6 +67,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     private static final String STANDARD_INTERVAL = "standardInterval";
     private static final String PROGRAM_STAGE_SECTIONS = "programStageSections";
     private static final String STYLE = "style";
+    private static final String PERIOD_TYPE = "periodType";
 
     public static final Field<ProgramStage, String> uid = Field.create(UID);
     public static final Field<ProgramStage, String> code = Field.create(CODE);
@@ -91,6 +93,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     public static final Field<ProgramStage, Boolean> blockEntryForm = Field.create(BLOCK_ENTRY_FORM);
     public static final Field<ProgramStage, Integer> minDaysFromStart = Field.create(MIN_DAYS_FROM_START);
     public static final Field<ProgramStage, Integer> standardInterval = Field.create(STANDARD_INTERVAL);
+    public static final Field<ProgramStage, PeriodType> periodType = Field.create(PERIOD_TYPE);
 
     public static final NestedField<ProgramStage, ProgramStageSection> programStageSections
             = NestedField.create(PROGRAM_STAGE_SECTIONS);
@@ -174,6 +177,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     @JsonProperty(STYLE)
     public abstract ObjectStyle style();
 
+    @Nullable
+    @JsonProperty(PERIOD_TYPE)
+    public abstract PeriodType periodType();
+
     @JsonCreator
     public static ProgramStage create(
             @JsonProperty(UID) String uid,
@@ -201,6 +208,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
             @JsonProperty(PROGRAM_STAGE_SECTIONS) List<ProgramStageSection> programStageSections,
             @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements,
             @JsonProperty(STYLE) ObjectStyle style,
+            @JsonProperty(PERIOD_TYPE) PeriodType periodType,
             @JsonProperty(DELETED) Boolean deleted
     ) {
 
@@ -230,7 +238,8 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
                 standardInterval,
                 safeUnmodifiableList(programStageSections),
                 safeUnmodifiableList(programStageDataElements),
-                style
+                style,
+                periodType
         );
     }
 }

@@ -34,7 +34,9 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramStageModel.Columns;
+import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -69,6 +71,7 @@ public class ProgramStageModelShould {
     private static final Integer MIN_DAYS_FROM_START = 5;
     private static final Integer STANDARD_INTERVAL = 7;
     private static final String PROGRAM = "test_program";
+    private static final PeriodType PERIOD_TYPE = PeriodType.Weekly;
 
     private final Date date;
     private final String dateString;
@@ -80,34 +83,10 @@ public class ProgramStageModelShould {
 
     @Test
     public void create_model_when_created_from_database_cursor() {
-        MatrixCursor cursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.EXECUTION_DATE_LABEL,
-                Columns.ALLOW_GENERATE_NEXT_VISIT,
-                Columns.VALID_COMPLETE_ONLY,
-                Columns.REPORT_DATE_TO_USE,
-                Columns.OPEN_AFTER_ENROLLMENT,
-                Columns.REPEATABLE,
-                Columns.CAPTURE_COORDINATES,
-                Columns.FORM_TYPE,
-                Columns.DISPLAY_GENERATE_EVENT_BOX,
-                Columns.GENERATED_BY_ENROLMENT_DATE,
-                Columns.AUTO_GENERATE_EVENT,
-                Columns.SORT_ORDER,
-                Columns.HIDE_DUE_DATE,
-                Columns.BLOCK_ENTRY_FORM,
-                Columns.MIN_DAYS_FROM_START,
-                Columns.STANDARD_INTERVAL,
-                Columns.PROGRAM
-        });
+        String[] columnsWithId = Utils.appendInNewArray(ProgramStageModel.Columns.all(), ProgramModel.Columns.ID);
+        MatrixCursor cursor = new MatrixCursor(columnsWithId);
         cursor.addRow(new Object[]{
-                ID, UID, CODE, NAME, DISPLAY_NAME,
+                UID, CODE, NAME, DISPLAY_NAME,
                 dateString, dateString,
                 EXECUTION_DATE_LABEL,
                 ALLOW_GENERATE_NEXT_VISIT,
@@ -125,7 +104,9 @@ public class ProgramStageModelShould {
                 BLOCK_ENTRY_FORM,
                 MIN_DAYS_FROM_START,
                 STANDARD_INTERVAL,
-                PROGRAM
+                PROGRAM,
+                PERIOD_TYPE,
+                ID
         });
         cursor.moveToFirst();
 
@@ -156,6 +137,7 @@ public class ProgramStageModelShould {
         assertThat(model.minDaysFromStart()).isEqualTo(MIN_DAYS_FROM_START);
         assertThat(model.standardInterval()).isEqualTo(STANDARD_INTERVAL);
         assertThat(model.program()).isEqualTo(PROGRAM);
+        assertThat(model.periodType()).isEqualTo(PERIOD_TYPE);
     }
 
     @Test
@@ -185,6 +167,7 @@ public class ProgramStageModelShould {
                 .minDaysFromStart(MIN_DAYS_FROM_START)
                 .standardInterval(STANDARD_INTERVAL)
                 .program(PROGRAM)
+                .periodType(PERIOD_TYPE)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -212,5 +195,6 @@ public class ProgramStageModelShould {
         assertThat(contentValues.getAsInteger(Columns.MIN_DAYS_FROM_START)).isEqualTo(MIN_DAYS_FROM_START);
         assertThat(contentValues.getAsInteger(Columns.STANDARD_INTERVAL)).isEqualTo(STANDARD_INTERVAL);
         assertThat(contentValues.getAsString(Columns.PROGRAM)).isEqualTo(PROGRAM);
+        assertThat(contentValues.getAsString(Columns.PERIOD_TYPE)).isEqualTo(PERIOD_TYPE.name());
     }
 }

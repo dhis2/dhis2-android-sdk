@@ -356,18 +356,17 @@ public class MetadataCall implements Call<Response> {
 
     /// Utilty methods:
     private Set<String> getAssignedOptionSetUids(List<Program> programs, List<ProgramStage> programStages) {
-        if (programs == null && programStages == null) {
-            return null;
-        }
         Set<String> uids = new HashSet<>();
-        int size = programs.size();
-        for (int i = 0; i < size; i++) {
-            Program program = programs.get(i);
 
-            getOptionSetUidsForAttributes(uids, program);
+        if (programs != null) {
+            for (Program program : programs) {
+                getOptionSetUidsForAttributes(uids, program);
+            }
         }
 
-        getOptionSetUidsForDataElements(uids, programStages);
+        if (programStages != null) {
+            getOptionSetUidsForDataElements(uids, programStages);
+        }
         return uids;
     }
 

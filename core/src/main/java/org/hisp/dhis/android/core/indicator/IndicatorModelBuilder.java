@@ -25,17 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-public final class IndicatorHandler {
+public class IndicatorModelBuilder extends ModelBuilder<Indicator, IndicatorModel> {
 
-    private IndicatorHandler() {}
-
-    public static GenericHandler<Indicator, IndicatorModel> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableHandlerImpl<>(IndicatorStore.create(databaseAdapter));
+    @Override
+    public IndicatorModel buildModel(Indicator indicator) {
+        return IndicatorModel.builder()
+                .uid(indicator.uid())
+                .code(indicator.code())
+                .name(indicator.name())
+                .displayName(indicator.displayName())
+                .created(indicator.created())
+                .lastUpdated(indicator.lastUpdated())
+                .shortName(indicator.shortName())
+                .displayShortName(indicator.displayShortName())
+                .description(indicator.description())
+                .displayDescription(indicator.displayDescription())
+                .annualized(indicator.annualized())
+                .indicatorType(indicator.indicatorTypeUid())
+                .numerator(indicator.numerator())
+                .numeratorDescription(indicator.numeratorDescription())
+                .denominator(indicator.denominator())
+                .denominatorDescription(indicator.denominatorDescription())
+                .url(indicator.url())
+                .build();
     }
 }

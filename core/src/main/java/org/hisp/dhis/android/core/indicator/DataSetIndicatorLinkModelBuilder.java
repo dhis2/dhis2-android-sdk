@@ -25,17 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataset.DataSet;
 
-public final class IndicatorHandler {
+public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<ObjectWithUid, DataSetIndicatorLinkModel> {
 
-    private IndicatorHandler() {}
+    private final DataSetIndicatorLinkModel.Builder builder;
 
-    public static GenericHandler<Indicator, IndicatorModel> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableHandlerImpl<>(IndicatorStore.create(databaseAdapter));
+    public DataSetIndicatorLinkModelBuilder(DataSet dataSet) {
+        this.builder = DataSetIndicatorLinkModel.builder()
+                .dataSet(dataSet.uid());
+    }
+
+    @Override
+    public DataSetIndicatorLinkModel buildModel(ObjectWithUid pojo) {
+        return builder
+                .indicator(pojo.uid())
+                .build();
     }
 }

@@ -32,23 +32,23 @@ import org.junit.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class ModelAbstractShould<M extends BaseModel, P> extends LinkModelAbstractShould<M> {
+public abstract class ModelAbstractShould<P, M extends BaseModel> extends LinkModelAbstractShould<M> {
 
     protected final M model;
     private final P pojo;
-    private final ModelFactory<M, P> modelFactory;
+    private final ModelBuilder<P, M> modelBuilder;
 
-    public ModelAbstractShould(String[] columns, int columnsLength, ModelFactory<M, P> modelFactory) {
-        super(columns, columnsLength, modelFactory);
+    public ModelAbstractShould(String[] columns, int columnsLength, ModelBuilder<P, M> modelBuilder) {
+        super(columns, columnsLength);
         this.model = buildModel();
         this.pojo = buildPojo();
-        this.modelFactory = modelFactory;
+        this.modelBuilder = modelBuilder;
     }
 
     protected abstract P buildPojo();
 
     @Test
     public void create_model_from_pojo() {
-        assertThat(modelFactory.fromPojo(pojo)).isEqualTo(model);
+        assertThat(modelBuilder.buildModel(pojo)).isEqualTo(model);
     }
 }

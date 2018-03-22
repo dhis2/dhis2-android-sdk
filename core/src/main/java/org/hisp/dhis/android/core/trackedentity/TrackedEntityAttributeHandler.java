@@ -28,7 +28,10 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -36,11 +39,11 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 public class TrackedEntityAttributeHandler {
 
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
-    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     public TrackedEntityAttributeHandler(TrackedEntityAttributeStore trackedEntityAttributeStore,
-                                         DictionaryTableHandler<ObjectStyle> styleHandler,
+                                         GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                                          DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
         this.styleHandler = styleHandler;
@@ -97,8 +100,8 @@ public class TrackedEntityAttributeHandler {
             }
         }
 
-        styleHandler.handle(trackedEntityAttribute.style(), trackedEntityAttribute.uid(),
-                TrackedEntityAttributeModel.TABLE);
+        styleHandler.handle(trackedEntityAttribute.style(),
+                new ObjectStyleModelBuilder(trackedEntityAttribute.uid(), TrackedEntityAttributeModel.TABLE));
         renderTypeHandler.handle(trackedEntityAttribute.renderType(), trackedEntityAttribute.uid(),
                 TrackedEntityAttributeModel.TABLE);
     }

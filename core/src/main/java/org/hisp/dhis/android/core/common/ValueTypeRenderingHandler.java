@@ -31,26 +31,26 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTypeRendering> {
 
-    private final DictionaryTableHandler<ValueTypeDeviceRendering> desktopHandler;
-    private final DictionaryTableHandler<ValueTypeDeviceRendering> mobileHandler;
+    private final GenericHandler<ValueTypeDeviceRendering,
+            ValueTypeDeviceRenderingModel> deviceRenderingHandler;
 
-    ValueTypeRenderingHandler(DictionaryTableHandler<ValueTypeDeviceRendering> desktopHandler,
-                              DictionaryTableHandler<ValueTypeDeviceRendering> mobileHandler) {
-        this.desktopHandler = desktopHandler;
-        this.mobileHandler = mobileHandler;
+    ValueTypeRenderingHandler(GenericHandler<ValueTypeDeviceRendering,
+            ValueTypeDeviceRenderingModel> deviceRenderingHandler) {
+        this.deviceRenderingHandler = deviceRenderingHandler;
     }
 
     @Override
     public void handle(ValueTypeRendering renderType, String uid, String objectTable) {
         if (renderType != null) {
-            desktopHandler.handle(renderType.desktop(), uid, objectTable);
-            mobileHandler.handle(renderType.mobile(), uid, objectTable);
+            deviceRenderingHandler.handle(renderType.desktop(),
+                    new ValueTypeDeviceRenderingModelBuilder(uid, objectTable, ValueTypeRendering.DESKTOP));
+            deviceRenderingHandler.handle(renderType.mobile(),
+                    new ValueTypeDeviceRenderingModelBuilder(uid, objectTable, ValueTypeRendering.MOBILE));
         }
     }
 
     public static ValueTypeRenderingHandler create(DatabaseAdapter databaseAdapter) {
         return new ValueTypeRenderingHandler(
-                ValueTypeDeviceRenderingHandler.create(databaseAdapter, ValueTypeRendering.DESKTOP),
-                ValueTypeDeviceRenderingHandler.create(databaseAdapter, ValueTypeRendering.MOBILE));
+                ValueTypeDeviceRenderingHandler.create(databaseAdapter));
     }
 }

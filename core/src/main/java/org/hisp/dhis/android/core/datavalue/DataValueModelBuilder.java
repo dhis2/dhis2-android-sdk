@@ -25,17 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.datavalue;
 
-public final class IndicatorHandler {
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-    private IndicatorHandler() {}
+public class DataValueModelBuilder extends ModelBuilder<DataValue, DataValueModel> {
 
-    public static GenericHandler<Indicator, IndicatorModel> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableHandlerImpl<>(IndicatorStore.create(databaseAdapter));
+    @Override
+    public DataValueModel buildModel(DataValue dataValue) {
+        return DataValueModel.builder()
+                .dataElement(dataValue.dataElement())
+                .period(dataValue.period())
+                .organisationUnit(dataValue.organisationUnit())
+                .categoryOptionCombo(dataValue.categoryOptionCombo())
+                .attributeOptionCombo(dataValue.attributeOptionCombo())
+                .value(dataValue.value())
+                .storedBy(dataValue.storedBy())
+                .created(dataValue.created())
+                .lastUpdated(dataValue.lastUpdated())
+                .comment(dataValue.comment())
+                .followUp(dataValue.followUp())
+                .build();
     }
 }

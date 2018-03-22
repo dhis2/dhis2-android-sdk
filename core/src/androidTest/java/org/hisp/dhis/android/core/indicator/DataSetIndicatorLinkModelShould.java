@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.indicator;
 
+import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.LinkModelAbstractShould;
@@ -47,13 +48,20 @@ public class DataSetIndicatorLinkModelShould extends
         LinkModelAbstractShould<DataSetIndicatorLinkModel> {
 
     public DataSetIndicatorLinkModelShould() {
-        super(Columns.all(), 2, DataSetIndicatorLinkModel.factory);
+        super(Columns.all(), 2);
     }
 
     @Override
     protected DataSetIndicatorLinkModel buildModel() {
-        return DataSetIndicatorLinkModel.create("data_set_uid",
-                "indicator_uid");
+        return DataSetIndicatorLinkModel.builder()
+                .dataSet("data_set_uid")
+                .indicator("indicator_uid")
+                .build();
+    }
+
+    @Override
+    protected DataSetIndicatorLinkModel cursorToModel(Cursor cursor) {
+        return DataSetIndicatorLinkModel.create(cursor);
     }
 
     @Override

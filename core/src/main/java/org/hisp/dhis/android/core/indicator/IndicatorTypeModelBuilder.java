@@ -26,8 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.indicator;
 
-public interface ModelFactory<M extends Model, P> extends LinkModelFactory<M> {
-    M fromPojo(P p);
+import org.hisp.dhis.android.core.common.ModelBuilder;
+
+public class IndicatorTypeModelBuilder extends ModelBuilder<IndicatorType, IndicatorTypeModel> {
+
+    @Override
+    public IndicatorTypeModel buildModel(IndicatorType type) {
+        return IndicatorTypeModel.builder()
+                .uid(type.uid())
+                .code(type.code())
+                .name(type.name())
+                .displayName(type.displayName())
+                .created(type.created())
+                .lastUpdated(type.lastUpdated())
+                .number(type.number())
+                .factor(type.factor())
+                .build();
+    }
 }

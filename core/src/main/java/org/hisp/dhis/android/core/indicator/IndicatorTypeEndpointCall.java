@@ -40,12 +40,15 @@ import java.util.Set;
 
 import retrofit2.Call;
 
-public final class IndicatorTypeEndpointCall extends GenericEndpointCallImpl<IndicatorType, UidsQuery> {
+public final class IndicatorTypeEndpointCall extends GenericEndpointCallImpl<IndicatorType,
+        IndicatorTypeModel, UidsQuery> {
     private final IndicatorTypeService indicatorTypeService;
 
     private IndicatorTypeEndpointCall(GenericCallData data, IndicatorTypeService indicatorTypeService,
-                                      GenericHandler<IndicatorType> indicatorTypeHandler, UidsQuery query) {
-        super(data, indicatorTypeHandler, ResourceModel.Type.INDICATOR_TYPE, query);
+                                      GenericHandler<IndicatorType, IndicatorTypeModel> indicatorTypeHandler,
+                                      UidsQuery query) {
+        super(data, indicatorTypeHandler, ResourceModel.Type.INDICATOR_TYPE,
+                new IndicatorTypeModelBuilder(), query);
         this.indicatorTypeService = indicatorTypeService;
     }
 

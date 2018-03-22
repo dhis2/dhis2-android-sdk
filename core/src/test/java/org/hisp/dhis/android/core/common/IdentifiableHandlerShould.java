@@ -37,10 +37,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -64,11 +62,17 @@ public class IdentifiableHandlerShould {
 
     @Mock
     private BaseIdentifiableObject pojo2;
-    
+
     @Mock
     private NameableMockModelInterface model;
 
-    private GenericHandler<BaseIdentifiableObject> genericHandler;
+    @Mock
+    private NameableMockModelInterface model2;
+
+    @Mock
+    private ModelBuilder<BaseIdentifiableObject, NameableMockModelInterface> modelBuilder;
+
+    private GenericHandler<BaseIdentifiableObject, NameableMockModelInterface> genericHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -77,13 +81,11 @@ public class IdentifiableHandlerShould {
         when(pojo.uid()).thenReturn("uid");
         when(pojo2.uid()).thenReturn("uid2");
         when(model.uid()).thenReturn("uid");
+        when(model2.uid()).thenReturn("uid2");
+        when(modelBuilder.buildModel(pojo)).thenReturn(model);
+        when(modelBuilder.buildModel(pojo2)).thenReturn(model2);
 
         genericHandler = new IdentifiableHandlerImpl<BaseIdentifiableObject, NameableMockModelInterface>(store) {
-            @Override
-            protected NameableMockModelInterface pojoToModel(BaseIdentifiableObject BaseIdentifiableObject) {
-                return model;
-            }
-
             @Override
             protected void afterObjectPersisted(BaseIdentifiableObject BaseIdentifiableObject) {
                 testCall.call(BaseIdentifiableObject);
@@ -93,52 +95,43 @@ public class IdentifiableHandlerShould {
 
     @Test
     public void do_nothing_for_null() throws Exception {
-        genericHandler.handle(null);
-
-        verify(store, never()).delete(anyString());
-        verify(store, never()).update(any(NameableMockModelInterface.class));
-        verify(store, never()).insert(any(NameableMockModelInterface.class));
-        verify(store, never()).updateOrInsert(any(NameableMockModelInterface.class));
+        genericHandler.handle(null, null);
+        verifyNoMoreInteractions(store);
     }
 
     @Test
     public void delete_when_deleted_is_true() throws Exception {
         when(pojo.deleted()).thenReturn(Boolean.TRUE);
 
-        genericHandler.handle(pojo);
+        genericHandler.handle(pojo, modelBuilder);
 
         verify(store).delete(pojo.uid());
-        verify(store, never()).update(any(NameableMockModelInterface.class));
-        verify(store, never()).insert(any(NameableMockModelInterface.class));
-        verify(store, never()).updateOrInsert(any(NameableMockModelInterface.class));
+        verifyNoMoreInteractions(store);
     }
 
     @Test
     public void call_update_or_insert_when_deleted_is_false() throws Exception {
         when(pojo.deleted()).thenReturn(Boolean.FALSE);
 
-        genericHandler.handle(pojo);
+        genericHandler.handle(pojo, modelBuilder);
 
         verify(store).updateOrInsert(any(NameableMockModelInterface.class));
-        verify(store, never()).update(any(NameableMockModelInterface.class));
-        verify(store, never()).insert(any(NameableMockModelInterface.class));
-        verify(store, never()).delete(anyString());
+        verifyNoMoreInteractions(store);
     }
 
     @Test
     public void call_after_object_persisted() throws Exception {
-        genericHandler.handle(pojo);
+        genericHandler.handle(pojo, modelBuilder);
         verify(testCall).call(pojo);
     }
 
     @Test
     public void handle_multiple_pojos() throws Exception {
-        genericHandler.handleMany(Arrays.asList(pojo, pojo2));
+        genericHandler.handleMany(Arrays.asList(pojo, pojo2), modelBuilder);
 
-        verify(store, times(2)).updateOrInsert(any(NameableMockModelInterface.class));
-        verify(store, never()).update(any(NameableMockModelInterface.class));
-        verify(store, never()).insert(any(NameableMockModelInterface.class));
-        verify(store, never()).delete(anyString());
+        verify(store).updateOrInsert(model);
+        verify(store).updateOrInsert(model2);
+        verifyNoMoreInteractions(store);
 
         verify(testCall).call(pojo);
         verify(testCall).call(pojo2);

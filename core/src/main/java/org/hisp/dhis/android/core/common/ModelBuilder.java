@@ -25,17 +25,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.common;
 
-public final class IndicatorHandler {
-
-    private IndicatorHandler() {}
-
-    public static GenericHandler<Indicator, IndicatorModel> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableHandlerImpl<>(IndicatorStore.create(databaseAdapter));
-    }
+public abstract class ModelBuilder<P, M> {
+    public abstract M buildModel(P pojo);
 }

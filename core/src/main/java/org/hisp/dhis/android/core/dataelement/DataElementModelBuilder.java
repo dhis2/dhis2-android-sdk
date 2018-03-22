@@ -25,17 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.dataelement;
 
-public final class IndicatorHandler {
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-    private IndicatorHandler() {}
+public class DataElementModelBuilder extends ModelBuilder<DataElement, DataElementModel> {
 
-    public static GenericHandler<Indicator, IndicatorModel> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableHandlerImpl<>(IndicatorStore.create(databaseAdapter));
+    @Override
+    public DataElementModel buildModel(DataElement dataElement) {
+        return DataElementModel.builder()
+                .uid(dataElement.uid())
+                .code(dataElement.code())
+                .name(dataElement.name())
+                .displayName(dataElement.displayName())
+                .created(dataElement.created())
+                .lastUpdated(dataElement.lastUpdated())
+                .shortName(dataElement.shortName())
+                .displayShortName(dataElement.displayShortName())
+                .description(dataElement.description())
+                .displayDescription(dataElement.displayDescription())
+                .valueType(dataElement.valueType())
+                .zeroIsSignificant(dataElement.zeroIsSignificant())
+                .aggregationType(dataElement.aggregationType())
+                .formName(dataElement.formName())
+                .numberType(dataElement.numberType())
+                .domainType(dataElement.domainType())
+                .dimension(dataElement.dimension())
+                .displayFormName(dataElement.displayFormName())
+                .optionSet(dataElement.optionSetUid())
+                .categoryCombo(dataElement.categoryComboUid())
+                .build();
     }
 }

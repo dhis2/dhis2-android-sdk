@@ -26,10 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.option;
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-public interface LinkModelFactory<M extends Model> {
-    M fromCursor(Cursor cursor);
+public class OptionSetModelBuilder extends ModelBuilder<OptionSet, OptionSetModel> {
+
+    @Override
+    public OptionSetModel buildModel(OptionSet optionSet) {
+        return OptionSetModel.builder()
+                .uid(optionSet.uid())
+                .code(optionSet.code())
+                .name(optionSet.name())
+                .displayName(optionSet.displayName())
+                .created(optionSet.created())
+                .lastUpdated(optionSet.lastUpdated())
+                .version(optionSet.version())
+                .valueType(optionSet.valueType())
+                .build();
+    }
 }

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.LinkModelAbstractShould;
@@ -46,13 +47,20 @@ import static com.google.common.truth.Truth.assertThat;
 public class DataSetDataElementLinkModelShould extends LinkModelAbstractShould<DataSetDataElementLinkModel> {
 
     public DataSetDataElementLinkModelShould() {
-        super(DataSetDataElementLinkModel.Columns.all(), 2, DataSetDataElementLinkModel.factory);
+        super(DataSetDataElementLinkModel.Columns.all(), 2);
     }
 
     @Override
     protected DataSetDataElementLinkModel buildModel() {
-        return DataSetDataElementLinkModel.create("data_set_uid",
-                "data_element_uid");
+        return DataSetDataElementLinkModel.builder()
+                .dataSet("data_set_uid")
+                .dataElement("data_element_uid")
+                .build();
+    }
+
+    @Override
+    protected DataSetDataElementLinkModel cursorToModel(Cursor cursor) {
+        return DataSetDataElementLinkModel.create(cursor);
     }
 
     @Override

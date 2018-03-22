@@ -34,12 +34,14 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
@@ -58,7 +60,7 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-@SuppressWarnings({"PMD.TooManyFields", "PMD.ExcessiveMethodLength"})
+@SuppressWarnings({"PMD.TooManyFields", "PMD.ExcessiveMethodLength", "PMD.ExcessiveImports"})
 public class ProgramCall implements Call<Response<Payload<Program>>> {
     private final ProgramService programService;
 
@@ -88,8 +90,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                        ProgramStageSectionStore programStageSectionStore,
                        ProgramStageStore programStageStore,
                        RelationshipTypeStore relationshipStore,
-                       GenericHandler<DataElement> dataElementHandler,
-                       DictionaryTableHandler<ObjectStyle> styleHandler,
+                       GenericHandler<DataElement, DataElementModel> dataElementHandler,
+                       GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                        DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         this.programService = programService;
         this.databaseAdapter = databaseAdapter;

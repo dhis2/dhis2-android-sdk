@@ -38,7 +38,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.ModelFactory;
 import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -62,28 +61,6 @@ public abstract class IndicatorTypeModel extends BaseIdentifiableObjectModel imp
     static IndicatorTypeModel create(Cursor cursor) {
         return AutoValue_IndicatorTypeModel.createFromCursor(cursor);
     }
-
-    public static final ModelFactory<IndicatorTypeModel, IndicatorType> factory
-            = new ModelFactory<IndicatorTypeModel, IndicatorType>() {
-        @Override
-        public IndicatorTypeModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-
-        @Override
-        public IndicatorTypeModel fromPojo(IndicatorType type) {
-            return IndicatorTypeModel.builder()
-                    .uid(type.uid())
-                    .code(type.code())
-                    .name(type.name())
-                    .displayName(type.displayName())
-                    .created(type.created())
-                    .lastUpdated(type.lastUpdated())
-                    .number(type.number())
-                    .factor(type.factor())
-                    .build();
-        }
-    };
 
     public static Builder builder() {
         return new $AutoValue_IndicatorTypeModel.Builder();

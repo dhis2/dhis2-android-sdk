@@ -40,12 +40,12 @@ import java.util.Set;
 
 import retrofit2.Call;
 
-public final class DataSetEndpointCall extends GenericEndpointCallImpl<DataSet, UidsQuery> {
+public final class DataSetEndpointCall extends GenericEndpointCallImpl<DataSet, DataSetModel, UidsQuery> {
     private final DataSetService dataSetService;
 
     private DataSetEndpointCall(GenericCallData data, DataSetService dataSetService,
-                                GenericHandler<DataSet> dataSetHandler, UidsQuery uidsQuery) {
-        super(data, dataSetHandler, ResourceModel.Type.DATA_SET, uidsQuery);
+                                GenericHandler<DataSet, DataSetModel> dataSetHandler, UidsQuery uidsQuery) {
+        super(data, dataSetHandler, ResourceModel.Type.DATA_SET, new DataSetModelBuilder(), uidsQuery);
         this.dataSetService = dataSetService;
     }
 

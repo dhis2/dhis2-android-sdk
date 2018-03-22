@@ -32,6 +32,7 @@ import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModelBuilder;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.junit.Before;
 import org.junit.Test;
@@ -131,15 +132,14 @@ public class DataSetParentLinkManagerShould {
     }
 
     private DataSetDataElementLinkModel dataElementExpectedLink(DataElementUids decc, DataSet dataSet) {
-        return DataSetDataElementLinkModel.builder()
-                .dataSet(dataSet.uid()).dataElement(decc.dataElement().uid()).build();
+        return new DataSetDataElementLinkModelBuilder(dataSet).buildModel(decc);
     }
 
     private DataSetIndicatorLinkModel indicatorExpectedLink(ObjectWithUid i1, DataSet dataSet) {
-        return DataSetIndicatorLinkModel.create(dataSet.uid(), i1.uid());
+        return new DataSetIndicatorLinkModelBuilder(dataSet).buildModel(i1);
     }
 
     private DataSetOrganisationUnitLinkModel orgUnitExpectedLink(OrganisationUnit ou, DataSet dataSet) {
-        return DataSetOrganisationUnitLinkModel.create(dataSet.uid(), ou.uid());
+        return new DataSetOrganisationUnitLinkModelBuilder(ou).buildModel(dataSet);
     }
 }

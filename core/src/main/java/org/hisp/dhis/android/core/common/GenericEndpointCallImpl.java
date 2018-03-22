@@ -37,20 +37,23 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public abstract class GenericEndpointCallImpl<P, Q extends BaseQuery>
+public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
         implements Call<Response<Payload<P>>> {
     private final GenericCallData data;
-    private final GenericHandler<P> handler;
+    private final GenericHandler<P, M> handler;
     private boolean isExecuted;
 
     private final ResourceModel.Type resourceType;
+    private final ModelBuilder<P, M> modelBuilder;
     public final Q query;
 
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P> handler,
-                                   ResourceModel.Type resourceType, Q query) {
+    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler,
+                                   ResourceModel.Type resourceType,
+                                   ModelBuilder<P, M> modelBuilder, Q query) {
         this.data = data;
         this.handler = handler;
         this.resourceType = resourceType;
+        this.modelBuilder = modelBuilder;
         this.query = query;
     }
 
@@ -95,7 +98,7 @@ public abstract class GenericEndpointCallImpl<P, Q extends BaseQuery>
             Transaction transaction = data.databaseAdapter().beginNewTransaction();
 
             try {
-                handler.handleMany(pojoList);
+                handler.handleMany(pojoList, modelBuilder);
                 data.resourceHandler().handleResource(resourceType, data.serverDate());
 
                 transaction.setSuccessful();

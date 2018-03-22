@@ -38,7 +38,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.ModelFactory;
 import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -83,46 +82,6 @@ public abstract class DataSetModel extends BaseNameableObjectModel implements St
     static DataSetModel create(Cursor cursor) {
         return AutoValue_DataSetModel.createFromCursor(cursor);
     }
-
-    public static final ModelFactory<DataSetModel, DataSet> factory
-            = new ModelFactory<DataSetModel, DataSet>() {
-        @Override
-        public DataSetModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-
-        @Override
-        public DataSetModel fromPojo(DataSet dataSet) {
-            return DataSetModel.builder()
-                    .uid(dataSet.uid())
-                    .code(dataSet.code())
-                    .name(dataSet.name())
-                    .displayName(dataSet.displayName())
-                    .created(dataSet.created())
-                    .lastUpdated(dataSet.lastUpdated())
-                    .shortName(dataSet.shortName())
-                    .displayShortName(dataSet.displayShortName())
-                    .description(dataSet.description())
-                    .displayDescription(dataSet.displayDescription())
-                    .periodType(dataSet.periodType())
-                    .categoryCombo(dataSet.categoryComboUid())
-                    .mobile(dataSet.mobile())
-                    .version(dataSet.version())
-                    .expiryDays(dataSet.expiryDays())
-                    .timelyDays(dataSet.timelyDays())
-                    .notifyCompletingUser(dataSet.notifyCompletingUser())
-                    .openFuturePeriods(dataSet.openFuturePeriods())
-                    .fieldCombinationRequired(dataSet.fieldCombinationRequired())
-                    .validCompleteOnly(dataSet.validCompleteOnly())
-                    .noValueRequiresComment(dataSet.noValueRequiresComment())
-                    .skipOffline(dataSet.skipOffline())
-                    .dataElementDecoration(dataSet.dataElementDecoration())
-                    .renderAsTabs(dataSet.renderAsTabs())
-                    .renderHorizontally(dataSet.renderHorizontally())
-                    .accessDataWrite(dataSet.access().data().write())
-                    .build();
-        }
-    };
 
     public static Builder builder() {
         return new $AutoValue_DataSetModel.Builder();

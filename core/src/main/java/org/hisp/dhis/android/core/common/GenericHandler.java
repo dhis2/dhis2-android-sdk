@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.common;
 
 import java.util.Collection;
 
-public interface GenericHandler<P> {
+public interface GenericHandler<P, M extends Model> {
 
-    void handle(P p);
+    void handle(P p, ModelBuilder<P, M> modelBuilder);
 
-    void handleMany(Collection<P> pCollection);
+    void handleMany(Collection<P> pCollection, ModelBuilder<P, M> modelBuilder);
 }

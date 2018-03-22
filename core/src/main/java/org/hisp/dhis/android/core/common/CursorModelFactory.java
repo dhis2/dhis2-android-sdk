@@ -25,19 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+package org.hisp.dhis.android.core.common;
 
-@RunWith(JUnit4.class)
-public class IndicatorTypeHandlerShould {
+import android.database.Cursor;
 
-    @Test
-    public void extend_generic_handler_impl() {
-        IdentifiableHandlerImpl<IndicatorType, IndicatorTypeModel> genericHandler
-                = new IndicatorTypeHandler(null);
-    }
+public interface CursorModelFactory<M extends Model> {
+    M fromCursor(Cursor cursor);
 }

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.ModelAbstractShould;
@@ -48,7 +49,7 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED_STR;
 
 @RunWith(AndroidJUnit4.class)
-public class DataValueModelShould extends ModelAbstractShould<DataValueModel, DataValue> {
+public class DataValueModelShould extends ModelAbstractShould<DataValue, DataValueModel> {
     private static final String DATA_ELEMENT = "dataElement";
     private static final String PERIOD = "period";
     private static final String ORGANISATION_UNIT = "organisationUnit";
@@ -60,13 +61,18 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel, Da
     private static final boolean FOLLOW_UP = false;
 
     public DataValueModelShould() {
-        super(DataValueModel.Columns.all(), 11, DataValueModel.factory);
+        super(DataValueModel.Columns.all(), 11, new DataValueModelBuilder());
     }
 
     @Override
     protected DataValue buildPojo() {
         return DataValue.create(DATA_ELEMENT, PERIOD, ORGANISATION_UNIT, CATEGORY_OPTION_COMBO,
                 ATTRIBUTE_OPTION_COMBO, VALUE, STORED_BY, CREATED, LAST_UPDATED, COMMENT, FOLLOW_UP, DELETED);
+    }
+
+    @Override
+    protected DataValueModel cursorToModel(Cursor cursor) {
+        return DataValueModel.create(cursor);
     }
 
     @Override

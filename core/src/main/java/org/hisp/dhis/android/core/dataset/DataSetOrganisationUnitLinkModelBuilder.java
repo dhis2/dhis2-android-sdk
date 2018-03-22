@@ -25,19 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+package org.hisp.dhis.android.core.dataset;
 
-@RunWith(JUnit4.class)
-public class DataValueHandlerShould {
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-    @Test
-    public void extend_object_without_id_handler_impl() {
-        ObjectWithoutUidHandlerImpl<DataValue, DataValueModel> objectWithoutUidHandler =
-                new DataValueHandler(null);
+public class DataSetOrganisationUnitLinkModelBuilder extends ModelBuilder<DataSet, DataSetOrganisationUnitLinkModel> {
+
+    private final DataSetOrganisationUnitLinkModel.Builder builder;
+
+    DataSetOrganisationUnitLinkModelBuilder(OrganisationUnit organisationUnit) {
+        this.builder = DataSetOrganisationUnitLinkModel.builder()
+                .organisationUnit(organisationUnit.uid());
+    }
+
+    @Override
+    public DataSetOrganisationUnitLinkModel buildModel(DataSet pojo) {
+        return builder
+                .dataSet(pojo.uid())
+                .build();
     }
 }

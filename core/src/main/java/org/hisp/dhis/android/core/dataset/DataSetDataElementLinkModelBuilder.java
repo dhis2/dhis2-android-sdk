@@ -25,18 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+package org.hisp.dhis.android.core.dataset;
 
-@RunWith(JUnit4.class)
-public class IndicatorHandlerShould {
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-    @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<Indicator, IndicatorModel> genericHandler = new IndicatorHandler(null);
+public class DataSetDataElementLinkModelBuilder extends ModelBuilder<DataElementUids, DataSetDataElementLinkModel> {
+
+    private final DataSetDataElementLinkModel.Builder builder;
+
+    DataSetDataElementLinkModelBuilder(DataSet dataSet) {
+        this.builder = DataSetDataElementLinkModel.builder()
+                .dataSet(dataSet.uid());
+    }
+
+    @Override
+    public DataSetDataElementLinkModel buildModel(DataElementUids pojo) {
+        return builder
+                .dataElement(pojo.dataElement().uid())
+                .build();
     }
 }

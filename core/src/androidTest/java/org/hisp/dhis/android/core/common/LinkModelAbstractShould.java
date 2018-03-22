@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.Cursor;
 import android.database.MatrixCursor;
 
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
@@ -39,17 +40,17 @@ public abstract class LinkModelAbstractShould<M extends BaseModel> {
 
     protected final M model;
     protected final String[] columns;
-    protected final int columnsLength;
-    protected final LinkModelFactory<M> linkModelFactory;
+    private final int columnsLength;
 
-    public LinkModelAbstractShould(String[] columns, int columnsLength, LinkModelFactory<M> linkModelFactory) {
+    public LinkModelAbstractShould(String[] columns, int columnsLength) {
         this.model = buildModel();
         this.columns = columns;
         this.columnsLength = columnsLength;
-        this.linkModelFactory = linkModelFactory;
     }
 
     protected abstract M buildModel();
+
+    protected abstract M cursorToModel(Cursor cursor);
 
     protected abstract Object[] getModelAsObjectArray();
 
@@ -59,7 +60,7 @@ public abstract class LinkModelAbstractShould<M extends BaseModel> {
         cursor.addRow(getModelAsObjectArray());
         cursor.moveToFirst();
 
-        M modelFromDB = linkModelFactory.fromCursor(cursor);
+        M modelFromDB = cursorToModel(cursor);
         cursor.close();
 
         assertThat(modelFromDB).isEqualTo(model);

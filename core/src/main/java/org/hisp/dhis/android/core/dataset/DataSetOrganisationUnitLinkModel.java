@@ -37,7 +37,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.LinkModelFactory;
 import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -65,22 +64,6 @@ public abstract class DataSetOrganisationUnitLinkModel extends BaseModel impleme
 
     public static DataSetOrganisationUnitLinkModel create(Cursor cursor) {
         return AutoValue_DataSetOrganisationUnitLinkModel.createFromCursor(cursor);
-    }
-
-    public static final LinkModelFactory<DataSetOrganisationUnitLinkModel> factory
-            = new LinkModelFactory<DataSetOrganisationUnitLinkModel>() {
-        @Override
-        public DataSetOrganisationUnitLinkModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
-
-    public static DataSetOrganisationUnitLinkModel create(
-            String dataSetUid, String organisationUnitUid) {
-        return DataSetOrganisationUnitLinkModel.builder()
-                .dataSet(dataSetUid)
-                .organisationUnit(organisationUnitUid)
-                .build();
     }
 
     public static Builder builder() {

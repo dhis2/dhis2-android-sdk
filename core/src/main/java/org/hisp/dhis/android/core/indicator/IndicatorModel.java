@@ -37,7 +37,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.ModelFactory;
 import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -67,37 +66,6 @@ public abstract class IndicatorModel extends BaseNameableObjectModel implements 
     static IndicatorModel create(Cursor cursor) {
         return AutoValue_IndicatorModel.createFromCursor(cursor);
     }
-
-    public static final ModelFactory<IndicatorModel, Indicator> factory
-            = new ModelFactory<IndicatorModel, Indicator>() {
-        @Override
-        public IndicatorModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-
-        @Override
-        public IndicatorModel fromPojo(Indicator indicator) {
-            return IndicatorModel.builder()
-                    .uid(indicator.uid())
-                    .code(indicator.code())
-                    .name(indicator.name())
-                    .displayName(indicator.displayName())
-                    .created(indicator.created())
-                    .lastUpdated(indicator.lastUpdated())
-                    .shortName(indicator.shortName())
-                    .displayShortName(indicator.displayShortName())
-                    .description(indicator.description())
-                    .displayDescription(indicator.displayDescription())
-                    .annualized(indicator.annualized())
-                    .indicatorType(indicator.indicatorTypeUid())
-                    .numerator(indicator.numerator())
-                    .numeratorDescription(indicator.numeratorDescription())
-                    .denominator(indicator.denominator())
-                    .denominatorDescription(indicator.denominatorDescription())
-                    .url(indicator.url())
-                    .build();
-        }
-    };
 
     public static Builder builder() {
         return new $AutoValue_IndicatorModel.Builder();

@@ -27,8 +27,10 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 
 import java.util.List;
 
@@ -38,18 +40,19 @@ public class ProgramStageHandler {
     private final ProgramStageStore programStageStore;
     private final ProgramStageSectionHandler programStageSectionHandler;
     private final ProgramStageDataElementHandler programStageDataElementHandler;
-    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     public ProgramStageHandler(ProgramStageStore programStageStore,
                                ProgramStageSectionHandler programStageSectionHandler,
                                ProgramStageDataElementHandler programStageDataElementHandler,
-                               DictionaryTableHandler<ObjectStyle> styleHandler) {
+                               GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
         this.programStageStore = programStageStore;
         this.programStageSectionHandler = programStageSectionHandler;
         this.programStageDataElementHandler = programStageDataElementHandler;
         this.styleHandler = styleHandler;
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     public void handleProgramStage(String programUid, List<ProgramStage> programStages) {
         if (programStages == null || programUid == null) {
             return;
@@ -99,7 +102,8 @@ public class ProgramStageHandler {
             programStageSectionHandler.handleProgramStageSection(programStage.uid(),
                     programStage.programStageSections());
 
-            styleHandler.handle(programStage.style(), programStage.uid(), ProgramStageModel.TABLE);
+            styleHandler.handle(programStage.style(),
+                    new ObjectStyleModelBuilder(programStage.uid(), ProgramStageModel.TABLE));
         }
     }
 }

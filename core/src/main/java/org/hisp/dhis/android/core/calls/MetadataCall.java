@@ -70,8 +70,8 @@ import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
 import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageCall;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramStageEndpointCall;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
@@ -142,7 +142,6 @@ public class MetadataCall implements Call<Response> {
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
     private final DataSetParentCall.Factory dataSetParentCallFactory;
-    private final ProgramStageCall.Factory programStageCallFactory;
 
     private boolean isExecuted;
 
@@ -182,7 +181,6 @@ public class MetadataCall implements Call<Response> {
                         @NonNull CategoryComboHandler categoryComboHandler,
                         @NonNull GenericHandler<OptionSet, OptionSetModel> optionSetHandler,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
-                        @NonNull ProgramStageCall.Factory programStageCallFactory,
                         @NonNull GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                         @NonNull DictionaryTableHandler<ValueTypeRendering> renderTypeHandler,
                         @NonNull Retrofit retrofit
@@ -221,7 +219,6 @@ public class MetadataCall implements Call<Response> {
         this.categoryComboHandler = categoryComboHandler;
         this.optionSetHandler = optionSetHandler;
         this.dataSetParentCallFactory = dataSetParentCallFactory;
-        this.programStageCallFactory = programStageCallFactory;
         this.styleHandler = styleHandler;
         this.renderTypeHandler = renderTypeHandler;
 
@@ -308,8 +305,8 @@ public class MetadataCall implements Call<Response> {
             }
 
             List<Program> programs = ((Response<Payload<Program>>) response).body().items();
-            Set<String> assignedProgramStageUids = getAssignedTrackedEntityUids(programs);
-            response = programStageCallFactory.create(data, assignedProgramStageUids).call();
+            Set<String> assignedProgramStageUids = getAssignedProgramStageUids(programs);
+            response = ProgramStageEndpointCall.FACTORY.create(data, assignedProgramStageUids).call();
 
             if (!response.isSuccessful()) {
                 return response;

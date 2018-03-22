@@ -134,7 +134,6 @@ import org.hisp.dhis.android.core.program.ProgramRuleStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramService;
-import org.hisp.dhis.android.core.program.ProgramStageCall;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
@@ -548,7 +547,7 @@ public final class D2 {
                 relationshipStore, trackedEntityStore,
                 organisationUnitProgramLinkStore, categoryQuery,
                 categoryService, categoryHandler, categoryComboQuery, comboService,
-                categoryComboHandler, optionSetHandler, DataSetParentCall.FACTORY, ProgramStageCall.FACTORY,
+                categoryComboHandler, optionSetHandler, DataSetParentCall.FACTORY,
                 styleHandler, renderTypeHandler, retrofit);
     }
 

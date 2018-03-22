@@ -47,7 +47,7 @@ public final class ProgramStageEndpointCall extends
     private ProgramStageEndpointCall(GenericCallData data, ProgramStageService programStageService,
                                      GenericHandler<ProgramStage, ProgramStageModel> programStageHandler,
                                      UidsQuery uidsQuery) {
-        super(data, programStageHandler, ResourceModel.Type.PROGRAM_STAGE, new ProgramStageModelBuilder(null),
+        super(data, programStageHandler, ResourceModel.Type.PROGRAM_STAGE, new ProgramStageModelBuilder(),
                 uidsQuery);
         this.programStageService = programStageService;
     }
@@ -62,7 +62,7 @@ public final class ProgramStageEndpointCall extends
         ProgramStageEndpointCall create(GenericCallData data, Set<String> uids);
     }
 
-    static final ProgramStageEndpointCall.Factory FACTORY = new ProgramStageEndpointCall.Factory() {
+    public static final ProgramStageEndpointCall.Factory FACTORY = new ProgramStageEndpointCall.Factory() {
         @Override
         public ProgramStageEndpointCall create(GenericCallData data, Set<String> uids) {
             return new ProgramStageEndpointCall(data, data.retrofit().create(ProgramStageService.class),

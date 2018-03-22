@@ -49,7 +49,6 @@ import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;

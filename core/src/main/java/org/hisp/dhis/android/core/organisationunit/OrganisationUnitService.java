@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
+import org.hisp.dhis.android.core.dataset.DataSet;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -42,9 +43,9 @@ public interface OrganisationUnitService {
 
     @GET("organisationUnits/{uid}")
     Call<Payload<OrganisationUnit>> getOrganisationUnits(
-            @Path("uid") String organisationUnitUid,
             @Query("fields") @Which Fields<OrganisationUnit> fields,
             @Query("filter") @Where Filter<OrganisationUnit, String> lastUpdated,
+            @Query("filter") @Where Filter<OrganisationUnit, String> uids,
             @Query("includeDescendants") Boolean descendants,
             @Query("paging") Boolean paging
     );

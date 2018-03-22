@@ -26,33 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.user;
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
+public class UserOrganisationUnitLinkModelBuilder extends ModelBuilder<OrganisationUnit, UserOrganisationUnitLinkModel> {
 
-import java.util.Date;
+    private final UserOrganisationUnitLinkModel.Builder builder;
 
-import retrofit2.Retrofit;
-
-@AutoValue
-public abstract class GenericCallData {
-    public abstract DatabaseAdapter databaseAdapter();
-    public abstract ResourceHandler resourceHandler();
-    public abstract Retrofit retrofit();
-    public abstract Date serverDate();
-
-    public static GenericCallData create(DatabaseAdapter databaseAdapter,
-                                         ResourceHandler resourceHandler,
-                                         Retrofit retrofit) {
-        return new AutoValue_GenericCallData(databaseAdapter, resourceHandler, retrofit, new Date());
+    public UserOrganisationUnitLinkModelBuilder(OrganisationUnitModel.Scope scope, User user) {
+        this.builder = UserOrganisationUnitLinkModel.builder()
+                .organisationUnitScope(scope.name())
+                .user(user.uid());
     }
 
-    public static GenericCallData create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        return new AutoValue_GenericCallData(databaseAdapter,
-                new ResourceHandler(new ResourceStoreImpl(databaseAdapter)), retrofit, new Date());
+    @Override
+    public UserOrganisationUnitLinkModel buildModel(OrganisationUnit organisationUnit) {
+        return builder
+                .organisationUnit(organisationUnit.uid())
+                .build();
     }
 }

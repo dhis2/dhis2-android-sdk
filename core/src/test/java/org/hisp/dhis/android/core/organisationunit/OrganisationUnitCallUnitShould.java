@@ -27,20 +27,20 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.Cursor;
-
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +56,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -67,40 +70,20 @@ import retrofit2.Response;
 import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class OrganisationUnitCallUnitShould {
 
     @Mock
-    private Cursor cursor;
-
-    @Mock
-    private DatabaseAdapter database;
+    private DatabaseAdapter databaseAdapter;
 
     @Mock
     private Transaction transaction;
-
-
-    @Mock
-    private OrganisationUnitHandler organisationUnitHandler;
-
-    @Mock
-    private OrganisationUnitStore organisationUnitStore;
-
-    @Mock
-    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
-
-    @Mock
-    private OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
-
-    @Mock
-    private ResourceStore resourceStore;
 
     //Mock return value of the mock service:
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -111,7 +94,7 @@ public class OrganisationUnitCallUnitShould {
 
     //Captors for the organisationUnitService arguments:
     @Captor
-    private ArgumentCaptor<String> uidCaptor;
+    private ArgumentCaptor<Filter<OrganisationUnit, String>> uidsCaptor;
 
     @Captor
     private ArgumentCaptor<Fields<OrganisationUnit>> fieldsCaptor;
@@ -129,8 +112,7 @@ public class OrganisationUnitCallUnitShould {
     @Mock
     private OrganisationUnit organisationUnit;
 
-    @Mock
-    private OrganisationUnit organisationUnit2;
+    private List<OrganisationUnit> organisationUnits;
 
     @Mock
     private Payload<OrganisationUnit> payload;
@@ -145,7 +127,13 @@ public class OrganisationUnitCallUnitShould {
     private Date lastUpdated;
 
     @Mock
-    private Date serverDate;
+    private ResourceHandler resourceHandler;
+
+    @Mock
+    private GenericCallData genericCallData;
+
+    @Mock
+    private GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler;
 
     //the call we are testing:
     private OrganisationUnitCall organisationUnitCall;
@@ -156,7 +144,8 @@ public class OrganisationUnitCallUnitShould {
         lastUpdated = new Date();
 
         //TODO: evaluate if only one org unit would suffice for the testing:
-        when(organisationUnit.uid()).thenReturn("orgUnitUid1");
+        String orgUnitUid = "orgUnitUid1";
+        when(organisationUnit.uid()).thenReturn(orgUnitUid);
         when(organisationUnit.code()).thenReturn("organisation_unit_code");
         when(organisationUnit.name()).thenReturn("organisation_unit_name");
         when(organisationUnit.displayName()).thenReturn("organisation_unit_display_name");
@@ -194,57 +183,40 @@ public class OrganisationUnitCallUnitShould {
         when(user.nationality()).thenReturn("user_nationality");
 
 
-        when(database.beginNewTransaction()).thenReturn(transaction);
+        when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
-        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService, database,
-                organisationUnitStore,
-                resourceStore,
-                serverDate, userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, Sets.newHashSet(
-                        Lists.newArrayList("program_1_uid", "program_2_uid")
-        ));
+        Set<String> organisationUnitUids = Sets.newHashSet(
+                Lists.newArrayList(orgUnitUid));
+        organisationUnitCall = new OrganisationUnitCall(genericCallData, organisationUnitService,
+                organisationUnitHandler, UidsQuery.create(organisationUnitUids, null));
 
         //Return only one organisationUnit.
-        when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
+        organisationUnits = Collections.singletonList(organisationUnit);
+        when(user.organisationUnits()).thenReturn(organisationUnits);
 
         when(organisationUnitService.getOrganisationUnits(
-                uidCaptor.capture(), fieldsCaptor.capture(), filterCaptor.capture(), descendantsCaptor.capture(),
+                fieldsCaptor.capture(), filterCaptor.capture(), uidsCaptor.capture(), descendantsCaptor.capture(),
                 pagingCaptor.capture()
         )).thenReturn(retrofitCall);
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
+
+        when(payload.items()).thenReturn(organisationUnits);
+
+        when(genericCallData.resourceHandler()).thenReturn(resourceHandler);
+        when(genericCallData.databaseAdapter()).thenReturn(databaseAdapter);
+        when(resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)).thenReturn("lastUpdated");
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void invoke_server_with_correct_parameters() throws Exception {
-        when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
-
-        organisationUnitCall.call();
-
-        assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
-        assertThat(fieldsCaptor.getValue().fields()).contains(
-                OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
-                OrganisationUnit.shortName, OrganisationUnit.displayShortName,
-                OrganisationUnit.description, OrganisationUnit.displayDescription,
-                OrganisationUnit.path, OrganisationUnit.openingDate,
-                OrganisationUnit.closedDate, OrganisationUnit.level, OrganisationUnit.deleted,
-                OrganisationUnit.parent.with(OrganisationUnit.uid), OrganisationUnit.programs.with(Program.uid)
-        );
-        assertThat(filterCaptor.getValue()).isNull();
-        assertThat(descendantsCaptor.getValue()).isTrue();
-        assertThat(pagingCaptor.getValue()).isFalse();
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void invoke_server_with_correct_parameters_with_last_updated() throws Exception {
         String date = "2014-11-25T09:37:53.358";
-        when(resourceStore.getLastUpdated(any(ResourceModel.Type.class))).thenReturn(date);
-        when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
+        when(genericCallData.resourceHandler().getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT))
+                .thenReturn(date);
 
         organisationUnitCall.call();
 
-        assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
+        assertThat(uidsCaptor.getValue().values()).contains(organisationUnit.uid());
         assertThat(fieldsCaptor.getValue().fields()).contains(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
                 OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
@@ -266,7 +238,7 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void throw_exception_not_mark_transaction_successful() throws Exception {
+    public void throw_exception_dont_start_transaction() throws Exception {
         when(retrofitCall.execute()).thenThrow(IOException.class);
         try {
             organisationUnitCall.call();
@@ -274,15 +246,14 @@ public class OrganisationUnitCallUnitShould {
         } catch (Exception e) {
             assertThat(IOException.class.isInstance(e)).isTrue();
 
-            verify(database, times(1)).beginNewTransaction();
-            verify(transaction, times(1)).end();
-            verify(transaction, never()).setSuccessful();
+            verifyNoMoreInteractions(databaseAdapter);
+            verifyNoMoreInteractions(transaction);
         }
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void not_mark_transaction_successful_if_request_fails() throws Exception {
+    public void not_start_transaction_if_request_fails() throws Exception {
         when(retrofitCall.execute()).thenReturn(Response.<Payload<OrganisationUnit>>error(
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 ResponseBody.create(MediaType.parse("application/json"), "{}")));
@@ -290,37 +261,33 @@ public class OrganisationUnitCallUnitShould {
         Response<Payload<OrganisationUnit>> response = organisationUnitCall.call();
 
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(database, times(1)).beginNewTransaction();
-        verify(transaction, times(1)).end();
-        verify(transaction, never()).setSuccessful();
+        verifyNoMoreInteractions(databaseAdapter);
+        verifyNoMoreInteractions(transaction);
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void invoke_store_if_request_succeeds() throws Exception {
+    public void invoke_handler_if_request_succeeds() throws Exception {
         Headers headers = new Headers.Builder().add(HeaderUtils.DATE, lastUpdated.toString()).build();
-        when(payload.items()).thenReturn(Collections.singletonList(organisationUnit));
         Response<Payload<OrganisationUnit>> response = Response.success(payload, headers);
         when(retrofitCall.execute()).thenReturn(response);
 
         organisationUnitCall.call();
 
-        verify(database, times(1)).beginNewTransaction();
+        verify(databaseAdapter, times(1)).beginNewTransaction();
         verify(transaction, times(1)).setSuccessful();
         verify(transaction, times(1)).end();
 
-        verify(organisationUnitStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt()
-        );
-        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
+        verify(organisationUnitHandler).handleMany(eq(organisationUnits), any(OrganisationUnitModelBuilder.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void not_fail_on_empty_input() {
-        when(user.organisationUnits()).thenReturn(null); //no organisation units in user
+        Set<String> uids = new HashSet<>();
+        organisationUnitCall = new OrganisationUnitCall(genericCallData, organisationUnitService,
+                organisationUnitHandler, UidsQuery.create(uids, null));
+
         try {
             organisationUnitCall.call();
         } catch (Exception e) {
@@ -333,24 +300,24 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void thrown_illegal_state_exception_on_consecutive_calls() {
+    public void thrown_illegal_argument_exception_on_consecutive_calls() {
         try {
             organisationUnitCall.call();
             organisationUnitCall.call();
             fail("Expecting an Exception on Consecutive calls");
         } catch (Exception e) {
-            assertThat(IllegalStateException.class.isInstance(e)).isTrue();
+            assertThat(IllegalArgumentException.class.isInstance(e)).isTrue();
         }
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void mark_as_executed_after_call() {
-        when(organisationUnitStore.insert(any(String.class), any(String.class), any(String.class), any(String.class),
-                any(Date.class), any(Date.class), any(String.class), any(String.class), any(String.class),
-                any(String.class), any(String.class), any(Date.class), any(Date.class), any(String.class),
-                any(Integer.class))
+        /*when(organisationUnitHandler.handleMany(anyListOf(OrganisationUnit.class),
+        TODO fix
+                any(OrganisationUnitModelBuilder.class))
         ).thenThrow(IOException.class);
+                 */
 
         try {
             organisationUnitCall.call();

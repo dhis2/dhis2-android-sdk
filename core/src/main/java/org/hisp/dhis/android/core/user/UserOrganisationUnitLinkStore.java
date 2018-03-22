@@ -28,27 +28,16 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class UserOrganisationUnitLinkStore {
 
-public interface UserOrganisationUnitLinkStore extends DeletableStore {
+    private UserOrganisationUnitLinkStore() {}
 
-    long insert(@NonNull String user,
-                @NonNull String organisationUnit,
-                @NonNull String organisationUnitScope
-    );
-
-    int update(@NonNull String user,
-               @NonNull String organisationUnit,
-               @NonNull String organisationUnitScope,
-               @NonNull String whereUserUid,
-               @NonNull String whereOrganisationUnitUid,
-               @NonNull String whereOrganisationUnitScope
-    );
-
-    int delete(@NonNull String userUid, @NonNull String organisationUnitUid, @NonNull String organisationUnitScope);
-
-    int delete();
-
+    public static ObjectWithoutUidStore<UserOrganisationUnitLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, UserOrganisationUnitLinkModel.TABLE,
+                UserOrganisationUnitLinkModel.Columns.all(), UserOrganisationUnitLinkModel.Columns.all());
+    }
 }

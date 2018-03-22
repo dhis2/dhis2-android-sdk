@@ -27,12 +27,17 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class OrganisationUnitProgramLinkStore {
 
-public interface OrganisationUnitProgramLinkStore extends DeletableStore {
-    long insert(@NonNull String organisationUnitUid, @NonNull String programUid);
+    private OrganisationUnitProgramLinkStore() {}
 
-    boolean exists(@NonNull String organisationUnitUid, @NonNull String programUid);
+    public static ObjectWithoutUidStore<OrganisationUnitProgramLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, OrganisationUnitProgramLinkModel.TABLE,
+                OrganisationUnitProgramLinkModel.Columns.all(), OrganisationUnitProgramLinkModel.Columns.all());
+    }
 }

@@ -26,33 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.organisationunit;
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.program.Program;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
+public class OrganisationUnitProgramLinkModelBuilder extends ModelBuilder<Program, OrganisationUnitProgramLinkModel> {
 
-import java.util.Date;
+    private final OrganisationUnitProgramLinkModel.Builder builder;
 
-import retrofit2.Retrofit;
-
-@AutoValue
-public abstract class GenericCallData {
-    public abstract DatabaseAdapter databaseAdapter();
-    public abstract ResourceHandler resourceHandler();
-    public abstract Retrofit retrofit();
-    public abstract Date serverDate();
-
-    public static GenericCallData create(DatabaseAdapter databaseAdapter,
-                                         ResourceHandler resourceHandler,
-                                         Retrofit retrofit) {
-        return new AutoValue_GenericCallData(databaseAdapter, resourceHandler, retrofit, new Date());
+    public OrganisationUnitProgramLinkModelBuilder(OrganisationUnit organisationUnit) {
+        this.builder = OrganisationUnitProgramLinkModel.builder()
+                .organisationUnit(organisationUnit.uid());
     }
 
-    public static GenericCallData create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        return new AutoValue_GenericCallData(databaseAdapter,
-                new ResourceHandler(new ResourceStoreImpl(databaseAdapter)), retrofit, new Date());
+    @Override
+    public OrganisationUnitProgramLinkModel buildModel(Program program) {
+        return builder
+                .program(program.uid())
+                .build();
     }
 }

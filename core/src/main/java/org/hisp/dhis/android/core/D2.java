@@ -414,7 +414,7 @@ public final class D2 {
         TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler =
                 new TrackedEntityAttributeValueHandler(trackedEntityAttributeValueStore);
 
-        EnrollmentHandler enrollmentHandler = new EnrollmentHandler(enrollmentStore, eventHandler);
+        EnrollmentHandler enrollmentHandler = new EnrollmentHandler(databaseAdapter, enrollmentStore, eventHandler);
 
         trackedEntityInstanceHandler =
                 new TrackedEntityInstanceHandler(

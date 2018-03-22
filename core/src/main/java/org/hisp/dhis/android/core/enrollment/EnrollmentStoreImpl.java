@@ -293,7 +293,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                     enrollmentMap.get(trackedEntityInstance).add(Enrollment.create(
                             uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                             organisationUnit, program, enrollmentDate, incidentDate, followUp,
-                            status, trackedEntityInstance, coordinates, false, null
+                            status, trackedEntityInstance, coordinates, false, null, null
                     ));
 
                 }

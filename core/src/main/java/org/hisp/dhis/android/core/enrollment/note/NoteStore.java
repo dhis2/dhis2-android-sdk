@@ -25,36 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
 
-import java.util.Collection;
+package org.hisp.dhis.android.core.enrollment.note;
 
-public abstract class GenericHandlerBaseImpl<
-        P, M extends BaseModel & StatementBinder> implements GenericHandler<P, M> {
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-    @Override
-    public final void handle(P p, ModelBuilder<P, M> modelBuilder) {
-        if (p == null) {
-            return;
-        }
-        deleteOrPersist(p, modelBuilder);
-    }
+public final class NoteStore {
 
-    @Override
-    public final void handleMany(Collection<P> pCollection, ModelBuilder<P, M> modelBuilder) {
-        if (pCollection != null) {
-            for(P p : pCollection) {
-                handle(p, modelBuilder);
-            }
-        }
-    }
+    private NoteStore() {}
 
-    protected abstract void deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder);
-
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void afterObjectPersisted(P p) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
+    public static ObjectWithoutUidStore<NoteModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteModel.TABLE,
+                NoteModel.Columns.all(), NoteModel.Columns.whereUpdate());
     }
 }

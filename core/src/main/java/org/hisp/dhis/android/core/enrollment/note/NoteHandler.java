@@ -25,36 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.enrollment.note;
 
-import java.util.Collection;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public abstract class GenericHandlerBaseImpl<
-        P, M extends BaseModel & StatementBinder> implements GenericHandler<P, M> {
+public final class NoteHandler {
 
-    @Override
-    public final void handle(P p, ModelBuilder<P, M> modelBuilder) {
-        if (p == null) {
-            return;
-        }
-        deleteOrPersist(p, modelBuilder);
-    }
+    private NoteHandler() {}
 
-    @Override
-    public final void handleMany(Collection<P> pCollection, ModelBuilder<P, M> modelBuilder) {
-        if (pCollection != null) {
-            for(P p : pCollection) {
-                handle(p, modelBuilder);
-            }
-        }
-    }
-
-    protected abstract void deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder);
-
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void afterObjectPersisted(P p) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
+    public static GenericHandler<Note, NoteModel> create(DatabaseAdapter databaseAdapter) {
+        return new ObjectWithoutUidHandlerImpl<>(NoteStore.create(databaseAdapter));
     }
 }

@@ -25,36 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
 
-import java.util.Collection;
+package org.hisp.dhis.android.core.enrollment.note;
 
-public abstract class GenericHandlerBaseImpl<
-        P, M extends BaseModel & StatementBinder> implements GenericHandler<P, M> {
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 
-    @Override
-    public final void handle(P p, ModelBuilder<P, M> modelBuilder) {
-        if (p == null) {
-            return;
-        }
-        deleteOrPersist(p, modelBuilder);
+import java.text.ParseException;
+import java.util.Date;
+
+public class NoteModelBuilder extends ModelBuilder<Note, NoteModel> {
+
+    private final NoteModel.Builder builder;
+
+    public NoteModelBuilder(Enrollment enrollment) {
+        this.builder = NoteModel.builder()
+                .enrollment(enrollment.uid());
     }
 
     @Override
-    public final void handleMany(Collection<P> pCollection, ModelBuilder<P, M> modelBuilder) {
-        if (pCollection != null) {
-            for(P p : pCollection) {
-                handle(p, modelBuilder);
-            }
+    public NoteModel buildModel(Note pojo) {
+
+        Date storedDate;
+        try {
+            storedDate = BaseIdentifiableObject.parseSpaceDate(pojo.storedDate());
+        } catch (ParseException ignored) {
+            storedDate = null;
         }
-    }
 
-    protected abstract void deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder);
-
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void afterObjectPersisted(P p) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
+        return builder
+                .value(pojo.value())
+                .storedBy(pojo.storedBy())
+                .storedDate(storedDate)
+                .build();
     }
 }

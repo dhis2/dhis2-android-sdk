@@ -25,36 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
 
-import java.util.Collection;
+package org.hisp.dhis.android.core.enrollment.note;
 
-public abstract class GenericHandlerBaseImpl<
-        P, M extends BaseModel & StatementBinder> implements GenericHandler<P, M> {
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-    @Override
-    public final void handle(P p, ModelBuilder<P, M> modelBuilder) {
-        if (p == null) {
-            return;
-        }
-        deleteOrPersist(p, modelBuilder);
+import java.io.IOException;
+import java.text.ParseException;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
+public class NoteShould extends BaseObjectShould implements ObjectShould {
+
+    public NoteShould() {
+        super("note.json");
     }
 
     @Override
-    public final void handleMany(Collection<P> pCollection, ModelBuilder<P, M> modelBuilder) {
-        if (pCollection != null) {
-            for(P p : pCollection) {
-                handle(p, modelBuilder);
-            }
-        }
-    }
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Note note = objectMapper.readValue(jsonStream, Note.class);
 
-    protected abstract void deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder);
-
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void afterObjectPersisted(P p) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
+        assertThat(note.value()).isEqualTo("Note");
+        assertThat(note.storedBy()).isEqualTo("android");
+        assertThat(note.storedDate()).isEqualTo("2018-03-19 15:20:55.058");
     }
 }

@@ -477,37 +477,31 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
-    public static final String CREATE_PROGRAM_STAGE_TABLE = "CREATE TABLE " +
-            ProgramStageModel.TABLE + " (" +
-            ProgramStageModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ProgramStageModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            ProgramStageModel.Columns.CODE + " TEXT," +
-            ProgramStageModel.Columns.NAME + " TEXT," +
-            ProgramStageModel.Columns.DISPLAY_NAME + " TEXT," +
-            ProgramStageModel.Columns.CREATED + " TEXT," +
-            ProgramStageModel.Columns.LAST_UPDATED + " TEXT," +
-            ProgramStageModel.Columns.EXECUTION_DATE_LABEL + " TEXT," +
-            ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT + " INTEGER," +
-            ProgramStageModel.Columns.VALID_COMPLETE_ONLY + " INTEGER," +
-            ProgramStageModel.Columns.REPORT_DATE_TO_USE + " TEXT," +
-            ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT + " INTEGER," +
-            ProgramStageModel.Columns.REPEATABLE + " INTEGER," +
-            ProgramStageModel.Columns.CAPTURE_COORDINATES + " INTEGER," +
-            ProgramStageModel.Columns.FORM_TYPE + " TEXT," +
-            ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX + " INTEGER," +
-            ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE + " INTEGER," +
-            ProgramStageModel.Columns.AUTO_GENERATE_EVENT + " INTEGER," +
-            ProgramStageModel.Columns.SORT_ORDER + " INTEGER," +
-            ProgramStageModel.Columns.HIDE_DUE_DATE + " INTEGER," +
-            ProgramStageModel.Columns.BLOCK_ENTRY_FORM + " INTEGER," +
-            ProgramStageModel.Columns.MIN_DAYS_FROM_START + " INTEGER," +
-            ProgramStageModel.Columns.STANDARD_INTERVAL + " INTEGER," +
-            ProgramStageModel.Columns.PROGRAM + " TEXT NOT NULL," +
-            ProgramStageModel.Columns.PERIOD_TYPE + " TEXT," +
-            " FOREIGN KEY ( " + ProgramStageModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-            ");";
+    private static final String CREATE_PROGRAM_STAGE_TABLE =
+            SQLStatementBuilder.createIdentifiableModelTable(ProgramStageModel.TABLE,
+                    ProgramStageModel.Columns.EXECUTION_DATE_LABEL + " TEXT," +
+                            ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT + " INTEGER," +
+                            ProgramStageModel.Columns.VALID_COMPLETE_ONLY + " INTEGER," +
+                            ProgramStageModel.Columns.REPORT_DATE_TO_USE + " TEXT," +
+                            ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT + " INTEGER," +
+                            ProgramStageModel.Columns.REPEATABLE + " INTEGER," +
+                            ProgramStageModel.Columns.CAPTURE_COORDINATES + " INTEGER," +
+                            ProgramStageModel.Columns.FORM_TYPE + " TEXT," +
+                            ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX + " INTEGER," +
+                            ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE + " INTEGER," +
+                            ProgramStageModel.Columns.AUTO_GENERATE_EVENT + " INTEGER," +
+                            ProgramStageModel.Columns.SORT_ORDER + " INTEGER," +
+                            ProgramStageModel.Columns.HIDE_DUE_DATE + " INTEGER," +
+                            ProgramStageModel.Columns.BLOCK_ENTRY_FORM + " INTEGER," +
+                            ProgramStageModel.Columns.MIN_DAYS_FROM_START + " INTEGER," +
+                            ProgramStageModel.Columns.STANDARD_INTERVAL + " INTEGER," +
+                            ProgramStageModel.Columns.PROGRAM + " TEXT NOT NULL," +
+                            ProgramStageModel.Columns.PERIOD_TYPE + " TEXT," +
+                            ProgramStageModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
+                            " FOREIGN KEY ( " + ProgramStageModel.Columns.PROGRAM + ")" +
+                            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
+            );
 
     private static final String CREATE_PROGRAM_RULE_VARIABLE_TABLE = "CREATE TABLE " +
             ProgramRuleVariableModel.TABLE + " (" +

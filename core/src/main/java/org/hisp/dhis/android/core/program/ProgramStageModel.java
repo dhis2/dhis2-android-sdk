@@ -72,6 +72,7 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
         public static final String STANDARD_INTERVAL = "standardInterval";
         public static final String PROGRAM = "program";
         public static final String PERIOD_TYPE = "periodType";
+        public static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
         private Columns() {}
 
@@ -81,7 +82,7 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
                     REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT, REPEATABLE, CAPTURE_COORDINATES,
                     FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX, GENERATED_BY_ENROLMENT_DATE,
                     AUTO_GENERATE_EVENT, SORT_ORDER, HIDE_DUE_DATE, BLOCK_ENTRY_FORM,
-                    MIN_DAYS_FROM_START, STANDARD_INTERVAL, PROGRAM, PERIOD_TYPE);
+                    MIN_DAYS_FROM_START, STANDARD_INTERVAL, PROGRAM, PERIOD_TYPE, ACCESS_DATA_WRITE);
         }
     }
 
@@ -170,6 +171,10 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
     @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
+    @Nullable
+    @ColumnName(Columns.ACCESS_DATA_WRITE)
+    public abstract Boolean accessDataWrite();
+
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         super.bindToStatement(sqLiteStatement);
@@ -191,6 +196,7 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
         sqLiteBind(sqLiteStatement, 22, standardInterval());
         sqLiteBind(sqLiteStatement, 23, program());
         sqLiteBind(sqLiteStatement, 24, periodType());
+        sqLiteBind(sqLiteStatement, 25, accessDataWrite());
     }
 
     @AutoValue.Builder
@@ -231,6 +237,8 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
         public abstract Builder program(@Nullable String program);
 
         public abstract Builder periodType(@Nullable PeriodType periodType);
+
+        public abstract Builder accessDataWrite(@Nullable Boolean accessDataWrite);
 
         public abstract ProgramStageModel build();
 

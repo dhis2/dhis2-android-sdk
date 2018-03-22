@@ -28,82 +28,44 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.List;
-
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
-
-public class ProgramStageHandler {
-    private final ProgramStageStore programStageStore;
+public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, ProgramStageModel> {
     private final ProgramStageSectionHandler programStageSectionHandler;
     private final ProgramStageDataElementHandler programStageDataElementHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
-    public ProgramStageHandler(ProgramStageStore programStageStore,
+    ProgramStageHandler(IdentifiableObjectStore<ProgramStageModel> programStageStore,
                                ProgramStageSectionHandler programStageSectionHandler,
                                ProgramStageDataElementHandler programStageDataElementHandler,
                                GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
-        this.programStageStore = programStageStore;
+        super(programStageStore);
         this.programStageSectionHandler = programStageSectionHandler;
         this.programStageDataElementHandler = programStageDataElementHandler;
         this.styleHandler = styleHandler;
     }
 
-    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    public void handleProgramStage(String programUid, List<ProgramStage> programStages) {
-        if (programStages == null || programUid == null) {
-            return;
-        }
-        for (int i = 0, size = programStages.size(); i < size; i++) {
-            ProgramStage programStage = programStages.get(i);
-            if (isDeleted(programStage)) {
-                programStageStore.delete(programStage.uid());
-            } else {
-                int updatedRow = programStageStore.update(
-                        programStage.uid(), programStage.code(), programStage.name(),
-                        programStage.displayName(), programStage.created(), programStage.lastUpdated(),
-                        programStage.executionDateLabel(), programStage.allowGenerateNextVisit(),
-                        programStage.validCompleteOnly(), programStage.reportDateToUse(),
-                        programStage.openAfterEnrollment(), programStage.repeatable(),
-                        programStage.captureCoordinates(), programStage.formType(),
-                        programStage.displayGenerateEventBox(),
-                        programStage.generatedByEnrollmentDate(), programStage.autoGenerateEvent(),
-                        programStage.sortOrder(), programStage.hideDueDate(),
-                        programStage.blockEntryForm(), programStage.minDaysFromStart(),
-                        programStage.standardInterval(), programUid, programStage.uid()
-                );
-                if (updatedRow <= 0) {
-                    programStageStore.insert(programStage.uid(), programStage.code(), programStage.name(),
-                            programStage.displayName(), programStage.created(), programStage.lastUpdated(),
-                            programStage.executionDateLabel(), programStage.allowGenerateNextVisit(),
-                            programStage.validCompleteOnly(), programStage.reportDateToUse(),
-                            programStage.openAfterEnrollment(), programStage.repeatable(),
-                            programStage.captureCoordinates(), programStage.formType(),
-                            programStage.displayGenerateEventBox(),
-                            programStage.generatedByEnrollmentDate(), programStage.autoGenerateEvent(),
-                            programStage.sortOrder(), programStage.hideDueDate(),
-                            programStage.blockEntryForm(), programStage.minDaysFromStart(),
-                            programStage.standardInterval(), programUid);
-                }
-            }
+    @Override
+    protected void afterObjectPersisted(ProgramStage programStage) {
+        programStageDataElementHandler.handleProgramStageDataElements(
+                programStage.programStageDataElements());
+        programStageSectionHandler.handleProgramStageSection(programStage.uid(),
+                programStage.programStageSections());
+        styleHandler.handle(programStage.style(),
+                new ObjectStyleModelBuilder(programStage.uid(), ProgramStageModel.TABLE));
+    }
 
-
-            // We will first save programStageDataElements which will invoke saving of all data elements
-            // and graph below (data elements, option sets, options..)
-            programStageDataElementHandler.handleProgramStageDataElements(
-                    programStage.programStageDataElements());
-
-            // programStageSectionHandler will first persist the programStageSections,
-            // then we will update the programStageDataElements with the missing link to programStageSection
-            // based on the dataElement foreign key for the programStageDataElement
-            programStageSectionHandler.handleProgramStageSection(programStage.uid(),
-                    programStage.programStageSections());
-
-            styleHandler.handle(programStage.style(),
-                    new ObjectStyleModelBuilder(programStage.uid(), ProgramStageModel.TABLE));
-        }
+    public static ProgramStageHandler create(DatabaseAdapter databaseAdapter) {
+        return new ProgramStageHandler(
+                ProgramStageStore.create(databaseAdapter),
+                ProgramStageSectionHandler.create(databaseAdapter),
+                ProgramStageDataElementHandler.create(databaseAdapter),
+                ObjectStyleHandler.create(databaseAdapter));
     }
 }

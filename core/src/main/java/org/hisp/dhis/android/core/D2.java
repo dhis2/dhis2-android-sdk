@@ -84,8 +84,6 @@ import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
@@ -138,12 +136,12 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariableStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageSectionStore;
 import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
-import org.hisp.dhis.android.core.program.ProgramStageStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
@@ -246,7 +244,7 @@ public final class D2 {
     private final IdentifiableObjectStore<DataElementModel> dataElementStore;
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
-    private final ProgramStageStore programStageStore;
+    private final IdentifiableObjectStore<ProgramStageModel> programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
 
@@ -285,7 +283,6 @@ public final class D2 {
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
     private final OrganisationUnitHandler organisationUnitHandler;
-    private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
     private final OptionSetHandler optionSetHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
@@ -353,8 +350,7 @@ public final class D2 {
                 new ProgramStageDataElementStoreImpl(databaseAdapter);
         this.programStageSectionStore =
                 new ProgramStageSectionStoreImpl(databaseAdapter);
-        this.programStageStore =
-                new ProgramStageStoreImpl(databaseAdapter);
+        this.programStageStore = ProgramStageStore.create(databaseAdapter);
         this.relationshipStore =
                 new RelationshipTypeStoreImpl(databaseAdapter);
         this.trackedEntityStore =
@@ -434,7 +430,6 @@ public final class D2 {
 
         // handlers
         this.optionSetHandler = OptionSetHandler.create(databaseAdapter);
-        this.dataElementHandler = DataElementHandler.create(databaseAdapter, this.optionSetHandler);
         this.styleHandler = ObjectStyleHandler.create(databaseAdapter);
         this.renderTypeHandler = ValueTypeRenderingHandler.create(databaseAdapter);
 
@@ -549,12 +544,10 @@ public final class D2 {
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore,
-                programStageDataElementStore,
-                programStageSectionStore,
-                programStageStore, relationshipStore, trackedEntityStore,
+                relationshipStore, trackedEntityStore,
                 organisationUnitProgramLinkStore, categoryQuery,
                 categoryService, categoryHandler, categoryComboQuery, comboService,
-                categoryComboHandler, optionSetHandler, dataElementHandler, DataSetParentCall.FACTORY,
+                categoryComboHandler, optionSetHandler, DataSetParentCall.FACTORY,
                 styleHandler, renderTypeHandler, retrofit);
     }
 

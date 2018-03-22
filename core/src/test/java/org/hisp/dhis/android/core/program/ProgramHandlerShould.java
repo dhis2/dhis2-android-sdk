@@ -44,12 +44,14 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -65,7 +67,7 @@ public class ProgramHandlerShould {
     private ProgramRuleVariableHandler programRuleVariableHandler;
 
     @Mock
-    private ProgramStageHandler programStageHandler;
+    private GenericHandler<ProgramStage, ProgramStageModel> programStageHandler;
 
     @Mock
     private ProgramIndicatorHandler programIndicatorHandler;
@@ -87,6 +89,9 @@ public class ProgramHandlerShould {
 
     @Mock
     private Access access;
+
+    @Mock
+    private List<ProgramStage> programStages;
 
     @Mock
     private Program relatedProgram;
@@ -144,7 +149,7 @@ public class ProgramHandlerShould {
         when(program.relatedProgram()).thenReturn(relatedProgram);
         when(program.trackedEntity()).thenReturn(trackedEntity);
 
-        when(program.programStages()).thenReturn(new ArrayList<ProgramStage>());
+        when(program.programStages()).thenReturn(programStages);
         when(program.programTrackedEntityAttributes()).thenReturn(new ArrayList<ProgramTrackedEntityAttribute>());
         when(program.programIndicators()).thenReturn(new ArrayList<ProgramIndicator>());
         when(program.programRules()).thenReturn(new ArrayList<ProgramRule>());
@@ -181,7 +186,8 @@ public class ProgramHandlerShould {
 
         // verify that all the handlers is called once
 
-        verify(programStageHandler, times(1)).handleProgramStage(program.uid(), program.programStages());
+        verify(programStageHandler, times(1)).handleMany(anyListOf(ProgramStage.class),
+                any(ProgramStageModelBuilder.class));
         verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
                 program.programTrackedEntityAttributes()
         );
@@ -222,7 +228,8 @@ public class ProgramHandlerShould {
 
         // verify that all the handlers is called once
 
-        verify(programStageHandler, times(1)).handleProgramStage(program.uid(), program.programStages());
+        verify(programStageHandler, times(1)).handleMany(eq(programStages),
+                any(ProgramStageModelBuilder.class));
         verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
                 program.programTrackedEntityAttributes()
         );
@@ -263,7 +270,8 @@ public class ProgramHandlerShould {
 
         // verify that all the handlers is called once
 
-        verify(programStageHandler, times(1)).handleProgramStage(program.uid(), program.programStages());
+        verify(programStageHandler, times(1)).handleMany(anyListOf(ProgramStage.class),
+                any(ProgramStageModelBuilder.class));
         verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
                 program.programTrackedEntityAttributes()
         );
@@ -294,7 +302,8 @@ public class ProgramHandlerShould {
                 anyString(), anyString(), anyString(), anyBoolean(), anyString());
 
         // verify that handlers is never called
-        verify(programStageHandler, never()).handleProgramStage(anyString(), anyListOf(ProgramStage.class));
+        verify(programStageHandler, never()).handleMany(anyListOf(ProgramStage.class),
+                any(ProgramStageModelBuilder.class));
         verify(programTrackedEntityAttributeHandler, never()).handleProgramTrackedEntityAttributes(
                 anyListOf(ProgramTrackedEntityAttribute.class)
         );

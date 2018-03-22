@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
 import java.util.List;
@@ -110,5 +111,13 @@ public class ProgramStageSectionHandler {
             programIndicatorHandler.handleProgramIndicator(programStageSection.uid(),
                     programStageSection.programIndicators());
         }
+    }
+
+    public static ProgramStageSectionHandler create(DatabaseAdapter databaseAdapter) {
+        return new ProgramStageSectionHandler(
+                new ProgramStageSectionStoreImpl(databaseAdapter),
+                ProgramStageDataElementHandler.create(databaseAdapter),
+                ProgramIndicatorHandler.create(databaseAdapter)
+        );
     }
 }

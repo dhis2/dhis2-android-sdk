@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetModelBuilder;
 
@@ -57,11 +58,10 @@ public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, Dat
         this.renderTypeHandler = renderTypeHandler;
     }
 
-    public static DataElementHandler create(DatabaseAdapter databaseAdapter,
-                                            GenericHandler<OptionSet, OptionSetModel> optionSetHandler) {
+    public static DataElementHandler create(DatabaseAdapter databaseAdapter) {
         return new DataElementHandler(
                 DataElementStore.create(databaseAdapter),
-                optionSetHandler,
+                OptionSetHandler.create(databaseAdapter),
                 ObjectStyleHandler.create(databaseAdapter),
                 ValueTypeRenderingHandler.create(databaseAdapter));
     }

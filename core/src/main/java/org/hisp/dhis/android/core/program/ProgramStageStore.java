@@ -28,39 +28,16 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
-import org.hisp.dhis.android.core.common.FormType;
+public final class ProgramStageStore {
 
-import java.util.Date;
+    private ProgramStageStore() {}
 
-public interface ProgramStageStore extends DeletableStore {
-    long insert(
-            @NonNull String uid, @Nullable String code, @NonNull String name, @NonNull String displayName,
-            @NonNull Date created, @NonNull Date lastUpdated, @Nullable String executionDateLabel,
-            @NonNull Boolean allowGenerateNextVisit, @NonNull Boolean validCompleteOnly,
-            @Nullable String reportDateToUse, @NonNull Boolean openAfterEnrollment,
-            @NonNull Boolean repeatable, @NonNull Boolean captureCoordinates,
-            @NonNull FormType formType, @NonNull Boolean displayGenerateEventBox,
-            @NonNull Boolean generatedByEnrollmentDate, @NonNull Boolean autoGenerateEvent,
-            @NonNull Integer sortOrder, @NonNull Boolean hideDueDate, @NonNull Boolean blockEntryForm,
-            @NonNull Integer minDaysFromStart, @NonNull Integer standardInterval,
-            @NonNull String program
-    );
-
-    int update(@NonNull String uid, @Nullable String code, @NonNull String name, @NonNull String displayName,
-               @NonNull Date created, @NonNull Date lastUpdated, @Nullable String executionDateLabel,
-               @NonNull Boolean allowGenerateNextVisit, @NonNull Boolean validCompleteOnly,
-               @Nullable String reportDateToUse, @NonNull Boolean openAfterEnrollment,
-               @NonNull Boolean repeatable, @NonNull Boolean captureCoordinates,
-               @NonNull FormType formType, @NonNull Boolean displayGenerateEventBox,
-               @NonNull Boolean generatedByEnrollmentDate, @NonNull Boolean autoGenerateEvent,
-               @NonNull Integer sortOrder, @NonNull Boolean hideDueDate, @NonNull Boolean blockEntryForm,
-               @NonNull Integer minDaysFromStart, @NonNull Integer standardInterval,
-               @NonNull String program, @NonNull String whereProgramStageUid
-    );
-
-    int delete(@NonNull String uid);
+    public static IdentifiableObjectStore<ProgramStageModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.identifiableStore(databaseAdapter, ProgramStageModel.TABLE,
+                ProgramStageModel.Columns.all());
+    }
 }

@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -108,5 +110,12 @@ public class ProgramIndicatorHandler {
                 }
             }
         }
+    }
+
+    public static ProgramIndicatorHandler create(DatabaseAdapter databaseAdapter) {
+        return new ProgramIndicatorHandler(
+                new ProgramIndicatorStoreImpl(databaseAdapter),
+                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter)
+        );
     }
 }

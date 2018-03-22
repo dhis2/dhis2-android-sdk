@@ -41,17 +41,15 @@ import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
@@ -72,10 +70,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
 import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
-import org.hisp.dhis.android.core.program.ProgramStageSectionStore;
-import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
@@ -131,13 +126,9 @@ public class MetadataCall implements Call<Response> {
             programStageSectionProgramIndicatorLinkStore;
     private final ProgramRuleActionStore programRuleActionStore;
     private final ProgramRuleStore programRuleStore;
-    private final ProgramStageDataElementStore programStageDataElementStore;
-    private final ProgramStageSectionStore programStageSectionStore;
-    private final ProgramStageStore programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
     private final GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
-    private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
@@ -177,9 +168,6 @@ public class MetadataCall implements Call<Response> {
                                 programStageSectionProgramIndicatorLinkStore,
                         @NonNull ProgramRuleActionStore programRuleActionStore,
                         @NonNull ProgramRuleStore programRuleStore,
-                        @NonNull ProgramStageDataElementStore programStageDataElementStore,
-                        @NonNull ProgramStageSectionStore programStageSectionStore,
-                        @NonNull ProgramStageStore programStageStore,
                         @NonNull RelationshipTypeStore relationshipStore,
                         @NonNull TrackedEntityStore trackedEntityStore,
                         @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
@@ -190,7 +178,6 @@ public class MetadataCall implements Call<Response> {
                         @NonNull CategoryComboService categoryComboService,
                         @NonNull CategoryComboHandler categoryComboHandler,
                         @NonNull GenericHandler<OptionSet, OptionSetModel> optionSetHandler,
-                        @NonNull GenericHandler<DataElement, DataElementModel> dataElementHandler,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
                         @NonNull GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                         @NonNull DictionaryTableHandler<ValueTypeRendering> renderTypeHandler,
@@ -219,9 +206,6 @@ public class MetadataCall implements Call<Response> {
                 programStageSectionProgramIndicatorLinkStore;
         this.programRuleActionStore = programRuleActionStore;
         this.programRuleStore = programRuleStore;
-        this.programStageDataElementStore = programStageDataElementStore;
-        this.programStageSectionStore = programStageSectionStore;
-        this.programStageStore = programStageStore;
         this.relationshipStore = relationshipStore;
         this.trackedEntityStore = trackedEntityStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
@@ -232,7 +216,6 @@ public class MetadataCall implements Call<Response> {
         this.categoryComboService = categoryComboService;
         this.categoryComboHandler = categoryComboHandler;
         this.optionSetHandler = optionSetHandler;
-        this.dataElementHandler = dataElementHandler;
         this.dataSetParentCallFactory = dataSetParentCallFactory;
         this.styleHandler = styleHandler;
         this.renderTypeHandler = renderTypeHandler;
@@ -313,10 +296,7 @@ public class MetadataCall implements Call<Response> {
                     programRuleVariableStore,
                     programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
                     programRuleActionStore,
-                    programRuleStore,
-                    programStageDataElementStore,
-                    programStageSectionStore, programStageStore, relationshipStore,
-                    dataElementHandler, styleHandler, renderTypeHandler
+                    programRuleStore, relationshipStore, styleHandler, renderTypeHandler
             ).call();
             if (!response.isSuccessful()) {
                 return response;

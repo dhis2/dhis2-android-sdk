@@ -31,7 +31,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryComboHandler;
 import org.hisp.dhis.android.core.category.CategoryComboQuery;
 import org.hisp.dhis.android.core.category.CategoryComboService;
@@ -61,6 +60,8 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
 import org.hisp.dhis.android.core.program.ProgramService;
+import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.ProgramStageEndpointCall;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
@@ -68,7 +69,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
@@ -98,6 +98,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -149,14 +150,8 @@ public class MetadataCallShould {
     @Mock
     private SystemInfo systemInfo;
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<Category>> categoryInfo;
-
     @Mock
     private SystemInfoService systemInfoService;
-
-    @Mock
-    private SystemInfoHandler systemInfoHandler;
 
     @Mock
     private SystemInfoStore systemInfoStore;
@@ -257,6 +252,9 @@ public class MetadataCallShould {
     private Payload<Program> programPayload;
 
     @Mock
+    private Payload<ProgramStage> programStagePayload;
+
+    @Mock
     private Payload<TrackedEntity> trackedEntityPayload;
 
     @Mock
@@ -281,6 +279,9 @@ public class MetadataCallShould {
     private Program program;
 
     @Mock
+    private ObjectWithUid programStageWithUid;
+
+    @Mock
     private TrackedEntity trackedEntity;
 
     @Mock
@@ -301,6 +302,12 @@ public class MetadataCallShould {
     private GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
 
     @Mock
+    private ProgramStageEndpointCall.Factory programStageCallFactory;
+
+    @Mock
+    private Call<Response<Payload<ProgramStage>>> programStageEndpointCall;
+
+    @Mock
     private DataSetParentCall.Factory dataSetParentCallFactory;
 
     @Mock
@@ -313,6 +320,8 @@ public class MetadataCallShould {
     private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     private Response<Payload<DataElement>> dataSetParentCallResponse;
+
+    private Response<Payload<ProgramStage>> programStageResponse;
 
 
     // object to test
@@ -364,6 +373,8 @@ public class MetadataCallShould {
         when(programWithAccess.access()).thenReturn(access);
         when(program.trackedEntity()).thenReturn(trackedEntity);
         when(program.access()).thenReturn(access);
+        when(program.programStages()).thenReturn(Collections.singletonList(programStageWithUid));
+        when(programStageWithUid.uid()).thenReturn("program_stage_uid");
         when(programWithAccessPayload.items()).thenReturn(Collections.singletonList(programWithAccess));
         when(programPayload.items()).thenReturn(Collections.singletonList(program));
         when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntity));
@@ -378,6 +389,10 @@ public class MetadataCallShould {
         dataSetParentCallResponse = Response.success(dataElementPayload);
         when(dataSetParentCall.call()).thenReturn(dataSetParentCallResponse);
 
+        when(programStageCallFactory.create(any(GenericCallData.class), any(Set.class)))
+                .thenReturn(programStageEndpointCall);
+        programStageResponse = Response.success(programStagePayload);
+        when(programStageEndpointCall.call()).thenReturn(programStageResponse);
 
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
         Retrofit retrofit = new Retrofit.Builder()
@@ -399,11 +414,10 @@ public class MetadataCallShould {
                 userRoleStore, organisationUnitStore,userOrganisationUnitLinkStore, programStore,
                 trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
                 programIndicatorStore,programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore,
-                relationshipStore, trackedEntityStore, organisationUnitProgramLinkStore,categoryQuery, categoryService,
-                categoryHandler, CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetHandler, dataSetParentCallFactory, styleHandler, renderTypeHandler,
-                retrofit);
+                programRuleStore, relationshipStore, trackedEntityStore, organisationUnitProgramLinkStore,
+                categoryQuery, categoryService, categoryHandler, CategoryComboQuery.defaultQuery(), comboService,
+                mockCategoryComboHandler, optionSetHandler, dataSetParentCallFactory, styleHandler, renderTypeHandler,
+                programStageCallFactory, retrofit);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 

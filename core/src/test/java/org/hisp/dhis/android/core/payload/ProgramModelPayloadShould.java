@@ -4,12 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.junit.Test;
 
 import java.util.List;
@@ -312,35 +309,13 @@ public class ProgramModelPayloadShould {
         assertThat(program.programStages()).isNotNull();
         assertThat(program.programStages()).isNotEmpty();
 
-        ProgramStage programStage = program.programStages().get(0);
-        assertThat(programStage.programStageDataElements()).isNotNull();
-        assertThat(programStage.programStageDataElements()).isNotEmpty();
-
-        ProgramStageDataElement programStageDataElement = programStage.programStageDataElements().get(0);
-        assertThat(programStageDataElement.uid()).isEqualTo("LBNxoXdMnkv");
-        DataElement dataElement = programStageDataElement.dataElement();
-        assertThat(dataElement.uid()).isEqualTo("a3kGcGDCuk6");
-        assertThat(dataElement.optionSet()).isNull();
-
         Program program1 = programs.get(1);
         assertThat(program1.uid()).isEqualTo("q04UBOqq3rp");
         assertThat(program1.version()).isEqualTo(1);
         assertThat(program1.programStages()).isNotNull();
         assertThat(program1.programStages()).isNotEmpty();
 
-        ProgramStage programStage1 = program1.programStages().get(0);
+        ObjectWithUid programStage1 = program1.programStages().get(0);
         assertThat(programStage1.uid()).isEqualTo("pSllsjpfLH2");
-        assertThat(programStage1.programStageDataElements()).isNotNull();
-        assertThat(programStage1.programStageDataElements()).isNotEmpty();
-
-        ProgramStageDataElement programStageDataElement1 = programStage1.programStageDataElements().get(0);
-        assertThat(programStageDataElement1.uid()).isEqualTo("apYCBRwEc44");
-
-        DataElement dataElement1 = programStageDataElement1.dataElement();
-        assertThat(dataElement1.uid()).isEqualTo("f3Rn9XPEQuv");
-
-        OptionSet optionSet1 = dataElement1.optionSet();
-        assertThat(optionSet1.uid()).isEqualTo("s3GoZHCmXL2");
-
     }
 }

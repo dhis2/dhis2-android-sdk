@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -58,10 +60,13 @@ public class ProgramStageHandlerShould {
     private ProgramStageDataElementHandler programStageDataElementHandler;
 
     @Mock
-    private Program program;
+    private ProgramStage programStage;
 
     @Mock
-    private ProgramStage programStage;
+    private DataAccess dataAccess;
+
+    @Mock
+    private Access access;
 
     @Mock
     private ObjectStyle objectStyle;
@@ -84,7 +89,7 @@ public class ProgramStageHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        programStageModelBuilder = new ProgramStageModelBuilder(program);
+        programStageModelBuilder = new ProgramStageModelBuilder();
 
         programStageHandler = new ProgramStageHandler(
                 programStageStore, programStageSectionHandler,
@@ -95,6 +100,9 @@ public class ProgramStageHandlerShould {
         when(programStage.style()).thenReturn(objectStyle);
         when(programStage.programStageDataElements()).thenReturn(programStageDataElements);
         when(programStage.programStageSections()).thenReturn(programStageSections);
+        when(dataAccess.read()).thenReturn(true);
+        when(access.data()).thenReturn(dataAccess);
+        when(programStage.access()).thenReturn(access);
     }
 
     @Test

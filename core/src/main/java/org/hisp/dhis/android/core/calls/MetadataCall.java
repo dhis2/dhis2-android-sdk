@@ -315,8 +315,6 @@ public class MetadataCall implements Call<Response> {
                 return response;
             }
 
-            List<ProgramStage> programStages = ((Response<Payload<ProgramStage>>) response).body().items();
-
             Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
             response = new TrackedEntityCall(
                     trackedEntityUids, databaseAdapter, trackedEntityStore,
@@ -335,6 +333,7 @@ public class MetadataCall implements Call<Response> {
                 return organisationUnitResponse;
             }
 
+            List<ProgramStage> programStages = ((Response<Payload<ProgramStage>>) response).body().items();
             Set<String> optionSetUids = getAssignedOptionSetUids(programs, programStages);
             response = new OptionSetCall(
                     data, optionSetService, optionSetHandler, optionSetUids).call();

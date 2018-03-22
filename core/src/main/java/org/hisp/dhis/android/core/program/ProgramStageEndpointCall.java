@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
@@ -38,7 +39,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.io.IOException;
 import java.util.Set;
 
-import retrofit2.Call;
+import retrofit2.Response;
 
 public final class ProgramStageEndpointCall extends
         GenericEndpointCallImpl<ProgramStage, ProgramStageModel, UidsQuery> {
@@ -53,18 +54,18 @@ public final class ProgramStageEndpointCall extends
     }
 
     @Override
-    protected Call<Payload<ProgramStage>> getCall(UidsQuery query, String lastUpdated) throws IOException {
+    protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query, String lastUpdated) throws IOException {
         return programStageService.getProgramStages(ProgramStage.allFields, ProgramStage.lastUpdated.gt(lastUpdated),
                 ProgramStage.uid.in(query.uids()), Boolean.FALSE);
     }
 
     public interface Factory {
-        ProgramStageEndpointCall create(GenericCallData data, Set<String> uids);
+        Call<Response<Payload<ProgramStage>>> create(GenericCallData data, Set<String> uids);
     }
 
     public static final ProgramStageEndpointCall.Factory FACTORY = new ProgramStageEndpointCall.Factory() {
         @Override
-        public ProgramStageEndpointCall create(GenericCallData data, Set<String> uids) {
+        public Call<Response<Payload<ProgramStage>>> create(GenericCallData data, Set<String> uids) {
             return new ProgramStageEndpointCall(data, data.retrofit().create(ProgramStageService.class),
                     ProgramStageHandler.create(data.databaseAdapter()),  UidsQuery.create(uids, 64));
         }

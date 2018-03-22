@@ -60,6 +60,7 @@ public class ProgramStageModelBuilder extends ModelBuilder<ProgramStage, Program
                 .standardInterval(programStage.standardInterval())
                 .periodType(programStage.periodType())
                 .program(programStage.programUid())
+                .accessDataWrite(programStage.access().data().write())
                 .build();
     }
 }

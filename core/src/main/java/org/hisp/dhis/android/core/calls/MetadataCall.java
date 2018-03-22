@@ -142,6 +142,7 @@ public class MetadataCall implements Call<Response> {
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
     private final DataSetParentCall.Factory dataSetParentCallFactory;
+    private final ProgramStageEndpointCall.Factory programStageCallFactory;
 
     private boolean isExecuted;
 
@@ -183,6 +184,7 @@ public class MetadataCall implements Call<Response> {
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
                         @NonNull GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                         @NonNull DictionaryTableHandler<ValueTypeRendering> renderTypeHandler,
+                        @NonNull ProgramStageEndpointCall.Factory programStageCallFactory,
                         @NonNull Retrofit retrofit
                         ) {
         this.databaseAdapter = databaseAdapter;
@@ -221,6 +223,7 @@ public class MetadataCall implements Call<Response> {
         this.dataSetParentCallFactory = dataSetParentCallFactory;
         this.styleHandler = styleHandler;
         this.renderTypeHandler = renderTypeHandler;
+        this.programStageCallFactory = programStageCallFactory;
 
         this.retrofit = retrofit;
     }
@@ -306,7 +309,7 @@ public class MetadataCall implements Call<Response> {
 
             List<Program> programs = ((Response<Payload<Program>>) response).body().items();
             Set<String> assignedProgramStageUids = getAssignedProgramStageUids(programs);
-            response = ProgramStageEndpointCall.FACTORY.create(data, assignedProgramStageUids).call();
+            response = programStageCallFactory.create(data, assignedProgramStageUids).call();
 
             if (!response.isSuccessful()) {
                 return response;

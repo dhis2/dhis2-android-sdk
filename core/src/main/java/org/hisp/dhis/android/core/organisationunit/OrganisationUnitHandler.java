@@ -130,15 +130,15 @@ public class OrganisationUnitHandler {
 
     private void addOrganisationUnitProgramLink(@NonNull OrganisationUnit organisationUnit) {
         List<Program> orgUnitPrograms = organisationUnit.programs();
-        assert orgUnitPrograms != null;
-        assert programUids != null;
-        for (Program program : orgUnitPrograms) {
-            if (programUids.contains(program.uid()) &&
-                    !organisationUnitProgramLinkStore.exists(organisationUnit.uid(), program.uid())) {
-                organisationUnitProgramLinkStore.insert(
-                        organisationUnit.uid(),
-                        program.uid()
-                );
+        if (orgUnitPrograms != null && programUids != null) {
+            for (Program program : orgUnitPrograms) {
+                if (programUids.contains(program.uid()) &&
+                        !organisationUnitProgramLinkStore.exists(organisationUnit.uid(), program.uid())) {
+                    organisationUnitProgramLinkStore.insert(
+                            organisationUnit.uid(),
+                            program.uid()
+                    );
+                }
             }
         }
     }

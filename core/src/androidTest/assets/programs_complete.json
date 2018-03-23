@@ -54,9 +54,6 @@
                   "programRuleVariableSourceType": "DATAELEMENT_NEWEST_EVENT_PROGRAM",
                   "program": {
                       "id": "IpHINAT79UW"
-                  },
-                  "dataElement": {
-                      "id": "a3kGcGDCuk6"
                   }
               },
               {
@@ -68,9 +65,6 @@
                   "programRuleVariableSourceType": "DATAELEMENT_NEWEST_EVENT_PROGRAM",
                   "program": {
                       "id": "IpHINAT79UW"
-                  },
-                  "dataElement": {
-                      "id": "H6uSAMO5WLD"
                   }
               }
           ],
@@ -369,9 +363,6 @@
                           "id": "v434s5YPDcP",
                           "programRuleActionType": "SHOWWARNING",
                           "content": "It is suggested that an explanation is provided when the Apgar score is below 4",
-                          "dataElement": {
-                              "id": "H6uSAMO5WLD"
-                          },
                           "programRule": {
                               "id": "NAgjOfWMXg6"
                           }
@@ -395,9 +386,6 @@
                           "id": "t944GaMzNbs",
                           "programRuleActionType": "SHOWERROR",
                           "content": "If the apgar score is below zero, an explanation must be provided.",
-                          "dataElement": {
-                              "id": "a3kGcGDCuk6"
-                          },
                           "programRule": {
                               "id": "tTPMkizzUZg"
                           }
@@ -421,9 +409,6 @@
                           "id": "iwGAWKvStTt",
                           "programRuleActionType": "HIDEFIELD",
                           "content": "",
-                          "dataElement": {
-                              "id": "H6uSAMO5WLD"
-                          },
                           "programRule": {
                               "id": "ppdTpuQC7Q5"
                           }

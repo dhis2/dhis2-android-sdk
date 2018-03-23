@@ -250,7 +250,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 null,
                 "IpHINAT79UW",
                 null,
-                "a3kGcGDCuk6",
+                null,
                 null,
                 "DATAELEMENT_NEWEST_EVENT_PROGRAM"
         ).isExhausted();
@@ -485,7 +485,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 null,
                 "SHOWWARNING",
                 null,
-                "H6uSAMO5WLD",
+                null,
                 "NAgjOfWMXg6"
         ).isExhausted();
     }

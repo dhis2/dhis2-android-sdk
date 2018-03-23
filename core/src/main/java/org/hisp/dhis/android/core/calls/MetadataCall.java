@@ -309,10 +309,9 @@ public class MetadataCall implements Call<Response> {
 
             List<Program> programs = ((Response<Payload<Program>>) response).body().items();
             Set<String> assignedProgramStageUids = getAssignedProgramStageUids(programs);
-            response = programStageCallFactory.create(data, assignedProgramStageUids).call();
-            Response programStageResponse = response;
-            if (!response.isSuccessful()) {
-                return response;
+            Response programStageResponse = programStageCallFactory.create(data, assignedProgramStageUids).call();
+            if (!programStageResponse.isSuccessful()) {
+                return programStageResponse;
             }
 
             Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);

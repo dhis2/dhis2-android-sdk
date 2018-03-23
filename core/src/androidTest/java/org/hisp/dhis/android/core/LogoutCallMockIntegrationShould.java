@@ -200,7 +200,7 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         EventEndPointCall eventCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
-        dhis2MockServer.enqueueMockResponse("events_1.json");
+        dhis2MockServer.enqueueMockResponse("events.json");
 
         Response response = eventCall.call();
 

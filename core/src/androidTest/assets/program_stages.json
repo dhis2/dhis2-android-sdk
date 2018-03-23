@@ -1,0 +1,131 @@
+{
+  "programStages": [
+    {
+      "lastUpdated": "2016-04-12T15:34:04.929",
+      "id": "dBwrot7S420",
+      "created": "2016-04-12T15:30:43.806",
+      "name": "Antenatal care visit - Program rules demo",
+      "allowGenerateNextVisit": false,
+      "executionDateLabel": "Visit date",
+      "validCompleteOnly": true,
+      "displayName": "Antenatal care visit - Program rules demo",
+      "openAfterEnrollment": false,
+      "repeatable": false,
+      "captureCoordinates": false,
+      "formType": "DEFAULT",
+      "displayGenerateEventBox": false,
+      "generatedByEnrollmentDate": false,
+      "autoGenerateEvent": true,
+      "sortOrder": 1,
+      "blockEntryForm": true,
+      "hideDueDate": false,
+      "minDaysFromStart": 0,
+      "access": {
+        "read": true,
+        "updateWithSection": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": false,
+        "data": {
+          "read": true,
+          "write": true
+        }
+      },
+      "program": {
+        "id": "lxAQ7Zs9VYR"
+      },
+      "programStageDataElements": [
+        {
+          "lastUpdated": "2016-04-12T15:34:04.913",
+          "created": "2016-04-12T15:34:04.913",
+          "id": "eM6beRIqUnM",
+          "displayInReports": false,
+          "compulsory": false,
+          "allowProvidedElsewhere": false,
+          "sortOrder": 0,
+          "allowFutureDate": false,
+          "programStage": {
+            "id": "dBwrot7S420"
+          },
+          "dataElement": {
+            "code": "STA_SMO",
+            "created": "2015-01-14T07:43:31.645",
+            "lastUpdated": "2016-04-06T01:39:41.132",
+            "name": "WHOMCH Smoking",
+            "id": "sWoqcoByYmD",
+            "shortName": "Smoking",
+            "aggregationType": "SUM",
+            "domainType": "TRACKER",
+            "displayName": "WHOMCH Smoking",
+            "displayFormName": "WHOMCH Smoking",
+            "zeroIsSignificant": false,
+            "displayShortName": "Smoking",
+            "valueType": "BOOLEAN"
+          }
+        },
+        {
+          "lastUpdated": "2016-04-12T15:34:04.920",
+          "created": "2016-04-12T15:34:04.920",
+          "id": "ZD8pd21Dt4i",
+          "displayInReports": false,
+          "compulsory": false,
+          "allowProvidedElsewhere": false,
+          "sortOrder": 1,
+          "allowFutureDate": false,
+          "programStage": {
+            "id": "dBwrot7S420"
+          },
+          "dataElement": {
+            "code": "EA5_TRE_SMO",
+            "created": "2013-10-31T12:12:02.900",
+            "lastUpdated": "2015-10-14T13:36:33.896",
+            "name": "WHOMCH Smoking cessation counselling provided ",
+            "id": "Ok9OQpitjQr",
+            "shortName": "Smoking cessation counselling provided ",
+            "displayDescription": "Counselling and behavioural interventions on smoking cessation.",
+            "aggregationType": "SUM",
+            "domainType": "TRACKER",
+            "displayName": "WHOMCH Smoking cessation counselling provided ",
+            "description": "Counselling and behavioural interventions on smoking cessation.",
+            "displayFormName": "WHOMCH Smoking cessation counselling provided ",
+            "zeroIsSignificant": false,
+            "displayShortName": "Smoking cessation counselling provided ",
+            "valueType": "BOOLEAN"
+          }
+        },
+        {
+          "lastUpdated": "2016-04-12T15:34:04.924",
+          "created": "2016-04-12T15:34:04.924",
+          "id": "QgGD234oA8i",
+          "displayInReports": false,
+          "compulsory": false,
+          "allowProvidedElsewhere": false,
+          "sortOrder": 2,
+          "allowFutureDate": false,
+          "programStage": {
+            "id": "dBwrot7S420"
+          },
+          "dataElement": {
+            "code": "LAB_HB",
+            "created": "2013-10-28T17:27:17.826",
+            "lastUpdated": "2015-10-14T13:36:44.324",
+            "name": "WHOMCH Hemoglobin value",
+            "id": "vANAXwtLwcT",
+            "shortName": "Hemoglobin value",
+            "displayDescription": "Screening for anemia.",
+            "aggregationType": "SUM",
+            "domainType": "TRACKER",
+            "displayName": "WHOMCH Hemoglobin value",
+            "description": "Screening for anemia.",
+            "displayFormName": "WHOMCH Hemoglobin value",
+            "zeroIsSignificant": true,
+            "displayShortName": "Hemoglobin value",
+            "valueType": "NUMBER"
+          }
+        }
+      ],
+      "programStageSections": []
+    }
+  ]
+}

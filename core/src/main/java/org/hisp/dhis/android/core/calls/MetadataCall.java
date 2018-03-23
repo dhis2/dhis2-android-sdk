@@ -310,7 +310,7 @@ public class MetadataCall implements Call<Response> {
             List<Program> programs = ((Response<Payload<Program>>) response).body().items();
             Set<String> assignedProgramStageUids = getAssignedProgramStageUids(programs);
             response = programStageCallFactory.create(data, assignedProgramStageUids).call();
-
+            Response programStageResponse = response;
             if (!response.isSuccessful()) {
                 return response;
             }
@@ -333,7 +333,7 @@ public class MetadataCall implements Call<Response> {
                 return organisationUnitResponse;
             }
 
-            List<ProgramStage> programStages = ((Response<Payload<ProgramStage>>) response).body().items();
+            List<ProgramStage> programStages = ((Response<Payload<ProgramStage>>) programStageResponse).body().items();
             Set<String> optionSetUids = getAssignedOptionSetUids(programs, programStages);
             response = new OptionSetCall(
                     data, optionSetService, optionSetHandler, optionSetUids).call();

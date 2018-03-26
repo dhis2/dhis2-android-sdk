@@ -300,8 +300,6 @@ public class MetadataCallShould {
     @Mock
     private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
-    private Response<Payload<DataElement>> dataSetParentCallResponse;
-
     private Response<Payload<ProgramStage>> programStageResponse;
 
 

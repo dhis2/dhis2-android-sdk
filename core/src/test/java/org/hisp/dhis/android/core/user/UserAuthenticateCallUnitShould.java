@@ -140,10 +140,19 @@ public class UserAuthenticateCallUnitShould {
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
+        UserAuthenticateCall.OrganisationUnitHandlerFactory organisationUnitHandlerFactory =
+                new UserAuthenticateCall.OrganisationUnitHandlerFactory() {
+                    @Override
+                    public GenericHandler<OrganisationUnit, OrganisationUnitModel>
+                    organisationUnitHandler(DatabaseAdapter databaseAdapter, User user) {
+                        return organisationUnitHandler;
+                    }
+                };
+
         userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userStore,
                 userCredentialsHandler, resourceHandler,
                 authenticatedUserStore,
-                organisationUnitHandler, "test_user_name", "test_user_password");
+                organisationUnitHandlerFactory, "test_user_name", "test_user_password");
 
         when(userCredentials.uid()).thenReturn("test_user_credentials_uid");
         when(userCredentials.code()).thenReturn("test_user_credentials_code");

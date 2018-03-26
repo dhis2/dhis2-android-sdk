@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
 
 import java.util.Date;
@@ -69,7 +70,7 @@ public abstract class TrackedEntityInstance {
     public static final Field<TrackedEntityInstance, String> trackedEntity = Field.create(TRACKED_ENTITY);
     public static final Field<TrackedEntityInstance, Boolean> deleted = Field.create(DELETED);
     public static final Field<TrackedEntityInstance, String> coordinates = Field.create(COORDINATES);
-    public static final Field<TrackedEntityInstance, String> featureType = Field.create(FEATURE_TYPE);
+    public static final Field<TrackedEntityInstance, FeatureType> featureType = Field.create(FEATURE_TYPE);
 
     public static final NestedField<TrackedEntityInstance, Enrollment> enrollment
             = NestedField.create(ENROLLMENTS);
@@ -127,7 +128,7 @@ public abstract class TrackedEntityInstance {
 
     @Nullable
     @JsonProperty(FEATURE_TYPE)
-    public abstract String featureType();
+    public abstract FeatureType featureType();
 
     @JsonCreator
     public static TrackedEntityInstance create(
@@ -144,7 +145,7 @@ public abstract class TrackedEntityInstance {
             @JsonProperty(RELATIONSHIPS) List<Relationship> relationships,
             @JsonProperty(ENROLLMENTS) List<Enrollment> enrollments,
             @JsonProperty(COORDINATES) String coordinates,
-            @JsonProperty(FEATURE_TYPE) String featureType) {
+            @JsonProperty(FEATURE_TYPE) FeatureType featureType) {
         return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 organisationUnit, trackedEntity, deleted, safeUnmodifiableList(trackedEntityAttributeValues),
                 safeUnmodifiableList(relationships), safeUnmodifiableList(enrollments), coordinates, featureType);

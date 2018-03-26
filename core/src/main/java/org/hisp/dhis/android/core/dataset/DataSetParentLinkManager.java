@@ -96,11 +96,13 @@ class DataSetParentLinkManager {
 
     private void saveDataSetOrganisationUnitLink(OrganisationUnit organisationUnit, Set<String> dataSetUids) {
         List<DataSet> orgUnitDataSets = organisationUnit.dataSets();
-        assert orgUnitDataSets != null;
-        DataSetOrganisationUnitLinkModelBuilder builder = new DataSetOrganisationUnitLinkModelBuilder(organisationUnit);
-        for (DataSet dataSet : orgUnitDataSets) {
-            if (dataSetUids.contains(dataSet.uid())) {
-                dataSetOrganisationUnitStore.updateOrInsertWhere(builder.buildModel(dataSet));
+        if (orgUnitDataSets != null) {
+            DataSetOrganisationUnitLinkModelBuilder builder =
+                    new DataSetOrganisationUnitLinkModelBuilder(organisationUnit);
+            for (DataSet dataSet : orgUnitDataSets) {
+                if (dataSetUids.contains(dataSet.uid())) {
+                    dataSetOrganisationUnitStore.updateOrInsertWhere(builder.buildModel(dataSet));
+                }
             }
         }
     }

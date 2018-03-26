@@ -117,9 +117,7 @@ import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
@@ -179,7 +177,6 @@ import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
 import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
-import org.hisp.dhis.android.core.user.UserCredentialsHandler;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
@@ -277,13 +274,11 @@ public final class D2 {
     private final ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> valueTypeDeviceRenderingStore;
 
     //Handlers
-    private final UserCredentialsHandler userCredentialsHandler;
     private final EventHandler eventHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
-    private final GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler;
     private final OptionSetHandler optionSetHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
@@ -391,11 +386,7 @@ public final class D2 {
         this.valueTypeDeviceRenderingStore = ValueTypeDeviceRenderingStore.create(databaseAdapter());
 
         //handlers
-        userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
         resourceHandler = new ResourceHandler(resourceStore);
-
-        organisationUnitHandler = OrganisationUnitHandler.create(databaseAdapter,
-                null, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, null);
 
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
@@ -454,10 +445,7 @@ public final class D2 {
             throw new NullPointerException("password == null");
         }
 
-        return new UserAuthenticateCall(userService, databaseAdapter, userStore,
-                userCredentialsHandler, resourceHandler,
-                authenticatedUserStore, organisationUnitHandler, username, password
-        );
+        return UserAuthenticateCall.create(databaseAdapter, retrofit, username, password);
     }
 
     @NonNull

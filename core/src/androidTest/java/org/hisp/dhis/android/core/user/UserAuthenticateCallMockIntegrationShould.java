@@ -36,16 +36,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -221,27 +215,8 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-        UserService userService = retrofit.create(UserService.class);
-
-        UserStore userStore = new UserStoreImpl(databaseAdapter());
-        UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
-        AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(
-                databaseAdapter());
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-        UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(
-                userCredentialsStore);
-
-        // TODO fix
-        User user = null;
-        GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler =
-                OrganisationUnitHandler.create(databaseAdapter(), null,
-                        OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
-
-        authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userStore,
-                userCredentialsHandler, resourceHandler,
-                authenticatedUserStore,
-                organisationUnitHandler, "test_user", "test_password");
+        authenticateUserCall = UserAuthenticateCall.create(databaseAdapter(), retrofit,
+                "test_user", "test_password");
     }
 
     @Test

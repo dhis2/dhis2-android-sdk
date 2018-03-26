@@ -27,12 +27,9 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.assertj.core.util.Lists;
-import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -94,7 +91,7 @@ public class OrganisationUnitCallUnitShould {
 
     //Captors for the organisationUnitService arguments:
     @Captor
-    private ArgumentCaptor<Filter<OrganisationUnit, String>> uidsCaptor;
+    private ArgumentCaptor<String> uidCaptor;
 
     @Captor
     private ArgumentCaptor<Fields<OrganisationUnit>> fieldsCaptor;
@@ -185,17 +182,15 @@ public class OrganisationUnitCallUnitShould {
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
-        Set<String> organisationUnitUids = Sets.newHashSet(
-                Lists.newArrayList(orgUnitUid));
-        organisationUnitCall = new OrganisationUnitCall(genericCallData, organisationUnitService,
-                organisationUnitHandler, UidsQuery.create(organisationUnitUids, null));
+        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
+                genericCallData, organisationUnitHandler);
 
         //Return only one organisationUnit.
         organisationUnits = Collections.singletonList(organisationUnit);
         when(user.organisationUnits()).thenReturn(organisationUnits);
 
         when(organisationUnitService.getOrganisationUnits(
-                fieldsCaptor.capture(), filterCaptor.capture(), uidsCaptor.capture(), descendantsCaptor.capture(),
+                uidCaptor.capture(), fieldsCaptor.capture(), filterCaptor.capture(), descendantsCaptor.capture(),
                 pagingCaptor.capture()
         )).thenReturn(retrofitCall);
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
@@ -216,7 +211,7 @@ public class OrganisationUnitCallUnitShould {
 
         organisationUnitCall.call();
 
-        assertThat(uidsCaptor.getValue().values()).contains(organisationUnit.uid());
+        assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
         assertThat(fieldsCaptor.getValue().fields()).contains(
                 OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
                 OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
@@ -238,7 +233,7 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void throw_exception_dont_start_transaction() throws Exception {
+    public void throw_exception_not_mark_transaction_successful() throws Exception {
         when(retrofitCall.execute()).thenThrow(IOException.class);
         try {
             organisationUnitCall.call();
@@ -246,14 +241,15 @@ public class OrganisationUnitCallUnitShould {
         } catch (Exception e) {
             assertThat(IOException.class.isInstance(e)).isTrue();
 
-            verifyNoMoreInteractions(databaseAdapter);
+            verify(databaseAdapter, times(1)).beginNewTransaction();
+            verify(transaction, times(1)).end();
             verifyNoMoreInteractions(transaction);
         }
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void not_start_transaction_if_request_fails() throws Exception {
+    public void not_mark_transaction_successful_if_request_fails() throws Exception {
         when(retrofitCall.execute()).thenReturn(Response.<Payload<OrganisationUnit>>error(
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 ResponseBody.create(MediaType.parse("application/json"), "{}")));
@@ -261,7 +257,8 @@ public class OrganisationUnitCallUnitShould {
         Response<Payload<OrganisationUnit>> response = organisationUnitCall.call();
 
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verifyNoMoreInteractions(databaseAdapter);
+        verify(databaseAdapter, times(1)).beginNewTransaction();
+        verify(transaction, times(1)).end();
         verifyNoMoreInteractions(transaction);
     }
 
@@ -285,8 +282,8 @@ public class OrganisationUnitCallUnitShould {
     @SuppressWarnings("unchecked")
     public void not_fail_on_empty_input() {
         Set<String> uids = new HashSet<>();
-        organisationUnitCall = new OrganisationUnitCall(genericCallData, organisationUnitService,
-                organisationUnitHandler, UidsQuery.create(uids, null));
+        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
+                genericCallData, organisationUnitHandler);
 
         try {
             organisationUnitCall.call();

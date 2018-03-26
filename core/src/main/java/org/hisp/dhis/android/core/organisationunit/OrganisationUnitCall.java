@@ -28,13 +28,17 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.UidsQuery;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
 
@@ -45,48 +49,113 @@ import retrofit2.Response;
 
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
 
-public class OrganisationUnitCall extends GenericEndpointCallImpl<OrganisationUnit, OrganisationUnitModel, UidsQuery> {
+public class OrganisationUnitCall implements Call<Response<Payload<OrganisationUnit>>> {
 
+    private final User user;
     private final OrganisationUnitService organisationUnitService;
+    private final GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler;
+    private final GenericCallData genericCallData;
+    private boolean isExecuted;
 
-    OrganisationUnitCall(@NonNull GenericCallData data,
-                                 @NonNull OrganisationUnitService organisationUnitService,
-                                 @NonNull GenericHandler<OrganisationUnit, OrganisationUnitModel>
-                                         organisationUnitHandler,
-                                 @NonNull UidsQuery uidsQuery) {
-        super(data, organisationUnitHandler, ResourceModel.Type.ORGANISATION_UNIT, new OrganisationUnitModelBuilder(),
-                uidsQuery);
+    OrganisationUnitCall(@NonNull User user,
+                         @NonNull OrganisationUnitService organisationUnitService,
+                         @NonNull GenericCallData genericCallData,
+                         @NonNull GenericHandler<OrganisationUnit, OrganisationUnitModel>
+                                 organisationUnitHandler) {
+        this.user = user;
         this.organisationUnitService = organisationUnitService;
+        this.genericCallData = genericCallData;
+        this.organisationUnitHandler = organisationUnitHandler;
     }
 
     @Override
-    protected retrofit2.Call<Payload<OrganisationUnit>> getCall(UidsQuery query,
-                                                                String lastUpdated) throws IOException {
-        return organisationUnitService.getOrganisationUnits(
-                OrganisationUnit.allFields,
-                OrganisationUnit.lastUpdated.gt(lastUpdated),
-                OrganisationUnit.uid.in(query.uids()),
-                true,
-                false);
+    public boolean isExecuted() {
+        synchronized (this) {
+            return isExecuted;
+        }
+    }
+
+    @Override
+    public Response<Payload<OrganisationUnit>> call() throws Exception {
+        synchronized (this) {
+            if (isExecuted) {
+                throw new IllegalArgumentException("AlreadyExecuted");
+            }
+            isExecuted = true;
+        }
+        Response<Payload<OrganisationUnit>> response = null;
+        Response<Payload<OrganisationUnit>> totalResponse = null;
+
+        Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
+        try {
+            Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
+            Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
+                    genericCallData.resourceHandler().getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
+            );
+            // Call OrganisationUnitService for each tree root & try to handleTrackedEntity sub-tree:
+            for (String uid : rootOrgUnitUids) {
+                response = getOrganisationUnit(uid, lastUpdatedFilter);
+                if (response.isSuccessful()) {
+                    if (totalResponse == null) {
+                        totalResponse = response;
+                    } else {
+                        totalResponse.body().items().addAll(response.body().items());
+                    }
+                    OrganisationUnitModelBuilder modelBuilder = new OrganisationUnitModelBuilder();
+                    organisationUnitHandler.handleMany(
+                            response.body().items(),
+                            modelBuilder);
+                } else {
+                    totalResponse = response;
+                    break; //stop early unsuccessful:
+                }
+            }
+            if (response != null && response.isSuccessful()) {
+                genericCallData.resourceHandler().handleResource(ResourceModel.Type.ORGANISATION_UNIT,
+                        genericCallData.serverDate());
+                transaction.setSuccessful();
+            }
+        } finally {
+            transaction.end();
+        }
+        return totalResponse;
+    }
+
+    private Response<Payload<OrganisationUnit>> getOrganisationUnit(
+            @NonNull String uid,
+            @Nullable Filter<OrganisationUnit, String> lastUpdatedFilter) throws IOException {
+
+        Fields<OrganisationUnit> fields = Fields.<OrganisationUnit>builder().fields(
+                OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
+                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
+                OrganisationUnit.shortName, OrganisationUnit.displayShortName,
+                OrganisationUnit.description, OrganisationUnit.displayDescription,
+                OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
+                OrganisationUnit.closedDate, OrganisationUnit.level, OrganisationUnit.deleted,
+                OrganisationUnit.parent.with(OrganisationUnit.uid),
+                OrganisationUnit.programs.with(Program.uid),
+                OrganisationUnit.dataSets.with(DataSet.uid)
+        ).build();
+        return organisationUnitService.getOrganisationUnits(uid, fields, lastUpdatedFilter, true, false).execute();
     }
 
     public interface Factory {
         Call<Response<Payload<OrganisationUnit>>> create(GenericCallData data,
-                              User user,
-                              Set<String> programUids);
+                                                         User user,
+                                                         Set<String> programUids);
     }
 
     public static final OrganisationUnitCall.Factory FACTORY = new OrganisationUnitCall.Factory() {
         @Override
         public Call<Response<Payload<OrganisationUnit>>> create(GenericCallData data,
-                                           User user,
-                                           Set<String> programUids) {
+                                                                User user,
+                                                                Set<String> programUids) {
             GenericHandler<OrganisationUnit, OrganisationUnitModel> handler =
                     OrganisationUnitHandler.create(data.databaseAdapter(), programUids,
                             OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
             Set<String> uids = findRoots(user.organisationUnits());
-            return new OrganisationUnitCall(data, data.retrofit().create(OrganisationUnitService.class),
-                    handler, UidsQuery.create(uids, null));
+            return new OrganisationUnitCall(user, data.retrofit().create(OrganisationUnitService.class),
+                    data, handler);
         }
     };
 }

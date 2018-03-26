@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -164,10 +163,9 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 OrganisationUnitHandler.create(databaseAdapter(), programUids,
                         OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
 
-        UidsQuery query = UidsQuery.create(Sets.newHashSet("DiszpKrYNg8"), 64);
         genericCallData = GenericCallData.create(databaseAdapter(), d2.retrofit());
-        organisationUnitCall = new OrganisationUnitCall(genericCallData, organisationUnitService,
-                organisationUnitHandler, query);
+        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
+                genericCallData, organisationUnitHandler);
     }
 
     private void insertProgramWithUid(String uid) {

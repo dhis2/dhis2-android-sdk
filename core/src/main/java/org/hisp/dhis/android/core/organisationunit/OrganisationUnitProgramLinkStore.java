@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.organisationunit;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 
 public final class OrganisationUnitProgramLinkStore {
 

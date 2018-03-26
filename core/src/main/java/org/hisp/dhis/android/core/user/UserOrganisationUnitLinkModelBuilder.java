@@ -32,7 +32,8 @@ import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 
-public class UserOrganisationUnitLinkModelBuilder extends ModelBuilder<OrganisationUnit, UserOrganisationUnitLinkModel> {
+public class UserOrganisationUnitLinkModelBuilder
+        extends ModelBuilder<OrganisationUnit, UserOrganisationUnitLinkModel> {
 
     private final UserOrganisationUnitLinkModel.Builder builder;
 

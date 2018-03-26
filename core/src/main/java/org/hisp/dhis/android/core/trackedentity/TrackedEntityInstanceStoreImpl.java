@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -38,11 +35,15 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals",
@@ -58,8 +59,10 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             Columns.LAST_UPDATED_AT_CLIENT + ", " +
             Columns.ORGANISATION_UNIT + ", " +
             Columns.TRACKED_ENTITY + ", " +
+            Columns.COORDINATES + ", " +
+            Columns.FEATURE_TYPE + ", " +
             Columns.STATE +
-            ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityInstanceModel.TABLE + " SET " +
             Columns.UID + " =?, " +
@@ -69,6 +72,8 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             Columns.LAST_UPDATED_AT_CLIENT + " =? , " +
             Columns.ORGANISATION_UNIT + " =?, " +
             Columns.TRACKED_ENTITY + " =?, " +
+            Columns.COORDINATES + " =?, " +
+            Columns.FEATURE_TYPE + " =?, " +
             Columns.STATE + " =? " +
             " WHERE " +
             Columns.UID + " =?;";
@@ -90,7 +95,9 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             "  TrackedEntityInstance.createdAtClient, " +
             "  TrackedEntityInstance.lastUpdatedAtClient, " +
             "  TrackedEntityInstance.organisationUnit, " +
-            "  TrackedEntityInstance.trackedEntity " +
+            "  TrackedEntityInstance.trackedEntity," +
+            "  TrackedEntityInstance.coordinates," +
+            "  TrackedEntityInstance.featureType " +
             "FROM TrackedEntityInstance ";
 
     private static final String QUERY_STATEMENT_TO_POST =
@@ -120,7 +127,8 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
                        @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
-                       @NonNull String organisationUnit, @NonNull String trackedEntity, @Nullable State state) {
+                       @NonNull String organisationUnit, @NonNull String trackedEntity, @Nullable String coordinates,
+                       @Nullable FeatureType featureType, @Nullable State state) {
 
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, created);
@@ -129,7 +137,9 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         sqLiteBind(insertStatement, 5, lastUpdatedAtClient);
         sqLiteBind(insertStatement, 6, organisationUnit);
         sqLiteBind(insertStatement, 7, trackedEntity);
-        sqLiteBind(insertStatement, 8, state);
+        sqLiteBind(insertStatement, 8, coordinates);
+        sqLiteBind(insertStatement, 9, trackedEntity);
+        sqLiteBind(insertStatement, 10, state);
 
         long returnValue = databaseAdapter.executeInsert(TrackedEntityInstanceModel.TABLE, insertStatement);
         insertStatement.clearBindings();
@@ -145,6 +155,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
     public int update(@NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated,
                       @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
                       @NonNull String organisationUnit, @NonNull String trackedEntity,
+                      @Nullable String coordinates, @Nullable FeatureType featureType,
                       @NonNull State state, @NonNull String whereTrackedEntityInstanceUid) {
         sqLiteBind(updateStatement, 1, uid);
         sqLiteBind(updateStatement, 2, created);
@@ -153,10 +164,12 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         sqLiteBind(updateStatement, 5, lastUpdatedAtClient);
         sqLiteBind(updateStatement, 6, organisationUnit);
         sqLiteBind(updateStatement, 7, trackedEntity);
-        sqLiteBind(updateStatement, 8, state);
+        sqLiteBind(updateStatement, 8, coordinates);
+        sqLiteBind(updateStatement, 9, featureType);
+        sqLiteBind(updateStatement, 10, state);
 
         // bind the where clause
-        sqLiteBind(updateStatement, 9, whereTrackedEntityInstanceUid);
+        sqLiteBind(updateStatement, 11, whereTrackedEntityInstanceUid);
 
         int rowId = databaseAdapter.executeUpdateDelete(TrackedEntityInstanceModel.TABLE, updateStatement);
         updateStatement.clearBindings();
@@ -223,14 +236,17 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
                     String uid = cursor.getString(0);
                     Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
                     Date lastUpdated = cursor.getString(2) == null ? null : parse(cursor.getString(2));
-                    String createdAtClient = cursor.getString(3) == null ? null : cursor.getString(3);
-                    String lastUpdatedAtClient = cursor.getString(4) == null ? null : cursor.getString(4);
-                    String organisationUnit = cursor.getString(5) == null ? null : cursor.getString(5);
-                    String trackedEntity = cursor.getString(6) == null ? null : cursor.getString(6);
+                    String createdAtClient = cursor.getString(3);
+                    String lastUpdatedAtClient = cursor.getString(4);
+                    String organisationUnit = cursor.getString(5);
+                    String trackedEntity = cursor.getString(6);
+                    String coordinates = cursor.getString(7);
+                    FeatureType featureType = cursor.getString(8) == null ? null :
+                            FeatureType.valueOf(cursor.getString(8));
 
                     trackedEntityInstanceMap.put(uid, TrackedEntityInstance.create(
                             uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                            organisationUnit, trackedEntity, false, null, null,
+                            organisationUnit, trackedEntity, coordinates, featureType, false,
                             null, null, null));
 
                 } while (cursor.moveToNext());

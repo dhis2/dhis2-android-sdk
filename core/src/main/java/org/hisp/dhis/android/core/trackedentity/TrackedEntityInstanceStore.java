@@ -33,6 +33,7 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.period.FeatureType;
 
 import java.util.Date;
 import java.util.Map;
@@ -40,20 +41,15 @@ import java.util.Map;
 public interface TrackedEntityInstanceStore extends DeletableStore {
 
     long insert(
-            @NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated,
-            @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
-            @NonNull String organisationUnit, @NonNull String trackedEntity, @Nullable State state);
+            @NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated, @Nullable String createdAtClient,
+            @Nullable String lastUpdatedAtClient, @NonNull String organisationUnit, @NonNull String trackedEntity,
+            @Nullable String coordinates, @Nullable FeatureType featureType, @Nullable State state);
 
     int delete();
 
-    int update(@NonNull String uid,
-               @NonNull Date created,
-               @NonNull Date lastUpdated,
-               @Nullable String createdAtClient,
-               @Nullable String lastUpdatedAtClient,
-               @NonNull String organisationUnit,
-               @NonNull String trackedEntity,
-               @NonNull State state,
+    int update(@NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated, @Nullable String createdAtClient,
+               @Nullable String lastUpdatedAtClient, @NonNull String organisationUnit, @NonNull String trackedEntity,
+               @Nullable String coordinates, @Nullable FeatureType featureType, @Nullable State state,
                @NonNull String whereTrackedEntityInstanceUid);
 
     int delete(@NonNull String uid);

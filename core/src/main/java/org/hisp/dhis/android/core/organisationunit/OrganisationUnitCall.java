@@ -153,7 +153,6 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             GenericHandler<OrganisationUnit, OrganisationUnitModel> handler =
                     OrganisationUnitHandler.create(data.databaseAdapter(), programUids,
                             OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
-            Set<String> uids = findRoots(user.organisationUnits());
             return new OrganisationUnitCall(user, data.retrofit().create(OrganisationUnitService.class),
                     data, handler);
         }

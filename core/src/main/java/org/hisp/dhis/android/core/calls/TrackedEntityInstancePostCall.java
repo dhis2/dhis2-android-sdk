@@ -169,7 +169,7 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
                     trackedEntityInstance.createdAtClient(), trackedEntityInstance.lastUpdatedAtClient(),
                     trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntity(),
                     trackedEntityInstance.deleted(), attributeValues,
-                    relationshipRecreated, enrollmentsRecreated));
+                    relationshipRecreated, enrollmentsRecreated, null, null));
 
         }
 

@@ -57,6 +57,8 @@ public abstract class TrackedEntityInstance {
     private static final String TRACKED_ENTITY = "trackedEntityType";
     private static final String DELETED = "deleted";
     private static final String ENROLLMENTS = "enrollments";
+    private static final String COORDINATES = "coordinates";
+    private static final String FEATURE_TYPE = "featureType";
 
     public static final Field<TrackedEntityInstance, String> uid = Field.create(UID);
     public static final Field<TrackedEntityInstance, String> created = Field.create(CREATED);
@@ -64,9 +66,10 @@ public abstract class TrackedEntityInstance {
     public static final Field<TrackedEntityInstance, String> createdAtClient = Field.create(CREATED_AT_CLIENT);
     public static final Field<TrackedEntityInstance, String> lastUpdatedAtClient = Field.create(LAST_UPDATED_AT_CLIENT);
     public static final Field<TrackedEntityInstance, String> organisationUnit = Field.create(ORGANISATION_UNIT);
-    public static final Field<TrackedEntityInstance, String> trackedEntity = Field.create(
-            TRACKED_ENTITY);
+    public static final Field<TrackedEntityInstance, String> trackedEntity = Field.create(TRACKED_ENTITY);
     public static final Field<TrackedEntityInstance, Boolean> deleted = Field.create(DELETED);
+    public static final Field<TrackedEntityInstance, String> coordinates = Field.create(COORDINATES);
+    public static final Field<TrackedEntityInstance, String> featureType = Field.create(FEATURE_TYPE);
 
     public static final NestedField<TrackedEntityInstance, Enrollment> enrollment
             = NestedField.create(ENROLLMENTS);
@@ -118,6 +121,14 @@ public abstract class TrackedEntityInstance {
     @JsonProperty(ENROLLMENTS)
     public abstract List<Enrollment> enrollments();
 
+    @Nullable
+    @JsonProperty(COORDINATES)
+    public abstract String coordinates();
+
+    @Nullable
+    @JsonProperty(FEATURE_TYPE)
+    public abstract String featureType();
+
     @JsonCreator
     public static TrackedEntityInstance create(
             @JsonProperty(UID) String uid,
@@ -131,11 +142,12 @@ public abstract class TrackedEntityInstance {
             @JsonProperty(TRACKED_ENTITY_ATTRIBUTE_VALUES)
                     List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
             @JsonProperty(RELATIONSHIPS) List<Relationship> relationships,
-            @JsonProperty(ENROLLMENTS) List<Enrollment> enrollments) {
+            @JsonProperty(ENROLLMENTS) List<Enrollment> enrollments,
+            @JsonProperty(COORDINATES) String coordinates,
+            @JsonProperty(FEATURE_TYPE) String featureType) {
         return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                organisationUnit, trackedEntity, deleted,
-                safeUnmodifiableList(trackedEntityAttributeValues),
-                safeUnmodifiableList(relationships), safeUnmodifiableList(enrollments));
+                organisationUnit, trackedEntity, deleted, safeUnmodifiableList(trackedEntityAttributeValues),
+                safeUnmodifiableList(relationships), safeUnmodifiableList(enrollments), coordinates, featureType);
     }
 
 }

@@ -258,7 +258,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             OrganisationUnitModel.Columns.OPENING_DATE + " TEXT," +
             OrganisationUnitModel.Columns.CLOSED_DATE + " TEXT," +
             OrganisationUnitModel.Columns.LEVEL + " INTEGER," +
-            OrganisationUnitModel.Columns.PARENT + " TEXT" +
+            OrganisationUnitModel.Columns.PARENT + " TEXT," +
+            OrganisationUnitModel.Columns.DISPLAY_NAME_PATH + " TEXT" +
             ");";
 
     private static final String CREATE_USER_ORGANISATION_UNIT_TABLE = "CREATE TABLE " +

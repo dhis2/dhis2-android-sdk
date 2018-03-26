@@ -57,7 +57,7 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel impl
         public static final String CLOSED_DATE = "closedDate";
         public static final String LEVEL = "level";
         public static final String PARENT = "parent";
-        public static final String DISPLAY_NAME_PATH = "parent";
+        public static final String DISPLAY_NAME_PATH = "displayNamePath";
 
         private Columns() {}
 
@@ -80,10 +80,6 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel impl
     }
 
     @Nullable
-    @ColumnName(Columns.PARENT)
-    public abstract String parent();
-
-    @Nullable
     @ColumnName(Columns.PATH)
     public abstract String path();
 
@@ -100,6 +96,10 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel impl
     @Nullable
     @ColumnName(Columns.LEVEL)
     public abstract Integer level();
+
+    @Nullable
+    @ColumnName(Columns.PARENT)
+    public abstract String parent();
 
     @Nullable
     @ColumnName(Columns.DISPLAY_NAME_PATH)
@@ -121,8 +121,6 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel impl
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
-        public abstract Builder parent(@Nullable String parent);
-
         public abstract Builder path(@Nullable String path);
 
         public abstract Builder openingDate(@Nullable Date openingDate);
@@ -130,6 +128,8 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel impl
         public abstract Builder closedDate(@Nullable Date closedDate);
 
         public abstract Builder level(@Nullable Integer level);
+
+        public abstract Builder parent(@Nullable String parent);
 
         public abstract Builder displayNamePath(@Nullable String displayNamePath);
 

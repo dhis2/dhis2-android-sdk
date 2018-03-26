@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.program.Program;
@@ -75,6 +76,12 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     public static final NestedField<OrganisationUnit, Program> programs = NestedField.create(PROGRAMS);
     public static final NestedField<OrganisationUnit, DataSet> dataSets = NestedField.create(DATA_SETS);
 
+    static final Fields<OrganisationUnit> allFields = Fields.<OrganisationUnit>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
+            description, displayDescription, displayDescription, path, openingDate,
+            closedDate, level, deleted, parent.with(uid), programs.with(Program.uid),
+            dataSets.with(DataSet.uid)).build();
+    
     @Nullable
     @JsonProperty(PARENT)
     public abstract OrganisationUnit parent();

@@ -30,116 +30,71 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModelBuilder;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
 import java.util.List;
 import java.util.Set;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
-
-public class OrganisationUnitHandler {
-    private final OrganisationUnitStore organisationUnitStore;
-    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
-    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
+public class OrganisationUnitHandler extends IdentifiableHandlerImpl<OrganisationUnit, OrganisationUnitModel> {
+    private final ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
+    private final ObjectWithoutUidStore<OrganisationUnitProgramLinkModel> organisationUnitProgramLinkStore;
     private final Set<String> programUids;
+    private final OrganisationUnitModel.Scope scope;
+    private final User user;
 
-    public OrganisationUnitHandler(@NonNull OrganisationUnitStore organisationUnitStore,
-                                   @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                                   @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
-                                   @Nullable Set<String> programUids) {
-        this.organisationUnitStore = organisationUnitStore;
+    public OrganisationUnitHandler(@NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
+                                   @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel>
+                                           userOrganisationUnitLinkStore,
+                                   @NonNull ObjectWithoutUidStore<OrganisationUnitProgramLinkModel>
+                                           organisationUnitProgramLinkStore,
+                                   @Nullable Set<String> programUids,
+                                   @Nullable OrganisationUnitModel.Scope scope,
+                                   @Nullable User user) {
+        super(organisationUnitStore);
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
         this.programUids = programUids;
+        this.scope = scope;
+        this.user = user;
     }
 
-    public void handleOrganisationUnits(@NonNull List<OrganisationUnit> organisationUnits,
-                                        @Nullable OrganisationUnitModel.Scope scope,
-                                        @NonNull String userUid) {
-        if (organisationUnits == null) {
-            return;
-        }
+    @Override
+    protected void afterObjectPersisted(OrganisationUnit organisationUnit) {
+        UserOrganisationUnitLinkModelBuilder modelBuilder = new UserOrganisationUnitLinkModelBuilder(scope, user);
+        userOrganisationUnitLinkStore.updateOrInsertWhere(modelBuilder.buildModel(organisationUnit));
 
-        int size = organisationUnits.size();
-        for (int i = 0; i < size; i++) {
-            OrganisationUnit organisationUnit = organisationUnits.get(i);
-
-            if (isDeleted(organisationUnit)) {
-                organisationUnitStore.delete(organisationUnit.uid());
-            } else {
-                String parentUid = null;
-                if (organisationUnit.parent() != null) {
-                    parentUid = organisationUnit.parent().uid();
-                }
-                int updatedRow = organisationUnitStore.update(
-                        organisationUnit.uid(),
-                        organisationUnit.code(),
-                        organisationUnit.name(),
-                        organisationUnit.displayName(),
-                        organisationUnit.created(),
-                        organisationUnit.lastUpdated(),
-                        organisationUnit.shortName(),
-                        organisationUnit.displayShortName(),
-                        organisationUnit.description(),
-                        organisationUnit.displayDescription(),
-                        organisationUnit.path(),
-                        organisationUnit.openingDate(),
-                        organisationUnit.closedDate(),
-                        parentUid,
-                        organisationUnit.level(),
-                        organisationUnit.uid());
-                if (updatedRow <= 0) {
-                    organisationUnitStore.insert(
-                            organisationUnit.uid(),
-                            organisationUnit.code(),
-                            organisationUnit.name(),
-                            organisationUnit.displayName(),
-                            organisationUnit.created(),
-                            organisationUnit.lastUpdated(),
-                            organisationUnit.shortName(),
-                            organisationUnit.displayShortName(),
-                            organisationUnit.description(),
-                            organisationUnit.displayDescription(),
-                            organisationUnit.path(),
-                            organisationUnit.openingDate(),
-                            organisationUnit.closedDate(),
-                            parentUid,
-                            organisationUnit.level()
-                    );
-                }
-                addUserOrganisationUnitLink(scope, userUid, organisationUnit);
-
-                if (programUids != null) {
-                    addOrganisationUnitProgramLink(organisationUnit);
-                }
-            }
-        }
-    }
-
-    private void addUserOrganisationUnitLink(@Nullable OrganisationUnitModel.Scope scope,
-                                             @NonNull String userUid, OrganisationUnit organisationUnit) {
-        if (scope != null) {
-            int updatedLinkRow = userOrganisationUnitLinkStore.update(userUid, organisationUnit.uid(),
-                    scope.name(), userUid, organisationUnit.uid(), scope.name());
-            if (updatedLinkRow <= 0) {
-                userOrganisationUnitLinkStore.insert(userUid, organisationUnit.uid(), scope.name());
-            }
-        }
+        addOrganisationUnitProgramLink(organisationUnit);
     }
 
     private void addOrganisationUnitProgramLink(@NonNull OrganisationUnit organisationUnit) {
         List<Program> orgUnitPrograms = organisationUnit.programs();
         if (orgUnitPrograms != null && programUids != null) {
+            OrganisationUnitProgramLinkModelBuilder modelBuilder
+                    = new OrganisationUnitProgramLinkModelBuilder(organisationUnit);
             for (Program program : orgUnitPrograms) {
-                if (programUids.contains(program.uid()) &&
-                        !organisationUnitProgramLinkStore.exists(organisationUnit.uid(), program.uid())) {
-                    organisationUnitProgramLinkStore.insert(
-                            organisationUnit.uid(),
-                            program.uid()
-                    );
+                if (programUids.contains(program.uid())) {
+                    organisationUnitProgramLinkStore.updateOrInsertWhere(modelBuilder.buildModel(program));
                 }
             }
         }
+    }
+
+    public static OrganisationUnitHandler create(DatabaseAdapter databaseAdapter,
+                                                 Set<String> programUids,
+                                                 OrganisationUnitModel.Scope scope,
+                                                 User user) {
+        return new OrganisationUnitHandler(
+                OrganisationUnitStore.create(databaseAdapter),
+                UserOrganisationUnitLinkStore.create(databaseAdapter),
+                OrganisationUnitProgramLinkStore.create(databaseAdapter),
+                programUids, scope, user);
     }
 }

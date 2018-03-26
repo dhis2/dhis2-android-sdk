@@ -28,28 +28,31 @@
 
 package org.hisp.dhis.android.core.user;
 
-import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
-
-import static okhttp3.Credentials.basic;
-
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModelBuilder;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
+
+import static okhttp3.Credentials.basic;
+import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 
 // ToDo: ask about API changes
 // ToDo: performance tests? Try to feed in a user instance with thousands organisation units
@@ -63,7 +66,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     private final UserCredentialsHandler userCredentialsHandler;
     private final ResourceHandler resourceHandler;
     private final AuthenticatedUserStore authenticatedUserStore;
-    private final OrganisationUnitHandler organisationUnitHandler;
+    private final OrganisationUnitHandlerFactory organisationUnitHandlerFactory;
 
     // username and password of candidate
     private final String username;
@@ -71,14 +74,14 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
     private boolean isExecuted;
 
-    public UserAuthenticateCall(
+    UserAuthenticateCall(
             @NonNull UserService userService,
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull UserStore userStore,
             @NonNull UserCredentialsHandler userCredentialsHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
-            @NonNull OrganisationUnitHandler organisationUnitHandler,
+            @NonNull OrganisationUnitHandlerFactory organisationUnitHandlerFactory,
             @NonNull String username,
             @NonNull String password) {
         this.userService = userService;
@@ -88,7 +91,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         this.userCredentialsHandler = userCredentialsHandler;
         this.resourceHandler = resourceHandler;
         this.authenticatedUserStore = authenticatedUserStore;
-        this.organisationUnitHandler = organisationUnitHandler;
+        this.organisationUnitHandlerFactory = organisationUnitHandlerFactory;
 
         // credentials
         this.username = username;
@@ -211,13 +214,45 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, serverDateTime);
 
         if (user.organisationUnits() != null) {
-            organisationUnitHandler.handleOrganisationUnits(
-                    user.organisationUnits(),
-                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
-                    user.uid());
+            organisationUnitHandlerFactory.organisationUnitHandler(databaseAdapter, user)
+                    .handleMany(user.organisationUnits(), new OrganisationUnitModelBuilder());
 
             // TODO: This is introduced to download all descendants
             // resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDateTime);
         }
     }
+
+    public static UserAuthenticateCall create(
+            @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull Retrofit retrofit,
+            @NonNull String username,
+            @NonNull String password) {
+        return new UserAuthenticateCall(
+                retrofit.create(UserService.class),
+                databaseAdapter,
+                new UserStoreImpl(databaseAdapter),
+                UserCredentialsHandler.create(databaseAdapter),
+                ResourceHandler.create(databaseAdapter),
+                new AuthenticatedUserStoreImpl(databaseAdapter),
+                FACTORY,
+                username,
+                password
+        );
+    }
+
+    public interface OrganisationUnitHandlerFactory {
+        GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler(
+                DatabaseAdapter databaseAdapter,
+                User user);
+    }
+
+    private static final UserAuthenticateCall.OrganisationUnitHandlerFactory FACTORY =
+            new UserAuthenticateCall.OrganisationUnitHandlerFactory() {
+                @Override
+                public GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler(
+                        DatabaseAdapter databaseAdapter, User user) {
+                    return OrganisationUnitHandler.create(databaseAdapter, new HashSet<String>(),
+                            OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
+                }
+            };
 }

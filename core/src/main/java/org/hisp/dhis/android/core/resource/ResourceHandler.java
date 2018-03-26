@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.resource;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import java.util.Date;
 
 public class ResourceHandler {
@@ -54,5 +56,9 @@ public class ResourceHandler {
      */
     public String getLastUpdated(ResourceModel.Type type) {
         return resourceStore.getLastUpdated(type);
+    }
+
+    public static ResourceHandler create(DatabaseAdapter databaseAdapter) {
+        return new ResourceHandler(new ResourceStoreImpl(databaseAdapter));
     }
 }

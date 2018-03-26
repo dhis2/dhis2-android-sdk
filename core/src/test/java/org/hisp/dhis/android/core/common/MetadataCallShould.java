@@ -51,9 +51,7 @@ import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
@@ -78,7 +76,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRole;
 import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserService;
@@ -112,7 +109,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -131,9 +128,6 @@ public class MetadataCallShould {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<User> userCall;
-
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<OrganisationUnit>> organisationUnitCall;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<Payload<Program>> programCall;
@@ -164,12 +158,6 @@ public class MetadataCallShould {
 
     @Mock
     private UserRoleStore userRoleStore;
-
-    @Mock
-    private OrganisationUnitStore organisationUnitStore;
-
-    @Mock
-    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
 
     @Mock
     private UserStore userStore;
@@ -205,16 +193,10 @@ public class MetadataCallShould {
     private TrackedEntityStore trackedEntityStore;
 
     @Mock
-    private OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
-
-    @Mock
     private UserService userService;
 
     @Mock
     private ProgramService programService;
-
-    @Mock
-    private OrganisationUnitService organisationUnitService;
 
     @Mock
     private TrackedEntityService trackedEntityService;
@@ -236,8 +218,6 @@ public class MetadataCallShould {
 
     @Mock
     private UserRole userRole;
-
-    private List<UserRole> userRoles;
 
     @Mock
     private OrganisationUnit organisationUnit;
@@ -287,19 +267,17 @@ public class MetadataCallShould {
     @Mock
     private CategoryQuery categoryQuery;
 
-    private CategoryService categoryService;
-
     @Mock
     private CategoryHandler categoryHandler;
-
-
-    private CategoryComboService comboService;
 
     @Mock
     private CategoryComboHandler mockCategoryComboHandler;
 
     @Mock
     private GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
+
+    @Mock
+    private OrganisationUnitCall.Factory organisationUnitCallFactory;
 
     @Mock
     private ProgramStageEndpointCall.Factory programStageCallFactory;
@@ -314,12 +292,13 @@ public class MetadataCallShould {
     private Call<Response> dataSetParentCall;
 
     @Mock
+    private Call<Response<Payload<OrganisationUnit>>> organisationUnitEndpointCall;
+
+    @Mock
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
     private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
-
-    private Response<Payload<DataElement>> dataSetParentCallResponse;
 
     private Response<Payload<ProgramStage>> programStageResponse;
 
@@ -330,7 +309,7 @@ public class MetadataCallShould {
 
     private Response errorResponse;
 
-    Dhis2MockServer  dhis2MockServer;
+    private Dhis2MockServer  dhis2MockServer;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -343,9 +322,6 @@ public class MetadataCallShould {
 
         when(systemInfoService.getSystemInfo(any(Fields.class))).thenReturn(systemInfoCall);
         when(userService.getUser(any(Fields.class))).thenReturn(userCall);
-        when(organisationUnitService.getOrganisationUnits(
-                anyString(), any(Fields.class), any(Filter.class), anyBoolean(), anyBoolean())
-        ).thenReturn(organisationUnitCall);
         when(programService.getProgramsForAccess(any(Fields.class), any(Filter.class), anyBoolean())
         ).thenReturn(programWithAccessCall);
         when(programService.getPrograms(
@@ -358,7 +334,7 @@ public class MetadataCallShould {
                 anyBoolean(), any(Fields.class), any(Filter.class))
         ).thenReturn(optionSetCall);
 
-        userRoles = new ArrayList<>();
+        List<UserRole> userRoles = new ArrayList<>();
         userRoles.add(userRole);
 
         when(systemInfo.serverDate()).thenReturn(serverDateTime);
@@ -386,7 +362,9 @@ public class MetadataCallShould {
 
         when(dataSetParentCallFactory.create(any(User.class), any(GenericCallData.class), any(List.class)))
                 .thenReturn(dataSetParentCall);
-        dataSetParentCallResponse = Response.success(dataElementPayload);
+        when(organisationUnitCallFactory.create(any(GenericCallData.class), any(User.class), anySetOf(String.class)))
+                .thenReturn(organisationUnitEndpointCall);
+        Response<Payload<DataElement>> dataSetParentCallResponse = Response.success(dataElementPayload);
         when(dataSetParentCall.call()).thenReturn(dataSetParentCallResponse);
 
         when(programStageCallFactory.create(any(GenericCallData.class), any(Set.class)))
@@ -402,32 +380,31 @@ public class MetadataCallShould {
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-        categoryService = retrofit.create(CategoryService.class);
-        comboService = retrofit.create(CategoryComboService.class);
+        CategoryService categoryService = retrofit.create(CategoryService.class);
+        CategoryComboService comboService = retrofit.create(CategoryComboService.class);
 
         dhis2MockServer.enqueueMockResponse("categories.json");
         dhis2MockServer.enqueueMockResponse("category_combos.json");
 
         metadataCall = new MetadataCall(
-                databaseAdapter, systemInfoService, userService, programService, organisationUnitService,
-                trackedEntityService, optionSetService, systemInfoStore, resourceStore, userStore, userCredentialsStore,
-                userRoleStore, organisationUnitStore,userOrganisationUnitLinkStore, programStore,
-                trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
+                databaseAdapter, systemInfoService, userService, programService, trackedEntityService,
+                optionSetService, systemInfoStore, resourceStore, userStore, userCredentialsStore, userRoleStore,
+                programStore, trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
                 programIndicatorStore,programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, relationshipStore, trackedEntityStore, organisationUnitProgramLinkStore,
-                categoryQuery, categoryService, categoryHandler, CategoryComboQuery.defaultQuery(), comboService,
-                mockCategoryComboHandler, optionSetHandler, dataSetParentCallFactory, styleHandler, renderTypeHandler,
-                programStageCallFactory, retrofit);
+                programRuleStore, relationshipStore, trackedEntityStore, categoryQuery, categoryService,
+                categoryHandler, CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
+                optionSetHandler, organisationUnitCallFactory, dataSetParentCallFactory, styleHandler,
+                renderTypeHandler, programStageCallFactory, retrofit);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
         when(userCall.execute()).thenReturn(Response.success(user));
-        when(organisationUnitCall.execute()).thenReturn(Response.success(organisationUnitPayload));
         when(programCall.execute()).thenReturn(Response.success(programPayload));
         when(programWithAccessCall.execute()).thenReturn(Response.success(programWithAccessPayload));
         when(trackedEntityCall.execute()).thenReturn(Response.success(trackedEntityPayload));
         when(optionSetCall.execute()).thenReturn(Response.success(optionSetPayload));
+        when(organisationUnitEndpointCall.call()).thenReturn(Response.success(organisationUnitPayload));
     }
 
     @After
@@ -482,8 +459,8 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_organisation_unit_call_fail() throws Exception {
-        final int expectedTransactions = 8;
-        when(organisationUnitCall.execute()).thenReturn(errorResponse);
+        final int expectedTransactions = 7;
+        when(organisationUnitEndpointCall.call()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
@@ -527,7 +504,7 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_option_set_fail() throws Exception {
-        final int expectedTransactions = 8;
+        final int expectedTransactions = 7;
         when(optionSetCall.execute()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();

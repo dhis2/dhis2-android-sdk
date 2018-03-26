@@ -29,9 +29,12 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,27 +44,23 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class OrganisationUnitHandlerShould {
     @Mock
-    private OrganisationUnitStore organisationUnitStore;
+    private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
 
     @Mock
-    private UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
 
     @Mock
-    private OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
+    private ObjectWithoutUidStore<OrganisationUnitProgramLinkModel> organisationUnitProgramLinkStore;
 
     @Mock
     private OrganisationUnit organisationUnit;
@@ -72,24 +71,22 @@ public class OrganisationUnitHandlerShould {
     @Mock
     private Program program;
 
-    private String PROGRAM_UID = "test_program_uid";
-
-    // object to test
     private OrganisationUnitHandler organisationUnitHandler;
 
-    // list of organisation units
     private List<OrganisationUnit> organisationUnits;
 
-
-    // scope of org units
     private OrganisationUnitModel.Scope scope;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        scope = OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE;
+        String PROGRAM_UID = "test_program_uid";
+        Set<String> programUids = Sets.newHashSet(Lists.newArrayList(PROGRAM_UID));
+
         organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore, Sets.newHashSet(Lists.newArrayList(PROGRAM_UID)));
+                organisationUnitProgramLinkStore, programUids, scope, user);
 
         when(organisationUnit.uid()).thenReturn("test_organisation_unit_uid");
         when(user.uid()).thenReturn(PROGRAM_UID);
@@ -97,212 +94,33 @@ public class OrganisationUnitHandlerShould {
         organisationUnits = new ArrayList<>();
         organisationUnits.add(organisationUnit);
 
-        scope = OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE;
         when(program.uid()).thenReturn("test_program_uid");
         when(organisationUnit.programs()).thenReturn(Collections.singletonList(program));
     }
 
-    public void do_nothing_when_passing_in_null_organisation_units() throws Exception {
-        organisationUnitHandler.handleOrganisationUnits(
-                null, scope, user.uid()
-        );
-
-        // verify that stores is never invoked
-
-        verify(organisationUnitStore, never()).delete(anyString());
-        verify(organisationUnitStore, never()).insert(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt());
-        verify(organisationUnitStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString()
-        );
-
-        verify(userOrganisationUnitLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
-        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
-
-        verify(organisationUnitProgramLinkStore, never()).insert(anyString(), anyString());
+    @Test
+    public void persist_user_organisation_unit_link() throws Exception {
+        UserOrganisationUnitLinkModel userLinkModel = new UserOrganisationUnitLinkModelBuilder(scope, user)
+                .buildModel(organisationUnit);
+        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
+        verify(userOrganisationUnitLinkStore).updateOrInsertWhere(userLinkModel);
     }
 
     @Test
-    public void invoke_delete_when_handle_organisation_unit_set_as_delete() throws Exception {
-        when(organisationUnit.deleted()).thenReturn(Boolean.TRUE);
-
-        // passing in null args to user uid and org unit scope. We don't want to invoke link store
-        organisationUnitHandler.handleOrganisationUnits(
-                organisationUnits, scope, user.uid());
-
-        verify(organisationUnitStore, times(1)).delete(organisationUnit.uid());
-
-        verify(organisationUnitStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString()
-        );
-        verify(organisationUnitStore, never()).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt());
-
-        // verify that link store is never invoked
-        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
-        verify(userOrganisationUnitLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
-        );
-        verify(organisationUnitProgramLinkStore, never()).insert(anyString(), anyString());
+    public void persist_program_organisation_unit_link_when_programs_uids() throws Exception {
+        OrganisationUnitProgramLinkModel programLinkModel =
+                new OrganisationUnitProgramLinkModelBuilder(organisationUnit).buildModel(program);
+        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
+        verify(organisationUnitProgramLinkStore).updateOrInsertWhere(programLinkModel);
     }
 
     @Test
-    public void invoke_only_update_when_handle_updatable_organisation_unit_and_link_store() throws Exception {
-        when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(1);
-
-        when(userOrganisationUnitLinkStore.update(
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString())
-        ).thenReturn(1);
-
-        organisationUnitHandler.handleOrganisationUnits(organisationUnits, scope, user.uid());
-
-        // verify that update is called once
-        verify(organisationUnitStore, times(1)).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString()
-        );
-
-        // verify that insert and delete is never called
-        verify(organisationUnitStore, never()).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt()
-        );
-
-        verify(organisationUnitStore, never()).delete(anyString());
-
-        // verify that link store #update method is called once
-        verify(userOrganisationUnitLinkStore, times(1)).update(
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
-        );
-
-        // verify that insert in link store is never called
-        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
-        verify(organisationUnitProgramLinkStore, times(1)).insert(anyString(), anyString());
-    }
-
-    @Test
-    public void invoke_only_update_when_handle_organisation_units_inserted() throws Exception {
-        when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(1);
-
-        // we pass in null as scope parameter for not invoking the link store
-        organisationUnitHandler.handleOrganisationUnits(organisationUnits, null, user.uid());
-
-        // verify that update is called once
-        verify(organisationUnitStore, times(1)).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString()
-        );
-
-        // verify that insert and delete is never called
-        verify(organisationUnitStore, never()).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt()
-        );
-
-        verify(organisationUnitStore, never()).delete(anyString());
-
-        // verify that link store #update method is called once
-        verify(userOrganisationUnitLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
-        );
-
-        // verify that insert in link store is never called
-        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
-
-        verify(organisationUnitProgramLinkStore, times(1)).insert(anyString(), anyString());
-
-    }
-
-    @Test
-    public void invoke_update_and_insert_when_handle_insertable_organisation_unit_and_link_store() throws Exception {
-        when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(0);
-
-        when(userOrganisationUnitLinkStore.update(
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString())
-        ).thenReturn(0);
-
-        organisationUnitHandler.handleOrganisationUnits(organisationUnits, scope, user.uid());
-
-        // verify that insert is called once
-        verify(organisationUnitStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt()
-        );
-
-        // verify that update is called once since we try to update before we insert
-        verify(organisationUnitStore, times(1)).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString()
-        );
-
-        // verify that delete is never called
-        verify(organisationUnitStore, never()).delete(anyString());
-
-        // verify that insert in link store is called once
-        verify(userOrganisationUnitLinkStore, times(1)).insert(anyString(), anyString(), anyString());
-
-
-        // verify that link store #update method is called once since we try to update before inserting
-        verify(userOrganisationUnitLinkStore, times(1)).update(
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
-        );
-
-        verify(organisationUnitProgramLinkStore, times(1)).insert(anyString(), anyString());
-    }
-
-    @Test
-    public void invoke_update_and_insert_when_handle_insertable_organisation_unit() throws Exception {
-        when(organisationUnitStore.update(anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString())).thenReturn(0);
-
-
-        organisationUnitHandler.handleOrganisationUnits(organisationUnits, null, null);
-
-        // verify that insert is called once
-        verify(organisationUnitStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt()
-        );
-
-        // verify that update is called once since we try to update before we insert
-        verify(organisationUnitStore, times(1)).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class),
-                any(Date.class), anyString(), anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyInt(), anyString()
-        );
-
-        // verify that delete is never called
-        verify(organisationUnitStore, never()).delete(anyString());
-
-        // verify that link store is never called
-        verify(userOrganisationUnitLinkStore, never()).insert(anyString(), anyString(), anyString());
-
-        verify(userOrganisationUnitLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString()
-        );
-
-        verify(organisationUnitProgramLinkStore, times(1)).insert(anyString(), anyString());
+    public void persist_program_organisation_unit_link_when_no_programs_uids() throws Exception {
+        organisationUnitHandler = new OrganisationUnitHandler(
+                organisationUnitStore, userOrganisationUnitLinkStore,
+                organisationUnitProgramLinkStore, null,
+                scope, user);
+        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
+        verifyNoMoreInteractions(organisationUnitProgramLinkStore);
     }
 }

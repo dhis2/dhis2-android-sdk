@@ -26,33 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.organisationunit;
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
+public class OrganisationUnitModelBuilder extends ModelBuilder<OrganisationUnit, OrganisationUnitModel> {
 
-import java.util.Date;
+    @Override
+    public OrganisationUnitModel buildModel(OrganisationUnit organisationUnit) {
+        OrganisationUnit parent = organisationUnit.parent();
+        return OrganisationUnitModel.builder()
+                .uid(organisationUnit.uid())
+                .code(organisationUnit.code())
+                .name(organisationUnit.name())
+                .displayName(organisationUnit.displayName())
+                .created(organisationUnit.created())
+                .lastUpdated(organisationUnit.lastUpdated())
+                .shortName(organisationUnit.shortName())
+                .displayShortName(organisationUnit.displayShortName())
+                .description(organisationUnit.description())
+                .displayDescription(organisationUnit.displayDescription())
 
-import retrofit2.Retrofit;
-
-@AutoValue
-public abstract class GenericCallData {
-    public abstract DatabaseAdapter databaseAdapter();
-    public abstract ResourceHandler resourceHandler();
-    public abstract Retrofit retrofit();
-    public abstract Date serverDate();
-
-    public static GenericCallData create(DatabaseAdapter databaseAdapter,
-                                         ResourceHandler resourceHandler,
-                                         Retrofit retrofit) {
-        return new AutoValue_GenericCallData(databaseAdapter, resourceHandler, retrofit, new Date());
-    }
-
-    public static GenericCallData create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        return new AutoValue_GenericCallData(databaseAdapter,
-                new ResourceHandler(new ResourceStoreImpl(databaseAdapter)), retrofit, new Date());
+                .path(organisationUnit.path())
+                .openingDate(organisationUnit.openingDate())
+                .closedDate(organisationUnit.closedDate())
+                .parent(parent == null ? null : parent.uid())
+                .level(organisationUnit.level())
+                .build();
     }
 }

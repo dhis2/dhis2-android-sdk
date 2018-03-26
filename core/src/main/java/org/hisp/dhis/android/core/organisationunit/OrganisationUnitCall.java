@@ -31,21 +31,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Set;
 
 import retrofit2.Response;
@@ -56,34 +53,19 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
 
     private final User user;
     private final OrganisationUnitService organisationUnitService;
-    private final DatabaseAdapter database;
-    private final OrganisationUnitStore organisationUnitStore;
-    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
-    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
-    private final ResourceStore resourceStore;
-    private final Set<String> programUids;
-
-    private final Date serverDate;
+    private final GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler;
+    private final GenericCallData genericCallData;
     private boolean isExecuted;
 
-    public OrganisationUnitCall(@NonNull User user,
-                                @NonNull OrganisationUnitService organisationUnitService,
-                                @NonNull DatabaseAdapter database,
-                                @NonNull OrganisationUnitStore organisationUnitStore,
-                                @NonNull ResourceStore resourceStore,
-                                @NonNull Date serverDate,
-                                @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
-                                @NonNull OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore,
-                                @NonNull Set<String> programUids) {
+    OrganisationUnitCall(@NonNull User user,
+                         @NonNull OrganisationUnitService organisationUnitService,
+                         @NonNull GenericCallData genericCallData,
+                         @NonNull GenericHandler<OrganisationUnit, OrganisationUnitModel>
+                                 organisationUnitHandler) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
-        this.database = database;
-        this.organisationUnitStore = organisationUnitStore;
-        this.resourceStore = resourceStore;
-        this.serverDate = new Date(serverDate.getTime());
-        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
-        this.programUids = programUids;
+        this.genericCallData = genericCallData;
+        this.organisationUnitHandler = organisationUnitHandler;
     }
 
     @Override
@@ -97,23 +79,20 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     public Response<Payload<OrganisationUnit>> call() throws Exception {
         synchronized (this) {
             if (isExecuted) {
-                throw new IllegalStateException("AlreadyExecuted");
+                throw new IllegalArgumentException("AlreadyExecuted");
             }
             isExecuted = true;
         }
         Response<Payload<OrganisationUnit>> response = null;
         Response<Payload<OrganisationUnit>> totalResponse = null;
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
-        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore, programUids);
+        Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
+        OrganisationUnitModelBuilder modelBuilder = new OrganisationUnitModelBuilder();
 
-        Transaction transaction = database.beginNewTransaction();
         try {
             Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
             Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
-                    resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
+                    genericCallData.resourceHandler().getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
             );
             // Call OrganisationUnitService for each tree root & try to handleTrackedEntity sub-tree:
             for (String uid : rootOrgUnitUids) {
@@ -121,21 +100,20 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                 if (response.isSuccessful()) {
                     if (totalResponse == null) {
                         totalResponse = response;
-                    } else  {
+                    } else {
                         totalResponse.body().items().addAll(response.body().items());
                     }
-                    organisationUnitHandler.handleOrganisationUnits(
+                    organisationUnitHandler.handleMany(
                             response.body().items(),
-                            OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
-                            user.uid()
-                    );
+                            modelBuilder);
                 } else {
                     totalResponse = response;
                     break; //stop early unsuccessful:
                 }
             }
             if (response != null && response.isSuccessful()) {
-                resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDate);
+                genericCallData.resourceHandler().handleResource(ResourceModel.Type.ORGANISATION_UNIT,
+                        genericCallData.serverDate());
                 transaction.setSuccessful();
             }
         } finally {
@@ -161,4 +139,23 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         ).build();
         return organisationUnitService.getOrganisationUnits(uid, fields, lastUpdatedFilter, true, false).execute();
     }
+
+    public interface Factory {
+        Call<Response<Payload<OrganisationUnit>>> create(GenericCallData data,
+                                                         User user,
+                                                         Set<String> programUids);
+    }
+
+    public static final OrganisationUnitCall.Factory FACTORY = new OrganisationUnitCall.Factory() {
+        @Override
+        public Call<Response<Payload<OrganisationUnit>>> create(GenericCallData data,
+                                                                User user,
+                                                                Set<String> programUids) {
+            GenericHandler<OrganisationUnit, OrganisationUnitModel> handler =
+                    OrganisationUnitHandler.create(data.databaseAdapter(), programUids,
+                            OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
+            return new OrganisationUnitCall(user, data.retrofit().create(OrganisationUnitService.class),
+                    data, handler);
+        }
+    };
 }

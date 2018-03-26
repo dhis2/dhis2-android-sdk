@@ -34,12 +34,10 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.datavalue.DataValueEndpointCall;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.period.PeriodModel;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import retrofit2.Response;
@@ -49,13 +47,13 @@ public class AggregatedDataCall extends TransactionalCall {
     private final DataValueEndpointCall.Factory dataValueCallFactory;
     private final IdentifiableObjectStore<DataSetModel> dataSetStore;
     private final ObjectWithoutUidStore<PeriodModel> periodStore;
-    private final OrganisationUnitStore organisationUnitStore;
+    private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
 
     public AggregatedDataCall(@NonNull GenericCallData genericCallData,
                               @NonNull DataValueEndpointCall.Factory dataValueCallFactory,
                               @NonNull IdentifiableObjectStore<DataSetModel> dataSetStore,
                               @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
-                              @NonNull OrganisationUnitStore organisationUnitStore) {
+                              @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
         super(genericCallData);
         this.dataValueCallFactory = dataValueCallFactory;
         this.dataSetStore = dataSetStore;
@@ -67,17 +65,8 @@ public class AggregatedDataCall extends TransactionalCall {
     public Response callBody() throws Exception {
         DataValueEndpointCall dataValueEndpointCall = dataValueCallFactory.create(data, dataSetStore.selectUids(),
                 selectPeriodIds(periodStore.selectAll(PeriodModel.factory)),
-                selectOrganisationUnitUids(organisationUnitStore.queryOrganisationUnits()));
+                organisationUnitStore.selectUids());
         return dataValueEndpointCall.call();
-    }
-
-    private Set<String> selectOrganisationUnitUids(List<OrganisationUnit> organisationUnits) {
-        Set<String> organisationUnitUids = new HashSet<>();
-
-        for (OrganisationUnit organisationUnit: organisationUnits) {
-            organisationUnitUids.add(organisationUnit.uid());
-        }
-        return organisationUnitUids;
     }
 
     private Set<String> selectPeriodIds(Set<PeriodModel> periodModels) {

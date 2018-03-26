@@ -28,13 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import static com.google.common.truth.Truth.assertThat;
-
-import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-
-import static okhttp3.internal.Util.UTC;
-
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -43,11 +36,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -69,6 +63,11 @@ import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import static com.google.common.truth.Truth.assertThat;
+import static okhttp3.internal.Util.UTC;
+import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
+import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 // ToDo: implement integration tests for user authentication task
 // ToDo: more tests to verify correct store behaviour
@@ -226,8 +225,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
         UserStore userStore = new UserStoreImpl(databaseAdapter());
         UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
-        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(
-                databaseAdapter());
         AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(
                 databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
@@ -235,9 +232,11 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(
                 userCredentialsStore);
 
-        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, new UserOrganisationUnitLinkStoreImpl(databaseAdapter()),
-                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter()), null);
+        // TODO fix
+        User user = null;
+        GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler =
+                OrganisationUnitHandler.create(databaseAdapter(), null,
+                        OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
 
         authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userStore,
                 userCredentialsHandler, resourceHandler,

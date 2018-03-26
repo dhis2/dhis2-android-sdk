@@ -1,10 +1,5 @@
 package org.hisp.dhis.android.core;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
@@ -32,6 +27,11 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 
 public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
@@ -215,15 +215,15 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
         TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.create(
                 uid, date, date, dateString, dateString,
-                "DiszpKrYNg8", "nEenWmSyUEp",
+                "DiszpKrYNg8", "nEenWmSyUEp", null, null,
                 false, null, null, null);
 
         trackedEntityInstanceStore.insert(
                 trackedEntityInstance.uid(), trackedEntityInstance.created(),
                 trackedEntityInstance.lastUpdated(), trackedEntityInstance.createdAtClient(),
-                trackedEntityInstance.lastUpdatedAtClient(),
-                trackedEntityInstance.organisationUnit(),
-                trackedEntityInstance.trackedEntity(), state);
+                trackedEntityInstance.lastUpdatedAtClient(), trackedEntityInstance.organisationUnit(),
+                trackedEntityInstance.trackedEntity(), trackedEntityInstance.coordinates(),
+                trackedEntityInstance.featureType(), state);
 
         return trackedEntityInstance;
     }

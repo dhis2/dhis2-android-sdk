@@ -171,9 +171,9 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
     }
 
     private void insertProgramWithUid(String uid) {
-        ContentValues program8 = new ContentValues();
-        program8.put(ProgramModel.Columns.UID, uid);
-        database().insert(ProgramModel.TABLE, null, program8);
+        ContentValues program = new ContentValues();
+        program.put(ProgramModel.Columns.UID, uid);
+        database().insert(ProgramModel.TABLE, null, program);
     }
 
     @Test

@@ -74,7 +74,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
     private boolean isExecuted;
 
-    public UserAuthenticateCall(
+    UserAuthenticateCall(
             @NonNull UserService userService,
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull UserStore userStore,

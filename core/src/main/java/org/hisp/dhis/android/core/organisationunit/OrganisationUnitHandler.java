@@ -48,7 +48,7 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
     private final ObjectWithoutUidStore<OrganisationUnitProgramLinkModel> organisationUnitProgramLinkStore;
     private final Set<String> programUids;
     private final OrganisationUnitModel.Scope scope;
-    private User user;
+    private final User user;
 
     public OrganisationUnitHandler(@NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
                                    @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel>

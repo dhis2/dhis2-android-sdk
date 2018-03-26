@@ -31,17 +31,10 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
 public class ProgramStageModelBuilder extends ModelBuilder<ProgramStage, ProgramStageModel> {
-
-    private final ProgramStageModel.Builder builder;
-
-    ProgramStageModelBuilder(Program program) {
-        this.builder = ProgramStageModel.builder()
-            .program(program.uid());
-    }
     
     @Override
     public ProgramStageModel buildModel(ProgramStage programStage) {
-        return builder
+        return ProgramStageModel.builder()
                 .uid(programStage.uid())
                 .code(programStage.code())
                 .name(programStage.name())
@@ -66,6 +59,8 @@ public class ProgramStageModelBuilder extends ModelBuilder<ProgramStage, Program
                 .minDaysFromStart(programStage.minDaysFromStart())
                 .standardInterval(programStage.standardInterval())
                 .periodType(programStage.periodType())
+                .program(programStage.programUid())
+                .accessDataWrite(programStage.access().data().write())
                 .build();
     }
 }

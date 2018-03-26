@@ -28,7 +28,11 @@
     "externalize": false,
     "delete": true,
     "write": true,
-    "manage": false
+    "manage": false,
+    "data": {
+      "read": true,
+      "write": true
+    }
   },
   "program": {
     "id": "uy2gU8kT1jF"

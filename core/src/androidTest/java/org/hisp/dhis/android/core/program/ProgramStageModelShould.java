@@ -72,6 +72,7 @@ public class ProgramStageModelShould {
     private static final Integer STANDARD_INTERVAL = 7;
     private static final String PROGRAM = "test_program";
     private static final PeriodType PERIOD_TYPE = PeriodType.Weekly;
+    private static final Integer ACCESS_DATA_WRITE = 1;
 
     private final Date date;
     private final String dateString;
@@ -106,6 +107,7 @@ public class ProgramStageModelShould {
                 STANDARD_INTERVAL,
                 PROGRAM,
                 PERIOD_TYPE,
+                ACCESS_DATA_WRITE,
                 ID
         });
         cursor.moveToFirst();
@@ -138,6 +140,7 @@ public class ProgramStageModelShould {
         assertThat(model.standardInterval()).isEqualTo(STANDARD_INTERVAL);
         assertThat(model.program()).isEqualTo(PROGRAM);
         assertThat(model.periodType()).isEqualTo(PERIOD_TYPE);
+        assertThat(model.accessDataWrite()).isTrue();
     }
 
     @Test
@@ -168,6 +171,7 @@ public class ProgramStageModelShould {
                 .standardInterval(STANDARD_INTERVAL)
                 .program(PROGRAM)
                 .periodType(PERIOD_TYPE)
+                .accessDataWrite(toBoolean(ACCESS_DATA_WRITE))
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -196,5 +200,6 @@ public class ProgramStageModelShould {
         assertThat(contentValues.getAsInteger(Columns.STANDARD_INTERVAL)).isEqualTo(STANDARD_INTERVAL);
         assertThat(contentValues.getAsString(Columns.PROGRAM)).isEqualTo(PROGRAM);
         assertThat(contentValues.getAsString(Columns.PERIOD_TYPE)).isEqualTo(PERIOD_TYPE.name());
+        assertThat(contentValues.getAsBoolean(Columns.ACCESS_DATA_WRITE)).isTrue();
     }
 }

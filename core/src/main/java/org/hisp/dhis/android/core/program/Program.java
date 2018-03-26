@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
@@ -148,7 +149,7 @@ public abstract class Program extends BaseNameableObject {
             = NestedField.create(ACCESS);
     public static final NestedField<Program, ProgramIndicator> programIndicators
             = NestedField.create(PROGRAM_INDICATORS);
-    public static final NestedField<Program, ProgramStage> programStages
+    public static final NestedField<Program, ObjectWithUid> programStages
             = NestedField.create(PROGRAM_STAGES);
     public static final NestedField<Program, ProgramRule> programRules
             = NestedField.create(PROGRAM_RULES);
@@ -253,7 +254,7 @@ public abstract class Program extends BaseNameableObject {
 
     @Nullable
     @JsonProperty(PROGRAM_STAGES)
-    public abstract List<ProgramStage> programStages();
+    public abstract List<ObjectWithUid> programStages();
 
     @Nullable
     @JsonProperty(PROGRAM_RULES)
@@ -302,7 +303,7 @@ public abstract class Program extends BaseNameableObject {
             @JsonProperty(CATEGORY_COMBO) CategoryCombo categoryCombo,
             @JsonProperty(ACCESS) Access access,
             @JsonProperty(PROGRAM_INDICATORS) List<ProgramIndicator> programIndicators,
-            @JsonProperty(PROGRAM_STAGES) List<ProgramStage> programStages,
+            @JsonProperty(PROGRAM_STAGES) List<ObjectWithUid> programStages,
             @JsonProperty(PROGRAM_RULES) List<ProgramRule> programRules,
             @JsonProperty(PROGRAM_RULE_VARIABLES) List<ProgramRuleVariable> programRuleVariables,
             @JsonProperty(STYLE) ObjectStyle style,

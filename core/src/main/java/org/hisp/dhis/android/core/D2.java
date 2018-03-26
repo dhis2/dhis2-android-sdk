@@ -136,6 +136,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariableStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStageEndpointCall;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStoreImpl;
@@ -548,7 +549,7 @@ public final class D2 {
                 organisationUnitProgramLinkStore, categoryQuery,
                 categoryService, categoryHandler, categoryComboQuery, comboService,
                 categoryComboHandler, optionSetHandler, DataSetParentCall.FACTORY,
-                styleHandler, renderTypeHandler, retrofit);
+                styleHandler, renderTypeHandler, ProgramStageEndpointCall.FACTORY, retrofit);
     }
 
     @NonNull

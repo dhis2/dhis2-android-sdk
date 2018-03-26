@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -233,38 +234,7 @@ public class ProgramCallShould {
                 Program.selectEnrollmentDatesInFuture, Program.selectIncidentDatesInFuture,
                 Program.useFirstStageDuringRegistration,
                 Program.relatedProgram.with(Program.uid),
-                Program.programStages.with(
-                        ProgramStage.uid, ProgramStage.code, ProgramStage.name, ProgramStage.displayName,
-                        ProgramStage.created, ProgramStage.lastUpdated, ProgramStage.allowGenerateNextVisit,
-                        ProgramStage.autoGenerateEvent, ProgramStage.blockEntryForm, ProgramStage.captureCoordinates,
-                        ProgramStage.deleted, ProgramStage.displayGenerateEventBox, ProgramStage.executionDateLabel,
-                        ProgramStage.formType, ProgramStage.generatedByEnrollmentDate, ProgramStage.hideDueDate,
-                        ProgramStage.minDaysFromStart, ProgramStage.openAfterEnrollment, ProgramStage.repeatable,
-                        ProgramStage.reportDateToUse, ProgramStage.sortOrder, ProgramStage.standardInterval,
-                        ProgramStage.validCompleteOnly, ProgramStage.programStageDataElements.with(
-                                ProgramStageDataElement.uid, ProgramStageDataElement.code,
-                                ProgramStageDataElement.created, ProgramStageDataElement.lastUpdated,
-                                ProgramStageDataElement.allowFutureDate,
-                                ProgramStageDataElement.allowProvidedElsewhere, ProgramStageDataElement.compulsory,
-                                ProgramStageDataElement.deleted, ProgramStageDataElement.displayInReports,
-                                ProgramStageDataElement.sortOrder,
-                                ProgramStageDataElement.programStage.with(ProgramStage.uid),
-                                ProgramStageDataElement.dataElement.with(DataElement.allFields)
-                        ),
-                        ProgramStage.programStageSections.with(
-                                ProgramStageSection.uid, ProgramStageSection.code, ProgramStageSection.name,
-                                ProgramStageSection.displayName, ProgramStageSection.created,
-                                ProgramStageSection.lastUpdated, ProgramStageSection.sortOrder,
-                                ProgramStageSection.deleted,
-                                ProgramStageSection.dataElements.with(DataElement.uid),
-                                ProgramStageSection.programIndicators.with(ProgramIndicator.uid,
-                                        ProgramIndicator.program.with(Program.uid)
-                                ),
-                                ProgramStageSection.renderType
-                        ),
-                        ProgramStage.style.with(ObjectStyle.allFields),
-                        ProgramStage.periodType
-                ),
+                Program.programStages.with(ObjectWithUid.uid),
                 Program.programRules.with(
                         ProgramRule.uid, ProgramRule.code, ProgramRule.name, ProgramRule.displayName,
                         ProgramRule.created, ProgramRule.lastUpdated, ProgramRule.deleted,

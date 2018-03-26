@@ -135,7 +135,7 @@ public class SQLStatementBuilder {
         return createTableWrapper(tableName, Utils.appendInNewArray(idColumn(), columnsWithAttributes));
     }
 
-    static String createIdentifiableModelTable(String tableName, String... columnsWithAttributes) {
+    public static String createIdentifiableModelTable(String tableName, String... columnsWithAttributes) {
         return createTableWrapper(tableName, Utils.appendInNewArray(identifiableColumns(), columnsWithAttributes));
     }
 

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModelBuilder;
@@ -66,7 +67,7 @@ public class ProgramStageDataElementHandlerShould {
     private DataElement dataElement;
 
     @Mock
-    private ProgramStage programStage;
+    private ObjectWithUid programStage;
 
     private List<ProgramStageDataElement> programStageDataElements;
 

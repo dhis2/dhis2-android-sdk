@@ -51,8 +51,6 @@ import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
-import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
@@ -222,221 +220,6 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void persist_program_stage_when_call() throws Exception {
-        programCall.call();
-        String[] projection = {
-                ProgramStageModel.Columns.UID,
-                ProgramStageModel.Columns.CODE,
-                ProgramStageModel.Columns.NAME,
-                ProgramStageModel.Columns.DISPLAY_NAME,
-                ProgramStageModel.Columns.CREATED,
-                ProgramStageModel.Columns.LAST_UPDATED,
-                ProgramStageModel.Columns.EXECUTION_DATE_LABEL,
-                ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT,
-                ProgramStageModel.Columns.VALID_COMPLETE_ONLY,
-                ProgramStageModel.Columns.REPORT_DATE_TO_USE,
-                ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT,
-                ProgramStageModel.Columns.REPEATABLE,
-                ProgramStageModel.Columns.CAPTURE_COORDINATES,
-                ProgramStageModel.Columns.FORM_TYPE,
-                ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX,
-                ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE,
-                ProgramStageModel.Columns.AUTO_GENERATE_EVENT,
-                ProgramStageModel.Columns.SORT_ORDER,
-                ProgramStageModel.Columns.HIDE_DUE_DATE,
-                ProgramStageModel.Columns.BLOCK_ENTRY_FORM,
-                ProgramStageModel.Columns.MIN_DAYS_FROM_START,
-                ProgramStageModel.Columns.STANDARD_INTERVAL,
-                ProgramStageModel.Columns.PROGRAM
-        };
-        Cursor programStageCursor = database().query(ProgramStageModel.TABLE, projection,
-                ProgramStageModel.Columns.UID + "=?", new String[]{"A03MvHHogjR"}, null, null, null);
-
-        assertThatCursor(programStageCursor).hasRow(
-                "A03MvHHogjR",
-                null,
-                "Birth",
-                "Birth",
-                "2013-03-04T11:41:07.541",
-                "2016-10-11T10:32:53.527",
-                "Report date",
-                0, // false
-                0, // false
-                null,
-                0, // false
-                0, // false
-                0, // false
-                "DEFAULT",
-                0, // false
-                0, // false
-                0, // false
-                1,
-                0, // false
-                0, // false
-                0,
-                null,
-                "IpHINAT79UW"
-        ).isExhausted();
-    }
-
-    /**
-     * There is no ProgramStageSections in the payload in setUpMethod. Therefore we need to check that
-     * no program stage sections exists in database
-     *
-     * @throws Exception
-     */
-    @Test
-    public void not_persist_program_stage_sections_when_call() throws Exception {
-        programCall.call();
-        String[] projection = {
-                ProgramStageSectionModel.Columns.UID,
-                ProgramStageSectionModel.Columns.CODE,
-                ProgramStageSectionModel.Columns.NAME,
-                ProgramStageSectionModel.Columns.DISPLAY_NAME,
-                ProgramStageSectionModel.Columns.CREATED,
-                ProgramStageSectionModel.Columns.LAST_UPDATED,
-                ProgramStageSectionModel.Columns.SORT_ORDER,
-                ProgramStageSectionModel.Columns.PROGRAM_STAGE,
-                ProgramStageSectionModel.Columns.DESKTOP_RENDER_TYPE,
-                ProgramStageSectionModel.Columns.MOBILE_RENDER_TYPE
-        };
-        Cursor programStageSectionCursor = database().query(ProgramStageSectionModel.TABLE, projection,
-                null, null, null, null, null);
-
-        assertThatCursor(programStageSectionCursor).hasRow(
-                "OeSqs7pkKqI",
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                "A03MvHHogjR",
-                ProgramStageSectionRenderingType.SEQUENTIAL.toString(),
-                ProgramStageSectionRenderingType.MATRIX.toString()
-        ).isExhausted();
-
-        assertThatCursor(programStageSectionCursor).isExhausted();
-    }
-
-    @Test
-    public void persist_program_stage_data_element_when_call() throws Exception {
-        programCall.call();
-
-        String[] projection = {
-                ProgramStageDataElementModel.Columns.UID,
-                ProgramStageDataElementModel.Columns.CODE,
-                ProgramStageDataElementModel.Columns.NAME,
-                ProgramStageDataElementModel.Columns.DISPLAY_NAME,
-                ProgramStageDataElementModel.Columns.CREATED,
-                ProgramStageDataElementModel.Columns.LAST_UPDATED,
-                ProgramStageDataElementModel.Columns.DISPLAY_IN_REPORTS,
-                ProgramStageDataElementModel.Columns.COMPULSORY,
-                ProgramStageDataElementModel.Columns.ALLOW_PROVIDED_ELSEWHERE,
-                ProgramStageDataElementModel.Columns.SORT_ORDER,
-                ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE,
-                ProgramStageDataElementModel.Columns.DATA_ELEMENT,
-                ProgramStageDataElementModel.Columns.PROGRAM_STAGE,
-                ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION
-        };
-
-        Cursor programStageDataElementCursor = database().query(ProgramStageDataElementModel.TABLE, projection,
-                ProgramStageDataElementModel.Columns.PROGRAM_STAGE + "=?" +
-                        " AND " +
-                        ProgramStageDataElementModel.Columns.DATA_ELEMENT + "=?",
-                new String[]{"ZzYYXq4fJie", "GQY2lXrypjO"}, null, null, null);
-
-        assertThatCursor(programStageDataElementCursor).hasRow(
-                "ztoQtbuXzsI",
-                null,
-                null,
-                null,
-                "2015-03-27T16:27:19.000",
-                "2015-08-06T20:16:48.340",
-                0, // false
-                0, // false
-                1, // true
-                0,
-                0, // false
-                "GQY2lXrypjO",
-                "ZzYYXq4fJie",
-                null
-        ).isExhausted();
-    }
-
-    @Test
-    public void persist_data_element_when_call() throws Exception {
-        programCall.call();
-
-        String[] projection = {
-                DataElementModel.Columns.UID,
-                DataElementModel.Columns.CODE,
-                DataElementModel.Columns.NAME,
-                DataElementModel.Columns.DISPLAY_NAME,
-                DataElementModel.Columns.CREATED,
-                DataElementModel.Columns.LAST_UPDATED,
-                DataElementModel.Columns.SHORT_NAME,
-                DataElementModel.Columns.DISPLAY_SHORT_NAME,
-                DataElementModel.Columns.DESCRIPTION,
-                DataElementModel.Columns.DISPLAY_DESCRIPTION,
-                DataElementModel.Columns.VALUE_TYPE,
-                DataElementModel.Columns.ZERO_IS_SIGNIFICANT,
-                DataElementModel.Columns.AGGREGATION_TYPE,
-                DataElementModel.Columns.FORM_NAME,
-                DataElementModel.Columns.NUMBER_TYPE,
-                DataElementModel.Columns.DOMAIN_TYPE,
-                DataElementModel.Columns.DIMENSION,
-                DataElementModel.Columns.DISPLAY_FORM_NAME,
-                DataElementModel.Columns.OPTION_SET,
-                DataElementModel.Columns.CATEGORY_COMBO
-        };
-
-        Cursor dataElementCursor = database().query(DataElementModel.TABLE, projection,
-                DataElementModel.Columns.UID + "=?", new String[]{"GQY2lXrypjO"}, null, null, null);
-
-        assertThatCursor(dataElementCursor).hasRow(
-                "GQY2lXrypjO",
-                "DE_2006099",
-                "MCH Infant Weight  (g)",
-                "MCH Infant Weight  (g)",
-                "2012-09-20T08:44:53.428",
-                "2014-11-11T21:56:05.550",
-                "Infant Weight (g)",
-                "Infant Weight (g)",
-                "Infant weight in grams",
-                "Infant weight in grams",
-                "NUMBER",
-                0, // false
-                "AVERAGE",
-                "Infant Weight (g)",
-                null,
-                "TRACKER",
-                null,
-                "Infant Weight (g)",
-                "x31y45jvIQL",
-                "p0KPaWEg3cf"
-        ).isExhausted();
-    }
-
-    @Test
-    public void persist_option_set_when_call() throws Exception {
-        programCall.call();
-
-        String[] projection = {
-                OptionSetModel.Columns.UID,
-                OptionSetModel.Columns.VERSION
-        };
-
-        Cursor optionSetCursor = database().query(OptionSetModel.TABLE, projection,
-                OptionSetModel.Columns.UID + "=?", new String[]{"x31y45jvIQL"}, null, null, null);
-
-        assertThatCursor(optionSetCursor).hasRow(
-                "x31y45jvIQL",
-                1
-        ).isExhausted();
-    }
-
-    @Test
     public void persist_program_rule_variables_on_call() throws Exception {
         programCall.call();
         String[] projection = {
@@ -467,7 +250,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 null,
                 "IpHINAT79UW",
                 null,
-                "a3kGcGDCuk6",
+                null,
                 null,
                 "DATAELEMENT_NEWEST_EVENT_PROGRAM"
         ).isExhausted();
@@ -702,7 +485,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
                 null,
                 "SHOWWARNING",
                 null,
-                "H6uSAMO5WLD",
+                null,
                 "NAgjOfWMXg6"
         ).isExhausted();
     }

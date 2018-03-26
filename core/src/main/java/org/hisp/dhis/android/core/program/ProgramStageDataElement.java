@@ -35,7 +35,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
@@ -75,10 +77,15 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
             = Field.create(ALLOW_FUTURE_DATE);
     public static final NestedField<ProgramStageDataElement, DataElement> dataElement
             = NestedField.create(DATA_ELEMENT);
-    public static final NestedField<ProgramStageDataElement, ProgramStage> programStage
+    public static final NestedField<ProgramStageDataElement, ObjectWithUid> programStage
             = NestedField.create(PROGRAM_STAGE);
     public static final Field<ProgramStageDataElement, Boolean> deleted
             = Field.create(DELETED);
+
+    static final Fields<ProgramStageDataElement> allFields = Fields.<ProgramStageDataElement>builder().fields(
+            uid, code, created, lastUpdated, allowFutureDate, allowProvidedElsewhere, compulsory, deleted,
+            displayInReports, sortOrder, programStage.with(ObjectWithUid.uid), dataElement.with(DataElement.allFields)
+    ).build();
 
     @Nullable
     @JsonProperty(DISPLAY_IN_REPORTS)
@@ -106,7 +113,7 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
 
     @Nullable
     @JsonProperty(PROGRAM_STAGE)
-    public abstract ProgramStage programStage();
+    public abstract ObjectWithUid programStage();
 
     @JsonCreator
     public static ProgramStageDataElement create(
@@ -123,7 +130,7 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
             @JsonProperty(ALLOW_FUTURE_DATE) Boolean allowFutureDate,
             @JsonProperty(DATA_ELEMENT) DataElement dataElement,
             @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(PROGRAM_STAGE) ProgramStage programStage
+            @JsonProperty(PROGRAM_STAGE) ObjectWithUid programStage
     ) {
 
         return new AutoValue_ProgramStageDataElement(

@@ -40,7 +40,6 @@ public class ProgramHandler {
     private final ProgramStore programStore;
 
     private final ProgramRuleVariableHandler programRuleVariableHandler;
-    private final GenericHandler<ProgramStage, ProgramStageModel> programStageHandler;
     private final ProgramIndicatorHandler programIndicatorHandler;
     private final ProgramRuleHandler programRuleHandler;
     private final ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
@@ -49,7 +48,6 @@ public class ProgramHandler {
 
     public ProgramHandler(ProgramStore programStore,
                           ProgramRuleVariableHandler programRuleVariableHandler,
-                          GenericHandler<ProgramStage, ProgramStageModel> programStageHandler,
                           ProgramIndicatorHandler programIndicatorHandler,
                           ProgramRuleHandler programRuleHandler,
                           ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler,
@@ -57,7 +55,6 @@ public class ProgramHandler {
                           GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
         this.programStore = programStore;
         this.programRuleVariableHandler = programRuleVariableHandler;
-        this.programStageHandler = programStageHandler;
         this.programIndicatorHandler = programIndicatorHandler;
         this.programRuleHandler = programRuleHandler;
         this.programTrackedEntityAttributeHandler = programTrackedEntityAttributeHandler;
@@ -118,7 +115,6 @@ public class ProgramHandler {
         }
         // programStageHandler will invoke programStageSectionHandler, programStageDataElementHandler,
         // programIndicatorHandler, dataElement handler and optionSetHandler
-        programStageHandler.handleMany(program.programStages(), new ProgramStageModelBuilder(program));
         programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(
                 program.programTrackedEntityAttributes());
         programIndicatorHandler.handleProgramIndicator(null, program.programIndicators());

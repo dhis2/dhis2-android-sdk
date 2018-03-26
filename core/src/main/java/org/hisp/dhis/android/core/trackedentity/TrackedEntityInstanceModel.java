@@ -30,16 +30,26 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableDataModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
+import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
+import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataModel {
+public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataModel
+        implements UpdateWhereStatementBinder {
     public static final String TABLE = "TrackedEntityInstance";
 
     public static class Columns extends BaseIdentifiableDataModel.Columns {
@@ -48,6 +58,16 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
         public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
         public static final String ORGANISATION_UNIT = "organisationUnit";
         public static final String TRACKED_ENTITY = "trackedEntity";
+        public static final String COORDINATES = "coordinates";
+        public static final String FEATURE_TYPE = "featureType";
+
+        private Columns() {}
+
+        public static String[] all() {
+            return Utils.appendInNewArray(BaseModel.Columns.all(),
+                    UID, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT, ORGANISATION_UNIT, TRACKED_ENTITY, CREATED,
+                    LAST_UPDATED, STATE, COORDINATES, FEATURE_TYPE);
+        }
     }
 
     @NonNull
@@ -83,6 +103,34 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
     @ColumnName(Columns.TRACKED_ENTITY)
     public abstract String trackedEntity();
 
+    @Nullable
+    @ColumnName(Columns.COORDINATES)
+    public abstract String coordinates();
+
+    @Nullable
+    @ColumnName(Columns.FEATURE_TYPE)
+    @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
+    public abstract FeatureType featureType();
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, uid());
+        sqLiteBind(sqLiteStatement, 2, created());
+        sqLiteBind(sqLiteStatement, 3, lastUpdated());
+        sqLiteBind(sqLiteStatement, 4, createdAtClient());
+        sqLiteBind(sqLiteStatement, 5, lastUpdatedAtClient());
+        sqLiteBind(sqLiteStatement, 6, organisationUnit());
+        sqLiteBind(sqLiteStatement, 7, trackedEntity());
+        sqLiteBind(sqLiteStatement, 8, state());
+        sqLiteBind(sqLiteStatement, 9, coordinates());
+        sqLiteBind(sqLiteStatement, 10, featureType());
+    }
+
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 11, trackedEntity());
+    }
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableDataModel.Builder<Builder> {
         public abstract Builder uid(@NonNull String uid);
@@ -94,6 +142,10 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
         public abstract Builder organisationUnit(@Nullable String organisationUnit);
 
         public abstract Builder trackedEntity(@Nullable String trackedEntity);
+
+        public abstract Builder coordinates(@Nullable String coordinates);
+
+        public abstract Builder featureType(@Nullable FeatureType featureType);
 
         public abstract TrackedEntityInstanceModel build();
     }

@@ -14,7 +14,17 @@
       "openingDate": "2010-01-01T00:00:00.000",
       "parent": {
         "id": "qtr8GGlm4gg"
-      }
+      },
+      "programs": [
+        {
+          "id": "lxAQ7Zs9VYR"
+        }
+      ],
+      "dataSets": [
+        {
+          "id": "lyLU2wR22tC"
+        }
+      ]
     },
     {
       "code": "OU_278371",
@@ -30,7 +40,17 @@
       "openingDate": "2008-01-01T00:00:00.000",
       "parent": {
         "id": "qtr8GGlm4gg"
-      }
+      },
+      "programs": [
+        {
+          "id": "lxAQ7Zs9VYR"
+        }
+      ],
+      "dataSets": [
+        {
+          "id": "lyLU2wR22tC"
+        }
+      ]
     }
   ]
 }

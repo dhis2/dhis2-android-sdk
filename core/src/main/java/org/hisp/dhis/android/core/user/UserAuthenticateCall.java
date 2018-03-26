@@ -159,9 +159,9 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                         OrganisationUnit.openingDate,
                         OrganisationUnit.closedDate,
                         OrganisationUnit.level,
-                        OrganisationUnit.parent.with(
-                                OrganisationUnit.uid))
-        ).build()).execute();
+                        OrganisationUnit.parent.with(OrganisationUnit.uid),
+                        OrganisationUnit.ancestors.with(OrganisationUnit.uid, OrganisationUnit.displayName))
+                ).build()).execute();
     }
 
     private void saveUser(Response<User> response) throws Exception {

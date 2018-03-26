@@ -259,8 +259,8 @@ public class UserAuthenticateCallUnitShould {
                                 OrganisationUnit.openingDate,
                                 OrganisationUnit.closedDate,
                                 OrganisationUnit.level,
-                                OrganisationUnit.ancestors.with(OrganisationUnit.displayName),
-                                OrganisationUnit.parent.with(OrganisationUnit.uid)));
+                                OrganisationUnit.parent.with(OrganisationUnit.uid),
+                                OrganisationUnit.ancestors.with(OrganisationUnit.uid, OrganisationUnit.displayName)));
     }
 
     @Test

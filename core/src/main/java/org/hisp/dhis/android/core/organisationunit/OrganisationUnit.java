@@ -82,7 +82,8 @@ public abstract class OrganisationUnit extends BaseNameableObject {
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, displayDescription, path, openingDate,
             closedDate, level, deleted, parent.with(uid), programs.with(Program.uid),
-            dataSets.with(DataSet.uid), ancestors.with(OrganisationUnit.displayName)).build();
+            dataSets.with(DataSet.uid),
+            ancestors.with(OrganisationUnit.uid, OrganisationUnit.displayName)).build();
     
     @Nullable
     @JsonProperty(PARENT)

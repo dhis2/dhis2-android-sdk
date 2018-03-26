@@ -110,9 +110,9 @@ public class TrackedEntityInstanceEndPointCall implements
                 TrackedEntityInstance.lastUpdated,
                 TrackedEntityInstance.organisationUnit,
                 TrackedEntityInstance.trackedEntity,
-                TrackedEntityInstance.deleted,
                 TrackedEntityInstance.coordinates,
                 TrackedEntityInstance.featureType,
+                TrackedEntityInstance.deleted,
                 TrackedEntityInstance.relationships.with(
                         Relationship.trackedEntityInstanceA,
                         Relationship.trackedEntityInstanceB,

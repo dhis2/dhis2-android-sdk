@@ -41,7 +41,7 @@ import retrofit2.http.Query;
 
 public interface OrganisationUnitService {
 
-    @GET("organisationUnits/{uid}")
+    @GET("organisationUnits")
     Call<Payload<OrganisationUnit>> getOrganisationUnits(
             @Query("fields") @Which Fields<OrganisationUnit> fields,
             @Query("filter") @Where Filter<OrganisationUnit, String> lastUpdated,

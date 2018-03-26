@@ -87,6 +87,8 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
         Response<Payload<OrganisationUnit>> totalResponse = null;
 
         Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
+        OrganisationUnitModelBuilder modelBuilder = new OrganisationUnitModelBuilder();
+
         try {
             Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
             Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
@@ -101,7 +103,6 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
                     } else {
                         totalResponse.body().items().addAll(response.body().items());
                     }
-                    OrganisationUnitModelBuilder modelBuilder = new OrganisationUnitModelBuilder();
                     organisationUnitHandler.handleMany(
                             response.body().items(),
                             modelBuilder);

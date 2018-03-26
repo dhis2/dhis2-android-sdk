@@ -135,7 +135,7 @@ public abstract class OrganisationUnit extends BaseNameableObject {
             @JsonProperty(LEVEL) Integer level,
             @JsonProperty(PROGRAMS) List<Program> programs,
             @JsonProperty(DATA_SETS) List<DataSet> dataSets,
-            @JsonProperty(DATA_SETS) List<OrganisationUnit> ancestors,
+            @JsonProperty(ANCESTORS) List<OrganisationUnit> ancestors,
             @JsonProperty(DELETED) Boolean deleted) {
         return new AutoValue_OrganisationUnit(uid, code, name, displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription, parent, path, openingDate,

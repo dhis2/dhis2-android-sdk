@@ -31,13 +31,16 @@
   "children": [ ],
   "ancestors": [
     {
-      "id": "ImspTQPwCqd"
+      "id": "ImspTQPwCqd",
+      "displayName": "Sierra Leone"
     },
     {
-      "id": "O6uvpzGd5pu"
+      "id": "O6uvpzGd5pu",
+      "displayName": "Bo"
     },
     {
-      "id": "npWGUj37qDe"
+      "id": "npWGUj37qDe",
+      "displayName": "Valunia"
     }
   ],
   "organisationUnitGroups": [

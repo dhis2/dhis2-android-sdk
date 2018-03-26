@@ -101,7 +101,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
-    public static final int VERSION = 12;
+    public static final int VERSION = 13;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -804,6 +804,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             TrackedEntityInstanceModel.Columns.LAST_UPDATED_AT_CLIENT + " TEXT," +
             TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
             TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + " TEXT NOT NULL," +
+            TrackedEntityInstanceModel.Columns.COORDINATES + " TEXT," +
+            TrackedEntityInstanceModel.Columns.FEATURE_TYPE + " TEXT," +
             TrackedEntityInstanceModel.Columns.STATE + " TEXT," +
             " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + ")" +
             " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID

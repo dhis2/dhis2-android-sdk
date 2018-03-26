@@ -107,7 +107,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, dateString, dateString,
                 CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
-                ORGANISATION_UNIT, TRACKED_ENTITY, STATE).isExhausted();
+                ORGANISATION_UNIT, TRACKED_ENTITY, COORDINATES, FEATURE_TYPE, STATE).isExhausted();
     }
 
     @Test
@@ -130,19 +130,19 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, dateString, dateString,
                 CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
-                deferredOrganisationUnit, deferredTrackedEntity, STATE
+                deferredOrganisationUnit, deferredTrackedEntity, COORDINATES, FEATURE_TYPE, STATE
         ).isExhausted();
     }
 
     @Test
     public void insert_in_data_base_when_insert_nullable_row() {
         long rowId = trackedEntityInstanceStore.insert(UID, null, null, null, null,
-                ORGANISATION_UNIT, TRACKED_ENTITY, null, null, null);
+                ORGANISATION_UNIT, TRACKED_ENTITY, COORDINATES, FEATURE_TYPE, null);
 
         Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
-                UID, null, null, null, null, ORGANISATION_UNIT, TRACKED_ENTITY, null
+                UID, null, null, null, null, ORGANISATION_UNIT, TRACKED_ENTITY, COORDINATES, FEATURE_TYPE, null
         ).isExhausted();
     }
 

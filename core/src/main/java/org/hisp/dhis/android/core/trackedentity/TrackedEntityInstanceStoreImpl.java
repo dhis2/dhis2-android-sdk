@@ -138,7 +138,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         sqLiteBind(insertStatement, 6, organisationUnit);
         sqLiteBind(insertStatement, 7, trackedEntity);
         sqLiteBind(insertStatement, 8, coordinates);
-        sqLiteBind(insertStatement, 9, trackedEntity);
+        sqLiteBind(insertStatement, 9, featureType);
         sqLiteBind(insertStatement, 10, state);
 
         long returnValue = databaseAdapter.executeInsert(TrackedEntityInstanceModel.TABLE, insertStatement);
@@ -242,7 +242,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
                     String trackedEntity = cursor.getString(6);
                     String coordinates = cursor.getString(7);
                     FeatureType featureType = cursor.getString(8) == null ? null :
-                            FeatureType.valueOf(cursor.getString(8));
+                            FeatureType.valueOf(FeatureType.class, cursor.getString(8));
 
                     trackedEntityInstanceMap.put(uid, TrackedEntityInstance.create(
                             uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,

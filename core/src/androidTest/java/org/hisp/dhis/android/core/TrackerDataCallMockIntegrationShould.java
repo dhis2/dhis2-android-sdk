@@ -9,6 +9,7 @@ import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -215,7 +216,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
         TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.create(
                 uid, date, date, dateString, dateString,
-                "DiszpKrYNg8", "nEenWmSyUEp", null, null,
+                "DiszpKrYNg8", "nEenWmSyUEp", "[9,9]", FeatureType.POINT,
                 false, null, null, null);
 
         trackedEntityInstanceStore.insert(

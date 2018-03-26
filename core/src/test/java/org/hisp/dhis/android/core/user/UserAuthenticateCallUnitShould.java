@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.SqLiteTransaction;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModelBuilder;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -258,8 +259,8 @@ public class UserAuthenticateCallUnitShould {
                                 OrganisationUnit.openingDate,
                                 OrganisationUnit.closedDate,
                                 OrganisationUnit.level,
-                                OrganisationUnit.parent.with(
-                                        OrganisationUnit.uid)));
+                                OrganisationUnit.ancestors.with(OrganisationUnit.displayName),
+                                OrganisationUnit.parent.with(OrganisationUnit.uid)));
     }
 
     @Test

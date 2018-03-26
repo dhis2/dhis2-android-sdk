@@ -56,6 +56,7 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     private static final String LEVEL = "level";
     private static final String PROGRAMS = "programs";
     private static final String DATA_SETS = "dataSets";
+    private static final String ANCESTORS = "ancestors";
 
     public static final Field<OrganisationUnit, String> uid = Field.create(BaseIdentifiableObject.UID);
     public static final Field<OrganisationUnit, String> code = Field.create(BaseIdentifiableObject.CODE);
@@ -75,12 +76,13 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     public static final NestedField<OrganisationUnit, OrganisationUnit> parent = NestedField.create(PARENT);
     public static final NestedField<OrganisationUnit, Program> programs = NestedField.create(PROGRAMS);
     public static final NestedField<OrganisationUnit, DataSet> dataSets = NestedField.create(DATA_SETS);
+    public static final NestedField<OrganisationUnit, OrganisationUnit> ancestors = NestedField.create(ANCESTORS);
 
     static final Fields<OrganisationUnit> allFields = Fields.<OrganisationUnit>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, displayDescription, path, openingDate,
             closedDate, level, deleted, parent.with(uid), programs.with(Program.uid),
-            dataSets.with(DataSet.uid)).build();
+            dataSets.with(DataSet.uid), ancestors.with(OrganisationUnit.displayName)).build();
     
     @Nullable
     @JsonProperty(PARENT)
@@ -110,6 +112,10 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     @JsonProperty(DATA_SETS)
     public abstract List<DataSet> dataSets();
 
+    @Nullable
+    @JsonProperty(ANCESTORS)
+    public abstract List<OrganisationUnit> ancestors();
+
     @JsonCreator
     public static OrganisationUnit create(
             @JsonProperty(UID) String uid,
@@ -129,9 +135,11 @@ public abstract class OrganisationUnit extends BaseNameableObject {
             @JsonProperty(LEVEL) Integer level,
             @JsonProperty(PROGRAMS) List<Program> programs,
             @JsonProperty(DATA_SETS) List<DataSet> dataSets,
+            @JsonProperty(DATA_SETS) List<OrganisationUnit> ancestors,
             @JsonProperty(DELETED) Boolean deleted) {
         return new AutoValue_OrganisationUnit(uid, code, name, displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription, parent, path, openingDate,
-                closedDate, level, safeUnmodifiableList(programs), safeUnmodifiableList(dataSets));
+                closedDate, level, safeUnmodifiableList(programs), safeUnmodifiableList(dataSets),
+                ancestors);
     }
 }

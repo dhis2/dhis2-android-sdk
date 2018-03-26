@@ -37,6 +37,7 @@ public class TrackedEntityInstanceHandler {
                     trackedEntityInstance.uid(), trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),
                     trackedEntityInstance.createdAtClient(), trackedEntityInstance.lastUpdatedAtClient(),
                     trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntity(),
+                    trackedEntityInstance.coordinates(), trackedEntityInstance.featureType(),
                     State.SYNCED, trackedEntityInstance.uid());
 
             if (updatedRow <= 0) {
@@ -44,7 +45,8 @@ public class TrackedEntityInstanceHandler {
                         trackedEntityInstance.uid(), trackedEntityInstance.created(),
                         trackedEntityInstance.lastUpdated(), trackedEntityInstance.createdAtClient(),
                         trackedEntityInstance.lastUpdatedAtClient(), trackedEntityInstance.organisationUnit(),
-                        trackedEntityInstance.trackedEntity(), State.SYNCED);
+                        trackedEntityInstance.trackedEntity(), trackedEntityInstance.coordinates(),
+                        trackedEntityInstance.featureType(), State.SYNCED);
             }
 
             trackedEntityAttributeValueHandler.handle(

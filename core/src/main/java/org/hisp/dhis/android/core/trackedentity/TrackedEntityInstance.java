@@ -147,8 +147,8 @@ public abstract class TrackedEntityInstance {
             @JsonProperty(RELATIONSHIPS) List<Relationship> relationships,
             @JsonProperty(ENROLLMENTS) List<Enrollment> enrollments) {
         return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                organisationUnit, trackedEntity, coordinates, featureType, deleted, safeUnmodifiableList
-                (trackedEntityAttributeValues), safeUnmodifiableList(relationships), safeUnmodifiableList(enrollments));
+                organisationUnit, trackedEntity, coordinates, featureType, deleted,
+                safeUnmodifiableList(trackedEntityAttributeValues), safeUnmodifiableList(relationships),
+                safeUnmodifiableList(enrollments));
     }
-
 }

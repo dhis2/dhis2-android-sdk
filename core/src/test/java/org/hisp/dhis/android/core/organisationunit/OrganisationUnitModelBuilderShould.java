@@ -130,11 +130,11 @@ public class OrganisationUnitModelBuilderShould {
     }
 
     @Test
-    public void build_display_name_path_from_acestors() {
+    public void build_display_name_path_from_ancestors() {
         OrganisationUnitModel model = new OrganisationUnitModelBuilder().buildModel(pojo);
 
         String expectedDisplayNamePath = "/" + grandparent.displayName() + "/" + parent.displayName() + "/" +
-                pojo.displayName() + "/";
+                pojo.displayName();
         assertThat(model.displayNamePath()).isEqualTo(expectedDisplayNamePath);
     }
 }

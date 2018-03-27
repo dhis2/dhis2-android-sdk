@@ -62,7 +62,7 @@ public class OrganisationUnitModelBuilder extends ModelBuilder<OrganisationUnit,
         for (OrganisationUnit ancestor: organisationUnit.ancestors()) {
             sb.append(separator).append(ancestor.displayName());
         }
-        sb.append(separator).append(organisationUnit.displayName()).append(separator);
+        sb.append(separator).append(organisationUnit.displayName());
         return sb.toString();
     }
 }

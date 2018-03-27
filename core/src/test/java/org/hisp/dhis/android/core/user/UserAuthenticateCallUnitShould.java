@@ -150,9 +150,8 @@ public class UserAuthenticateCallUnitShould {
                     }
                 };
 
-        userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userStore,
-                userCredentialsHandler, resourceHandler,
-                authenticatedUserStore,
+        userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, new Date(),
+                userStore, userCredentialsHandler, resourceHandler, authenticatedUserStore,
                 organisationUnitHandlerFactory, "test_user_name", "test_user_password");
 
         when(userCredentials.uid()).thenReturn("test_user_credentials_uid");

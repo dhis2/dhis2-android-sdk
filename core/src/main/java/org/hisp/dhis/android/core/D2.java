@@ -445,7 +445,8 @@ public final class D2 {
             throw new NullPointerException("password == null");
         }
 
-        return UserAuthenticateCall.create(databaseAdapter, retrofit, username, password);
+        return UserAuthenticateCall.create(GenericCallData.create(databaseAdapter, retrofit),
+                username, password);
     }
 
     @NonNull

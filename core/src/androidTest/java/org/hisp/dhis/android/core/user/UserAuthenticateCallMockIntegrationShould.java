@@ -35,12 +35,12 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -135,6 +135,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
     private Dhis2MockServer dhis2MockServer;
     private Call<Response<User>> authenticateUserCall;
+    private GenericCallData genericCallData;
 
     @Before
     @Override
@@ -147,13 +148,14 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
         dhis2MockServer.enqueueMockResponse("user.json");
 
-        authenticateUserCall = UserAuthenticateCall.create(databaseAdapter(), d2.retrofit(),
+        genericCallData = GenericCallData.create(databaseAdapter(), d2.retrofit());
+        authenticateUserCall = UserAuthenticateCall.create(genericCallData,
                 "test_user", "test_password");
     }
 
     @Test
     public void persist_user_in_data_base_when_call() throws Exception {
-        Response response = authenticateUserCall.call();
+        authenticateUserCall.call();
 
         // verify that user is persisted in database with corresponding data
         Cursor userCursor = database().query(UserModel.TABLE,
@@ -200,10 +202,10 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                         1L, // id
                         "M0fCOxtkURr", // uid
                         "android", // code
-                        "John Traore", // name
-                        "John Traore", // display name
+                        "John Barnes", // name
+                        "John Barnes", // display name
                         "2015-03-31T13:31:09.206", // created
-                        "2016-12-20T15:04:21.254", // last updated
+                        "2017-11-29T11:45:37.250", // last updated
                         "android", // username
                         "DXyJmlo9rge" // user
                 )
@@ -221,20 +223,20 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 .hasRow(
                         1L, // id
                         "DiszpKrYNg8", // uid
-                        "OU_559", // code
-                        "Ngelehun CHC", // name
-                        "Ngelehun CHC", // display name
-                        "2012-02-17T15:54:39.987", // created
-                        "2014-11-25T09:37:54.924", // last updated
-                        "Ngelehun CHC", // short name
-                        "Ngelehun CHC", // display short name,
+                        null, // code
+                        null, // name
+                        null, // display name
+                        null, // created
+                        null, // last updated
+                        null, // short name
+                        null, // display short name,
                         null, // description
                         null, // display description
                         "/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8", // path
-                        "1970-01-01T00:00:00.000", // opening date
+                        null, // opening date
                         null, // closed date
-                        "YuQRtpLP10I", // parent
-                        4 // level
+                        null, // parent
+                        null // level
                 )
                 .isExhausted();
 
@@ -248,7 +250,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 .isExhausted();
 
         String dateString = BaseIdentifiableObject.DATE_FORMAT.format(
-                response.headers().getDate(HeaderUtils.DATE));
+                genericCallData.serverDate());
 
         assertThatCursor(resource)
                 .hasRow(

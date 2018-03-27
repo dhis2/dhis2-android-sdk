@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.user;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -41,7 +42,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModelBuilder;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
@@ -49,7 +49,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 import static okhttp3.Credentials.basic;
 import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
@@ -62,6 +61,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
     // stores and databaseAdapter related dependencies
     private final DatabaseAdapter databaseAdapter;
+    private final Date serverDate;
     private final UserStore userStore;
     private final UserCredentialsHandler userCredentialsHandler;
     private final ResourceHandler resourceHandler;
@@ -77,6 +77,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     UserAuthenticateCall(
             @NonNull UserService userService,
             @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull Date serverDate,
             @NonNull UserStore userStore,
             @NonNull UserCredentialsHandler userCredentialsHandler,
             @NonNull ResourceHandler resourceHandler,
@@ -87,6 +88,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         this.userService = userService;
 
         this.databaseAdapter = databaseAdapter;
+        this.serverDate = serverDate;
         this.userStore = userStore;
         this.userCredentialsHandler = userCredentialsHandler;
         this.resourceHandler = resourceHandler;
@@ -172,9 +174,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         try {
             User user = response.body();
 
-            Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
-
-            handleUser(user, serverDateTime);
+            handleUser(user, serverDate);
 
             transaction.setSuccessful();
         } finally {
@@ -223,17 +223,17 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     }
 
     public static UserAuthenticateCall create(
-            @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull Retrofit retrofit,
+            @NonNull GenericCallData genericCallData,
             @NonNull String username,
             @NonNull String password) {
         return new UserAuthenticateCall(
-                retrofit.create(UserService.class),
-                databaseAdapter,
-                new UserStoreImpl(databaseAdapter),
-                UserCredentialsHandler.create(databaseAdapter),
-                ResourceHandler.create(databaseAdapter),
-                new AuthenticatedUserStoreImpl(databaseAdapter),
+                genericCallData.retrofit().create(UserService.class),
+                genericCallData.databaseAdapter(),
+                genericCallData.serverDate(),
+                new UserStoreImpl(genericCallData.databaseAdapter()),
+                UserCredentialsHandler.create(genericCallData.databaseAdapter()),
+                ResourceHandler.create(genericCallData.databaseAdapter()),
+                new AuthenticatedUserStoreImpl(genericCallData.databaseAdapter()),
                 FACTORY,
                 username,
                 password

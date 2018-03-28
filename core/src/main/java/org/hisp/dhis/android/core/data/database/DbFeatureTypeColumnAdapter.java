@@ -26,39 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.data.database;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import org.hisp.dhis.android.core.common.DeletableStore;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.period.FeatureType;
 
-import java.util.Date;
-import java.util.Map;
-
-public interface TrackedEntityInstanceStore extends DeletableStore {
-
-    long insert(
-            @NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated, @Nullable String createdAtClient,
-            @Nullable String lastUpdatedAtClient, @NonNull String organisationUnit, @NonNull String trackedEntity,
-            @Nullable String coordinates, @Nullable FeatureType featureType, @Nullable State state);
-
-    int delete();
-
-    int update(@NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated, @Nullable String createdAtClient,
-               @Nullable String lastUpdatedAtClient, @NonNull String organisationUnit, @NonNull String trackedEntity,
-               @Nullable String coordinates, @Nullable FeatureType featureType, @Nullable State state,
-               @NonNull String whereTrackedEntityInstanceUid);
-
-    int delete(@NonNull String uid);
-
-    int setState(@NonNull String uid, @NonNull State state);
-
-    Map<String, TrackedEntityInstance> queryToPost();
-
-    Map<String, TrackedEntityInstance> querySynced();
-
-    Map<String, TrackedEntityInstance> queryAll();
+public class DbFeatureTypeColumnAdapter extends EnumColumnAdapter<FeatureType> {
+    @Override
+    protected Class<FeatureType> getEnumClass() {
+        return FeatureType.class;
+    }
 }

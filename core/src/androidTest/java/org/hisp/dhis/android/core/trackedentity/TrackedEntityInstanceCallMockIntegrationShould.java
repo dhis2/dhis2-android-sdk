@@ -1,8 +1,5 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-
 import android.support.annotation.NonNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -29,6 +26,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTestCase {
 
@@ -166,7 +166,10 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                 trackedEntityInstance.lastUpdated(),
                 trackedEntityInstance.createdAtClient(),
                 trackedEntityInstance.lastUpdatedAtClient(),
-                trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntity(),
+                trackedEntityInstance.organisationUnit(),
+                trackedEntityInstance.trackedEntity(),
+                trackedEntityInstance.coordinates(),
+                trackedEntityInstance.featureType(),
                 trackedEntityInstance.deleted(),
                 trackedEntityInstance.trackedEntityAttributeValues(),
                 trackedEntityInstance.relationships(), expectedEnrollments);
@@ -257,10 +260,9 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         downloadedTei = TrackedEntityInstance.create(
                 downloadedTei.uid(), downloadedTei.created(), downloadedTei.lastUpdated(),
                 downloadedTei.createdAtClient(), downloadedTei.lastUpdatedAtClient(),
-                downloadedTei.organisationUnit(), downloadedTei.trackedEntity(),
-                downloadedTei.deleted(), attValues.get(downloadedTei.uid()),
+                downloadedTei.organisationUnit(), downloadedTei.trackedEntity(), downloadedTei.coordinates(),
+                downloadedTei.featureType(), downloadedTei.deleted(), attValues.get(downloadedTei.uid()),
                 relationships, downloadedEnrollments);
-
 
         return downloadedTei;
     }

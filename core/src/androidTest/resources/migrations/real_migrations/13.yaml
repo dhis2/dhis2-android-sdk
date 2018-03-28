@@ -1,0 +1,3 @@
+up:
+ - DROP TABLE IF EXISTS TrackedEntityInstance;
+ - CREATE TABLE TrackedEntityInstance (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,created TEXT, lastUpdated TEXT,createdAtClient TEXT,lastUpdatedAtClient TEXT,organisationUnit TEXT NOT NULL,trackedEntity TEXT NOT NULL,coordinates TEXT,featureType TEXT,state TEXT, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED FOREIGN KEY (trackedEntity) REFERENCES TrackedEntity (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);

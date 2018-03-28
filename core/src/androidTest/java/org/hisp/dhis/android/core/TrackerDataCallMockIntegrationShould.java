@@ -1,10 +1,5 @@
 package org.hisp.dhis.android.core;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
@@ -14,6 +9,7 @@ import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -32,6 +28,11 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsNull.nullValue;
 
 public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
@@ -215,15 +216,15 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
         TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.create(
                 uid, date, date, dateString, dateString,
-                "DiszpKrYNg8", "nEenWmSyUEp",
+                "DiszpKrYNg8", "nEenWmSyUEp", "[9,9]", FeatureType.POINT,
                 false, null, null, null);
 
         trackedEntityInstanceStore.insert(
                 trackedEntityInstance.uid(), trackedEntityInstance.created(),
                 trackedEntityInstance.lastUpdated(), trackedEntityInstance.createdAtClient(),
-                trackedEntityInstance.lastUpdatedAtClient(),
-                trackedEntityInstance.organisationUnit(),
-                trackedEntityInstance.trackedEntity(), state);
+                trackedEntityInstance.lastUpdatedAtClient(), trackedEntityInstance.organisationUnit(),
+                trackedEntityInstance.trackedEntity(), trackedEntityInstance.coordinates(),
+                trackedEntityInstance.featureType(), state);
 
         return trackedEntityInstance;
     }

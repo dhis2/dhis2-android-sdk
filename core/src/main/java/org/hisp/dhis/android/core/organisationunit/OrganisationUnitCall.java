@@ -34,11 +34,8 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
 
@@ -126,18 +123,8 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
             @NonNull String uid,
             @Nullable Filter<OrganisationUnit, String> lastUpdatedFilter) throws IOException {
 
-        Fields<OrganisationUnit> fields = Fields.<OrganisationUnit>builder().fields(
-                OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
-                OrganisationUnit.shortName, OrganisationUnit.displayShortName,
-                OrganisationUnit.description, OrganisationUnit.displayDescription,
-                OrganisationUnit.displayDescription, OrganisationUnit.path, OrganisationUnit.openingDate,
-                OrganisationUnit.closedDate, OrganisationUnit.level, OrganisationUnit.deleted,
-                OrganisationUnit.parent.with(OrganisationUnit.uid),
-                OrganisationUnit.programs.with(Program.uid),
-                OrganisationUnit.dataSets.with(DataSet.uid)
-        ).build();
-        return organisationUnitService.getOrganisationUnits(uid, fields, lastUpdatedFilter, true, false).execute();
+        return organisationUnitService.getOrganisationUnits(uid, OrganisationUnit.allFields,
+                lastUpdatedFilter, true, false).execute();
     }
 
     public interface Factory {

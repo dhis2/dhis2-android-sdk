@@ -96,5 +96,13 @@ public class OrganisationUnitShould {
         assertThat(organisationUnit.dataSets().get(1).uid()).isEqualTo("VTdjfLXXmoi");
         assertThat(organisationUnit.dataSets().get(2).uid()).isEqualTo("aLpVgfXiz0f");
         assertThat(organisationUnit.dataSets().get(3).uid()).isEqualTo("N4fIX1HL3TQ");
+
+        // checking ancestors
+        assertThat(organisationUnit.ancestors().get(0).uid()).isEqualTo("ImspTQPwCqd");
+        assertThat(organisationUnit.ancestors().get(1).uid()).isEqualTo("O6uvpzGd5pu");
+        assertThat(organisationUnit.ancestors().get(2).uid()).isEqualTo("npWGUj37qDe");
+        assertThat(organisationUnit.ancestors().get(0).displayName()).isEqualTo("Sierra Leone");
+        assertThat(organisationUnit.ancestors().get(1).displayName()).isEqualTo("Bo");
+        assertThat(organisationUnit.ancestors().get(2).displayName()).isEqualTo("Valunia");
     }
 }

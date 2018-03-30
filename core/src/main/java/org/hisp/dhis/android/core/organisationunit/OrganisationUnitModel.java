@@ -57,12 +57,13 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel impl
         public static final String CLOSED_DATE = "closedDate";
         public static final String LEVEL = "level";
         public static final String PARENT = "parent";
+        public static final String DISPLAY_NAME_PATH = "displayNamePath";
 
         private Columns() {}
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(),
-                    PATH, OPENING_DATE, CLOSED_DATE, LEVEL, PARENT);
+                    PATH, OPENING_DATE, CLOSED_DATE, LEVEL, PARENT, DISPLAY_NAME_PATH);
         }
     }
     public enum Scope {
@@ -77,10 +78,6 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel impl
     public static Builder builder() {
         return new $$AutoValue_OrganisationUnitModel.Builder();
     }
-
-    @Nullable
-    @ColumnName(Columns.PARENT)
-    public abstract String parent();
 
     @Nullable
     @ColumnName(Columns.PATH)
@@ -100,6 +97,14 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel impl
     @ColumnName(Columns.LEVEL)
     public abstract Integer level();
 
+    @Nullable
+    @ColumnName(Columns.PARENT)
+    public abstract String parent();
+
+    @Nullable
+    @ColumnName(Columns.DISPLAY_NAME_PATH)
+    public abstract String displayNamePath();
+
     @NonNull
     public abstract ContentValues toContentValues();
 
@@ -111,12 +116,11 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel impl
         sqLiteBind(sqLiteStatement, 13, closedDate());
         sqLiteBind(sqLiteStatement, 14, level());
         sqLiteBind(sqLiteStatement, 15, parent());
+        sqLiteBind(sqLiteStatement, 16, displayNamePath());
     }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
-        public abstract Builder parent(@Nullable String parent);
-
         public abstract Builder path(@Nullable String path);
 
         public abstract Builder openingDate(@Nullable Date openingDate);
@@ -124,6 +128,10 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel impl
         public abstract Builder closedDate(@Nullable Date closedDate);
 
         public abstract Builder level(@Nullable Integer level);
+
+        public abstract Builder parent(@Nullable String parent);
+
+        public abstract Builder displayNamePath(@Nullable String displayNamePath);
 
         public abstract OrganisationUnitModel build();
     }

@@ -52,6 +52,17 @@ public class OrganisationUnitModelBuilder extends ModelBuilder<OrganisationUnit,
                 .closedDate(organisationUnit.closedDate())
                 .parent(parent == null ? null : parent.uid())
                 .level(organisationUnit.level())
+                .displayNamePath(displayNamePath(organisationUnit))
                 .build();
+    }
+
+    private String displayNamePath(OrganisationUnit organisationUnit) {
+        String separator = "/";
+        StringBuilder sb = new StringBuilder();
+        for (OrganisationUnit ancestor: organisationUnit.ancestors()) {
+            sb.append(separator).append(ancestor.displayName());
+        }
+        sb.append(separator).append(organisationUnit.displayName());
+        return sb.toString();
     }
 }

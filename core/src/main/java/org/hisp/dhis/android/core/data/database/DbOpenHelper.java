@@ -101,7 +101,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
-    public static final int VERSION = 13;
+    public static final int VERSION = 14;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -241,25 +241,15 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             "ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED " +
             ");";
 
-    private static final String CREATE_ORGANISATION_UNIT_TABLE = "CREATE TABLE " +
-            OrganisationUnitModel.TABLE + " (" +
-            OrganisationUnitModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            OrganisationUnitModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            OrganisationUnitModel.Columns.CODE + " TEXT," +
-            OrganisationUnitModel.Columns.NAME + " TEXT," +
-            OrganisationUnitModel.Columns.DISPLAY_NAME + " TEXT," +
-            OrganisationUnitModel.Columns.CREATED + " TEXT," +
-            OrganisationUnitModel.Columns.LAST_UPDATED + " TEXT," +
-            OrganisationUnitModel.Columns.SHORT_NAME + " TEXT," +
-            OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-            OrganisationUnitModel.Columns.DESCRIPTION + " TEXT," +
-            OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
-            OrganisationUnitModel.Columns.PATH + " TEXT," +
-            OrganisationUnitModel.Columns.OPENING_DATE + " TEXT," +
-            OrganisationUnitModel.Columns.CLOSED_DATE + " TEXT," +
-            OrganisationUnitModel.Columns.LEVEL + " INTEGER," +
-            OrganisationUnitModel.Columns.PARENT + " TEXT" +
-            ");";
+    private static final String CREATE_ORGANISATION_UNIT_TABLE =
+            SQLStatementBuilder.createNameableModelTable(OrganisationUnitModel.TABLE,
+                    OrganisationUnitModel.Columns.PATH + " TEXT," +
+                            OrganisationUnitModel.Columns.OPENING_DATE + " TEXT," +
+                            OrganisationUnitModel.Columns.CLOSED_DATE + " TEXT," +
+                            OrganisationUnitModel.Columns.LEVEL + " INTEGER," +
+                            OrganisationUnitModel.Columns.PARENT + " TEXT," +
+                            OrganisationUnitModel.Columns.DISPLAY_NAME_PATH + " TEXT"
+            );
 
     private static final String CREATE_USER_ORGANISATION_UNIT_TABLE = "CREATE TABLE " +
             UserOrganisationUnitLinkModel.TABLE + " (" +

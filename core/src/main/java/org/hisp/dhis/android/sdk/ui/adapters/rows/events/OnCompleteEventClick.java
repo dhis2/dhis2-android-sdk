@@ -30,6 +30,7 @@
 package org.hisp.dhis.android.sdk.ui.adapters.rows.events;
 
 import android.widget.Button;
+import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 
@@ -41,13 +42,16 @@ public class OnCompleteEventClick
     private String action, label;
     private Event event;
     private Button complete;
+    private TextView status;
 
-    public OnCompleteEventClick(String label, String action, Event event, Button complete)
+    public OnCompleteEventClick(String label, String action, Event event, Button complete,
+            TextView status)
     {
         this.label = label;
         this.action = action;
         this.event = event;
         this.complete = complete;
+        this.status = status;
     }
 
     public String getAction() {
@@ -64,5 +68,9 @@ public class OnCompleteEventClick
 
     public String getLabel() {
         return label;
+    }
+
+    public TextView getStatus() {
+        return status;
     }
 }

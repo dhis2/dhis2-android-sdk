@@ -29,8 +29,6 @@
 
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
-import static org.hisp.dhis.android.sdk.persistence.models.Event.EVENT_DATETIME_FORMAT;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -40,6 +38,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
@@ -49,7 +48,6 @@ import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnCompleteEventClick;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
 import org.hisp.dhis.android.sdk.ui.fragments.eventdataentry.EventDataEntryFragment;
-import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 
@@ -119,6 +117,7 @@ public final class StatusRow extends Row {
         private final OnValidateClickListener onValidateButtonClickListener;
         private final Event event;
         private final View detailedInfoButton;
+        private final TextView status;
 
         public StatusViewHolder(Context context, View view, Event event, View detailedInfoButton) {
 
@@ -127,25 +126,30 @@ public final class StatusRow extends Row {
             /* views */
             complete = (Button) view.findViewById(R.id.complete);
             validate = (Button) view.findViewById(R.id.validate);
+            status = (TextView) view.findViewById(R.id.status);
             this.detailedInfoButton = detailedInfoButton;
 
             /* text watchers and click listener */
-            onCompleteButtonClickListener = new OnCompleteClickListener(context, complete, this.event);
+            onCompleteButtonClickListener = new OnCompleteClickListener(context, complete,
+                    this.event, status);
             onValidateButtonClickListener = new OnValidateClickListener(context, validate, this.event);
             complete.setOnClickListener(onCompleteButtonClickListener);
             validate.setOnClickListener(onValidateButtonClickListener);
 
-            updateViews(event, complete, context);
+            updateViews(event, complete, context, status);
         }
 
-        public static void updateViews(Event event, Button button, Context context) {
+        public static void updateViews(Event event, Button button, Context context,
+                TextView status) {
             if(event.getStatus().equals(Event.STATUS_COMPLETED)) {
                 if(context != null) {
                     button.setText(context.getString(R.string.incomplete));
+                    status.setText(R.string.complete);
                 }
             } else {
                 if(context != null) {
                     button.setText(context.getString(R.string.complete));
+                    status.setText(R.string.incomplete);
                 }
             }
         }
@@ -156,11 +160,14 @@ public final class StatusRow extends Row {
         private final Event event;
         private final Context context;
         private Activity activity;
+        private final TextView status;
 
-        public OnCompleteClickListener(Context context, Button complete, Event event) {
+        public OnCompleteClickListener(Context context, Button complete, Event event,
+                TextView status) {
             this.context = context;
             this.complete = complete;
             this.event = event;
+            this.status = status;
         }
 
         @Override
@@ -172,7 +179,7 @@ public final class StatusRow extends Row {
                     activity.getString(R.string.incomplete_confirm) : activity.getString(R.string.complete_confirm);
 //            Dhis2.showConfirmDialog(activity, label, action, label, activity.getString(R.string.cancel), this);
 
-            Dhis2Application.getEventBus().post(new OnCompleteEventClick(label,action,event,complete));
+            Dhis2Application.getEventBus().post(new OnCompleteEventClick(label,action,event,complete,status));
         }
 
         private void setActivity(Activity activity) {
@@ -190,7 +197,7 @@ public final class StatusRow extends Row {
                     event.saveNewCompletedDate();
                 }
             }
-            StatusViewHolder.updateViews(event, complete, context);
+            StatusViewHolder.updateViews(event, complete, context, status);
         }
     }
 

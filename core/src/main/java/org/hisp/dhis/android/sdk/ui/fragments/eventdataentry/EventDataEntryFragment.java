@@ -604,6 +604,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     eventClick.getComplete().setText(R.string.incomplete);
+                                    eventClick.getStatus().setText(R.string.complete);
                                     eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
                                     eventClick.getEvent().setFromServer(false);
                                     ProgramStage currentProgramStage = MetaDataController
@@ -653,6 +654,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 });
             } else {
                 eventClick.getComplete().setText(R.string.complete);
+                eventClick.getStatus().setText(R.string.incomplete);
                 eventClick.getEvent().setStatus(Event.STATUS_ACTIVE);
                 eventClick.getEvent().setCompletedDate(null);
                 eventClick.getEvent().setFromServer(false);

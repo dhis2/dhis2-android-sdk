@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
@@ -115,11 +116,11 @@ public class TrackerEntitiesDataCall implements Call<Response> {
 
         int numPages = (int) Math.ceil((double) teiLimitByOrgUnit / pageSize);
 
-        int teisDownloaded = 0;
-
         int pageLimit = 0;
 
         for (String orgUnitUid : organisationUnitUids) {
+
+            int teisDownloaded = 0;
 
             for (int page = 1; page <= numPages; page++) {
 
@@ -135,7 +136,7 @@ public class TrackerEntitiesDataCall implements Call<Response> {
                         .build();
 
                 response = new TeisEndPointCall(trackedEntityInstanceService, databaseAdapter,
-                        teiQuery, trackedEntityInstanceHandler, resourceHandler, serverDate).call();
+                        teiQuery, trackedEntityInstanceHandler, resourceHandler).call();
 
                 if (!response.isSuccessful()) {
                     return response;
@@ -144,6 +145,10 @@ public class TrackerEntitiesDataCall implements Call<Response> {
                 teisDownloaded = teisDownloaded + teiQuery.getPageSize();
             }
 
+        }
+
+        if (response != null && response.isSuccessful()) {
+            resourceHandler.handleResource(ResourceModel.Type.TRACKED_ENTITY_INSTANCE, serverDate);
         }
 
         return response;

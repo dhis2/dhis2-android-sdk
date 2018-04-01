@@ -3,11 +3,12 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
@@ -19,7 +20,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import retrofit2.Response;
 
@@ -28,7 +29,7 @@ public class TrackerEntitiesDataCall implements Call<Response> {
 
     private boolean isExecuted;
     private final int teiLimitByOrgUnit;
-    private final OrganisationUnitStore organisationUnitStore;
+    private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final DatabaseAdapter databaseAdapter;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
@@ -37,7 +38,7 @@ public class TrackerEntitiesDataCall implements Call<Response> {
     private final SystemInfoService systemInfoService;
     private final SystemInfoStore systemInfoStore;
 
-    public TrackerEntitiesDataCall(@NonNull OrganisationUnitStore organisationUnitStore,
+    public TrackerEntitiesDataCall(@NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
                                    @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
                                    @NonNull DatabaseAdapter databaseAdapter,
                                    @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
@@ -109,17 +110,17 @@ public class TrackerEntitiesDataCall implements Call<Response> {
     private Response trackerCall(Date serverDate) throws Exception {
         Response response = null;
 
-        List<OrganisationUnit> organisationUnits = organisationUnitStore.queryOrganisationUnits();
+        Set<String> organisationUnitUids = organisationUnitStore.selectUids();
 
         int pageSize = TeiQuery.Builder.create().build().getPageSize();
 
         int numPages = (int) Math.ceil((double) teiLimitByOrgUnit / pageSize);
 
-        int teisDownloaded = 0;
-
         int pageLimit = 0;
 
-        for (OrganisationUnit orgUnit : organisationUnits) {
+        for (String orgUnitUid : organisationUnitUids) {
+
+            int teisDownloaded = 0;
 
             for (int page = 1; page <= numPages; page++) {
 
@@ -129,13 +130,13 @@ public class TrackerEntitiesDataCall implements Call<Response> {
 
                 TeiQuery teiQuery = TeiQuery.
                         Builder.create()
-                        .withOrgUnit(orgUnit.uid())
+                        .withOrgUnit(orgUnitUid)
                         .withPage(page)
                         .withPageLimit(pageLimit)
                         .build();
 
                 response = new TeisEndPointCall(trackedEntityInstanceService, databaseAdapter,
-                        teiQuery, trackedEntityInstanceHandler, resourceHandler, serverDate).call();
+                        teiQuery, trackedEntityInstanceHandler, resourceHandler).call();
 
                 if (!response.isSuccessful()) {
                     return response;
@@ -144,6 +145,10 @@ public class TrackerEntitiesDataCall implements Call<Response> {
                 teisDownloaded = teisDownloaded + teiQuery.getPageSize();
             }
 
+        }
+
+        if (response != null && response.isSuccessful()) {
+            resourceHandler.handleResource(ResourceModel.Type.TRACKED_ENTITY_INSTANCE, serverDate);
         }
 
         return response;

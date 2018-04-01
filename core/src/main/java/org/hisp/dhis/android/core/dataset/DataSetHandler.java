@@ -27,26 +27,23 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
 
-    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
-                   DictionaryTableHandler<ObjectStyle> styleHandler) {
+                   GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
         super(dataSetStore);
         this.styleHandler = styleHandler;
-    }
-
-    @Override
-    protected DataSetModel pojoToModel(DataSet dataSet) {
-        return DataSetModel.factory.fromPojo(dataSet);
     }
 
     public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
@@ -57,6 +54,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
 
     @Override
     protected void afterObjectPersisted(DataSet dataSet) {
-        styleHandler.handle(dataSet.style(), dataSet.uid(), DataSetModel.TABLE);
+        styleHandler.handle(dataSet.style(),
+                new ObjectStyleModelBuilder(dataSet.uid(), DataSetModel.TABLE));
     }
 }

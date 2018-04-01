@@ -29,23 +29,11 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class ObjectStyleHandler implements DictionaryTableHandler<ObjectStyle> {
+public final class ObjectStyleHandler {
 
-    private final ObjectWithoutUidStore<ObjectStyleModel> store;
+    private ObjectStyleHandler() {}
 
-    ObjectStyleHandler(ObjectWithoutUidStore<ObjectStyleModel> store) {
-        this.store = store;
-    }
-
-    @Override
-    public void handle(ObjectStyle style, String uid, String objectTable) {
-        if (style != null) {
-            ObjectStyleModel model = ObjectStyleModel.fromPojo(style, uid, objectTable);
-            store.updateOrInsertWhere(model);
-        }
-    }
-
-    public static ObjectStyleHandler create(DatabaseAdapter databaseAdapter) {
-        return new ObjectStyleHandler(ObjectStyleStore.create(databaseAdapter));
+    public static GenericHandler<ObjectStyle, ObjectStyleModel> create(DatabaseAdapter databaseAdapter) {
+        return new ObjectWithoutUidHandlerImpl<>(ObjectStyleStore.create(databaseAdapter));
     }
 }

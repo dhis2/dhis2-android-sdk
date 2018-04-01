@@ -10,16 +10,15 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Response;
-
 
 public class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInstance>>> {
 
@@ -28,22 +27,19 @@ public class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInst
     private final TeiQuery trackerQuery;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
-    private final Date serverDate;
 
     private boolean isExecuted;
 
     public TeisEndPointCall(@NonNull TrackedEntityInstanceService trackedEntityInstanceService,
                             @NonNull DatabaseAdapter databaseAdapter, @NonNull TeiQuery trackerQuery,
                             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
-                            @NonNull ResourceHandler resourceHandler,
-                            @NonNull Date serverDate) {
+                            @NonNull ResourceHandler resourceHandler) {
 
         this.databaseAdapter = databaseAdapter;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.trackerQuery = trackerQuery;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
         this.resourceHandler = resourceHandler;
-        this.serverDate = new Date(serverDate.getTime());
     }
 
     @Override
@@ -70,7 +66,8 @@ public class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInst
                 TrackedEntityInstance.lastUpdated.gt(lastSyncedTEIs), fields(),
                 Boolean.TRUE, trackerQuery.getPage(), trackerQuery.getPageSize()).execute();
 
-        if (response.isSuccessful() && response.body().items() != null) {
+        if (response.isSuccessful() && response.body().items() != null
+                && response.body().items().size()>0) {
             List<TrackedEntityInstance> trackedEntityInstances = response.body().items();
             int size = trackedEntityInstances.size();
 
@@ -99,7 +96,6 @@ public class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInst
                     transaction.end();
                 }
             }
-            resourceHandler.handleResource(ResourceModel.Type.TRACKED_ENTITY_INSTANCE, serverDate);
         }
 
         return response;
@@ -144,10 +140,9 @@ public class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInst
                                         TrackedEntityDataValue.storedBy,
                                         TrackedEntityDataValue.value
                                 )
-                        )
+                        ),
+                        Enrollment.notes.with(Note.allFields)
                 )
         ).build();
     }
-
-
 }

@@ -39,6 +39,7 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
     /* date format which should be used for all Date instances
     within models which extend BaseIdentifiableObject */
     public static final SafeDateFormat DATE_FORMAT = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    public static final SafeDateFormat SPACE_DATE_FORMAT = new SafeDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     public static final String UID = "id";
     protected static final String CODE = "code";
@@ -83,6 +84,10 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
 
     public static Date parseDate(String dateStr) throws ParseException {
         return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+    }
+
+    public static Date parseSpaceDate(String dateStr) throws ParseException {
+        return BaseIdentifiableObject.SPACE_DATE_FORMAT.parse(dateStr);
     }
 
     protected static abstract class Builder<T extends Builder> {

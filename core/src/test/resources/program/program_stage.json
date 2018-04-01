@@ -1,0 +1,100 @@
+{
+  "lastUpdated": "2013-04-10T12:15:02.041",
+  "id": "eaDHS084uMp",
+  "href": "https://play.dhis2.org/dev/api/programStages/eaDHS084uMp",
+  "created": "2013-03-04T11:41:07.541",
+  "name": "ANC 1st visit",
+  "allowGenerateNextVisit": false,
+  "validCompleteOnly": false,
+  "displayName": "ANC 1st visit",
+  "reportDateToUse": "false",
+  "description": "ANC 1st visit",
+  "externalAccess": false,
+  "openAfterEnrollment": false,
+  "repeatable": false,
+  "captureCoordinates": false,
+  "formType": "DEFAULT",
+  "remindCompleted": false,
+  "displayGenerateEventBox": false,
+  "generatedByEnrollmentDate": false,
+  "autoGenerateEvent": true,
+  "sortOrder": 1,
+  "hideDueDate": false,
+  "blockEntryForm": false,
+  "minDaysFromStart": 0,
+  "access": {
+    "read": true,
+    "updateWithSection": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": false,
+    "data": {
+      "read": true,
+      "write": true
+    }
+  },
+  "program": {
+    "id": "uy2gU8kT1jF"
+  },
+  "notificationTemplates": [],
+  "programStageDataElements": [
+    {
+      "id": "EQCf1l2Mdr8"
+    },
+    {
+      "id": "muxw4SGzUwJ"
+    },
+    {
+      "id": "KWybjio9UZT"
+    },
+    {
+      "id": "ejm0g2hwHHc"
+    },
+    {
+      "id": "yvV3txhSCyc"
+    },
+    {
+      "id": "fzQrjBpbwQD"
+    },
+    {
+      "id": "BbvkNf9PCxX"
+    },
+    {
+      "id": "MbdCfd4HaMQ"
+    },
+    {
+      "id": "SBn4XCFRbyT"
+    },
+    {
+      "id": "F0PZ4nZ86vo"
+    },
+    {
+      "id": "gFBRqVFh60H"
+    },
+    {
+      "id": "ljAoyjH4GYA"
+    },
+    {
+      "id": "MAdsNY2gOlv"
+    },
+    {
+      "id": "IpVUTCDdlGW"
+    },
+    {
+      "id": "psBtdqepNVM"
+    },
+    {
+      "id": "UzB6pZxZ2Rb"
+    },
+    {
+      "id": "FQZEMbBVabW"
+    }
+  ],
+  "translations": [],
+  "userGroupAccesses": [],
+  "attributeValues": [],
+  "programStageSections": [],
+  "periodType": "Monthly"
+}
+

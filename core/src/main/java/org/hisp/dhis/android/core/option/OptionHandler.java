@@ -27,8 +27,10 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 
 import java.util.List;
 
@@ -36,10 +38,11 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class OptionHandler {
     private final OptionStore optionStore;
-    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
 
-    public OptionHandler(OptionStore optionStore, DictionaryTableHandler<ObjectStyle> styleHandler) {
+    public OptionHandler(OptionStore optionStore,
+                         GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
         this.optionStore = optionStore;
         this.styleHandler = styleHandler;
     }
@@ -52,6 +55,7 @@ public class OptionHandler {
         deleteOrPersistOptions(options);
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     private void deleteOrPersistOptions(List<Option> options) {
         int size = options.size();
 
@@ -69,7 +73,8 @@ public class OptionHandler {
                             option.created(), option.lastUpdated(), option.optionSet().uid());
                 }
 
-                styleHandler.handle(option.style(), option.uid(), OptionModel.TABLE);
+                styleHandler.handle(option.style(),
+                        new ObjectStyleModelBuilder(option.uid(), OptionModel.TABLE));
             }
         }
     }

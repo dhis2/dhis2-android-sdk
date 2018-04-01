@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +14,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -62,15 +62,12 @@ public class TrackedEntityInstanceHandlerShould {
         // verify that tracked entity instance store is never called
         verify(trackedEntityInstanceStore, never()).delete(anyString());
         verify(trackedEntityInstanceStore, never()).update(anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(),
-                anyString(), anyString(), any(State.class), anyString());
+                anyString(), anyString(), anyString(), anyString(), anyString(), any(FeatureType.class),
+                any(State.class), anyString());
         verify(trackedEntityInstanceStore, never()).insert(anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(),
-                anyString(), anyString(), any(State.class));
-
-        verify(trackedEntityAttributeValueHandler, never()).handle(
-                any(String.class), any(ArrayList.class));
-
+                anyString(), anyString(), anyString(), anyString(), anyString(), any(FeatureType.class),
+                any(State.class));
+        verify(trackedEntityAttributeValueHandler, never()).handle(any(String.class), any(ArrayList.class));
         verify(enrollmentHandler, never()).handle(any(ArrayList.class));
     }
 
@@ -84,11 +81,11 @@ public class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityInstanceStore, times(1)).delete(anyString());
 
         verify(trackedEntityInstanceStore, never()).update(anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(),
-                anyString(), anyString(), any(State.class), anyString());
+                anyString(), anyString(), anyString(), anyString(), anyString(), any(FeatureType.class),
+                any(State.class), anyString());
         verify(trackedEntityInstanceStore, never()).insert(anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(),
-                anyString(), anyString(), any(State.class));
+                anyString(), anyString(), anyString(), anyString(), anyString(), any(FeatureType.class),
+                any(State.class));
 
         verify(trackedEntityAttributeValueHandler, never()).handle(
                 any(String.class), any(ArrayList.class));
@@ -100,21 +97,21 @@ public class TrackedEntityInstanceHandlerShould {
     @Test
     public void invoke_only_update_when_handle_tracked_entity_instance_inserted() throws Exception {
         when(trackedEntityInstanceStore.update(anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(),
-                anyString(), anyString(), any(State.class), anyString())).thenReturn(1);
+                anyString(), anyString(), anyString(), anyString(), anyString(), any(FeatureType.class),
+                any(State.class), anyString())).thenReturn(1);
 
         trackedEntityInstanceHandler.handle(trackedEntityInstance);
 
 
         // verify that tracked entity instance store is only called with update
         verify(trackedEntityInstanceStore, times(1)).update(anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(),
-                anyString(), anyString(), any(State.class), anyString());
+                anyString(), anyString(), anyString(), anyString(), anyString(), any(FeatureType.class),
+                any(State.class), anyString());
 
 
         verify(trackedEntityInstanceStore, never()).insert(anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(),
-                anyString(), anyString(), any(State.class));
+                anyString(), anyString(),anyString(), anyString(), anyString(), any(FeatureType.class),
+                any(State.class));
         verify(trackedEntityInstanceStore, never()).delete(anyString());
 
         verify(trackedEntityAttributeValueHandler, times(1)).handle(
@@ -128,21 +125,21 @@ public class TrackedEntityInstanceHandlerShould {
     @Test
     public void invoke_update_and_insert_when_handle_tracked_entity_instance_not_inserted() throws Exception {
         when(trackedEntityInstanceStore.update(anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(),
-                anyString(), anyString(), any(State.class), anyString())).thenReturn(0);
+                anyString(), anyString(), anyString(), anyString(), anyString(), any(FeatureType.class),
+                any(State.class), anyString())).thenReturn(0);
 
         trackedEntityInstanceHandler.handle(trackedEntityInstance);
 
         // verify that tracked entity instance store is called with insert
         verify(trackedEntityInstanceStore, times(1)).insert(anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(),
-                anyString(), anyString(), any(State.class));
+                anyString(), anyString(),anyString(), anyString(), anyString(), any(FeatureType.class),
+                any(State.class));
 
         // update is also invoked since we're trying to update before we insert
 
         verify(trackedEntityInstanceStore, times(1)).update(anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(),
-                anyString(), anyString(), any(State.class), anyString());
+                anyString(), anyString(), anyString(), anyString(), anyString(), any(FeatureType.class),
+                any(State.class), anyString());
 
         // check that delete is never invoked
         verify(trackedEntityInstanceStore, never()).delete(anyString());

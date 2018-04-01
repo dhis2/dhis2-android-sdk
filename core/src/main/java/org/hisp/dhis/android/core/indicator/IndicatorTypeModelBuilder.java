@@ -25,18 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-@RunWith(JUnit4.class)
-public class IndicatorHandlerShould {
+public class IndicatorTypeModelBuilder extends ModelBuilder<IndicatorType, IndicatorTypeModel> {
 
-    @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<Indicator, IndicatorModel> genericHandler = new IndicatorHandler(null);
+    @Override
+    public IndicatorTypeModel buildModel(IndicatorType type) {
+        return IndicatorTypeModel.builder()
+                .uid(type.uid())
+                .code(type.code())
+                .name(type.name())
+                .displayName(type.displayName())
+                .created(type.created())
+                .lastUpdated(type.lastUpdated())
+                .number(type.number())
+                .factor(type.factor())
+                .build();
     }
 }

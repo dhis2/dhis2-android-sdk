@@ -34,6 +34,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel.Columns;
+import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -54,6 +55,7 @@ public class OrganisationUnitModelShould {
     private static final String DISPLAY_DESCRIPTION = "test_display_description";
     private static final String PATH = "test_path";
     private static final String PARENT = "test_parent";
+    private static final String DISPLAY_NAME_PATH = "/grandpa/dad/me/";
     private static final int LEVEL = 100;
 
     private final Date date;
@@ -66,27 +68,14 @@ public class OrganisationUnitModelShould {
 
     @Test
     public void create_model_when_created_from_database_cursor() {
-        MatrixCursor cursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.SHORT_NAME,
-                Columns.DISPLAY_SHORT_NAME,
-                Columns.DESCRIPTION,
-                Columns.DISPLAY_DESCRIPTION,
-                Columns.PATH,
-                Columns.OPENING_DATE,
-                Columns.CLOSED_DATE,
-                Columns.PARENT,
-                Columns.LEVEL,
-        });
+
+        String[] columnsWithId = Utils.appendInNewArray(OrganisationUnitModel.Columns.all(),
+                OrganisationUnitModel.Columns.ID);
+        MatrixCursor cursor = new MatrixCursor(columnsWithId);
         cursor.addRow(new Object[]{
-                ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, SHORT_NAME, DISPLAY_SHORT_NAME,
-                DESCRIPTION, DISPLAY_DESCRIPTION, PATH, dateString, dateString, PARENT, LEVEL
+                UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, SHORT_NAME, DISPLAY_SHORT_NAME,
+                DESCRIPTION, DISPLAY_DESCRIPTION, PATH, dateString, dateString, LEVEL, PARENT,
+                DISPLAY_NAME_PATH, ID
         });
         cursor.moveToFirst();
 
@@ -109,6 +98,7 @@ public class OrganisationUnitModelShould {
         assertThat(model.closedDate()).isEqualTo(date);
         assertThat(model.parent()).isEqualTo(PARENT);
         assertThat(model.level()).isEqualTo(LEVEL);
+        assertThat(model.displayNamePath()).isEqualTo(DISPLAY_NAME_PATH);
     }
 
     @Test
@@ -130,6 +120,7 @@ public class OrganisationUnitModelShould {
                 .closedDate(date)
                 .parent(PARENT)
                 .level(LEVEL)
+                .displayNamePath(DISPLAY_NAME_PATH)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -149,5 +140,6 @@ public class OrganisationUnitModelShould {
         assertThat(contentValues.getAsString(Columns.CLOSED_DATE)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.PARENT)).isEqualTo(PARENT);
         assertThat(contentValues.getAsInteger(Columns.LEVEL)).isEqualTo(LEVEL);
+        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME_PATH)).isEqualTo(DISPLAY_NAME_PATH);
     }
 }

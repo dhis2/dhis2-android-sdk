@@ -27,8 +27,10 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +44,7 @@ import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -59,7 +62,7 @@ public class OptionHandlerShould {
     private OptionSet optionSet;
 
     @Mock
-    private DictionaryTableHandler<ObjectStyle> styleHandler;
+    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     // object to test
     private OptionHandler optionHandler;
@@ -148,6 +151,6 @@ public class OptionHandlerShould {
     @Test
     public void call_style_handler() throws Exception {
         optionHandler.handleOptions(options);
-        verify(styleHandler).handle(option.style(), option.uid(), OptionModel.TABLE);
+        verify(styleHandler).handle(eq(option.style()), any(ObjectStyleModelBuilder.class));
     }
 }

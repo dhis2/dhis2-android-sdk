@@ -28,28 +28,30 @@
 
 package org.hisp.dhis.android.core.user;
 
-import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
-
-import static okhttp3.Credentials.basic;
-
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModelBuilder;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import retrofit2.Response;
+
+import static okhttp3.Credentials.basic;
+import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 
 // ToDo: ask about API changes
 // ToDo: performance tests? Try to feed in a user instance with thousands organisation units
@@ -59,11 +61,12 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
     // stores and databaseAdapter related dependencies
     private final DatabaseAdapter databaseAdapter;
+    private final Date serverDate;
     private final UserStore userStore;
     private final UserCredentialsHandler userCredentialsHandler;
     private final ResourceHandler resourceHandler;
     private final AuthenticatedUserStore authenticatedUserStore;
-    private final OrganisationUnitHandler organisationUnitHandler;
+    private final OrganisationUnitHandlerFactory organisationUnitHandlerFactory;
 
     // username and password of candidate
     private final String username;
@@ -71,24 +74,26 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
 
     private boolean isExecuted;
 
-    public UserAuthenticateCall(
+    UserAuthenticateCall(
             @NonNull UserService userService,
             @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull Date serverDate,
             @NonNull UserStore userStore,
             @NonNull UserCredentialsHandler userCredentialsHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
-            @NonNull OrganisationUnitHandler organisationUnitHandler,
+            @NonNull OrganisationUnitHandlerFactory organisationUnitHandlerFactory,
             @NonNull String username,
             @NonNull String password) {
         this.userService = userService;
 
         this.databaseAdapter = databaseAdapter;
+        this.serverDate = serverDate;
         this.userStore = userStore;
         this.userCredentialsHandler = userCredentialsHandler;
         this.resourceHandler = resourceHandler;
         this.authenticatedUserStore = authenticatedUserStore;
-        this.organisationUnitHandler = organisationUnitHandler;
+        this.organisationUnitHandlerFactory = organisationUnitHandlerFactory;
 
         // credentials
         this.username = username;
@@ -156,9 +161,9 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                         OrganisationUnit.openingDate,
                         OrganisationUnit.closedDate,
                         OrganisationUnit.level,
-                        OrganisationUnit.parent.with(
-                                OrganisationUnit.uid))
-        ).build()).execute();
+                        OrganisationUnit.parent.with(OrganisationUnit.uid),
+                        OrganisationUnit.ancestors.with(OrganisationUnit.uid, OrganisationUnit.displayName))
+                ).build()).execute();
     }
 
     private void saveUser(Response<User> response) throws Exception {
@@ -169,9 +174,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         try {
             User user = response.body();
 
-            Date serverDateTime = response.headers().getDate(HeaderUtils.DATE);
-
-            handleUser(user, serverDateTime);
+            handleUser(user, serverDate);
 
             transaction.setSuccessful();
         } finally {
@@ -211,13 +214,45 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, serverDateTime);
 
         if (user.organisationUnits() != null) {
-            organisationUnitHandler.handleOrganisationUnits(
-                    user.organisationUnits(),
-                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE,
-                    user.uid());
+            organisationUnitHandlerFactory.organisationUnitHandler(databaseAdapter, user)
+                    .handleMany(user.organisationUnits(), new OrganisationUnitModelBuilder());
 
             // TODO: This is introduced to download all descendants
             // resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDateTime);
         }
     }
+
+    public static UserAuthenticateCall create(
+            @NonNull GenericCallData genericCallData,
+            @NonNull String username,
+            @NonNull String password) {
+        return new UserAuthenticateCall(
+                genericCallData.retrofit().create(UserService.class),
+                genericCallData.databaseAdapter(),
+                genericCallData.serverDate(),
+                new UserStoreImpl(genericCallData.databaseAdapter()),
+                UserCredentialsHandler.create(genericCallData.databaseAdapter()),
+                ResourceHandler.create(genericCallData.databaseAdapter()),
+                new AuthenticatedUserStoreImpl(genericCallData.databaseAdapter()),
+                FACTORY,
+                username,
+                password
+        );
+    }
+
+    public interface OrganisationUnitHandlerFactory {
+        GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler(
+                DatabaseAdapter databaseAdapter,
+                User user);
+    }
+
+    private static final UserAuthenticateCall.OrganisationUnitHandlerFactory FACTORY =
+            new UserAuthenticateCall.OrganisationUnitHandlerFactory() {
+                @Override
+                public GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler(
+                        DatabaseAdapter databaseAdapter, User user) {
+                    return OrganisationUnitHandler.create(databaseAdapter, new HashSet<String>(),
+                            OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
+                }
+            };
 }

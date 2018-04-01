@@ -30,24 +30,26 @@ package org.hisp.dhis.android.core.common;
 import java.util.Collection;
 
 public abstract class GenericHandlerBaseImpl<
-        P, M extends BaseModel & StatementBinder> implements GenericHandler<P> {
+        P, M extends BaseModel & StatementBinder> implements GenericHandler<P, M> {
 
     @Override
-    public final void handle(P p) {
+    public final void handle(P p, ModelBuilder<P, M> modelBuilder) {
         if (p == null) {
             return;
         }
-        deleteOrPersist(p);
+        deleteOrPersist(p, modelBuilder);
     }
 
     @Override
-    public final void handleMany(Collection<P> pCollection) {
-        for(P p : pCollection) {
-            handle(p);
+    public final void handleMany(Collection<P> pCollection, ModelBuilder<P, M> modelBuilder) {
+        if (pCollection != null) {
+            for(P p : pCollection) {
+                handle(p, modelBuilder);
+            }
         }
     }
 
-    protected abstract void deleteOrPersist(P p);
+    protected abstract void deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder);
 
     @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
     protected void afterObjectPersisted(P p) {
@@ -55,6 +57,4 @@ public abstract class GenericHandlerBaseImpl<
          * be unnecessarily written in every child.
          */
     }
-
-    protected abstract M pojoToModel(P p);
 }

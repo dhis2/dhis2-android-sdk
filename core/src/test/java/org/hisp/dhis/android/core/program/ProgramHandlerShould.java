@@ -29,8 +29,10 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
@@ -43,6 +45,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -64,7 +67,7 @@ public class ProgramHandlerShould {
     private ProgramRuleVariableHandler programRuleVariableHandler;
 
     @Mock
-    private ProgramStageHandler programStageHandler;
+    private GenericHandler<ProgramStage, ProgramStageModel> programStageHandler;
 
     @Mock
     private ProgramIndicatorHandler programIndicatorHandler;
@@ -88,13 +91,16 @@ public class ProgramHandlerShould {
     private Access access;
 
     @Mock
+    private List<ObjectWithUid> programStages;
+
+    @Mock
     private Program relatedProgram;
 
     @Mock
     private TrackedEntity trackedEntity;
 
     @Mock
-    private DictionaryTableHandler<ObjectStyle> styleHandler;
+    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
     private RelationshipTypeHandler relationshipTypeHandler;
@@ -107,10 +113,8 @@ public class ProgramHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         programHandler = new ProgramHandler(
-                programStore, programRuleVariableHandler,
-                programStageHandler, programIndicatorHandler,
-                programRuleHandler, programTrackedEntityAttributeHandler,
-                relationshipTypeHandler, styleHandler);
+                programStore, programRuleVariableHandler, programIndicatorHandler, programRuleHandler,
+                programTrackedEntityAttributeHandler, relationshipTypeHandler, styleHandler);
         when(relationshipType.uid()).thenReturn("relationshipTypeUid");
 
         when(program.uid()).thenReturn("test_program_uid");
@@ -143,7 +147,7 @@ public class ProgramHandlerShould {
         when(program.relatedProgram()).thenReturn(relatedProgram);
         when(program.trackedEntity()).thenReturn(trackedEntity);
 
-        when(program.programStages()).thenReturn(new ArrayList<ProgramStage>());
+        when(program.programStages()).thenReturn(programStages);
         when(program.programTrackedEntityAttributes()).thenReturn(new ArrayList<ProgramTrackedEntityAttribute>());
         when(program.programIndicators()).thenReturn(new ArrayList<ProgramIndicator>());
         when(program.programRules()).thenReturn(new ArrayList<ProgramRule>());
@@ -179,11 +183,8 @@ public class ProgramHandlerShould {
                 anyString(), anyString(), anyString(), anyBoolean(), anyString());
 
         // verify that all the handlers is called once
-
-        verify(programStageHandler, times(1)).handleProgramStage(program.uid(), program.programStages());
         verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
-                program.programTrackedEntityAttributes()
-        );
+                program.programTrackedEntityAttributes());
         verify(programIndicatorHandler, times(1)).handleProgramIndicator(null, program.programIndicators());
         verify(programRuleHandler, times(1)).handleProgramRules(program.programRules());
         verify(programRuleVariableHandler, times(1)).handleProgramRuleVariables(program.programRuleVariables());
@@ -220,15 +221,11 @@ public class ProgramHandlerShould {
         verify(programStore, never()).delete(anyString());
 
         // verify that all the handlers is called once
-
-        verify(programStageHandler, times(1)).handleProgramStage(program.uid(), program.programStages());
         verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
-                program.programTrackedEntityAttributes()
-        );
+                program.programTrackedEntityAttributes());
         verify(programIndicatorHandler, times(1)).handleProgramIndicator(null, program.programIndicators());
         verify(programRuleHandler, times(1)).handleProgramRules(program.programRules());
         verify(programRuleVariableHandler, times(1)).handleProgramRuleVariables(program.programRuleVariables());
-
     }
 
     @Test
@@ -261,11 +258,8 @@ public class ProgramHandlerShould {
         verify(programStore, never()).delete(anyString());
 
         // verify that all the handlers is called once
-
-        verify(programStageHandler, times(1)).handleProgramStage(program.uid(), program.programStages());
         verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
-                program.programTrackedEntityAttributes()
-        );
+                program.programTrackedEntityAttributes());
         verify(programIndicatorHandler, times(1)).handleProgramIndicator(null, program.programIndicators());
         verify(programRuleHandler, times(1)).handleProgramRules(program.programRules());
         verify(programRuleVariableHandler, times(1)).handleProgramRuleVariables(program.programRuleVariables());
@@ -293,7 +287,8 @@ public class ProgramHandlerShould {
                 anyString(), anyString(), anyString(), anyBoolean(), anyString());
 
         // verify that handlers is never called
-        verify(programStageHandler, never()).handleProgramStage(anyString(), anyListOf(ProgramStage.class));
+        verify(programStageHandler, never()).handleMany(anyListOf(ProgramStage.class),
+                any(ProgramStageModelBuilder.class));
         verify(programTrackedEntityAttributeHandler, never()).handleProgramTrackedEntityAttributes(
                 anyListOf(ProgramTrackedEntityAttribute.class)
         );

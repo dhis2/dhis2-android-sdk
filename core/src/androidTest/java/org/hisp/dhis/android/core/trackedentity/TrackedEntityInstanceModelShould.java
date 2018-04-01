@@ -34,6 +34,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +49,8 @@ public class TrackedEntityInstanceModelShould {
     private static final String UID = "test_uid";
     private static final String ORGANISATION_UNIT = "test_organisationUnit";
     private static final String TRACKED_ENTITY = "test_trackedEntity";
+    private static final String COORDINATES = "[9,9]";
+    private static final FeatureType FEATURE_TYPE = FeatureType.POINT;
     private static final State STATE = State.ERROR;
 
     private final Date date;
@@ -67,10 +70,12 @@ public class TrackedEntityInstanceModelShould {
                 Columns.LAST_UPDATED,
                 Columns.ORGANISATION_UNIT,
                 Columns.TRACKED_ENTITY,
+                Columns.COORDINATES,
+                Columns.FEATURE_TYPE,
                 Columns.STATE
         });
         cursor.addRow(new Object[]{
-                ID, UID, dateString, dateString, ORGANISATION_UNIT, TRACKED_ENTITY, STATE
+                ID, UID, dateString, dateString, ORGANISATION_UNIT, TRACKED_ENTITY, COORDINATES, FEATURE_TYPE, STATE
         });
         cursor.moveToFirst();
 
@@ -83,6 +88,8 @@ public class TrackedEntityInstanceModelShould {
         assertThat(model.lastUpdated()).isEqualTo(date);
         assertThat(model.organisationUnit()).isEqualTo(ORGANISATION_UNIT);
         assertThat(model.trackedEntity()).isEqualTo(TRACKED_ENTITY);
+        assertThat(model.coordinates()).isEqualTo(COORDINATES);
+        assertThat(model.featureType()).isEqualTo(FEATURE_TYPE);
         assertThat(model.state()).isEqualTo(STATE);
     }
 
@@ -95,6 +102,8 @@ public class TrackedEntityInstanceModelShould {
                 .lastUpdated(date)
                 .organisationUnit(ORGANISATION_UNIT)
                 .trackedEntity(TRACKED_ENTITY)
+                .coordinates(COORDINATES)
+                .featureType(FEATURE_TYPE)
                 .state(STATE)
                 .build();
         ContentValues contentValues = model.toContentValues();
@@ -105,6 +114,8 @@ public class TrackedEntityInstanceModelShould {
         assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.ORGANISATION_UNIT)).isEqualTo(ORGANISATION_UNIT);
         assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY)).isEqualTo(TRACKED_ENTITY);
+        assertThat(contentValues.getAsString(Columns.COORDINATES)).isEqualTo(COORDINATES);
+        assertThat(contentValues.getAsString(Columns.FEATURE_TYPE)).isEqualTo(FEATURE_TYPE.name());
         assertThat(contentValues.getAsString(Columns.STATE)).isEqualTo(STATE.name());
     }
 }

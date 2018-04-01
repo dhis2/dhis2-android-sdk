@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.indicator;
 
+import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.IdentifiableModelAbstractShould;
@@ -51,13 +52,13 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
-public class IndicatorTypeModelShould extends IdentifiableModelAbstractShould<IndicatorTypeModel, IndicatorType> {
+public class IndicatorTypeModelShould extends IdentifiableModelAbstractShould<IndicatorType, IndicatorTypeModel> {
 
     private final Boolean number = false;
     private final Integer factor = 100;
 
     public IndicatorTypeModelShould() {
-            super(Columns.all(), 8, IndicatorTypeModel.factory);
+            super(Columns.all(), 8, new IndicatorTypeModelBuilder());
     }
 
     @Override
@@ -68,6 +69,11 @@ public class IndicatorTypeModelShould extends IdentifiableModelAbstractShould<In
                 .number(number)
                 .factor(factor);
         return builder.build();
+    }
+
+    @Override
+    protected IndicatorTypeModel cursorToModel(Cursor cursor) {
+        return IndicatorTypeModel.create(cursor);
     }
 
     @Override

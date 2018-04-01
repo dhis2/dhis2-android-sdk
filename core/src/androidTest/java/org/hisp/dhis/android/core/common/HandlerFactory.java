@@ -81,7 +81,7 @@ public class HandlerFactory {
         EventHandler eventHandler = createEventHandler(databaseAdapter);
 
         EnrollmentHandler enrollmentHandler =
-                new EnrollmentHandler(enrollmentStore, eventHandler);
+                new EnrollmentHandler(databaseAdapter, enrollmentStore, eventHandler);
 
 
         return enrollmentHandler;

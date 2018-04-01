@@ -25,49 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
 
-import org.junit.Before;
+package org.hisp.dhis.android.core.enrollment.note;
+
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import java.io.IOException;
+import java.text.ParseException;
 
-@RunWith(JUnit4.class)
-public class ObjectStyleHandlerShould {
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    @Mock
-    private ObjectWithoutUidStore<ObjectStyleModel> store;
+public class NoteShould extends BaseObjectShould implements ObjectShould {
 
-    // object to test
-    private DictionaryTableHandler<ObjectStyle> styleHandler;
-
-    private static final String UID = "uid";
-    private static final String TABLE = "table";
-    private static final String COLOR = "red";
-    private static final String ICON = "batman";
-    private static final ObjectStyle STYLE = ObjectStyle.create(COLOR, ICON);
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        styleHandler = new ObjectStyleHandler(store);
+    public NoteShould() {
+        super("note.json");
     }
 
+    @Override
     @Test
-    public void call_store_when_style_not_null() throws Exception {
-        styleHandler.handle(STYLE, UID, TABLE);
-        verify(store).updateOrInsertWhere(ObjectStyleModel.fromPojo(STYLE, UID, TABLE));
-        verifyNoMoreInteractions(store);
-    }
+    public void map_from_json_string() throws IOException, ParseException {
+        Note note = objectMapper.readValue(jsonStream, Note.class);
 
-    @Test
-    public void not_call_store_when_style_null() throws Exception {
-        styleHandler.handle(null, UID, TABLE);
-        verifyNoMoreInteractions(store);
+        assertThat(note.value()).isEqualTo("Note");
+        assertThat(note.storedBy()).isEqualTo("android");
+        assertThat(note.storedDate()).isEqualTo("2018-03-19 15:20:55.058");
     }
 }

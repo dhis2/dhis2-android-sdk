@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -121,15 +123,6 @@ public class ProgramCallShould {
     private ProgramRuleStore programRuleStore;
 
     @Mock
-    private ProgramStageDataElementStore programStageDataElementStore;
-
-    @Mock
-    private ProgramStageSectionStore programStageSectionStore;
-
-    @Mock
-    private ProgramStageStore programStageStore;
-
-    @Mock
     private RelationshipTypeStore relationshipStore;
 
     @Mock
@@ -169,10 +162,7 @@ public class ProgramCallShould {
     private Date serverDate;
 
     @Mock
-    private GenericHandler<DataElement> dataElementHandler;
-
-    @Mock
-    private DictionaryTableHandler<ObjectStyle> styleHandler;
+    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
     private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
@@ -194,8 +184,7 @@ public class ProgramCallShould {
                 resourceStore, uids, programStore, serverDate, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore, programRuleStore,
-                programStageDataElementStore, programStageSectionStore, programStageStore,
-                relationshipStore, dataElementHandler, styleHandler, renderTypeHandler);
+                relationshipStore, styleHandler, renderTypeHandler);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.access()).thenReturn(access);
@@ -245,37 +234,7 @@ public class ProgramCallShould {
                 Program.selectEnrollmentDatesInFuture, Program.selectIncidentDatesInFuture,
                 Program.useFirstStageDuringRegistration,
                 Program.relatedProgram.with(Program.uid),
-                Program.programStages.with(
-                        ProgramStage.uid, ProgramStage.code, ProgramStage.name, ProgramStage.displayName,
-                        ProgramStage.created, ProgramStage.lastUpdated, ProgramStage.allowGenerateNextVisit,
-                        ProgramStage.autoGenerateEvent, ProgramStage.blockEntryForm, ProgramStage.captureCoordinates,
-                        ProgramStage.deleted, ProgramStage.displayGenerateEventBox, ProgramStage.executionDateLabel,
-                        ProgramStage.formType, ProgramStage.generatedByEnrollmentDate, ProgramStage.hideDueDate,
-                        ProgramStage.minDaysFromStart, ProgramStage.openAfterEnrollment, ProgramStage.repeatable,
-                        ProgramStage.reportDateToUse, ProgramStage.sortOrder, ProgramStage.standardInterval,
-                        ProgramStage.validCompleteOnly, ProgramStage.programStageDataElements.with(
-                                ProgramStageDataElement.uid, ProgramStageDataElement.code,
-                                ProgramStageDataElement.created, ProgramStageDataElement.lastUpdated,
-                                ProgramStageDataElement.allowFutureDate,
-                                ProgramStageDataElement.allowProvidedElsewhere, ProgramStageDataElement.compulsory,
-                                ProgramStageDataElement.deleted, ProgramStageDataElement.displayInReports,
-                                ProgramStageDataElement.sortOrder,
-                                ProgramStageDataElement.programStage.with(ProgramStage.uid),
-                                ProgramStageDataElement.dataElement.with(DataElement.allFields)
-                        ),
-                        ProgramStage.programStageSections.with(
-                                ProgramStageSection.uid, ProgramStageSection.code, ProgramStageSection.name,
-                                ProgramStageSection.displayName, ProgramStageSection.created,
-                                ProgramStageSection.lastUpdated, ProgramStageSection.sortOrder,
-                                ProgramStageSection.deleted,
-                                ProgramStageSection.dataElements.with(DataElement.uid),
-                                ProgramStageSection.programIndicators.with(ProgramIndicator.uid,
-                                        ProgramIndicator.program.with(Program.uid)
-                                ),
-                                ProgramStageSection.renderType
-                        ),
-                        ProgramStage.style.with(ObjectStyle.allFields)
-                ),
+                Program.programStages.with(ObjectWithUid.uid),
                 Program.programRules.with(
                         ProgramRule.uid, ProgramRule.code, ProgramRule.name, ProgramRule.displayName,
                         ProgramRule.created, ProgramRule.lastUpdated, ProgramRule.deleted,

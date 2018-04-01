@@ -76,12 +76,12 @@ public class ObjectStoreImpl<M extends Model & StatementBinder> implements Objec
     }
 
     @Override
-    public Set<M> selectAll(@NonNull LinkModelFactory<M> modelFactory) throws RuntimeException {
+    public Set<M> selectAll(@NonNull CursorModelFactory<M> modelFactory) throws RuntimeException {
         Cursor cursor = databaseAdapter.query(builder.selectAll());
         return mapObjectsFromCursor(cursor, modelFactory);
     }
 
-    private Set<M> mapObjectsFromCursor(Cursor cursor, LinkModelFactory<M> modelFactory) {
+    private Set<M> mapObjectsFromCursor(Cursor cursor, CursorModelFactory<M> modelFactory) {
         Set<M> objects = new HashSet<>(cursor.getCount());
 
         try {

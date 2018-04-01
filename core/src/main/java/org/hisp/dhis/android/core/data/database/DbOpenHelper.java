@@ -53,6 +53,7 @@ import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.datavalue.DataValueModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
+import org.hisp.dhis.android.core.enrollment.note.NoteModel;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
 import org.hisp.dhis.android.core.indicator.IndicatorModel;
@@ -100,8 +101,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
-    @VisibleForTesting
-    static int VERSION = 9;
+    public static final int VERSION = 14;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -241,25 +241,15 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             "ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED " +
             ");";
 
-    private static final String CREATE_ORGANISATION_UNIT_TABLE = "CREATE TABLE " +
-            OrganisationUnitModel.TABLE + " (" +
-            OrganisationUnitModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            OrganisationUnitModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            OrganisationUnitModel.Columns.CODE + " TEXT," +
-            OrganisationUnitModel.Columns.NAME + " TEXT," +
-            OrganisationUnitModel.Columns.DISPLAY_NAME + " TEXT," +
-            OrganisationUnitModel.Columns.CREATED + " TEXT," +
-            OrganisationUnitModel.Columns.LAST_UPDATED + " TEXT," +
-            OrganisationUnitModel.Columns.SHORT_NAME + " TEXT," +
-            OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-            OrganisationUnitModel.Columns.DESCRIPTION + " TEXT," +
-            OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
-            OrganisationUnitModel.Columns.PATH + " TEXT," +
-            OrganisationUnitModel.Columns.OPENING_DATE + " TEXT," +
-            OrganisationUnitModel.Columns.CLOSED_DATE + " TEXT," +
-            OrganisationUnitModel.Columns.LEVEL + " INTEGER," +
-            OrganisationUnitModel.Columns.PARENT + " TEXT" +
-            ");";
+    private static final String CREATE_ORGANISATION_UNIT_TABLE =
+            SQLStatementBuilder.createNameableModelTable(OrganisationUnitModel.TABLE,
+                    OrganisationUnitModel.Columns.PATH + " TEXT," +
+                            OrganisationUnitModel.Columns.OPENING_DATE + " TEXT," +
+                            OrganisationUnitModel.Columns.CLOSED_DATE + " TEXT," +
+                            OrganisationUnitModel.Columns.LEVEL + " INTEGER," +
+                            OrganisationUnitModel.Columns.PARENT + " TEXT," +
+                            OrganisationUnitModel.Columns.DISPLAY_NAME_PATH + " TEXT"
+            );
 
     private static final String CREATE_USER_ORGANISATION_UNIT_TABLE = "CREATE TABLE " +
             UserOrganisationUnitLinkModel.TABLE + " (" +
@@ -477,36 +467,31 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
-    private static final String CREATE_PROGRAM_STAGE_TABLE = "CREATE TABLE " +
-            ProgramStageModel.TABLE + " (" +
-            ProgramStageModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ProgramStageModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            ProgramStageModel.Columns.CODE + " TEXT," +
-            ProgramStageModel.Columns.NAME + " TEXT," +
-            ProgramStageModel.Columns.DISPLAY_NAME + " TEXT," +
-            ProgramStageModel.Columns.CREATED + " TEXT," +
-            ProgramStageModel.Columns.LAST_UPDATED + " TEXT," +
-            ProgramStageModel.Columns.EXECUTION_DATE_LABEL + " TEXT," +
-            ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT + " INTEGER," +
-            ProgramStageModel.Columns.VALID_COMPLETE_ONLY + " INTEGER," +
-            ProgramStageModel.Columns.REPORT_DATE_TO_USE + " TEXT," +
-            ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT + " INTEGER," +
-            ProgramStageModel.Columns.REPEATABLE + " INTEGER," +
-            ProgramStageModel.Columns.CAPTURE_COORDINATES + " INTEGER," +
-            ProgramStageModel.Columns.FORM_TYPE + " TEXT," +
-            ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX + " INTEGER," +
-            ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE + " INTEGER," +
-            ProgramStageModel.Columns.AUTO_GENERATE_EVENT + " INTEGER," +
-            ProgramStageModel.Columns.SORT_ORDER + " INTEGER," +
-            ProgramStageModel.Columns.HIDE_DUE_DATE + " INTEGER," +
-            ProgramStageModel.Columns.BLOCK_ENTRY_FORM + " INTEGER," +
-            ProgramStageModel.Columns.MIN_DAYS_FROM_START + " INTEGER," +
-            ProgramStageModel.Columns.STANDARD_INTERVAL + " INTEGER," +
-            ProgramStageModel.Columns.PROGRAM + " TEXT NOT NULL," +
-            " FOREIGN KEY ( " + ProgramStageModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-            ");";
+    private static final String CREATE_PROGRAM_STAGE_TABLE =
+            SQLStatementBuilder.createIdentifiableModelTable(ProgramStageModel.TABLE,
+                    ProgramStageModel.Columns.EXECUTION_DATE_LABEL + " TEXT," +
+                            ProgramStageModel.Columns.ALLOW_GENERATE_NEXT_VISIT + " INTEGER," +
+                            ProgramStageModel.Columns.VALID_COMPLETE_ONLY + " INTEGER," +
+                            ProgramStageModel.Columns.REPORT_DATE_TO_USE + " TEXT," +
+                            ProgramStageModel.Columns.OPEN_AFTER_ENROLLMENT + " INTEGER," +
+                            ProgramStageModel.Columns.REPEATABLE + " INTEGER," +
+                            ProgramStageModel.Columns.CAPTURE_COORDINATES + " INTEGER," +
+                            ProgramStageModel.Columns.FORM_TYPE + " TEXT," +
+                            ProgramStageModel.Columns.DISPLAY_GENERATE_EVENT_BOX + " INTEGER," +
+                            ProgramStageModel.Columns.GENERATED_BY_ENROLMENT_DATE + " INTEGER," +
+                            ProgramStageModel.Columns.AUTO_GENERATE_EVENT + " INTEGER," +
+                            ProgramStageModel.Columns.SORT_ORDER + " INTEGER," +
+                            ProgramStageModel.Columns.HIDE_DUE_DATE + " INTEGER," +
+                            ProgramStageModel.Columns.BLOCK_ENTRY_FORM + " INTEGER," +
+                            ProgramStageModel.Columns.MIN_DAYS_FROM_START + " INTEGER," +
+                            ProgramStageModel.Columns.STANDARD_INTERVAL + " INTEGER," +
+                            ProgramStageModel.Columns.PROGRAM + " TEXT NOT NULL," +
+                            ProgramStageModel.Columns.PERIOD_TYPE + " TEXT," +
+                            ProgramStageModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
+                            " FOREIGN KEY ( " + ProgramStageModel.Columns.PROGRAM + ")" +
+                            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
+            );
 
     private static final String CREATE_PROGRAM_RULE_VARIABLE_TABLE = "CREATE TABLE " +
             ProgramRuleVariableModel.TABLE + " (" +
@@ -809,6 +794,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             TrackedEntityInstanceModel.Columns.LAST_UPDATED_AT_CLIENT + " TEXT," +
             TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
             TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + " TEXT NOT NULL," +
+            TrackedEntityInstanceModel.Columns.COORDINATES + " TEXT," +
+            TrackedEntityInstanceModel.Columns.FEATURE_TYPE + " TEXT," +
             TrackedEntityInstanceModel.Columns.STATE + " TEXT," +
             " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + ")" +
             " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID
@@ -1069,6 +1056,21 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             ValueTypeDeviceRenderingModel.Columns.DEVICE_TYPE + ")"
             );
 
+    private static final String CREATE_NOTE_TABLE =
+            SQLStatementBuilder.createModelTable(NoteModel.TABLE,
+                    NoteModel.Columns.ENROLLMENT + " TEXT," +
+                            NoteModel.Columns.VALUE + " TEXT," +
+                            NoteModel.Columns.STORED_BY + " TEXT," +
+                            NoteModel.Columns.STORED_DATE + " TEXT," +
+                            " FOREIGN KEY (" + NoteModel.Columns.ENROLLMENT + ") " +
+                            " REFERENCES " + EnrollmentModel.TABLE + " (" + EnrollmentModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " UNIQUE (" + NoteModel.Columns.ENROLLMENT + ", " +
+                            NoteModel.Columns.VALUE + ", " +
+                            NoteModel.Columns.STORED_BY + ", " +
+                            NoteModel.Columns.STORED_DATE + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1130,6 +1132,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_PERIOD_TABLE);
         database.execSQL(CREATE_OBJECT_STYLE_TABLE);
         database.execSQL(CREATE_VALUE_TYPE_DEVICE_RENDERING_TABLE);
+        database.execSQL(CREATE_NOTE_TABLE);
         return database;
     }
 

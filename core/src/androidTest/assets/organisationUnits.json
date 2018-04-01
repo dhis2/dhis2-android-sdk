@@ -17,44 +17,15 @@
       },
       "programs": [
         {
-          "id": "q04UBOqq3rp"
-        },
-        {
-          "id": "kla3mAPgvCH"
-        },
-        {
-          "id": "uy2gU8kT1jF"
-        },
-        {
-          "id": "VBqh0ynB2wv"
-        },
-        {
-          "id": "eBAyeGv0exc"
-        },
-        {
           "id": "lxAQ7Zs9VYR"
-        },
-        {
-          "id": "IpHINAT79UW"
-        },
-        {
-          "id": "bMcwwoVnbSR"
-        },
-        {
-          "id": "ur1Edk5Oe2n"
-        },
-        {
-          "id": "WSGAb5XwJ3Y"
-        },
-        {
-          "id": "fDd25txQckK"
         }
       ],
       "dataSets": [
         {
           "id": "lyLU2wR22tC"
         }
-      ]
+      ],
+      "ancestors": []
     }
   ]
 }

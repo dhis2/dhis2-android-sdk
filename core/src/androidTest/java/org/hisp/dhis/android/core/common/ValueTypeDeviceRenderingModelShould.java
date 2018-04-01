@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingModel.Columns;
@@ -49,7 +50,7 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.VALU
 public class ValueTypeDeviceRenderingModelShould extends LinkModelAbstractShould<ValueTypeDeviceRenderingModel> {
 
     public ValueTypeDeviceRenderingModelShould() {
-        super(Columns.all(), 8, ValueTypeDeviceRenderingModel.factory);
+        super(Columns.all(), 8);
     }
 
     @Override
@@ -69,6 +70,11 @@ public class ValueTypeDeviceRenderingModelShould extends LinkModelAbstractShould
     }
 
     @Override
+    protected ValueTypeDeviceRenderingModel cursorToModel(Cursor cursor) {
+        return ValueTypeDeviceRenderingModel.create(cursor);
+    }
+
+    @Override
     protected Object[] getModelAsObjectArray() {
         return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
                 model.uid(), model.objectTable(), model.deviceType(), model.type(), model.min(), model.max(),
@@ -81,7 +87,8 @@ public class ValueTypeDeviceRenderingModelShould extends LinkModelAbstractShould
 
     @Test
     public void create_model_from_pojo() {
-        assertThat(ValueTypeDeviceRenderingModel.fromPojo(buildPojo(), UID, TABLE, DEVICE_TYPE)).isEqualTo(model);
+        assertThat(new ValueTypeDeviceRenderingModelBuilder(UID, TABLE, DEVICE_TYPE).buildModel(buildPojo()))
+                .isEqualTo(model);
     }
 
     @Test

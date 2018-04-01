@@ -28,36 +28,16 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class OrganisationUnitStore {
 
-import java.util.Date;
-import java.util.List;
+    private OrganisationUnitStore() {}
 
-public interface OrganisationUnitStore extends DeletableStore {
-    long insert(
-            @NonNull String uid, @Nullable String code, @Nullable String name,
-            @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
-            @Nullable String shortName, @Nullable String displayShortName,
-            @Nullable String description, @Nullable String displayDescription,
-            @Nullable String path, @Nullable Date openingDate, @Nullable Date closedDate,
-            @Nullable String parent, @Nullable Integer level
-    );
-
-    int update(
-            @NonNull String uid, @Nullable String code, @Nullable String name,
-            @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
-            @Nullable String shortName, @Nullable String displayShortName,
-            @Nullable String description, @Nullable String displayDescription,
-            @Nullable String path, @Nullable Date openingDate, @Nullable Date closedDate,
-            @Nullable String parent, @Nullable Integer level, @NonNull String whereUid
-    );
-
-    int delete(@NonNull String uid);
-
-    int delete();
-
-    List<OrganisationUnit> queryOrganisationUnits();
+    public static IdentifiableObjectStore<OrganisationUnitModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.identifiableStore(databaseAdapter, OrganisationUnitModel.TABLE,
+                OrganisationUnitModel.Columns.all());
+    }
 }

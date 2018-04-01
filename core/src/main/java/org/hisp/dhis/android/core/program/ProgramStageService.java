@@ -25,9 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program;
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Where;
+import org.hisp.dhis.android.core.data.api.Which;
 
-public interface ModelFactory<M extends Model, P> extends LinkModelFactory<M> {
-    M fromPojo(P p);
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
+
+public interface ProgramStageService {
+    @GET("programStages")
+    Call<Payload<ProgramStage>> getProgramStages(@Query("fields") @Which Fields<ProgramStage> fields,
+                                                 @Query("filter") @Where Filter<ProgramStage, String> lastUpdated,
+                                                 @Query("filter") @Where Filter<ProgramStage, String> uids,
+                                                 @Query("paging") Boolean paging);
 }

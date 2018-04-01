@@ -84,8 +84,6 @@ import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkModel;
@@ -119,12 +117,11 @@ import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.period.PeriodStore;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
@@ -138,12 +135,13 @@ import org.hisp.dhis.android.core.program.ProgramRuleVariableStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStore;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStageEndpointCall;
+import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageSectionStore;
 import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
-import org.hisp.dhis.android.core.program.ProgramStageStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
@@ -179,11 +177,10 @@ import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
 import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
-import org.hisp.dhis.android.core.user.UserCredentialsHandler;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserRoleStore;
 import org.hisp.dhis.android.core.user.UserRoleStoreImpl;
 import org.hisp.dhis.android.core.user.UserService;
@@ -211,7 +208,6 @@ public final class D2 {
     private final UserService userService;
     private final SystemInfoService systemInfoService;
     private final ProgramService programService;
-    private final OrganisationUnitService organisationUnitService;
     private final TrackedEntityService trackedEntityService;
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final OptionSetService optionSetService;
@@ -226,9 +222,9 @@ public final class D2 {
     // stores
     private final UserStore userStore;
     private final UserCredentialsStore userCredentialsStore;
-    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
+    private final ObjectStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
     private final AuthenticatedUserStore authenticatedUserStore;
-    private final OrganisationUnitStore organisationUnitStore;
+    private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
     private final ResourceStore resourceStore;
     private final SystemInfoStore systemInfoStore;
     private final UserRoleStore userRoleStore;
@@ -246,7 +242,7 @@ public final class D2 {
     private final IdentifiableObjectStore<DataElementModel> dataElementStore;
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final ProgramStageSectionStore programStageSectionStore;
-    private final ProgramStageStore programStageStore;
+    private final IdentifiableObjectStore<ProgramStageModel> programStageStore;
     private final RelationshipTypeStore relationshipStore;
     private final TrackedEntityStore trackedEntityStore;
 
@@ -257,7 +253,7 @@ public final class D2 {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
-    private final OrganisationUnitProgramLinkStore organisationUnitProgramLinkStore;
+    private final ObjectStore<OrganisationUnitProgramLinkModel> organisationUnitProgramLinkStore;
 
     private final CategoryOptionStore categoryOptionStore;
     private final CategoryStore categoryStore;
@@ -278,16 +274,13 @@ public final class D2 {
     private final ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> valueTypeDeviceRenderingStore;
 
     //Handlers
-    private final UserCredentialsHandler userCredentialsHandler;
     private final EventHandler eventHandler;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
     private final CategoryHandler categoryHandler;
     private final CategoryComboHandler categoryComboHandler;
-    private final OrganisationUnitHandler organisationUnitHandler;
-    private final GenericHandler<DataElement> dataElementHandler;
     private final OptionSetHandler optionSetHandler;
-    private final DictionaryTableHandler<ObjectStyle> styleHandler;
+    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     //Generic Call Data
@@ -302,7 +295,6 @@ public final class D2 {
         this.userService = retrofit.create(UserService.class);
         this.systemInfoService = retrofit.create(SystemInfoService.class);
         this.programService = retrofit.create(ProgramService.class);
-        this.organisationUnitService = retrofit.create(OrganisationUnitService.class);
         this.trackedEntityService = retrofit.create(TrackedEntityService.class);
         this.optionSetService = retrofit.create(OptionSetService.class);
         this.trackedEntityInstanceService = retrofit.create(TrackedEntityInstanceService.class);
@@ -315,12 +307,10 @@ public final class D2 {
                 new UserStoreImpl(databaseAdapter);
         this.userCredentialsStore =
                 new UserCredentialsStoreImpl(databaseAdapter);
-        this.userOrganisationUnitLinkStore =
-                new UserOrganisationUnitLinkStoreImpl(databaseAdapter);
+        this.userOrganisationUnitLinkStore = UserOrganisationUnitLinkStore.create(databaseAdapter);
         this.authenticatedUserStore =
                 new AuthenticatedUserStoreImpl(databaseAdapter);
-        this.organisationUnitStore =
-                new OrganisationUnitStoreImpl(databaseAdapter);
+        this.organisationUnitStore = OrganisationUnitStore.create(databaseAdapter);
         this.resourceStore =
                 new ResourceStoreImpl(databaseAdapter);
         this.systemInfoStore =
@@ -353,8 +343,7 @@ public final class D2 {
                 new ProgramStageDataElementStoreImpl(databaseAdapter);
         this.programStageSectionStore =
                 new ProgramStageSectionStoreImpl(databaseAdapter);
-        this.programStageStore =
-                new ProgramStageStoreImpl(databaseAdapter);
+        this.programStageStore = ProgramStageStore.create(databaseAdapter);
         this.relationshipStore =
                 new RelationshipTypeStoreImpl(databaseAdapter);
         this.trackedEntityStore =
@@ -371,7 +360,7 @@ public final class D2 {
         this.trackedEntityAttributeValueStore =
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter);
         this.organisationUnitProgramLinkStore =
-                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter);
+                OrganisationUnitProgramLinkStore.create(databaseAdapter);
 
         this.categoryStore = new CategoryStoreImpl(databaseAdapter);
         this.categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
@@ -397,11 +386,7 @@ public final class D2 {
         this.valueTypeDeviceRenderingStore = ValueTypeDeviceRenderingStore.create(databaseAdapter());
 
         //handlers
-        userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
         resourceHandler = new ResourceHandler(resourceStore);
-
-        organisationUnitHandler = new OrganisationUnitHandler(organisationUnitStore,
-                userOrganisationUnitLinkStore, organisationUnitProgramLinkStore, null);
 
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
@@ -414,7 +399,7 @@ public final class D2 {
         TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler =
                 new TrackedEntityAttributeValueHandler(trackedEntityAttributeValueStore);
 
-        EnrollmentHandler enrollmentHandler = new EnrollmentHandler(enrollmentStore, eventHandler);
+        EnrollmentHandler enrollmentHandler = new EnrollmentHandler(databaseAdapter, enrollmentStore, eventHandler);
 
         trackedEntityInstanceHandler =
                 new TrackedEntityInstanceHandler(
@@ -434,7 +419,6 @@ public final class D2 {
 
         // handlers
         this.optionSetHandler = OptionSetHandler.create(databaseAdapter);
-        this.dataElementHandler = DataElementHandler.create(databaseAdapter, this.optionSetHandler);
         this.styleHandler = ObjectStyleHandler.create(databaseAdapter);
         this.renderTypeHandler = ValueTypeRenderingHandler.create(databaseAdapter);
 
@@ -461,10 +445,8 @@ public final class D2 {
             throw new NullPointerException("password == null");
         }
 
-        return new UserAuthenticateCall(userService, databaseAdapter, userStore,
-                userCredentialsHandler, resourceHandler,
-                authenticatedUserStore, organisationUnitHandler, username, password
-        );
+        return UserAuthenticateCall.create(GenericCallData.create(databaseAdapter, retrofit),
+                username, password);
     }
 
     @NonNull
@@ -541,21 +523,22 @@ public final class D2 {
     @NonNull
     public Call<Response> syncMetaData() {
         return new MetadataCall(
-                databaseAdapter, systemInfoService, userService, programService, organisationUnitService,
-                trackedEntityService, optionSetService,
+                databaseAdapter,
+                systemInfoService,
+                userService,
+                programService,
+                trackedEntityService,
+                optionSetService,
                 systemInfoStore, resourceStore, userStore,
-                userCredentialsStore, userRoleStore, organisationUnitStore,
-                userOrganisationUnitLinkStore, programStore, trackedEntityAttributeStore,
+                userCredentialsStore, userRoleStore,
+                programStore, trackedEntityAttributeStore,
                 programTrackedEntityAttributeStore, programRuleVariableStore, programIndicatorStore,
                 programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
                 programRuleStore,
-                programStageDataElementStore,
-                programStageSectionStore,
-                programStageStore, relationshipStore, trackedEntityStore,
-                organisationUnitProgramLinkStore, categoryQuery,
+                relationshipStore, trackedEntityStore, categoryQuery,
                 categoryService, categoryHandler, categoryComboQuery, comboService,
-                categoryComboHandler, optionSetHandler, dataElementHandler, DataSetParentCall.FACTORY,
-                styleHandler, renderTypeHandler, retrofit);
+                categoryComboHandler, optionSetHandler, OrganisationUnitCall.FACTORY, DataSetParentCall.FACTORY,
+                styleHandler, renderTypeHandler, ProgramStageEndpointCall.FACTORY, retrofit);
     }
 
     @NonNull

@@ -67,7 +67,8 @@ public abstract class ResourceModel extends BaseModel {
         CATEGORY_COMBO,
         INDICATOR_TYPE,
         INDICATOR,
-        DATA_VALUE
+        DATA_VALUE,
+        PROGRAM_STAGE
     }
 
     @Nullable

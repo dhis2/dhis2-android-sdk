@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.common;
 
-public abstract class ObjectWithoutUidHandlerImpl<
+public class ObjectWithoutUidHandlerImpl<
         P, M extends BaseModel & UpdateWhereStatementBinder> extends GenericHandlerBaseImpl<P, M> {
 
     private final ObjectWithoutUidStore<M> store;
@@ -37,8 +37,8 @@ public abstract class ObjectWithoutUidHandlerImpl<
     }
 
     @Override
-    protected void deleteOrPersist(P p) {
-        M m = pojoToModel(p);
+    protected void deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder) {
+        M m = modelBuilder.buildModel(p);
         store.updateOrInsertWhere(m);
         this.afterObjectPersisted(p);
     }

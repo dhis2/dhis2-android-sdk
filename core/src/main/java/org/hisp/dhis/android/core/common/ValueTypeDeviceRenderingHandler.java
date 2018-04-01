@@ -29,30 +29,15 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class ValueTypeDeviceRenderingHandler implements DictionaryTableHandler<ValueTypeDeviceRendering> {
+public final class ValueTypeDeviceRenderingHandler extends ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
+        ValueTypeDeviceRenderingModel> {
 
-    private final ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> store;
-    private final String deviceType;
-
-    ValueTypeDeviceRenderingHandler(ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> store,
-                                    String deviceType) {
-        this.store = store;
-        this.deviceType = deviceType;
+    private ValueTypeDeviceRenderingHandler(ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> store) {
+        super(store);
     }
 
-    @Override
-    public void handle(ValueTypeDeviceRendering deviceRendering, String uid, String objectTable) {
-        if (deviceRendering != null) {
-            ValueTypeDeviceRenderingModel model = ValueTypeDeviceRenderingModel.fromPojo(
-                    deviceRendering, uid, objectTable, deviceType);
-            store.updateOrInsertWhere(model);
-        }
-    }
-
-    public static ValueTypeDeviceRenderingHandler create(DatabaseAdapter databaseAdapter,
-                                                         String deviceType) {
+    public static ValueTypeDeviceRenderingHandler create(DatabaseAdapter databaseAdapter) {
         return new ValueTypeDeviceRenderingHandler(
-                ValueTypeDeviceRenderingStore.create(databaseAdapter),
-                deviceType);
+                ValueTypeDeviceRenderingStore.create(databaseAdapter));
     }
 }

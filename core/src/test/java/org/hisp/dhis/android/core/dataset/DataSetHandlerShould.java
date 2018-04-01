@@ -29,10 +29,12 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,6 +42,8 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -50,7 +54,7 @@ public class DataSetHandlerShould {
     private IdentifiableObjectStore<DataSetModel> dataSetStore;
 
     @Mock
-    private DictionaryTableHandler<ObjectStyle> styleHandler;
+    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
     private DataSet dataSet;
@@ -80,7 +84,7 @@ public class DataSetHandlerShould {
 
     @Test
     public void call_style_handler() throws Exception {
-        dataSetHandler.handle(dataSet);
-        verify(styleHandler).handle(dataSet.style(), dataSet.uid(), DataSetModel.TABLE);
+        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+        verify(styleHandler).handle(eq(dataSet.style()), any(ObjectStyleModelBuilder.class));
     }
 }

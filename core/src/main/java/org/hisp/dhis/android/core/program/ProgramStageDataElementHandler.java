@@ -30,7 +30,11 @@ package org.hisp.dhis.android.core.program;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementHandler;
+import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.dataelement.DataElementModelBuilder;
 
 import java.util.List;
 
@@ -38,10 +42,10 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class ProgramStageDataElementHandler {
     private final ProgramStageDataElementStore programStageDataElementStore;
-    private final GenericHandler<DataElement> dataElementHandler;
+    private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
 
     ProgramStageDataElementHandler(ProgramStageDataElementStore programStageDataElementStore,
-                                   GenericHandler<DataElement> dataElementHandler) {
+                                   GenericHandler<DataElement, DataElementModel> dataElementHandler) {
         this.programStageDataElementStore = programStageDataElementStore;
         this.dataElementHandler = dataElementHandler;
     }
@@ -62,6 +66,7 @@ public class ProgramStageDataElementHandler {
      */
     private void deleteOrPersistProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
         int size = programStageDataElements.size();
+        DataElementModelBuilder dataElementModelBuilder = new DataElementModelBuilder();
         for (int i = 0; i < size; i++) {
             ProgramStageDataElement programStageDataElement = programStageDataElements.get(i);
 
@@ -93,12 +98,19 @@ public class ProgramStageDataElementHandler {
                     );
                 }
             }
-            dataElementHandler.handle(programStageDataElement.dataElement());
+            dataElementHandler.handle(programStageDataElement.dataElement(), dataElementModelBuilder);
         }
     }
 
     void updateProgramStageDataElementWithProgramStageSectionLink(@NonNull String programStageSectionUid,
                                                                   @NonNull String dataElementUid) {
         programStageDataElementStore.updateWithProgramStageSectionLink(programStageSectionUid, dataElementUid);
+    }
+
+    public static ProgramStageDataElementHandler create(DatabaseAdapter databaseAdapter) {
+        return new ProgramStageDataElementHandler(
+                new ProgramStageDataElementStoreImpl(databaseAdapter),
+                DataElementHandler.create(databaseAdapter)
+        );
     }
 }

@@ -26,10 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.enrollment.note;
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public interface LinkModelFactory<M extends Model> {
-    M fromCursor(Cursor cursor);
+public final class NoteStore {
+
+    private NoteStore() {}
+
+    public static ObjectWithoutUidStore<NoteModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteModel.TABLE,
+                NoteModel.Columns.all(), NoteModel.Columns.whereUpdate());
+    }
 }

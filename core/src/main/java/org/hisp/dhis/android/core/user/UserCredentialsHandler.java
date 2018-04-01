@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class UserCredentialsHandler {
@@ -63,5 +65,7 @@ public class UserCredentialsHandler {
         }
     }
 
-
+    public static UserCredentialsHandler create(DatabaseAdapter databaseAdapter) {
+        return new UserCredentialsHandler(new UserCredentialsStoreImpl(databaseAdapter));
+    }
 }

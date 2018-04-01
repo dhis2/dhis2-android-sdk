@@ -34,6 +34,8 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -45,10 +47,7 @@ public class ValueTypeRenderingHandlerShould {
     private static final String TABLE = "table";
     
     @Mock
-    private DictionaryTableHandler<ValueTypeDeviceRendering> desktopHandler;
-    
-    @Mock
-    private DictionaryTableHandler<ValueTypeDeviceRendering> mobileHandler;
+    private GenericHandler<ValueTypeDeviceRendering, ValueTypeDeviceRenderingModel> deviceRenderingHandler;
     
     @Mock
     private ValueTypeDeviceRendering desktopRenderType;
@@ -67,32 +66,22 @@ public class ValueTypeRenderingHandlerShould {
         MockitoAnnotations.initMocks(this);
         when(renderType.desktop()).thenReturn(desktopRenderType);
         when(renderType.mobile()).thenReturn(mobileRenderType);
-        renderTypeHandler = new ValueTypeRenderingHandler(desktopHandler, mobileHandler);
+        renderTypeHandler = new ValueTypeRenderingHandler(deviceRenderingHandler);
     }
 
     @Test
-    public void call_desktop_handler_when_render_type_not_null() throws Exception {
+    public void call_device_handler_when_render_type_not_null() throws Exception {
         renderTypeHandler.handle(renderType, UID, TABLE);
-        verify(desktopHandler).handle(desktopRenderType, UID, TABLE);
-        verifyNoMoreInteractions(desktopHandler);
+        verify(deviceRenderingHandler).handle(eq(desktopRenderType),
+                any(ValueTypeDeviceRenderingModelBuilder.class));
+        verify(deviceRenderingHandler).handle(eq(mobileRenderType),
+                any(ValueTypeDeviceRenderingModelBuilder.class));
+        verifyNoMoreInteractions(deviceRenderingHandler);
     }
 
     @Test
-    public void call_mobile_handler_when_render_type_not_null() throws Exception {
-        renderTypeHandler.handle(renderType, UID, TABLE);
-        verify(mobileHandler).handle(mobileRenderType, UID, TABLE);
-        verifyNoMoreInteractions(mobileHandler);
-    }
-
-    @Test
-    public void not_call_desktop_handler_when_render_type_null() throws Exception {
+    public void not_call_device_handler_when_render_type_null() throws Exception {
         renderTypeHandler.handle(null, UID, TABLE);
-        verifyNoMoreInteractions(desktopHandler);
-    }
-
-    @Test
-    public void not_call_mobile_handler_when_render_type_null() throws Exception {
-        renderTypeHandler.handle(null, UID, TABLE);
-        verifyNoMoreInteractions(mobileHandler);
+        verifyNoMoreInteractions(deviceRenderingHandler);
     }
 }

@@ -215,7 +215,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
         GenericCallData data = GenericCallData.create(databaseAdapter(),
                 new ResourceHandler(resourceStore), retrofit);
 
-        GenericHandler<OptionSet> optionSetHandler = OptionSetHandler.create(databaseAdapter());
+        GenericHandler<OptionSet, OptionSetModel> optionSetHandler = OptionSetHandler.create(databaseAdapter());
 
         optionSetCall = new OptionSetCall(data, optionSetService, optionSetHandler, uids);
 

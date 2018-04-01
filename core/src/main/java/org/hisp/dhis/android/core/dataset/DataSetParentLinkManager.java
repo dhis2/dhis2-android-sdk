@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModelBuilder;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
@@ -67,25 +68,21 @@ class DataSetParentLinkManager {
 
     private void saveDataSetDataElementLink(DataSet dataSet) {
         List<DataElementUids> dataSetElements = dataSet.dataSetElements();
-        assert dataSetElements != null;
-        for (DataElementUids dataSetDataElement : dataSetElements) {
-            dataSetDataElementStore.updateOrInsertWhere(
-                    DataSetDataElementLinkModel.create(
-                            dataSet.uid(),
-                            dataSetDataElement.dataElement().uid()
-                    ));
+        if (dataSetElements != null) {
+            DataSetDataElementLinkModelBuilder builder = new DataSetDataElementLinkModelBuilder(dataSet);
+            for (DataElementUids dataSetDataElement : dataSetElements) {
+                dataSetDataElementStore.updateOrInsertWhere(builder.buildModel(dataSetDataElement));
+            }
         }
     }
 
     private void saveDataSetIndicatorLink(DataSet dataSet) {
         List<ObjectWithUid> indicators = dataSet.indicators();
-        assert indicators != null;
-        for (ObjectWithUid indicator : indicators) {
-            dataSetIndicatorStore.updateOrInsertWhere(
-                    DataSetIndicatorLinkModel.create(
-                            dataSet.uid(),
-                            indicator.uid()
-                    ));
+        if (indicators != null) {
+            DataSetIndicatorLinkModelBuilder builder = new DataSetIndicatorLinkModelBuilder(dataSet);
+            for (ObjectWithUid indicator : indicators) {
+                dataSetIndicatorStore.updateOrInsertWhere(builder.buildModel(indicator));
+            }
         }
     }
 
@@ -93,21 +90,19 @@ class DataSetParentLinkManager {
         if (organisationUnits != null) {
             for (OrganisationUnit organisationUnit : organisationUnits) {
                 saveDataSetOrganisationUnitLink(organisationUnit, dataSetUids);
-
             }
         }
     }
 
     private void saveDataSetOrganisationUnitLink(OrganisationUnit organisationUnit, Set<String> dataSetUids) {
         List<DataSet> orgUnitDataSets = organisationUnit.dataSets();
-        assert orgUnitDataSets != null;
-        for (DataSet dataSet : orgUnitDataSets) {
-            if (dataSetUids.contains(dataSet.uid())) {
-                dataSetOrganisationUnitStore.updateOrInsertWhere(
-                        DataSetOrganisationUnitLinkModel.create(
-                                dataSet.uid(),
-                                organisationUnit.uid()
-                        ));
+        if (orgUnitDataSets != null) {
+            DataSetOrganisationUnitLinkModelBuilder builder =
+                    new DataSetOrganisationUnitLinkModelBuilder(organisationUnit);
+            for (DataSet dataSet : orgUnitDataSets) {
+                if (dataSetUids.contains(dataSet.uid())) {
+                    dataSetOrganisationUnitStore.updateOrInsertWhere(builder.buildModel(dataSet));
+                }
             }
         }
     }

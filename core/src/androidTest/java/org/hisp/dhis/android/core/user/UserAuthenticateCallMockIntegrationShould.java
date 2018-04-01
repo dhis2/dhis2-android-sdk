@@ -28,49 +28,31 @@
 
 package org.hisp.dhis.android.core.user;
 
-import static com.google.common.truth.Truth.assertThat;
-
-import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-
-import static okhttp3.internal.Util.UTC;
-
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
+import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
+import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStoreImpl;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStoreImpl;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
+import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 // ToDo: implement integration tests for user authentication task
 // ToDo: more tests to verify correct store behaviour
@@ -151,105 +133,29 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
             ResourceModel.Columns.LAST_SYNCED
     };
 
-    private MockWebServer mockWebServer;
+    private Dhis2MockServer dhis2MockServer;
     private Call<Response<User>> authenticateUserCall;
+    private GenericCallData genericCallData;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
 
-        mockWebServer = new MockWebServer();
-        mockWebServer.start();
+        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        MockResponse mockResponse = new MockResponse();
+        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
-        DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-        rfc1123.setLenient(false);
-        rfc1123.setTimeZone(UTC);
-        String dateHeaderValue = rfc1123.format(Calendar.getInstance().getTime());
+        dhis2MockServer.enqueueMockResponse("user.json");
 
-        mockResponse.setHeader(HeaderUtils.DATE, dateHeaderValue);
-
-        mockResponse.setBody("{\n" +
-                "\n" +
-                "    \"created\": \"2015-03-31T13:31:09.324\",\n" +
-                "    \"lastUpdated\": \"2016-04-06T00:05:57.495\",\n" +
-                "    \"name\": \"John Barnes\",\n" +
-                "    \"id\": \"DXyJmlo9rge\",\n" +
-                "    \"displayName\": \"John Barnes\",\n" +
-                "    \"firstName\": \"John\",\n" +
-                "    \"surname\": \"Barnes\",\n" +
-                "    \"email\": \"john@hmail.com\",\n" +
-                "    \"userCredentials\": {\n" +
-                "        \"lastUpdated\": \"2016-12-20T15:04:21.254\",\n" +
-                "        \"code\": \"android\",\n" +
-                "        \"created\": \"2015-03-31T13:31:09.206\",\n" +
-                "        \"name\": \"John Traore\",\n" +
-                "        \"id\": \"M0fCOxtkURr\",\n" +
-                "        \"displayName\": \"John Traore\",\n" +
-                "        \"username\": \"android\"\n" +
-                "    },\n" +
-                "    \"organisationUnits\": [\n" +
-                "        {\n" +
-                "            \"code\": \"OU_559\",\n" +
-                "            \"level\": 4,\n" +
-                "            \"created\": \"2012-02-17T15:54:39.987\",\n" +
-                "            \"lastUpdated\": \"2014-11-25T09:37:54.924\",\n" +
-                "            \"name\": \"Ngelehun CHC\",\n" +
-                "            \"id\": \"DiszpKrYNg8\",\n" +
-                "            \"shortName\": \"Ngelehun CHC\",\n" +
-                "            \"displayName\": \"Ngelehun CHC\",\n" +
-                "            \"displayShortName\": \"Ngelehun CHC\",\n" +
-                "            \"path\": \"/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8\",\n" +
-                "            \"openingDate\": \"1970-01-01T00:00:00.000\",\n" +
-                "            \"parent\": {\n" +
-                "                \"id\": \"YuQRtpLP10I\"\n" +
-                "            }\n" +
-                "        }\n" +
-                "    ]\n" +
-                "\n" +
-                "}");
-
-        mockWebServer.enqueue(mockResponse);
-
-        // ToDo: consider moving this out
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(mockWebServer.url("/"))
-                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                .addConverterFactory(FieldsConverterFactory.create())
-                .build();
-
-        UserService userService = retrofit.create(UserService.class);
-
-        UserStore userStore = new UserStoreImpl(databaseAdapter());
-        UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
-        OrganisationUnitStore organisationUnitStore = new OrganisationUnitStoreImpl(
-                databaseAdapter());
-        AuthenticatedUserStore authenticatedUserStore = new AuthenticatedUserStoreImpl(
-                databaseAdapter());
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-        UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(
-                userCredentialsStore);
-
-        OrganisationUnitHandler organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, new UserOrganisationUnitLinkStoreImpl(databaseAdapter()),
-                new OrganisationUnitProgramLinkStoreImpl(databaseAdapter()), null);
-
-        authenticateUserCall = new UserAuthenticateCall(userService, databaseAdapter(), userStore,
-                userCredentialsHandler, resourceHandler,
-                authenticatedUserStore,
-                organisationUnitHandler, "test_user", "test_password");
+        genericCallData = GenericCallData.create(databaseAdapter(), d2.retrofit());
+        authenticateUserCall = UserAuthenticateCall.create(genericCallData,
+                "test_user", "test_password");
     }
 
     @Test
     public void persist_user_in_data_base_when_call() throws Exception {
-        Response response = authenticateUserCall.call();
+        authenticateUserCall.call();
 
         // verify that user is persisted in database with corresponding data
         Cursor userCursor = database().query(UserModel.TABLE,
@@ -296,10 +202,10 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                         1L, // id
                         "M0fCOxtkURr", // uid
                         "android", // code
-                        "John Traore", // name
-                        "John Traore", // display name
+                        "John Barnes", // name
+                        "John Barnes", // display name
                         "2015-03-31T13:31:09.206", // created
-                        "2016-12-20T15:04:21.254", // last updated
+                        "2017-11-29T11:45:37.250", // last updated
                         "android", // username
                         "DXyJmlo9rge" // user
                 )
@@ -317,20 +223,20 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 .hasRow(
                         1L, // id
                         "DiszpKrYNg8", // uid
-                        "OU_559", // code
-                        "Ngelehun CHC", // name
-                        "Ngelehun CHC", // display name
-                        "2012-02-17T15:54:39.987", // created
-                        "2014-11-25T09:37:54.924", // last updated
-                        "Ngelehun CHC", // short name
-                        "Ngelehun CHC", // display short name,
+                        null, // code
+                        null, // name
+                        null, // display name
+                        null, // created
+                        null, // last updated
+                        null, // short name
+                        null, // display short name,
                         null, // description
                         null, // display description
                         "/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8", // path
-                        "1970-01-01T00:00:00.000", // opening date
+                        null, // opening date
                         null, // closed date
-                        "YuQRtpLP10I", // parent
-                        4 // level
+                        null, // parent
+                        null // level
                 )
                 .isExhausted();
 
@@ -344,7 +250,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 .isExhausted();
 
         String dateString = BaseIdentifiableObject.DATE_FORMAT.format(
-                response.headers().getDate(HeaderUtils.DATE));
+                genericCallData.serverDate());
 
         assertThatCursor(resource)
                 .hasRow(
@@ -403,6 +309,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
     public void tearDown() throws IOException {
         super.tearDown();
 
-        mockWebServer.shutdown();
+        dhis2MockServer.shutdown();
     }
 }

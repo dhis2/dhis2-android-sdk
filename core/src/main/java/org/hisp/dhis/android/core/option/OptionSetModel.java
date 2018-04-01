@@ -66,19 +66,6 @@ public abstract class OptionSetModel extends BaseIdentifiableObjectModel impleme
         return AutoValue_OptionSetModel.createFromCursor(cursor);
     }
 
-    public static OptionSetModel create(OptionSet optionSet) {
-        return OptionSetModel.builder()
-                .uid(optionSet.uid())
-                .code(optionSet.code())
-                .name(optionSet.name())
-                .displayName(optionSet.displayName())
-                .created(optionSet.created())
-                .lastUpdated(optionSet.lastUpdated())
-                .version(optionSet.version())
-                .valueType(optionSet.valueType())
-                .build();
-    }
-
     public static Builder builder() {
         return new $$AutoValue_OptionSetModel.Builder();
     }

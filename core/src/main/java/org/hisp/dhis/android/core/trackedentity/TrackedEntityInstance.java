@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
 
 import java.util.Date;
@@ -55,6 +56,8 @@ public abstract class TrackedEntityInstance {
     private static final String TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
     private static final String RELATIONSHIPS = "relationships";
     private static final String TRACKED_ENTITY = "trackedEntityType";
+    private static final String COORDINATES = "coordinates";
+    private static final String FEATURE_TYPE = "featureType";
     private static final String DELETED = "deleted";
     private static final String ENROLLMENTS = "enrollments";
 
@@ -64,8 +67,9 @@ public abstract class TrackedEntityInstance {
     public static final Field<TrackedEntityInstance, String> createdAtClient = Field.create(CREATED_AT_CLIENT);
     public static final Field<TrackedEntityInstance, String> lastUpdatedAtClient = Field.create(LAST_UPDATED_AT_CLIENT);
     public static final Field<TrackedEntityInstance, String> organisationUnit = Field.create(ORGANISATION_UNIT);
-    public static final Field<TrackedEntityInstance, String> trackedEntity = Field.create(
-            TRACKED_ENTITY);
+    public static final Field<TrackedEntityInstance, String> trackedEntity = Field.create(TRACKED_ENTITY);
+    public static final Field<TrackedEntityInstance, String> coordinates = Field.create(COORDINATES);
+    public static final Field<TrackedEntityInstance, FeatureType> featureType = Field.create(FEATURE_TYPE);
     public static final Field<TrackedEntityInstance, Boolean> deleted = Field.create(DELETED);
 
     public static final NestedField<TrackedEntityInstance, Enrollment> enrollment
@@ -103,6 +107,14 @@ public abstract class TrackedEntityInstance {
     public abstract String trackedEntity();
 
     @Nullable
+    @JsonProperty(COORDINATES)
+    public abstract String coordinates();
+
+    @Nullable
+    @JsonProperty(FEATURE_TYPE)
+    public abstract FeatureType featureType();
+
+    @Nullable
     @JsonProperty(DELETED)
     public abstract Boolean deleted();
 
@@ -127,15 +139,16 @@ public abstract class TrackedEntityInstance {
             @JsonProperty(LAST_UPDATED_AT_CLIENT) String lastUpdatedAtClient,
             @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
             @JsonProperty(TRACKED_ENTITY) String trackedEntity,
+            @JsonProperty(COORDINATES) String coordinates,
+            @JsonProperty(FEATURE_TYPE) FeatureType featureType,
             @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(TRACKED_ENTITY_ATTRIBUTE_VALUES)
                     List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
             @JsonProperty(RELATIONSHIPS) List<Relationship> relationships,
             @JsonProperty(ENROLLMENTS) List<Enrollment> enrollments) {
         return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                organisationUnit, trackedEntity, deleted,
-                safeUnmodifiableList(trackedEntityAttributeValues),
-                safeUnmodifiableList(relationships), safeUnmodifiableList(enrollments));
+                organisationUnit, trackedEntity, coordinates, featureType, deleted,
+                safeUnmodifiableList(trackedEntityAttributeValues), safeUnmodifiableList(relationships),
+                safeUnmodifiableList(enrollments));
     }
-
 }

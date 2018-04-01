@@ -39,12 +39,14 @@ import retrofit2.Call;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedArrayValuesFromSet;
 
-public final class DataValueEndpointCall extends GenericEndpointCallImpl<DataValue, DataValueQuery> {
+public final class DataValueEndpointCall extends GenericEndpointCallImpl<DataValue, DataValueModel,
+        DataValueQuery> {
     private final DataValueService dataValueService;
 
     private DataValueEndpointCall(GenericCallData data, DataValueService dataValueService,
-                                  GenericHandler<DataValue> dataValueHandler, DataValueQuery query) {
-        super(data, dataValueHandler, ResourceModel.Type.DATA_VALUE, query);
+                                  GenericHandler<DataValue, DataValueModel> dataValueHandler,
+                                  DataValueQuery query) {
+        super(data, dataValueHandler, ResourceModel.Type.DATA_VALUE, new DataValueModelBuilder(), query);
         this.dataValueService = dataValueService;
     }
 

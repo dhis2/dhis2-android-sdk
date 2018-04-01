@@ -1,0 +1,2 @@
+up:
+ - CREATE TABLE Note (_id INTEGER PRIMARY KEY AUTOINCREMENT, enrollment TEXT,value TEXT,storedBy TEXT,storedDate TEXT, FOREIGN KEY (enrollment)  REFERENCES Enrollment (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (enrollment, value, storedBy, storedDate));

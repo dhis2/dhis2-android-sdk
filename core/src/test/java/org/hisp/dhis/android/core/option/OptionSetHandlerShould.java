@@ -68,7 +68,7 @@ public class OptionSetHandlerShould {
 
     @Test
     public void handle_option_sets() throws Exception {
-        optionSetHandler.handle(optionSet);
+        optionSetHandler.handle(optionSet, new OptionSetModelBuilder());
         verify(optionHandler).handleOptions(options);
     }
 

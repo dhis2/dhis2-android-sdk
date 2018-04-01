@@ -28,27 +28,15 @@
 
 package org.hisp.dhis.android.core.user;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import static okhttp3.Credentials.basic;
-
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.SqLiteTransaction;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModelBuilder;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +53,6 @@ import org.mockito.stubbing.Answer;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +60,20 @@ import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
+
+import static okhttp3.Credentials.basic;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(JUnit4.class)
@@ -97,7 +98,7 @@ public class UserAuthenticateCallUnitShould {
     private ResourceHandler resourceHandler;
 
     @Mock
-    private OrganisationUnitHandler organisationUnitHandler;
+    private GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler;
 
     @Mock
     private AuthenticatedUserStore authenticatedUserStore;
@@ -139,10 +140,18 @@ public class UserAuthenticateCallUnitShould {
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
-        userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, userStore,
-                userCredentialsHandler, resourceHandler,
-                authenticatedUserStore,
-                organisationUnitHandler, "test_user_name", "test_user_password");
+        UserAuthenticateCall.OrganisationUnitHandlerFactory organisationUnitHandlerFactory =
+                new UserAuthenticateCall.OrganisationUnitHandlerFactory() {
+                    @Override
+                    public GenericHandler<OrganisationUnit, OrganisationUnitModel>
+                    organisationUnitHandler(DatabaseAdapter databaseAdapter, User user) {
+                        return organisationUnitHandler;
+                    }
+                };
+
+        userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, new Date(),
+                userStore, userCredentialsHandler, resourceHandler, authenticatedUserStore,
+                organisationUnitHandlerFactory, "test_user_name", "test_user_password");
 
         when(userCredentials.uid()).thenReturn("test_user_credentials_uid");
         when(userCredentials.code()).thenReturn("test_user_credentials_code");
@@ -248,8 +257,8 @@ public class UserAuthenticateCallUnitShould {
                                 OrganisationUnit.openingDate,
                                 OrganisationUnit.closedDate,
                                 OrganisationUnit.level,
-                                OrganisationUnit.parent.with(
-                                        OrganisationUnit.uid)));
+                                OrganisationUnit.parent.with(OrganisationUnit.uid),
+                                OrganisationUnit.ancestors.with(OrganisationUnit.uid, OrganisationUnit.displayName)));
     }
 
     @Test
@@ -270,14 +279,9 @@ public class UserAuthenticateCallUnitShould {
 
             // stores must not be invoked
             verify(authenticatedUserStore, never()).insert(anyString(), anyString());
-            verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                    any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                    anyString(), anyString(), anyString(), anyString());
-            verify(userCredentialsHandler, never()).handleUserCredentials(
-                    any(UserCredentials.class), any(User.class));
-            verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
-                    any(OrganisationUnitModel.Scope.class), anyString());
+            verifyNoMoreInteractions(userStore);
+            verifyNoMoreInteractions(userCredentialsHandler);
+            verifyNoMoreInteractions(organisationUnitHandler);
         }
     }
 
@@ -299,16 +303,11 @@ public class UserAuthenticateCallUnitShould {
         verify(sqLiteTransaction, never()).end();
 
         // stores must not be invoked
-        verify(authenticatedUserStore, never()).insert(anyString(), anyString());
-        verify(userStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString());
-        verify(userCredentialsHandler, never()).handleUserCredentials(
-                any(UserCredentials.class), any(User.class));
-        verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
-                any(OrganisationUnitModel.Scope.class), anyString());
-
+        verify(authenticatedUserStore).query();
+        verifyNoMoreInteractions(authenticatedUserStore);
+        verifyNoMoreInteractions(userStore);
+        verifyNoMoreInteractions(userCredentialsHandler);
+        verifyNoMoreInteractions(organisationUnitHandler);
     }
 
     @Test
@@ -338,9 +337,8 @@ public class UserAuthenticateCallUnitShould {
         verify(userCredentialsHandler, times(1)).handleUserCredentials(
                 userCredentials, user);
 
-        verify(organisationUnitHandler, times(1)).handleOrganisationUnits(
-                organisationUnits, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user.uid());
-
+        verify(organisationUnitHandler).handleMany(
+                anyListOf(OrganisationUnit.class), any(OrganisationUnitModelBuilder.class));
     }
 
 
@@ -366,8 +364,8 @@ public class UserAuthenticateCallUnitShould {
 
         verify(userCredentialsHandler, times(1)).handleUserCredentials(
                 userCredentials, user);
-        verify(organisationUnitHandler, never()).handleOrganisationUnits(any(ArrayList.class),
-                any(OrganisationUnitModel.Scope.class), anyString());
+
+        verifyNoMoreInteractions(organisationUnitHandler);
     }
 
     @Test

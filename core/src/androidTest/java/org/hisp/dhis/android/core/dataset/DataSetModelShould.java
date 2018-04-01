@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.Access;
@@ -64,10 +65,10 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
-public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel, DataSet> {
+public class DataSetModelShould extends NameableModelAbstractShould<DataSet, DataSetModel> {
 
     public DataSetModelShould() {
-        super(DataSetModel.Columns.all(), 26, DataSetModel.factory);
+        super(DataSetModel.Columns.all(), 26, new DataSetModelBuilder());
     }
 
     @Override
@@ -92,6 +93,11 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel
                 .renderHorizontally(false)
                 .accessDataWrite(false);
         return dataSetModelBuilder.build();
+    }
+
+    @Override
+    protected DataSetModel cursorToModel(Cursor cursor) {
+        return DataSetModel.create(cursor);
     }
 
     @Override

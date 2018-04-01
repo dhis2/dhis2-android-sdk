@@ -34,11 +34,16 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
 import java.util.List;
@@ -66,6 +71,9 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     private static final String STANDARD_INTERVAL = "standardInterval";
     private static final String PROGRAM_STAGE_SECTIONS = "programStageSections";
     private static final String STYLE = "style";
+    private static final String PERIOD_TYPE = "periodType";
+    private static final String PROGRAM = "program";
+    private final static String ACCESS = "access";
 
     public static final Field<ProgramStage, String> uid = Field.create(UID);
     public static final Field<ProgramStage, String> code = Field.create(CODE);
@@ -91,12 +99,25 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     public static final Field<ProgramStage, Boolean> blockEntryForm = Field.create(BLOCK_ENTRY_FORM);
     public static final Field<ProgramStage, Integer> minDaysFromStart = Field.create(MIN_DAYS_FROM_START);
     public static final Field<ProgramStage, Integer> standardInterval = Field.create(STANDARD_INTERVAL);
+    public static final Field<ProgramStage, PeriodType> periodType = Field.create(PERIOD_TYPE);
 
     public static final NestedField<ProgramStage, ProgramStageSection> programStageSections
             = NestedField.create(PROGRAM_STAGE_SECTIONS);
     public static final NestedField<ProgramStage, ProgramStageDataElement> programStageDataElements =
             NestedField.create(PROGRAM_STAGE_DATA_ELEMENTS);
     public static final NestedField<ProgramStage, ObjectStyle> style = NestedField.create(STYLE);
+    public static final NestedField<ProgramStage, ObjectWithUid> program = NestedField.create(PROGRAM);
+    public static final NestedField<ProgramStage, Access> access = NestedField.create(ACCESS);
+
+    static final Fields<ProgramStage> allFields = Fields.<ProgramStage>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, allowGenerateNextVisit, autoGenerateEvent,
+            blockEntryForm, captureCoordinates, deleted, displayGenerateEventBox, executionDateLabel, formType,
+            generatedByEnrollmentDate, hideDueDate, minDaysFromStart, openAfterEnrollment, repeatable,
+            reportDateToUse, sortOrder, standardInterval, validCompleteOnly,
+            programStageDataElements.with(ProgramStageDataElement.allFields),
+            programStageSections.with(ProgramStageSection.allFields),
+            style.with(ObjectStyle.allFields), periodType, program.with(ObjectWithUid.uid),
+            access.with(Access.data.with(DataAccess.write))).build();
 
     @Nullable
     @JsonProperty(EXECUTION_DATE_LABEL)
@@ -174,6 +195,23 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     @JsonProperty(STYLE)
     public abstract ObjectStyle style();
 
+    @Nullable
+    @JsonProperty(PERIOD_TYPE)
+    public abstract PeriodType periodType();
+
+    @Nullable
+    @JsonProperty(PROGRAM)
+    public abstract ObjectWithUid program();
+
+    String programUid() {
+        ObjectWithUid program = program();
+        return program == null ? null : program.uid();
+    }
+
+    @Nullable
+    @JsonProperty(ACCESS)
+    public abstract Access access();
+
     @JsonCreator
     public static ProgramStage create(
             @JsonProperty(UID) String uid,
@@ -201,6 +239,9 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
             @JsonProperty(PROGRAM_STAGE_SECTIONS) List<ProgramStageSection> programStageSections,
             @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements,
             @JsonProperty(STYLE) ObjectStyle style,
+            @JsonProperty(PERIOD_TYPE) PeriodType periodType,
+            @JsonProperty(PROGRAM) ObjectWithUid program,
+            @JsonProperty(ACCESS) Access access,
             @JsonProperty(DELETED) Boolean deleted
     ) {
 
@@ -230,7 +271,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
                 standardInterval,
                 safeUnmodifiableList(programStageSections),
                 safeUnmodifiableList(programStageDataElements),
-                style
+                style,
+                periodType,
+                program,
+                access
         );
     }
 }

@@ -21,6 +21,7 @@ import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.Before;
@@ -54,8 +55,9 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     private String programStageUid;
     private String dataElementUid;
     private String trackedEntityUid;
-    private String programStageDataElementUid;
     private String trackedEntityAttributeUid;
+    private String coordinates;
+    private FeatureType featureType;
     private String eventUid;
     private String enrollmentUid;
     private String trackedEntityInstanceUid;
@@ -87,8 +89,10 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         programStageUid = "A03MvHHogjR";
         dataElementUid = "a3kGcGDCuk6";
         trackedEntityUid = "nEenWmSyUEp";
-        programStageDataElementUid = "LBNxoXdMnkv";
         trackedEntityAttributeUid = "w75KJ2mc4zz";
+
+        coordinates = "[9,9]";
+        featureType = FeatureType.POINT;
 
         categoryOptionUid = "CW81uF03hvV";
         categoryComboOptionUid = "l5QR5hJ4u44";
@@ -118,17 +122,12 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
 
         createDummyDataToPost(
-                orgUnitUid, programUid, programStageUid, trackedEntityUid,
-                eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid,
-                dataElementUid
-        );
+                orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, featureType, eventUid,
+                enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid, dataElementUid);
 
         createDummyDataToPost(
-                orgUnitUid, programUid, programStageUid, trackedEntityUid,
-                event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid,
-                dataElementUid
-        );
-
+                orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, featureType,
+                event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid, dataElementUid);
 
         Call<Response<WebResponse>> call = d2.syncTrackedEntityInstances();
         response = call.call();
@@ -148,11 +147,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
 
         createDummyDataToPost(
-                orgUnitUid, programUid, programStageUid, trackedEntityUid,
-                eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid,
-                dataElementUid
-        );
-
+                orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, featureType,
+                eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid, dataElementUid);
 
         postTrackedEntityInstances();
 
@@ -181,12 +177,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     }
 
     private void createDummyDataToPost(String orgUnitUid, String programUid, String programStageUid,
-            String trackedEntityUid, String eventUid, String enrollmentUid,
-            String trackedEntityInstanceUid, String trackedEntityAttributeUid,
-            String dataElementUid) {
-        trackedEntityInstanceStore.insert(
-                trackedEntityInstanceUid, new Date(), new Date(), null, null, orgUnitUid, trackedEntityUid, State.TO_POST
-        );
+                                       String trackedEntityUid, String coordinates, FeatureType featureType,
+                                       String eventUid, String enrollmentUid, String trackedEntityInstanceUid,
+                                       String trackedEntityAttributeUid, String dataElementUid) {
+        trackedEntityInstanceStore.insert(trackedEntityInstanceUid, new Date(), new Date(), null,
+                null, orgUnitUid, trackedEntityUid, coordinates, featureType, State.TO_POST);
 
         enrollmentStore.insert(
                 enrollmentUid, new Date(), new Date(), null, null, orgUnitUid, programUid, new Date(),

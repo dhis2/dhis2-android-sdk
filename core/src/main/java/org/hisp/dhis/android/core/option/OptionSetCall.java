@@ -42,13 +42,14 @@ import java.util.Set;
 
 import retrofit2.Call;
 
-public class OptionSetCall extends GenericEndpointCallImpl<OptionSet, UidsQuery> {
+public class OptionSetCall extends GenericEndpointCallImpl<OptionSet, OptionSetModel, UidsQuery> {
     private final OptionSetService optionSetService;
     private final UidsQuery uidsQuery;
 
     public OptionSetCall(GenericCallData data, OptionSetService optionSetService,
-                         GenericHandler<OptionSet> optionSetHandler, Set<String> uids) {
-        super(data, optionSetHandler, ResourceModel.Type.OPTION_SET, UidsQuery.create(uids, 64));
+                         GenericHandler<OptionSet, OptionSetModel> optionSetHandler, Set<String> uids) {
+        super(data, optionSetHandler, ResourceModel.Type.OPTION_SET, new OptionSetModelBuilder(),
+                UidsQuery.create(uids, 64));
         this.uidsQuery = UidsQuery.create(uids, 64);
         this.optionSetService = optionSetService;
     }

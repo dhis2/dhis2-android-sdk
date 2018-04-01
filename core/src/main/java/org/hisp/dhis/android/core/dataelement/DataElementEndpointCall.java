@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
-import org.hisp.dhis.android.core.option.OptionSetHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.io.IOException;
@@ -41,12 +40,14 @@ import java.util.Set;
 
 import retrofit2.Call;
 
-public final class DataElementEndpointCall extends GenericEndpointCallImpl<DataElement, UidsQuery> {
+public final class DataElementEndpointCall extends GenericEndpointCallImpl<DataElement,
+        DataElementModel, UidsQuery> {
     private final DataElementService dataElementService;
 
     private DataElementEndpointCall(GenericCallData data, DataElementService dataElementService,
-                                   GenericHandler<DataElement> dataElementHandler, UidsQuery query) {
-        super(data, dataElementHandler, ResourceModel.Type.DATA_ELEMENT, query);
+                                    GenericHandler<DataElement, DataElementModel> dataElementHandler,
+                                    UidsQuery query) {
+        super(data, dataElementHandler, ResourceModel.Type.DATA_ELEMENT, new DataElementModelBuilder(), query);
         this.dataElementService = dataElementService;
     }
 
@@ -64,7 +65,7 @@ public final class DataElementEndpointCall extends GenericEndpointCallImpl<DataE
         @Override
         public DataElementEndpointCall create(GenericCallData data, Set<String> uids) {
             return new DataElementEndpointCall(data, data.retrofit().create(DataElementService.class),
-                    DataElementHandler.create(data.databaseAdapter(), OptionSetHandler.create(data.databaseAdapter())),
+                    DataElementHandler.create(data.databaseAdapter()),
                     UidsQuery.create(uids, null));
         }
     };

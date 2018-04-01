@@ -25,19 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+package org.hisp.dhis.android.core.data.database;
 
-@RunWith(JUnit4.class)
-public class DataValueHandlerShould {
+import org.hisp.dhis.android.core.period.FeatureType;
 
-    @Test
-    public void extend_object_without_id_handler_impl() {
-        ObjectWithoutUidHandlerImpl<DataValue, DataValueModel> objectWithoutUidHandler =
-                new DataValueHandler(null);
+public class DbFeatureTypeColumnAdapter extends EnumColumnAdapter<FeatureType> {
+    @Override
+    protected Class<FeatureType> getEnumClass() {
+        return FeatureType.class;
     }
 }

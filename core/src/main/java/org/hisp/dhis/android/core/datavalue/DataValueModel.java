@@ -38,7 +38,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.ModelFactory;
 import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -82,31 +81,6 @@ public abstract class DataValueModel extends BaseModel implements UpdateWhereSta
     static DataValueModel create(Cursor cursor) {
         return AutoValue_DataValueModel.createFromCursor(cursor);
     }
-
-    public static final ModelFactory<DataValueModel, DataValue> factory
-            = new ModelFactory<DataValueModel, DataValue>() {
-        @Override
-        public DataValueModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-
-        @Override
-        public DataValueModel fromPojo(DataValue dataValue) {
-            return DataValueModel.builder()
-                    .dataElement(dataValue.dataElement())
-                    .period(dataValue.period())
-                    .organisationUnit(dataValue.organisationUnit())
-                    .categoryOptionCombo(dataValue.categoryOptionCombo())
-                    .attributeOptionCombo(dataValue.attributeOptionCombo())
-                    .value(dataValue.value())
-                    .storedBy(dataValue.storedBy())
-                    .created(dataValue.created())
-                    .lastUpdated(dataValue.lastUpdated())
-                    .comment(dataValue.comment())
-                    .followUp(dataValue.followUp())
-                    .build();
-        }
-    };
 
     public static Builder builder() {
         return new $AutoValue_DataValueModel.Builder();

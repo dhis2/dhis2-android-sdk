@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.common;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-public abstract class IdentifiableHandlerImpl<
+public class IdentifiableHandlerImpl<
         P extends BaseIdentifiableObject,
         M extends BaseIdentifiableObjectModel & StatementBinder> extends GenericHandlerBaseImpl<P, M> {
 
@@ -40,8 +40,8 @@ public abstract class IdentifiableHandlerImpl<
     }
 
     @Override
-    protected void deleteOrPersist(P p) {
-        M m = pojoToModel(p);
+    protected void deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder) {
+        M m = modelBuilder.buildModel(p);
         String modelUid = m.uid();
         if (isDeleted(p) && modelUid != null) {
             store.delete(modelUid);

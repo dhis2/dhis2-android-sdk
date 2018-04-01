@@ -2,14 +2,14 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.event.EventEndPointCall;
 import org.hisp.dhis.android.core.event.EventHandler;
 import org.hisp.dhis.android.core.event.EventQuery;
 import org.hisp.dhis.android.core.event.EventService;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
@@ -18,14 +18,14 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import retrofit2.Response;
 
 @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 public class SingleDataCall implements Call<Response> {
 
-    private final OrganisationUnitStore organisationUnitStore;
+    private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
     private final SystemInfoStore systemInfoStore;
     private final SystemInfoService systemInfoService;
     private final ResourceStore resourceStore;
@@ -40,7 +40,7 @@ public class SingleDataCall implements Call<Response> {
     private boolean isExecuted;
 
     public SingleDataCall(
-            @NonNull OrganisationUnitStore organisationUnitStore,
+            @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
             @NonNull SystemInfoStore systemInfoStore,
             @NonNull SystemInfoService systemInfoService,
             @NonNull ResourceStore resourceStore,
@@ -113,7 +113,7 @@ public class SingleDataCall implements Call<Response> {
     private Response eventCall(Date serverDate) throws Exception {
         Response response = null;
 
-        List<OrganisationUnit> organisationUnits = organisationUnitStore.queryOrganisationUnits();
+        Set<String> organisationUnitUids = organisationUnitStore.selectUids();
 
         //TODO: we should download events by orgunit and program
         //programs to retrieve from DB should be non tracker programs
@@ -128,7 +128,7 @@ public class SingleDataCall implements Call<Response> {
 
         int pageLimit = 0;
 
-        for (OrganisationUnit orgUnit : organisationUnits) {
+        for (String orgUnitUid : organisationUnitUids) {
 
             for (int page = 1; page <= numPages; page++) {
 
@@ -138,7 +138,7 @@ public class SingleDataCall implements Call<Response> {
 
                 EventQuery eventQuery = EventQuery.
                         Builder.create()
-                        .withOrgUnit(orgUnit.uid())
+                        .withOrgUnit(orgUnitUid)
                         .withPage(page)
                         .withPageLimit(pageLimit)
                         .build();

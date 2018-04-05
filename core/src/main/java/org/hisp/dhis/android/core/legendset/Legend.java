@@ -52,12 +52,13 @@ public abstract class Legend extends BaseIdentifiableObject {
     private static final Field<Legend, String> displayName = Field.create(DISPLAY_NAME);
     private static final Field<Legend, String> created = Field.create(CREATED);
     private static final Field<Legend, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<Legend, String> deleted = Field.create(DELETED);
     private static final Field<Legend, Double> startValue = Field.create(START_VALUE);
     private static final Field<Legend, Double> endValue = Field.create(END_VALUE);
     private static final Field<Legend, String> color = Field.create(COLOR);
 
     static final Fields<Legend> allFields = Fields.<Legend>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, startValue, endValue, color).build();
+            uid, code, name, displayName, created, lastUpdated, deleted, startValue, endValue, color).build();
 
     @Nullable
     @JsonProperty(START_VALUE)
@@ -79,10 +80,12 @@ public abstract class Legend extends BaseIdentifiableObject {
             @JsonProperty(DISPLAY_NAME) String displayName,
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(START_VALUE) Double startValue,
             @JsonProperty(END_VALUE) Double endValue,
             @JsonProperty(COLOR) String color) {
 
-        return new AutoValue_Legend(uid, code, name, displayName, created, lastUpdated, startValue, endValue, color);
+        return new AutoValue_Legend(uid, code, name, displayName, created, lastUpdated, deleted, startValue,
+                endValue, color);
     }
 }

@@ -63,11 +63,11 @@ public abstract class LegendSet extends BaseIdentifiableObject {
 
     @Nullable
     @JsonProperty(SYMBOLIZER)
-    abstract String symbolizer();
+    public abstract String symbolizer();
 
     @Nullable
     @JsonProperty(LEGENDS)
-    abstract List<Legend> legends();
+    public abstract List<Legend> legends();
 
     @JsonCreator
     static LegendSet create(

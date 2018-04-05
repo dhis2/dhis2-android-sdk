@@ -42,6 +42,7 @@ import java.util.Date;
 @AutoValue
 public abstract class Legend {
     private final static String UID = "id";
+    private final static String CODE = "code";
     private final static String NAME = "name";
     private final static String DISPLAY_NAME = "displayName";
     private final static String CREATED = "created";
@@ -51,6 +52,7 @@ public abstract class Legend {
     private final static String COLOR = "color";
 
     private static final Field<Legend, String> uid = Field.create(UID);
+    private static final Field<Legend, String> code = Field.create(CODE);
     private static final Field<Legend, String> name = Field.create(NAME);
     private static final Field<Legend, String> displayName = Field.create(DISPLAY_NAME);
     private static final Field<Legend, String> created = Field.create(CREATED);
@@ -60,10 +62,14 @@ public abstract class Legend {
     private static final Field<Legend, String> color = Field.create(COLOR);
 
     static final Fields<Legend> allFields = Fields.<Legend>builder().fields(
-            uid, name, displayName, created, lastUpdated, startValue, endValue, color).build();
+            uid, code, name, displayName, created, lastUpdated, startValue, endValue, color).build();
 
     @JsonProperty(UID)
     public abstract String uid();
+
+    @Nullable
+    @JsonProperty(CODE)
+    public abstract String code();
 
     @Nullable
     @JsonProperty(NAME)
@@ -96,6 +102,7 @@ public abstract class Legend {
     @JsonCreator
     static Legend create(
             @JsonProperty(UID) String uid,
+            @JsonProperty(CODE) String code,
             @JsonProperty(NAME) String name,
             @JsonProperty(DISPLAY_NAME) String displayName,
             @JsonProperty(CREATED) Date created,
@@ -104,6 +111,6 @@ public abstract class Legend {
             @JsonProperty(END_VALUE) Double endValue,
             @JsonProperty(COLOR) String color) {
 
-        return new AutoValue_Legend(uid, name, displayName, created, lastUpdated, startValue, endValue, color);
+        return new AutoValue_Legend(uid, code, name, displayName, created, lastUpdated, startValue, endValue, color);
     }
 }

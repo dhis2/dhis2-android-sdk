@@ -34,7 +34,7 @@ public class LegendModelBuilder extends ModelBuilder<Legend, LegendModel> {
 
     private final LegendModel.Builder builder;
 
-    public LegendModelBuilder(LegendSet legendSet) {
+    LegendModelBuilder(LegendSet legendSet) {
         this.builder = LegendModel.builder()
                 .legendSet(legendSet.uid());
     }

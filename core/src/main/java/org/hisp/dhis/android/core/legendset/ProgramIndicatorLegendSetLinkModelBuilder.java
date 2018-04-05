@@ -35,7 +35,7 @@ public class ProgramIndicatorLegendSetLinkModelBuilder extends ModelBuilder<Lege
 
     private final ProgramIndicatorLegendSetLinkModel.Builder builder;
 
-    ProgramIndicatorLegendSetLinkModelBuilder(ProgramIndicator programIndicator) {
+    public ProgramIndicatorLegendSetLinkModelBuilder(ProgramIndicator programIndicator) {
         this.builder = ProgramIndicatorLegendSetLinkModel.builder()
                 .programIndicator(programIndicator.uid());
     }

@@ -99,8 +99,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
 
         //TODO: This needs to be refactored badly
 
-        ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(programIndicatorStore,
-                programStageSectionProgramIndicatorLinkStore);
+        ProgramIndicatorHandler programIndicatorHandler = ProgramIndicatorHandler.create(databaseAdapter);
 
         this.programHandler = new ProgramHandler(programStore,
                 new ProgramRuleVariableHandler(programRuleVariableStore), programIndicatorHandler,

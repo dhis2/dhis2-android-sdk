@@ -29,13 +29,28 @@ package org.hisp.dhis.android.core.legendset;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class LegendSetHandler {
+public final class LegendSetHandler extends IdentifiableHandlerImpl<LegendSet, LegendSetModel> {
 
-    private LegendSetHandler() {}
+    private final GenericHandler<Legend, LegendModel> legendHandler;
+
+    private LegendSetHandler(IdentifiableObjectStore<LegendSetModel> legendSetStore,
+                     GenericHandler<Legend, LegendModel> legendHandler) {
+        super(legendSetStore);
+        this.legendHandler = legendHandler;
+    }
 
     public static GenericHandler<LegendSet, LegendSetModel> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableHandlerImpl<>(LegendSetStore.create(databaseAdapter));
+        return new LegendSetHandler(
+                LegendSetStore.create(databaseAdapter),
+                LegendHandler.create(databaseAdapter)
+        );
+    }
+
+    @Override
+    protected void afterObjectPersisted(LegendSet legendSet) {
+        legendHandler.handleMany(legendSet.legends(), new LegendModelBuilder(legendSet));
     }
 }

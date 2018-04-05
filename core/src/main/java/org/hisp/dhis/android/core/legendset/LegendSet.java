@@ -57,7 +57,7 @@ public abstract class LegendSet extends BaseIdentifiableObject {
     private static final Field<LegendSet, String> symbolizer = Field.create(SYMBOLIZER);
     private static final NestedField<LegendSet, Legend> legends = NestedField.create(LEGENDS);
 
-    static final Fields<LegendSet> allFields = Fields.<LegendSet>builder().fields(
+    public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder().fields(
             uid, code, name, displayName, created, lastUpdated, deleted, symbolizer, legends.with(Legend.allFields))
             .build();
 

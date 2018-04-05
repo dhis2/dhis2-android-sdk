@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 
@@ -69,7 +70,13 @@ public abstract class ProgramIndicator extends BaseNameableObject {
     public static final Field<ProgramIndicator, String> filter = Field.create(FILTER);
     public static final Field<ProgramIndicator, Integer> decimals = Field.create(DECIMALS);
     public static final NestedField<ProgramIndicator, Program> program = NestedField.create(PROGRAM);
-    public static final NestedField<ProgramIndicator, LegendSet> legendSets = NestedField.create(LEGEND_SETS);
+    private static final NestedField<ProgramIndicator, LegendSet> legendSets = NestedField.create(LEGEND_SETS);
+
+    static final Fields<ProgramIndicator> allFields = Fields.<ProgramIndicator>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
+            description, displayDescription, deleted, decimals, dimensionItem, displayInForm, expression, filter,
+            program.with(Program.uid), legendSets.with(LegendSet.allFields)
+    ).build();
 
     @Nullable
     @JsonProperty(DISPLAY_IN_FORM)

@@ -198,16 +198,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                         ProgramRuleVariable.programStage.with(ProgramStage.uid),
                         ProgramRuleVariable.trackedEntityAttribute.with(TrackedEntityAttribute.uid)
                 ),
-                Program.programIndicators.with(
-                        ProgramIndicator.uid, ProgramIndicator.code, ProgramIndicator.name,
-                        ProgramIndicator.displayName, ProgramIndicator.created,
-                        ProgramIndicator.lastUpdated, ProgramIndicator.shortName,
-                        ProgramIndicator.displayShortName, ProgramIndicator.description,
-                        ProgramIndicator.displayDescription, ProgramIndicator.decimals,
-                        ProgramIndicator.deleted, ProgramIndicator.dimensionItem,
-                        ProgramIndicator.displayInForm,
-                        ProgramIndicator.expression, ProgramIndicator.filter, ProgramIndicator.program.with(Program.uid)
-                ),
+                Program.programIndicators.with(ProgramIndicator.allFields),
                 Program.programTrackedEntityAttributes.with(
                         ProgramTrackedEntityAttribute.uid, ProgramTrackedEntityAttribute.code,
                         ProgramTrackedEntityAttribute.name, ProgramTrackedEntityAttribute.displayName,

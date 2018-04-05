@@ -32,9 +32,16 @@ import org.hisp.dhis.android.core.common.ModelBuilder;
 
 public class LegendModelBuilder extends ModelBuilder<Legend, LegendModel> {
 
+    private final LegendModel.Builder builder;
+
+    public LegendModelBuilder(LegendSet legendSet) {
+        this.builder = LegendModel.builder()
+                .legendSet(legendSet.uid());
+    }
+
     @Override
     public LegendModel buildModel(Legend legend) {
-        return LegendModel.builder()
+        return builder
                 .uid(legend.uid())
                 .code(legend.code())
                 .name(legend.name())

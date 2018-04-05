@@ -51,9 +51,11 @@ public abstract class LegendModel extends BaseIdentifiableObjectModel implements
         private final static String START_VALUE = "startValue";
         private final static String END_VALUE = "endValue";
         private final static String COLOR = "color";
+        private final static String LEGEND_SET = "legendSet";
 
         public static String[] all() {
-            return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(), START_VALUE, END_VALUE, COLOR);
+            return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(), START_VALUE, END_VALUE, COLOR,
+                    LEGEND_SET);
         }
     }
 
@@ -77,12 +79,17 @@ public abstract class LegendModel extends BaseIdentifiableObjectModel implements
     @ColumnName(Columns.COLOR)
     public abstract String color();
 
+    @Nullable
+    @ColumnName(Columns.LEGEND_SET)
+    public abstract String legendSet();
+
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         super.bindToStatement(sqLiteStatement);
         sqLiteBind(sqLiteStatement, 7, startValue());
         sqLiteBind(sqLiteStatement, 8, endValue());
         sqLiteBind(sqLiteStatement, 9, color());
+        sqLiteBind(sqLiteStatement, 10, legendSet());
     }
 
     @AutoValue.Builder
@@ -92,6 +99,8 @@ public abstract class LegendModel extends BaseIdentifiableObjectModel implements
         public abstract Builder endValue(Double endValue);
 
         public abstract Builder color(String color);
+
+        public abstract Builder legendSet(String legendSet);
 
         public abstract LegendModel build();
     }

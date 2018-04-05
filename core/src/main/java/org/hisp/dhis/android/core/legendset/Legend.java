@@ -62,15 +62,15 @@ public abstract class Legend extends BaseIdentifiableObject {
 
     @Nullable
     @JsonProperty(START_VALUE)
-    abstract Double startValue();
+    public abstract Double startValue();
 
     @Nullable
     @JsonProperty(END_VALUE)
-    abstract Double endValue();
+    public abstract Double endValue();
 
     @Nullable
     @JsonProperty(COLOR)
-    abstract String color();
+    public abstract String color();
 
     @JsonCreator
     static Legend create(

@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.legendset.LegendSetHandler;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +64,9 @@ public class ProgramIndicatorHandlerShould {
     @Mock
     private Program program;
 
+    @Mock
+    private DatabaseAdapter databaseAdapter;
+
     // object to test
     private ProgramIndicatorHandler programIndicatorHandler;
 
@@ -72,10 +78,13 @@ public class ProgramIndicatorHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         programIndicatorHandler = new ProgramIndicatorHandler(
-                programIndicatorStore, programStageSectionProgramIndicatorLinkStore
+                programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
+                ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
+                LegendSetHandler.create(databaseAdapter)
         );
 
         when(programIndicator.uid()).thenReturn("test_program_indicator_uid");
+        when(program.uid()).thenReturn("test_program_uid");
         when(programIndicator.program()).thenReturn(program);
 
         programIndicators = new ArrayList<>();

@@ -48,7 +48,7 @@ public class ProgramIndicatorHandler {
     private final ObjectWithoutUidStore<ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkStore;
     private final GenericHandler<LegendSet, LegendSetModel> legendSetHandler;
 
-    private ProgramIndicatorHandler(ProgramIndicatorStore programIndicatorStore,
+    ProgramIndicatorHandler(ProgramIndicatorStore programIndicatorStore,
                                    ProgramStageSectionProgramIndicatorLinkStore
                                            programStageSectionProgramIndicatorLinkStore,
                                    ObjectWithoutUidStore<ProgramIndicatorLegendSetLinkModel>

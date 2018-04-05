@@ -48,7 +48,7 @@ public abstract class LegendSetModel extends BaseIdentifiableObjectModel impleme
     public static final String TABLE = "LegendSet";
 
     public abstract static class Columns extends BaseIdentifiableObjectModel.Columns {
-        private final static String SYMBOLIZER = "symbolizer";
+        public final static String SYMBOLIZER = "symbolizer";
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(), SYMBOLIZER);

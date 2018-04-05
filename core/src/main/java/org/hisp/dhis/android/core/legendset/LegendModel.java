@@ -48,10 +48,10 @@ public abstract class LegendModel extends BaseIdentifiableObjectModel implements
     public static final String TABLE = "Legend";
 
     public abstract static class Columns extends BaseIdentifiableObjectModel.Columns {
-        private final static String START_VALUE = "startValue";
-        private final static String END_VALUE = "endValue";
-        private final static String COLOR = "color";
-        private final static String LEGEND_SET = "legendSet";
+        public final static String START_VALUE = "startValue";
+        public final static String END_VALUE = "endValue";
+        public final static String COLOR = "color";
+        public final static String LEGEND_SET = "legendSet";
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(), START_VALUE, END_VALUE, COLOR,

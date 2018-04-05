@@ -60,11 +60,13 @@ import org.hisp.dhis.android.core.indicator.IndicatorModel;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeModel;
 import org.hisp.dhis.android.core.legendset.LegendModel;
 import org.hisp.dhis.android.core.legendset.LegendSetModel;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
 import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
 import org.hisp.dhis.android.core.period.PeriodModel;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
@@ -1089,6 +1091,21 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     LegendSetModel.Columns.SYMBOLIZER + " TEXT"
             );
 
+    private static final String CREATE_PROGRAM_INDICATOR_LEGEND_SET_LINK_TABLE =
+            SQLStatementBuilder.createModelTable(ProgramIndicatorLegendSetLinkModel.TABLE,
+                    ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR + " TEXT NOT NULL," +
+                            ProgramIndicatorLegendSetLinkModel.Columns.LEGEND_SET + " TEXT NOT NULL," +
+                            " FOREIGN KEY (" + ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR + ") " +
+                            " REFERENCES " + ProgramIndicatorModel.TABLE + " (" +
+                            ProgramIndicatorModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " FOREIGN KEY (" + ProgramIndicatorLegendSetLinkModel.Columns.LEGEND_SET + ") " +
+                            " REFERENCES " + LegendSetModel.TABLE + " (" + LegendSetModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " UNIQUE (" + ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR + ", " +
+                            ProgramIndicatorLegendSetLinkModel.Columns.LEGEND_SET + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1153,6 +1170,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_NOTE_TABLE);
         database.execSQL(CREATE_LEGEND_TABLE);
         database.execSQL(CREATE_LEGEND_SET_TABLE);
+        database.execSQL(CREATE_PROGRAM_INDICATOR_LEGEND_SET_LINK_TABLE);
         return database;
     }
 

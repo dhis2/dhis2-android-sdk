@@ -34,19 +34,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class Legend {
-    private final static String UID = "id";
-    private final static String CODE = "code";
-    private final static String NAME = "name";
-    private final static String DISPLAY_NAME = "displayName";
-    private final static String CREATED = "created";
-    private final static String LAST_UPDATED = "lastUpdated";
+public abstract class Legend extends BaseIdentifiableObject {
     private final static String START_VALUE = "startValue";
     private final static String END_VALUE = "endValue";
     private final static String COLOR = "color";
@@ -63,29 +58,6 @@ public abstract class Legend {
 
     static final Fields<Legend> allFields = Fields.<Legend>builder().fields(
             uid, code, name, displayName, created, lastUpdated, startValue, endValue, color).build();
-
-    @JsonProperty(UID)
-    public abstract String uid();
-
-    @Nullable
-    @JsonProperty(CODE)
-    public abstract String code();
-
-    @Nullable
-    @JsonProperty(NAME)
-    public abstract String name();
-
-    @Nullable
-    @JsonProperty(DISPLAY_NAME)
-    public abstract String displayName();
-
-    @Nullable
-    @JsonProperty(CREATED)
-    public abstract Date created();
-
-    @Nullable
-    @JsonProperty(LAST_UPDATED)
-    public abstract Date lastUpdated();
 
     @Nullable
     @JsonProperty(START_VALUE)

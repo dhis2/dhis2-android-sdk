@@ -125,15 +125,20 @@ public class ProgramIndicatorHandler {
                     );
                 }
             }
-
-            legendSetHandler.handleMany(programIndicator.legendSets(), new LegendSetModelBuilder());
-
-            ProgramIndicatorLegendSetLinkModelBuilder builder =
-                    new ProgramIndicatorLegendSetLinkModelBuilder(programIndicator);
-
-            for (LegendSet legendSet : programIndicator.legendSets()) {
-                programIndicatorLegendSetLinkStore.updateOrInsertWhere(builder.buildModel(legendSet));
+            else {
+                handleLegendSet(programIndicator);
             }
+        }
+    }
+
+    private void handleLegendSet(ProgramIndicator programIndicator) {
+        legendSetHandler.handleMany(programIndicator.legendSets(), new LegendSetModelBuilder());
+
+        ProgramIndicatorLegendSetLinkModelBuilder builder =
+                new ProgramIndicatorLegendSetLinkModelBuilder(programIndicator);
+
+        for (LegendSet legendSet : programIndicator.legendSets()) {
+            programIndicatorLegendSetLinkStore.updateOrInsertWhere(builder.buildModel(legendSet));
         }
     }
 

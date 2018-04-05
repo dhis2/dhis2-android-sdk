@@ -27,9 +27,12 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.legendset.LegendSetHandler;
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.LegendSetModel;
+import org.hisp.dhis.android.core.legendset.LegendSetModelBuilder;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +48,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -59,13 +63,19 @@ public class ProgramIndicatorHandlerShould {
     private ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
 
     @Mock
+    private ObjectWithoutUidStore<ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkStore;
+
+    @Mock
+    private GenericHandler<LegendSet, LegendSetModel> legendSetHandler;
+
+    @Mock
     private ProgramIndicator programIndicator;
 
     @Mock
-    private Program program;
+    private LegendSet legendSet;
 
     @Mock
-    private DatabaseAdapter databaseAdapter;
+    private Program program;
 
     // object to test
     private ProgramIndicatorHandler programIndicatorHandler;
@@ -73,22 +83,27 @@ public class ProgramIndicatorHandlerShould {
     // list of program indicators
     private List<ProgramIndicator> programIndicators;
 
+    // list of program indicators
+    private List<LegendSet> legendSets;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         programIndicatorHandler = new ProgramIndicatorHandler(
                 programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
-                ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
-                LegendSetHandler.create(databaseAdapter)
-        );
+                programIndicatorLegendSetLinkStore, legendSetHandler);
+
+        programIndicators = new ArrayList<>();
+        programIndicators.add(programIndicator);
+
+        legendSets = new ArrayList<>();
+        legendSets.add(legendSet);
 
         when(programIndicator.uid()).thenReturn("test_program_indicator_uid");
         when(program.uid()).thenReturn("test_program_uid");
         when(programIndicator.program()).thenReturn(program);
-
-        programIndicators = new ArrayList<>();
-        programIndicators.add(programIndicator);
+        when(programIndicator.legendSets()).thenReturn(legendSets);
     }
 
     @Test
@@ -282,5 +297,31 @@ public class ProgramIndicatorHandlerShould {
                 anyString(), anyString(), anyString(), anyString()
         );
 
+    }
+
+    @Test
+    public void call_program_indicator_legend_set_link_store() throws Exception {
+        programIndicatorHandler.handleProgramIndicator(null, programIndicators);
+        verify(programIndicatorLegendSetLinkStore).updateOrInsertWhere(any(ProgramIndicatorLegendSetLinkModel.class));
+    }
+
+    @Test
+    public void not_call_program_indicator_legend_set_link_store_if_program_stage_section_not_null() throws
+            Exception {
+        programIndicatorHandler.handleProgramIndicator("program_stage_section_uid", programIndicators);
+        verify(programIndicatorLegendSetLinkStore, never())
+                .updateOrInsertWhere(any(ProgramIndicatorLegendSetLinkModel.class));
+    }
+
+    @Test
+    public void call_program_indicator_legend_set_handler() throws Exception {
+        programIndicatorHandler.handleProgramIndicator(null, programIndicators);
+        verify(legendSetHandler).handleMany(eq(legendSets), any(LegendSetModelBuilder.class));
+    }
+
+    @Test
+    public void not_call_program_indicator_legend_set_handler() throws Exception {
+        programIndicatorHandler.handleProgramIndicator("program_stage_section_uid", programIndicators);
+        verify(legendSetHandler, never()).handleMany(eq(legendSets), any(LegendSetModelBuilder.class));
     }
 }

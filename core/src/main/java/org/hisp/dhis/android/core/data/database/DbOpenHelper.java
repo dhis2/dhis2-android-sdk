@@ -58,6 +58,9 @@ import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
 import org.hisp.dhis.android.core.indicator.IndicatorModel;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeModel;
+import org.hisp.dhis.android.core.legendset.LegendModel;
+import org.hisp.dhis.android.core.legendset.LegendSetModel;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
 import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -101,7 +104,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
-    public static final int VERSION = 14;
+    public static final int VERSION = 15;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -1071,6 +1074,37 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             NoteModel.Columns.STORED_DATE + ")"
             );
 
+    private static final String CREATE_LEGEND_TABLE =
+            SQLStatementBuilder.createIdentifiableModelTable(LegendModel.TABLE,
+                    LegendModel.Columns.START_VALUE + " REAL," +
+                            LegendModel.Columns.END_VALUE + " REAL," +
+                            LegendModel.Columns.COLOR + " TEXT," +
+                            LegendModel.Columns.LEGEND_SET + " TEXT," +
+                            " FOREIGN KEY ( " + LegendModel.Columns.LEGEND_SET + ")" +
+                            " REFERENCES " + LegendSetModel.TABLE + " (" + LegendSetModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
+            );
+
+    private static final String CREATE_LEGEND_SET_TABLE =
+            SQLStatementBuilder.createIdentifiableModelTable(LegendSetModel.TABLE,
+                    LegendSetModel.Columns.SYMBOLIZER + " TEXT"
+            );
+
+    private static final String CREATE_PROGRAM_INDICATOR_LEGEND_SET_LINK_TABLE =
+            SQLStatementBuilder.createModelTable(ProgramIndicatorLegendSetLinkModel.TABLE,
+                    ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR + " TEXT NOT NULL," +
+                            ProgramIndicatorLegendSetLinkModel.Columns.LEGEND_SET + " TEXT NOT NULL," +
+                            " FOREIGN KEY (" + ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR + ") " +
+                            " REFERENCES " + ProgramIndicatorModel.TABLE + " (" +
+                            ProgramIndicatorModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " FOREIGN KEY (" + ProgramIndicatorLegendSetLinkModel.Columns.LEGEND_SET + ") " +
+                            " REFERENCES " + LegendSetModel.TABLE + " (" + LegendSetModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " UNIQUE (" + ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR + ", " +
+                            ProgramIndicatorLegendSetLinkModel.Columns.LEGEND_SET + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1133,6 +1167,9 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_OBJECT_STYLE_TABLE);
         database.execSQL(CREATE_VALUE_TYPE_DEVICE_RENDERING_TABLE);
         database.execSQL(CREATE_NOTE_TABLE);
+        database.execSQL(CREATE_LEGEND_TABLE);
+        database.execSQL(CREATE_LEGEND_SET_TABLE);
+        database.execSQL(CREATE_PROGRAM_INDICATOR_LEGEND_SET_LINK_TABLE);
         return database;
     }
 

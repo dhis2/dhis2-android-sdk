@@ -60,7 +60,8 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-@SuppressWarnings({"PMD.TooManyFields", "PMD.ExcessiveMethodLength", "PMD.ExcessiveImports"})
+@SuppressWarnings({"PMD.TooManyFields", "PMD.ExcessiveMethodLength", "PMD.ExcessiveImports",
+        "PMD.UnusedFormalParameter"})
 public class ProgramCall implements Call<Response<Payload<Program>>> {
     private final ProgramService programService;
 
@@ -99,8 +100,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
 
         //TODO: This needs to be refactored badly
 
-        ProgramIndicatorHandler programIndicatorHandler = new ProgramIndicatorHandler(programIndicatorStore,
-                programStageSectionProgramIndicatorLinkStore);
+        ProgramIndicatorHandler programIndicatorHandler = ProgramIndicatorHandler.create(databaseAdapter);
 
         this.programHandler = new ProgramHandler(programStore,
                 new ProgramRuleVariableHandler(programRuleVariableStore), programIndicatorHandler,
@@ -198,16 +198,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                         ProgramRuleVariable.programStage.with(ProgramStage.uid),
                         ProgramRuleVariable.trackedEntityAttribute.with(TrackedEntityAttribute.uid)
                 ),
-                Program.programIndicators.with(
-                        ProgramIndicator.uid, ProgramIndicator.code, ProgramIndicator.name,
-                        ProgramIndicator.displayName, ProgramIndicator.created,
-                        ProgramIndicator.lastUpdated, ProgramIndicator.shortName,
-                        ProgramIndicator.displayShortName, ProgramIndicator.description,
-                        ProgramIndicator.displayDescription, ProgramIndicator.decimals,
-                        ProgramIndicator.deleted, ProgramIndicator.dimensionItem,
-                        ProgramIndicator.displayInForm,
-                        ProgramIndicator.expression, ProgramIndicator.filter, ProgramIndicator.program.with(Program.uid)
-                ),
+                Program.programIndicators.with(ProgramIndicator.allFields),
                 Program.programTrackedEntityAttributes.with(
                         ProgramTrackedEntityAttribute.uid, ProgramTrackedEntityAttribute.code,
                         ProgramTrackedEntityAttribute.name, ProgramTrackedEntityAttribute.displayName,

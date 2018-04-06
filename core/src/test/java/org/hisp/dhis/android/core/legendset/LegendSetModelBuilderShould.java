@@ -26,21 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.legendset;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.common.NameableModelBuilderAbstractShould;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
@@ -49,82 +45,45 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISP
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class OrganisationUnitModelBuilderShould extends NameableModelBuilderAbstractShould<OrganisationUnit,
-        OrganisationUnitModel> {
+public class LegendSetModelBuilderShould extends IdentifiableModelBuilderAbstractShould<LegendSet, LegendSetModel> {
 
-    private OrganisationUnit pojo;
+    private LegendSet pojo;
 
-    private OrganisationUnitModel model;
-
-    @Mock
-    private OrganisationUnit parent;
-
-    @Mock
-    private OrganisationUnit grandparent;
+    private LegendSetModel model;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
-        when(parent.uid()).thenReturn("parentUid");
-        when(parent.displayName()).thenReturn("parentDisplayName");
-        when(grandparent.displayName()).thenReturn("grandparentDisplayName");
-
         pojo = buildPojo();
         model = buildModel();
     }
 
     @Override
-    protected OrganisationUnit buildPojo() {
-        return OrganisationUnit.create(
+    protected LegendSet buildPojo() {
+        return LegendSet.create(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
                 CREATED,
                 LAST_UPDATED,
-                "shortName",
-                "displayShortName",
-                "description",
-                "displayDescription",
-                parent,
-                "path",
-                CREATED,
-                CREATED,
-                3,
-                new ArrayList<Program>(),
-                new ArrayList<DataSet>(),
-                Lists.newArrayList(grandparent, parent),
-                false
+                false,
+                "color",
+                Lists.<Legend>newArrayList()
         );
     }
 
     @Override
-    protected OrganisationUnitModel buildModel() {
-        return new OrganisationUnitModelBuilder().buildModel(pojo);
+    protected LegendSetModel buildModel() {
+        return new LegendSetModelBuilder().buildModel(pojo);
     }
 
     @Test
-    public void copy_pojo_organisation_unit_properties() {
-        assertThat(model.path()).isEqualTo(pojo.path());
-        assertThat(model.openingDate()).isEqualTo(pojo.openingDate());
-        assertThat(model.closedDate()).isEqualTo(pojo.closedDate());
-        assertThat(model.level()).isEqualTo(pojo.level());
-    }
-
-    @Test
-    public void copy_pojo_organisation_parent_uid() {
-        assertThat(model.parent()).isEqualTo(parent.uid());
-    }
-
-    @Test
-    public void build_display_name_path_from_ancestors() {
-        String expectedDisplayNamePath = "/" + grandparent.displayName() + "/" + parent.displayName() + "/" +
-                pojo.displayName();
-        assertThat(model.displayNamePath()).isEqualTo(expectedDisplayNamePath);
+    public void copy_pojo_legend_set_properties() {
+        assertThat(model.symbolizer()).isEqualTo(pojo.symbolizer());
     }
 }

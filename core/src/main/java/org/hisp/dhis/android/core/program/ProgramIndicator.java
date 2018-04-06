@@ -36,9 +36,12 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.legendset.LegendSet;
 
 import java.util.Date;
+import java.util.List;
 
 @AutoValue
 public abstract class ProgramIndicator extends BaseNameableObject {
@@ -48,6 +51,7 @@ public abstract class ProgramIndicator extends BaseNameableObject {
     private static final String FILTER = "filter";
     private static final String DECIMALS = "decimals";
     private static final String PROGRAM = "program";
+    private static final String LEGEND_SETS = "legendSets";
 
     public static final Field<ProgramIndicator, String> uid = Field.create(UID);
     public static final Field<ProgramIndicator, String> code = Field.create(CODE);
@@ -66,6 +70,13 @@ public abstract class ProgramIndicator extends BaseNameableObject {
     public static final Field<ProgramIndicator, String> filter = Field.create(FILTER);
     public static final Field<ProgramIndicator, Integer> decimals = Field.create(DECIMALS);
     public static final NestedField<ProgramIndicator, Program> program = NestedField.create(PROGRAM);
+    private static final NestedField<ProgramIndicator, LegendSet> legendSets = NestedField.create(LEGEND_SETS);
+
+    static final Fields<ProgramIndicator> allFields = Fields.<ProgramIndicator>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
+            description, displayDescription, deleted, decimals, dimensionItem, displayInForm, expression, filter,
+            program.with(Program.uid), legendSets.with(LegendSet.allFields)
+    ).build();
 
     @Nullable
     @JsonProperty(DISPLAY_IN_FORM)
@@ -91,6 +102,10 @@ public abstract class ProgramIndicator extends BaseNameableObject {
     @JsonProperty(PROGRAM)
     public abstract Program program();
 
+    @Nullable
+    @JsonProperty(LEGEND_SETS)
+    public abstract List<LegendSet> legendSets();
+
     @JsonCreator
     public static ProgramIndicator create(
             @JsonProperty(UID) String uid,
@@ -109,12 +124,13 @@ public abstract class ProgramIndicator extends BaseNameableObject {
             @JsonProperty(FILTER) String filter,
             @JsonProperty(DECIMALS) Integer decimals,
             @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(PROGRAM) Program program
+            @JsonProperty(PROGRAM) Program program,
+            @JsonProperty(LEGEND_SETS) List<LegendSet> legendSets
     ) {
         return new AutoValue_ProgramIndicator(
                 uid, code, name, displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription,
-                displayInForm, expression, dimensionItem, filter, decimals, program);
+                displayInForm, expression, dimensionItem, filter, decimals, program, legendSets);
     }
 
 }

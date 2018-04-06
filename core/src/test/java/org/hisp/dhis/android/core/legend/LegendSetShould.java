@@ -61,11 +61,8 @@ public class LegendSetShould extends BaseObjectShould implements ObjectShould {
         assertThat(legendSet.symbolizer()).isEqualTo("color");
 
         assertThat(legendSet.legends().get(0).uid()).isEqualTo("BzQkRWHS7lu");
+        assertThat(legendSet.legends().get(0).name()).isEqualTo("45 - 60");
         assertThat(legendSet.legends().get(1).uid()).isEqualTo("kEf6QhFVMab");
-        assertThat(legendSet.legends().get(2).uid()).isEqualTo("aeCp6thd8zL");
-        assertThat(legendSet.legends().get(3).uid()).isEqualTo("FWciVWWrPMr");
-        assertThat(legendSet.legends().get(4).uid()).isEqualTo("ETdvuOmTpc6");
-        assertThat(legendSet.legends().get(5).uid()).isEqualTo("xpC4lomA8aD");
-        assertThat(legendSet.legends().get(6).uid()).isEqualTo("rlXteEDaTpt");
+        assertThat(legendSet.legends().get(1).name()).isEqualTo("15 - 30");
     }
 }

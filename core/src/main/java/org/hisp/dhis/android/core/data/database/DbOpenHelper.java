@@ -66,7 +66,6 @@ import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
 import org.hisp.dhis.android.core.period.PeriodModel;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel;

@@ -41,9 +41,14 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -75,22 +80,21 @@ public class OrganisationUnitModelBuilderShould extends NameableModelBuilderAbst
 
     @Override
     protected OrganisationUnit buildPojo() {
-        Date date = new Date();
         return OrganisationUnit.create(
-                "uid",
-                "code",
-                "name",
-                "displayName",
-                date,
-                date,
+                UID,
+                CODE,
+                NAME,
+                DISPLAY_NAME,
+                CREATED,
+                LAST_UPDATED,
                 "shortName",
                 "displayShortName",
                 "description",
                 "displayDescription",
                 parent,
                 "path",
-                date,
-                date,
+                CREATED,
+                CREATED,
                 3,
                 new ArrayList<Program>(),
                 new ArrayList<DataSet>(),

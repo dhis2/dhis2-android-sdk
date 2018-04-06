@@ -37,9 +37,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.Date;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -65,14 +70,13 @@ public class LegendModelBuilderShould extends IdentifiableModelBuilderAbstractSh
 
     @Override
     protected Legend buildPojo() {
-        Date date = new Date();
         return Legend.create(
-                "uid",
-                "code",
-                "name",
-                "displayName",
-                date,
-                date,
+                UID,
+                CODE,
+                NAME,
+                DISPLAY_NAME,
+                CREATED,
+                LAST_UPDATED,
                 false,
                 20.0,
                 30.5,

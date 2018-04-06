@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
+import org.hisp.dhis.android.core.common.NameableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.program.Program;
 import org.junit.Before;
@@ -47,7 +48,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class OrganisationUnitModelBuilderShould extends IdentifiableModelBuilderAbstractShould<OrganisationUnit,
+public class OrganisationUnitModelBuilderShould extends NameableModelBuilderAbstractShould<OrganisationUnit,
         OrganisationUnitModel> {
 
     private OrganisationUnit pojo;
@@ -75,21 +76,22 @@ public class OrganisationUnitModelBuilderShould extends IdentifiableModelBuilder
 
     @Override
     protected OrganisationUnit buildPojo() {
+        Date date = new Date();
         return OrganisationUnit.create(
                 "uid",
                 "code",
                 "name",
                 "displayName",
-                new Date(),
-                new Date(),
+                date,
+                date,
                 "shortName",
                 "displayShortName",
                 "description",
                 "displayDescription",
                 parent,
                 "path",
-                new Date(),
-                new Date(),
+                date,
+                date,
                 3,
                 new ArrayList<Program>(),
                 new ArrayList<DataSet>(),
@@ -101,14 +103,6 @@ public class OrganisationUnitModelBuilderShould extends IdentifiableModelBuilder
     @Override
     protected OrganisationUnitModel buildModel() {
         return new OrganisationUnitModelBuilder().buildModel(pojo);
-    }
-
-    @Test
-    public void copy_pojo_nameable_properties() {
-        assertThat(model.shortName()).isEqualTo(pojo.shortName());
-        assertThat(model.displayShortName()).isEqualTo(pojo.displayShortName());
-        assertThat(model.description()).isEqualTo(pojo.description());
-        assertThat(model.displayDescription()).isEqualTo(pojo.displayDescription());
     }
 
     @Test

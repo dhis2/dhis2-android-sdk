@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.legendset;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.IdentifiableModelAbstractShould;
-import org.hisp.dhis.android.core.legendset.LegendSetModel.Columns;
+import org.hisp.dhis.android.core.common.LinkModelAbstractShould;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel.Columns;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
 import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
@@ -42,50 +42,38 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
-public class LegendSetModelShould extends IdentifiableModelAbstractShould<LegendSet, LegendSetModel> {
+public class ProgramIndicatorLegendSetLinkModelShould extends LinkModelAbstractShould<ProgramIndicatorLegendSetLinkModel> {
 
-    private final String symbolizer = "color";
-
-    public LegendSetModelShould() {
-            super(Columns.all(), 7, new LegendSetModelBuilder());
+    public ProgramIndicatorLegendSetLinkModelShould() {
+        super(Columns.all(), 2);
     }
 
     @Override
-    protected LegendSetModel buildModel() {
-        LegendSetModel.Builder builder = LegendSetModel.builder();
-        fillIdentifiableModelProperties(builder);
-        return builder.symbolizer(symbolizer).build();
+    protected ProgramIndicatorLegendSetLinkModel buildModel() {
+        return ProgramIndicatorLegendSetLinkModel.builder()
+                .programIndicator("program_indicator_uid")
+                .legendSet("legend_set_uid")
+                .build();
     }
 
     @Override
-    protected LegendSetModel cursorToModel(Cursor cursor) {
-        return LegendSetModel.create(cursor);
-    }
-
-    @Override
-    protected LegendSet buildPojo() {
-        return LegendSet.create(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, DELETED, symbolizer, null);
+    protected ProgramIndicatorLegendSetLinkModel cursorToModel(Cursor cursor) {
+        return ProgramIndicatorLegendSetLinkModel.create(cursor);
     }
 
     @Override
     protected Object[] getModelAsObjectArray() {
-        return Utils.appendInNewArray(ColumnsArrayUtils.getIdentifiableModelAsObjectArray(model), model.symbolizer());
+        return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
+                model.programIndicator(), model.legendSet());
     }
 
     @Test
-    public void have_extra_legend_set_model_columns() {
-        List<String> columnsList = Arrays.asList(columns);
+    public void have_program_indicator_legend_set_model_columns() {
+        List<String> columnsList = Arrays.asList(Columns.all());
 
-        assertThat(columnsList.contains(Columns.SYMBOLIZER)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.PROGRAM_INDICATOR)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.LEGEND_SET)).isEqualTo(true);
     }
 }

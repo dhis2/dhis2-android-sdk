@@ -26,12 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legend;
+package org.hisp.dhis.android.core.legendset;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,30 +38,26 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class LegendSetShould extends BaseObjectShould implements ObjectShould {
+public class LegendShould extends BaseObjectShould implements ObjectShould {
 
-    public LegendSetShould() {
-        super("legend/legendSet.json");
+    public LegendShould() {
+        super("legendset/legend.json");
     }
 
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        LegendSet legendSet = objectMapper.readValue(jsonStream, LegendSet.class);
+        Legend legend = objectMapper.readValue(jsonStream, Legend.class);
 
-        assertThat(legendSet.uid()).isEqualTo("TiOkbpGEud4");
-        assertThat(legendSet.name()).isEqualTo("Age 15y interval");
-        assertThat(legendSet.displayName()).isEqualTo("Age 15y interval");
-        assertThat(legendSet.code()).isEqualTo("AGE15YINT");
-        assertThat(legendSet.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2017-06-02T11:41:01.999"));
-        assertThat(legendSet.created()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2017-06-02T11:40:33.452"));
-        assertThat(legendSet.symbolizer()).isEqualTo("color");
-
-        assertThat(legendSet.legends().get(0).uid()).isEqualTo("BzQkRWHS7lu");
-        assertThat(legendSet.legends().get(0).name()).isEqualTo("45 - 60");
-        assertThat(legendSet.legends().get(1).uid()).isEqualTo("kEf6QhFVMab");
-        assertThat(legendSet.legends().get(1).name()).isEqualTo("15 - 30");
+        assertThat(legend.uid()).isEqualTo("ZUUGJnvX40X");
+        assertThat(legend.name()).isEqualTo("30 - 40");
+        assertThat(legend.displayName()).isEqualTo("30 - 40");
+        assertThat(legend.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.parseDate("2017-06-02T11:40:44.279"));
+        assertThat(legend.created()).isEqualTo(
+                BaseIdentifiableObject.parseDate("2017-06-02T11:40:44.279"));
+        assertThat(legend.startValue()).isEqualTo(30.5);
+        assertThat(legend.endValue()).isEqualTo(40);
+        assertThat(legend.color()).isEqualTo("#d9f0a3");
     }
 }

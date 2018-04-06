@@ -30,27 +30,60 @@ package org.hisp.dhis.android.core.legendset;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-public final class LegendSetHandler extends IdentifiableHandlerImpl<LegendSet, LegendSetModel> {
+import java.util.ArrayList;
+import java.util.List;
 
-    private final GenericHandler<Legend, LegendModel> legendHandler;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-    LegendSetHandler(IdentifiableObjectStore<LegendSetModel> legendSetStore,
-                     GenericHandler<Legend, LegendModel> legendHandler) {
-        super(legendSetStore);
-        this.legendHandler = legendHandler;
+@RunWith(JUnit4.class)
+public class LegendSetHandlerShould {
+
+    @Mock
+    private IdentifiableObjectStore<LegendSetModel> legendSetStore;
+
+    @Mock
+    private GenericHandler<Legend, LegendModel> legendHandler;
+
+    @Mock
+    private Legend legend;
+
+    @Mock
+    private List<Legend> legends;
+
+    @Mock
+    private LegendSet legendSet;
+
+    // object to test
+    private LegendSetHandler legendSetHandler;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        legendSetHandler = new LegendSetHandler(legendSetStore, legendHandler);
+        legends = new ArrayList<>();
+        legends.add(legend);
+        when(legendSet.legends()).thenReturn(legends);
     }
 
-    public static GenericHandler<LegendSet, LegendSetModel> create(DatabaseAdapter databaseAdapter) {
-        return new LegendSetHandler(
-                LegendSetStore.create(databaseAdapter),
-                LegendHandler.create(databaseAdapter)
-        );
+    @Test
+    public void extend_identifiable_handler_impl() {
+        IdentifiableHandlerImpl<LegendSet, LegendSetModel> genericHandler = new LegendSetHandler
+                (null, null);
     }
 
-    @Override
-    protected void afterObjectPersisted(LegendSet legendSet) {
-        legendHandler.handleMany(legendSet.legends(), new LegendModelBuilder(legendSet));
+    @Test
+    public void call_style_handler() throws Exception {
+        legendSetHandler.handle(legendSet, new LegendSetModelBuilder());
+        verify(legendHandler).handleMany(eq(legendSet.legends()), any(LegendModelBuilder.class));
     }
 }

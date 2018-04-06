@@ -31,7 +31,8 @@ package org.hisp.dhis.android.core.legendset;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 
-public class ProgramIndicatorLegendSetLinkModelBuilder extends ModelBuilder<LegendSet, ProgramIndicatorLegendSetLinkModel> {
+public class ProgramIndicatorLegendSetLinkModelBuilder extends ModelBuilder<LegendSet,
+        ProgramIndicatorLegendSetLinkModel> {
 
     private final ProgramIndicatorLegendSetLinkModel.Builder builder;
 

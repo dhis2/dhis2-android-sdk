@@ -59,7 +59,9 @@ public abstract class LegendSetModel extends BaseIdentifiableObjectModel impleme
         return AutoValue_LegendSetModel.createFromCursor(cursor);
     }
 
-    public static Builder builder() { return new $AutoValue_LegendSetModel.Builder(); }
+    public static Builder builder() {
+        return new $AutoValue_LegendSetModel.Builder();
+    }
 
     @Nullable
     @ColumnName(Columns.SYMBOLIZER)

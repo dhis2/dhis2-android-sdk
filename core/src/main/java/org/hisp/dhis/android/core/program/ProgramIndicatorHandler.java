@@ -124,8 +124,7 @@ public class ProgramIndicatorHandler {
                             programStageSectionUid, programIndicator.uid()
                     );
                 }
-            }
-            else {
+            } else {
                 handleLegendSet(programIndicator);
             }
         }

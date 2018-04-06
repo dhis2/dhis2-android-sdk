@@ -60,7 +60,8 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-@SuppressWarnings({"PMD.TooManyFields", "PMD.ExcessiveMethodLength", "PMD.ExcessiveImports"})
+@SuppressWarnings({"PMD.TooManyFields", "PMD.ExcessiveMethodLength", "PMD.ExcessiveImports",
+        "PMD.UnusedFormalParameter"})
 public class ProgramCall implements Call<Response<Payload<Program>>> {
     private final ProgramService programService;
 

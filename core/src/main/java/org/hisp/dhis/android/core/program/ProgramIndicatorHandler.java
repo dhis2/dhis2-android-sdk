@@ -111,7 +111,9 @@ public class ProgramIndicatorHandler {
                 }
             }
 
-            if (programStageSectionUid != null) {
+            if (programStageSectionUid == null) {
+                handleLegendSet(programIndicator);
+            } else {
                 // since this is many-to-many relationship we need to update link table
 
                 int updatedLink = programStageSectionProgramIndicatorLinkStore.update(
@@ -124,8 +126,6 @@ public class ProgramIndicatorHandler {
                             programStageSectionUid, programIndicator.uid()
                     );
                 }
-            } else {
-                handleLegendSet(programIndicator);
             }
         }
     }

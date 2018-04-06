@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
+import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.program.Program;
 import org.junit.Before;
@@ -46,7 +47,12 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class OrganisationUnitModelBuilderShould {
+public class OrganisationUnitModelBuilderShould extends IdentifiableModelBuilderAbstractShould<OrganisationUnit,
+        OrganisationUnitModel> {
+
+    private OrganisationUnit pojo;
+
+    private OrganisationUnitModel model;
 
     @Mock
     private OrganisationUnit parent;
@@ -54,16 +60,22 @@ public class OrganisationUnitModelBuilderShould {
     @Mock
     private OrganisationUnit grandparent;
 
-    @Mock
-    private OrganisationUnit pojo;
-
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
+        when(parent.uid()).thenReturn("parentUid");
+        when(parent.displayName()).thenReturn("parentDisplayName");
+        when(grandparent.displayName()).thenReturn("grandparentDisplayName");
 
-        pojo = OrganisationUnit.create(
+        pojo = buildPojo();
+        model = buildModel();
+    }
+
+    @Override
+    protected OrganisationUnit buildPojo() {
+        return OrganisationUnit.create(
                 "uid",
                 "code",
                 "name",
@@ -84,28 +96,15 @@ public class OrganisationUnitModelBuilderShould {
                 Lists.newArrayList(grandparent, parent),
                 false
         );
-
-        when(parent.uid()).thenReturn("parentUid");
-        when(parent.displayName()).thenReturn("parentDisplayName");
-        when(grandparent.displayName()).thenReturn("grandparentDisplayName");
     }
 
-    @Test
-    public void copy_pojo_identifiable_properties() {
-        OrganisationUnitModel model = new OrganisationUnitModelBuilder().buildModel(pojo);
-
-        assertThat(model.uid()).isEqualTo(pojo.uid());
-        assertThat(model.code()).isEqualTo(pojo.code());
-        assertThat(model.name()).isEqualTo(pojo.name());
-        assertThat(model.displayName()).isEqualTo(pojo.displayName());
-        assertThat(model.created()).isEqualTo(pojo.created());
-        assertThat(model.lastUpdated()).isEqualTo(pojo.lastUpdated());
+    @Override
+    protected OrganisationUnitModel buildModel() {
+        return new OrganisationUnitModelBuilder().buildModel(pojo);
     }
 
     @Test
     public void copy_pojo_nameable_properties() {
-        OrganisationUnitModel model = new OrganisationUnitModelBuilder().buildModel(pojo);
-
         assertThat(model.shortName()).isEqualTo(pojo.shortName());
         assertThat(model.displayShortName()).isEqualTo(pojo.displayShortName());
         assertThat(model.description()).isEqualTo(pojo.description());
@@ -114,8 +113,6 @@ public class OrganisationUnitModelBuilderShould {
 
     @Test
     public void copy_pojo_organisation_unit_properties() {
-        OrganisationUnitModel model = new OrganisationUnitModelBuilder().buildModel(pojo);
-
         assertThat(model.path()).isEqualTo(pojo.path());
         assertThat(model.openingDate()).isEqualTo(pojo.openingDate());
         assertThat(model.closedDate()).isEqualTo(pojo.closedDate());
@@ -124,15 +121,11 @@ public class OrganisationUnitModelBuilderShould {
 
     @Test
     public void copy_pojo_organisation_parent_uid() {
-        OrganisationUnitModel model = new OrganisationUnitModelBuilder().buildModel(pojo);
-
         assertThat(model.parent()).isEqualTo(parent.uid());
     }
 
     @Test
     public void build_display_name_path_from_ancestors() {
-        OrganisationUnitModel model = new OrganisationUnitModelBuilder().buildModel(pojo);
-
         String expectedDisplayNamePath = "/" + grandparent.displayName() + "/" + parent.displayName() + "/" +
                 pojo.displayName();
         assertThat(model.displayNamePath()).isEqualTo(expectedDisplayNamePath);

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.NameableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.program.Program;

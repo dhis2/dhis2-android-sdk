@@ -77,7 +77,7 @@
                 android:clickable="true"
                 android:contentDescription="@string/stub_description"
                 android:padding="@dimen/keyline_default"
-                android:src="@drawable/ic_cancel_grey" />
+                app:srcCompat="@drawable/ic_cancel_grey" />
 
         </LinearLayout>
 

@@ -30,6 +30,9 @@ import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.z
 import static org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions.zpvc;
 import static org.junit.Assert.assertThat;
 
+import static java.util.Arrays.asList;
+
+import org.hamcrest.MatcherAssert;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.utils.api.ValueType;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
@@ -55,12 +58,15 @@ public class ExpressionFunctionsTest {
         assertThat(zing(0), is(equalTo(0.0)));
         assertThat(zing(1), is(equalTo(1.0)));
         assertThat(zing(5), is(equalTo(5.0)));
+        assertThat(zing(0.1), is(equalTo(0.1)));
+        assertThat(zing(1.1), is(equalTo(1.1)));
     }
 
     @Test
     public void zingShouldReturnZeroForNegativeInput() {
         assertThat(zing(-1), is(equalTo(0.0)));
         assertThat(zing(-10), is(equalTo(0.0)));
+        assertThat(zing(-1.1), is(equalTo(0.0)));
     }
 
     @Test
@@ -88,7 +94,7 @@ public class ExpressionFunctionsTest {
 
     @Test
     public void zpvcShouldReturnCountOfNonNegativeValuesInArguments() {
-        assertThat(zpvc(0, 1, -1, 2, -2, 3), is(equalTo(4)));
+        assertThat(zpvc(null, 0, 1, -1, 2, -2, 3), is(equalTo(4)));
     }
 
     @Test
@@ -119,13 +125,21 @@ public class ExpressionFunctionsTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void daysBetweenShouldRaiseIllegalArgumentExceptionIfFirstDateIsInvalid() throws ParseException {
+    public void daysBetweenShouldRaiseIllegalArgumentExceptionIfFirstDateIsInvalid()
+            throws ParseException {
         daysBetween("bad date", "2010-01-01");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void daysBetweenShouldRaiseIllegalArgumentExceptionIfSecondDateIsInvalid() throws ParseException {
+    public void daysBetweenShouldRaiseIllegalArgumentExceptionIfSecondDateIsInvalid()
+            throws ParseException {
         daysBetween("2010-01-01", "bad date");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void daysBetweenShouldRaiseIllegalArgumentExceptionIfFirstAndSecondDateIsInvalid()
+            throws ParseException {
+        daysBetween("bad date", "bad date");
     }
 
     @Test
@@ -133,6 +147,10 @@ public class ExpressionFunctionsTest {
         assertThat(daysBetween("2010-10-15", "2010-10-20"), is(equalTo(5)));
         assertThat(daysBetween("2010-09-30", "2010-10-15"), is(equalTo(15)));
         assertThat(daysBetween("2010-12-31", "2011-01-01"), is(equalTo(1)));
+
+        assertThat(daysBetween("2010-10-20", "2010-10-15"), is(equalTo(-5)));
+        assertThat(daysBetween("2010-10-15", "2010-09-30"), is(equalTo(-15)));
+        assertThat(daysBetween("2011-01-01", "2010-12-31"), is(equalTo(-1)));
     }
 
     @Test
@@ -144,12 +162,14 @@ public class ExpressionFunctionsTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void weeksBetweenShouldRaiseIllegalArgumentExceptionIfFirstDateIsInvalid() throws ParseException {
+    public void weeksBetweenShouldRaiseIllegalArgumentExceptionIfFirstDateIsInvalid()
+            throws ParseException {
         weeksBetween("bad date", "2010-01-01");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void weeksBetweenShouldRaiseIllegalArgumentExceptionIfSecondDateIsInvalid() throws ParseException {
+    public void weeksBetweenShouldRaiseIllegalArgumentExceptionIfSecondDateIsInvalid()
+            throws ParseException {
         weeksBetween("2010-01-01", "bad date");
     }
 
@@ -158,6 +178,10 @@ public class ExpressionFunctionsTest {
         assertThat(weeksBetween("2010-10-15", "2010-10-22"), is(equalTo(1)));
         assertThat(weeksBetween("2010-09-30", "2010-10-15"), is(equalTo(2)));
         assertThat(weeksBetween("2010-12-31", "2011-01-01"), is(equalTo(0)));
+
+        assertThat(weeksBetween("2010-10-22", "2010-10-15"), is(equalTo(-1)));
+        assertThat(weeksBetween("2010-10-15", "2010-09-30"), is(equalTo(-2)));
+        assertThat(weeksBetween("2011-01-01", "2010-12-31"), is(equalTo(0)));
     }
 
     @Test
@@ -169,12 +193,14 @@ public class ExpressionFunctionsTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void monthsBetweenShouldRaiseIllegalArgumentExceptionIfFirstDateIsInvalid() throws ParseException {
+    public void monthsBetweenShouldRaiseIllegalArgumentExceptionIfFirstDateIsInvalid()
+            throws ParseException {
         monthsBetween("bad date", "2010-01-01");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void monthsBetweenShouldRaiseIllegalArgumentExceptionIfSecondDateIsInvalid() throws ParseException {
+    public void monthsBetweenShouldRaiseIllegalArgumentExceptionIfSecondDateIsInvalid()
+            throws ParseException {
         monthsBetween("2010-01-01", "bad date");
     }
 
@@ -182,6 +208,15 @@ public class ExpressionFunctionsTest {
     public void monthsBetweenShouldReturnDifferenceOfMonthsOfTwoDates() throws ParseException {
         assertThat(monthsBetween("2010-10-15", "2010-10-22"), is(equalTo(0)));
         assertThat(monthsBetween("2010-09-30", "2010-10-31"), is(equalTo(1)));
+        assertThat(monthsBetween("2013-01-31", "2013-02-01"), is(equalTo(1)));
+        assertThat(monthsBetween("2016-01-01", "2016-07-31"), is(equalTo(6)));
+        assertThat(monthsBetween("2015-01-01", "2016-06-30"), is(equalTo(17)));
+
+        assertThat(monthsBetween("2010-10-22", "2010-10-15"), is(equalTo(0)));
+        assertThat(monthsBetween("2010-10-31", "2010-09-30"), is(equalTo(-1)));
+        assertThat(monthsBetween("2013-02-01", "2013-01-31"), is(equalTo(-1)));
+        assertThat(monthsBetween("2016-07-31", "2016-01-01"), is(equalTo(-6)));
+        assertThat(monthsBetween("2016-06-30", "2015-01-01"), is(equalTo(-17)));
     }
 
     @Test
@@ -193,12 +228,14 @@ public class ExpressionFunctionsTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void yearsBetweenShouldRaiseIllegalArgumentExceptionIfFirstDateIsInvalid() throws ParseException {
+    public void yearsBetweenShouldRaiseIllegalArgumentExceptionIfFirstDateIsInvalid()
+            throws ParseException {
         yearsBetween("bad date", "2010-01-01");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void yearsBetweenShouldRaiseIllegalArgumentExceptionIfSecondDateIsInvalid() throws ParseException {
+    public void yearsBetweenShouldRaiseIllegalArgumentExceptionIfSecondDateIsInvalid()
+            throws ParseException {
         yearsBetween("2010-01-01", "bad date");
     }
 
@@ -206,6 +243,13 @@ public class ExpressionFunctionsTest {
     public void yearsBetweenShouldReturnDifferenceOfYearsOfTwoDates() throws ParseException {
         assertThat(yearsBetween("2010-10-15", "2010-10-22"), is(equalTo(0)));
         assertThat(yearsBetween("2010-09-30", "2011-10-31"), is(equalTo(1)));
+        assertThat(yearsBetween("2010-01-01", "2016-06-30"), is(equalTo(6)));
+        assertThat(yearsBetween("2015-01-01", "2016-06-30"), is(equalTo(1)));
+
+        assertThat(yearsBetween("2010-10-22", "2010-10-22"), is(equalTo(0)));
+        assertThat(yearsBetween("2011-10-31", "2010-09-30"), is(equalTo(-1)));
+        assertThat(yearsBetween("2016-06-30", "2010-01-01"), is(equalTo(-6)));
+        assertThat(yearsBetween("2016-06-30", "2015-01-01"), is(equalTo(-1)));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -214,11 +258,14 @@ public class ExpressionFunctionsTest {
     }
 
     @Test
-    public void floorShouldReturnLargestIntegerLessOrEqualToInput() {
+    public void floorShouldReturnArgumentRoundedDownToNearestWholeNumber() {
         assertThat(floor(0), is(equalTo(0)));
         assertThat(floor(0.8), is(equalTo(0)));
         assertThat(floor(1.0), is(equalTo(1)));
         assertThat(floor(-9.3), is(equalTo(-10)));
+        assertThat(floor(5.9), is(equalTo(5)));
+        assertThat(floor(5), is(equalTo(5)));
+        assertThat(floor(-5), is(equalTo(-5)));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -236,6 +283,8 @@ public class ExpressionFunctionsTest {
         assertThat(modulus(0, 2), is(equalTo(0)));
         assertThat(modulus(11, 3), is(equalTo(2)));
         assertThat(modulus(-11, 3), is(equalTo(-2)));
+        assertThat(modulus(11.5, 3.2), is(equalTo(2)));
+        assertThat(modulus(-11.5, 3.2), is(equalTo(-2)));
     }
 
     @Test
@@ -295,7 +344,8 @@ public class ExpressionFunctionsTest {
         }
 
         public ProgramRuleVariable build() {
-            Boolean finalHasValue = hasValue != null ? hasValue : variableValue != "null" && variableValue != "";
+            Boolean finalHasValue =
+                    hasValue != null ? hasValue : variableValue != "null" && variableValue != "";
             ProgramRuleVariable programRuleVariable = new ProgramRuleVariable();
             programRuleVariable.setVariableType(variableType);
             programRuleVariable.setVariableValue(variableValue);
@@ -309,7 +359,8 @@ public class ExpressionFunctionsTest {
     private class ProgramRuleVariableMapSetter {
         private Map<String, ProgramRuleVariable> programRuleVariableMap = new HashMap<>();
 
-        public ProgramRuleVariableMapSetter addVariable(String variableName, ProgramRuleVariable programRuleVariable) {
+        public ProgramRuleVariableMapSetter addVariable(String variableName,
+                ProgramRuleVariable programRuleVariable) {
             programRuleVariableMap.put(variableName, programRuleVariable);
             return this;
         }
@@ -329,7 +380,8 @@ public class ExpressionFunctionsTest {
     public void countShouldReturnZeroForProgramRuleVariableWithoutValues() {
         new ProgramRuleVariableMapSetter()
                 .addVariable("myvar",
-                        new Variable().withValue("1.0").hasNoValue().withValues(Arrays.asList("1.0", "2.0")).build())
+                        new Variable().withValue("1.0").hasNoValue().withValues(
+                                Arrays.asList("1.0", "2.0")).build())
                 .set();
         assertThat(count("myvar"), is(equalTo(0)));
     }
@@ -338,7 +390,8 @@ public class ExpressionFunctionsTest {
     public void countShouldReturnSizeOfValuesForProgramRuleVariableWithValues() {
         new ProgramRuleVariableMapSetter()
                 .addVariable("myvar",
-                        new Variable().withValue("1.0").withValues(Arrays.asList("1.0", "2.0")).build())
+                        new Variable().withValue("1.0").withValues(
+                                Arrays.asList("1.0", "2.0")).build())
                 .set();
         assertThat(count("myvar"), is(equalTo(2)));
     }
@@ -361,22 +414,26 @@ public class ExpressionFunctionsTest {
     public void countIfZeroPosShouldReturnZeroForProgramRuleVariableWithoutValue() {
         new ProgramRuleVariableMapSetter()
                 .addVariable("myvar",
-                        new Variable().withValue("1.0").hasNoValue().withValues(Arrays.asList("1.0", "2.0")).build())
+                        new Variable().withValue("1.0").hasNoValue().withValues(
+                                Arrays.asList("1.0", "2.0")).build())
                 .set();
         assertThat(countIfZeroPos("myvar"), is(equalTo(0)));
     }
 
     @Test
-    public void countIfZeroPosShouldReturnSizeOfZeroOrPositiveValuesForProgramRuleVariableWithValues() {
+    public void
+    countIfZeroPosShouldReturnSizeOfZeroOrPositiveValuesForProgramRuleVariableWithValues() {
         new ProgramRuleVariableMapSetter()
                 .addVariable("myvar",
-                        new Variable().withValue("1.0").withValues(Arrays.asList("1.0", null, "2.0", "-3.0")).build())
+                        new Variable().withValue("1.0").withValues(
+                                Arrays.asList("1.0", null, "2.0", "-3.0")).build())
                 .set();
         assertThat(countIfZeroPos("myvar"), is(equalTo(2)));
     }
 
     @Test
-    public void countIfZeroPosShouldReturnZeroForProgramRuleVariableWithUndefinedValuesAndValueNotSet() {
+    public void
+    countIfZeroPosShouldReturnZeroForProgramRuleVariableWithUndefinedValuesAndValueNotSet() {
         new ProgramRuleVariableMapSetter()
                 .addVariable("myvar", new Variable().build())
                 .set();
@@ -384,7 +441,8 @@ public class ExpressionFunctionsTest {
     }
 
     @Test
-    public void countIfZeroPosShouldReturnOneForProgramRuleVariableWithValuesButNotDefinedAndValueSet() {
+    public void
+    countIfZeroPosShouldReturnOneForProgramRuleVariableWithValuesButNotDefinedAndValueSet() {
         new ProgramRuleVariableMapSetter()
                 .addVariable("myvar", new Variable().withValue("1.0").build())
                 .set();
@@ -394,16 +452,17 @@ public class ExpressionFunctionsTest {
     @Test
     public void countIfValueShouldReturnZeroForNonExistingVariable() {
         new ProgramRuleVariableMapSetter().set();
-        assertThat(countIfValue("nonexisting"), is(equalTo(0)));
+        assertThat(countIfValue("nonexisting","textToCompare"), is(equalTo(0)));
     }
 
     @Test
     public void countIfValueShouldReturnCountOfMatchingValuesForProgramRuleVariableWithValues() {
         new ProgramRuleVariableMapSetter()
                 .addVariable("myvar",
-                        new Variable().withValue("1.0").withValues(Arrays.asList("1.0", null, "2.0", "1.0")).build())
+                        new Variable().withValue("1.0").withValues(
+                                Arrays.asList("1.0", null, "2.0", "1.0")).build())
                 .set();
-        assertThat(countIfValue("myvar"), is(equalTo(2)));
+        assertThat(countIfValue("myvar","1.0"), is(equalTo(2)));
     }
 
     @Test
@@ -411,7 +470,7 @@ public class ExpressionFunctionsTest {
         new ProgramRuleVariableMapSetter()
                 .addVariable("myvar", new Variable().withValue("1.0").build())
                 .set();
-        assertThat(countIfValue("myvar"), is(equalTo(1)));
+        assertThat(countIfValue("myvar","1.0"), is(equalTo(1)));
     }
 
     @Test
@@ -429,6 +488,7 @@ public class ExpressionFunctionsTest {
         assertThat(round(0.4999), is(equalTo(0L)));
         assertThat(round(0.5001), is(equalTo(1L)));
         assertThat(round(-9.3), is(equalTo(-9L)));
+        assertThat(round(-9.8), is(equalTo(-10L)));
     }
 
     @Test
@@ -480,7 +540,8 @@ public class ExpressionFunctionsTest {
         assertThat(validatePattern("abc123", "xyz"), is(equalTo(false)));
         assertThat(validatePattern("abc123", "^bc"), is(equalTo(false)));
         assertThat(validatePattern("abc123", "abc12345"), is(equalTo(false)));
-        assertThat(validatePattern(123, "567"), is(equalTo(false)));
+        assertThat(validatePattern("1999/99/9", "\\[9]{4}/\\d{2}/\\d"), is(equalTo(false)));
+        assertThat(validatePattern("9999/99/", "[0-9]{4}/[0-9]{2}/[0-9]"), is(equalTo(false)));
     }
 
     @Test
@@ -491,6 +552,8 @@ public class ExpressionFunctionsTest {
         assertThat(validatePattern(123, "12"), is(equalTo(false)));
         assertThat(validatePattern(123, "123"), is(equalTo(true)));
         assertThat(validatePattern("27123456789", "27\\d{2}\\d{3}\\d{4}"), is(equalTo(true)));
+        assertThat(validatePattern("9999/99/9", "\\d{4}/\\d{2}/\\d"), is(equalTo(true)));
+        assertThat(validatePattern("9999/99/9", "[0-9]{4}/[0-9]{2}/[0-9]"), is(equalTo(true)));
     }
 
     @Test

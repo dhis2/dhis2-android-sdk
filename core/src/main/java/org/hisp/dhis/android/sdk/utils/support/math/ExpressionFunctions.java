@@ -242,23 +242,22 @@ public class ExpressionFunctions {
         return count;
     }
 
-    public static Integer countIfValue(String variableName) {
+    public static Integer countIfValue(String variableName, String textToCompare) {
         ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
 
         Integer count = 0;
         if(programRuleVariable != null) {
-            String valueToCompare = programRuleVariable.getVariableValue();
 
             if( programRuleVariable.isHasValue() ) {
                 if( programRuleVariable.getAllValues() != null ) {
                     for(int i = 0; i < programRuleVariable.getAllValues().size(); i++) {
-                        if(valueToCompare.equals(programRuleVariable.getAllValues().get(i))) {
+                        if(textToCompare.equals(programRuleVariable.getAllValues().get(i))) {
                             count++;
                         }
                     }
                 } else {
                     //The variable has a value, but no list of alternates. This means we compare the standard variablevalue
-                    if(valueToCompare.equals(programRuleVariable.getVariableValue())) {
+                    if(textToCompare.equals(programRuleVariable.getVariableValue())) {
                         count = 1;
                     }
                 }

@@ -655,6 +655,7 @@ public final class MetaDataController extends ResourceController {
 
         }
         SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
+        serverSystemInfo.save();
         AppPreferencesImpl appPreferences = new AppPreferencesImpl(context);
         appPreferences.setApiVersion(serverSystemInfo.getVersion());
         DateTime serverDateTime = serverSystemInfo.getServerDate();
@@ -723,9 +724,14 @@ public final class MetaDataController extends ResourceController {
 
     private static void getAssignedProgramsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "getAssignedProgramsDataFromServer");
-        UserAccount userAccount = dhisApi.getUserAccount();
+        UserAccount userAccount;
+        if(DhisController.getInstance().isLoggedInServerWithLatestApiVersion()){
+            userAccount = dhisApi.getUserAccount();
+        }else{
+            userAccount = dhisApi.getDeprecatedUserAccount();
+        }
         Map<String, Program> programMap = new HashMap<>();
-        List<Program> assignedProgramUids = userAccount.getPrograms();
+        List<Program> assignedProgramUids = userAccount.getUserPrograms();
 
         for (Program program : assignedProgramUids) {
             programMap.put(program.getUid(), program);
@@ -819,7 +825,7 @@ public final class MetaDataController extends ResourceController {
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
 
         QUERY_MAP_FULL.put("fields",
-                "*,trackedEntity[*],programIndicators[*],programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
+                "*,trackedEntity[*], trackedEntityType[*], programIndicators[*],programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
                         "programStageSections[*,programStageDataElements[*,programStage[id]," +
                         "dataElement[*,id,attributeValues[*,attribute[*]],optionSet[id]]],programIndicators[*]],programStageDataElements" +
                         "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
@@ -956,7 +962,13 @@ public final class MetaDataController extends ResourceController {
                 .getLastUpdated(ResourceType.PROGRAMRULES);
         List<ProgramRule> programRules = unwrapResponse(dhisApi
                 .getProgramRules(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.PROGRAMRULES);
-        saveResourceDataFromServer(ResourceType.PROGRAMRULES, dhisApi, programRules, getProgramRules(), serverDateTime);
+        List<ProgramRule> validProgramRules = new ArrayList<>();
+        for(ProgramRule programRule : programRules){
+            if(programRule.getCondition()!=null && !programRule.getCondition().isEmpty()) {
+                validProgramRules.add(programRule);
+            }
+        }
+        saveResourceDataFromServer(ResourceType.PROGRAMRULES, dhisApi, validProgramRules, getProgramRules(), serverDateTime);
     }
 
     private static void getProgramRuleVariablesDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {

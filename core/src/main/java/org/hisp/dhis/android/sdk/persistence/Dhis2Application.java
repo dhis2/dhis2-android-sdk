@@ -31,7 +31,9 @@ package org.hisp.dhis.android.sdk.persistence;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.multidex.MultiDex;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
@@ -103,5 +105,11 @@ public abstract class Dhis2Application extends Application {
 
     public static Bus getEventBus() {
         return bus;
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 }

@@ -899,21 +899,17 @@ public final class MetaDataController extends ResourceController {
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTEGENERATEDVALUES);
 
-        List<TrackedEntityAttributeGeneratedValue> updatedTrackedEntityAttributeGeneratedValues = new ArrayList<>();
         for (TrackedEntityAttribute trackedEntityAttribute : trackedEntityAttributes) {
             if (trackedEntityAttribute.isGenerated()) {
                 long numberOfGeneratedTrackedEntityAttributesToFetch = shouldFetchGeneratedTrackedEntityAttributeValues(trackedEntityAttribute, serverDateTime);
                 if (numberOfGeneratedTrackedEntityAttributesToFetch > 0) {
                     List<TrackedEntityAttributeGeneratedValue> trackedEntityAttributeGeneratedValues =
                             dhisApi.getTrackedEntityAttributeGeneratedValues(trackedEntityAttribute.getUid(), numberOfGeneratedTrackedEntityAttributesToFetch); // Downloading x generated IDs per trackedEntityAttribute
-                            for(TrackedEntityAttributeGeneratedValue trackedEntityAttributeGeneratedValue:trackedEntityAttributeGeneratedValues){
-                                trackedEntityAttributeGeneratedValue.setTrackedEntityAttribute(trackedEntityAttribute);
-                                updatedTrackedEntityAttributeGeneratedValues.add(trackedEntityAttributeGeneratedValue);
-                            }
+
+                    saveBaseValueDataFromServer(ResourceType.TRACKEDENTITYATTRIBUTEGENERATEDVALUES, "", trackedEntityAttributeGeneratedValues, getTrackedEntityAttributeGeneratedValues(), serverDateTime, false);
                 }
             }
         }
-        saveBaseValueDataFromServer(ResourceType.TRACKEDENTITYATTRIBUTEGENERATEDVALUES, "", updatedTrackedEntityAttributeGeneratedValues, getTrackedEntityAttributeGeneratedValues(), serverDateTime, false);
     }
 
     /**

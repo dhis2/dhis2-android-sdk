@@ -736,6 +736,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                         }
 
                                         eventClick.getComplete().setText(labelForCompleteButton);
+                                        eventClick.getStatus().setText(R.string.complete);
                                         eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
                                         form.getEvent().setFromServer(false);
                                         form.getEnrollment().setFromServer(false);
@@ -792,6 +793,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 });
             } else {
                 eventClick.getComplete().setText(R.string.complete);
+                eventClick.getStatus().setText(R.string.incomplete);
                 form.getEvent().setStatus(Event.STATUS_ACTIVE);
                 form.getEvent().setFromServer(false);
 

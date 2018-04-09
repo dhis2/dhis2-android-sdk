@@ -72,14 +72,23 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/statusButton"
                 android:layout_width="wrap_content"
+                android:layout_gravity="center"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right">
-            </ImageButton>
+                />
+            <TextView
+                android:id="@+id/statusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/event_offline"
+                android:textSize="16sp"/>
+
             </LinearLayout>
 
 

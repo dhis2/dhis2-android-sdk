@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
 import java.util.Collections;
@@ -62,6 +63,9 @@ public abstract class Category extends BaseNameableObject {
     public static final NestedField<Category, CategoryOption> categoryOptions = NestedField.create(
             CATEGORY_OPTIONS);
 
+    static final Fields<Category> allFields = Fields.<Category>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, deleted, shortName, displayShortName,
+            dataDimensionType, categoryOptions.with(CategoryOption.allFields)).build();
 
     @Nullable
     @JsonProperty(DATA_DIMENSION_TYPE)

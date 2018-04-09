@@ -1,16 +1,12 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import static com.google.common.truth.Truth.assertThat;
-
-import static junit.framework.Assert.assertTrue;
-
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.TrackedEntityInstanceCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
@@ -34,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;
+
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStoreTestCase {
@@ -162,8 +160,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
 
         TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceCallFactory.create(
-                        d2.retrofit(), databaseAdapter(), trackedEntityInstanceUid);
+                TrackedEntityInstanceEndPointCall.create(GenericCallData.create(
+                        d2.databaseAdapter(), d2.retrofit()), new Date(), trackedEntityInstanceUid);
 
         trackedEntityInstanceEndPointCall.call();
 

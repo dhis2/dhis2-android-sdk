@@ -27,71 +27,31 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryComboQuery;
-import org.hisp.dhis.android.core.category.CategoryComboService;
-import org.hisp.dhis.android.core.category.CategoryHandler;
-import org.hisp.dhis.android.core.category.CategoryQuery;
-import org.hisp.dhis.android.core.category.CategoryService;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
-import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.category.Category;
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetModel;
-import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
-import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
-import org.hisp.dhis.android.core.program.ProgramRuleStore;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
-import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageEndpointCall;
-import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
-import org.hisp.dhis.android.core.program.ProgramStore;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
-import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserRole;
-import org.hisp.dhis.android.core.user.UserRoleStore;
-import org.hisp.dhis.android.core.user.UserService;
-import org.hisp.dhis.android.core.user.UserStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -102,107 +62,21 @@ import javax.net.ssl.HttpsURLConnection;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anySetOf;
-import static org.mockito.Mockito.atMost;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class MetadataCallShould {
-    @Mock
-    private DatabaseAdapter databaseAdapter;
-
-    @Mock
-    private Transaction transaction;
-
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<SystemInfo> systemInfoCall;
-
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<User> userCall;
-
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<Program>> programCall;
-
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<Program>> programWithAccessCall;
-
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<TrackedEntity>> trackedEntityCall;
-
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<OptionSet>> optionSetCall;
-
+public class MetadataCallShould extends BaseCallShould {
     @Mock
     private SystemInfo systemInfo;
-
-    @Mock
-    private SystemInfoService systemInfoService;
-
-    @Mock
-    private SystemInfoStore systemInfoStore;
-
-    @Mock
-    private ResourceStore resourceStore;
-
-    @Mock
-    private UserCredentialsStore userCredentialsStore;
-
-    @Mock
-    private UserRoleStore userRoleStore;
-
-    @Mock
-    private UserStore userStore;
-
-    @Mock
-    private ProgramStore programStore;
-
-    @Mock
-    private TrackedEntityAttributeStore trackedEntityAttributeStore;
-
-    @Mock
-    private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
-
-    @Mock
-    private ProgramRuleVariableStore programRuleVariableStore;
-
-    @Mock
-    private ProgramIndicatorStore programIndicatorStore;
-
-    @Mock
-    private ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
-
-    @Mock
-    private ProgramRuleActionStore programRuleActionStore;
-
-    @Mock
-    private ProgramRuleStore programRuleStore;
-
-    @Mock
-    private RelationshipTypeStore relationshipStore;
-
-    @Mock
-    private TrackedEntityStore trackedEntityStore;
-
-    @Mock
-    private UserService userService;
-
-    @Mock
-    private ProgramService programService;
-
-    @Mock
-    private TrackedEntityService trackedEntityService;
-
-    @Mock
-    private OptionSetService optionSetService;
 
     @Mock
     private Date serverDateTime;
@@ -221,6 +95,12 @@ public class MetadataCallShould {
 
     @Mock
     private OrganisationUnit organisationUnit;
+
+    @Mock
+    private Payload<Category> categoryPayload;
+
+    @Mock
+    private Payload<CategoryCombo> categoryComboPayload;
 
     @Mock
     private Payload<OrganisationUnit> organisationUnitPayload;
@@ -247,6 +127,12 @@ public class MetadataCallShould {
     private OptionSet optionSet;
 
     @Mock
+    private Category category;
+
+    @Mock
+    private CategoryCombo categoryCombo;
+
+    @Mock
     private DataAccess dataAccess;
 
     @Mock
@@ -265,28 +151,31 @@ public class MetadataCallShould {
     private TrackedEntity trackedEntity;
 
     @Mock
-    private CategoryQuery categoryQuery;
+    private Call<Response<SystemInfo>> systemInfoEndpointCall;
 
     @Mock
-    private CategoryHandler categoryHandler;
+    private Call<Response<User>> userCall;
 
     @Mock
-    private CategoryComboHandler mockCategoryComboHandler;
+    private Call<Response<Payload<Category>>> categoryEndpointCall;
 
     @Mock
-    private GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
+    private Call<Response<Payload<CategoryCombo>>> categoryComboEndpointCall;
 
     @Mock
-    private OrganisationUnitCall.Factory organisationUnitCallFactory;
+    private Call<Response<Payload<Program>>> programAccessEndpointCall;
 
     @Mock
-    private ProgramStageEndpointCall.Factory programStageCallFactory;
+    private Call<Response<Payload<Program>>> programEndpointCall;
 
     @Mock
     private Call<Response<Payload<ProgramStage>>> programStageEndpointCall;
 
     @Mock
-    private DataSetParentCall.Factory dataSetParentCallFactory;
+    private Call<Response<Payload<TrackedEntity>>> trackedEntityCall;
+
+    @Mock
+    private Call<Response<Payload<OptionSet>>> optionSetCall;
 
     @Mock
     private Call<Response> dataSetParentCall;
@@ -295,13 +184,37 @@ public class MetadataCallShould {
     private Call<Response<Payload<OrganisationUnit>>> organisationUnitEndpointCall;
 
     @Mock
-    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private SimpleCallFactory<SystemInfo> systemInfoCallFactory;
 
     @Mock
-    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
+    private SimpleCallFactory<User> userCallFactory;
 
-    private Response<Payload<ProgramStage>> programStageResponse;
+    @Mock
+    private SimpleCallFactory<Payload<Program>> programAccessCallFactory;
 
+    @Mock
+    private SimpleCallFactory<Payload<Category>> categoryCallFactory;
+
+    @Mock
+    private SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
+
+    @Mock
+    private UidsCallFactory<Program> programCallFactory;
+
+    @Mock
+    private UidsCallFactory<ProgramStage> programStageCallFactory;
+
+    @Mock
+    private UidsCallFactory<TrackedEntity> trackedEntityCallFactory;
+
+    @Mock
+    private OrganisationUnitCall.Factory organisationUnitCallFactory;
+
+    @Mock
+    private UidsCallFactory<OptionSet> optionSetCallFactory;
+
+    @Mock
+    private DataSetParentCall.Factory dataSetParentCallFactory;
 
     // object to test
     private MetadataCall metadataCall;
@@ -309,41 +222,22 @@ public class MetadataCallShould {
 
     private Response errorResponse;
 
-    private Dhis2MockServer  dhis2MockServer;
-
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        super.setUp();
 
         errorResponse = Response.error(
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
 
-        when(systemInfoService.getSystemInfo(any(Fields.class))).thenReturn(systemInfoCall);
-        when(userService.getUser(any(Fields.class))).thenReturn(userCall);
-        when(programService.getProgramsForAccess(any(Fields.class), any(Filter.class), anyBoolean())
-        ).thenReturn(programWithAccessCall);
-        when(programService.getPrograms(
-                any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
-        ).thenReturn(programCall);
-        when(trackedEntityService.trackedEntities(
-                any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
-        ).thenReturn(trackedEntityCall);
-        when(optionSetService.optionSets(
-                anyBoolean(), any(Fields.class), any(Filter.class))
-        ).thenReturn(optionSetCall);
-
-        List<UserRole> userRoles = new ArrayList<>();
-        userRoles.add(userRole);
-
+        // Payload data
         when(systemInfo.serverDate()).thenReturn(serverDateTime);
-        when(userCredentials.userRoles()).thenReturn(userRoles);
+        when(userCredentials.userRoles()).thenReturn(Collections.singletonList(userRole));
         when(organisationUnit.uid()).thenReturn("unit");
         when(organisationUnit.path()).thenReturn("path/to/org/unit");
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
-        when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
         when(dataAccess.read()).thenReturn(true);
         when(access.data()).thenReturn(dataAccess);
         when(programWithAccess.access()).thenReturn(access);
@@ -351,65 +245,69 @@ public class MetadataCallShould {
         when(program.access()).thenReturn(access);
         when(program.programStages()).thenReturn(Collections.singletonList(programStageWithUid));
         when(programStageWithUid.uid()).thenReturn("program_stage_uid");
+        when(trackedEntity.uid()).thenReturn("test_tracked_entity_uid");
+
+        // Payloads
         when(programWithAccessPayload.items()).thenReturn(Collections.singletonList(programWithAccess));
+        when(categoryPayload.items()).thenReturn(Collections.singletonList(category));
+        when(categoryComboPayload.items()).thenReturn(Collections.singletonList(categoryCombo));
         when(programPayload.items()).thenReturn(Collections.singletonList(program));
         when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntity));
-        when(trackedEntity.uid()).thenReturn("test_tracked_entity_uid");
+        when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
         when(optionSetPayload.items()).thenReturn(Collections.singletonList(optionSet));
         when(dataElementPayload.items()).thenReturn(Collections.singletonList(dataElement));
 
-        when(resourceStore.getLastUpdated(any(ResourceModel.Type.class))).thenReturn("2017-01-01");
-
-        when(dataSetParentCallFactory.create(any(User.class), any(GenericCallData.class), any(List.class)))
-                .thenReturn(dataSetParentCall);
-        when(organisationUnitCallFactory.create(any(GenericCallData.class), any(User.class), anySetOf(String.class)))
-                .thenReturn(organisationUnitEndpointCall);
-        Response<Payload<DataElement>> dataSetParentCallResponse = Response.success(dataElementPayload);
-        when(dataSetParentCall.call()).thenReturn(dataSetParentCallResponse);
-
-        when(programStageCallFactory.create(any(GenericCallData.class), any(Set.class)))
+        // Call factories
+        when(systemInfoCallFactory.create(genericCallData)).thenReturn(systemInfoEndpointCall);
+        when(userCallFactory.create(genericCallData)).thenReturn(userCall);
+        when(programAccessCallFactory.create(genericCallData)).thenReturn(programAccessEndpointCall);
+        when(categoryCallFactory.create(genericCallData)).thenReturn(categoryEndpointCall);
+        when(categoryComboCallFactory.create(genericCallData)).thenReturn(categoryComboEndpointCall);
+        when(programCallFactory.create(same(genericCallData), any(Set.class)))
+                .thenReturn(programEndpointCall);
+        when(programStageCallFactory.create(same(genericCallData), any(Set.class)))
                 .thenReturn(programStageEndpointCall);
-        programStageResponse = Response.success(programStagePayload);
-        when(programStageEndpointCall.call()).thenReturn(programStageResponse);
+        when(trackedEntityCallFactory.create(same(genericCallData), any(Set.class)))
+                .thenReturn(trackedEntityCall);
+        when(organisationUnitCallFactory.create(same(genericCallData), same(user), anySetOf(String.class)))
+                .thenReturn(organisationUnitEndpointCall);
+        when(optionSetCallFactory.create(same(genericCallData), any(Set.class)))
+                .thenReturn(optionSetCall);
+        when(dataSetParentCallFactory.create(same(user), same(genericCallData), any(List.class)))
+                .thenReturn(dataSetParentCall);
 
-        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(dhis2MockServer.getBaseEndpoint())
-                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
-                .addConverterFactory(FilterConverterFactory.create())
-                .addConverterFactory(FieldsConverterFactory.create())
-                .build();
-
-        CategoryService categoryService = retrofit.create(CategoryService.class);
-        CategoryComboService comboService = retrofit.create(CategoryComboService.class);
-
-        dhis2MockServer.enqueueMockResponse("categories.json");
-        dhis2MockServer.enqueueMockResponse("category_combos.json");
-
-        metadataCall = new MetadataCall(
-                databaseAdapter, systemInfoService, userService, programService, trackedEntityService,
-                optionSetService, systemInfoStore, resourceStore, userStore, userCredentialsStore, userRoleStore,
-                programStore, trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
-                programIndicatorStore,programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, relationshipStore, trackedEntityStore, categoryQuery, categoryService,
-                categoryHandler, CategoryComboQuery.defaultQuery(), comboService, mockCategoryComboHandler,
-                optionSetHandler, organisationUnitCallFactory, dataSetParentCallFactory, styleHandler,
-                renderTypeHandler, programStageCallFactory, retrofit);
-
-        when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
-
-        when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
-        when(userCall.execute()).thenReturn(Response.success(user));
-        when(programCall.execute()).thenReturn(Response.success(programPayload));
-        when(programWithAccessCall.execute()).thenReturn(Response.success(programWithAccessPayload));
-        when(trackedEntityCall.execute()).thenReturn(Response.success(trackedEntityPayload));
-        when(optionSetCall.execute()).thenReturn(Response.success(optionSetPayload));
+        // Calls
+        when(systemInfoEndpointCall.call()).thenReturn(Response.success(systemInfo));
+        when(userCall.call()).thenReturn(Response.success(user));
+        when(categoryEndpointCall.call()).thenReturn(Response.success(categoryPayload));
+        when(categoryComboEndpointCall.call()).thenReturn(Response.success(categoryComboPayload));
+        when(programEndpointCall.call()).thenReturn(Response.success(programPayload));
+        when(programAccessEndpointCall.call()).thenReturn(Response.success(programWithAccessPayload));
+        when(trackedEntityCall.call()).thenReturn(Response.success(trackedEntityPayload));
+        when(optionSetCall.call()).thenReturn(Response.success(optionSetPayload));
         when(organisationUnitEndpointCall.call()).thenReturn(Response.success(organisationUnitPayload));
+        when(dataSetParentCall.call()).thenReturn(Response.success(dataElementPayload));
+        when(programStageEndpointCall.call()).thenReturn(Response.success(programStagePayload));
+
+        // Metadata call
+        metadataCall = new MetadataCall(
+                genericCallData,
+                systemInfoCallFactory,
+                userCallFactory,
+                categoryCallFactory,
+                categoryComboCallFactory,
+                programAccessCallFactory,
+                programCallFactory,
+                programStageCallFactory,
+                trackedEntityCallFactory,
+                organisationUnitCallFactory,
+                optionSetCallFactory,
+                dataSetParentCallFactory);
     }
 
     @After
     public void tearDown() throws IOException {
-        dhis2MockServer.shutdown();
+        super.tearDown();
     }
 
     @Test
@@ -430,7 +328,7 @@ public class MetadataCallShould {
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_system_info_call_fail() throws Exception {
         final int expectedTransactions = 1;
-        when(systemInfoCall.execute()).thenReturn(errorResponse);
+        when(systemInfoEndpointCall.call()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
@@ -444,75 +342,70 @@ public class MetadataCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_user_call_fail() throws Exception {
-        final int expectedTransactions = 2;
-        when(userCall.execute()).thenReturn(errorResponse);
+        when(userCall.call()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
         assertThat(response).isEqualTo(errorResponse);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
-        verify(transaction, times(expectedTransactions)).end();
-        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful();//ie last one is not marked as success...
+        verify(databaseAdapter).beginNewTransaction();
+        verify(transaction).end();
+        verify(transaction, never()).setSuccessful();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_organisation_unit_call_fail() throws Exception {
-        final int expectedTransactions = 7;
         when(organisationUnitEndpointCall.call()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
         assertThat(response).isEqualTo(errorResponse);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
-        verify(transaction, times(expectedTransactions)).end();
-        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful(); //taking in account the sub-transactions
+        verify(databaseAdapter).beginNewTransaction();
+        verify(transaction).end();
+        verify(transaction, never()).setSuccessful();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_program_call_fail() throws Exception {
-        final int expectedTransactions = 5;
-        when(programCall.execute()).thenReturn(errorResponse);
+        when(programEndpointCall.call()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
         assertThat(response).isEqualTo(errorResponse);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
-        verify(transaction, times(expectedTransactions)).end();
-        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful();
+        verify(databaseAdapter).beginNewTransaction();
+        verify(transaction).end();
+        verify(transaction, never()).setSuccessful();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_tracked_entity_call_fail() throws Exception {
-        final int expectedTransactions = 7;
-        when(trackedEntityCall.execute()).thenReturn(errorResponse);
+        when(trackedEntityCall.call()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
         assertThat(response).isEqualTo(errorResponse);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
-        verify(transaction, times(expectedTransactions)).end();
-        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful();
+        verify(databaseAdapter).beginNewTransaction();
+        verify(transaction).end();
+        verify(transaction, never()).setSuccessful();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void verify_transaction_fail_when_option_set_fail() throws Exception {
-        final int expectedTransactions = 7;
-        when(optionSetCall.execute()).thenReturn(errorResponse);
+        when(optionSetCall.call()).thenReturn(errorResponse);
 
         Response response = metadataCall.call();
 
         assertThat(response).isEqualTo(errorResponse);
         assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
-        verify(transaction, times(expectedTransactions)).end();
-        verify(transaction, atMost(expectedTransactions - 1)).setSuccessful();
+        verify(databaseAdapter).beginNewTransaction();
+        verify(transaction).end();
+        verify(transaction, never()).setSuccessful();
     }
 }

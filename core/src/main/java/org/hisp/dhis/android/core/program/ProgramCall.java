@@ -31,85 +31,45 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import retrofit2.Response;
 
-@SuppressWarnings({"PMD.TooManyFields", "PMD.ExcessiveMethodLength", "PMD.ExcessiveImports",
-        "PMD.UnusedFormalParameter"})
 public class ProgramCall implements Call<Response<Payload<Program>>> {
-    private final ProgramService programService;
 
-    private final DatabaseAdapter databaseAdapter;
-    private final ResourceStore resourceStore;
+    private final GenericCallData genericCallData;
+
+    private final ProgramService programService;
 
     private boolean isExecuted;
     private final Set<String> uids;
-    private final Date serverDate;
 
     private final ProgramHandler programHandler;
 
-    public ProgramCall(ProgramService programService,
-                       DatabaseAdapter databaseAdapter,
-                       ResourceStore resourceStore,
-                       Set<String> uids,
-                       ProgramStore programStore,
-                       Date serverDate,
-                       TrackedEntityAttributeStore trackedEntityAttributeStore,
-                       ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
-                       ProgramRuleVariableStore programRuleVariableStore,
-                       ProgramIndicatorStore programIndicatorStore,
-                       ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore,
-                       ProgramRuleActionStore programRuleActionStore,
-                       ProgramRuleStore programRuleStore,
-                       RelationshipTypeStore relationshipStore,
-                       GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
-                       DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
+    ProgramCall(
+            GenericCallData genericCallData,
+            ProgramService programService,
+            ProgramHandler programHandler,
+            Set<String> uids) {
+        this.genericCallData = genericCallData;
         this.programService = programService;
-        this.databaseAdapter = databaseAdapter;
-        this.resourceStore = resourceStore;
+        this.programHandler = programHandler;
         this.uids = uids;
-        this.serverDate = new Date(serverDate.getTime());
-
-        //TODO: make this an argument to the constructor:
-
-        //TODO: This needs to be refactored badly
-
-        ProgramIndicatorHandler programIndicatorHandler = ProgramIndicatorHandler.create(databaseAdapter);
-
-        this.programHandler = new ProgramHandler(programStore,
-                new ProgramRuleVariableHandler(programRuleVariableStore), programIndicatorHandler,
-                new ProgramRuleHandler(programRuleStore, new ProgramRuleActionHandler(programRuleActionStore)),
-                new ProgramTrackedEntityAttributeHandler(programTrackedEntityAttributeStore,
-                        new TrackedEntityAttributeHandler(trackedEntityAttributeStore, styleHandler,
-                                renderTypeHandler)
-                ),
-                new RelationshipTypeHandler(relationshipStore), styleHandler);
     }
 
     @Override
@@ -131,14 +91,13 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
             throw new IllegalArgumentException("Can't handle the amount of programs: " + uids.size() + ". " +
                     "Max size is: " + MAX_UIDS);
         }
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-        String lastSyncedPrograms = resourceHandler.getLastUpdated(ResourceModel.Type.PROGRAM);
+        String lastSyncedPrograms = genericCallData.resourceHandler().getLastUpdated(ResourceModel.Type.PROGRAM);
         Response<Payload<Program>> programsByLastUpdated = programService.getPrograms(
                 getFields(), Program.lastUpdated.gt(lastSyncedPrograms),
                 Program.uid.in(uids), Boolean.FALSE
         ).execute();
         if (programsByLastUpdated.isSuccessful()) {
-            Transaction transaction = databaseAdapter.beginNewTransaction();
+            Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
             try {
                 List<Program> programs = programsByLastUpdated.body().items();
                 int size = programs.size();
@@ -146,7 +105,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                     Program program = programs.get(i);
                     programHandler.handleProgram(program);
                 }
-                resourceHandler.handleResource(ResourceModel.Type.PROGRAM, serverDate);
+                genericCallData.resourceHandler().handleResource(ResourceModel.Type.PROGRAM,
+                        genericCallData.serverDate());
                 transaction.setSuccessful();
             } finally {
                 transaction.end();
@@ -242,4 +202,15 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
         ).build();
     }
 
+    public static final UidsCallFactory<Program> FACTORY = new UidsCallFactory<Program>() {
+
+        @Override
+        public Call<Response<Payload<Program>>> create(GenericCallData genericCallData, Set<String> uids) {
+            return new ProgramCall(
+                    genericCallData,
+                    genericCallData.retrofit().create(ProgramService.class),
+                    ProgramHandler.create(genericCallData.databaseAdapter()),
+                    uids);
+        }
+    };
 }

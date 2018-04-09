@@ -28,12 +28,13 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 
 import java.io.IOException;
 
@@ -43,17 +44,17 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
     private final DatabaseAdapter databaseAdapter;
     private final SystemInfoStore systemInfoStore;
     private final SystemInfoService systemInfoService;
-    private final ResourceStore resourceStore;
+    private final ResourceHandler resourceHandler;
     private boolean isExecuted;
 
-    public SystemInfoCall(DatabaseAdapter databaseAdapter,
+    SystemInfoCall(DatabaseAdapter databaseAdapter,
                           SystemInfoStore systemInfoStore,
                           SystemInfoService systemInfoService,
-                          ResourceStore resourceStore) {
+                          ResourceHandler resourceHandler) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoStore = systemInfoStore;
         this.systemInfoService = systemInfoService;
-        this.resourceStore = resourceStore;
+        this.resourceHandler = resourceHandler;
     }
 
     @Override
@@ -85,7 +86,6 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
 
     private void insertOrUpdateSystemInfo(Response<SystemInfo> response) {
         SystemInfoHandler systemInfoHandler = new SystemInfoHandler(systemInfoStore);
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
@@ -112,4 +112,17 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
                 ).build()
         ).execute();
     }
+
+    public static final SimpleCallFactory<SystemInfo> FACTORY = new SimpleCallFactory<SystemInfo>() {
+
+        @Override
+        public Call<Response<SystemInfo>> create(GenericCallData genericCallData) {
+            return new SystemInfoCall(
+                    genericCallData.databaseAdapter(),
+                    new SystemInfoStoreImpl(genericCallData.databaseAdapter()),
+                    genericCallData.retrofit().create(SystemInfoService.class),
+                    genericCallData.resourceHandler()
+            );
+        }
+    };
 }

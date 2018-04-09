@@ -34,12 +34,11 @@ import android.support.test.runner.AndroidJUnit4;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -119,10 +118,10 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
 
         SystemInfoService systemInfoService = retrofit.create(SystemInfoService.class);
         SystemInfoStore systemInfoStore = new SystemInfoStoreImpl(databaseAdapter());
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
+        ResourceHandler resourceHandler = ResourceHandler.create(databaseAdapter());
 
         systeminfoCall = new SystemInfoCall(
-                databaseAdapter(), systemInfoStore, systemInfoService, resourceStore
+                databaseAdapter(), systemInfoStore, systemInfoService, resourceHandler
         );
     }
 

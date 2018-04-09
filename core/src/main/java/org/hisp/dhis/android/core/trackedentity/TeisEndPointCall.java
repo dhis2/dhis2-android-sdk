@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -20,7 +21,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInstance>>> {
+public final class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInstance>>> {
 
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final DatabaseAdapter databaseAdapter;
@@ -30,10 +31,11 @@ public class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInst
 
     private boolean isExecuted;
 
-    public TeisEndPointCall(@NonNull TrackedEntityInstanceService trackedEntityInstanceService,
-                            @NonNull DatabaseAdapter databaseAdapter, @NonNull TeiQuery trackerQuery,
-                            @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
-                            @NonNull ResourceHandler resourceHandler) {
+    private TeisEndPointCall(@NonNull TrackedEntityInstanceService trackedEntityInstanceService,
+                     @NonNull DatabaseAdapter databaseAdapter,
+                     @NonNull TeiQuery trackerQuery,
+                     @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
+                     @NonNull ResourceHandler resourceHandler) {
 
         this.databaseAdapter = databaseAdapter;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
@@ -144,5 +146,15 @@ public class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInst
                         Enrollment.notes.with(Note.allFields)
                 )
         ).build();
+    }
+
+    public static TeisEndPointCall create(GenericCallData genericCallData, TeiQuery teiQuery) {
+        return new TeisEndPointCall(
+                genericCallData.retrofit().create(TrackedEntityInstanceService.class),
+                genericCallData.databaseAdapter(),
+                teiQuery,
+                TrackedEntityInstanceHandler.create(genericCallData.databaseAdapter()),
+                genericCallData.resourceHandler()
+        );
     }
 }

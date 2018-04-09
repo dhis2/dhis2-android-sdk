@@ -7,11 +7,10 @@ import android.util.Log;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.Date;
@@ -21,28 +20,25 @@ import retrofit2.Response;
 
 public class EventEndPointCall implements Call<Response<Payload<Event>>> {
 
+    private final GenericCallData genericCallData;
     private final EventService eventService;
-    private final DatabaseAdapter databaseAdapter;
     private final EventQuery eventQuery;
-    private final Date serverDate;
-    private final ResourceHandler resourceHandler;
     private final EventHandler eventHandler;
+    private final Date serverDate;
 
     private boolean isExecuted;
 
-    public EventEndPointCall(@NonNull EventService eventService,
-            @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull ResourceHandler resourceHandler,
-            @NonNull EventHandler eventHandler,
-            @NonNull Date serverDate,
-            @NonNull EventQuery eventQuery) {
+    EventEndPointCall(@NonNull GenericCallData genericCallData,
+                      @NonNull EventService eventService,
+                      @NonNull EventHandler eventHandler,
+                      @NonNull EventQuery eventQuery,
+                      @NonNull Date serverDate) {
 
+        this.genericCallData = genericCallData;
         this.eventService = eventService;
-        this.databaseAdapter = databaseAdapter;
-        this.resourceHandler = resourceHandler;
         this.eventHandler = eventHandler;
         this.eventQuery = eventQuery;
-        this.serverDate = new Date(serverDate.getTime());
+        this.serverDate = serverDate;
 
         if (eventQuery != null && eventQuery.getUIds() != null &&
                 eventQuery.getUIds().size() > MAX_UIDS) {
@@ -68,7 +64,7 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
             isExecuted = true;
         }
 
-        String lastSyncedEvents = resourceHandler.getLastUpdated(ResourceModel.Type.EVENT);
+        String lastSyncedEvents = genericCallData.resourceHandler().getLastUpdated(ResourceModel.Type.EVENT);
 
         Response<Payload<Event>> eventsByLastUpdated;
 
@@ -99,7 +95,7 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
                 size = eventQuery.getPageLimit();
             }
             for (int i = 0; i < size; i++) {
-                Transaction transaction = databaseAdapter.beginNewTransaction();
+                Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
                 Event event = events.get(i);
                 try {
                     eventHandler.handle(event);
@@ -117,7 +113,7 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
                     transaction.end();
                 }
             }
-            resourceHandler.handleResource(ResourceModel.Type.EVENT, serverDate);
+            genericCallData.resourceHandler().handleResource(ResourceModel.Type.EVENT, serverDate);
 
         }
         return eventsByLastUpdated;
@@ -132,4 +128,16 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
                 Event.dueDate, Event.deleted, Event.trackedEntityDataValues
         ).build();
     }
+
+    public static EventEndPointCall create(GenericCallData genericCallData,
+                                           Date serverDate,
+                                           EventQuery eventQuery) {
+        return new EventEndPointCall(
+                genericCallData,
+                genericCallData.retrofit().create(EventService.class),
+                EventHandler.create(genericCallData.databaseAdapter()),
+                eventQuery,
+                serverDate
+    );
+}
 }

@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -34,7 +36,7 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 public class ProgramRuleActionHandler {
     private final ProgramRuleActionStore programRuleActionStore;
 
-    public ProgramRuleActionHandler(ProgramRuleActionStore programRuleActionStore) {
+    ProgramRuleActionHandler(ProgramRuleActionStore programRuleActionStore) {
         this.programRuleActionStore = programRuleActionStore;
     }
 
@@ -128,5 +130,9 @@ public class ProgramRuleActionHandler {
                 }
             }
         }
+    }
+
+    public static ProgramRuleActionHandler create(DatabaseAdapter databaseAdapter) {
+        return new ProgramRuleActionHandler(new ProgramRuleActionStoreImpl(databaseAdapter));
     }
 }

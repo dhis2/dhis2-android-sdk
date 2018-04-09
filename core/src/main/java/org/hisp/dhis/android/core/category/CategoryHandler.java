@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -15,7 +17,7 @@ public class CategoryHandler {
     private final CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore;
     private final CategoryStore categoryStore;
 
-    public CategoryHandler(
+    CategoryHandler(
             @NonNull CategoryStore categoryStore,
             @NonNull GenericHandler<CategoryOption, CategoryOptionModel> categoryOptionHandler,
             @NonNull CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore) {
@@ -60,5 +62,13 @@ public class CategoryHandler {
                 category.uid())
                 .option(option.uid())
                 .build();
+    }
+
+    public static CategoryHandler create(DatabaseAdapter databaseAdapter) {
+        return new CategoryHandler(
+                new CategoryStoreImpl(databaseAdapter),
+                CategoryOptionHandler.create(databaseAdapter),
+                new CategoryCategoryOptionLinkStoreImpl(databaseAdapter)
+        );
     }
 }

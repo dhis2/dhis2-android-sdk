@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -34,7 +36,7 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 public class ProgramRuleVariableHandler {
     private final ProgramRuleVariableStore programRuleVariableStore;
 
-    public ProgramRuleVariableHandler(ProgramRuleVariableStore programRuleVariableStore) {
+    ProgramRuleVariableHandler(ProgramRuleVariableStore programRuleVariableStore) {
         this.programRuleVariableStore = programRuleVariableStore;
     }
 
@@ -96,5 +98,9 @@ public class ProgramRuleVariableHandler {
             }
 
         }
+    }
+
+    public static ProgramRuleVariableHandler create(DatabaseAdapter databaseAdapter) {
+        return new ProgramRuleVariableHandler(new ProgramRuleVariableStoreImpl(databaseAdapter));
     }
 }

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
 
 import java.util.List;
@@ -37,7 +38,7 @@ public class ProgramTrackedEntityAttributeHandler {
     private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     private final TrackedEntityAttributeHandler trackedEntityAttributeHandler;
 
-    public ProgramTrackedEntityAttributeHandler(ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
+    ProgramTrackedEntityAttributeHandler(ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
                                                 TrackedEntityAttributeHandler trackedEntityAttributeHandler) {
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
         this.trackedEntityAttributeHandler = trackedEntityAttributeHandler;
@@ -107,5 +108,12 @@ public class ProgramTrackedEntityAttributeHandler {
             );
         }
 
+    }
+
+    public static ProgramTrackedEntityAttributeHandler create(DatabaseAdapter databaseAdapter) {
+        return new ProgramTrackedEntityAttributeHandler(
+                new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter),
+                TrackedEntityAttributeHandler.create(databaseAdapter)
+        );
     }
 }

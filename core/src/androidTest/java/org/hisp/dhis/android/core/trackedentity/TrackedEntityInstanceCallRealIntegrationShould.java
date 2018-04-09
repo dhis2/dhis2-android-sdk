@@ -4,12 +4,13 @@ import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.TrackedEntityInstanceCallFactory;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 
 import java.io.IOException;
+import java.util.Date;
 
 public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTestCase {
 
@@ -38,8 +39,8 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTest
         Truth.assertThat(response.isSuccessful()).isTrue();
 
         TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceCallFactory.create(
-                        d2.retrofit(), databaseAdapter(), "IaxoagO9899");
+                TrackedEntityInstanceEndPointCall.create(GenericCallData.create(
+                        d2.databaseAdapter(), d2.retrofit()), new Date(), "IaxoagO9899");
 
         response = trackedEntityInstanceEndPointCall.call();
 

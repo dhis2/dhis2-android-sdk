@@ -31,10 +31,13 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.TransactionalCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementEndpointCall;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorEndpointCall;
+import org.hisp.dhis.android.core.indicator.IndicatorType;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeEndpointCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.PeriodHandler;
@@ -47,20 +50,20 @@ import retrofit2.Response;
 
 public class DataSetParentCall extends TransactionalCall {
     private final DataSetParentLinkManager linkManager;
-    private final DataSetAccessEndpointCall.Factory dataSetAccessCallFactory;
-    private final DataSetEndpointCall.Factory dataSetCallFactory;
-    private final DataElementEndpointCall.Factory dataElementCallFactory;
-    private final IndicatorEndpointCall.Factory indicatorCallFactory;
-    private final IndicatorTypeEndpointCall.Factory indicatorTypeCallFactory;
+    private final SimpleCallFactory<Payload<DataSet>> dataSetAccessCallFactory;
+    private final UidsCallFactory<DataSet> dataSetCallFactory;
+    private final UidsCallFactory<DataElement> dataElementCallFactory;
+    private final UidsCallFactory<Indicator> indicatorCallFactory;
+    private final UidsCallFactory<IndicatorType> indicatorTypeCallFactory;
     private final List<OrganisationUnit> organisationUnits;
     private final PeriodHandler periodHandler;
 
     private DataSetParentCall(GenericCallData data, DataSetParentLinkManager linkManager,
-                              DataSetAccessEndpointCall.Factory dataSetAccessCallFactory,
-                              DataSetEndpointCall.Factory dataSetCallFactory,
-                              DataElementEndpointCall.Factory dataElementCallFactory,
-                              IndicatorEndpointCall.Factory indicatorCallFactory,
-                              IndicatorTypeEndpointCall.Factory indicatorTypeCallFactory,
+                              SimpleCallFactory<Payload<DataSet>> dataSetAccessCallFactory,
+                              UidsCallFactory<DataSet> dataSetCallFactory,
+                              UidsCallFactory<DataElement> dataElementCallFactory,
+                              UidsCallFactory<Indicator> indicatorCallFactory,
+                              UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
                               List<OrganisationUnit> organisationUnits,
                               PeriodHandler periodHandler) {
         super(data);
@@ -76,26 +79,26 @@ public class DataSetParentCall extends TransactionalCall {
 
     @Override
     public Response callBody() throws Exception {
-        DataSetAccessEndpointCall dataSetAccessEndpointCall = dataSetAccessCallFactory.create(data);
+        Call<Response<Payload<DataSet>>> dataSetAccessEndpointCall = dataSetAccessCallFactory.create(data);
         Response<Payload<DataSet>> dataSetAccessResponse = dataSetAccessEndpointCall.call();
         List<DataSet> dataSetsWithAccess = dataSetAccessResponse.body().items();
 
         Set<String> dataSetUids = DataSetParentUidsHelper.getAssignedDataSetUids(dataSetsWithAccess);
 
-        DataSetEndpointCall dataSetEndpointCall = dataSetCallFactory.create(data, dataSetUids);
+        Call<Response<Payload<DataSet>>> dataSetEndpointCall = dataSetCallFactory.create(data, dataSetUids);
         Response<Payload<DataSet>> dataSetResponse = dataSetEndpointCall.call();
 
         List<DataSet> dataSets = dataSetResponse.body().items();
-        DataElementEndpointCall dataElementEndpointCall =
+        Call<Response<Payload<DataElement>>> dataElementEndpointCall =
                 dataElementCallFactory.create(data, DataSetParentUidsHelper.getDataElementUids(dataSets));
         Response<Payload<DataElement>> dataElementResponse = dataElementEndpointCall.call();
 
-        IndicatorEndpointCall indicatorEndpointCall
+        Call<Response<Payload<Indicator>>> indicatorEndpointCall
                 = indicatorCallFactory.create(data, DataSetParentUidsHelper.getIndicatorUids(dataSets));
         Response<Payload<Indicator>> indicatorResponse = indicatorEndpointCall.call();
 
         List<Indicator> indicators = indicatorResponse.body().items();
-        IndicatorTypeEndpointCall indicatorTypeEndpointCall
+        Call<Response<Payload<IndicatorType>>> indicatorTypeEndpointCall
                 = indicatorTypeCallFactory.create(data, DataSetParentUidsHelper.getIndicatorTypeUids(indicators));
         indicatorTypeEndpointCall.call();
 

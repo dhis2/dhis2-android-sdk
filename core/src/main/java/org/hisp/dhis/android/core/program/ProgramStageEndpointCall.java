@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
@@ -59,11 +60,7 @@ public final class ProgramStageEndpointCall extends
                 ProgramStage.uid.in(query.uids()), Boolean.FALSE);
     }
 
-    public interface Factory {
-        Call<Response<Payload<ProgramStage>>> create(GenericCallData data, Set<String> uids);
-    }
-
-    public static final ProgramStageEndpointCall.Factory FACTORY = new ProgramStageEndpointCall.Factory() {
+    public static final UidsCallFactory<ProgramStage> FACTORY = new UidsCallFactory<ProgramStage>() {
         @Override
         public Call<Response<Payload<ProgramStage>>> create(GenericCallData data, Set<String> uids) {
             return new ProgramStageEndpointCall(data, data.retrofit().create(ProgramStageService.class),

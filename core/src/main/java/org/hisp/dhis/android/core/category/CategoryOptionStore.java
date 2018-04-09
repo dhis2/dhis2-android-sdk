@@ -1,20 +1,15 @@
 package org.hisp.dhis.android.core.category;
 
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import android.support.annotation.NonNull;
+public final class CategoryOptionStore {
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+    private CategoryOptionStore() {}
 
-import java.util.List;
-
-public interface CategoryOptionStore extends DeletableStore {
-
-    long insert(@NonNull CategoryOption categoryOption);
-
-    boolean delete(@NonNull CategoryOption categoryOption);
-
-    boolean update(@NonNull CategoryOption oldCategoryOption,
-            @NonNull CategoryOption newCategoryOption);
-
-    List<CategoryOption> queryAll();
+    public static IdentifiableObjectStore<CategoryOptionModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.identifiableStore(databaseAdapter, CategoryOptionModel.TABLE,
+                CategoryOptionModel.Columns.all());
+    }
 }

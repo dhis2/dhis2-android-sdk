@@ -1,9 +1,8 @@
 package org.hisp.dhis.android.core.category;
 
-import static junit.framework.Assert.assertTrue;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
@@ -23,6 +22,8 @@ import java.util.Date;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import static junit.framework.Assert.assertTrue;
 
 public class CategoryEndpointCallShould extends AbsStoreTestCase {
 
@@ -78,10 +79,9 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
 
         CategoryStore store = new CategoryStoreImpl(databaseAdapter());
 
-        CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
+        GenericHandler<CategoryOption, CategoryOptionModel> categoryOptionHandler = CategoryOptionHandler.create(
+                databaseAdapter());
 
-        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                categoryOptionStore);
         CategoryCategoryOptionLinkStore
                 categoryCategoryOptionLinkStore = new CategoryCategoryOptionLinkStoreImpl(
                 databaseAdapter());

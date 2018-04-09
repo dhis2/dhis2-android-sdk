@@ -1,14 +1,13 @@
 package org.hisp.dhis.android.core.category;
 
 
-import static junit.framework.Assert.assertTrue;
-
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.CategoryCallFactory;
 import org.hisp.dhis.android.core.common.CategoryComboCallFactory;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -16,8 +15,11 @@ import org.junit.Before;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Response;
+
+import static junit.framework.Assert.assertTrue;
 
 public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
@@ -59,7 +61,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertThereAreCombosInDB();
         assertThereAreCategoryCombosLinkInDB();
         assertThereAreCategoryOptionCombosInDB();
-        assertThereAreCategorysInDB();
+        assertThereAreCategoriesInDB();
     }
 
     private void downloadCategories() throws Exception {
@@ -100,10 +102,10 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertTrue(categoryOptionCombos.size() > 0);
     }
 
-    private void assertThereAreCategorysInDB() {
-        CategoryOptionStore categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
-        List<CategoryOption> categoryOptions = categoryOptionStore.queryAll();
-        assertTrue(categoryOptions.size() > 0);
+    private void assertThereAreCategoriesInDB() {
+        IdentifiableObjectStore<CategoryOptionModel> categoryOptionStore = CategoryOptionStore.create(databaseAdapter());
+        Set<String> categoryOptionUids = categoryOptionStore.selectUids();
+        assertTrue(categoryOptionUids.size() > 0);
     }
 
     private boolean hasCombos(Response<Payload<CategoryCombo>> response) {

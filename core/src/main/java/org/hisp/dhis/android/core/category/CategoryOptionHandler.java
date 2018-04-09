@@ -1,30 +1,15 @@
 package org.hisp.dhis.android.core.category;
 
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import android.support.annotation.NonNull;
+public final class CategoryOptionHandler {
 
-public class CategoryOptionHandler {
+    private CategoryOptionHandler() {}
 
-    @NonNull
-    private final CategoryOptionStore store;
-
-    public CategoryOptionHandler(@NonNull CategoryOptionStore store) {
-        this.store = store;
-    }
-
-    public void handle(@NonNull CategoryOption categoryOption) {
-
-        if (isDeleted(categoryOption)) {
-            store.delete(categoryOption);
-        } else {
-
-            boolean updated = store.update(categoryOption, categoryOption);
-
-            if (!updated) {
-                store.insert(categoryOption);
-            }
-        }
+    public static GenericHandler<CategoryOption, CategoryOptionModel> create(DatabaseAdapter databaseAdapter) {
+        return new IdentifiableHandlerImpl<>(CategoryOptionStore.create(databaseAdapter));
     }
 }

@@ -5,6 +5,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings({"PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal"})
 public class TrackedEntityAttributeValueHandler {
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 

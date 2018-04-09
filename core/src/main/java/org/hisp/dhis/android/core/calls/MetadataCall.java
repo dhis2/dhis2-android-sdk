@@ -65,7 +65,8 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity"})
+@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity", "PMD.ExcessiveImports"})
 public class MetadataCall implements Call<Response> {
 
     private final GenericCallData data;
@@ -117,6 +118,7 @@ public class MetadataCall implements Call<Response> {
         }
     }
 
+    @SuppressWarnings("PMD.NPathComplexity")
     @Override
     public Response call() throws Exception {
         synchronized (this) {

@@ -87,12 +87,15 @@ public abstract class CategoryOption extends BaseNameableObject {
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
             @JsonProperty(SHORT_NAME) String shortName,
             @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
+            @JsonProperty(DESCRIPTION) String description,
+            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
             @JsonProperty(START_DATE) Date startDate,
             @JsonProperty(END_DATE) Date endDate) {
 
-        return builder().uid(uid).code(code).name(name).displayName(displayName).created(
-                created).lastUpdated(lastUpdated).shortName(shortName).displayShortName(displayShortName)
-                .startDate(startDate).endDate(endDate).build();
+        return builder().uid(uid).code(code).name(name).displayName(displayName).created(created)
+                .lastUpdated(lastUpdated).shortName(shortName).displayShortName(displayShortName)
+                .description(description).displayDescription(displayDescription).startDate(startDate)
+                .endDate(endDate).build();
     }
 
     @AutoValue.Builder

@@ -8,7 +8,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class CategoryOptionHandler extends IdentifiableHandlerImpl<CategoryOption, CategoryOptionModel> {
 
-    CategoryOptionHandler(IdentifiableObjectStore<CategoryOptionModel> categoryOptionStore) {
+    private CategoryOptionHandler(IdentifiableObjectStore<CategoryOptionModel> categoryOptionStore) {
         super(categoryOptionStore);
     }
 

@@ -104,7 +104,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
-    public static final int VERSION = 15;
+    public static final int VERSION = 16;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -124,14 +124,10 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     CategoryModel.Columns.DATA_DIMENSION_TYPE + " TEXT" + ");";
 
     private static final String CREATE_CATEGORY_OPTION_TABLE =
-            "CREATE TABLE " + CategoryOptionModel.TABLE + " (" +
-                    CategoryModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CategoryModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-                    CategoryModel.Columns.CODE + " TEXT," +
-                    CategoryModel.Columns.NAME + " TEXT," +
-                    CategoryModel.Columns.DISPLAY_NAME + " TEXT," +
-                    CategoryModel.Columns.CREATED + " TEXT," +
-                    CategoryModel.Columns.LAST_UPDATED + " TEXT" + ");";
+            SQLStatementBuilder.createNameableModelTable(CategoryOptionModel.TABLE,
+                    CategoryOptionModel.Columns.START_DATE + " TEXT," +
+                            CategoryOptionModel.Columns.END_DATE + " TEXT"
+            );
 
     private static final String CREATE_CATEGORY_CATEGORY_OPTION_LINK_TABLE = "CREATE TABLE " +
             CategoryCategoryOptionLinkModel.TABLE + " (" +

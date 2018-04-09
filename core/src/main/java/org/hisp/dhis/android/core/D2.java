@@ -57,8 +57,8 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboHandler;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionHandler;
+import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
-import org.hisp.dhis.android.core.category.CategoryOptionStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryQuery;
 import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.category.CategoryStore;
@@ -255,7 +255,7 @@ public final class D2 {
 
     private final ObjectStore<OrganisationUnitProgramLinkModel> organisationUnitProgramLinkStore;
 
-    private final CategoryOptionStore categoryOptionStore;
+    private final IdentifiableObjectStore<CategoryOptionModel> categoryOptionStore;
     private final CategoryStore categoryStore;
     private final CategoryComboStore categoryComboStore;
     private final CategoryCategoryComboLinkStore categoryCategoryComboLinkStore;
@@ -363,7 +363,7 @@ public final class D2 {
                 OrganisationUnitProgramLinkStore.create(databaseAdapter);
 
         this.categoryStore = new CategoryStoreImpl(databaseAdapter);
-        this.categoryOptionStore = new CategoryOptionStoreImpl(databaseAdapter());
+        this.categoryOptionStore = CategoryOptionStore.create(databaseAdapter());
         this.categoryCategoryOptionLinkStore = new CategoryCategoryOptionLinkStoreImpl(
                 databaseAdapter());
         this.categoryComboOptionCategoryLinkStore
@@ -391,9 +391,6 @@ public final class D2 {
         TrackedEntityDataValueHandler trackedEntityDataValueHandler =
                 new TrackedEntityDataValueHandler(trackedEntityDataValueStore);
 
-        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                categoryOptionStore);
-
         this.eventHandler = new EventHandler(eventStore, trackedEntityDataValueHandler);
 
         TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler =
@@ -407,7 +404,7 @@ public final class D2 {
                         trackedEntityAttributeValueHandler,
                         enrollmentHandler);
 
-        categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler,
+        categoryHandler = new CategoryHandler(categoryStore, CategoryOptionHandler.create(databaseAdapter),
                 categoryCategoryOptionLinkStore);
 
         CategoryOptionComboHandler optionComboHandler = new CategoryOptionComboHandler(

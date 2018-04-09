@@ -1,21 +1,23 @@
 package org.hisp.dhis.android.core.category;
 
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
-
 import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.common.GenericHandler;
 
 import java.util.List;
 
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+
 public class CategoryHandler {
 
-    private final CategoryOptionHandler categoryOptionHandler;
+    private final GenericHandler<CategoryOption, CategoryOptionModel> categoryOptionHandler;
     private final CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore;
     private final CategoryStore categoryStore;
 
     public CategoryHandler(
             @NonNull CategoryStore categoryStore,
-            @NonNull CategoryOptionHandler categoryOptionHandler,
+            @NonNull GenericHandler<CategoryOption, CategoryOptionModel> categoryOptionHandler,
             @NonNull CategoryCategoryOptionLinkStore categoryCategoryOptionLinkStore) {
         this.categoryStore = categoryStore;
         this.categoryOptionHandler = categoryOptionHandler;
@@ -41,9 +43,9 @@ public class CategoryHandler {
         List<CategoryOption> categoryOptions = category.categoryOptions();
         if (categoryOptions != null) {
 
-            for (CategoryOption option : categoryOptions) {
-                categoryOptionHandler.handle(option);
+            categoryOptionHandler.handleMany(categoryOptions, new CategoryOptionModelBuilder());
 
+            for (CategoryOption option : categoryOptions) {
                 CategoryCategoryOptionLinkModel link = newCategoryOption(category, option);
 
                 categoryCategoryOptionLinkStore.insert(link);

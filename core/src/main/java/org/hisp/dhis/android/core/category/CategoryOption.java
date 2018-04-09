@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.category;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -39,31 +37,33 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
 import java.util.Date;
-import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)
 public abstract class CategoryOption extends BaseNameableObject {
-    private static final String CATEGORY_OPTION_COMBOS = "categoryOptionCombos";
     private static final String START_DATE = "startDate";
     private static final String END_DATE = "endDate";
 
     public static final Field<CategoryOption, String> uid = Field.create(UID);
-    public static final Field<CategoryOption, String> code = Field.create(CODE);
-    public static final Field<CategoryOption, String> name = Field.create(NAME);
-    public static final Field<CategoryOption, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<CategoryOption, String> created = Field.create(CREATED);
-    public static final Field<CategoryOption, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<CategoryOption, Boolean> deleted = Field.create(DELETED);
-    public static final Field<CategoryOption, String> shortName = Field.create(SHORT_NAME);
-    public static final Field<CategoryOption, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+    private static final Field<CategoryOption, String> code = Field.create(CODE);
+    private static final Field<CategoryOption, String> name = Field.create(NAME);
+    private static final Field<CategoryOption, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<CategoryOption, String> created = Field.create(CREATED);
+    private static final Field<CategoryOption, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<CategoryOption, String> shortName = Field.create(SHORT_NAME);
+    private static final Field<CategoryOption, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+    private static final Field<CategoryOption, String> description = Field.create(DESCRIPTION);
+    private static final Field<CategoryOption, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
+    private static final Field<CategoryOption, String> startDate = Field.create(START_DATE);
+    private static final Field<CategoryOption, String> endDate = Field.create(END_DATE);
+    private static final Field<CategoryOption, Boolean> deleted = Field.create(DELETED);
 
-
-    @Nullable
-    @JsonProperty(CATEGORY_OPTION_COMBOS)
-    public abstract List<CategoryOptionCombo> categoryOptionCombos();
+    static final Fields<CategoryOption> allFields = Fields.<CategoryOption>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description,
+            displayDescription, startDate, endDate, deleted).build();
 
     @Nullable
     @JsonProperty(START_DATE)
@@ -84,18 +84,22 @@ public abstract class CategoryOption extends BaseNameableObject {
             @JsonProperty(NAME) String name,
             @JsonProperty(DISPLAY_NAME) String displayName,
             @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated
-    ) {
-        return builder().uid(uid).code(code).name(name).displayName(displayName).created(
-                created).lastUpdated(lastUpdated).build();
+            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(SHORT_NAME) String shortName,
+            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
+            @JsonProperty(DESCRIPTION) String description,
+            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
+            @JsonProperty(START_DATE) Date startDate,
+            @JsonProperty(END_DATE) Date endDate) {
+
+        return builder().uid(uid).code(code).name(name).displayName(displayName).created(created)
+                .lastUpdated(lastUpdated).shortName(shortName).displayShortName(displayShortName)
+                .description(description).displayDescription(displayDescription).startDate(startDate)
+                .endDate(endDate).build();
     }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
-
-        @JsonProperty(CATEGORY_OPTION_COMBOS)
-        public abstract Builder categoryOptionCombos(
-                @Nullable List<CategoryOptionCombo> categoryOptionCombos);
 
         @JsonProperty(START_DATE)
         public abstract Builder startDate(@Nullable Date startDate);
@@ -103,13 +107,9 @@ public abstract class CategoryOption extends BaseNameableObject {
         @JsonProperty(END_DATE)
         public abstract Builder endDate(@Nullable Date endDate);
 
-        // internal, not exposed
-        abstract List<CategoryOptionCombo> categoryOptionCombos();
-
         abstract CategoryOption autoBuild();
 
         public CategoryOption build() {
-            categoryOptionCombos(safeUnmodifiableList(categoryOptionCombos()));
             return autoBuild();
         }
     }

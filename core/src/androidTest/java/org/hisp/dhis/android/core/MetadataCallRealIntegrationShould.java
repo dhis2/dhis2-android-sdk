@@ -1,13 +1,13 @@
 package org.hisp.dhis.android.core;
 
-import static com.google.common.truth.Truth.assertThat;
-
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 
 import java.io.IOException;
+
+import static com.google.common.truth.Truth.assertThat;
 
 public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     /**

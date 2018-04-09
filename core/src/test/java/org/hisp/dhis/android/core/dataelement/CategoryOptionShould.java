@@ -60,12 +60,7 @@ public class CategoryOptionShould {
                         "\"dimensionItemType\":\"CATEGORY_OPTION\"," +
                         "\"categories\":[]," +
                         "\"organisationUnits\":[]," +
-                        "\"categoryOptionCombos\":[" +
-                        "{\"id\":\"S34ULMcHMca\"}," +
-                        "{\"id\":\"sqGRzCziswD\"}," +
-                        "{\"id\":\"WVzTbHctjok\"}," +
-                        "{\"id\":\"QFcGyiRFFH5\"}" +
-                        "]," +
+                        "\"categoryOptionCombos\":[]," +
                         "\"categoryOptionGroups\":[]" +
                         "}",
                 CategoryOption.class);
@@ -85,11 +80,5 @@ public class CategoryOptionShould {
                 BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-01T00:00:00.000"));
         assertThat(option.endDate()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2016-05-01T00:00:00.000"));
-
-        // check if list maintains order of the items in payload
-        assertThat(option.categoryOptionCombos().get(0).uid()).isEqualTo("S34ULMcHMca");
-        assertThat(option.categoryOptionCombos().get(1).uid()).isEqualTo("sqGRzCziswD");
-        assertThat(option.categoryOptionCombos().get(2).uid()).isEqualTo("WVzTbHctjok");
-        assertThat(option.categoryOptionCombos().get(3).uid()).isEqualTo("QFcGyiRFFH5");
     }
 }

@@ -116,9 +116,9 @@ public class ProgramStoreImpl implements ProgramStore {
             ProgramModel.Columns.RELATED_PROGRAM + " =?, " +
             ProgramModel.Columns.TRACKED_ENTITY_TYPE + " =?, " +
             ProgramModel.Columns.CATEGORY_COMBO + " =?, " +
-            ProgramModel.Columns.ACCESS_DATA_WRITE + " =? " +
-            ProgramModel.Columns.EXPIRY_DAYS + " =? " +
-            ProgramModel.Columns.COMPLETE_EVENTS_EXPIRY_DAYS + " =? " +
+            ProgramModel.Columns.ACCESS_DATA_WRITE + " =?, " +
+            ProgramModel.Columns.EXPIRY_DAYS + " =?, " +
+            ProgramModel.Columns.COMPLETE_EVENTS_EXPIRY_DAYS + " =?, " +
             ProgramModel.Columns.EXPIRY_PERIOD_TYPE + " =? " +
             " WHERE " +
             ProgramModel.Columns.UID + " = ?;";

@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
@@ -80,6 +81,9 @@ public abstract class Program extends BaseNameableObject {
     private static final String PROGRAM_RULE_VARIABLES = "programRuleVariables";
     private final static String ACCESS = "access";
     private final static String STYLE = "style";
+    private final static String EXPIRY_DAYS = "expiryDays";
+    private final static String COMPLETE_EVENTS_EXPIRY_DAYS = "completeEventsExpiryDays";
+    private final static String EXPIRY_PERIOD_TYPE = "expiryPeriodType";
 
     public static final Field<Program, String> uid
             = Field.create(UID);
@@ -135,6 +139,13 @@ public abstract class Program extends BaseNameableObject {
             = Field.create(PROGRAM_TYPE);
     public static final Field<Program, String> relationshipText
             = Field.create(RELATIONSHIP_TEXT);
+    public static final Field<Program, String> expiryDays
+            = Field.create(EXPIRY_DAYS);
+    public static final Field<Program, String> completeEventsExpiryDays
+            = Field.create(COMPLETE_EVENTS_EXPIRY_DAYS);
+    public static final Field<Program, String> expiryPeriodType
+            = Field.create(EXPIRY_PERIOD_TYPE);
+
     public static final NestedField<Program, RelationshipType> relationshipType
             = NestedField.create(RELATIONSHIP_TYPE);
     public static final NestedField<Program, ProgramTrackedEntityAttribute> programTrackedEntityAttributes
@@ -268,6 +279,18 @@ public abstract class Program extends BaseNameableObject {
     @JsonProperty(STYLE)
     public abstract ObjectStyle style();
 
+    @Nullable
+    @JsonProperty(EXPIRY_DAYS)
+    public abstract Integer expiryDays();
+
+    @Nullable
+    @JsonProperty(COMPLETE_EVENTS_EXPIRY_DAYS)
+    public abstract Integer completeEventsExpiryDays();
+
+    @Nullable
+    @JsonProperty(EXPIRY_PERIOD_TYPE)
+    public abstract PeriodType expiryPeriodType();
+
     @JsonCreator
     public static Program create(
             @JsonProperty(UID) String uid,
@@ -307,6 +330,9 @@ public abstract class Program extends BaseNameableObject {
             @JsonProperty(PROGRAM_RULES) List<ProgramRule> programRules,
             @JsonProperty(PROGRAM_RULE_VARIABLES) List<ProgramRuleVariable> programRuleVariables,
             @JsonProperty(STYLE) ObjectStyle style,
+            @JsonProperty(EXPIRY_DAYS) Integer expiryDays,
+            @JsonProperty(COMPLETE_EVENTS_EXPIRY_DAYS) Integer completeEventsExpiryDays,
+            @JsonProperty(EXPIRY_PERIOD_TYPE) PeriodType expiryPeriodType,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_Program(
@@ -347,6 +373,9 @@ public abstract class Program extends BaseNameableObject {
                 safeUnmodifiableList(programStages),
                 safeUnmodifiableList(programRules),
                 safeUnmodifiableList(programRuleVariables),
-                style);
+                style,
+                expiryDays,
+                completeEventsExpiryDays,
+                expiryPeriodType);
     }
 }

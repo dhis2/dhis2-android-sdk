@@ -38,7 +38,9 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 @SuppressWarnings({"PMD.ExcessivePublicCount"})
 @AutoValue
@@ -68,6 +70,9 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
         public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
         public static final String CATEGORY_COMBO = "categoryCombo";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
+        public final static String EXPIRY_DAYS = "expiryDays";
+        public final static String COMPLETE_EVENTS_EXPIRY_DAYS = "completeEventsExpiryDays";
+        public final static String EXPIRY_PERIOD_TYPE = "expiryPeriodType";
     }
 
     public static ProgramModel create(Cursor cursor) {
@@ -166,6 +171,19 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
     @ColumnName(Columns.ACCESS_DATA_WRITE)
     public abstract Boolean accessDataWrite();
 
+    @Nullable
+    @ColumnName(Columns.EXPIRY_DAYS)
+    public abstract Integer expiryDays();
+
+    @Nullable
+    @ColumnName(Columns.COMPLETE_EVENTS_EXPIRY_DAYS)
+    public abstract Integer completeEventsExpiryDays();
+
+    @Nullable
+    @ColumnName(Columns.EXPIRY_PERIOD_TYPE)
+    @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
+    public abstract PeriodType expiryPeriodType();
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
 
@@ -210,6 +228,12 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
         public abstract Builder categoryCombo(@Nullable String categoryCombo);
 
         public abstract Builder accessDataWrite(@Nullable Boolean accessDataWrite);
+
+        public abstract Builder expiryDays(@Nullable Integer expiryDays);
+
+        public abstract Builder completeEventsExpiryDays(@Nullable Integer completeEventsExpiryDays);
+
+        public abstract Builder expiryPeriodType(@Nullable PeriodType expiryPeriodType);
 
         public abstract ProgramModel build();
     }

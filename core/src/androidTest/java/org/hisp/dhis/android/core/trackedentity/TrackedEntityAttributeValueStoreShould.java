@@ -87,7 +87,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
 
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L,
                 ORGANIZATION_UNIT);
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
+        ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 TRACKED_ENTITY_INSTANCE, ORGANIZATION_UNIT, TRACKED_ENTITY);
         ContentValues trackedEntityInstance_2 = CreateTrackedEntityInstanceUtils.create(
@@ -100,7 +100,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
                 .create(1L, TRACKED_ENTITY_ATTRIBUTE_2, null);
 
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
-        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance_2);
         database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);

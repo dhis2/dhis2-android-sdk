@@ -110,7 +110,7 @@ public class TrackedEntityInstanceEndPointCall implements
                 TrackedEntityInstance.uid, TrackedEntityInstance.created,
                 TrackedEntityInstance.lastUpdated,
                 TrackedEntityInstance.organisationUnit,
-                TrackedEntityInstance.trackedEntity,
+                TrackedEntityInstance.trackedEntityType,
                 TrackedEntityInstance.coordinates,
                 TrackedEntityInstance.featureType,
                 TrackedEntityInstance.deleted,

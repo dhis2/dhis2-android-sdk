@@ -69,7 +69,7 @@ public class TrackedEntityInstanceModelShould {
                 Columns.CREATED,
                 Columns.LAST_UPDATED,
                 Columns.ORGANISATION_UNIT,
-                Columns.TRACKED_ENTITY,
+                Columns.TRACKED_ENTITY_TYPE,
                 Columns.COORDINATES,
                 Columns.FEATURE_TYPE,
                 Columns.STATE
@@ -87,7 +87,7 @@ public class TrackedEntityInstanceModelShould {
         assertThat(model.created()).isEqualTo(date);
         assertThat(model.lastUpdated()).isEqualTo(date);
         assertThat(model.organisationUnit()).isEqualTo(ORGANISATION_UNIT);
-        assertThat(model.trackedEntity()).isEqualTo(TRACKED_ENTITY);
+        assertThat(model.trackedEntityType()).isEqualTo(TRACKED_ENTITY);
         assertThat(model.coordinates()).isEqualTo(COORDINATES);
         assertThat(model.featureType()).isEqualTo(FEATURE_TYPE);
         assertThat(model.state()).isEqualTo(STATE);
@@ -101,7 +101,7 @@ public class TrackedEntityInstanceModelShould {
                 .created(date)
                 .lastUpdated(date)
                 .organisationUnit(ORGANISATION_UNIT)
-                .trackedEntity(TRACKED_ENTITY)
+                .trackedEntityType(TRACKED_ENTITY)
                 .coordinates(COORDINATES)
                 .featureType(FEATURE_TYPE)
                 .state(STATE)
@@ -113,7 +113,7 @@ public class TrackedEntityInstanceModelShould {
         assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.ORGANISATION_UNIT)).isEqualTo(ORGANISATION_UNIT);
-        assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY)).isEqualTo(TRACKED_ENTITY);
+        assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_TYPE)).isEqualTo(TRACKED_ENTITY);
         assertThat(contentValues.getAsString(Columns.COORDINATES)).isEqualTo(COORDINATES);
         assertThat(contentValues.getAsString(Columns.FEATURE_TYPE)).isEqualTo(FEATURE_TYPE.name());
         assertThat(contentValues.getAsString(Columns.STATE)).isEqualTo(STATE.name());

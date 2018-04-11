@@ -117,9 +117,9 @@ public class TrackedEntityTypeStoreShould extends AbsStoreTestCase {
 
     @Test
     public void update_shouldUpdateRowInDatabase() {
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, UID);
+        ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, UID);
 
-        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
         Cursor cursor1 = database().query(TrackedEntityTypeModel.TABLE, PROJECTION, null, null, null, null, null);
 
@@ -168,9 +168,9 @@ public class TrackedEntityTypeStoreShould extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteRowInDatabase() {
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, UID);
+        ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, UID);
 
-        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
         int deleted = store.delete(UID);
         Cursor cursor = database().query(TrackedEntityTypeModel.TABLE, null, null, null, null, null, null);

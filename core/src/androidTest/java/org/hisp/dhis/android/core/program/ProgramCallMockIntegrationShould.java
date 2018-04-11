@@ -127,8 +127,8 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         database().insert(CategoryComboModel.TABLE, null, categoryCombo2);
 
         // inserting tracked entity
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
-        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntity);
+        ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
         programCall = ProgramCall.FACTORY.create(
                 GenericCallData.create(databaseAdapter(), d2.retrofit()), uids);

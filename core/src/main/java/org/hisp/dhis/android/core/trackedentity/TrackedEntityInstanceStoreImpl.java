@@ -58,7 +58,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             Columns.CREATED_AT_CLIENT + ", " +
             Columns.LAST_UPDATED_AT_CLIENT + ", " +
             Columns.ORGANISATION_UNIT + ", " +
-            Columns.TRACKED_ENTITY + ", " +
+            Columns.TRACKED_ENTITY_TYPE + ", " +
             Columns.COORDINATES + ", " +
             Columns.FEATURE_TYPE + ", " +
             Columns.STATE +
@@ -71,7 +71,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             Columns.CREATED_AT_CLIENT + " =? , " +
             Columns.LAST_UPDATED_AT_CLIENT + " =? , " +
             Columns.ORGANISATION_UNIT + " =?, " +
-            Columns.TRACKED_ENTITY + " =?, " +
+            Columns.TRACKED_ENTITY_TYPE + " =?, " +
             Columns.COORDINATES + " =?, " +
             Columns.FEATURE_TYPE + " =?, " +
             Columns.STATE + " =? " +
@@ -127,7 +127,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
                        @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
-                       @NonNull String organisationUnit, @NonNull String trackedEntity, @Nullable String coordinates,
+                       @NonNull String organisationUnit, @NonNull String trackedEntityType, @Nullable String coordinates,
                        @Nullable FeatureType featureType, @Nullable State state) {
 
         sqLiteBind(insertStatement, 1, uid);
@@ -136,7 +136,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         sqLiteBind(insertStatement, 4, createdAtClient);
         sqLiteBind(insertStatement, 5, lastUpdatedAtClient);
         sqLiteBind(insertStatement, 6, organisationUnit);
-        sqLiteBind(insertStatement, 7, trackedEntity);
+        sqLiteBind(insertStatement, 7, trackedEntityType);
         sqLiteBind(insertStatement, 8, coordinates);
         sqLiteBind(insertStatement, 9, featureType);
         sqLiteBind(insertStatement, 10, state);
@@ -154,7 +154,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
     @Override
     public int update(@NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated,
                       @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
-                      @NonNull String organisationUnit, @NonNull String trackedEntity,
+                      @NonNull String organisationUnit, @NonNull String trackedEntityType,
                       @Nullable String coordinates, @Nullable FeatureType featureType,
                       @NonNull State state, @NonNull String whereTrackedEntityInstanceUid) {
         sqLiteBind(updateStatement, 1, uid);
@@ -163,7 +163,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         sqLiteBind(updateStatement, 4, createdAtClient);
         sqLiteBind(updateStatement, 5, lastUpdatedAtClient);
         sqLiteBind(updateStatement, 6, organisationUnit);
-        sqLiteBind(updateStatement, 7, trackedEntity);
+        sqLiteBind(updateStatement, 7, trackedEntityType);
         sqLiteBind(updateStatement, 8, coordinates);
         sqLiteBind(updateStatement, 9, featureType);
         sqLiteBind(updateStatement, 10, state);
@@ -239,14 +239,14 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
                     String createdAtClient = cursor.getString(3);
                     String lastUpdatedAtClient = cursor.getString(4);
                     String organisationUnit = cursor.getString(5);
-                    String trackedEntity = cursor.getString(6);
+                    String trackedEntityType = cursor.getString(6);
                     String coordinates = cursor.getString(7);
                     FeatureType featureType = cursor.getString(8) == null ? null :
                             FeatureType.valueOf(FeatureType.class, cursor.getString(8));
 
                     trackedEntityInstanceMap.put(uid, TrackedEntityInstance.create(
                             uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                            organisationUnit, trackedEntity, coordinates, featureType, false,
+                            organisationUnit, trackedEntityType, coordinates, featureType, false,
                             null, null, null));
 
                 } while (cursor.moveToNext());

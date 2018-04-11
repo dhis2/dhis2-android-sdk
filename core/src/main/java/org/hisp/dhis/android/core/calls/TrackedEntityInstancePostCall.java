@@ -175,7 +175,7 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
             trackedEntityInstancesRecreated.add(TrackedEntityInstance.create(trackedEntityInstance.uid(),
                     trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),
                     trackedEntityInstance.createdAtClient(), trackedEntityInstance.lastUpdatedAtClient(),
-                    trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntity(),
+                    trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntityType(),
                     trackedEntityInstance.coordinates(), trackedEntityInstance.featureType(),
                     trackedEntityInstance.deleted(), attributeValues,
                     relationshipRecreated, enrollmentsRecreated));

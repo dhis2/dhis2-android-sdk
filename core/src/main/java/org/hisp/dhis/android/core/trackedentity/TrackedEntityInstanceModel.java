@@ -52,7 +52,7 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
         public static final String CREATED_AT_CLIENT = "createdAtClient";
         public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
         public static final String ORGANISATION_UNIT = "organisationUnit";
-        public static final String TRACKED_ENTITY = "trackedEntityType";
+        public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
         public static final String COORDINATES = "coordinates";
         public static final String FEATURE_TYPE = "featureType";
 
@@ -60,7 +60,7 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
 
         public static String[] all() {
             return Utils.appendInNewArray(BaseModel.Columns.all(),
-                    UID, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT, ORGANISATION_UNIT, TRACKED_ENTITY, CREATED,
+                    UID, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT, ORGANISATION_UNIT, TRACKED_ENTITY_TYPE, CREATED,
                     LAST_UPDATED, STATE, COORDINATES, FEATURE_TYPE);
         }
     }
@@ -95,8 +95,8 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
     public abstract String organisationUnit();
 
     @Nullable
-    @ColumnName(Columns.TRACKED_ENTITY)
-    public abstract String trackedEntity();
+    @ColumnName(Columns.TRACKED_ENTITY_TYPE)
+    public abstract String trackedEntityType();
 
     @Nullable
     @ColumnName(Columns.COORDINATES)
@@ -117,7 +117,7 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
 
         public abstract Builder organisationUnit(@Nullable String organisationUnit);
 
-        public abstract Builder trackedEntity(@Nullable String trackedEntity);
+        public abstract Builder trackedEntityType(@Nullable String trackedEntityType);
 
         public abstract Builder coordinates(@Nullable String coordinates);
 

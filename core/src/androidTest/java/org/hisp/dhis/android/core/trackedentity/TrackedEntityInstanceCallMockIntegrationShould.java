@@ -169,7 +169,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                 trackedEntityInstance.createdAtClient(),
                 trackedEntityInstance.lastUpdatedAtClient(),
                 trackedEntityInstance.organisationUnit(),
-                trackedEntityInstance.trackedEntity(),
+                trackedEntityInstance.trackedEntityType(),
                 trackedEntityInstance.coordinates(),
                 trackedEntityInstance.featureType(),
                 trackedEntityInstance.deleted(),
@@ -262,7 +262,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         downloadedTei = TrackedEntityInstance.create(
                 downloadedTei.uid(), downloadedTei.created(), downloadedTei.lastUpdated(),
                 downloadedTei.createdAtClient(), downloadedTei.lastUpdatedAtClient(),
-                downloadedTei.organisationUnit(), downloadedTei.trackedEntity(), downloadedTei.coordinates(),
+                downloadedTei.organisationUnit(), downloadedTei.trackedEntityType(), downloadedTei.coordinates(),
                 downloadedTei.featureType(), downloadedTei.deleted(), attValues.get(downloadedTei.uid()),
                 relationships, downloadedEnrollments);
 

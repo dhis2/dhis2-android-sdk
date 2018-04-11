@@ -223,7 +223,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
                 trackedEntityInstance.uid(), trackedEntityInstance.created(),
                 trackedEntityInstance.lastUpdated(), trackedEntityInstance.createdAtClient(),
                 trackedEntityInstance.lastUpdatedAtClient(), trackedEntityInstance.organisationUnit(),
-                trackedEntityInstance.trackedEntity(), trackedEntityInstance.coordinates(),
+                trackedEntityInstance.trackedEntityType(), trackedEntityInstance.coordinates(),
                 trackedEntityInstance.featureType(), state);
 
         return trackedEntityInstance;

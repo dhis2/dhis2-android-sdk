@@ -211,7 +211,7 @@ public class ProgramModelShould {
                 .relationshipType(RELATIONSHIP_TYPE)
                 .relationshipText(RELATIONSHIP_TEXT)
                 .relatedProgram(RELATED_PROGRAM)
-                .trackedEntity(TRACKED_ENTITY)
+                .trackedEntityType(TRACKED_ENTITY)
                 .build();
         ContentValues contentValues = model.toContentValues();
 

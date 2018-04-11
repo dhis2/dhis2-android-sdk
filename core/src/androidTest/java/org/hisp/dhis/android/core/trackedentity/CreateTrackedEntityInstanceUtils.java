@@ -41,13 +41,13 @@ public class CreateTrackedEntityInstanceUtils {
 
     public static ContentValues create(@NonNull String uid,
                                        @NonNull String organisationUnit,
-                                       @NonNull String trackedEntity) {
+                                       @NonNull String trackedEntityType) {
         ContentValues trackedEntityInstance = new ContentValues();
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.UID, uid);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.CREATED, DATE);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.LAST_UPDATED, DATE);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT, organisationUnit);
-        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.TRACKED_ENTITY, trackedEntity);
+        trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.TRACKED_ENTITY_TYPE, trackedEntityType);
         trackedEntityInstance.put(TrackedEntityInstanceModel.Columns.STATE, STATE.name());
         return trackedEntityInstance;
     }

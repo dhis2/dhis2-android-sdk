@@ -205,7 +205,7 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
 
         public abstract Builder relatedProgram(@Nullable String relatedProgram);
 
-        public abstract Builder trackedEntity(@Nullable String trackedEntity);
+        public abstract Builder trackedEntityType(@Nullable String trackedEntityType);
 
         public abstract Builder categoryCombo(@Nullable String categoryCombo);
 

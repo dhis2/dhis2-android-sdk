@@ -42,15 +42,15 @@ public interface TrackedEntityInstanceStore extends DeletableStore {
 
     long insert(
             @NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated, @Nullable String createdAtClient,
-            @Nullable String lastUpdatedAtClient, @NonNull String organisationUnit, @NonNull String trackedEntity,
+            @Nullable String lastUpdatedAtClient, @NonNull String organisationUnit, @NonNull String trackedEntityType,
             @Nullable String coordinates, @Nullable FeatureType featureType, @Nullable State state);
 
     int delete();
 
     int update(@NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated, @Nullable String createdAtClient,
-               @Nullable String lastUpdatedAtClient, @NonNull String organisationUnit, @NonNull String trackedEntity,
-               @Nullable String coordinates, @Nullable FeatureType featureType, @Nullable State state,
-               @NonNull String whereTrackedEntityInstanceUid);
+               @Nullable String lastUpdatedAtClient, @NonNull String organisationUnit,
+               @NonNull String trackedEntityType, @Nullable String coordinates, @Nullable FeatureType featureType,
+               @Nullable State state, @NonNull String whereTrackedEntityInstanceUid);
 
     int delete(@NonNull String uid);
 

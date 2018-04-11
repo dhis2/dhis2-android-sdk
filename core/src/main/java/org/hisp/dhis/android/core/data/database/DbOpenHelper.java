@@ -84,7 +84,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserModel;
@@ -104,7 +104,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
-    public static final int VERSION = 16;
+    public static final int VERSION = 17;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -336,15 +336,15 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             ProgramModel.Columns.RELATIONSHIP_TYPE + " TEXT," +
             ProgramModel.Columns.RELATIONSHIP_TEXT + " TEXT," +
             ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
-            ProgramModel.Columns.TRACKED_ENTITY + " TEXT," +
+            ProgramModel.Columns.TRACKED_ENTITY_TYPE + " TEXT," +
             ProgramModel.Columns.CATEGORY_COMBO + " TEXT," +
             ProgramModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
             " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID
             + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
-            " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY + ")" +
-            " REFERENCES " + TrackedEntityModel.TABLE + " (" + TrackedEntityModel.Columns.UID + ")"
+            " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY_TYPE + ")" +
+            " REFERENCES " + TrackedEntityTypeModel.TABLE + " (" + TrackedEntityTypeModel.Columns.UID + ")"
             +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             " FOREIGN KEY (" + ProgramModel.Columns.CATEGORY_COMBO + ")" +
@@ -354,19 +354,19 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_TABLE =
-            "CREATE TABLE " + TrackedEntityModel.TABLE +
+            "CREATE TABLE " + TrackedEntityTypeModel.TABLE +
                     " (" +
-                    TrackedEntityModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    TrackedEntityModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-                    TrackedEntityModel.Columns.CODE + " TEXT," +
-                    TrackedEntityModel.Columns.NAME + " TEXT," +
-                    TrackedEntityModel.Columns.DISPLAY_NAME + " TEXT," +
-                    TrackedEntityModel.Columns.CREATED + " TEXT," +
-                    TrackedEntityModel.Columns.LAST_UPDATED + " TEXT," +
-                    TrackedEntityModel.Columns.SHORT_NAME + " TEXT," +
-                    TrackedEntityModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-                    TrackedEntityModel.Columns.DESCRIPTION + " TEXT," +
-                    TrackedEntityModel.Columns.DISPLAY_DESCRIPTION + " TEXT" +
+                    TrackedEntityTypeModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    TrackedEntityTypeModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+                    TrackedEntityTypeModel.Columns.CODE + " TEXT," +
+                    TrackedEntityTypeModel.Columns.NAME + " TEXT," +
+                    TrackedEntityTypeModel.Columns.DISPLAY_NAME + " TEXT," +
+                    TrackedEntityTypeModel.Columns.CREATED + " TEXT," +
+                    TrackedEntityTypeModel.Columns.LAST_UPDATED + " TEXT," +
+                    TrackedEntityTypeModel.Columns.SHORT_NAME + " TEXT," +
+                    TrackedEntityTypeModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+                    TrackedEntityTypeModel.Columns.DESCRIPTION + " TEXT," +
+                    TrackedEntityTypeModel.Columns.DISPLAY_DESCRIPTION + " TEXT" +
                     ");";
 
     private static final String CREATE_DATA_ELEMENT_TABLE =
@@ -792,7 +792,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             TrackedEntityInstanceModel.Columns.CREATED_AT_CLIENT + " TEXT," +
             TrackedEntityInstanceModel.Columns.LAST_UPDATED_AT_CLIENT + " TEXT," +
             TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
-            TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + " TEXT NOT NULL," +
+            TrackedEntityInstanceModel.Columns.TRACKED_ENTITY_TYPE + " TEXT NOT NULL," +
             TrackedEntityInstanceModel.Columns.COORDINATES + " TEXT," +
             TrackedEntityInstanceModel.Columns.FEATURE_TYPE + " TEXT," +
             TrackedEntityInstanceModel.Columns.STATE + " TEXT," +
@@ -800,8 +800,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID
             + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-            " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + ")" +
-            " REFERENCES " + TrackedEntityModel.TABLE + " (" + TrackedEntityModel.Columns.UID + ")"
+            " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.TRACKED_ENTITY_TYPE + ")" +
+            " REFERENCES " + TrackedEntityTypeModel.TABLE + " (" + TrackedEntityTypeModel.Columns.UID + ")"
             +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";

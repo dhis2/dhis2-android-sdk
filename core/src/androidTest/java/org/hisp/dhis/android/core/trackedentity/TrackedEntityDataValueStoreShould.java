@@ -116,7 +116,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
 
         trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter());
 
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID,
+        ContentValues trackedEntityType = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID,
                 TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
@@ -138,7 +138,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         ContentValues dataElement1 = CreateDataElementUtils.create(1L, DATA_ELEMENT_1, null);
         ContentValues dataElement2 = CreateDataElementUtils.create(2L, DATA_ELEMENT_2, null);
 
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
         database().insert(RelationshipTypeModel.TABLE, null,
                 relationshipType);
         database().insert(ProgramModel.TABLE, null, program);

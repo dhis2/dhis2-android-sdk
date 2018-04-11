@@ -66,7 +66,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class TrackedEntityCallUnitShould {
+public class TrackedEntityTypeCallUnitShould {
 
     @Mock
     private Cursor cursor;
@@ -76,7 +76,7 @@ public class TrackedEntityCallUnitShould {
     private DatabaseAdapter database;
 
     @Mock
-    private TrackedEntityStore trackedEntityStore;
+    private TrackedEntityTypeStore trackedEntityTypeStore;
 
     @Mock
     private ResourceStore resourceStore;
@@ -85,30 +85,30 @@ public class TrackedEntityCallUnitShould {
     private Transaction transaction;
 
     @Mock
-    private TrackedEntityService service;
+    private TrackedEntityTypeService service;
 
     //Mock return value of the mock service:
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<Payload<TrackedEntity>> retrofitCall;
+    private retrofit2.Call<Payload<TrackedEntityType>> retrofitCall;
 
     @Mock
-    private Payload<TrackedEntity> payload;
+    private Payload<TrackedEntityType> payload;
 
     @Mock
-    private TrackedEntity trackedEntity;
+    private TrackedEntityType trackedEntityType;
 
     @Mock
     private Date created, lastUpdated;
 
     //Captors for the service arguments:
     @Captor
-    private ArgumentCaptor<Fields<TrackedEntity>> fieldsCaptor;
+    private ArgumentCaptor<Fields<TrackedEntityType>> fieldsCaptor;
 
     @Captor
-    private ArgumentCaptor<Filter<TrackedEntity, String>> idFilterCaptor;
+    private ArgumentCaptor<Filter<TrackedEntityType, String>> idFilterCaptor;
 
     @Captor
-    private ArgumentCaptor<Filter<TrackedEntity, String>> lastUpdatedFilterCaptor;
+    private ArgumentCaptor<Filter<TrackedEntityType, String>> lastUpdatedFilterCaptor;
 
     @Captor
     private ArgumentCaptor<Boolean> pagingCaptor;
@@ -117,25 +117,25 @@ public class TrackedEntityCallUnitShould {
     private Date serverDate;
 
     //the call we are testing:
-    private TrackedEntityCall call;
+    private TrackedEntityTypeCall call;
 
     @Before
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
-        when(trackedEntity.uid()).thenReturn("uid1");
-        when(trackedEntity.code()).thenReturn("code");
-        when(trackedEntity.name()).thenReturn("name");
-        when(trackedEntity.displayName()).thenReturn("display_name");
-        when(trackedEntity.deleted()).thenReturn(false);
-        when(trackedEntity.created()).thenReturn(created);
-        when(trackedEntity.lastUpdated()).thenReturn(lastUpdated);
-        when(trackedEntity.shortName()).thenReturn("short_name");
-        when(trackedEntity.displayShortName()).thenReturn("display_short_name");
-        when(trackedEntity.description()).thenReturn("description");
-        when(trackedEntity.displayDescription()).thenReturn("display_description");
+        when(trackedEntityType.uid()).thenReturn("uid1");
+        when(trackedEntityType.code()).thenReturn("code");
+        when(trackedEntityType.name()).thenReturn("name");
+        when(trackedEntityType.displayName()).thenReturn("display_name");
+        when(trackedEntityType.deleted()).thenReturn(false);
+        when(trackedEntityType.created()).thenReturn(created);
+        when(trackedEntityType.lastUpdated()).thenReturn(lastUpdated);
+        when(trackedEntityType.shortName()).thenReturn("short_name");
+        when(trackedEntityType.displayShortName()).thenReturn("display_short_name");
+        when(trackedEntityType.description()).thenReturn("description");
+        when(trackedEntityType.displayDescription()).thenReturn("display_description");
 
-        call = new TrackedEntityCall(Sets.newLinkedHashSet(trackedEntity.uid()), database,
-                trackedEntityStore, resourceStore, service, serverDate);
+        call = new TrackedEntityTypeCall(Sets.newLinkedHashSet(trackedEntityType.uid()), database,
+                trackedEntityTypeStore, resourceStore, service, serverDate);
 
         when(database.beginNewTransaction()).thenReturn(transaction);
         when(service.trackedEntities(
@@ -150,19 +150,19 @@ public class TrackedEntityCallUnitShould {
     @Test
     @SuppressWarnings("unchecked")
     public void invoke_server_with_correct_parameters_after_call() throws Exception {
-        when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
+        when(payload.items()).thenReturn(Collections.singletonList(trackedEntityType));
 
         call.call();
 
         assertThat(fieldsCaptor.getValue().fields()).contains(
-                TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
-                TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
-                TrackedEntity.shortName, TrackedEntity.displayShortName,
-                TrackedEntity.description, TrackedEntity.displayDescription,
-                TrackedEntity.displayDescription,
-                TrackedEntity.deleted
+                TrackedEntityType.uid, TrackedEntityType.code, TrackedEntityType.name,
+                TrackedEntityType.displayName, TrackedEntityType.created, TrackedEntityType.lastUpdated,
+                TrackedEntityType.shortName, TrackedEntityType.displayShortName,
+                TrackedEntityType.description, TrackedEntityType.displayDescription,
+                TrackedEntityType.displayDescription,
+                TrackedEntityType.deleted
         );
-        assertThat(idFilterCaptor.getValue().values()).contains(trackedEntity.uid());
+        assertThat(idFilterCaptor.getValue().values()).contains(trackedEntityType.uid());
         assertThat(lastUpdatedFilterCaptor.getValue()).isNull();
         assertThat(pagingCaptor.getValue()).isFalse();
     }
@@ -172,19 +172,19 @@ public class TrackedEntityCallUnitShould {
     public void invoke_server_with_correct_parameters_after_call_with_last_updated() throws Exception {
         String date = "2014-11-25T09:37:53.358";
         when(resourceStore.getLastUpdated(eq(ResourceModel.Type.TRACKED_ENTITY))).thenReturn(date);
-        when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
+        when(payload.items()).thenReturn(Collections.singletonList(trackedEntityType));
 
         call.call();
 
         assertThat(fieldsCaptor.getValue().fields()).contains(
-                TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
-                TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
-                TrackedEntity.shortName, TrackedEntity.displayShortName,
-                TrackedEntity.description, TrackedEntity.displayDescription,
-                TrackedEntity.displayDescription,
-                TrackedEntity.deleted
+                TrackedEntityType.uid, TrackedEntityType.code, TrackedEntityType.name,
+                TrackedEntityType.displayName, TrackedEntityType.created, TrackedEntityType.lastUpdated,
+                TrackedEntityType.shortName, TrackedEntityType.displayShortName,
+                TrackedEntityType.description, TrackedEntityType.displayDescription,
+                TrackedEntityType.displayDescription,
+                TrackedEntityType.deleted
         );
-        assertThat(idFilterCaptor.getValue().values()).contains(trackedEntity.uid());
+        assertThat(idFilterCaptor.getValue().values()).contains(trackedEntityType.uid());
         assertThat(lastUpdatedFilterCaptor.getValue().values()).contains(date);
         assertThat(pagingCaptor.getValue()).isFalse();
     }
@@ -207,8 +207,8 @@ public class TrackedEntityCallUnitShould {
     @SuppressWarnings("unchecked")
     public void invoke_insert_if_request_is_successful() throws Exception {
         Headers headers = new Headers.Builder().add("Date", lastUpdated.toString()).build();
-        when(payload.items()).thenReturn(Collections.singletonList(trackedEntity));
-        Response<Payload<TrackedEntity>> response = Response.success(payload, headers);
+        when(payload.items()).thenReturn(Collections.singletonList(trackedEntityType));
+        Response<Payload<TrackedEntityType>> response = Response.success(payload, headers);
         when(retrofitCall.execute()).thenReturn(response);
 
         call.call();
@@ -216,7 +216,7 @@ public class TrackedEntityCallUnitShould {
         verify(database, times(1)).beginNewTransaction();
         verify(transaction, times(1)).setSuccessful();
         verify(transaction, times(1)).end();
-        verify(trackedEntityStore, times(1)).insert(
+        verify(trackedEntityTypeStore, times(1)).insert(
                 anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(), anyString(), anyString());
         //TODO: after implementing the SystemInfoCall, tests..etc modify this to actually check the date:
@@ -228,8 +228,8 @@ public class TrackedEntityCallUnitShould {
     @Test
     @SuppressWarnings("unchecked")
     public void not_fail_on_empty_input() throws IOException {
-        TrackedEntityCall call = new TrackedEntityCall(new HashSet<String>(), database,
-                trackedEntityStore, resourceStore, service, serverDate);
+        TrackedEntityTypeCall call = new TrackedEntityTypeCall(new HashSet<String>(), database,
+                trackedEntityTypeStore, resourceStore, service, serverDate);
         when(service.trackedEntities(
                 fieldsCaptor.capture(),
                 idFilterCaptor.capture(),

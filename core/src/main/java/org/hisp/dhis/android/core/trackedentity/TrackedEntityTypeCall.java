@@ -49,26 +49,26 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>> {
+public class TrackedEntityTypeCall implements Call<Response<Payload<TrackedEntityType>>> {
 
-    private final TrackedEntityService service;
+    private final TrackedEntityTypeService service;
     private final DatabaseAdapter databaseAdapter;
-    private final TrackedEntityStore trackedEntityStore;
+    private final TrackedEntityTypeStore trackedEntityTypeStore;
     private final ResourceStore resourceStore;
     private final Set<String> uidSet;
     private final Date serverDate;
     private final ResourceModel.Type resourceType = ResourceModel.Type.TRACKED_ENTITY;
     private Boolean isExecuted = false;
 
-    TrackedEntityCall(@Nullable Set<String> uidSet,
-                             @NonNull DatabaseAdapter databaseAdapter,
-                             @NonNull TrackedEntityStore trackedEntityStore,
-                             @NonNull ResourceStore resourceStore,
-                             @NonNull TrackedEntityService service,
-                             @NonNull Date serverDate) {
+    TrackedEntityTypeCall(@Nullable Set<String> uidSet,
+                          @NonNull DatabaseAdapter databaseAdapter,
+                          @NonNull TrackedEntityTypeStore trackedEntityTypeStore,
+                          @NonNull ResourceStore resourceStore,
+                          @NonNull TrackedEntityTypeService service,
+                          @NonNull Date serverDate) {
         this.uidSet = uidSet;
         this.databaseAdapter = databaseAdapter;
-        this.trackedEntityStore = trackedEntityStore;
+        this.trackedEntityTypeStore = trackedEntityTypeStore;
         this.resourceStore = resourceStore;
         this.service = service;
         this.serverDate = new Date(serverDate.getTime());
@@ -82,7 +82,7 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
     }
 
     @Override
-    public Response<Payload<TrackedEntity>> call() throws Exception {
+    public Response<Payload<TrackedEntityType>> call() throws Exception {
         synchronized (this) {
             if (isExecuted) {
                 throw new IllegalStateException("Already executed");
@@ -97,20 +97,20 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         String lastUpdated = resourceHandler.getLastUpdated(resourceType);
-        Response<Payload<TrackedEntity>> response = getTrackedEntities(lastUpdated);
+        Response<Payload<TrackedEntityType>> response = getTrackedEntities(lastUpdated);
 
-        TrackedEntityHandler trackedEntityHandler = new TrackedEntityHandler(trackedEntityStore);
+        TrackedEntityTypeHandler trackedEntityTypeHandler = new TrackedEntityTypeHandler(trackedEntityTypeStore);
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
 
             if (response != null && response.isSuccessful()) {
-                List<TrackedEntity> trackedEntities = response.body().items();
+                List<TrackedEntityType> trackedEntities = response.body().items();
                 int size = trackedEntities.size();
 
                 for (int i = 0; i < size; i++) {
-                    TrackedEntity trackedEntity = trackedEntities.get(i);
+                    TrackedEntityType trackedEntityType = trackedEntities.get(i);
 
-                    trackedEntityHandler.handleTrackedEntity(trackedEntity);
+                    trackedEntityTypeHandler.handleTrackedEntity(trackedEntityType);
                 }
                 resourceHandler.handleResource(
                         resourceType,
@@ -124,31 +124,31 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
         return response;
     }
 
-    private Response<Payload<TrackedEntity>> getTrackedEntities(String lastUpdated) throws IOException {
+    private Response<Payload<TrackedEntityType>> getTrackedEntities(String lastUpdated) throws IOException {
         return service.trackedEntities(
-                Fields.<TrackedEntity>builder().fields(
-                        TrackedEntity.uid, TrackedEntity.code, TrackedEntity.name,
-                        TrackedEntity.displayName, TrackedEntity.created, TrackedEntity.lastUpdated,
-                        TrackedEntity.shortName, TrackedEntity.displayShortName,
-                        TrackedEntity.description, TrackedEntity.displayDescription,
-                        TrackedEntity.deleted
+                Fields.<TrackedEntityType>builder().fields(
+                        TrackedEntityType.uid, TrackedEntityType.code, TrackedEntityType.name,
+                        TrackedEntityType.displayName, TrackedEntityType.created, TrackedEntityType.lastUpdated,
+                        TrackedEntityType.shortName, TrackedEntityType.displayShortName,
+                        TrackedEntityType.description, TrackedEntityType.displayDescription,
+                        TrackedEntityType.deleted
                 ).build(),
-                TrackedEntity.uid.in(uidSet),
-                TrackedEntity.lastUpdated.gt(lastUpdated),
+                TrackedEntityType.uid.in(uidSet),
+                TrackedEntityType.lastUpdated.gt(lastUpdated),
                 false
         ).execute();
     }
 
-    public static final UidsCallFactory<TrackedEntity> FACTORY = new UidsCallFactory<TrackedEntity>() {
+    public static final UidsCallFactory<TrackedEntityType> FACTORY = new UidsCallFactory<TrackedEntityType>() {
 
         @Override
-        public Call<Response<Payload<TrackedEntity>>> create(GenericCallData genericCallData, Set<String> uids) {
-            return new TrackedEntityCall(
+        public Call<Response<Payload<TrackedEntityType>>> create(GenericCallData genericCallData, Set<String> uids) {
+            return new TrackedEntityTypeCall(
                     uids,
                     genericCallData.databaseAdapter(),
-                    new TrackedEntityStoreImpl(genericCallData.databaseAdapter()),
+                    new TrackedEntityTypeStoreImpl(genericCallData.databaseAdapter()),
                     new ResourceStoreImpl(genericCallData.databaseAdapter()),
-                    genericCallData.retrofit().create(TrackedEntityService.class),
+                    genericCallData.retrofit().create(TrackedEntityTypeService.class),
                     new Date()
             );
         }

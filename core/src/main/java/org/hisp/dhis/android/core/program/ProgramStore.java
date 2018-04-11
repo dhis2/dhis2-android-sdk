@@ -65,7 +65,7 @@ public interface ProgramStore extends DeletableStore {
             @Nullable String relationshipType,
             @Nullable String relationshipText,
             @Nullable String relatedProgram,
-            @Nullable String trackedEntity,
+            @Nullable String trackedEntityType,
             @Nullable String categoryCombo,
             @Nullable Boolean accessDataWrite
     );
@@ -99,7 +99,7 @@ public interface ProgramStore extends DeletableStore {
             @Nullable String relationshipType,
             @Nullable String relationshipText,
             @Nullable String relatedProgram,
-            @Nullable String trackedEntity,
+            @Nullable String trackedEntityType,
             @Nullable String categoryCombo,
             @Nullable Boolean accessDataWrite,
             @NonNull String whereProgramUid);

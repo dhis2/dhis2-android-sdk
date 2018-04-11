@@ -65,7 +65,7 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
         public static final String RELATIONSHIP_TYPE = "relationshipType";
         public static final String RELATIONSHIP_TEXT = "relationshipText";
         public static final String RELATED_PROGRAM = "relatedProgram";
-        public static final String TRACKED_ENTITY = "trackedEntity";
+        public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
         public static final String CATEGORY_COMBO = "categoryCombo";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
     }
@@ -155,8 +155,8 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
     public abstract String relatedProgram();
 
     @Nullable
-    @ColumnName(Columns.TRACKED_ENTITY)
-    public abstract String trackedEntity();
+    @ColumnName(Columns.TRACKED_ENTITY_TYPE)
+    public abstract String trackedEntityType();
 
     @Nullable
     @ColumnName(Columns.CATEGORY_COMBO)
@@ -205,7 +205,7 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
 
         public abstract Builder relatedProgram(@Nullable String relatedProgram);
 
-        public abstract Builder trackedEntity(@Nullable String trackedEntity);
+        public abstract Builder trackedEntityType(@Nullable String trackedEntityType);
 
         public abstract Builder categoryCombo(@Nullable String categoryCombo);
 

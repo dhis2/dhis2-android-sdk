@@ -45,18 +45,18 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class TrackedEntityStoreShould extends AbsStoreTestCase {
+public class TrackedEntityTypeStoreShould extends AbsStoreTestCase {
     public static final String[] PROJECTION = {
-            TrackedEntityModel.Columns.UID,
-            TrackedEntityModel.Columns.CODE,
-            TrackedEntityModel.Columns.NAME,
-            TrackedEntityModel.Columns.DISPLAY_NAME,
-            TrackedEntityModel.Columns.CREATED,
-            TrackedEntityModel.Columns.LAST_UPDATED,
-            TrackedEntityModel.Columns.SHORT_NAME,
-            TrackedEntityModel.Columns.DISPLAY_SHORT_NAME,
-            TrackedEntityModel.Columns.DESCRIPTION,
-            TrackedEntityModel.Columns.DISPLAY_DESCRIPTION,
+            TrackedEntityTypeModel.Columns.UID,
+            TrackedEntityTypeModel.Columns.CODE,
+            TrackedEntityTypeModel.Columns.NAME,
+            TrackedEntityTypeModel.Columns.DISPLAY_NAME,
+            TrackedEntityTypeModel.Columns.CREATED,
+            TrackedEntityTypeModel.Columns.LAST_UPDATED,
+            TrackedEntityTypeModel.Columns.SHORT_NAME,
+            TrackedEntityTypeModel.Columns.DISPLAY_SHORT_NAME,
+            TrackedEntityTypeModel.Columns.DESCRIPTION,
+            TrackedEntityTypeModel.Columns.DISPLAY_DESCRIPTION,
     };
     public static final String UID = "uid";
     public static final String CODE = "code";
@@ -70,18 +70,18 @@ public class TrackedEntityStoreShould extends AbsStoreTestCase {
     private final Date date;
     private final String dateString;
 
-    public TrackedEntityStoreShould() {
+    public TrackedEntityTypeStoreShould() {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
-    private TrackedEntityStore store;
+    private TrackedEntityTypeStore store;
 
     @Before
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        store = new TrackedEntityStoreImpl(databaseAdapter());
+        store = new TrackedEntityTypeStoreImpl(databaseAdapter());
     }
 
     @Test
@@ -98,7 +98,7 @@ public class TrackedEntityStoreShould extends AbsStoreTestCase {
                 DESCRIPTION,
                 DISPLAY_DESCRIPTION
         );
-        Cursor cursor = database().query(TrackedEntityModel.TABLE, PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(TrackedEntityTypeModel.TABLE, PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
@@ -117,11 +117,11 @@ public class TrackedEntityStoreShould extends AbsStoreTestCase {
 
     @Test
     public void update_shouldUpdateRowInDatabase() {
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, UID);
+        ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, UID);
 
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
-        Cursor cursor1 = database().query(TrackedEntityModel.TABLE, PROJECTION, null, null, null, null, null);
+        Cursor cursor1 = database().query(TrackedEntityTypeModel.TABLE, PROJECTION, null, null, null, null, null);
 
         assertThatCursor(cursor1).hasRow(
                 UID,
@@ -150,7 +150,7 @@ public class TrackedEntityStoreShould extends AbsStoreTestCase {
                 DISPLAY_DESCRIPTION,
                 UID
         );
-        Cursor cursor = database().query(TrackedEntityModel.TABLE, PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(TrackedEntityTypeModel.TABLE, PROJECTION, null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(
                 UID,
@@ -168,12 +168,12 @@ public class TrackedEntityStoreShould extends AbsStoreTestCase {
 
     @Test
     public void delete_shouldDeleteRowInDatabase() {
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, UID);
+        ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, UID);
 
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
         int deleted = store.delete(UID);
-        Cursor cursor = database().query(TrackedEntityModel.TABLE, null, null, null, null, null, null);
+        Cursor cursor = database().query(TrackedEntityTypeModel.TABLE, null, null, null, null, null, null);
 
         assertThat(deleted).isEqualTo(1L);
         assertThatCursor(cursor).isExhausted();

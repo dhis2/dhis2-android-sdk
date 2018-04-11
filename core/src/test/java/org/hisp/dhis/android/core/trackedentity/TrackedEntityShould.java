@@ -44,7 +44,7 @@ public class TrackedEntityShould {
     @Test
     public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
-        TrackedEntity trackedEntity = objectMapper.readValue("{\n" +
+        TrackedEntityType trackedEntityType = objectMapper.readValue("{\n" +
                 "\n" +
                 "    \"created\": \"2014-08-20T12:28:56.409\",\n" +
                 "    \"lastUpdated\": \"2015-10-14T13:36:53.063\",\n" +
@@ -67,16 +67,16 @@ public class TrackedEntityShould {
                 "    \"attributeValues\": [ ],\n" +
                 "    \"translations\": [ ]\n" +
                 "\n" +
-                "}",TrackedEntity.class);
+                "}",TrackedEntityType.class);
 
-        assertThat(trackedEntity.lastUpdated()).isEqualTo(
+        assertThat(trackedEntityType.lastUpdated()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2015-10-14T13:36:53.063"));
-        assertThat(trackedEntity.created()).isEqualTo(
+        assertThat(trackedEntityType.created()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-20T12:28:56.409"));
-        assertThat(trackedEntity.uid()).isEqualTo("nEenWmSyUEp");
-        assertThat(trackedEntity.displayName()).isEqualTo("Person");
-        assertThat(trackedEntity.name()).isEqualTo("Person");
-        assertThat(trackedEntity.description()).isEqualTo("Person");
-        assertThat(trackedEntity.displayDescription()).isEqualTo("Person");
+        assertThat(trackedEntityType.uid()).isEqualTo("nEenWmSyUEp");
+        assertThat(trackedEntityType.displayName()).isEqualTo("Person");
+        assertThat(trackedEntityType.name()).isEqualTo("Person");
+        assertThat(trackedEntityType.description()).isEqualTo("Person");
+        assertThat(trackedEntityType.displayDescription()).isEqualTo("Person");
     }
 }

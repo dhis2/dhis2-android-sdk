@@ -33,7 +33,7 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel.Columns;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,7 +42,7 @@ import java.util.Date;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class TrackedEntityModelShould {
+public class TrackedEntityTypeModelShould {
     private static final long ID = 11L;
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
@@ -56,7 +56,7 @@ public class TrackedEntityModelShould {
     private final Date date;
     private final String dateString;
 
-    public TrackedEntityModelShould() {
+    public TrackedEntityTypeModelShould() {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
@@ -81,7 +81,7 @@ public class TrackedEntityModelShould {
                 SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION
         });
         cursor.moveToFirst();
-        TrackedEntityModel model = TrackedEntityModel.create(cursor);
+        TrackedEntityTypeModel model = TrackedEntityTypeModel.create(cursor);
         cursor.close();
 
         assertThat(model.id()).isEqualTo(ID);
@@ -99,7 +99,7 @@ public class TrackedEntityModelShould {
 
     @Test
     public void create_content_values_when_created_from_builder() {
-        TrackedEntityModel model = TrackedEntityModel.builder()
+        TrackedEntityTypeModel model = TrackedEntityTypeModel.builder()
                 .id(ID)
                 .uid(UID)
                 .code(CODE)
@@ -114,18 +114,18 @@ public class TrackedEntityModelShould {
                 .build();
         ContentValues contentValues = model.toContentValues();
 
-        assertThat(contentValues.getAsLong(TrackedEntityModel.Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.CREATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.LAST_UPDATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.DISPLAY_SHORT_NAME))
+        assertThat(contentValues.getAsLong(TrackedEntityTypeModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(TrackedEntityTypeModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(TrackedEntityTypeModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(TrackedEntityTypeModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(TrackedEntityTypeModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(TrackedEntityTypeModel.Columns.CREATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(TrackedEntityTypeModel.Columns.LAST_UPDATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(TrackedEntityTypeModel.Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
+        assertThat(contentValues.getAsString(TrackedEntityTypeModel.Columns.DISPLAY_SHORT_NAME))
                 .isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
-        assertThat(contentValues.getAsString(TrackedEntityModel.Columns.DISPLAY_DESCRIPTION))
+        assertThat(contentValues.getAsString(TrackedEntityTypeModel.Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
+        assertThat(contentValues.getAsString(TrackedEntityTypeModel.Columns.DISPLAY_DESCRIPTION))
                 .isEqualTo(DISPLAY_DESCRIPTION);
     }
 }

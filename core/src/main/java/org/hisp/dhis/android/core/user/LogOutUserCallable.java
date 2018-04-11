@@ -72,7 +72,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeStoreImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,7 +128,7 @@ public class LogOutUserCallable implements Callable<Void> {
                 new ProgramStageSectionStoreImpl(databaseAdapter),
                 ProgramStageStore.create(databaseAdapter),
                 new RelationshipStoreImpl(databaseAdapter),
-                new TrackedEntityStoreImpl(databaseAdapter),
+                new TrackedEntityTypeStoreImpl(databaseAdapter),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
                 new TrackedEntityDataValueStoreImpl(databaseAdapter),

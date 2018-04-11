@@ -122,9 +122,9 @@ public class CreateProgramUtils {
             program.put(ProgramModel.Columns.RELATED_PROGRAM, RELATED_PROGRAM);
         }
         if(trackedEntityUid == null) {
-            program.putNull(ProgramModel.Columns.TRACKED_ENTITY);
+            program.putNull(ProgramModel.Columns.TRACKED_ENTITY_TYPE);
         } else {
-            program.put(ProgramModel.Columns.TRACKED_ENTITY, trackedEntityUid);
+            program.put(ProgramModel.Columns.TRACKED_ENTITY_TYPE, trackedEntityUid);
         }
         return program;
     }

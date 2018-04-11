@@ -119,7 +119,7 @@ public class ProgramModelShould {
                 Columns.RELATIONSHIP_TYPE,
                 Columns.RELATIONSHIP_TEXT,
                 Columns.RELATED_PROGRAM,
-                Columns.TRACKED_ENTITY
+                Columns.TRACKED_ENTITY_TYPE
         });
         cursor.addRow(new Object[]{ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
                 SHORT_NAME,
@@ -180,7 +180,7 @@ public class ProgramModelShould {
         assertThat(model.relationshipType()).isEqualTo(RELATIONSHIP_TYPE);
         assertThat(model.relationshipText()).isEqualTo(RELATIONSHIP_TEXT);
         assertThat(model.relatedProgram()).isEqualTo(RELATED_PROGRAM);
-        assertThat(model.trackedEntity()).isEqualTo(TRACKED_ENTITY);
+        assertThat(model.trackedEntityType()).isEqualTo(TRACKED_ENTITY);
     }
 
     @Test
@@ -253,6 +253,6 @@ public class ProgramModelShould {
         assertThat(contentValues.getAsString(ProgramModel.Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);
         assertThat(contentValues.getAsString(ProgramModel.Columns.RELATIONSHIP_TEXT)).isEqualTo(RELATIONSHIP_TEXT);
         assertThat(contentValues.getAsString(ProgramModel.Columns.RELATED_PROGRAM)).isEqualTo(RELATED_PROGRAM);
-        assertThat(contentValues.getAsString(ProgramModel.Columns.TRACKED_ENTITY)).isEqualTo(TRACKED_ENTITY);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.TRACKED_ENTITY_TYPE)).isEqualTo(TRACKED_ENTITY);
     }
 }

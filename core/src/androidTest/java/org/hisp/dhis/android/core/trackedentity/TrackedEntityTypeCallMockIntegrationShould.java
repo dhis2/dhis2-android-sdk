@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
@@ -62,18 +61,18 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class TrackedEntityCallMockIntegrationShould extends AbsStoreTestCase {
+public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase {
     public static final String[] PROJECTION = {
-            TrackedEntityModel.Columns.UID,
-            TrackedEntityModel.Columns.CODE,
-            TrackedEntityModel.Columns.NAME,
-            TrackedEntityModel.Columns.DISPLAY_NAME,
-            TrackedEntityModel.Columns.CREATED,
-            TrackedEntityModel.Columns.LAST_UPDATED,
-            TrackedEntityModel.Columns.SHORT_NAME,
-            TrackedEntityModel.Columns.DISPLAY_SHORT_NAME,
-            TrackedEntityModel.Columns.DESCRIPTION,
-            TrackedEntityModel.Columns.DISPLAY_DESCRIPTION,
+            TrackedEntityTypeModel.Columns.UID,
+            TrackedEntityTypeModel.Columns.CODE,
+            TrackedEntityTypeModel.Columns.NAME,
+            TrackedEntityTypeModel.Columns.DISPLAY_NAME,
+            TrackedEntityTypeModel.Columns.CREATED,
+            TrackedEntityTypeModel.Columns.LAST_UPDATED,
+            TrackedEntityTypeModel.Columns.SHORT_NAME,
+            TrackedEntityTypeModel.Columns.DISPLAY_SHORT_NAME,
+            TrackedEntityTypeModel.Columns.DESCRIPTION,
+            TrackedEntityTypeModel.Columns.DISPLAY_DESCRIPTION,
     };
 /*    private static String[] RESOURCE_PROJECTION = {
             ResourceModel.Columns.RESOURCE_TYPE,
@@ -82,7 +81,7 @@ public class TrackedEntityCallMockIntegrationShould extends AbsStoreTestCase {
 
     private MockWebServer server;
 
-    private Call<Response<Payload<TrackedEntity>>> trackedEntityCall;
+    private Call<Response<Payload<TrackedEntityType>>> trackedEntityCall;
 
     @Before
     @Override
@@ -129,14 +128,14 @@ public class TrackedEntityCallMockIntegrationShould extends AbsStoreTestCase {
                 .addConverterFactory(FilterConverterFactory.create())
                 .build();
 
-        TrackedEntityService service = retrofit.create(TrackedEntityService.class);
+        TrackedEntityTypeService service = retrofit.create(TrackedEntityTypeService.class);
 
         HashSet<String> uids = new HashSet<>(Arrays.asList("kIeke8tAQnd", "nEenWmSyUEp"));
-        TrackedEntityStore trackedEntityStore = new TrackedEntityStoreImpl(databaseAdapter());
+        TrackedEntityTypeStore trackedEntityTypeStore = new TrackedEntityTypeStoreImpl(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
-        trackedEntityCall = new TrackedEntityCall(
-                uids, databaseAdapter(), trackedEntityStore, resourceStore, service, new Date()
+        trackedEntityCall = new TrackedEntityTypeCall(
+                uids, databaseAdapter(), trackedEntityTypeStore, resourceStore, service, new Date()
         );
     }
 
@@ -144,7 +143,7 @@ public class TrackedEntityCallMockIntegrationShould extends AbsStoreTestCase {
     public void have_valid_values_when_call() throws Exception {
         trackedEntityCall.call();
 
-        Cursor cursor = database().query(TrackedEntityModel.TABLE, PROJECTION, null, null, null, null, null);
+        Cursor cursor = database().query(TrackedEntityTypeModel.TABLE, PROJECTION, null, null, null, null, null);
       /*  Cursor resourceCursor = database().query(ResourceModel.TABLE,
                 RESOURCE_PROJECTION, null, null, null, null, null);
 */

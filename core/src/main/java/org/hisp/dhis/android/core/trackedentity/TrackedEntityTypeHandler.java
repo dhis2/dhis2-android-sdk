@@ -31,43 +31,43 @@ import android.support.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-public class TrackedEntityHandler {
+public class TrackedEntityTypeHandler {
 
-    private final TrackedEntityStore store;
+    private final TrackedEntityTypeStore store;
 
-    public TrackedEntityHandler(@NonNull TrackedEntityStore store) {
+    public TrackedEntityTypeHandler(@NonNull TrackedEntityTypeStore store) {
         this.store = store;
     }
 
-    public void handleTrackedEntity(@NonNull TrackedEntity trackedEntity) {
-        if (isDeleted(trackedEntity)) {
-            store.delete(trackedEntity.uid());
+    public void handleTrackedEntity(@NonNull TrackedEntityType trackedEntityType) {
+        if (isDeleted(trackedEntityType)) {
+            store.delete(trackedEntityType.uid());
         } else {
             int updatedRow = store.update(
-                    trackedEntity.uid(),
-                    trackedEntity.code(),
-                    trackedEntity.name(),
-                    trackedEntity.displayName(),
-                    trackedEntity.created(),
-                    trackedEntity.lastUpdated(),
-                    trackedEntity.shortName(),
-                    trackedEntity.displayShortName(),
-                    trackedEntity.description(),
-                    trackedEntity.displayDescription(),
-                    trackedEntity.uid()
+                    trackedEntityType.uid(),
+                    trackedEntityType.code(),
+                    trackedEntityType.name(),
+                    trackedEntityType.displayName(),
+                    trackedEntityType.created(),
+                    trackedEntityType.lastUpdated(),
+                    trackedEntityType.shortName(),
+                    trackedEntityType.displayShortName(),
+                    trackedEntityType.description(),
+                    trackedEntityType.displayDescription(),
+                    trackedEntityType.uid()
             );
             if (updatedRow <= 0) {
                 store.insert(
-                        trackedEntity.uid(),
-                        trackedEntity.code(),
-                        trackedEntity.name(),
-                        trackedEntity.displayName(),
-                        trackedEntity.created(),
-                        trackedEntity.lastUpdated(),
-                        trackedEntity.shortName(),
-                        trackedEntity.displayShortName(),
-                        trackedEntity.description(),
-                        trackedEntity.displayDescription()
+                        trackedEntityType.uid(),
+                        trackedEntityType.code(),
+                        trackedEntityType.name(),
+                        trackedEntityType.displayName(),
+                        trackedEntityType.created(),
+                        trackedEntityType.lastUpdated(),
+                        trackedEntityType.shortName(),
+                        trackedEntityType.displayShortName(),
+                        trackedEntityType.description(),
+                        trackedEntityType.displayDescription()
                 );
             }
         }

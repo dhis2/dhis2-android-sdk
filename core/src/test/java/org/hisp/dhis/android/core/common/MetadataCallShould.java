@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserRole;
@@ -115,7 +115,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Payload<ProgramStage> programStagePayload;
 
     @Mock
-    private Payload<TrackedEntity> trackedEntityPayload;
+    private Payload<TrackedEntityType> trackedEntityPayload;
 
     @Mock
     private Payload<OptionSet> optionSetPayload;
@@ -148,7 +148,7 @@ public class MetadataCallShould extends BaseCallShould {
     private ObjectWithUid programStageWithUid;
 
     @Mock
-    private TrackedEntity trackedEntity;
+    private TrackedEntityType trackedEntityType;
 
     @Mock
     private Call<Response<SystemInfo>> systemInfoEndpointCall;
@@ -172,7 +172,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<Response<Payload<ProgramStage>>> programStageEndpointCall;
 
     @Mock
-    private Call<Response<Payload<TrackedEntity>>> trackedEntityCall;
+    private Call<Response<Payload<TrackedEntityType>>> trackedEntityCall;
 
     @Mock
     private Call<Response<Payload<OptionSet>>> optionSetCall;
@@ -205,7 +205,7 @@ public class MetadataCallShould extends BaseCallShould {
     private UidsCallFactory<ProgramStage> programStageCallFactory;
 
     @Mock
-    private UidsCallFactory<TrackedEntity> trackedEntityCallFactory;
+    private UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
 
     @Mock
     private OrganisationUnitCall.Factory organisationUnitCallFactory;
@@ -241,18 +241,18 @@ public class MetadataCallShould extends BaseCallShould {
         when(dataAccess.read()).thenReturn(true);
         when(access.data()).thenReturn(dataAccess);
         when(programWithAccess.access()).thenReturn(access);
-        when(program.trackedEntity()).thenReturn(trackedEntity);
+        when(program.trackedEntityType()).thenReturn(trackedEntityType);
         when(program.access()).thenReturn(access);
         when(program.programStages()).thenReturn(Collections.singletonList(programStageWithUid));
         when(programStageWithUid.uid()).thenReturn("program_stage_uid");
-        when(trackedEntity.uid()).thenReturn("test_tracked_entity_uid");
+        when(trackedEntityType.uid()).thenReturn("test_tracked_entity_uid");
 
         // Payloads
         when(programWithAccessPayload.items()).thenReturn(Collections.singletonList(programWithAccess));
         when(categoryPayload.items()).thenReturn(Collections.singletonList(category));
         when(categoryComboPayload.items()).thenReturn(Collections.singletonList(categoryCombo));
         when(programPayload.items()).thenReturn(Collections.singletonList(program));
-        when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntity));
+        when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntityType));
         when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
         when(optionSetPayload.items()).thenReturn(Collections.singletonList(optionSet));
         when(dataElementPayload.items()).thenReturn(Collections.singletonList(dataElement));

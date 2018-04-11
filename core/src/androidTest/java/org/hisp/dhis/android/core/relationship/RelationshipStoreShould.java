@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityInstanceUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -88,7 +88,7 @@ public class RelationshipStoreShould extends AbsStoreTestCase {
                 TRACKED_ENTITY_INSTANCE_B, "test_organisation_unit_uid", "test_tracked_entity_uid");
 
         database().insert(OrganisationUnitModel.TABLE, null, orgUnit);
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntity);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstanceA);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstanceB);
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);

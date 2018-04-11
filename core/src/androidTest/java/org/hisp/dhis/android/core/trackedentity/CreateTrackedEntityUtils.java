@@ -44,17 +44,17 @@ public class CreateTrackedEntityUtils {
 
     public static ContentValues create(long id, String uid) {
         ContentValues trackedEntity = new ContentValues();
-        trackedEntity.put(TrackedEntityModel.Columns.ID, id);
-        trackedEntity.put(TrackedEntityModel.Columns.UID, uid);
-        trackedEntity.put(TrackedEntityModel.Columns.CODE, TEST_CODE);
-        trackedEntity.put(TrackedEntityModel.Columns.NAME, TEST_NAME);
-        trackedEntity.put(TrackedEntityModel.Columns.DISPLAY_NAME, TEST_DISPLAY_NAME);
-        trackedEntity.put(TrackedEntityModel.Columns.CREATED, TEST_CREATED);
-        trackedEntity.put(TrackedEntityModel.Columns.LAST_UPDATED, TEST_LAST_UPDATED);
-        trackedEntity.put(TrackedEntityModel.Columns.SHORT_NAME, TEST_SHORT_NAME);
-        trackedEntity.put(TrackedEntityModel.Columns.DISPLAY_SHORT_NAME, TEST_DISPLAY_SHORT_NAME);
-        trackedEntity.put(TrackedEntityModel.Columns.DESCRIPTION, TEST_DESCRIPTION);
-        trackedEntity.put(TrackedEntityModel.Columns.DISPLAY_DESCRIPTION, TEST_DISPLAY_DESCRIPTION);
+        trackedEntity.put(TrackedEntityTypeModel.Columns.ID, id);
+        trackedEntity.put(TrackedEntityTypeModel.Columns.UID, uid);
+        trackedEntity.put(TrackedEntityTypeModel.Columns.CODE, TEST_CODE);
+        trackedEntity.put(TrackedEntityTypeModel.Columns.NAME, TEST_NAME);
+        trackedEntity.put(TrackedEntityTypeModel.Columns.DISPLAY_NAME, TEST_DISPLAY_NAME);
+        trackedEntity.put(TrackedEntityTypeModel.Columns.CREATED, TEST_CREATED);
+        trackedEntity.put(TrackedEntityTypeModel.Columns.LAST_UPDATED, TEST_LAST_UPDATED);
+        trackedEntity.put(TrackedEntityTypeModel.Columns.SHORT_NAME, TEST_SHORT_NAME);
+        trackedEntity.put(TrackedEntityTypeModel.Columns.DISPLAY_SHORT_NAME, TEST_DISPLAY_SHORT_NAME);
+        trackedEntity.put(TrackedEntityTypeModel.Columns.DESCRIPTION, TEST_DESCRIPTION);
+        trackedEntity.put(TrackedEntityTypeModel.Columns.DISPLAY_DESCRIPTION, TEST_DISPLAY_DESCRIPTION);
         return trackedEntity;
     }
 }

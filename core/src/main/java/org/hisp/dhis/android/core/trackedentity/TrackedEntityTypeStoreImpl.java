@@ -40,36 +40,36 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.Date;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public class TrackedEntityStoreImpl implements TrackedEntityStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " + TrackedEntityModel.TABLE + " (" +
-            TrackedEntityModel.Columns.UID + ", " +
-            TrackedEntityModel.Columns.CODE + ", " +
-            TrackedEntityModel.Columns.NAME + ", " +
-            TrackedEntityModel.Columns.DISPLAY_NAME + ", " +
-            TrackedEntityModel.Columns.CREATED + ", " +
-            TrackedEntityModel.Columns.LAST_UPDATED + ", " +
-            TrackedEntityModel.Columns.SHORT_NAME + ", " +
-            TrackedEntityModel.Columns.DISPLAY_SHORT_NAME + ", " +
-            TrackedEntityModel.Columns.DESCRIPTION + ", " +
-            TrackedEntityModel.Columns.DISPLAY_DESCRIPTION +
+public class TrackedEntityTypeStoreImpl implements TrackedEntityTypeStore {
+    private static final String INSERT_STATEMENT = "INSERT INTO " + TrackedEntityTypeModel.TABLE + " (" +
+            TrackedEntityTypeModel.Columns.UID + ", " +
+            TrackedEntityTypeModel.Columns.CODE + ", " +
+            TrackedEntityTypeModel.Columns.NAME + ", " +
+            TrackedEntityTypeModel.Columns.DISPLAY_NAME + ", " +
+            TrackedEntityTypeModel.Columns.CREATED + ", " +
+            TrackedEntityTypeModel.Columns.LAST_UPDATED + ", " +
+            TrackedEntityTypeModel.Columns.SHORT_NAME + ", " +
+            TrackedEntityTypeModel.Columns.DISPLAY_SHORT_NAME + ", " +
+            TrackedEntityTypeModel.Columns.DESCRIPTION + ", " +
+            TrackedEntityTypeModel.Columns.DISPLAY_DESCRIPTION +
             ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityModel.TABLE + " SET " +
-            TrackedEntityModel.Columns.UID + "=?, " +
-            TrackedEntityModel.Columns.CODE + "=?, " +
-            TrackedEntityModel.Columns.NAME + "=?, " +
-            TrackedEntityModel.Columns.DISPLAY_NAME + "=?, " +
-            TrackedEntityModel.Columns.CREATED + "=?, " +
-            TrackedEntityModel.Columns.LAST_UPDATED + "=?, " +
-            TrackedEntityModel.Columns.SHORT_NAME + "=?, " +
-            TrackedEntityModel.Columns.DISPLAY_SHORT_NAME + "=?, " +
-            TrackedEntityModel.Columns.DESCRIPTION + "=?, " +
-            TrackedEntityModel.Columns.DISPLAY_DESCRIPTION + "=? " +
+    private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityTypeModel.TABLE + " SET " +
+            TrackedEntityTypeModel.Columns.UID + "=?, " +
+            TrackedEntityTypeModel.Columns.CODE + "=?, " +
+            TrackedEntityTypeModel.Columns.NAME + "=?, " +
+            TrackedEntityTypeModel.Columns.DISPLAY_NAME + "=?, " +
+            TrackedEntityTypeModel.Columns.CREATED + "=?, " +
+            TrackedEntityTypeModel.Columns.LAST_UPDATED + "=?, " +
+            TrackedEntityTypeModel.Columns.SHORT_NAME + "=?, " +
+            TrackedEntityTypeModel.Columns.DISPLAY_SHORT_NAME + "=?, " +
+            TrackedEntityTypeModel.Columns.DESCRIPTION + "=?, " +
+            TrackedEntityTypeModel.Columns.DISPLAY_DESCRIPTION + "=? " +
             " WHERE " +
-            TrackedEntityModel.Columns.UID + " =?;";
+            TrackedEntityTypeModel.Columns.UID + " =?;";
 
-    private static final String DELETE_STATEMENT = "DELETE FROM " + TrackedEntityModel.TABLE +
-            " WHERE " + TrackedEntityModel.Columns.UID + " =?;";
+    private static final String DELETE_STATEMENT = "DELETE FROM " + TrackedEntityTypeModel.TABLE +
+            " WHERE " + TrackedEntityTypeModel.Columns.UID + " =?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -77,7 +77,7 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
 
     private final DatabaseAdapter databaseAdapter;
 
-    public TrackedEntityStoreImpl(DatabaseAdapter database) {
+    public TrackedEntityTypeStoreImpl(DatabaseAdapter database) {
         this.databaseAdapter = database;
         this.insertStatement = database.compileStatement(INSERT_STATEMENT);
         this.updateStatement = database.compileStatement(UPDATE_STATEMENT);
@@ -104,7 +104,7 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
         sqLiteBind(insertStatement, 9, description);
         sqLiteBind(insertStatement, 10, displayDescription);
 
-        long rowId = databaseAdapter.executeInsert(TrackedEntityModel.TABLE, insertStatement);
+        long rowId = databaseAdapter.executeInsert(TrackedEntityTypeModel.TABLE, insertStatement);
         insertStatement.clearBindings();
         return rowId;
 
@@ -130,7 +130,7 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
         sqLiteBind(updateStatement, 10, displayDescription);
         sqLiteBind(updateStatement, 11, whereUid);
 
-        int rowId = databaseAdapter.executeUpdateDelete(TrackedEntityModel.TABLE, updateStatement);
+        int rowId = databaseAdapter.executeUpdateDelete(TrackedEntityTypeModel.TABLE, updateStatement);
         updateStatement.clearBindings();
         return rowId;
     }
@@ -146,6 +146,6 @@ public class TrackedEntityStoreImpl implements TrackedEntityStore {
 
     @Override
     public int delete() {
-        return databaseAdapter.delete(TrackedEntityModel.TABLE);
+        return databaseAdapter.delete(TrackedEntityTypeModel.TABLE);
     }
 }

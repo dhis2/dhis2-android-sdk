@@ -38,21 +38,21 @@ import org.hisp.dhis.android.core.data.api.Field;
 import java.util.Date;
 
 @AutoValue
-public abstract class TrackedEntity extends BaseNameableObject {
-    public static final Field<TrackedEntity, String> uid = Field.create(UID);
-    public static final Field<TrackedEntity, String> code = Field.create(CODE);
-    public static final Field<TrackedEntity, String> name = Field.create(NAME);
-    public static final Field<TrackedEntity, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<TrackedEntity, String> created = Field.create(CREATED);
-    public static final Field<TrackedEntity, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<TrackedEntity, Boolean> deleted = Field.create(DELETED);
-    public static final Field<TrackedEntity, String> shortName = Field.create(SHORT_NAME);
-    public static final Field<TrackedEntity, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    public static final Field<TrackedEntity, String> description = Field.create(DESCRIPTION);
-    public static final Field<TrackedEntity, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
+public abstract class TrackedEntityType extends BaseNameableObject {
+    public static final Field<TrackedEntityType, String> uid = Field.create(UID);
+    public static final Field<TrackedEntityType, String> code = Field.create(CODE);
+    public static final Field<TrackedEntityType, String> name = Field.create(NAME);
+    public static final Field<TrackedEntityType, String> displayName = Field.create(DISPLAY_NAME);
+    public static final Field<TrackedEntityType, String> created = Field.create(CREATED);
+    public static final Field<TrackedEntityType, String> lastUpdated = Field.create(LAST_UPDATED);
+    public static final Field<TrackedEntityType, Boolean> deleted = Field.create(DELETED);
+    public static final Field<TrackedEntityType, String> shortName = Field.create(SHORT_NAME);
+    public static final Field<TrackedEntityType, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+    public static final Field<TrackedEntityType, String> description = Field.create(DESCRIPTION);
+    public static final Field<TrackedEntityType, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
 
     @JsonCreator
-    public static TrackedEntity create(
+    public static TrackedEntityType create(
             @JsonProperty(UID) String uid,
             @JsonProperty(CODE) String code,
             @JsonProperty(NAME) String name,
@@ -65,7 +65,7 @@ public abstract class TrackedEntity extends BaseNameableObject {
             @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
             @JsonProperty(DELETED) Boolean deleted) {
 
-        return new AutoValue_TrackedEntity(
+        return new AutoValue_TrackedEntityType(
                 uid, code, name, displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription);
     }

@@ -54,8 +54,8 @@ import org.hisp.dhis.android.core.program.ProgramStageEndpointCall;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCall;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 
@@ -79,7 +79,7 @@ public class MetadataCall implements Call<Response> {
     private final SimpleCallFactory<Payload<Program>> programAccessCallFactory;
     private final UidsCallFactory<Program> programCallFactory;
     private final UidsCallFactory<ProgramStage> programStageCallFactory;
-    private final UidsCallFactory<TrackedEntity> trackedEntityCallFactory;
+    private final UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
     private final UidsCallFactory<OptionSet> optionSetCallFactory;
     private final DataSetParentCall.Factory dataSetParentCallFactory;
@@ -92,7 +92,7 @@ public class MetadataCall implements Call<Response> {
                         @NonNull SimpleCallFactory<Payload<Program>> programAccessCallFactory,
                         @NonNull UidsCallFactory<Program> programCallFactory,
                         @NonNull UidsCallFactory<ProgramStage> programStageCallFactory,
-                        @NonNull UidsCallFactory<TrackedEntity> trackedEntityCallFactory,
+                        @NonNull UidsCallFactory<TrackedEntityType> trackedEntityCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
                         @NonNull UidsCallFactory<OptionSet> optionSetCallFactory,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory) {
@@ -172,7 +172,7 @@ public class MetadataCall implements Call<Response> {
             }
 
             Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
-            Response<Payload<TrackedEntity>> trackedEntityResponse =
+            Response<Payload<TrackedEntityType>> trackedEntityResponse =
                     trackedEntityCallFactory.create(data, trackedEntityUids).call();
             if (!trackedEntityResponse.isSuccessful()) {
                 return trackedEntityResponse;
@@ -269,8 +269,8 @@ public class MetadataCall implements Call<Response> {
         for (int i = 0; i < size; i++) {
             Program program = programs.get(i);
 
-            if (program.trackedEntity() != null) {
-                uids.add(program.trackedEntity().uid());
+            if (program.trackedEntityType() != null) {
+                uids.add(program.trackedEntityType().uid());
             }
         }
         return uids;
@@ -310,7 +310,7 @@ public class MetadataCall implements Call<Response> {
                 ProgramAccessEndpointCall.FACTORY,
                 ProgramCall.FACTORY,
                 ProgramStageEndpointCall.FACTORY,
-                TrackedEntityCall.FACTORY,
+                TrackedEntityTypeCall.FACTORY,
                 OrganisationUnitCall.FACTORY,
                 OptionSetCall.FACTORY,
                 DataSetParentCall.FACTORY

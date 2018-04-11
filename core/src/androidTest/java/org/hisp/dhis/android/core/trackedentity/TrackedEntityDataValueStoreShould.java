@@ -138,7 +138,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         ContentValues dataElement1 = CreateDataElementUtils.create(1L, DATA_ELEMENT_1, null);
         ContentValues dataElement2 = CreateDataElementUtils.create(2L, DATA_ELEMENT_2, null);
 
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntity);
         database().insert(RelationshipTypeModel.TABLE, null,
                 relationshipType);
         database().insert(ProgramModel.TABLE, null, program);

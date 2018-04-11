@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
@@ -186,7 +186,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                                 TrackedEntityAttribute.renderType
                         )
                 ),
-                Program.trackedEntity.with(TrackedEntity.uid),
+                Program.trackedEntityType.with(TrackedEntityType.uid),
                 Program.categoryCombo.with(CategoryCombo.uid),
                 Program.relationshipType.with(
                         RelationshipType.uid, RelationshipType.code, RelationshipType.name,

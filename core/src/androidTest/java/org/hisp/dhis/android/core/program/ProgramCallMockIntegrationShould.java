@@ -48,7 +48,7 @@ import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -93,7 +93,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
             ProgramModel.Columns.RELATIONSHIP_TYPE,
             ProgramModel.Columns.RELATIONSHIP_TEXT,
             ProgramModel.Columns.RELATED_PROGRAM,
-            ProgramModel.Columns.TRACKED_ENTITY,
+            ProgramModel.Columns.TRACKED_ENTITY_TYPE,
             ProgramModel.Columns.CATEGORY_COMBO,
             ProgramModel.Columns.ACCESS_DATA_WRITE
     };
@@ -128,7 +128,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
 
         // inserting tracked entity
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntity);
 
         programCall = ProgramCall.FACTORY.create(
                 GenericCallData.create(databaseAdapter(), d2.retrofit()), uids);

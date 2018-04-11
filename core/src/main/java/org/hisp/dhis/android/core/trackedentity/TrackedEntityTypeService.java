@@ -41,13 +41,13 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface TrackedEntityService {
+public interface TrackedEntityTypeService {
 
     @GET("trackedEntityTypes")
-    Call<Payload<TrackedEntity>> trackedEntities(
-            @NonNull @Query("fields") @Which Fields<TrackedEntity> fields,
-            @NonNull @Query("filter") @Where Filter<TrackedEntity, String> idFilter,
-            @Nullable @Query("filter") @Where Filter<TrackedEntity, String> lastUpdated,
+    Call<Payload<TrackedEntityType>> trackedEntities(
+            @NonNull @Query("fields") @Which Fields<TrackedEntityType> fields,
+            @NonNull @Query("filter") @Where Filter<TrackedEntityType, String> idFilter,
+            @Nullable @Query("filter") @Where Filter<TrackedEntityType, String> lastUpdated,
             @NonNull @Query("paging") boolean paging
     );
 }

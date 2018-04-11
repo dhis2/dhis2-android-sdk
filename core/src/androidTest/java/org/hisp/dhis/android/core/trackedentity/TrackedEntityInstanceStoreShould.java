@@ -94,7 +94,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntity);
     }
 
     @Test
@@ -122,7 +122,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(11L, deferredOrganisationUnit);
         ContentValues trackedEntity = CreateTrackedEntityUtils.create(11L, deferredTrackedEntity);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntity);
         database().setTransactionSuccessful();
         database().endTransaction();
 
@@ -231,8 +231,8 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT, TRACKED_ENTITY, COORDINATES, FEATURE_TYPE, STATE);
 
-        database().delete(TrackedEntityModel.TABLE,
-                TrackedEntityModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
+        database().delete(TrackedEntityTypeModel.TABLE,
+                TrackedEntityTypeModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
         Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }

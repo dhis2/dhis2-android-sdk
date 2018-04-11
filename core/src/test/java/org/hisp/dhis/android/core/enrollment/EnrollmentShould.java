@@ -45,7 +45,7 @@ public class EnrollmentShould {
     public void map_from_json_string() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
         Enrollment enrollment = objectMapper.readValue("{\n " +
-                "    \"trackedEntity\": \"nEenWmSyUEp\",\n " +
+                "    \"trackedEntityType\": \"nEenWmSyUEp\",\n " +
                 "    \"created\": \"2015-03-28T12:27:50.740\",\n " +
                 "    \"orgUnit\": \"Rp268JB6Ne4\",\n " +
                 "    \"program\": \"ur1Edk5Oe2n\",\n " +

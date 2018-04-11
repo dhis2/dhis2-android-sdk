@@ -76,8 +76,8 @@ public class ProgramHandler {
                 relatedProgramUid = program.relatedProgram().uid();
             }
             String trackedEntityUid = null;
-            if (program.trackedEntity() != null) {
-                trackedEntityUid = program.trackedEntity().uid();
+            if (program.trackedEntityType() != null) {
+                trackedEntityUid = program.trackedEntityType().uid();
             }
             String categoryCombo = null;
             if (program.categoryCombo() != null) {

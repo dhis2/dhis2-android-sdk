@@ -95,7 +95,7 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             "  TrackedEntityInstance.createdAtClient, " +
             "  TrackedEntityInstance.lastUpdatedAtClient, " +
             "  TrackedEntityInstance.organisationUnit, " +
-            "  TrackedEntityInstance.trackedEntity," +
+            "  TrackedEntityInstance.trackedEntityType," +
             "  TrackedEntityInstance.coordinates," +
             "  TrackedEntityInstance.featureType " +
             "FROM TrackedEntityInstance ";

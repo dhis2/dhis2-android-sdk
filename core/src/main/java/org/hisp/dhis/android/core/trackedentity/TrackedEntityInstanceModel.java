@@ -52,7 +52,7 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
         public static final String CREATED_AT_CLIENT = "createdAtClient";
         public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
         public static final String ORGANISATION_UNIT = "organisationUnit";
-        public static final String TRACKED_ENTITY = "trackedEntity";
+        public static final String TRACKED_ENTITY = "trackedEntityType";
         public static final String COORDINATES = "coordinates";
         public static final String FEATURE_TYPE = "featureType";
 

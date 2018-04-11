@@ -44,7 +44,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class TrackedEntityHandlerShould {
+public class TrackedEntityTypeHandlerShould {
     public static final String UID = "uid1";
     public static final String CODE = "code";
     public static final String NAME = "name";
@@ -55,38 +55,38 @@ public class TrackedEntityHandlerShould {
     public static final String DESCRIPTION = "description";
     public static final String DISPLAY_DESCRIPTION = "display_description";
     @Mock
-    private TrackedEntityStore store;
+    private TrackedEntityTypeStore store;
 
     @Mock
-    private TrackedEntity trackedEntity;
+    private TrackedEntityType trackedEntityType;
 
     @Mock
     private Date created, lastUpdated;
 
-    private TrackedEntityHandler handler;
+    private TrackedEntityTypeHandler handler;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        when(trackedEntity.uid()).thenReturn(UID);
-        when(trackedEntity.code()).thenReturn(CODE);
-        when(trackedEntity.name()).thenReturn(NAME);
-        when(trackedEntity.displayName()).thenReturn(DISPLAY_NAME);
-        when(trackedEntity.deleted()).thenReturn(DELETED);
-        when(trackedEntity.created()).thenReturn(created);
-        when(trackedEntity.lastUpdated()).thenReturn(lastUpdated);
-        when(trackedEntity.shortName()).thenReturn(SHORT_NAME);
-        when(trackedEntity.displayShortName()).thenReturn(DISPLAY_SHORT_NAME);
-        when(trackedEntity.description()).thenReturn(DESCRIPTION);
-        when(trackedEntity.displayDescription()).thenReturn(DISPLAY_DESCRIPTION);
+        when(trackedEntityType.uid()).thenReturn(UID);
+        when(trackedEntityType.code()).thenReturn(CODE);
+        when(trackedEntityType.name()).thenReturn(NAME);
+        when(trackedEntityType.displayName()).thenReturn(DISPLAY_NAME);
+        when(trackedEntityType.deleted()).thenReturn(DELETED);
+        when(trackedEntityType.created()).thenReturn(created);
+        when(trackedEntityType.lastUpdated()).thenReturn(lastUpdated);
+        when(trackedEntityType.shortName()).thenReturn(SHORT_NAME);
+        when(trackedEntityType.displayShortName()).thenReturn(DISPLAY_SHORT_NAME);
+        when(trackedEntityType.description()).thenReturn(DESCRIPTION);
+        when(trackedEntityType.displayDescription()).thenReturn(DISPLAY_DESCRIPTION);
 
-        handler = new TrackedEntityHandler(store);
+        handler = new TrackedEntityTypeHandler(store);
     }
 
     @Test
     public void invoke_delete_when_handle_tracked_entity_set_as_deleted() {
-        when(trackedEntity.deleted()).thenReturn(!DELETED);
-        handler.handleTrackedEntity(trackedEntity);
+        when(trackedEntityType.deleted()).thenReturn(!DELETED);
+        handler.handleTrackedEntity(trackedEntityType);
         verify(store, times(1)).delete(UID);
     }
 
@@ -96,7 +96,7 @@ public class TrackedEntityHandlerShould {
                 anyString(), anyString(), anyString(), anyString(), anyString())
         ).thenReturn(1);
 
-        handler.handleTrackedEntity(trackedEntity);
+        handler.handleTrackedEntity(trackedEntityType);
 
         verify(store, times(1)).update(eq(UID), eq(CODE), eq(NAME), eq(DISPLAY_NAME), eq(created), eq(lastUpdated),
                 eq(SHORT_NAME), eq(DISPLAY_SHORT_NAME), eq(DESCRIPTION), eq(DISPLAY_DESCRIPTION), eq(UID));
@@ -108,7 +108,7 @@ public class TrackedEntityHandlerShould {
                 anyString(), anyString(), anyString(), anyString(), anyString())
         ).thenReturn(-1);
 
-        handler.handleTrackedEntity(trackedEntity);
+        handler.handleTrackedEntity(trackedEntityType);
 
         verify(store, times(1)).insert(eq(UID), eq(CODE), eq(NAME), eq(DISPLAY_NAME), eq(created), eq(lastUpdated),
                 eq(SHORT_NAME), eq(DISPLAY_SHORT_NAME), eq(DESCRIPTION), eq(DISPLAY_DESCRIPTION));

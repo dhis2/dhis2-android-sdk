@@ -72,7 +72,7 @@ public class ProgramStoreImpl implements ProgramStore {
             ProgramModel.Columns.RELATIONSHIP_TYPE + ", " +
             ProgramModel.Columns.RELATIONSHIP_TEXT + ", " +
             ProgramModel.Columns.RELATED_PROGRAM + ", " +
-            ProgramModel.Columns.TRACKED_ENTITY + ", " +
+            ProgramModel.Columns.TRACKED_ENTITY_TYPE + ", " +
             ProgramModel.Columns.CATEGORY_COMBO + ", " +
             ProgramModel.Columns.ACCESS_DATA_WRITE + ") " +
             "VALUES (" +
@@ -109,7 +109,7 @@ public class ProgramStoreImpl implements ProgramStore {
             ProgramModel.Columns.RELATIONSHIP_TYPE + " =?, " +
             ProgramModel.Columns.RELATIONSHIP_TEXT + " =?, " +
             ProgramModel.Columns.RELATED_PROGRAM + " =?, " +
-            ProgramModel.Columns.TRACKED_ENTITY + " =?, " +
+            ProgramModel.Columns.TRACKED_ENTITY_TYPE + " =?, " +
             ProgramModel.Columns.CATEGORY_COMBO + " =?, " +
             ProgramModel.Columns.ACCESS_DATA_WRITE + " =? " +
             " WHERE " +

@@ -28,41 +28,27 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.common.DeletableStore;
 
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import java.util.Date;
 
-@AutoValue
-public abstract class TrackedEntityModel extends BaseNameableObjectModel {
+public interface TrackedEntityTypeStore extends DeletableStore {
 
-    public static final String TABLE = "TrackedEntity";
+    long insert(@NonNull String uid, @Nullable String code, @Nullable String name,
+                @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
+                @Nullable String shortName, @Nullable String displayShortName,
+                @Nullable String description, @Nullable String displayDescription
+    );
 
-    public static class Columns extends BaseNameableObjectModel.Columns {
-        // Empty by design. BaseNameableObjectModel.Columns contains all needed columns
-        // Keep this interface to provide homogeneity and readability in DbOpenHelper
-    }
+    int update(@NonNull String uid, @Nullable String code, @Nullable String name,
+               @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
+               @Nullable String shortName, @Nullable String displayShortName,
+               @Nullable String description, @Nullable String displayDescription, @NonNull String whereUid
+    );
 
-    // no fields
+    int delete(@NonNull String uid);
 
-    @NonNull
-    public abstract ContentValues toContentValues();
-
-    @NonNull
-    public static Builder builder() {
-        return new $$AutoValue_TrackedEntityModel.Builder();
-    }
-
-    @NonNull
-    public static TrackedEntityModel create(Cursor cursor) {
-        return AutoValue_TrackedEntityModel.createFromCursor(cursor);
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
-        public abstract TrackedEntityModel build();
-    }
 }

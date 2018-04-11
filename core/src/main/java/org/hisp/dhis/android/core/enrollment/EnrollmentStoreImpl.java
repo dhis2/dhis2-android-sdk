@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -40,12 +37,20 @@ import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
+import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.enrollment.note.NoteBuilder;
+import org.hisp.dhis.android.core.enrollment.note.NoteModel;
+import org.hisp.dhis.android.core.enrollment.note.NoteStore;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals",
@@ -290,12 +295,20 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                         coordinates = Coordinates.create(latitude, longitude);
                     }
 
+                    Set<NoteModel> noteModels = NoteStore.create(databaseAdapter).selectAll(NoteModel.factory);
+                    List<Note> notes = new ArrayList<>();
+                    NoteBuilder noteBuilder = new NoteBuilder();
+                    for (NoteModel noteModel : noteModels) {
+                        if (noteModel.enrollment().equals(uid)) {
+                            notes.add(noteBuilder.buildPojo(noteModel));
+                        }
+                    }
+
                     enrollmentMap.get(trackedEntityInstance).add(Enrollment.create(
                             uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                             organisationUnit, program, enrollmentDate, incidentDate, followUp,
-                            status, trackedEntityInstance, coordinates, false, null, null
+                            status, trackedEntityInstance, coordinates, false, null, notes
                     ));
-
                 }
                 while (cursor.moveToNext());
             }

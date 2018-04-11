@@ -27,7 +27,16 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.LegendSetHandler;
+import org.hisp.dhis.android.core.legendset.LegendSetModel;
+import org.hisp.dhis.android.core.legendset.LegendSetModelBuilder;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModelBuilder;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
 
 import java.util.List;
 
@@ -36,15 +45,22 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 public class ProgramIndicatorHandler {
     private final ProgramIndicatorStore programIndicatorStore;
     private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
+    private final ObjectWithoutUidStore<ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkStore;
+    private final GenericHandler<LegendSet, LegendSetModel> legendSetHandler;
 
-    public ProgramIndicatorHandler(ProgramIndicatorStore programIndicatorStore,
+    ProgramIndicatorHandler(ProgramIndicatorStore programIndicatorStore,
                                    ProgramStageSectionProgramIndicatorLinkStore
-                                           programStageSectionProgramIndicatorLinkStore) {
+                                           programStageSectionProgramIndicatorLinkStore,
+                                   ObjectWithoutUidStore<ProgramIndicatorLegendSetLinkModel>
+                                           programIndicatorLegendSetLinkStore,
+                                   GenericHandler<LegendSet, LegendSetModel> legendSetHandler) {
         this.programIndicatorStore = programIndicatorStore;
         this.programStageSectionProgramIndicatorLinkStore = programStageSectionProgramIndicatorLinkStore;
+        this.programIndicatorLegendSetLinkStore = programIndicatorLegendSetLinkStore;
+        this.legendSetHandler = legendSetHandler;
     }
 
-    public void handleProgramIndicator(String programStageSectionUid, List<ProgramIndicator> programIndicators) {
+    void handleProgramIndicator(String programStageSectionUid, List<ProgramIndicator> programIndicators) {
         if (programIndicators == null) {
             return;
         }
@@ -95,7 +111,9 @@ public class ProgramIndicatorHandler {
                 }
             }
 
-            if (programStageSectionUid != null) {
+            if (programStageSectionUid == null) {
+                handleLegendSet(programIndicator);
+            } else {
                 // since this is many-to-many relationship we need to update link table
 
                 int updatedLink = programStageSectionProgramIndicatorLinkStore.update(
@@ -112,10 +130,23 @@ public class ProgramIndicatorHandler {
         }
     }
 
+    private void handleLegendSet(ProgramIndicator programIndicator) {
+        legendSetHandler.handleMany(programIndicator.legendSets(), new LegendSetModelBuilder());
+
+        ProgramIndicatorLegendSetLinkModelBuilder builder =
+                new ProgramIndicatorLegendSetLinkModelBuilder(programIndicator);
+
+        for (LegendSet legendSet : programIndicator.legendSets()) {
+            programIndicatorLegendSetLinkStore.updateOrInsertWhere(builder.buildModel(legendSet));
+        }
+    }
+
     public static ProgramIndicatorHandler create(DatabaseAdapter databaseAdapter) {
         return new ProgramIndicatorHandler(
                 new ProgramIndicatorStoreImpl(databaseAdapter),
-                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter)
+                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter),
+                ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
+                LegendSetHandler.create(databaseAdapter)
         );
     }
 }

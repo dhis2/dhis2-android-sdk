@@ -1,13 +1,12 @@
 package org.hisp.dhis.android.core.category;
 
 
-import static junit.framework.Assert.assertTrue;
-
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.CategoryCallFactory;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -17,6 +16,8 @@ import org.junit.Test;
 import java.io.IOException;
 
 import retrofit2.Response;
+
+import static junit.framework.Assert.assertTrue;
 
 public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
@@ -34,7 +35,9 @@ public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase 
         Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
-        CategoryEndpointCall categoryEndpointCall = CategoryCallFactory.create(d2.retrofit(), databaseAdapter());
+        Call<Response<Payload<Category>>> categoryEndpointCall = CategoryEndpointCall.FACTORY.create(
+                GenericCallData.create(databaseAdapter(), d2.retrofit())
+        );
         Response<Payload<Category>> responseCategory = categoryEndpointCall.call();
 
         assertTrue(responseCategory.isSuccessful());

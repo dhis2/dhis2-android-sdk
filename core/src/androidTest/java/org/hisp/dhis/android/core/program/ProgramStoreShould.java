@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.program.ProgramModel.Columns;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,7 +85,7 @@ public class ProgramStoreShould extends AbsStoreTestCase {
             Columns.RELATIONSHIP_TYPE,
             Columns.RELATIONSHIP_TEXT,
             Columns.RELATED_PROGRAM,
-            Columns.TRACKED_ENTITY,
+            Columns.TRACKED_ENTITY_TYPE,
             Columns.CATEGORY_COMBO,
             Columns.ACCESS_DATA_WRITE
     };
@@ -153,9 +153,9 @@ public class ProgramStoreShould extends AbsStoreTestCase {
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID, RELATIONSHIP_TYPE);
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
 
-        //TrackedEntity foreign key corresponds to table entry
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY);
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        //TrackedEntityType foreign key corresponds to table entry
+        ContentValues trackedEntityType = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(CATEGORY_COMBO_ID, CATEGORY_COMBO);
         database().insert(CategoryComboModel.TABLE, null, categoryCombo);
@@ -244,9 +244,9 @@ public class ProgramStoreShould extends AbsStoreTestCase {
         //RelationshipType foreign key corresponds to table entry
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(2L, deferredRelationshipTypeUid);
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
-        //TrackedEntity foreign key corresponds to table entry
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(2L, deferredTrackedEntityUid);
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        //TrackedEntityType foreign key corresponds to table entry
+        ContentValues trackedEntityType = CreateTrackedEntityUtils.create(2L, deferredTrackedEntityUid);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(2L, deferredCategoryComboUid);
         database().insert(CategoryComboModel.TABLE, null, categoryCombo);
@@ -402,8 +402,8 @@ public class ProgramStoreShould extends AbsStoreTestCase {
                 ACCESS_DATA_WRITE
         );
 
-        database().delete(TrackedEntityModel.TABLE,
-                TrackedEntityModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
+        database().delete(TrackedEntityTypeModel.TABLE,
+                TrackedEntityTypeModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
 
         Cursor cursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();

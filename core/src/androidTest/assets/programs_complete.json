@@ -38,7 +38,7 @@
               "color": "#fff",
               "icon": "my-icon-name"
           },
-          "trackedEntity": {
+          "trackedEntityType": {
               "id": "nEenWmSyUEp"
           },
           "categoryCombo": {
@@ -222,7 +222,40 @@
                   "decimals": 2,
                   "program": {
                       "id": "IpHINAT79UW"
-                  }
+                  },
+                  "legendSets": [
+                      {
+                          "code": "AGE15YINT",
+                          "created": "2017-06-02T11:40:33.452",
+                          "lastUpdated": "2017-06-02T11:41:01.999",
+                          "name": "Age 15y interval",
+                          "id": "TiOkbpGEud4",
+                          "displayName": "Age 15y interval",
+                          "symbolizer": "color",
+                          "legends": [
+                              {
+                                  "lastUpdated": "2017-06-02T11:40:44.279",
+                                  "id": "ZUUGJnvX40X",
+                                  "created": "2017-06-02T11:40:44.279",
+                                  "name": "30 - 40",
+                                  "endValue": 40,
+                                  "color": "#d9f0a3",
+                                  "displayName": "30 - 40",
+                                  "startValue": 30.5
+                              },
+                              {
+                                  "lastUpdated": "2017-06-02T11:40:44.279",
+                                  "id": "kEf6QhFVMab",
+                                  "created": "2017-06-02T11:40:44.279",
+                                  "name": "15 - 30",
+                                  "endValue": 30,
+                                  "color": "#d9f0a3",
+                                  "displayName": "15 - 30",
+                                  "startValue": 15
+                              }
+                          ]
+                      }
+                  ]
               },
               {
                   "created": "2015-09-14T20:25:55.543",
@@ -238,7 +271,8 @@
                   "filter": "V{value_count}>0",
                   "program": {
                       "id": "IpHINAT79UW"
-                  }
+                  },
+                  "legendSets": []
               },
               {
                   "created": "2015-08-06T22:48:42.650",
@@ -253,7 +287,8 @@
                   "displayShortName": "Measles + Yellow fever doses",
                   "program": {
                       "id": "IpHINAT79UW"
-                  }
+                  },
+                  "legendSets": []
               },
               {
                   "created": "2015-08-07T19:04:29.117",
@@ -269,7 +304,8 @@
                   "filter": "A{cejWyOfXge6} == 'Female'",
                   "program": {
                       "id": "IpHINAT79UW"
-                  }
+                  },
+                  "legendSets": []
               },
               {
                   "created": "2015-08-06T22:49:20.128",
@@ -285,7 +321,8 @@
                   "filter": "#{ZzYYXq4fJie.GQY2lXrypjO} < 2700",
                   "program": {
                       "id": "IpHINAT79UW"
-                  }
+                  },
+                  "legendSets": []
               },
               {
                   "created": "2017-01-20T10:32:26.388",
@@ -303,7 +340,8 @@
                   "filter": "#{ZzYYXq4fJie.GQY2lXrypjO} != 0 && #{A03MvHHogjR.UXz7xuGCEhU} != 0 && V{enrollment_status} == 'COMPLETED'",
                   "program": {
                       "id": "IpHINAT79UW"
-                  }
+                  },
+                  "legendSets": []
               },
               {
                   "created": "2015-08-06T22:35:40.391",
@@ -319,7 +357,8 @@
                   "filter": "#{A03MvHHogjR.UXz7xuGCEhU} < 2700",
                   "program": {
                       "id": "IpHINAT79UW"
-                  }
+                  },
+                  "legendSets": []
               },
               {
                   "created": "2015-08-06T22:25:14.645",
@@ -334,7 +373,8 @@
                   "displayShortName": "BCG doses",
                   "program": {
                       "id": "IpHINAT79UW"
-                  }
+                  },
+                  "legendSets": []
               }
           ],
           "programStages": [

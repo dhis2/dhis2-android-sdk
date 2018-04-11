@@ -3,8 +3,10 @@ package org.hisp.dhis.android.core.dataelement;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -16,6 +18,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import retrofit2.Response;
+
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -25,7 +29,7 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private DataElementEndpointCall dataElementCall;
+    private Call<Response<Payload<DataElement>>> dataElementCall;
 
     @Before
     @Override
@@ -35,7 +39,7 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
         dataElementCall = createCall();
     }
 
-    private DataElementEndpointCall createCall() {
+    private Call<Response<Payload<DataElement>>> createCall() {
         ResourceHandler resourceHandler =
                 new ResourceHandler(new ResourceStoreImpl(databaseAdapter()));
         GenericCallData data = GenericCallData.create(databaseAdapter(), resourceHandler, d2.retrofit());

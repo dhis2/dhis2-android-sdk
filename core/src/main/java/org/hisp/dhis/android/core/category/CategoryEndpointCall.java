@@ -1,11 +1,10 @@
 package org.hisp.dhis.android.core.category;
 
 
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -27,7 +26,7 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
     private final Date serverDate;
     private boolean isExecuted;
 
-    public CategoryEndpointCall(CategoryQuery categoryQuery,
+    CategoryEndpointCall(CategoryQuery categoryQuery,
             CategoryService categoryService,
             ResponseValidator<Category> responseValidator,
             CategoryHandler handler,
@@ -55,8 +54,7 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
 
         validateIsNotTryingToExcuteAgain();
 
-        Response<Payload<Category>> response = categoryService.getCategory(getFields(),
-                categoryQuery.paging(),
+        Response<Payload<Category>> response = categoryService.getCategory(Category.allFields, categoryQuery.paging(),
                 categoryQuery.page(), categoryQuery.pageSize()).execute();
 
         if (responseValidator.isValid(response)) {
@@ -91,18 +89,20 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
         }
     }
 
-    @NonNull
-    private Fields<Category> getFields() {
-        return Fields.<Category>builder().fields(Category.uid,
-                Category.code, Category.name, Category.displayName,
-                Category.created, Category.lastUpdated, Category.deleted,
-                Category.shortName, Category.displayName,
-                Category.dataDimensionType,
-                Category.categoryOptions.with(CategoryOption.uid, CategoryOption.code,
-                        CategoryOption.name, CategoryOption.displayName,
-                        CategoryOption.created, CategoryOption.lastUpdated, CategoryOption.deleted,
-                        CategoryOption.shortName, CategoryOption.displayName))
-                .build();
+    public static final SimpleCallFactory<Payload<Category>> FACTORY
+            = new SimpleCallFactory<Payload<Category>>() {
 
-    }
+        @Override
+        public Call<Response<Payload<Category>>> create(GenericCallData genericCallData) {
+            return new CategoryEndpointCall(
+                    CategoryQuery.defaultQuery(),
+                    genericCallData.retrofit().create(CategoryService.class),
+                    new ResponseValidator<Category>(),
+                    CategoryHandler.create(genericCallData.databaseAdapter()),
+                    ResourceHandler.create(genericCallData.databaseAdapter()),
+                    genericCallData.databaseAdapter(),
+                    new Date()
+            );
+        }
+    };
 }

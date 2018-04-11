@@ -30,9 +30,12 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
@@ -42,7 +45,7 @@ public class TrackedEntityAttributeHandler {
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
-    public TrackedEntityAttributeHandler(TrackedEntityAttributeStore trackedEntityAttributeStore,
+    TrackedEntityAttributeHandler(TrackedEntityAttributeStore trackedEntityAttributeStore,
                                          GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                                          DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
@@ -104,5 +107,13 @@ public class TrackedEntityAttributeHandler {
                 new ObjectStyleModelBuilder(trackedEntityAttribute.uid(), TrackedEntityAttributeModel.TABLE));
         renderTypeHandler.handle(trackedEntityAttribute.renderType(), trackedEntityAttribute.uid(),
                 TrackedEntityAttributeModel.TABLE);
+    }
+
+    public static TrackedEntityAttributeHandler create(DatabaseAdapter databaseAdapter) {
+        return new TrackedEntityAttributeHandler(
+                new TrackedEntityAttributeStoreImpl(databaseAdapter),
+                ObjectStyleHandler.create(databaseAdapter),
+                ValueTypeRenderingHandler.create(databaseAdapter)
+        );
     }
 }

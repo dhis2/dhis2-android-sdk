@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -33,7 +34,7 @@ public class TrackedEntityInstanceEndPointCall implements
 
     private boolean isExecuted;
 
-    public TrackedEntityInstanceEndPointCall(
+    TrackedEntityInstanceEndPointCall(
             @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
@@ -109,7 +110,7 @@ public class TrackedEntityInstanceEndPointCall implements
                 TrackedEntityInstance.uid, TrackedEntityInstance.created,
                 TrackedEntityInstance.lastUpdated,
                 TrackedEntityInstance.organisationUnit,
-                TrackedEntityInstance.trackedEntity,
+                TrackedEntityInstance.trackedEntityType,
                 TrackedEntityInstance.coordinates,
                 TrackedEntityInstance.featureType,
                 TrackedEntityInstance.deleted,
@@ -149,5 +150,18 @@ public class TrackedEntityInstanceEndPointCall implements
                         Enrollment.notes.with(Note.allFields)
                 )
         ).build();
+    }
+
+    public static TrackedEntityInstanceEndPointCall create(GenericCallData genericCallData,
+                                                           Date serverDate,
+                                                           String trackedEntityInstanceUid) {
+        return new TrackedEntityInstanceEndPointCall(
+                genericCallData.retrofit().create(TrackedEntityInstanceService.class),
+                genericCallData.databaseAdapter(),
+                TrackedEntityInstanceHandler.create(genericCallData.databaseAdapter()),
+                ResourceHandler.create(genericCallData.databaseAdapter()),
+                serverDate,
+                trackedEntityInstanceUid
+        );
     }
 }

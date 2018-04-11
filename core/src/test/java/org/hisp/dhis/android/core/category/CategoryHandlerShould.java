@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.core.category;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -14,16 +11,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
+
 public class CategoryHandlerShould {
 
     @Mock
     private CategoryStore mockCategoryStore;
 
     @Mock
-    private CategoryOptionStore mockCategoryOptionStore;
+    private CategoryCategoryOptionLinkStore mockCategoryCategoryOptionLinkStore;
 
     @Mock
-    private CategoryCategoryOptionLinkStore mockCategoryCategoryOptionLinkStore;
+    private GenericHandler<CategoryOption, CategoryOptionModel> categoryOptionHandler;
 
     private CategoryHandler mCategoryHandler;
 
@@ -32,8 +34,6 @@ public class CategoryHandlerShould {
 
 
         MockitoAnnotations.initMocks(this);
-        CategoryOptionHandler categoryOptionHandler = new CategoryOptionHandler(
-                mockCategoryOptionStore);
 
         mCategoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler,
                 mockCategoryCategoryOptionLinkStore);

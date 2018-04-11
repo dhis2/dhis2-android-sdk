@@ -2,19 +2,14 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEndPointCall;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 
 import java.util.Date;
 import java.util.Map;
@@ -22,40 +17,17 @@ import java.util.Map;
 import retrofit2.Response;
 
 @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-public class TrackerDataCall implements Call<Response> {
+public final class TrackerDataCall implements Call<Response> {
 
+    private final GenericCallData genericCallData;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
-    private final SystemInfoStore systemInfoStore;
-    private final SystemInfoService systemInfoService;
-    private final ResourceStore resourceStore;
-
-    private final TrackedEntityInstanceService trackedEntityInstanceService;
-    private final DatabaseAdapter databaseAdapter;
-    private final ResourceHandler resourceHandler;
-    private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
 
     private boolean isExecuted;
 
-    public TrackerDataCall(
-            @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-            @NonNull SystemInfoStore systemInfoStore,
-            @NonNull SystemInfoService systemInfoService,
-            @NonNull ResourceStore resourceStore,
-            @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
-            @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull ResourceHandler resourceHandler,
-            @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler) {
-
+    private TrackerDataCall(@NonNull GenericCallData genericCallData,
+                            @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore) {
+        this.genericCallData = genericCallData;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
-
-        this.systemInfoStore = systemInfoStore;
-        this.systemInfoService = systemInfoService;
-        this.resourceStore = resourceStore;
-
-        this.trackedEntityInstanceService = trackedEntityInstanceService;
-        this.databaseAdapter = databaseAdapter;
-        this.resourceHandler = resourceHandler;
-        this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
     }
 
     @Override
@@ -81,13 +53,9 @@ public class TrackerDataCall implements Call<Response> {
                 trackedEntityInstanceStore.querySynced();
 
         if (!trackedEntityInstances.isEmpty()) {
-            Transaction transaction = databaseAdapter.beginNewTransaction();
+            Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
             try {
-
-                response = new SystemInfoCall(
-                        databaseAdapter, systemInfoStore,
-                        systemInfoService, resourceStore
-                ).call();
+                response = SystemInfoCall.FACTORY.create(genericCallData).call();
 
                 if (!response.isSuccessful()) {
                     return response;
@@ -96,7 +64,7 @@ public class TrackerDataCall implements Call<Response> {
                 SystemInfo systemInfo = (SystemInfo) response.body();
                 Date serverDate = systemInfo.serverDate();
 
-                response = trackedEntityInstanceCall(serverDate, trackedEntityInstances);
+                response = trackedEntityInstanceCall(genericCallData, serverDate, trackedEntityInstances);
 
                 transaction.setSuccessful();
 
@@ -108,15 +76,14 @@ public class TrackerDataCall implements Call<Response> {
         return response;
     }
 
-    private Response trackedEntityInstanceCall(Date serverDate,
+    private Response trackedEntityInstanceCall(GenericCallData genericCallData, Date serverDate,
             Map<String, TrackedEntityInstance> trackedEntityInstances) throws Exception {
         Response response = null;
 
         for (Map.Entry<String, TrackedEntityInstance> entry : trackedEntityInstances.entrySet()) {
 
-            response = new TrackedEntityInstanceEndPointCall(trackedEntityInstanceService,
-                    databaseAdapter, trackedEntityInstanceHandler, resourceHandler,
-                    serverDate, entry.getValue().uid()).call();
+            response = TrackedEntityInstanceEndPointCall.create(genericCallData, serverDate,
+                    entry.getValue().uid()).call();
 
             if (!response.isSuccessful()) {
                 return response;
@@ -124,5 +91,12 @@ public class TrackerDataCall implements Call<Response> {
         }
 
         return response;
+    }
+
+    public static TrackerDataCall create(GenericCallData genericCallData) {
+        return new TrackerDataCall(
+                genericCallData,
+                new TrackedEntityInstanceStoreImpl(genericCallData.databaseAdapter())
+        );
     }
 }

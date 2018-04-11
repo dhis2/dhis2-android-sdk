@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.util.Date;
 import java.util.List;
@@ -72,7 +72,7 @@ public abstract class Program extends BaseNameableObject {
     private static final String RELATIONSHIP_TEXT = "relationshipText";
     private static final String PROGRAM_TRACKED_ENTITY_ATTRIBUTES = "programTrackedEntityAttributes";
     private static final String RELATED_PROGRAM = "relatedProgram";
-    private static final String TRACKED_ENTITY = "trackedEntity";
+    private static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
     private static final String CATEGORY_COMBO = "categoryCombo";
     private static final String PROGRAM_INDICATORS = "programIndicators";
     private static final String PROGRAM_STAGES = "programStages";
@@ -141,8 +141,8 @@ public abstract class Program extends BaseNameableObject {
             = NestedField.create(PROGRAM_TRACKED_ENTITY_ATTRIBUTES);
     public static final NestedField<Program, Program> relatedProgram
             = NestedField.create(RELATED_PROGRAM);
-    public static final NestedField<Program, TrackedEntity> trackedEntity
-            = NestedField.create(TRACKED_ENTITY);
+    public static final NestedField<Program, TrackedEntityType> trackedEntityType
+            = NestedField.create(TRACKED_ENTITY_TYPE);
     public static final NestedField<Program, CategoryCombo> categoryCombo
             = NestedField.create(CATEGORY_COMBO);
     static final NestedField<Program, Access> access
@@ -237,8 +237,8 @@ public abstract class Program extends BaseNameableObject {
     public abstract Program relatedProgram();
 
     @Nullable
-    @JsonProperty(TRACKED_ENTITY)
-    public abstract TrackedEntity trackedEntity();
+    @JsonProperty(TRACKED_ENTITY_TYPE)
+    public abstract TrackedEntityType trackedEntityType();
 
     @Nullable
     @JsonProperty(CATEGORY_COMBO)
@@ -299,7 +299,7 @@ public abstract class Program extends BaseNameableObject {
             @JsonProperty(RELATIONSHIP_TEXT) String relationshipText,
             @JsonProperty(PROGRAM_TRACKED_ENTITY_ATTRIBUTES) List<ProgramTrackedEntityAttribute> attributes,
             @JsonProperty(RELATED_PROGRAM) Program relatedProgram,
-            @JsonProperty(TRACKED_ENTITY) TrackedEntity trackedEntity,
+            @JsonProperty(TRACKED_ENTITY_TYPE) TrackedEntityType trackedEntityType,
             @JsonProperty(CATEGORY_COMBO) CategoryCombo categoryCombo,
             @JsonProperty(ACCESS) Access access,
             @JsonProperty(PROGRAM_INDICATORS) List<ProgramIndicator> programIndicators,
@@ -340,7 +340,7 @@ public abstract class Program extends BaseNameableObject {
                 relationshipText,
                 safeUnmodifiableList(attributes),
                 relatedProgram,
-                trackedEntity,
+                trackedEntityType,
                 categoryCombo,
                 access,
                 safeUnmodifiableList(programIndicators),

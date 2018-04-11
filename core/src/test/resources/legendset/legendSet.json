@@ -1,0 +1,19 @@
+{
+  "code": "AGE15YINT",
+  "created": "2017-06-02T11:40:33.452",
+  "lastUpdated": "2017-06-02T11:41:01.999",
+  "name": "Age 15y interval",
+  "id": "TiOkbpGEud4",
+  "displayName": "Age 15y interval",
+  "symbolizer": "color",
+  "legends": [
+    {
+      "id": "BzQkRWHS7lu",
+      "name": "45 - 60"
+    },
+    {
+      "id": "kEf6QhFVMab",
+      "name": "15 - 30"
+    }
+  ]
+}

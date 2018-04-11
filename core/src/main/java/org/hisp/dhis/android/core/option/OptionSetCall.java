@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -41,13 +42,14 @@ import java.io.IOException;
 import java.util.Set;
 
 import retrofit2.Call;
+import retrofit2.Response;
 
 public class OptionSetCall extends GenericEndpointCallImpl<OptionSet, OptionSetModel, UidsQuery> {
     private final OptionSetService optionSetService;
     private final UidsQuery uidsQuery;
 
-    public OptionSetCall(GenericCallData data, OptionSetService optionSetService,
-                         GenericHandler<OptionSet, OptionSetModel> optionSetHandler, Set<String> uids) {
+    OptionSetCall(GenericCallData data, OptionSetService optionSetService,
+                  GenericHandler<OptionSet, OptionSetModel> optionSetHandler, Set<String> uids) {
         super(data, optionSetHandler, ResourceModel.Type.OPTION_SET, new OptionSetModelBuilder(),
                 UidsQuery.create(uids, 64));
         this.uidsQuery = UidsQuery.create(uids, 64);
@@ -76,4 +78,18 @@ public class OptionSetCall extends GenericEndpointCallImpl<OptionSet, OptionSetM
                 )
         ).build();
     }
+
+    public static final UidsCallFactory<OptionSet> FACTORY = new UidsCallFactory<OptionSet>() {
+
+        @Override
+        public org.hisp.dhis.android.core.calls.Call<Response<Payload<OptionSet>>> create(
+                GenericCallData genericCallData, Set<String> uids) {
+            return new OptionSetCall(
+                    genericCallData,
+                    genericCallData.retrofit().create(OptionSetService.class),
+                    OptionSetHandler.create(genericCallData.databaseAdapter()),
+                    uids
+            );
+        }
+    };
 }

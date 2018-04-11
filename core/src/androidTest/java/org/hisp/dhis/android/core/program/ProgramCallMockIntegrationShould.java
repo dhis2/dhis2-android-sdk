@@ -40,34 +40,21 @@ import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStoreImpl;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -106,7 +93,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
             ProgramModel.Columns.RELATIONSHIP_TYPE,
             ProgramModel.Columns.RELATIONSHIP_TEXT,
             ProgramModel.Columns.RELATED_PROGRAM,
-            ProgramModel.Columns.TRACKED_ENTITY,
+            ProgramModel.Columns.TRACKED_ENTITY_TYPE,
             ProgramModel.Columns.CATEGORY_COMBO,
             ProgramModel.Columns.ACCESS_DATA_WRITE
     };
@@ -129,32 +116,6 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        TrackedEntityAttributeStore trackedEntityAttributeStore =
-                new TrackedEntityAttributeStoreImpl(databaseAdapter());
-
-        ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore =
-                new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter());
-
-        ProgramRuleVariableStore programRuleVariableStore =
-                new ProgramRuleVariableStoreImpl(databaseAdapter());
-
-        ProgramIndicatorStore programIndicatorStore = new ProgramIndicatorStoreImpl(databaseAdapter());
-        ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore =
-                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter());
-
-        ProgramRuleActionStore programRuleActionStore = new ProgramRuleActionStoreImpl(databaseAdapter());
-        ProgramRuleStore programRuleStore = new ProgramRuleStoreImpl(databaseAdapter());
-
-        GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler = ObjectStyleHandler.create(databaseAdapter());
-        DictionaryTableHandler<ValueTypeRendering> renderTypeHandler
-                = ValueTypeRenderingHandler.create(databaseAdapter());
-
-        RelationshipTypeStore relationshipStore = new RelationshipTypeStoreImpl(databaseAdapter());
-        ProgramService programService = d2.retrofit().create(ProgramService.class);
-        ProgramStore programStore = new ProgramStoreImpl(databaseAdapter());
-
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-
         Set<String> uids = new HashSet<>();
         uids.add("uid1");
         uids.add("uids2");
@@ -166,15 +127,11 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         database().insert(CategoryComboModel.TABLE, null, categoryCombo2);
 
         // inserting tracked entity
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
-        programCall = new ProgramCall(
-                programService, databaseAdapter(), resourceStore, uids, programStore, new Date(),
-                trackedEntityAttributeStore, programTrackedEntityAttributeStore, programRuleVariableStore,
-                programIndicatorStore, programStageSectionProgramIndicatorLinkStore, programRuleActionStore,
-                programRuleStore, relationshipStore, styleHandler, renderTypeHandler
-        );
+        programCall = ProgramCall.FACTORY.create(
+                GenericCallData.create(databaseAdapter(), d2.retrofit()), uids);
     }
 
     @Test

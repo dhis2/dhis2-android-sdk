@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.TrackedEntityInstanceCallFactory;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +60,8 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         givenAMetadataInDatabase();
 
         TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceCallFactory.create(
-                        d2.retrofit(), databaseAdapter(), teiUid);
+                TrackedEntityInstanceEndPointCall.create(GenericCallData.create(
+                        d2.databaseAdapter(), d2.retrofit()), new Date(), teiUid);
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
 
@@ -77,16 +78,17 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         givenAMetadataInDatabase();
 
         TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceCallFactory.create(
-                        d2.retrofit(), databaseAdapter(), teiUid);
+                TrackedEntityInstanceEndPointCall.create(
+                        GenericCallData.create(d2.databaseAdapter(), d2.retrofit()),
+                        new Date(), teiUid);
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
 
         trackedEntityInstanceEndPointCall.call();
 
         trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceCallFactory.create(
-                        d2.retrofit(), databaseAdapter(), teiUid);
+                TrackedEntityInstanceEndPointCall.create(
+                        GenericCallData.create(databaseAdapter(), d2.retrofit()), new Date(), teiUid);
 
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance_with_removed_data.json");
@@ -167,7 +169,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                 trackedEntityInstance.createdAtClient(),
                 trackedEntityInstance.lastUpdatedAtClient(),
                 trackedEntityInstance.organisationUnit(),
-                trackedEntityInstance.trackedEntity(),
+                trackedEntityInstance.trackedEntityType(),
                 trackedEntityInstance.coordinates(),
                 trackedEntityInstance.featureType(),
                 trackedEntityInstance.deleted(),
@@ -260,7 +262,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         downloadedTei = TrackedEntityInstance.create(
                 downloadedTei.uid(), downloadedTei.created(), downloadedTei.lastUpdated(),
                 downloadedTei.createdAtClient(), downloadedTei.lastUpdatedAtClient(),
-                downloadedTei.organisationUnit(), downloadedTei.trackedEntity(), downloadedTei.coordinates(),
+                downloadedTei.organisationUnit(), downloadedTei.trackedEntityType(), downloadedTei.coordinates(),
                 downloadedTei.featureType(), downloadedTei.deleted(), attValues.get(downloadedTei.uid()),
                 relationships, downloadedEnrollments);
 

@@ -32,6 +32,8 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -41,6 +43,7 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 
 import java.io.IOException;
 import java.util.Date;
@@ -61,7 +64,7 @@ public final class UserCall implements Call<Response<User>> {
     private final Date serverDate;
     private boolean isExecuted;
 
-    public UserCall(UserService userService,
+    UserCall(UserService userService,
                     DatabaseAdapter databaseAdapter,
                     UserStore userStore,
                     UserCredentialsStore userCredentialsStore,
@@ -151,4 +154,19 @@ public final class UserCall implements Call<Response<User>> {
         return userService.getUser(fields).execute();
     }
 
+    public static final SimpleCallFactory<User> FACTORY = new SimpleCallFactory<User>() {
+
+        @Override
+        public Call<Response<User>> create(GenericCallData genericCallData) {
+            return new UserCall(
+                    genericCallData.retrofit().create(UserService.class),
+                    genericCallData.databaseAdapter(),
+                    new UserStoreImpl(genericCallData.databaseAdapter()),
+                    new UserCredentialsStoreImpl(genericCallData.databaseAdapter()),
+                    new UserRoleStoreImpl(genericCallData.databaseAdapter()),
+                    new ResourceStoreImpl(genericCallData.databaseAdapter()),
+                    new Date()
+            );
+        }
+    };
 }

@@ -1,9 +1,8 @@
 package org.hisp.dhis.android.core.category;
 
-import static org.junit.Assert.assertEquals;
-
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +11,8 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
@@ -87,8 +88,8 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void whenInsertNewOption() {
-        CategoryOptionStoreImpl optionStore = new CategoryOptionStoreImpl(databaseAdapter());
-        optionStore.insert(newCategoryOption);
+        IdentifiableObjectStore<CategoryOptionModel> optionStore = CategoryOptionStore.create(databaseAdapter());
+        optionStore.insert(new CategoryOptionModelBuilder().buildModel(newCategoryOption));
     }
 
     private void thenAssertLastInsertedIDIsOne(){

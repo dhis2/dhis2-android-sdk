@@ -58,6 +58,9 @@ import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
 import org.hisp.dhis.android.core.indicator.IndicatorModel;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeModel;
+import org.hisp.dhis.android.core.legendset.LegendModel;
+import org.hisp.dhis.android.core.legendset.LegendSetModel;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
 import org.hisp.dhis.android.core.option.OptionModel;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -81,7 +84,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserModel;
@@ -101,7 +104,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
-    public static final int VERSION = 14;
+    public static final int VERSION = 17;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -121,14 +124,10 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                     CategoryModel.Columns.DATA_DIMENSION_TYPE + " TEXT" + ");";
 
     private static final String CREATE_CATEGORY_OPTION_TABLE =
-            "CREATE TABLE " + CategoryOptionModel.TABLE + " (" +
-                    CategoryModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CategoryModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-                    CategoryModel.Columns.CODE + " TEXT," +
-                    CategoryModel.Columns.NAME + " TEXT," +
-                    CategoryModel.Columns.DISPLAY_NAME + " TEXT," +
-                    CategoryModel.Columns.CREATED + " TEXT," +
-                    CategoryModel.Columns.LAST_UPDATED + " TEXT" + ");";
+            SQLStatementBuilder.createNameableModelTable(CategoryOptionModel.TABLE,
+                    CategoryOptionModel.Columns.START_DATE + " TEXT," +
+                            CategoryOptionModel.Columns.END_DATE + " TEXT"
+            );
 
     private static final String CREATE_CATEGORY_CATEGORY_OPTION_LINK_TABLE = "CREATE TABLE " +
             CategoryCategoryOptionLinkModel.TABLE + " (" +
@@ -337,15 +336,15 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             ProgramModel.Columns.RELATIONSHIP_TYPE + " TEXT," +
             ProgramModel.Columns.RELATIONSHIP_TEXT + " TEXT," +
             ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
-            ProgramModel.Columns.TRACKED_ENTITY + " TEXT," +
+            ProgramModel.Columns.TRACKED_ENTITY_TYPE + " TEXT," +
             ProgramModel.Columns.CATEGORY_COMBO + " TEXT," +
             ProgramModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
             " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID
             + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
-            " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY + ")" +
-            " REFERENCES " + TrackedEntityModel.TABLE + " (" + TrackedEntityModel.Columns.UID + ")"
+            " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY_TYPE + ")" +
+            " REFERENCES " + TrackedEntityTypeModel.TABLE + " (" + TrackedEntityTypeModel.Columns.UID + ")"
             +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             " FOREIGN KEY (" + ProgramModel.Columns.CATEGORY_COMBO + ")" +
@@ -355,19 +354,19 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             ");";
 
     private static final String CREATE_TRACKED_ENTITY_TABLE =
-            "CREATE TABLE " + TrackedEntityModel.TABLE +
+            "CREATE TABLE " + TrackedEntityTypeModel.TABLE +
                     " (" +
-                    TrackedEntityModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    TrackedEntityModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-                    TrackedEntityModel.Columns.CODE + " TEXT," +
-                    TrackedEntityModel.Columns.NAME + " TEXT," +
-                    TrackedEntityModel.Columns.DISPLAY_NAME + " TEXT," +
-                    TrackedEntityModel.Columns.CREATED + " TEXT," +
-                    TrackedEntityModel.Columns.LAST_UPDATED + " TEXT," +
-                    TrackedEntityModel.Columns.SHORT_NAME + " TEXT," +
-                    TrackedEntityModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-                    TrackedEntityModel.Columns.DESCRIPTION + " TEXT," +
-                    TrackedEntityModel.Columns.DISPLAY_DESCRIPTION + " TEXT" +
+                    TrackedEntityTypeModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    TrackedEntityTypeModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
+                    TrackedEntityTypeModel.Columns.CODE + " TEXT," +
+                    TrackedEntityTypeModel.Columns.NAME + " TEXT," +
+                    TrackedEntityTypeModel.Columns.DISPLAY_NAME + " TEXT," +
+                    TrackedEntityTypeModel.Columns.CREATED + " TEXT," +
+                    TrackedEntityTypeModel.Columns.LAST_UPDATED + " TEXT," +
+                    TrackedEntityTypeModel.Columns.SHORT_NAME + " TEXT," +
+                    TrackedEntityTypeModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
+                    TrackedEntityTypeModel.Columns.DESCRIPTION + " TEXT," +
+                    TrackedEntityTypeModel.Columns.DISPLAY_DESCRIPTION + " TEXT" +
                     ");";
 
     private static final String CREATE_DATA_ELEMENT_TABLE =
@@ -793,7 +792,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             TrackedEntityInstanceModel.Columns.CREATED_AT_CLIENT + " TEXT," +
             TrackedEntityInstanceModel.Columns.LAST_UPDATED_AT_CLIENT + " TEXT," +
             TrackedEntityInstanceModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
-            TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + " TEXT NOT NULL," +
+            TrackedEntityInstanceModel.Columns.TRACKED_ENTITY_TYPE + " TEXT NOT NULL," +
             TrackedEntityInstanceModel.Columns.COORDINATES + " TEXT," +
             TrackedEntityInstanceModel.Columns.FEATURE_TYPE + " TEXT," +
             TrackedEntityInstanceModel.Columns.STATE + " TEXT," +
@@ -801,8 +800,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             " REFERENCES " + OrganisationUnitModel.TABLE + " (" + OrganisationUnitModel.Columns.UID
             + ")" +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-            " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.TRACKED_ENTITY + ")" +
-            " REFERENCES " + TrackedEntityModel.TABLE + " (" + TrackedEntityModel.Columns.UID + ")"
+            " FOREIGN KEY (" + TrackedEntityInstanceModel.Columns.TRACKED_ENTITY_TYPE + ")" +
+            " REFERENCES " + TrackedEntityTypeModel.TABLE + " (" + TrackedEntityTypeModel.Columns.UID + ")"
             +
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
@@ -1071,6 +1070,37 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             NoteModel.Columns.STORED_DATE + ")"
             );
 
+    private static final String CREATE_LEGEND_TABLE =
+            SQLStatementBuilder.createIdentifiableModelTable(LegendModel.TABLE,
+                    LegendModel.Columns.START_VALUE + " REAL," +
+                            LegendModel.Columns.END_VALUE + " REAL," +
+                            LegendModel.Columns.COLOR + " TEXT," +
+                            LegendModel.Columns.LEGEND_SET + " TEXT," +
+                            " FOREIGN KEY ( " + LegendModel.Columns.LEGEND_SET + ")" +
+                            " REFERENCES " + LegendSetModel.TABLE + " (" + LegendSetModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
+            );
+
+    private static final String CREATE_LEGEND_SET_TABLE =
+            SQLStatementBuilder.createIdentifiableModelTable(LegendSetModel.TABLE,
+                    LegendSetModel.Columns.SYMBOLIZER + " TEXT"
+            );
+
+    private static final String CREATE_PROGRAM_INDICATOR_LEGEND_SET_LINK_TABLE =
+            SQLStatementBuilder.createModelTable(ProgramIndicatorLegendSetLinkModel.TABLE,
+                    ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR + " TEXT NOT NULL," +
+                            ProgramIndicatorLegendSetLinkModel.Columns.LEGEND_SET + " TEXT NOT NULL," +
+                            " FOREIGN KEY (" + ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR + ") " +
+                            " REFERENCES " + ProgramIndicatorModel.TABLE + " (" +
+                            ProgramIndicatorModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " FOREIGN KEY (" + ProgramIndicatorLegendSetLinkModel.Columns.LEGEND_SET + ") " +
+                            " REFERENCES " + LegendSetModel.TABLE + " (" + LegendSetModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " UNIQUE (" + ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR + ", " +
+                            ProgramIndicatorLegendSetLinkModel.Columns.LEGEND_SET + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1133,6 +1163,9 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_OBJECT_STYLE_TABLE);
         database.execSQL(CREATE_VALUE_TYPE_DEVICE_RENDERING_TABLE);
         database.execSQL(CREATE_NOTE_TABLE);
+        database.execSQL(CREATE_LEGEND_TABLE);
+        database.execSQL(CREATE_LEGEND_SET_TABLE);
+        database.execSQL(CREATE_PROGRAM_INDICATOR_LEGEND_SET_LINK_TABLE);
         return database;
     }
 

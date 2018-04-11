@@ -79,7 +79,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
             Columns.CREATED_AT_CLIENT,
             Columns.LAST_UPDATED_AT_CLIENT,
             Columns.ORGANISATION_UNIT,
-            Columns.TRACKED_ENTITY,
+            Columns.TRACKED_ENTITY_TYPE,
             Columns.COORDINATES,
             Columns.FEATURE_TYPE,
             Columns.STATE
@@ -92,9 +92,9 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
 
         trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
+        ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
     }
 
     @Test
@@ -120,9 +120,9 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         long rowId = trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 deferredOrganisationUnit, deferredTrackedEntity, COORDINATES, FEATURE_TYPE, STATE);
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(11L, deferredOrganisationUnit);
-        ContentValues trackedEntity = CreateTrackedEntityUtils.create(11L, deferredTrackedEntity);
+        ContentValues trackedEntityType = CreateTrackedEntityUtils.create(11L, deferredTrackedEntity);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
-        database().insert(TrackedEntityModel.TABLE, null, trackedEntity);
+        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
         database().setTransactionSuccessful();
         database().endTransaction();
 
@@ -150,7 +150,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     public void update_in_data_base_when_update() throws Exception {
         ContentValues trackedEntityInstance = new ContentValues();
         trackedEntityInstance.put(Columns.UID, UID);
-        trackedEntityInstance.put(Columns.TRACKED_ENTITY, TRACKED_ENTITY);
+        trackedEntityInstance.put(Columns.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
         trackedEntityInstance.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
         trackedEntityInstance.put(Columns.LAST_UPDATED, dateString);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
@@ -178,7 +178,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     public void delete_in_data_base_when_delete() throws Exception {
         ContentValues trackedEntityInstance = new ContentValues();
         trackedEntityInstance.put(Columns.UID, UID);
-        trackedEntityInstance.put(Columns.TRACKED_ENTITY, TRACKED_ENTITY);
+        trackedEntityInstance.put(Columns.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
         trackedEntityInstance.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
 
@@ -231,8 +231,8 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 ORGANISATION_UNIT, TRACKED_ENTITY, COORDINATES, FEATURE_TYPE, STATE);
 
-        database().delete(TrackedEntityModel.TABLE,
-                TrackedEntityModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
+        database().delete(TrackedEntityTypeModel.TABLE,
+                TrackedEntityTypeModel.Columns.UID + "=?", new String[]{TRACKED_ENTITY});
         Cursor cursor = database().query(TrackedEntityInstanceModel.TABLE, PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
@@ -242,7 +242,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         ContentValues trackedEntityInstance = new ContentValues();
         trackedEntityInstance.put(Columns.UID, UID);
         trackedEntityInstance.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
-        trackedEntityInstance.put(Columns.TRACKED_ENTITY, TRACKED_ENTITY);
+        trackedEntityInstance.put(Columns.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
         trackedEntityInstance.put(Columns.STATE, STATE.name());
 
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
@@ -250,7 +250,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         String[] projection = {
                 Columns.UID,
                 Columns.ORGANISATION_UNIT,
-                Columns.TRACKED_ENTITY,
+                Columns.TRACKED_ENTITY_TYPE,
                 Columns.STATE
         };
 
@@ -271,7 +271,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         ContentValues trackedEntityInstanceContentValues = new ContentValues();
         trackedEntityInstanceContentValues.put(Columns.UID, UID);
         trackedEntityInstanceContentValues.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
-        trackedEntityInstanceContentValues.put(Columns.TRACKED_ENTITY, TRACKED_ENTITY);
+        trackedEntityInstanceContentValues.put(Columns.TRACKED_ENTITY_TYPE, TRACKED_ENTITY);
         trackedEntityInstanceContentValues.put(Columns.STATE, State.TO_POST.name());
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstanceContentValues);
 
@@ -286,7 +286,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         TrackedEntityInstance trackedEntityInstance = map.get(UID);
         assertThat(trackedEntityInstance.uid()).isEqualTo(UID);
         assertThat(trackedEntityInstance.organisationUnit()).isEqualTo(ORGANISATION_UNIT);
-        assertThat(trackedEntityInstance.trackedEntity()).isEqualTo(TRACKED_ENTITY);
+        assertThat(trackedEntityInstance.trackedEntityType()).isEqualTo(TRACKED_ENTITY);
 
     }
 

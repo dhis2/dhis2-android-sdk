@@ -9,7 +9,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class ProgramStageSectionProgramIndicatorLinkStoreShould extends AbsStore
         this.store = new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter());
 
         //prerequisites for ProgramStageSection:
-        database().insert(TrackedEntityModel.TABLE, null,
+        database().insert(TrackedEntityTypeModel.TABLE, null,
                 CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY_UID));
         database().insert(RelationshipTypeModel.TABLE, null,
                 CreateRelationshipTypeUtils.create(1L, RELATIONSHIP_TYPE_UID));

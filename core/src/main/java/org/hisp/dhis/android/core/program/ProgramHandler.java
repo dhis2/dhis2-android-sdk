@@ -29,8 +29,10 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -46,7 +48,7 @@ public class ProgramHandler {
     private final RelationshipTypeHandler relationshipHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
-    public ProgramHandler(ProgramStore programStore,
+    ProgramHandler(ProgramStore programStore,
                           ProgramRuleVariableHandler programRuleVariableHandler,
                           ProgramIndicatorHandler programIndicatorHandler,
                           ProgramRuleHandler programRuleHandler,
@@ -74,8 +76,8 @@ public class ProgramHandler {
                 relatedProgramUid = program.relatedProgram().uid();
             }
             String trackedEntityUid = null;
-            if (program.trackedEntity() != null) {
-                trackedEntityUid = program.trackedEntity().uid();
+            if (program.trackedEntityType() != null) {
+                trackedEntityUid = program.trackedEntityType().uid();
             }
             String categoryCombo = null;
             if (program.categoryCombo() != null) {
@@ -122,5 +124,17 @@ public class ProgramHandler {
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
         relationshipHandler.handleRelationshipType(program.relationshipType());
         styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(), ProgramModel.TABLE));
+    }
+
+    public static ProgramHandler create(DatabaseAdapter databaseAdapter) {
+        return new ProgramHandler(
+                new ProgramStoreImpl(databaseAdapter),
+                ProgramRuleVariableHandler.create(databaseAdapter),
+                ProgramIndicatorHandler.create(databaseAdapter),
+                ProgramRuleHandler.create(databaseAdapter),
+                ProgramTrackedEntityAttributeHandler.create(databaseAdapter),
+                RelationshipTypeHandler.create(databaseAdapter),
+                ObjectStyleHandler.create(databaseAdapter)
+        );
     }
 }

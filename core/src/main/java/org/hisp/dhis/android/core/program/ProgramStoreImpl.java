@@ -72,7 +72,7 @@ public class ProgramStoreImpl implements ProgramStore {
             ProgramModel.Columns.RELATIONSHIP_TYPE + ", " +
             ProgramModel.Columns.RELATIONSHIP_TEXT + ", " +
             ProgramModel.Columns.RELATED_PROGRAM + ", " +
-            ProgramModel.Columns.TRACKED_ENTITY + ", " +
+            ProgramModel.Columns.TRACKED_ENTITY_TYPE + ", " +
             ProgramModel.Columns.CATEGORY_COMBO + ", " +
             ProgramModel.Columns.ACCESS_DATA_WRITE + ") " +
             "VALUES (" +
@@ -109,7 +109,7 @@ public class ProgramStoreImpl implements ProgramStore {
             ProgramModel.Columns.RELATIONSHIP_TYPE + " =?, " +
             ProgramModel.Columns.RELATIONSHIP_TEXT + " =?, " +
             ProgramModel.Columns.RELATED_PROGRAM + " =?, " +
-            ProgramModel.Columns.TRACKED_ENTITY + " =?, " +
+            ProgramModel.Columns.TRACKED_ENTITY_TYPE + " =?, " +
             ProgramModel.Columns.CATEGORY_COMBO + " =?, " +
             ProgramModel.Columns.ACCESS_DATA_WRITE + " =? " +
             " WHERE " +
@@ -162,7 +162,7 @@ public class ProgramStoreImpl implements ProgramStore {
             @Nullable String relationshipType,
             @Nullable String relationshipText,
             @Nullable String relatedProgram,
-            @Nullable String trackedEntity,
+            @Nullable String trackedEntityType,
             @Nullable String categoryCombo,
             @Nullable Boolean accessDataWrite
     ) {
@@ -173,7 +173,7 @@ public class ProgramStoreImpl implements ProgramStore {
                 incidentDateLabel, registration, selectEnrollmentDatesInFuture, dataEntryMethod,
                 ignoreOverdueEvents, relationshipFromA, selectIncidentDatesInFuture, captureCoordinates,
                 useFirstStageDuringRegistration, displayInFrontPageList, programType,
-                relationshipType, relationshipText, relatedProgram, trackedEntity, categoryCombo, accessDataWrite);
+                relationshipType, relationshipText, relatedProgram, trackedEntityType, categoryCombo, accessDataWrite);
 
         Long insert = databaseAdapter.executeInsert(ProgramModel.TABLE, insertStatement);
         insertStatement.clearBindings();
@@ -210,7 +210,7 @@ public class ProgramStoreImpl implements ProgramStore {
                       @Nullable String relationshipType,
                       @Nullable String relationshipText,
                       @Nullable String relatedProgram,
-                      @Nullable String trackedEntity,
+                      @Nullable String trackedEntityType,
                       @Nullable String categoryCombo,
                       @Nullable Boolean accessDataWrite,
                       @NonNull String whereProgramUid) {
@@ -221,7 +221,7 @@ public class ProgramStoreImpl implements ProgramStore {
                 incidentDateLabel, registration, selectEnrollmentDatesInFuture, dataEntryMethod,
                 ignoreOverdueEvents, relationshipFromA, selectIncidentDatesInFuture, captureCoordinates,
                 useFirstStageDuringRegistration, displayInFrontPageList, programType,
-                relationshipType, relationshipText, relatedProgram, trackedEntity, categoryCombo,
+                relationshipType, relationshipText, relatedProgram, trackedEntityType, categoryCombo,
                 accessDataWrite);
 
         // bind the where argument
@@ -277,7 +277,7 @@ public class ProgramStoreImpl implements ProgramStore {
                                @Nullable String relationshipType,
                                @Nullable String relationshipText,
                                @Nullable String relatedProgram,
-                               @Nullable String trackedEntity,
+                               @Nullable String trackedEntityType,
                                @Nullable String categoryCombo,
                                @Nullable boolean accessDataWrite) {
         sqLiteBind(sqLiteStatement, 1, uid);
@@ -308,7 +308,7 @@ public class ProgramStoreImpl implements ProgramStore {
         sqLiteBind(sqLiteStatement, 26, relationshipType);
         sqLiteBind(sqLiteStatement, 27, relationshipText);
         sqLiteBind(sqLiteStatement, 28, relatedProgram);
-        sqLiteBind(sqLiteStatement, 29, trackedEntity);
+        sqLiteBind(sqLiteStatement, 29, trackedEntityType);
         sqLiteBind(sqLiteStatement, 30, categoryCombo);
         sqLiteBind(sqLiteStatement, 31, accessDataWrite);
     }

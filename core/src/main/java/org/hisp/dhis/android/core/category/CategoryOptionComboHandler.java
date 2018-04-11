@@ -5,11 +5,13 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 public class CategoryOptionComboHandler {
     @NonNull
     private final CategoryOptionComboStore store;
 
-    public CategoryOptionComboHandler(
+    CategoryOptionComboHandler(
             @NonNull CategoryOptionComboStore store) {
         this.store = store;
     }
@@ -28,4 +30,7 @@ public class CategoryOptionComboHandler {
         }
     }
 
+    public static CategoryOptionComboHandler create(DatabaseAdapter databaseAdapter) {
+        return new CategoryOptionComboHandler(new CategoryOptionComboStoreImpl(databaseAdapter));
+    }
 }

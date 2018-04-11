@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 
@@ -36,7 +37,7 @@ public class TrackedEntityInstanceHandler {
             int updatedRow = trackedEntityInstanceStore.update(
                     trackedEntityInstance.uid(), trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),
                     trackedEntityInstance.createdAtClient(), trackedEntityInstance.lastUpdatedAtClient(),
-                    trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntity(),
+                    trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntityType(),
                     trackedEntityInstance.coordinates(), trackedEntityInstance.featureType(),
                     State.SYNCED, trackedEntityInstance.uid());
 
@@ -45,7 +46,7 @@ public class TrackedEntityInstanceHandler {
                         trackedEntityInstance.uid(), trackedEntityInstance.created(),
                         trackedEntityInstance.lastUpdated(), trackedEntityInstance.createdAtClient(),
                         trackedEntityInstance.lastUpdatedAtClient(), trackedEntityInstance.organisationUnit(),
-                        trackedEntityInstance.trackedEntity(), trackedEntityInstance.coordinates(),
+                        trackedEntityInstance.trackedEntityType(), trackedEntityInstance.coordinates(),
                         trackedEntityInstance.featureType(), State.SYNCED);
             }
 
@@ -57,5 +58,13 @@ public class TrackedEntityInstanceHandler {
 
             enrollmentHandler.handle(enrollments);
         }
+    }
+
+    public static TrackedEntityInstanceHandler create(DatabaseAdapter databaseAdapter) {
+        return new TrackedEntityInstanceHandler(
+                new TrackedEntityInstanceStoreImpl(databaseAdapter),
+                TrackedEntityAttributeValueHandler.create(databaseAdapter),
+                EnrollmentHandler.create(databaseAdapter)
+        );
     }
 }

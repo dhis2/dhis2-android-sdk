@@ -20,7 +20,7 @@ public class EnrollmentHandler {
     private final EventHandler eventHandler;
     private final GenericHandler<Note, NoteModel> noteHandler;
 
-    public EnrollmentHandler(@NonNull DatabaseAdapter databaseAdapter,
+    EnrollmentHandler(@NonNull DatabaseAdapter databaseAdapter,
                              @NonNull EnrollmentStore enrollmentStore,
                              @NonNull EventHandler eventHandler) {
         this.enrollmentStore = enrollmentStore;
@@ -81,5 +81,13 @@ public class EnrollmentHandler {
             eventHandler.handle(enrollment.events());
             noteHandler.handleMany(enrollment.notes(), new NoteModelBuilder(enrollment));
         }
+    }
+
+    public static EnrollmentHandler create(DatabaseAdapter databaseAdapter) {
+        return new EnrollmentHandler(
+                databaseAdapter,
+                new EnrollmentStoreImpl(databaseAdapter),
+                EventHandler.create(databaseAdapter)
+        );
     }
 }

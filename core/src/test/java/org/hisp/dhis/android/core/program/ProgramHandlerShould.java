@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -97,7 +97,7 @@ public class ProgramHandlerShould {
     private Program relatedProgram;
 
     @Mock
-    private TrackedEntity trackedEntity;
+    private TrackedEntityType trackedEntityType;
 
     @Mock
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
@@ -145,7 +145,7 @@ public class ProgramHandlerShould {
         when(program.relationshipType()).thenReturn(relationshipType);
         when(program.relationshipText()).thenReturn("test relationship");
         when(program.relatedProgram()).thenReturn(relatedProgram);
-        when(program.trackedEntity()).thenReturn(trackedEntity);
+        when(program.trackedEntityType()).thenReturn(trackedEntityType);
 
         when(program.programStages()).thenReturn(programStages);
         when(program.programTrackedEntityAttributes()).thenReturn(new ArrayList<ProgramTrackedEntityAttribute>());

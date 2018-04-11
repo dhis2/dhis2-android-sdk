@@ -38,6 +38,7 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -75,6 +76,14 @@ public abstract class NoteModel extends BaseModel implements UpdateWhereStatemen
     public static Builder builder() {
         return new $AutoValue_NoteModel.Builder();
     }
+
+    public static final CursorModelFactory<NoteModel> factory
+            = new CursorModelFactory<NoteModel>() {
+        @Override
+        public NoteModel fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
 
     @Nullable
     @ColumnName(Columns.ENROLLMENT)

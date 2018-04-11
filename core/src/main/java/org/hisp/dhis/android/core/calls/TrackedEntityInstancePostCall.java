@@ -2,31 +2,39 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventImportHandler;
 import org.hisp.dhis.android.core.event.EventStore;
+import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.imports.WebResponseHandler;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceImportHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePayload;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;
-@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+import retrofit2.Retrofit;
+
+@SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
 public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>> {
     // service
     private final TrackedEntityInstanceService trackedEntityInstanceService;
@@ -40,7 +48,7 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
 
     private boolean isExecuted;
 
-    public TrackedEntityInstancePostCall(@NonNull TrackedEntityInstanceService trackedEntityInstanceService,
+    TrackedEntityInstancePostCall(@NonNull TrackedEntityInstanceService trackedEntityInstanceService,
                                          @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                                          @NonNull EnrollmentStore enrollmentStore,
                                          @NonNull EventStore eventStore,
@@ -194,5 +202,16 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
 
         webResponseHandler.handleWebResponse(webResponse);
 
+    }
+
+    public static TrackedEntityInstancePostCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
+        return new TrackedEntityInstancePostCall(
+                retrofit.create(TrackedEntityInstanceService.class),
+                new TrackedEntityInstanceStoreImpl(databaseAdapter),
+                new EnrollmentStoreImpl(databaseAdapter),
+                new EventStoreImpl(databaseAdapter),
+                new TrackedEntityDataValueStoreImpl(databaseAdapter),
+                new TrackedEntityAttributeValueStoreImpl(databaseAdapter)
+        );
     }
 }

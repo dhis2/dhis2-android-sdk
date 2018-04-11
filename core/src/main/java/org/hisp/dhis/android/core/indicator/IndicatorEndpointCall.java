@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
@@ -57,11 +58,7 @@ public final class IndicatorEndpointCall extends GenericEndpointCallImpl<Indicat
                 Boolean.FALSE);
     }
 
-    public interface Factory {
-        IndicatorEndpointCall create(GenericCallData data, Set<String> uids);
-    }
-
-    public static final IndicatorEndpointCall.Factory FACTORY = new IndicatorEndpointCall.Factory() {
+    public static final UidsCallFactory<Indicator> FACTORY = new UidsCallFactory<Indicator>() {
         @Override
         public IndicatorEndpointCall create(GenericCallData data, Set<String> uids) {
             return new IndicatorEndpointCall(data, data.retrofit().create(IndicatorService.class),

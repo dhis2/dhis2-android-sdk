@@ -1,26 +1,9 @@
 package org.hisp.dhis.android.core.event;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hisp.dhis.android.core.calls.Call.MAX_UIDS;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
-import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.util.Date;
@@ -28,49 +11,24 @@ import java.util.HashSet;
 import java.util.Set;
 
 import okhttp3.mockwebserver.RecordedRequest;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
-public class EventEndPointCallShould {
-    private Call<Response<Payload<Event>>> eventCall;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hisp.dhis.android.core.calls.Call.MAX_UIDS;
 
-    @Mock
-    private EventService eventService;
-
-    @Mock
-    private DatabaseAdapter databaseAdapter;
-
-    @Mock
-    private ResourceHandler resourceHandler;
-
-    @Mock
-    private EventHandler eventHandler;
-
-    @Mock
-    private Date serverDate;
-
-    Dhis2MockServer dhis2MockServer;
-    Retrofit retrofit;
+public class EventEndPointCallShould extends BaseCallShould {
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setUp() throws IOException {
-        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl(dhis2MockServer.getBaseEndpoint())
-                .addConverterFactory(JacksonConverterFactory.create(new ObjectMapper()))
-                .addConverterFactory(FilterConverterFactory.create())
-                .addConverterFactory(FieldsConverterFactory.create())
-                .build();
-
-        MockitoAnnotations.initMocks(this);
+    public void setUp() throws Exception {
+        super.setUp();
     }
 
     @After
     public void tearDown() throws IOException {
-        dhis2MockServer.shutdown();
+        super.tearDown();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -124,16 +82,10 @@ public class EventEndPointCallShould {
                 .withUIds(uIds)
                 .build();
 
-        EventEndPointCall eventEndPointCall =
-                new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
-                        eventHandler, serverDate, eventQuery);
-
-        return eventEndPointCall;
+        return EventEndPointCall.create(genericCallData, new Date(), eventQuery);
     }
 
     private EventEndPointCall givenAEventCallByPagination(int page, int pageCount) {
-        EventService eventService = retrofit.create(EventService.class);
-
         EventQuery eventQuery = EventQuery.Builder
                 .create()
                 .withPage(page)
@@ -141,28 +93,16 @@ public class EventEndPointCallShould {
                 .withPaging(true)
                 .build();
 
-
-        EventEndPointCall eventEndPointCall =
-                new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
-                        eventHandler, serverDate, eventQuery);
-
-        return eventEndPointCall;
+        return EventEndPointCall.create(genericCallData, new Date(), eventQuery);
     }
 
     private EventEndPointCall givenAEventCallByOrgUnitAndProgram(String orgUnit, String program) {
-        EventService eventService = retrofit.create(EventService.class);
-
         EventQuery eventQuery = EventQuery.Builder
                 .create()
                 .withOrgUnit(orgUnit)
                 .withProgram(program)
                 .build();
 
-
-        EventEndPointCall eventEndPointCall =
-                new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
-                        eventHandler, serverDate, eventQuery);
-
-        return eventEndPointCall;
+        return EventEndPointCall.create(genericCallData, new Date(), eventQuery);
     }
 }

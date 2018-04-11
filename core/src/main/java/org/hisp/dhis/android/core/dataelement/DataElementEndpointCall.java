@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
@@ -57,11 +58,7 @@ public final class DataElementEndpointCall extends GenericEndpointCallImpl<DataE
                 DataElement.uid.in(query.uids()), Boolean.FALSE);
     }
 
-    public interface Factory {
-        DataElementEndpointCall create(GenericCallData data, Set<String> uids);
-    }
-
-    public static final DataElementEndpointCall.Factory FACTORY = new DataElementEndpointCall.Factory() {
+    public static final UidsCallFactory<DataElement> FACTORY = new UidsCallFactory<DataElement>() {
         @Override
         public DataElementEndpointCall create(GenericCallData data, Set<String> uids) {
             return new DataElementEndpointCall(data, data.retrofit().create(DataElementService.class),

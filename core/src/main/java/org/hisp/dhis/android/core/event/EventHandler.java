@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -14,7 +15,7 @@ public class EventHandler {
     private final EventStore eventStore;
     private final TrackedEntityDataValueHandler trackedEntityDataValueHandler;
 
-    public EventHandler(EventStore eventStore,
+    EventHandler(EventStore eventStore,
             TrackedEntityDataValueHandler trackedEntityDataValueHandler) {
         this.eventStore = eventStore;
         this.trackedEntityDataValueHandler = trackedEntityDataValueHandler;
@@ -76,5 +77,10 @@ public class EventHandler {
         }
     }
 
-
+    public static EventHandler create(DatabaseAdapter databaseAdapter) {
+        return new EventHandler(
+                new EventStoreImpl(databaseAdapter),
+                TrackedEntityDataValueHandler.create(databaseAdapter)
+        );
+    }
 }

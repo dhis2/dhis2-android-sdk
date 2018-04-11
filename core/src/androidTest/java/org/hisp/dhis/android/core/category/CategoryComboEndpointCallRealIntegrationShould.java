@@ -4,9 +4,9 @@ package org.hisp.dhis.android.core.category;
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.CategoryCallFactory;
-import org.hisp.dhis.android.core.common.CategoryComboCallFactory;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -43,8 +43,9 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertNotCombosInDB();
         assertThereAreNotCategoryCombosLinkInDB();
 
-        CategoryComboEndpointCall categoryComboEndpointCall = CategoryComboCallFactory.create(
-                d2.retrofit(), databaseAdapter());
+        Call<Response<Payload<CategoryCombo>>> categoryComboEndpointCall =
+                CategoryComboEndpointCall.FACTORY.create(
+                GenericCallData.create(databaseAdapter(), d2.retrofit()));
         Response<Payload<CategoryCombo>> responseCategory = categoryComboEndpointCall.call();
 
         assertResponseIsCorrect(responseCategory);
@@ -65,8 +66,9 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void downloadCategories() throws Exception {
-        CategoryEndpointCall categoryEndpointCall = CategoryCallFactory.create(d2.retrofit(),
-                databaseAdapter());
+        Call<Response<Payload<Category>>> categoryEndpointCall =
+                CategoryEndpointCall.FACTORY.create(
+                        GenericCallData.create(databaseAdapter(), d2.retrofit()));
         categoryEndpointCall.call();
     }
 

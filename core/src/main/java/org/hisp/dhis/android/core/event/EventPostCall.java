@@ -3,17 +3,20 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
-public class EventPostCall implements Call<Response<WebResponse>> {
+public final class EventPostCall implements Call<Response<WebResponse>> {
     // retrofit service
     private final EventService eventService;
 
@@ -23,7 +26,7 @@ public class EventPostCall implements Call<Response<WebResponse>> {
 
     private boolean isExecuted;
 
-    public EventPostCall(@NonNull EventService eventService,
+    private EventPostCall(@NonNull EventService eventService,
                          @NonNull EventStore eventStore,
                          @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore) {
         this.eventService = eventService;
@@ -98,5 +101,13 @@ public class EventPostCall implements Call<Response<WebResponse>> {
                 webResponse.importSummaries().importSummaries()
         );
 
+    }
+
+    public static EventPostCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
+        return new EventPostCall(
+                retrofit.create(EventService.class),
+                new EventStoreImpl(databaseAdapter),
+                new TrackedEntityDataValueStoreImpl(databaseAdapter)
+        );
     }
 }

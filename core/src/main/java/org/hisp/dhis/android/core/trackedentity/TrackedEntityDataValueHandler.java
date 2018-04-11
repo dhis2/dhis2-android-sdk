@@ -1,12 +1,15 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings({"PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal"})
 public class TrackedEntityDataValueHandler {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
 
-    public TrackedEntityDataValueHandler(TrackedEntityDataValueStore trackedEntityDataValueStore) {
+    private TrackedEntityDataValueHandler(TrackedEntityDataValueStore trackedEntityDataValueStore) {
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
     }
 
@@ -72,6 +75,12 @@ public class TrackedEntityDataValueHandler {
                     eventUid, dataValue.created(), dataValue.lastUpdated(), dataValue.dataElement(),
                     dataValue.storedBy(), dataValue.value(), dataValue.providedElsewhere());
         }
+    }
+
+    public static TrackedEntityDataValueHandler create(DatabaseAdapter databaseAdapter) {
+        return new TrackedEntityDataValueHandler(
+               new TrackedEntityDataValueStoreImpl(databaseAdapter)
+        );
     }
 }
 

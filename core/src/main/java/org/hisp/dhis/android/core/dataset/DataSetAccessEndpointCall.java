@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseEndpointCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import retrofit2.Response;
@@ -51,13 +53,9 @@ public final class DataSetAccessEndpointCall extends BaseEndpointCall<DataSet> {
                 Boolean.FALSE).execute();
     }
 
-    public interface Factory {
-        DataSetAccessEndpointCall create(GenericCallData data);
-    }
-
-    static final DataSetAccessEndpointCall.Factory FACTORY = new DataSetAccessEndpointCall.Factory() {
+    static final SimpleCallFactory<Payload<DataSet>> FACTORY = new SimpleCallFactory<Payload<DataSet>>() {
         @Override
-        public DataSetAccessEndpointCall create(GenericCallData data) {
+        public Call<Response<Payload<DataSet>>> create(GenericCallData data) {
             return new DataSetAccessEndpointCall(data, data.retrofit().create(DataSetService.class));
         }
     };

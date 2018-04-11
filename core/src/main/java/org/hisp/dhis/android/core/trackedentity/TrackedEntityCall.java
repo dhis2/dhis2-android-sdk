@@ -31,13 +31,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 
 import java.io.IOException;
 import java.util.Date;
@@ -57,7 +60,7 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
     private final ResourceModel.Type resourceType = ResourceModel.Type.TRACKED_ENTITY;
     private Boolean isExecuted = false;
 
-    public TrackedEntityCall(@Nullable Set<String> uidSet,
+    TrackedEntityCall(@Nullable Set<String> uidSet,
                              @NonNull DatabaseAdapter databaseAdapter,
                              @NonNull TrackedEntityStore trackedEntityStore,
                              @NonNull ResourceStore resourceStore,
@@ -135,4 +138,19 @@ public class TrackedEntityCall implements Call<Response<Payload<TrackedEntity>>>
                 false
         ).execute();
     }
+
+    public static final UidsCallFactory<TrackedEntity> FACTORY = new UidsCallFactory<TrackedEntity>() {
+
+        @Override
+        public Call<Response<Payload<TrackedEntity>>> create(GenericCallData genericCallData, Set<String> uids) {
+            return new TrackedEntityCall(
+                    uids,
+                    genericCallData.databaseAdapter(),
+                    new TrackedEntityStoreImpl(genericCallData.databaseAdapter()),
+                    new ResourceStoreImpl(genericCallData.databaseAdapter()),
+                    genericCallData.retrofit().create(TrackedEntityService.class),
+                    new Date()
+            );
+        }
+    };
 }

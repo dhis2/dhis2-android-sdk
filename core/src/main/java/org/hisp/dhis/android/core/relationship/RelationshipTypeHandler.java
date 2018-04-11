@@ -27,12 +27,14 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class RelationshipTypeHandler {
     private final RelationshipTypeStore relationshipTypeStore;
 
-    public RelationshipTypeHandler(RelationshipTypeStore relationshipTypeStore) {
+    RelationshipTypeHandler(RelationshipTypeStore relationshipTypeStore) {
         this.relationshipTypeStore = relationshipTypeStore;
     }
 
@@ -67,5 +69,9 @@ public class RelationshipTypeHandler {
                         relationshipType.bIsToA());
             }
         }
+    }
+
+    public static RelationshipTypeHandler create(DatabaseAdapter databaseAdapter) {
+        return new RelationshipTypeHandler(new RelationshipTypeStoreImpl(databaseAdapter));
     }
 }

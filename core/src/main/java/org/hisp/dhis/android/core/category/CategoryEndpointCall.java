@@ -2,7 +2,9 @@ package org.hisp.dhis.android.core.category;
 
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -24,7 +26,7 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
     private final Date serverDate;
     private boolean isExecuted;
 
-    public CategoryEndpointCall(CategoryQuery categoryQuery,
+    CategoryEndpointCall(CategoryQuery categoryQuery,
             CategoryService categoryService,
             ResponseValidator<Category> responseValidator,
             CategoryHandler handler,
@@ -86,4 +88,21 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
             isExecuted = true;
         }
     }
+
+    public static final SimpleCallFactory<Payload<Category>> FACTORY
+            = new SimpleCallFactory<Payload<Category>>() {
+
+        @Override
+        public Call<Response<Payload<Category>>> create(GenericCallData genericCallData) {
+            return new CategoryEndpointCall(
+                    CategoryQuery.defaultQuery(),
+                    genericCallData.retrofit().create(CategoryService.class),
+                    new ResponseValidator<Category>(),
+                    CategoryHandler.create(genericCallData.databaseAdapter()),
+                    ResourceHandler.create(genericCallData.databaseAdapter()),
+                    genericCallData.databaseAdapter(),
+                    new Date()
+            );
+        }
+    };
 }

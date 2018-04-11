@@ -2,20 +2,15 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.event.EventEndPointCall;
-import org.hisp.dhis.android.core.event.EventHandler;
 import org.hisp.dhis.android.core.event.EventQuery;
-import org.hisp.dhis.android.core.event.EventService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 
 import java.util.Date;
 import java.util.Set;
@@ -23,43 +18,22 @@ import java.util.Set;
 import retrofit2.Response;
 
 @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-public class SingleDataCall implements Call<Response> {
+public final class SingleDataCall implements Call<Response> {
+
+    private final GenericCallData genericCallData;
 
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
-    private final SystemInfoStore systemInfoStore;
-    private final SystemInfoService systemInfoService;
-    private final ResourceStore resourceStore;
-
-    private final EventService eventService;
-    private final DatabaseAdapter databaseAdapter;
-    private final ResourceHandler resourceHandler;
-    private final EventHandler eventHandler;
 
     private final int eventLimitByOrgUnit;
 
     private boolean isExecuted;
 
-    public SingleDataCall(
+    private SingleDataCall(
+            @NonNull GenericCallData genericCallData,
             @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
-            @NonNull SystemInfoStore systemInfoStore,
-            @NonNull SystemInfoService systemInfoService,
-            @NonNull ResourceStore resourceStore,
-            @NonNull EventService eventService,
-            @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull ResourceHandler resourceHandler,
-            @NonNull EventHandler eventHandler,
             int eventLimitByOrgUnit) {
-
+        this.genericCallData = genericCallData;
         this.organisationUnitStore = organisationUnitStore;
-
-        this.systemInfoStore = systemInfoStore;
-        this.systemInfoService = systemInfoService;
-        this.resourceStore = resourceStore;
-
-        this.eventService = eventService;
-        this.databaseAdapter = databaseAdapter;
-        this.resourceHandler = resourceHandler;
-        this.eventHandler = eventHandler;
 
         this.eventLimitByOrgUnit = eventLimitByOrgUnit;
     }
@@ -82,13 +56,9 @@ public class SingleDataCall implements Call<Response> {
         }
 
         Response response = null;
-        Transaction transaction = databaseAdapter.beginNewTransaction();
+        Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
         try {
-
-            response = new SystemInfoCall(
-                    databaseAdapter, systemInfoStore,
-                    systemInfoService, resourceStore
-            ).call();
+            response = SystemInfoCall.FACTORY.create(genericCallData).call();
 
             if (!response.isSuccessful()) {
                 return response;
@@ -143,8 +113,7 @@ public class SingleDataCall implements Call<Response> {
                         .withPageLimit(pageLimit)
                         .build();
 
-                response = new EventEndPointCall(eventService, databaseAdapter, resourceHandler,
-                        eventHandler, serverDate, eventQuery).call();
+                response = EventEndPointCall.create(genericCallData, serverDate, eventQuery).call();
 
                 if (!response.isSuccessful()) {
                     return response;
@@ -156,5 +125,14 @@ public class SingleDataCall implements Call<Response> {
         }
 
         return response;
+    }
+
+    public static SingleDataCall create(GenericCallData genericCallData,
+                                        int eventLimitByOrgUnit) {
+        return new SingleDataCall(
+                genericCallData,
+                OrganisationUnitStore.create(genericCallData.databaseAdapter()),
+                eventLimitByOrgUnit
+        );
     }
 }

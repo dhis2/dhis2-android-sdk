@@ -4,7 +4,9 @@ package org.hisp.dhis.android.core.category;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -16,7 +18,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public class CategoryComboEndpointCall implements Call<Response<Payload<CategoryCombo>>> {
+public final class CategoryComboEndpointCall implements Call<Response<Payload<CategoryCombo>>> {
 
     private final CategoryComboQuery query;
     private final CategoryComboService categoryComboService;
@@ -27,7 +29,7 @@ public class CategoryComboEndpointCall implements Call<Response<Payload<Category
     private final Date serverDate;
     private boolean isExecuted;
 
-    public CategoryComboEndpointCall(CategoryComboQuery query,
+    private CategoryComboEndpointCall(CategoryComboQuery query,
             CategoryComboService categoryComboService,
             ResponseValidator<CategoryCombo> responseValidator,
             CategoryComboHandler handler,
@@ -113,4 +115,21 @@ public class CategoryComboEndpointCall implements Call<Response<Payload<Category
                         )))
                 .build();
     }
+
+    public static final SimpleCallFactory<Payload<CategoryCombo>> FACTORY
+            = new SimpleCallFactory<Payload<CategoryCombo>>() {
+
+        @Override
+        public Call<Response<Payload<CategoryCombo>>> create(GenericCallData genericCallData) {
+            return new CategoryComboEndpointCall(
+                    CategoryComboQuery.defaultQuery(),
+                    genericCallData.retrofit().create(CategoryComboService.class),
+                    new ResponseValidator<CategoryCombo>(),
+                    CategoryComboHandler.create(genericCallData.databaseAdapter()),
+                    ResourceHandler.create(genericCallData.databaseAdapter()),
+                    genericCallData.databaseAdapter(),
+                    genericCallData.serverDate()
+            );
+        }
+    };
 }

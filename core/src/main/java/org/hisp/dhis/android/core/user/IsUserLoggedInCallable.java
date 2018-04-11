@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import java.util.concurrent.Callable;
 
 public final class IsUserLoggedInCallable implements Callable<Boolean> {
@@ -37,12 +39,16 @@ public final class IsUserLoggedInCallable implements Callable<Boolean> {
     @NonNull
     private final AuthenticatedUserStore authenticatedUserStore;
 
-    public IsUserLoggedInCallable(@NonNull AuthenticatedUserStore authenticatedUserStore) {
+    IsUserLoggedInCallable(@NonNull AuthenticatedUserStore authenticatedUserStore) {
         this.authenticatedUserStore = authenticatedUserStore;
     }
 
     @Override
     public Boolean call() throws Exception {
         return !authenticatedUserStore.query().isEmpty();
+    }
+
+    public static IsUserLoggedInCallable create(DatabaseAdapter databaseAdapter) {
+        return new IsUserLoggedInCallable(new AuthenticatedUserStoreImpl(databaseAdapter));
     }
 }

@@ -3,60 +3,35 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TeiQuery;
 import org.hisp.dhis.android.core.trackedentity.TeisEndPointCall;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 
 import java.util.Date;
 import java.util.Set;
 
 import retrofit2.Response;
 
-@SuppressWarnings("PMD")
-public class TrackerEntitiesDataCall implements Call<Response> {
+public final class TrackerEntitiesDataCall implements Call<Response> {
 
     private boolean isExecuted;
     private final int teiLimitByOrgUnit;
+    private final GenericCallData genericCallData;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
-    private final TrackedEntityInstanceService trackedEntityInstanceService;
-    private final DatabaseAdapter databaseAdapter;
-    private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
-    private final ResourceHandler resourceHandler;
-    private final ResourceStore resourceStore;
-    private final SystemInfoService systemInfoService;
-    private final SystemInfoStore systemInfoStore;
 
-    public TrackerEntitiesDataCall(@NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
-                                   @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
-                                   @NonNull DatabaseAdapter databaseAdapter,
-                                   @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
-                                   @NonNull ResourceHandler resourceHandler,
-                                   @NonNull ResourceStore resourceStore,
-                                   @NonNull SystemInfoService systemInfoService,
-                                   @NonNull SystemInfoStore systemInfoStore,
-                                   int teiLimitByOrgUnit) {
-
-        this.teiLimitByOrgUnit = teiLimitByOrgUnit;
+    private TrackerEntitiesDataCall(@NonNull GenericCallData genericCallData,
+                                    @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
+                                    int teiLimitByOrgUnit) {
+        this.genericCallData = genericCallData;
         this.organisationUnitStore = organisationUnitStore;
-        this.trackedEntityInstanceService = trackedEntityInstanceService;
-        this.databaseAdapter = databaseAdapter;
-        this.trackedEntityInstanceHandler =  trackedEntityInstanceHandler;
-        this.resourceHandler = resourceHandler;
-        this.resourceStore = resourceStore;
-        this.systemInfoService = systemInfoService;
-        this.systemInfoStore = systemInfoStore;
+        this.teiLimitByOrgUnit = teiLimitByOrgUnit;
     }
 
     @Override
@@ -77,14 +52,10 @@ public class TrackerEntitiesDataCall implements Call<Response> {
 
         Response response = null;
 
-        Transaction transaction = databaseAdapter.beginNewTransaction();
+        Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
 
         try {
-
-            response = new SystemInfoCall(
-                    databaseAdapter, systemInfoStore,
-                    systemInfoService, resourceStore
-            ).call();
+            response = SystemInfoCall.FACTORY.create(genericCallData).call();
 
             if (!response.isSuccessful()) {
                 return response;
@@ -135,8 +106,7 @@ public class TrackerEntitiesDataCall implements Call<Response> {
                         .withPageLimit(pageLimit)
                         .build();
 
-                response = new TeisEndPointCall(trackedEntityInstanceService, databaseAdapter,
-                        teiQuery, trackedEntityInstanceHandler, resourceHandler).call();
+                response = TeisEndPointCall.create(genericCallData, teiQuery).call();
 
                 if (!response.isSuccessful()) {
                     return response;
@@ -148,11 +118,18 @@ public class TrackerEntitiesDataCall implements Call<Response> {
         }
 
         if (response != null && response.isSuccessful()) {
-            resourceHandler.handleResource(ResourceModel.Type.TRACKED_ENTITY_INSTANCE, serverDate);
+            genericCallData.resourceHandler().handleResource(ResourceModel.Type.TRACKED_ENTITY_INSTANCE, serverDate);
         }
 
         return response;
     }
 
 
+    public static TrackerEntitiesDataCall create(GenericCallData genericCallData, int teiLimitByOrgUnit) {
+        return new TrackerEntitiesDataCall(
+                genericCallData,
+                OrganisationUnitStore.create(genericCallData.databaseAdapter()),
+                teiLimitByOrgUnit
+        );
+    }
 }

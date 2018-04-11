@@ -32,15 +32,20 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
+import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.datavalue.DataValueEndpointCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.period.PeriodModel;
+import org.hisp.dhis.android.core.period.PeriodStore;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class AggregatedDataCall extends TransactionalCall {
 
@@ -76,5 +81,14 @@ public class AggregatedDataCall extends TransactionalCall {
             periodIds.add(period.periodId());
         }
         return periodIds;
+    }
+
+    public static AggregatedDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
+        return new AggregatedDataCall(
+                GenericCallData.create(databaseAdapter, retrofit),
+                DataValueEndpointCall.FACTORY,
+                DataSetStore.create(databaseAdapter),
+                PeriodStore.create(databaseAdapter),
+                OrganisationUnitStore.create(databaseAdapter));
     }
 }

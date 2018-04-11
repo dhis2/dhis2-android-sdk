@@ -32,187 +32,84 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
-import org.hisp.dhis.android.core.category.CategoryComboHandler;
-import org.hisp.dhis.android.core.category.CategoryComboQuery;
-import org.hisp.dhis.android.core.category.CategoryComboService;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
-import org.hisp.dhis.android.core.category.CategoryHandler;
-import org.hisp.dhis.android.core.category.CategoryQuery;
-import org.hisp.dhis.android.core.category.CategoryService;
-import org.hisp.dhis.android.core.category.ResponseValidator;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
-import org.hisp.dhis.android.core.option.OptionSetModel;
-import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramAccessEndpointCall;
 import org.hisp.dhis.android.core.program.ProgramCall;
-import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
-import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
-import org.hisp.dhis.android.core.program.ProgramRuleStore;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableStore;
-import org.hisp.dhis.android.core.program.ProgramService;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageEndpointCall;
-import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
-import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStore;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoService;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityCall;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityService;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
-import org.hisp.dhis.android.core.user.UserCredentialsStore;
-import org.hisp.dhis.android.core.user.UserRoleStore;
-import org.hisp.dhis.android.core.user.UserService;
-import org.hisp.dhis.android.core.user.UserStore;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields", "PMD.CyclomaticComplexity",
- "PMD.ModifiedCyclomaticComplexity", "PMD.StdCyclomaticComplexity", "PMD.ExcessiveMethodLength"})
+@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity", "PMD.ExcessiveImports"})
 public class MetadataCall implements Call<Response> {
-    private final DatabaseAdapter databaseAdapter;
-    private final SystemInfoService systemInfoService;
-    private final UserService userService;
-    private final ProgramService programService;
-    private final TrackedEntityService trackedEntityService;
-    private final OptionSetService optionSetService;
-    private final SystemInfoStore systemInfoStore;
-    private final ResourceStore resourceStore;
-    private final UserStore userStore;
-    private final UserCredentialsStore userCredentialsStore;
-    private final UserRoleStore userRoleStore;
-    private final ProgramStore programStore;
-    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
-    private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
-    private final ProgramRuleVariableStore programRuleVariableStore;
-    private final ProgramIndicatorStore programIndicatorStore;
-    private final ProgramStageSectionProgramIndicatorLinkStore
-            programStageSectionProgramIndicatorLinkStore;
-    private final ProgramRuleActionStore programRuleActionStore;
-    private final ProgramRuleStore programRuleStore;
-    private final RelationshipTypeStore relationshipStore;
-    private final TrackedEntityStore trackedEntityStore;
-    private final GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
-    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
-    private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
-    private final Retrofit retrofit;
-    private final CategoryQuery categoryQuery;
-    private final CategoryComboQuery categoryComboQuery;
-    private final CategoryService categoryService;
-    private final CategoryComboService categoryComboService;
-    private final CategoryHandler categoryHandler;
-    private final CategoryComboHandler categoryComboHandler;
-    private final OrganisationUnitCall.Factory organisationUnitCallFactory;
-    private final DataSetParentCall.Factory dataSetParentCallFactory;
-    private final ProgramStageEndpointCall.Factory programStageCallFactory;
-
+    private final GenericCallData data;
     private boolean isExecuted;
 
-    public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
-                        @NonNull SystemInfoService systemInfoService,
-                        @NonNull UserService userService,
-                        @NonNull ProgramService programService,
-                        @NonNull TrackedEntityService trackedEntityService,
-                        @NonNull OptionSetService optionSetService,
-                        @NonNull SystemInfoStore systemInfoStore,
-                        @NonNull ResourceStore resourceStore,
-                        @NonNull UserStore userStore,
-                        @NonNull UserCredentialsStore userCredentialsStore,
-                        @NonNull UserRoleStore userRoleStore,
-                        @NonNull ProgramStore programStore,
-                        @NonNull TrackedEntityAttributeStore trackedEntityAttributeStore,
-                        @NonNull ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
-                        @NonNull ProgramRuleVariableStore programRuleVariableStore,
-                        @NonNull ProgramIndicatorStore programIndicatorStore,
-                        @NonNull ProgramStageSectionProgramIndicatorLinkStore
-                                programStageSectionProgramIndicatorLinkStore,
-                        @NonNull ProgramRuleActionStore programRuleActionStore,
-                        @NonNull ProgramRuleStore programRuleStore,
-                        @NonNull RelationshipTypeStore relationshipStore,
-                        @NonNull TrackedEntityStore trackedEntityStore,
-                        @NonNull CategoryQuery categoryQuery,
-                        @NonNull CategoryService categoryService,
-                        @NonNull CategoryHandler categoryHandler,
-                        @NonNull CategoryComboQuery categoryComboQuery,
-                        @NonNull CategoryComboService categoryComboService,
-                        @NonNull CategoryComboHandler categoryComboHandler,
-                        @NonNull GenericHandler<OptionSet, OptionSetModel> optionSetHandler,
-                        @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
-                        @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
-                        @NonNull GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
-                        @NonNull DictionaryTableHandler<ValueTypeRendering> renderTypeHandler,
-                        @NonNull ProgramStageEndpointCall.Factory programStageCallFactory,
-                        @NonNull Retrofit retrofit
-                        ) {
-        this.databaseAdapter = databaseAdapter;
-        this.systemInfoService = systemInfoService;
-        this.userService = userService;
-        this.programService = programService;
-        this.trackedEntityService = trackedEntityService;
-        this.optionSetService = optionSetService;
-        this.systemInfoStore = systemInfoStore;
-        this.resourceStore = resourceStore;
-        this.userStore = userStore;
-        this.userCredentialsStore = userCredentialsStore;
-        this.userRoleStore = userRoleStore;
-        this.programStore = programStore;
-        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
-        this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
-        this.programRuleVariableStore = programRuleVariableStore;
-        this.programIndicatorStore = programIndicatorStore;
-        this.programStageSectionProgramIndicatorLinkStore =
-                programStageSectionProgramIndicatorLinkStore;
-        this.programRuleActionStore = programRuleActionStore;
-        this.programRuleStore = programRuleStore;
-        this.relationshipStore = relationshipStore;
-        this.trackedEntityStore = trackedEntityStore;
-        this.categoryQuery = categoryQuery;
-        this.categoryService = categoryService;
-        this.categoryHandler = categoryHandler;
-        this.categoryComboQuery = categoryComboQuery;
-        this.categoryComboService = categoryComboService;
-        this.categoryComboHandler = categoryComboHandler;
-        this.optionSetHandler = optionSetHandler;
-        this.organisationUnitCallFactory = organisationUnitCallFactory;
-        this.dataSetParentCallFactory = dataSetParentCallFactory;
-        this.styleHandler = styleHandler;
-        this.renderTypeHandler = renderTypeHandler;
-        this.programStageCallFactory = programStageCallFactory;
+    private final SimpleCallFactory<SystemInfo> systemInfoCallFactory;
+    private final SimpleCallFactory<User> userCallFactory;
+    private final SimpleCallFactory<Payload<Category>> categoryCallFactory;
+    private final SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
+    private final SimpleCallFactory<Payload<Program>> programAccessCallFactory;
+    private final UidsCallFactory<Program> programCallFactory;
+    private final UidsCallFactory<ProgramStage> programStageCallFactory;
+    private final UidsCallFactory<TrackedEntity> trackedEntityCallFactory;
+    private final OrganisationUnitCall.Factory organisationUnitCallFactory;
+    private final UidsCallFactory<OptionSet> optionSetCallFactory;
+    private final DataSetParentCall.Factory dataSetParentCallFactory;
 
-        this.retrofit = retrofit;
+    public MetadataCall(@NonNull GenericCallData data,
+                        @NonNull SimpleCallFactory<SystemInfo> systemInfoCallFactory,
+                        @NonNull SimpleCallFactory<User> userCallFactory,
+                        @NonNull SimpleCallFactory<Payload<Category>> categoryCallFactory,
+                        @NonNull SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory,
+                        @NonNull SimpleCallFactory<Payload<Program>> programAccessCallFactory,
+                        @NonNull UidsCallFactory<Program> programCallFactory,
+                        @NonNull UidsCallFactory<ProgramStage> programStageCallFactory,
+                        @NonNull UidsCallFactory<TrackedEntity> trackedEntityCallFactory,
+                        @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
+                        @NonNull UidsCallFactory<OptionSet> optionSetCallFactory,
+                        @NonNull DataSetParentCall.Factory dataSetParentCallFactory) {
+        this.data = data;
+        this.systemInfoCallFactory = systemInfoCallFactory;
+        this.userCallFactory = userCallFactory;
+        this.categoryCallFactory = categoryCallFactory;
+        this.categoryComboCallFactory = categoryComboCallFactory;
+        this.programAccessCallFactory = programAccessCallFactory;
+        this.programCallFactory = programCallFactory;
+        this.programStageCallFactory = programStageCallFactory;
+        this.trackedEntityCallFactory = trackedEntityCallFactory;
+        this.organisationUnitCallFactory = organisationUnitCallFactory;
+        this.optionSetCallFactory = optionSetCallFactory;
+        this.dataSetParentCallFactory = dataSetParentCallFactory;
     }
+
 
     @Override
     public boolean isExecuted() {
@@ -232,81 +129,53 @@ public class MetadataCall implements Call<Response> {
             isExecuted = true;
         }
 
-        Response response = null;
-        Transaction transaction = databaseAdapter.beginNewTransaction();
+        Transaction transaction = data.databaseAdapter().beginNewTransaction();
         try {
-            response = new SystemInfoCall(
-                    databaseAdapter, systemInfoStore,
-                    systemInfoService, resourceStore
-            ).call();
-            if (!response.isSuccessful()) {
-                return response;
-            }
-            GenericCallData data = GenericCallData.create(databaseAdapter,
-                    new ResourceHandler(resourceStore), retrofit);
 
-            Response<User> userResponse = new UserCall(
-                    userService,
-                    databaseAdapter,
-                    userStore,
-                    userCredentialsStore,
-                    userRoleStore,
-                    resourceStore,
-                    data.serverDate()
-            ).call();
-            response = userResponse;
-            if (!response.isSuccessful()) {
-                return response;
+            Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(data).call();
+            if (!systemCallResponse.isSuccessful()) {
+                return systemCallResponse;
             }
 
-
-            response = downloadCategories(data.serverDate());
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-            response = downloadCategoryCombos(data.serverDate());
-
-            if (!response.isSuccessful()) {
-                return response;
+            Response<User> userResponse = userCallFactory.create(data).call();
+            if (!userResponse.isSuccessful()) {
+                return userResponse;
             }
 
-            Response<Payload<Program>> programAccessResponse = ProgramAccessEndpointCall.FACTORY
-                    .create(data, programService).call();
-            response = programAccessResponse;
+            Response<Payload<Category>> categoryResponse = categoryCallFactory.create(data).call();
+            if (!categoryResponse.isSuccessful()) {
+                return categoryResponse;
+            }
 
-            if (!response.isSuccessful()) {
-                return response;
+            Response<Payload<CategoryCombo>> categoryComboResponse = categoryComboCallFactory.create(data).call();
+            if (!categoryComboResponse.isSuccessful()) {
+                return categoryComboResponse;
+            }
+
+            Response<Payload<Program>> programAccessResponse = programAccessCallFactory.create(data).call();
+            if (!programAccessResponse.isSuccessful()) {
+                return programAccessResponse;
             }
 
             Set<String> programUids = getProgramUidsWithDataReadAccess(programAccessResponse.body().items());
-            response = new ProgramCall(
-                    programService, databaseAdapter, resourceStore, programUids, programStore,
-                    data.serverDate(),
-                    trackedEntityAttributeStore, programTrackedEntityAttributeStore,
-                    programRuleVariableStore,
-                    programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
-                    programRuleActionStore,
-                    programRuleStore, relationshipStore, styleHandler, renderTypeHandler
-            ).call();
-            if (!response.isSuccessful()) {
-                return response;
+            Response<Payload<Program>> programResponse = programCallFactory.create(data, programUids).call();
+            if (!programResponse.isSuccessful()) {
+                return programResponse;
             }
 
-            List<Program> programs = ((Response<Payload<Program>>) response).body().items();
+            List<Program> programs = programResponse.body().items();
             Set<String> assignedProgramStageUids = getAssignedProgramStageUids(programs);
-            Response programStageResponse = programStageCallFactory.create(data, assignedProgramStageUids).call();
+            Response<Payload<ProgramStage>> programStageResponse = programStageCallFactory.create(data,
+                    assignedProgramStageUids).call();
             if (!programStageResponse.isSuccessful()) {
                 return programStageResponse;
             }
 
             Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
-            response = new TrackedEntityCall(
-                    trackedEntityUids, databaseAdapter, trackedEntityStore,
-                    resourceStore, trackedEntityService, data.serverDate()
-            ).call();
-            if (!response.isSuccessful()) {
-                return response;
+            Response<Payload<TrackedEntity>> trackedEntityResponse =
+                    trackedEntityCallFactory.create(data, trackedEntityUids).call();
+            if (!trackedEntityResponse.isSuccessful()) {
+                return trackedEntityResponse;
             }
 
             User user = userResponse.body();
@@ -317,27 +186,27 @@ public class MetadataCall implements Call<Response> {
                 return organisationUnitResponse;
             }
 
-            List<ProgramStage> programStages = ((Response<Payload<ProgramStage>>) programStageResponse).body().items();
+            List<ProgramStage> programStages = programStageResponse.body().items();
             Set<String> optionSetUids = getAssignedOptionSetUids(programs, programStages);
-            response = new OptionSetCall(
-                    data, optionSetService, optionSetHandler, optionSetUids).call();
-            if (!response.isSuccessful()) {
-                return response;
-            }
-            List<OrganisationUnit> organisationUnits = organisationUnitResponse.body().items();
-            response = dataSetParentCallFactory.create(user, data, organisationUnits).call();
-            if (!response.isSuccessful()) {
-                return response;
+            Response<Payload<OptionSet>> optionSetResponse = optionSetCallFactory.create(data, optionSetUids).call();
+            if (!optionSetResponse.isSuccessful()) {
+                return optionSetResponse;
             }
 
-            transaction.setSuccessful();
-            return response;
+            List<OrganisationUnit> organisationUnits = organisationUnitResponse.body().items();
+            Response dataSetParentCallResponse = dataSetParentCallFactory.create(user, data, organisationUnits).call();
+
+            if (dataSetParentCallResponse.isSuccessful()) {
+                transaction.setSuccessful();
+            }
+
+            return dataSetParentCallResponse;
         } finally {
             transaction.end();
         }
     }
 
-    /// Utilty methods:
+    /// Utility methods:
     private Set<String> getAssignedOptionSetUids(List<Program> programs, List<ProgramStage> programStages) {
         Set<String> uids = new HashSet<>();
 
@@ -431,20 +300,20 @@ public class MetadataCall implements Call<Response> {
         return programUids;
     }
 
-    private Response<Payload<Category>> downloadCategories(Date serverDate) throws Exception {
-        ResponseValidator<Category> validator = new ResponseValidator<>();
-        return new CategoryEndpointCall(categoryQuery, categoryService, validator,
-                categoryHandler,
-                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
-    }
-
-    private Response<Payload<CategoryCombo>> downloadCategoryCombos(Date serverDate)
-            throws Exception {
-
-        ResponseValidator<CategoryCombo> comboValidator = new ResponseValidator<>();
-
-        return new CategoryComboEndpointCall(categoryComboQuery, categoryComboService,
-                comboValidator, categoryComboHandler,
-                new ResourceHandler(resourceStore), databaseAdapter, serverDate).call();
+    public static MetadataCall create(GenericCallData data) {
+        return new MetadataCall(
+                data,
+                SystemInfoCall.FACTORY,
+                UserCall.FACTORY,
+                CategoryEndpointCall.FACTORY,
+                CategoryComboEndpointCall.FACTORY,
+                ProgramAccessEndpointCall.FACTORY,
+                ProgramCall.FACTORY,
+                ProgramStageEndpointCall.FACTORY,
+                TrackedEntityCall.FACTORY,
+                OrganisationUnitCall.FACTORY,
+                OptionSetCall.FACTORY,
+                DataSetParentCall.FACTORY
+        );
     }
 }

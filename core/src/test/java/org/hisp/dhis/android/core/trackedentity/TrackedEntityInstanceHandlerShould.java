@@ -28,7 +28,7 @@ public class TrackedEntityInstanceHandlerShould {
     private TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     @Mock
-    TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
+    private TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
 
     @Mock
     private EnrollmentHandler enrollmentHandler;

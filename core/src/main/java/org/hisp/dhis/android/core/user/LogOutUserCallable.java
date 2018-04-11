@@ -30,26 +30,138 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionStore;
+import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.ObjectStyleStore;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkStore;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
+import org.hisp.dhis.android.core.dataset.DataSetStore;
+import org.hisp.dhis.android.core.datavalue.DataValueStore;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.event.EventStoreImpl;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkStore;
+import org.hisp.dhis.android.core.indicator.IndicatorStore;
+import org.hisp.dhis.android.core.indicator.IndicatorTypeStore;
+import org.hisp.dhis.android.core.option.OptionSetStore;
+import org.hisp.dhis.android.core.option.OptionStoreImpl;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.period.PeriodStore;
+import org.hisp.dhis.android.core.program.ProgramIndicatorStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleActionStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStageStore;
+import org.hisp.dhis.android.core.program.ProgramStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.relationship.RelationshipStoreImpl;
+import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityStoreImpl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 public class LogOutUserCallable implements Callable<Void> {
 
     @NonNull
-    private final List<DeletableStore>  deletableStores;
+    private final List<DeletableStore> deletableStores;
 
-    public LogOutUserCallable(@NonNull List<DeletableStore> deletableStores) {
+    LogOutUserCallable(@NonNull List<DeletableStore> deletableStores) {
         this.deletableStores = deletableStores;
     }
 
     @Override
     public Void call() throws Exception {
         // clear out all tables
-        for(DeletableStore deletableStore:deletableStores){
+        for (DeletableStore deletableStore : deletableStores) {
             deletableStore.delete();
         }
         return null;
+    }
+
+
+
+    public static LogOutUserCallable createToWipe(DatabaseAdapter databaseAdapter) {
+
+        List<DeletableStore> deletableStores = Arrays.asList(
+                new UserStoreImpl(databaseAdapter),
+                new UserCredentialsStoreImpl(databaseAdapter),
+                UserOrganisationUnitLinkStore.create(databaseAdapter),
+                new AuthenticatedUserStoreImpl(databaseAdapter),
+                OrganisationUnitStore.create(databaseAdapter),
+                new ResourceStoreImpl(databaseAdapter),
+                new SystemInfoStoreImpl(databaseAdapter),
+                new UserRoleStoreImpl(databaseAdapter),
+                new ProgramStoreImpl(databaseAdapter),
+                new TrackedEntityAttributeStoreImpl(databaseAdapter),
+
+                new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter),
+                new ProgramRuleVariableStoreImpl(databaseAdapter),
+                new ProgramIndicatorStoreImpl(databaseAdapter),
+                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter),
+                new ProgramRuleActionStoreImpl(databaseAdapter),
+                new ProgramRuleStoreImpl(databaseAdapter),
+                new OptionStoreImpl(databaseAdapter),
+                OptionSetStore.create(databaseAdapter),
+                DataElementStore.create(databaseAdapter),
+                new ProgramStageDataElementStoreImpl(databaseAdapter),
+
+                new ProgramStageSectionStoreImpl(databaseAdapter),
+                ProgramStageStore.create(databaseAdapter),
+                new RelationshipStoreImpl(databaseAdapter),
+                new TrackedEntityStoreImpl(databaseAdapter),
+                new TrackedEntityInstanceStoreImpl(databaseAdapter),
+                new EnrollmentStoreImpl(databaseAdapter),
+                new TrackedEntityDataValueStoreImpl(databaseAdapter),
+                new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
+                OrganisationUnitProgramLinkStore.create(databaseAdapter),
+                new EventStoreImpl(databaseAdapter),
+
+                new CategoryStoreImpl(databaseAdapter),
+                CategoryOptionStore.create(databaseAdapter),
+                new CategoryCategoryOptionLinkStoreImpl(databaseAdapter),
+                new CategoryOptionComboCategoryLinkStoreImpl(databaseAdapter),
+                new CategoryComboStoreImpl(databaseAdapter),
+                new CategoryCategoryComboLinkStoreImpl(databaseAdapter),
+                DataSetStore.create(databaseAdapter),
+                DataSetDataElementLinkStore.create(databaseAdapter),
+                DataSetOrganisationUnitLinkStore.create(databaseAdapter),
+                IndicatorStore.create(databaseAdapter),
+
+                IndicatorTypeStore.create(databaseAdapter),
+                DataSetIndicatorLinkStore.create(databaseAdapter),
+                DataValueStore.create(databaseAdapter),
+                PeriodStore.create(databaseAdapter),
+                ObjectStyleStore.create(databaseAdapter),
+                ValueTypeDeviceRenderingStore.create(databaseAdapter));
+
+        return new LogOutUserCallable(
+                deletableStores
+        );
+    }
+
+    public static LogOutUserCallable createToLogOut(DatabaseAdapter databaseAdapter) {
+        List<DeletableStore> deletableStores = new ArrayList<>();
+        deletableStores.add(new AuthenticatedUserStoreImpl(databaseAdapter));
+        return new LogOutUserCallable(deletableStores);
     }
 }

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.common.BaseEndpointCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import retrofit2.Response;
@@ -51,14 +52,13 @@ public final class ProgramAccessEndpointCall extends BaseEndpointCall<Program> {
                 Boolean.FALSE).execute();
     }
 
-    public interface Factory {
-        ProgramAccessEndpointCall create(GenericCallData data, ProgramService service);
-    }
+    public static final SimpleCallFactory<Payload<Program>> FACTORY
+            = new SimpleCallFactory<Payload<Program>>() {
 
-    public static final ProgramAccessEndpointCall.Factory FACTORY = new ProgramAccessEndpointCall.Factory() {
         @Override
-        public ProgramAccessEndpointCall create(GenericCallData data, ProgramService service) {
-            return new ProgramAccessEndpointCall(data, service);
+        public ProgramAccessEndpointCall create(GenericCallData genericCallData) {
+            return new ProgramAccessEndpointCall(genericCallData,
+                    genericCallData.retrofit().create(ProgramService.class));
         }
     };
 }

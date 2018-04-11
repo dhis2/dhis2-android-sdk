@@ -5,6 +5,8 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import java.util.List;
 
 public class CategoryComboHandler {
@@ -21,7 +23,7 @@ public class CategoryComboHandler {
     @NonNull
     private final CategoryComboStore store;
 
-    public CategoryComboHandler(
+    CategoryComboHandler(
             @NonNull CategoryComboStore store,
             @NonNull CategoryOptionComboCategoryLinkStore
                     categoryComboOptionCategoryLinkStore,
@@ -115,5 +117,14 @@ public class CategoryComboHandler {
                 category.uid())
                 .combo(combo.uid())
                 .build();
+    }
+
+    public static CategoryComboHandler create(DatabaseAdapter databaseAdapter) {
+        return new CategoryComboHandler(
+                new CategoryComboStoreImpl(databaseAdapter),
+                new CategoryOptionComboCategoryLinkStoreImpl(databaseAdapter),
+                new CategoryCategoryComboLinkStoreImpl(databaseAdapter),
+                CategoryOptionComboHandler.create(databaseAdapter)
+        );
     }
 }

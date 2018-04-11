@@ -114,10 +114,7 @@ public class TrackedEntityInstanceEndPointCall implements
                 TrackedEntityInstance.coordinates,
                 TrackedEntityInstance.featureType,
                 TrackedEntityInstance.deleted,
-                TrackedEntityInstance.relationships.with(
-                        Relationship.trackedEntityInstanceA,
-                        Relationship.trackedEntityInstanceB,
-                        Relationship.displayName),
+                TrackedEntityInstance.relationships.with(Relationship.allFields),
                 TrackedEntityInstance.trackedEntityAttributeValues.with(
                         TrackedEntityAttributeValue.trackedEntityAttribute,
                         TrackedEntityAttributeValue.value,

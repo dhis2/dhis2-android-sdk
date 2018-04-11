@@ -201,6 +201,31 @@ public class FilterConverterShould {
         server.shutdown();
     }
 
+    @Test
+    public void returns_correct_path_when_create_a_retrofit_request_with_in_filter_and_empty_values() throws IOException, InterruptedException {
+        ArrayList<String> values = new ArrayList(0);
+        MockWebServer server = new MockWebServer();
+        server.start();
+
+        server.enqueue(new MockResponse());
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(server.url("/"))
+                .addConverterFactory(FilterConverterFactory.create())
+                .build();
+
+        TestService service = retrofit.create(TestService.class);
+        service.test(
+                InFilter.create(Field.create("id"), values),
+                GtFilter.create(Field.create("lastUpdated"), "")
+        ).execute();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertThat(request.getPath()).isEqualTo("/api?filter=id:in:[]");
+        server.shutdown();
+    }
+
     //TODO: test Filter for null input and empty string.
 
     @Test

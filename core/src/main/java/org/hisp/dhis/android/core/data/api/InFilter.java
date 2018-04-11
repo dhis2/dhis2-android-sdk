@@ -15,7 +15,7 @@ public abstract class InFilter<T, K> implements Filter<T, K> {
     public static <T, K> Filter<T, K> create(@NonNull Field<T, K> field,
                                              @Nullable Collection<String> values) {
         //If the filter is incomplete, returning null, tells Retrofit that this filter should not be included.
-        if (values == null || values.isEmpty()) {
+        if (values == null) {
             return null;
         }
         return new AutoValue_InFilter<>(field, "in", Collections.unmodifiableCollection(values));

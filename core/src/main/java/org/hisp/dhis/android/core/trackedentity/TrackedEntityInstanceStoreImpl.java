@@ -127,8 +127,9 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
     @Override
     public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
                        @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
-                       @NonNull String organisationUnit, @NonNull String trackedEntityType, @Nullable String coordinates,
-                       @Nullable FeatureType featureType, @Nullable State state) {
+                       @NonNull String organisationUnit, @NonNull String trackedEntityType,
+                       @Nullable String coordinates, @Nullable FeatureType featureType,
+                       @Nullable State state) {
 
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, created);

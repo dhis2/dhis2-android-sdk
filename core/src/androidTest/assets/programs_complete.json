@@ -38,7 +38,7 @@
               "color": "#fff",
               "icon": "my-icon-name"
           },
-          "trackedEntity": {
+          "trackedEntityType": {
               "id": "nEenWmSyUEp"
           },
           "categoryCombo": {

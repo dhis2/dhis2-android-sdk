@@ -337,8 +337,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
                             " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY_TYPE + ")" +
-                            " REFERENCES " + TrackedEntityTypeModel.TABLE + " (" + TrackedEntityTypeModel.Columns.UID + ")"
-                            +
+                            " REFERENCES " + TrackedEntityTypeModel.TABLE + " (" + TrackedEntityTypeModel.Columns.UID
+                            + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
                             " FOREIGN KEY (" + ProgramModel.Columns.CATEGORY_COMBO + ")" +
                             " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"

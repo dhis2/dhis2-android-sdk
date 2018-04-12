@@ -1,0 +1,2 @@
+up:
+- ALTER TABLE ProgramStage ADD COLUMN remindCompleted INTEGER;

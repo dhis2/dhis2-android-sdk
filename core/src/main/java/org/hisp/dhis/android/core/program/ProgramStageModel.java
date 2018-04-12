@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings({"PMD.ExcessivePublicCount"})
 @AutoValue
 public abstract class ProgramStageModel extends BaseIdentifiableObjectModel implements StatementBinder {
 
@@ -73,6 +74,7 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
         public static final String PROGRAM = "program";
         public static final String PERIOD_TYPE = "periodType";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
+        public static final String REMIND_COMPLETED = "remindCompleted";
 
         private Columns() {}
 
@@ -82,7 +84,8 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
                     REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT, REPEATABLE, CAPTURE_COORDINATES,
                     FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX, GENERATED_BY_ENROLMENT_DATE,
                     AUTO_GENERATE_EVENT, SORT_ORDER, HIDE_DUE_DATE, BLOCK_ENTRY_FORM,
-                    MIN_DAYS_FROM_START, STANDARD_INTERVAL, PROGRAM, PERIOD_TYPE, ACCESS_DATA_WRITE);
+                    MIN_DAYS_FROM_START, STANDARD_INTERVAL, PROGRAM, PERIOD_TYPE, ACCESS_DATA_WRITE,
+                    REMIND_COMPLETED);
         }
     }
 
@@ -175,6 +178,10 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
     @ColumnName(Columns.ACCESS_DATA_WRITE)
     public abstract Boolean accessDataWrite();
 
+    @Nullable
+    @ColumnName(Columns.REMIND_COMPLETED)
+    public abstract Boolean remindCompleted();
+
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         super.bindToStatement(sqLiteStatement);
@@ -197,6 +204,7 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
         sqLiteBind(sqLiteStatement, 23, program());
         sqLiteBind(sqLiteStatement, 24, periodType());
         sqLiteBind(sqLiteStatement, 25, accessDataWrite());
+        sqLiteBind(sqLiteStatement, 26, remindCompleted());
     }
 
     @AutoValue.Builder
@@ -239,6 +247,8 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
         public abstract Builder periodType(@Nullable PeriodType periodType);
 
         public abstract Builder accessDataWrite(@Nullable Boolean accessDataWrite);
+
+        public abstract Builder remindCompleted(@Nullable Boolean remindCompleted);
 
         public abstract ProgramStageModel build();
 

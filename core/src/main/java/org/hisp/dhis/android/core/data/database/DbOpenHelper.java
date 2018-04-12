@@ -104,7 +104,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
-    public static final int VERSION = 18;
+    public static final int VERSION = 19;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -337,8 +337,8 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
                             " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY_TYPE + ")" +
-                            " REFERENCES " + TrackedEntityTypeModel.TABLE + " (" + TrackedEntityTypeModel.Columns.UID + ")"
-                            +
+                            " REFERENCES " + TrackedEntityTypeModel.TABLE + " (" + TrackedEntityTypeModel.Columns.UID
+                            + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
                             " FOREIGN KEY (" + ProgramModel.Columns.CATEGORY_COMBO + ")" +
                             " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"
@@ -480,6 +480,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             ProgramStageModel.Columns.PROGRAM + " TEXT NOT NULL," +
                             ProgramStageModel.Columns.PERIOD_TYPE + " TEXT," +
                             ProgramStageModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
+                            ProgramStageModel.Columns.REMIND_COMPLETED + " INTEGER," +
                             " FOREIGN KEY ( " + ProgramStageModel.Columns.PROGRAM + ")" +
                             " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"

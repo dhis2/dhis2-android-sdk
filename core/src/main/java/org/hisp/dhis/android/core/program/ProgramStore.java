@@ -32,6 +32,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
 
@@ -67,7 +68,10 @@ public interface ProgramStore extends DeletableStore {
             @Nullable String relatedProgram,
             @Nullable String trackedEntityType,
             @Nullable String categoryCombo,
-            @Nullable Boolean accessDataWrite
+            @Nullable Boolean accessDataWrite,
+            @Nullable Integer expiryDays,
+            @Nullable Integer completeEventsExpiryDays,
+            @Nullable PeriodType expiryPeriodType
     );
 
     int update(
@@ -102,6 +106,9 @@ public interface ProgramStore extends DeletableStore {
             @Nullable String trackedEntityType,
             @Nullable String categoryCombo,
             @Nullable Boolean accessDataWrite,
+            @Nullable Integer expiryDays,
+            @Nullable Integer completeEventsExpiryDays,
+            @Nullable PeriodType expiryPeriodType,
             @NonNull String whereProgramUid);
 
     int delete(@NonNull String uid);

@@ -61,6 +61,7 @@ public class ProgramStageModelBuilder extends ModelBuilder<ProgramStage, Program
                 .periodType(programStage.periodType())
                 .program(programStage.programUid())
                 .accessDataWrite(programStage.access().data().write())
+                .remindCompleted(programStage.remindCompleted())
                 .build();
     }
 }

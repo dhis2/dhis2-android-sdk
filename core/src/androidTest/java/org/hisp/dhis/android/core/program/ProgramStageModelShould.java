@@ -73,6 +73,7 @@ public class ProgramStageModelShould {
     private static final String PROGRAM = "test_program";
     private static final PeriodType PERIOD_TYPE = PeriodType.Weekly;
     private static final Integer ACCESS_DATA_WRITE = 1;
+    private static final Integer REMIND_COMPLETED = 1;
 
     private final Date date;
     private final String dateString;
@@ -108,6 +109,7 @@ public class ProgramStageModelShould {
                 PROGRAM,
                 PERIOD_TYPE,
                 ACCESS_DATA_WRITE,
+                REMIND_COMPLETED,
                 ID
         });
         cursor.moveToFirst();
@@ -141,6 +143,7 @@ public class ProgramStageModelShould {
         assertThat(model.program()).isEqualTo(PROGRAM);
         assertThat(model.periodType()).isEqualTo(PERIOD_TYPE);
         assertThat(model.accessDataWrite()).isTrue();
+        assertThat(model.remindCompleted()).isTrue();
     }
 
     @Test
@@ -172,6 +175,7 @@ public class ProgramStageModelShould {
                 .program(PROGRAM)
                 .periodType(PERIOD_TYPE)
                 .accessDataWrite(toBoolean(ACCESS_DATA_WRITE))
+                .remindCompleted(toBoolean(REMIND_COMPLETED))
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -201,5 +205,6 @@ public class ProgramStageModelShould {
         assertThat(contentValues.getAsString(Columns.PROGRAM)).isEqualTo(PROGRAM);
         assertThat(contentValues.getAsString(Columns.PERIOD_TYPE)).isEqualTo(PERIOD_TYPE.name());
         assertThat(contentValues.getAsBoolean(Columns.ACCESS_DATA_WRITE)).isTrue();
+        assertThat(contentValues.getAsBoolean(Columns.REMIND_COMPLETED)).isTrue();
     }
 }

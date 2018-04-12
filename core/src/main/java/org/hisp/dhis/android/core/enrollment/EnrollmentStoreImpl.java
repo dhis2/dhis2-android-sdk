@@ -295,19 +295,10 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                         coordinates = Coordinates.create(latitude, longitude);
                     }
 
-                    Set<NoteModel> noteModels = NoteStore.create(databaseAdapter).selectAll(NoteModel.factory);
-                    List<Note> notes = new ArrayList<>();
-                    NoteBuilder noteBuilder = new NoteBuilder();
-                    for (NoteModel noteModel : noteModels) {
-                        if (noteModel.enrollment().equals(uid)) {
-                            notes.add(noteBuilder.buildPojo(noteModel));
-                        }
-                    }
-
                     enrollmentMap.get(trackedEntityInstance).add(Enrollment.create(
                             uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                             organisationUnit, program, enrollmentDate, incidentDate, followUp,
-                            status, trackedEntityInstance, coordinates, false, null, notes
+                            status, trackedEntityInstance, coordinates, false, null, getNotes(uid)
                     ));
                 }
                 while (cursor.moveToNext());
@@ -318,6 +309,18 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         }
 
         return enrollmentMap;
+    }
+
+    private List<Note> getNotes(String uid) {
+        List<Note> notes = new ArrayList<>();
+        Set<NoteModel> noteModels = NoteStore.create(databaseAdapter).selectAll(NoteModel.factory);
+        NoteBuilder noteBuilder = new NoteBuilder();
+        for (NoteModel noteModel : noteModels) {
+            if (noteModel.enrollment().equals(uid)) {
+                notes.add(noteBuilder.buildPojo(noteModel));
+            }
+        }
+        return notes;
     }
 
     @Override

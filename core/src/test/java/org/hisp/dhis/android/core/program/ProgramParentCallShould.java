@@ -34,8 +34,10 @@ import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.After;
 import org.junit.Before;
@@ -72,6 +74,9 @@ public class ProgramParentCallShould extends BaseCallShould {
     private Payload<TrackedEntityType> trackedEntityPayload;
 
     @Mock
+    private Payload<RelationshipType> relationshipTypePayload;
+
+    @Mock
     private Payload<OptionSet> optionSetPayload;
 
     @Mock
@@ -105,6 +110,9 @@ public class ProgramParentCallShould extends BaseCallShould {
     private Call<Response<Payload<TrackedEntityType>>> trackedEntityTypeCall;
 
     @Mock
+    private Call<Response<Payload<RelationshipType>>> relationshipTypeCall;
+
+    @Mock
     private Call<Response<Payload<OptionSet>>> optionSetCall;
 
     @Mock
@@ -115,6 +123,9 @@ public class ProgramParentCallShould extends BaseCallShould {
 
     @Mock
     private UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
+
+    @Mock
+    private SimpleCallFactory<Payload<RelationshipType>> relationshiptTypeCallFactory;
 
     @Mock
     private UidsCallFactory<OptionSet> optionSetCallFactory;
@@ -153,13 +164,15 @@ public class ProgramParentCallShould extends BaseCallShould {
                 .thenReturn(programStageEndpointCall);
         when(trackedEntityCallFactory.create(same(genericCallData), any(Set.class)))
                 .thenReturn(trackedEntityTypeCall);
-
+        when(relationshiptTypeCallFactory.create(same(genericCallData)))
+                .thenReturn(relationshipTypeCall);
         when(optionSetCallFactory.create(same(genericCallData), any(Set.class)))
                 .thenReturn(optionSetCall);
 
         // Calls
         when(programEndpointCall.call()).thenReturn(Response.success(programPayload));
         when(trackedEntityTypeCall.call()).thenReturn(Response.success(trackedEntityPayload));
+        when(relationshipTypeCall.call()).thenReturn(Response.success(relationshipTypePayload));
         when(optionSetCall.call()).thenReturn(Response.success(optionSetPayload));
         when(programStageEndpointCall.call()).thenReturn(Response.success(programStagePayload));
 
@@ -171,6 +184,7 @@ public class ProgramParentCallShould extends BaseCallShould {
                 programCallFactory,
                 programStageCallFactory,
                 trackedEntityCallFactory,
+                relationshiptTypeCallFactory,
                 optionSetCallFactory,
                 uids);
     }
@@ -210,6 +224,12 @@ public class ProgramParentCallShould extends BaseCallShould {
     @Test
     public void fail_when_tracked_entity_types_call_fail() throws Exception {
         whenEndpointCallFails(trackedEntityTypeCall);
+        verifyFail(programParentCall.call());
+    }
+
+    @Test
+    public void fail_when_relationship_type_call_fail() throws Exception {
+        whenEndpointCallFails(relationshipTypeCall);
         verifyFail(programParentCall.call());
     }
 

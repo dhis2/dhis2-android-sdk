@@ -31,9 +31,12 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.TransactionalCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeEndpointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCall;
 
@@ -48,19 +51,22 @@ public class ProgramParentCall extends TransactionalCall {
     private final Set<String> programUids;
     private final UidsCallFactory<ProgramStage> programStageCallFactory;
     private final UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory;
+    private final SimpleCallFactory<Payload<RelationshipType>> relationshipTypeCallFactory;
     private final UidsCallFactory<OptionSet> optionSetCallFactory;
 
     ProgramParentCall(GenericCallData genericCallData,
-                              UidsCallFactory<Program>  programCallFactory,
-                              UidsCallFactory<ProgramStage> programStageCallFactory,
-                              UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
-                              UidsCallFactory<OptionSet> optionSetCallFactory,
-                              Set<String> programUids) {
+                      UidsCallFactory<Program> programCallFactory,
+                      UidsCallFactory<ProgramStage> programStageCallFactory,
+                      UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
+                      SimpleCallFactory<Payload<RelationshipType>> relationshipTypeCallFactory,
+                      UidsCallFactory<OptionSet> optionSetCallFactory,
+                      Set<String> programUids) {
         super(genericCallData);
         this.programCallFactory = programCallFactory;
         this.programUids = programUids;
         this.programStageCallFactory = programStageCallFactory;
         this.trackedEntityTypeCallFactory = trackedEntityTypeCallFactory;
+        this.relationshipTypeCallFactory = relationshipTypeCallFactory;
         this.optionSetCallFactory = optionSetCallFactory;
     }
 
@@ -76,6 +82,8 @@ public class ProgramParentCall extends TransactionalCall {
 
         Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
         trackedEntityTypeCallFactory.create(data, trackedEntityUids).call();
+
+        relationshipTypeCallFactory.create(data).call();
 
         List<ProgramStage> programStages = programStageResponse.body().items();
         Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
@@ -94,6 +102,7 @@ public class ProgramParentCall extends TransactionalCall {
                     ProgramEndpointCall.FACTORY,
                     ProgramStageEndpointCall.FACTORY,
                     TrackedEntityTypeCall.FACTORY,
+                    RelationshipTypeEndpointCall.FACTORY,
                     OptionSetCall.FACTORY,
                     programUids);
         }

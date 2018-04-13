@@ -34,7 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-final class ProgramParentUidsHelper {
+public final class ProgramParentUidsHelper {
 
     private ProgramParentUidsHelper() {}
 
@@ -119,7 +119,7 @@ final class ProgramParentUidsHelper {
         return programStageUids;
     }
 
-    static Set<String> getProgramUidsWithDataReadAccess(List<Program> programsWithAccess) {
+    public static Set<String> getProgramUidsWithDataReadAccess(List<Program> programsWithAccess) {
         Set<String> programUids = new HashSet<>();
         for (Program program: programsWithAccess) {
             Access access = program.access();

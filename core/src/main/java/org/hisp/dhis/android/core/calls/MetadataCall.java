@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
-import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
@@ -44,12 +43,12 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramAccessEndpointCall;
 import org.hisp.dhis.android.core.program.ProgramParentCall;
+import org.hisp.dhis.android.core.program.ProgramParentUidsHelper;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -138,7 +137,8 @@ public class MetadataCall implements Call<Response> {
                 return programAccessResponse;
             }
 
-            Set<String> programUids = getProgramUidsWithDataReadAccess(programAccessResponse.body().items());
+            Set<String> programUids = ProgramParentUidsHelper
+                    .getProgramUidsWithDataReadAccess(programAccessResponse.body().items());
             Response programResponse = programParentCallFactory.create(data, programUids).call();
             if (!programResponse.isSuccessful()) {
                 return programResponse;
@@ -163,19 +163,6 @@ public class MetadataCall implements Call<Response> {
         } finally {
             transaction.end();
         }
-    }
-
-    // Utility method
-    private Set<String> getProgramUidsWithDataReadAccess(List<Program> programsWithAccess) {
-        Set<String> programUids = new HashSet<>();
-        for (Program program: programsWithAccess) {
-            Access access = program.access();
-            if (access != null && access.data().read()) {
-                programUids.add(program.uid());
-            }
-        }
-
-        return programUids;
     }
 
     public static MetadataCall create(GenericCallData data) {

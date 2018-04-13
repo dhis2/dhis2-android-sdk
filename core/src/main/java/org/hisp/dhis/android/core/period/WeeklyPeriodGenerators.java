@@ -38,7 +38,7 @@ final class WeeklyPeriodGenerators {
     final PeriodGenerator weeklySaturday;
     final PeriodGenerator weeklySunday;
 
-    private WeeklyPeriodGenerators(PeriodGenerator weekly,
+    WeeklyPeriodGenerators(PeriodGenerator weekly,
                            PeriodGenerator weeklyWednesday,
                            PeriodGenerator weeklyThursday,
                            PeriodGenerator weeklySaturday,

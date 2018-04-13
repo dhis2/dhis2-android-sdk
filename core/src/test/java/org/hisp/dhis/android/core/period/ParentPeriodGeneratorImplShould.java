@@ -36,16 +36,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.BIWEEKLY_PERIODS;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.DAILY_PERIODS;
-import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.WEEKLY_PERIODS;
-import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.MONTHLY_PERIODS;
 import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.BIMONTHLY_PERIODS;
+import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.BIWEEKLY_PERIODS;
+import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.DAILY_PERIODS;
+import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.MONTHLY_PERIODS;
 import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.QUARTER_PERIODS;
 import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.SIXMONTHLY_PERIODS;
+import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.WEEKLY_PERIODS;
 import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.YEARLY_PERIODS;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class ParentPeriodGeneratorImplShould {
@@ -152,12 +152,17 @@ public class ParentPeriodGeneratorImplShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        periodGenerator = new ParentPeriodGeneratorImpl(dailyPeriodGenerator, weeklyPeriodGenerator,
+
+        WeeklyPeriodGenerators weeklyPeriodGenerators = new WeeklyPeriodGenerators(weeklyPeriodGenerator,
                 weeklyWednesdayPeriodGenerator, weeklyThursdayPeriodGenerator, weeklySaturdayPeriodGenerator,
-                weeklySundayPeriodGenerator, biWeeklyPeriodGenerator, monthlyPeriodGenerator, biMonthlyPeriodGenerator,
-                quarterPeriodGenerator, sixMonthlyPeriodGenerator, sixMonthlyAprilPeriodGenerator,
-                yearlyPeriodGenerator, financialAprilPeriodGenerator, financialJulyPeriodGenerator,
-                financialOctPeriodGenerator);
+                weeklySundayPeriodGenerator);
+        NMonthlyPeriodGenerators nMonthlyPeriodGenerators = new NMonthlyPeriodGenerators(biMonthlyPeriodGenerator,
+                quarterPeriodGenerator, sixMonthlyPeriodGenerator, sixMonthlyAprilPeriodGenerator);
+        YearlyPeriodGenerators yearlyPeriodGenerators = new YearlyPeriodGenerators(yearlyPeriodGenerator,
+                financialAprilPeriodGenerator, financialJulyPeriodGenerator, financialOctPeriodGenerator);
+
+        periodGenerator = new ParentPeriodGeneratorImpl(dailyPeriodGenerator, weeklyPeriodGenerators,
+                biWeeklyPeriodGenerator, monthlyPeriodGenerator, nMonthlyPeriodGenerators, yearlyPeriodGenerators);
         
         mockGenerator(dailyPeriodGenerator, DAILY_PERIODS, dailyPeriod);
         mockGenerator(weeklyPeriodGenerator, WEEKLY_PERIODS, weeklyPeriod);

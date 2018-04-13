@@ -37,7 +37,7 @@ final class YearlyPeriodGenerators {
     final PeriodGenerator financialJuly;
     final PeriodGenerator financialOct;
 
-    private YearlyPeriodGenerators(PeriodGenerator yearly,
+    YearlyPeriodGenerators(PeriodGenerator yearly,
                                    PeriodGenerator financialApril,
                                    PeriodGenerator financialJuly,
                                    PeriodGenerator financialOct) {

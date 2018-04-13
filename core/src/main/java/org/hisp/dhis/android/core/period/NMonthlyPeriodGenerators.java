@@ -37,7 +37,7 @@ final class NMonthlyPeriodGenerators {
     final PeriodGenerator sixMonthly;
     final PeriodGenerator sixMonthlyApril;
 
-    private NMonthlyPeriodGenerators(PeriodGenerator biMonthly,
+    NMonthlyPeriodGenerators(PeriodGenerator biMonthly,
                                      PeriodGenerator quarter,
                                      PeriodGenerator sixMonthly,
                                      PeriodGenerator sixMonthlyApril) {

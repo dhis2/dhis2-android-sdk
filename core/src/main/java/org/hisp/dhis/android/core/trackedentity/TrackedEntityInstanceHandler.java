@@ -65,10 +65,9 @@ public class TrackedEntityInstanceHandler {
 
             enrollmentHandler.handle(enrollments);
 
+            RelationshipModelBuilder relationshipModelBuilder = new RelationshipModelBuilder();
             for (Relationship relationship : trackedEntityInstance.relationships()) {
                 this.handle(relationship.relative());
-
-                RelationshipModelBuilder relationshipModelBuilder = new RelationshipModelBuilder();
                 this.relationshipStore.updateOrInsertWhere(relationshipModelBuilder.buildModel(relationship));
             }
         }

@@ -127,7 +127,6 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
 
         for (Map.Entry<String, TrackedEntityInstance> teiUid : trackedEntityInstances.entrySet()) {
             List<Enrollment> enrollmentsRecreated = new ArrayList<>();
-            List<Relationship> relationshipRecreated = new ArrayList<>();
             List<Enrollment> enrollments = enrollmentMap.get(teiUid.getKey());
 
             // if enrollments is not null, then they exist for this tracked entity instance
@@ -178,14 +177,8 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
             TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(teiUid.getKey());
 
             // Building relationships for TEI
-            RelationshipBuilder relationshipBuilder = new RelationshipBuilder();
-            for(RelationshipModel relationship : relationshipSet) {
-                if (relationship.trackedEntityInstanceA().equals(trackedEntityInstance.uid()) ||
-                        relationship.trackedEntityInstanceB().equals(trackedEntityInstance.uid())) {
-
-                    relationshipRecreated.add(relationshipBuilder.buildPojo(relationship));
-                }
-            }
+            List<Relationship> relationshipRecreated = getRelatedRelationships(relationshipSet,
+                    trackedEntityInstance.uid());
 
             trackedEntityInstancesRecreated.add(TrackedEntityInstance.create(trackedEntityInstance.uid(),
                     trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),
@@ -199,6 +192,21 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
 
         return trackedEntityInstancesRecreated;
 
+    }
+
+    private List<Relationship> getRelatedRelationships(Set<RelationshipModel> relationshipSet,
+                                                       String trackedEntityInstanceUid) {
+        List<Relationship> relationshipRecreated = new ArrayList<>();
+
+        RelationshipBuilder relationshipBuilder = new RelationshipBuilder();
+        for(RelationshipModel relationship : relationshipSet) {
+            if (relationship.trackedEntityInstanceA().equals(trackedEntityInstanceUid) ||
+                    relationship.trackedEntityInstanceB().equals(trackedEntityInstanceUid)) {
+
+                relationshipRecreated.add(relationshipBuilder.buildPojo(relationship));
+            }
+        }
+        return relationshipRecreated;
     }
 
     private void handleWebResponse(Response<WebResponse> response) {

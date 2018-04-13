@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.EmptyQuery;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.GenericService;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -44,19 +43,19 @@ import retrofit2.Call;
 public final class RelationshipTypeEndpointCall extends GenericEndpointCallImpl<RelationshipType,
         RelationshipTypeModel, EmptyQuery> {
 
-    private final GenericService genericService;
+    private final RelationshipTypeService relationshipTypeService;
 
     private RelationshipTypeEndpointCall(GenericCallData data,
-                                         GenericService genericService,
+                                         RelationshipTypeService relationshipTypeService,
                                          GenericHandler<RelationshipType, RelationshipTypeModel> handler,
                                          EmptyQuery query) {
         super(data, handler, ResourceModel.Type.RELATIONSHIP_TYPE, new RelationshipTypeModelBuilder(), query);
-        this.genericService = genericService;
+        this.relationshipTypeService = relationshipTypeService;
     }
 
     @Override
     protected Call<Payload<RelationshipType>> getCall(EmptyQuery query, String lastUpdated) throws IOException {
-        return genericService.getAll("relationshipTypes", RelationshipType.allFields,
+        return relationshipTypeService.getRelationshipTypes(RelationshipType.allFields,
                 RelationshipType.lastUpdated.gt(lastUpdated), query.paging());
     }
 
@@ -67,7 +66,7 @@ public final class RelationshipTypeEndpointCall extends GenericEndpointCallImpl<
                 public RelationshipTypeEndpointCall create(GenericCallData genericCallData) {
                     return new RelationshipTypeEndpointCall(
                             genericCallData,
-                            genericCallData.retrofit().create(GenericService.class),
+                            genericCallData.retrofit().create(RelationshipTypeService.class),
                             RelationshipTypeHandler.create(genericCallData.databaseAdapter()),
                             EmptyQuery.create()
                     );

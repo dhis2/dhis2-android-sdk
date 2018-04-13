@@ -90,6 +90,7 @@ public class Dhis2MockServer {
         enqueueMockResponse("programs.json");
         enqueueMockResponse("program_stages.json");
         enqueueMockResponse("tracked_entities.json");
+        enqueueMockResponse("relationship_types.json");
         enqueueMockResponse("organisationUnits.json");
         enqueueMockResponse("option_sets.json");
         enqueueMockResponse("data_sets_with_access.json");
@@ -108,6 +109,7 @@ public class Dhis2MockServer {
         enqueueMockResponse("programs.json");
         enqueueMockResponse("program_stages.json");
         enqueueMockResponse("tracked_entities.json");
+        enqueueMockResponse("relationship_types.json");
         enqueueMockResponse("admin/organisation_units.json");
         enqueueMockResponse("option_sets.json");
         enqueueMockResponse("data_sets_with_access.json");

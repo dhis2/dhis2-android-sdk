@@ -25,8 +25,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.Where;
@@ -38,13 +39,12 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface GenericService {
+public interface RelationshipTypeService {
 
-    @GET("{path}")
-    public <T> Call<Payload<T>> getAll(
-            @Path("path") String path,
-            @Query("fields") @Which Fields<T> fields,
-            @Query("filter") @Where Filter<T, String> lastUpdated,
+    @GET("relationshipTypes")
+    Call<Payload<RelationshipType>> getRelationshipTypes(
+            @Query("fields") @Which Fields<RelationshipType> fields,
+            @Query("filter") @Where Filter<RelationshipType, String> lastUpdated,
             @Query("paging") Boolean paging
     );
 }

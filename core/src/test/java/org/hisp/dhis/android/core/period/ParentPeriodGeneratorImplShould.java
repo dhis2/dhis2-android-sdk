@@ -36,6 +36,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.BIWEEKLY_PERIODS;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.hisp.dhis.android.core.period.ParentPeriodGeneratorImpl.DAILY_PERIODS;
@@ -66,6 +67,9 @@ public class ParentPeriodGeneratorImplShould {
 
     @Mock
     private PeriodGenerator weeklySundayPeriodGenerator;
+
+    @Mock
+    private PeriodGenerator biWeeklyPeriodGenerator;
 
     @Mock
     private PeriodGenerator monthlyPeriodGenerator;
@@ -113,6 +117,9 @@ public class ParentPeriodGeneratorImplShould {
     private PeriodModel weeklySundayPeriod;
 
     @Mock
+    private PeriodModel biWeeklyPeriod;
+
+    @Mock
     private PeriodModel monthlyPeriod;
 
     @Mock
@@ -147,7 +154,7 @@ public class ParentPeriodGeneratorImplShould {
         MockitoAnnotations.initMocks(this);
         periodGenerator = new ParentPeriodGeneratorImpl(dailyPeriodGenerator, weeklyPeriodGenerator,
                 weeklyWednesdayPeriodGenerator, weeklyThursdayPeriodGenerator, weeklySaturdayPeriodGenerator,
-                weeklySundayPeriodGenerator, monthlyPeriodGenerator, biMonthlyPeriodGenerator,
+                weeklySundayPeriodGenerator, biWeeklyPeriodGenerator, monthlyPeriodGenerator, biMonthlyPeriodGenerator,
                 quarterPeriodGenerator, sixMonthlyPeriodGenerator, sixMonthlyAprilPeriodGenerator,
                 yearlyPeriodGenerator, financialAprilPeriodGenerator, financialJulyPeriodGenerator,
                 financialOctPeriodGenerator);
@@ -158,6 +165,7 @@ public class ParentPeriodGeneratorImplShould {
         mockGenerator(weeklyThursdayPeriodGenerator, WEEKLY_PERIODS, weeklyThursdayPeriod);
         mockGenerator(weeklySaturdayPeriodGenerator, WEEKLY_PERIODS, weeklySaturdayPeriod);
         mockGenerator(weeklySundayPeriodGenerator, WEEKLY_PERIODS, weeklySundayPeriod);
+        mockGenerator(biWeeklyPeriodGenerator, BIWEEKLY_PERIODS, biWeeklyPeriod);
         mockGenerator(monthlyPeriodGenerator, MONTHLY_PERIODS, monthlyPeriod);
         mockGenerator(biMonthlyPeriodGenerator, BIMONTHLY_PERIODS, biMonthlyPeriod);
         mockGenerator(quarterPeriodGenerator, QUARTER_PERIODS, quarterPeriod);
@@ -191,6 +199,7 @@ public class ParentPeriodGeneratorImplShould {
         verifyChildGeneratorCalled(weeklyThursdayPeriodGenerator, WEEKLY_PERIODS);
         verifyChildGeneratorCalled(weeklySaturdayPeriodGenerator, WEEKLY_PERIODS);
         verifyChildGeneratorCalled(weeklySundayPeriodGenerator, WEEKLY_PERIODS);
+        verifyChildGeneratorCalled(biWeeklyPeriodGenerator, BIWEEKLY_PERIODS);
         verifyChildGeneratorCalled(monthlyPeriodGenerator, MONTHLY_PERIODS);
         verifyChildGeneratorCalled(biMonthlyPeriodGenerator, BIMONTHLY_PERIODS);
         verifyChildGeneratorCalled(quarterPeriodGenerator, QUARTER_PERIODS);
@@ -212,6 +221,7 @@ public class ParentPeriodGeneratorImplShould {
         assertChildAnswerInParentAnswer(weeklyThursdayPeriod);
         assertChildAnswerInParentAnswer(weeklySaturdayPeriod);
         assertChildAnswerInParentAnswer(weeklySundayPeriod);
+        assertChildAnswerInParentAnswer(biWeeklyPeriod);
         assertChildAnswerInParentAnswer(monthlyPeriod);
         assertChildAnswerInParentAnswer(biMonthlyPeriod);
         assertChildAnswerInParentAnswer(quarterPeriod);

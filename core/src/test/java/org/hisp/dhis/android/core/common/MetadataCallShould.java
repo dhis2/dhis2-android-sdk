@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.user.User;
@@ -118,6 +119,9 @@ public class MetadataCallShould extends BaseCallShould {
     private Payload<TrackedEntityType> trackedEntityPayload;
 
     @Mock
+    private Payload<RelationshipType> relationshipTypePayload;
+
+    @Mock
     private Payload<OptionSet> optionSetPayload;
 
     @Mock
@@ -175,6 +179,9 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<Response<Payload<TrackedEntityType>>> trackedEntityCall;
 
     @Mock
+    private Call<Response<Payload<RelationshipType>>> relationshipTypeCall;
+
+    @Mock
     private Call<Response<Payload<OptionSet>>> optionSetCall;
 
     @Mock
@@ -206,6 +213,9 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
+
+    @Mock
+    private SimpleCallFactory<Payload<RelationshipType>> relationshipTypeCallFactory;
 
     @Mock
     private OrganisationUnitCall.Factory organisationUnitCallFactory;
@@ -269,6 +279,7 @@ public class MetadataCallShould extends BaseCallShould {
                 .thenReturn(programStageEndpointCall);
         when(trackedEntityCallFactory.create(same(genericCallData), any(Set.class)))
                 .thenReturn(trackedEntityCall);
+        when(relationshipTypeCallFactory.create(same(genericCallData))).thenReturn(relationshipTypeCall);
         when(organisationUnitCallFactory.create(same(genericCallData), same(user), anySetOf(String.class)))
                 .thenReturn(organisationUnitEndpointCall);
         when(optionSetCallFactory.create(same(genericCallData), any(Set.class)))
@@ -284,6 +295,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(programEndpointCall.call()).thenReturn(Response.success(programPayload));
         when(programAccessEndpointCall.call()).thenReturn(Response.success(programWithAccessPayload));
         when(trackedEntityCall.call()).thenReturn(Response.success(trackedEntityPayload));
+        when(relationshipTypeCall.call()).thenReturn(Response.success(relationshipTypePayload));
         when(optionSetCall.call()).thenReturn(Response.success(optionSetPayload));
         when(organisationUnitEndpointCall.call()).thenReturn(Response.success(organisationUnitPayload));
         when(dataSetParentCall.call()).thenReturn(Response.success(dataElementPayload));
@@ -300,6 +312,7 @@ public class MetadataCallShould extends BaseCallShould {
                 programCallFactory,
                 programStageCallFactory,
                 trackedEntityCallFactory,
+                relationshipTypeCallFactory,
                 organisationUnitCallFactory,
                 optionSetCallFactory,
                 dataSetParentCallFactory);

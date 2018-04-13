@@ -52,6 +52,8 @@ import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 import org.hisp.dhis.android.core.program.ProgramStageEndpointCall;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeEndpointCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -80,6 +82,7 @@ public class MetadataCall implements Call<Response> {
     private final UidsCallFactory<Program> programCallFactory;
     private final UidsCallFactory<ProgramStage> programStageCallFactory;
     private final UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
+    private final SimpleCallFactory<Payload<RelationshipType>> relationshipTypeCallFactory;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
     private final UidsCallFactory<OptionSet> optionSetCallFactory;
     private final DataSetParentCall.Factory dataSetParentCallFactory;
@@ -93,6 +96,7 @@ public class MetadataCall implements Call<Response> {
                         @NonNull UidsCallFactory<Program> programCallFactory,
                         @NonNull UidsCallFactory<ProgramStage> programStageCallFactory,
                         @NonNull UidsCallFactory<TrackedEntityType> trackedEntityCallFactory,
+                        @NonNull SimpleCallFactory<Payload<RelationshipType>> relationshipTypeCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
                         @NonNull UidsCallFactory<OptionSet> optionSetCallFactory,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory) {
@@ -107,6 +111,7 @@ public class MetadataCall implements Call<Response> {
         this.trackedEntityCallFactory = trackedEntityCallFactory;
         this.organisationUnitCallFactory = organisationUnitCallFactory;
         this.optionSetCallFactory = optionSetCallFactory;
+        this.relationshipTypeCallFactory = relationshipTypeCallFactory;
         this.dataSetParentCallFactory = dataSetParentCallFactory;
     }
 
@@ -176,6 +181,12 @@ public class MetadataCall implements Call<Response> {
                     trackedEntityCallFactory.create(data, trackedEntityUids).call();
             if (!trackedEntityResponse.isSuccessful()) {
                 return trackedEntityResponse;
+            }
+
+            Response<Payload<RelationshipType>> relationshipTypeResponse
+                    = relationshipTypeCallFactory.create(data).call();
+            if (!relationshipTypeResponse.isSuccessful()) {
+                return relationshipTypeResponse;
             }
 
             User user = userResponse.body();
@@ -311,6 +322,7 @@ public class MetadataCall implements Call<Response> {
                 ProgramCall.FACTORY,
                 ProgramStageEndpointCall.FACTORY,
                 TrackedEntityTypeCall.FACTORY,
+                RelationshipTypeEndpointCall.FACTORY,
                 OrganisationUnitCall.FACTORY,
                 OptionSetCall.FACTORY,
                 DataSetParentCall.FACTORY

@@ -27,14 +27,22 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Where;
+import org.hisp.dhis.android.core.data.api.Which;
 
-public final class RelationshipTypeHandler {
-    private RelationshipTypeHandler() {}
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-    public static GenericHandler<RelationshipType, RelationshipTypeModel> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableHandlerImpl<>(RelationshipTypeStore.create(databaseAdapter));
-    }
+public interface RelationshipTypeService {
+
+    @GET("relationshipTypes")
+    Call<Payload<RelationshipType>> getRelationshipTypes(
+            @Query("fields") @Which Fields<RelationshipType> fields,
+            @Query("filter") @Where Filter<RelationshipType, String> lastUpdated,
+            @Query("paging") Boolean paging
+    );
 }

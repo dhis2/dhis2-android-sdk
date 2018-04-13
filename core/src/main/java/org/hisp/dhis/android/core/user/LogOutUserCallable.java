@@ -65,6 +65,7 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
@@ -152,7 +153,8 @@ public class LogOutUserCallable implements Callable<Void> {
                 DataValueStore.create(databaseAdapter),
                 PeriodStore.create(databaseAdapter),
                 ObjectStyleStore.create(databaseAdapter),
-                ValueTypeDeviceRenderingStore.create(databaseAdapter));
+                ValueTypeDeviceRenderingStore.create(databaseAdapter),
+                RelationshipTypeStore.create(databaseAdapter));
 
         return new LogOutUserCallable(
                 deletableStores

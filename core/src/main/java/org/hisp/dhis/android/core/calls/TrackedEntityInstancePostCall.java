@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
@@ -14,6 +15,9 @@ import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.imports.WebResponseHandler;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipBuilder;
+import org.hisp.dhis.android.core.relationship.RelationshipModel;
+import org.hisp.dhis.android.core.relationship.RelationshipStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
@@ -30,6 +34,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -45,21 +50,24 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+    private final ObjectWithoutUidStore<RelationshipModel> relationshipStore;
 
     private boolean isExecuted;
 
     TrackedEntityInstancePostCall(@NonNull TrackedEntityInstanceService trackedEntityInstanceService,
-                                         @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-                                         @NonNull EnrollmentStore enrollmentStore,
-                                         @NonNull EventStore eventStore,
-                                         @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
-                                         @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
+                                  @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
+                                  @NonNull EnrollmentStore enrollmentStore,
+                                  @NonNull EventStore eventStore,
+                                  @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
+                                  @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
+                                  @NonNull ObjectWithoutUidStore<RelationshipModel> relationshipStore) {
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.enrollmentStore = enrollmentStore;
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
+        this.relationshipStore = relationshipStore;
     }
 
     @Override
@@ -110,18 +118,16 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap = trackedEntityAttributeValueStore.query();
         Map<String, TrackedEntityInstance> trackedEntityInstances =
                 trackedEntityInstanceStore.queryToPost();
+        Set<RelationshipModel> relationshipSet = relationshipStore.selectAll(RelationshipModel.factory);
 
         List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();
-
-
-
-        List<Relationship> relationshipRecreated = new ArrayList<>();
 
         // EMPTY LISTS TO REPLACE NULL VALUES SO THAT API DOESN'T BREAK.
         List<TrackedEntityAttributeValue> emptyAttributeValueList = new ArrayList<>();
 
         for (Map.Entry<String, TrackedEntityInstance> teiUid : trackedEntityInstances.entrySet()) {
             List<Enrollment> enrollmentsRecreated = new ArrayList<>();
+            List<Relationship> relationshipRecreated = new ArrayList<>();
             List<Enrollment> enrollments = enrollmentMap.get(teiUid.getKey());
 
             // if enrollments is not null, then they exist for this tracked entity instance
@@ -171,6 +177,16 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
             }
             TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(teiUid.getKey());
 
+            // Building relationships for TEI
+            RelationshipBuilder relationshipBuilder = new RelationshipBuilder();
+            for(RelationshipModel relationship : relationshipSet) {
+                if (relationship.trackedEntityInstanceA().equals(trackedEntityInstance.uid()) ||
+                        relationship.trackedEntityInstanceB().equals(trackedEntityInstance.uid())) {
+
+                    relationshipRecreated.add(relationshipBuilder.buildPojo(relationship));
+                }
+            }
+
             trackedEntityInstancesRecreated.add(TrackedEntityInstance.create(trackedEntityInstance.uid(),
                     trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),
                     trackedEntityInstance.createdAtClient(), trackedEntityInstance.lastUpdatedAtClient(),
@@ -210,7 +226,8 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
                 new EnrollmentStoreImpl(databaseAdapter),
                 new EventStoreImpl(databaseAdapter),
                 new TrackedEntityDataValueStoreImpl(databaseAdapter),
-                new TrackedEntityAttributeValueStoreImpl(databaseAdapter)
+                new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
+                RelationshipStore.create(databaseAdapter)
         );
     }
 }

@@ -44,11 +44,7 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
     static final int YEARLY_PERIODS = 5;
 
     private final PeriodGenerator daily;
-    private final PeriodGenerator weekly;
-    private final PeriodGenerator weeklyWednesday;
-    private final PeriodGenerator weeklyThursday;
-    private final PeriodGenerator weeklySaturday;
-    private final PeriodGenerator weeklySunday;
+    private final WeeklyPeriodGenerators weekly;
     private final PeriodGenerator biWeekly;
     private final PeriodGenerator monthly;
     private final PeriodGenerator biMonthly;
@@ -61,11 +57,7 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
     private final PeriodGenerator financialOct;
 
     ParentPeriodGeneratorImpl(PeriodGenerator daily,
-                              PeriodGenerator weekly,
-                              PeriodGenerator weeklyWednesday,
-                              PeriodGenerator weeklyThursday,
-                              PeriodGenerator weeklySaturday,
-                              PeriodGenerator weeklySunday,
+                              WeeklyPeriodGenerators weekly,
                               PeriodGenerator biWeekly,
                               PeriodGenerator monthly,
                               PeriodGenerator biMonthly,
@@ -78,10 +70,6 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
                               PeriodGenerator financialOct) {
         this.daily = daily;
         this.weekly = weekly;
-        this.weeklyWednesday = weeklyWednesday;
-        this.weeklyThursday = weeklyThursday;
-        this.weeklySaturday = weeklySaturday;
-        this.weeklySunday = weeklySunday;
         this.biWeekly = biWeekly;
         this.monthly = monthly;
         this.biMonthly = biMonthly;
@@ -98,11 +86,11 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         List<PeriodModel> periods = new ArrayList<>();
         periods.addAll(daily.generateLastPeriods(DAILY_PERIODS));
 
-        periods.addAll(weekly.generateLastPeriods(WEEKLY_PERIODS));
-        periods.addAll(weeklyWednesday.generateLastPeriods(WEEKLY_PERIODS));
-        periods.addAll(weeklyThursday.generateLastPeriods(WEEKLY_PERIODS));
-        periods.addAll(weeklySaturday.generateLastPeriods(WEEKLY_PERIODS));
-        periods.addAll(weeklySunday.generateLastPeriods(WEEKLY_PERIODS));
+        periods.addAll(weekly.weekly.generateLastPeriods(WEEKLY_PERIODS));
+        periods.addAll(weekly.weeklyWednesday.generateLastPeriods(WEEKLY_PERIODS));
+        periods.addAll(weekly.weeklyThursday.generateLastPeriods(WEEKLY_PERIODS));
+        periods.addAll(weekly.weeklySaturday.generateLastPeriods(WEEKLY_PERIODS));
+        periods.addAll(weekly.weeklySunday.generateLastPeriods(WEEKLY_PERIODS));
 
         periods.addAll(biWeekly.generateLastPeriods(BIWEEKLY_PERIODS));
 
@@ -127,11 +115,7 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         Calendar calendar = Calendar.getInstance();
         return new ParentPeriodGeneratorImpl(
                 new DailyPeriodGenerator(calendar),
-                WeeklyPeriodGeneratorFactory.weekly(calendar),
-                WeeklyPeriodGeneratorFactory.wednesday(calendar),
-                WeeklyPeriodGeneratorFactory.thursday(calendar),
-                WeeklyPeriodGeneratorFactory.saturday(calendar),
-                WeeklyPeriodGeneratorFactory.sunday(calendar),
+                WeeklyPeriodGenerators.create(calendar),
                 new BiWeeklyPeriodGenerator(calendar),
                 new MonthlyPeriodGenerator(calendar),
                 NMonthlyPeriodGeneratorFactory.biMonthly(calendar),

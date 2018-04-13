@@ -28,17 +28,15 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
-
-public class ProgramHandler {
-
-    private final ProgramStore programStore;
+public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramModel> {
 
     private final ProgramRuleVariableHandler programRuleVariableHandler;
     private final ProgramIndicatorHandler programIndicatorHandler;
@@ -46,13 +44,13 @@ public class ProgramHandler {
     private final ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
-    ProgramHandler(ProgramStore programStore,
-                          ProgramRuleVariableHandler programRuleVariableHandler,
-                          ProgramIndicatorHandler programIndicatorHandler,
-                          ProgramRuleHandler programRuleHandler,
-                          ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler,
-                          GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
-        this.programStore = programStore;
+    ProgramHandler(IdentifiableObjectStore<ProgramModel> programStore,
+                   ProgramRuleVariableHandler programRuleVariableHandler,
+                   ProgramIndicatorHandler programIndicatorHandler,
+                   ProgramRuleHandler programRuleHandler,
+                   ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler,
+                   GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
+        super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
         this.programRuleHandler = programRuleHandler;
@@ -60,77 +58,24 @@ public class ProgramHandler {
         this.styleHandler = styleHandler;
     }
 
-    public void handleProgram(Program program) {
-        if (program == null) {
-            return;
-        }
-        if (isDeleted(program)) {
-            programStore.delete(program.uid());
-        } else {
-            String relatedProgramUid = null;
-            if (program.relatedProgram() != null) {
-                relatedProgramUid = program.relatedProgram().uid();
-            }
-            String trackedEntityUid = null;
-            if (program.trackedEntityType() != null) {
-                trackedEntityUid = program.trackedEntityType().uid();
-            }
-            String categoryCombo = null;
-            if (program.categoryCombo() != null) {
-                categoryCombo = program.categoryCombo().uid();
-            }
-            String relationshipTypeUid = null;
-            if (program.relationshipType() != null) {
-                relationshipTypeUid = program.relationshipType().uid();
-            }
-
-            int updatedRow = programStore.update(
-                    program.uid(), program.code(), program.name(), program.displayName(), program.created(),
-                    program.lastUpdated(), program.shortName(), program.displayShortName(), program.description(),
-                    program.displayDescription(), program.version(), program.onlyEnrollOnce(),
-                    program.enrollmentDateLabel(), program.displayIncidentDate(),
-                    program.incidentDateLabel(), program.registration(), program.selectEnrollmentDatesInFuture(),
-                    program.dataEntryMethod(), program.ignoreOverdueEvents(), program.relationshipFromA(),
-                    program.selectIncidentDatesInFuture(), program.captureCoordinates(),
-                    program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
-                    program.programType(), relationshipTypeUid, program.relationshipText(),
-                    relatedProgramUid, trackedEntityUid, categoryCombo,
-                    program.access().data().write(), program.expiryDays(), program.completeEventsExpiryDays(),
-                    program.expiryPeriodType(), program.uid());
-
-            if (updatedRow <= 0) {
-                programStore.insert(
-                        program.uid(), program.code(), program.name(), program.displayName(), program.created(),
-                        program.lastUpdated(), program.shortName(), program.displayShortName(), program.description(),
-                        program.displayDescription(), program.version(), program.onlyEnrollOnce(),
-                        program.enrollmentDateLabel(), program.displayIncidentDate(),
-                        program.incidentDateLabel(), program.registration(), program.selectEnrollmentDatesInFuture(),
-                        program.dataEntryMethod(), program.ignoreOverdueEvents(), program.relationshipFromA(),
-                        program.selectIncidentDatesInFuture(), program.captureCoordinates(),
-                        program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
-                        program.programType(), relationshipTypeUid, program.relationshipText(),
-                        relatedProgramUid, trackedEntityUid, categoryCombo, program.access().data().write(),
-                        program.expiryDays(), program.completeEventsExpiryDays(), program.expiryPeriodType());
-            }
-        }
-        // programStageHandler will invoke programStageSectionHandler, programStageDataElementHandler,
-        // programIndicatorHandler, dataElement handler and optionSetHandler
-        programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(
-                program.programTrackedEntityAttributes());
-        programIndicatorHandler.handleProgramIndicator(null, program.programIndicators());
-        programRuleHandler.handleProgramRules(program.programRules());
-        programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
-        styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(), ProgramModel.TABLE));
-    }
-
     public static ProgramHandler create(DatabaseAdapter databaseAdapter) {
         return new ProgramHandler(
-                new ProgramStoreImpl(databaseAdapter),
+                ProgramStore.create(databaseAdapter),
                 ProgramRuleVariableHandler.create(databaseAdapter),
                 ProgramIndicatorHandler.create(databaseAdapter),
                 ProgramRuleHandler.create(databaseAdapter),
                 ProgramTrackedEntityAttributeHandler.create(databaseAdapter),
                 ObjectStyleHandler.create(databaseAdapter)
         );
+    }
+
+    @Override
+    protected void afterObjectPersisted(Program program) {
+        programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(
+                program.programTrackedEntityAttributes());
+        programIndicatorHandler.handleProgramIndicator(null, program.programIndicators());
+        programRuleHandler.handleProgramRules(program.programRules());
+        programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
+        styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(), ProgramModel.TABLE));
     }
 }

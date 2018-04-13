@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,17 +43,10 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -61,13 +54,10 @@ import static org.mockito.Mockito.when;
 public class ProgramHandlerShould {
 
     @Mock
-    private ProgramStore programStore;
+    private IdentifiableObjectStore<ProgramModel> programStore;
 
     @Mock
     private ProgramRuleVariableHandler programRuleVariableHandler;
-
-    @Mock
-    private GenericHandler<ProgramStage, ProgramStageModel> programStageHandler;
 
     @Mock
     private ProgramIndicatorHandler programIndicatorHandler;
@@ -79,10 +69,10 @@ public class ProgramHandlerShould {
     private ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
 
     @Mock
-    private Program program;
+    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
-    private RelationshipType relationshipType;
+    private Program program;
 
     @Mock
     private DataAccess dataAccess;
@@ -100,7 +90,16 @@ public class ProgramHandlerShould {
     private TrackedEntityType trackedEntityType;
 
     @Mock
-    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
+
+    @Mock
+    private List<ProgramIndicator> programIndicators;
+
+    @Mock
+    private List<ProgramRule> programRules;
+
+    @Mock
+    private List<ProgramRuleVariable> programRuleVariables;
 
     // object to test
     private ProgramHandler programHandler;
@@ -112,7 +111,6 @@ public class ProgramHandlerShould {
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler, programIndicatorHandler, programRuleHandler,
                 programTrackedEntityAttributeHandler, styleHandler);
-        when(relationshipType.uid()).thenReturn("relationshipTypeUid");
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.code()).thenReturn("test_program_code");
@@ -139,16 +137,15 @@ public class ProgramHandlerShould {
         when(program.useFirstStageDuringRegistration()).thenReturn(true);
         when(program.displayFrontPageList()).thenReturn(true);
         when(program.programType()).thenReturn(ProgramType.WITH_REGISTRATION);
-        when(program.relationshipType()).thenReturn(relationshipType);
         when(program.relationshipText()).thenReturn("test relationship");
         when(program.relatedProgram()).thenReturn(relatedProgram);
         when(program.trackedEntityType()).thenReturn(trackedEntityType);
 
         when(program.programStages()).thenReturn(programStages);
-        when(program.programTrackedEntityAttributes()).thenReturn(new ArrayList<ProgramTrackedEntityAttribute>());
-        when(program.programIndicators()).thenReturn(new ArrayList<ProgramIndicator>());
-        when(program.programRules()).thenReturn(new ArrayList<ProgramRule>());
-        when(program.programRuleVariables()).thenReturn(new ArrayList<ProgramRuleVariable>());
+        when(program.programTrackedEntityAttributes()).thenReturn(programTrackedEntityAttributes);
+        when(program.programIndicators()).thenReturn(programIndicators);
+        when(program.programRules()).thenReturn(programRules);
+        when(program.programRuleVariables()).thenReturn(programRuleVariables);
         when(program.access()).thenReturn(access);
         when(access.data()).thenReturn(dataAccess);
         when(dataAccess.read()).thenReturn(true);
@@ -156,142 +153,33 @@ public class ProgramHandlerShould {
     }
 
     @Test
-    public void invoke_deleted_when_handle_program_set_as_deleted() throws Exception {
-        when(program.deleted()).thenReturn(true);
-
-        programHandler.handleProgram(program);
-
-        // check that program store is invoked with delete method
-        verify(programStore, times(1)).delete(anyString());
-
-        // check that update and insert is never called
-        verify(programStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class));
-
-        verify(programStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class), anyString());
-
-        // verify that all the handlers is called once
-        verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
-                program.programTrackedEntityAttributes());
-        verify(programIndicatorHandler, times(1)).handleProgramIndicator(null, program.programIndicators());
-        verify(programRuleHandler, times(1)).handleProgramRules(program.programRules());
-        verify(programRuleVariableHandler, times(1)).handleProgramRuleVariables(program.programRuleVariables());
+    public void call_program_tracked_entity_attributes_handler() throws Exception {
+        programHandler.handle(program, new ProgramModelBuilder());
+        verify(programTrackedEntityAttributeHandler)
+                .handleProgramTrackedEntityAttributes(programTrackedEntityAttributes);
     }
 
     @Test
-    public void invoke_update_and_insert_when_handle_program_not_inserted() throws Exception {
-        when(programStore.update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class),
-                anyString())).thenReturn(0);
-
-        programHandler.handleProgram(program);
-
-        // verify that insert is called
-        verify(programStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class));
-
-        // verify that update is called since we update before we can insert
-        verify(programStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class), anyString());
-
-        // verify that delete is never called
-        verify(programStore, never()).delete(anyString());
-
-        // verify that all the handlers is called once
-        verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
-                program.programTrackedEntityAttributes());
-        verify(programIndicatorHandler, times(1)).handleProgramIndicator(null, program.programIndicators());
-        verify(programRuleHandler, times(1)).handleProgramRules(program.programRules());
-        verify(programRuleVariableHandler, times(1)).handleProgramRuleVariables(program.programRuleVariables());
+    public void call_program_indicator_handler() throws Exception {
+        programHandler.handle(program, new ProgramModelBuilder());
+        verify(programIndicatorHandler).handleProgramIndicator(null, programIndicators);
     }
 
     @Test
-    public void invoke_only_update_when_handle_program_inserted() throws Exception {
-        when(programStore.update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class), anyString())).thenReturn(1);
-
-        programHandler.handleProgram(program);
-
-        // verify that update is called
-        verify(programStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class), anyString());
-
-        // check that insert and delete is never called
-        verify(programStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class));
-
-        verify(programStore, never()).delete(anyString());
-
-        // verify that all the handlers is called once
-        verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
-                program.programTrackedEntityAttributes());
-        verify(programIndicatorHandler, times(1)).handleProgramIndicator(null, program.programIndicators());
-        verify(programRuleHandler, times(1)).handleProgramRules(program.programRules());
-        verify(programRuleVariableHandler, times(1)).handleProgramRuleVariables(program.programRuleVariables());
+    public void call_program_rule_handler() throws Exception {
+        programHandler.handle(program, new ProgramModelBuilder());
+        verify(programRuleHandler).handleProgramRules(programRules);
     }
 
     @Test
-    public void do_nothing_with_null_argument() throws Exception {
-        programHandler.handleProgram(null);
+    public void call_program_rule_variable_handler() throws Exception {
+        programHandler.handle(program, new ProgramModelBuilder());
+        verify(programRuleVariableHandler).handleProgramRuleVariables(programRuleVariables);
+    }
 
-        // verify that programStore is never called with insert, update or delete
-        verify(programStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class));
-
-        verify(programStore, never()).delete(anyString());
-
-        verify(programStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class), anyString());
-
-        // verify that handlers is never called
-        verify(programStageHandler, never()).handleMany(anyListOf(ProgramStage.class),
-                any(ProgramStageModelBuilder.class));
-        verify(programTrackedEntityAttributeHandler, never()).handleProgramTrackedEntityAttributes(
-                anyListOf(ProgramTrackedEntityAttribute.class)
-        );
-        verify(programIndicatorHandler, never()).handleProgramIndicator(anyString(), anyListOf(ProgramIndicator.class));
-        verify(programRuleHandler, never()).handleProgramRules(anyListOf(ProgramRule.class));
-        verify(programRuleVariableHandler, never()).handleProgramRuleVariables(anyListOf(ProgramRuleVariable.class));
+    @Test
+    public void call_style_handler() throws Exception {
+        programHandler.handle(program, new ProgramModelBuilder());
+        verify(styleHandler).handle(same(program.style()), any(ObjectStyleModelBuilder.class));
     }
 }

@@ -35,7 +35,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
@@ -50,40 +52,37 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     private static final String PROGRAM = "program";
     private static final String SORT_ORDER = "sortOrder";
 
-    public static final Field<ProgramTrackedEntityAttribute, String> uid
-            = Field.create(UID);
-    public static final Field<ProgramTrackedEntityAttribute, String> code
-            = Field.create(CODE);
-    public static final Field<ProgramTrackedEntityAttribute, String> name
-            = Field.create(NAME);
-    public static final Field<ProgramTrackedEntityAttribute, String> displayName
-            = Field.create(DISPLAY_NAME);
-    public static final Field<ProgramTrackedEntityAttribute, String> created
-            = Field.create(CREATED);
-    public static final Field<ProgramTrackedEntityAttribute, String> lastUpdated
-            = Field.create(LAST_UPDATED);
-    public static final Field<ProgramTrackedEntityAttribute, String> shortName
-            = Field.create(SHORT_NAME);
-    public static final Field<ProgramTrackedEntityAttribute, String> displayShortName
+    private static final Field<ProgramTrackedEntityAttribute, String> uid = Field.create(UID);
+    private static final Field<ProgramTrackedEntityAttribute, String> code = Field.create(CODE);
+    private static final Field<ProgramTrackedEntityAttribute, String> name = Field.create(NAME);
+    private static final Field<ProgramTrackedEntityAttribute, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<ProgramTrackedEntityAttribute, String> created = Field.create(CREATED);
+    private static final Field<ProgramTrackedEntityAttribute, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<ProgramTrackedEntityAttribute, String> shortName = Field.create(SHORT_NAME);
+    private static final Field<ProgramTrackedEntityAttribute, String> displayShortName
             = Field.create(DISPLAY_SHORT_NAME);
-    public static final Field<ProgramTrackedEntityAttribute, String> description
-            = Field.create(DESCRIPTION);
-    public static final Field<ProgramTrackedEntityAttribute, String> displayDescription
+    private static final Field<ProgramTrackedEntityAttribute, String> description = Field.create(DESCRIPTION);
+    private static final Field<ProgramTrackedEntityAttribute, String> displayDescription
             = Field.create(DISPLAY_DESCRIPTION);
-    public static final Field<ProgramTrackedEntityAttribute, String> mandatory
-            = Field.create(MANDATORY);
-    public static final NestedField<ProgramTrackedEntityAttribute, TrackedEntityAttribute> trackedEntityAttribute
+    private static final Field<ProgramTrackedEntityAttribute, String> mandatory = Field.create(MANDATORY);
+    private static final NestedField<ProgramTrackedEntityAttribute, TrackedEntityAttribute> trackedEntityAttribute
             = NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
-    public static final NestedField<ProgramTrackedEntityAttribute, Program> program
+    private static final NestedField<ProgramTrackedEntityAttribute, ObjectWithUid> program
             = NestedField.create(PROGRAM);
-    public static final Field<ProgramTrackedEntityAttribute, Boolean> allowFutureDate
+    private static final Field<ProgramTrackedEntityAttribute, Boolean> allowFutureDate
             = Field.create(ALLOW_FUTURE_DATE);
-    public static final Field<ProgramTrackedEntityAttribute, Boolean> displayInList
+    private static final Field<ProgramTrackedEntityAttribute, Boolean> displayInList
             = Field.create(DISPLAY_IN_LIST);
-    public static final Field<ProgramTrackedEntityAttribute, Boolean> deleted
+    private static final Field<ProgramTrackedEntityAttribute, Boolean> deleted
             = Field.create(DELETED);
-    public static final Field<ProgramTrackedEntityAttribute, Integer> sortOrder
+    private static final Field<ProgramTrackedEntityAttribute, Integer> sortOrder
             = Field.create(SORT_ORDER);
+
+    static final Fields<ProgramTrackedEntityAttribute> allFields = Fields.<ProgramTrackedEntityAttribute>builder()
+            .fields(uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description,
+                    displayDescription, allowFutureDate, deleted, displayInList, mandatory,
+                    program.with(ObjectWithUid.uid), sortOrder,
+                    trackedEntityAttribute.with(TrackedEntityAttribute.allFields)).build();
 
     @Nullable
     @JsonProperty(MANDATORY)

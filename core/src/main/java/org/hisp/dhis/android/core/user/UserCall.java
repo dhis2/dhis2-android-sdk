@@ -33,13 +33,13 @@ import android.util.Log;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
@@ -146,7 +146,7 @@ public final class UserCall implements Call<Response<User>> {
                 User.organisationUnits.with(
                         OrganisationUnit.uid,
                         OrganisationUnit.path,
-                        OrganisationUnit.programs.with(Program.uid),
+                        OrganisationUnit.programs.with(ObjectWithUid.uid),
                         OrganisationUnit.dataSets.with(DataSet.uid)
                 ),
                 User.teiSearchOrganisationUnits.with(OrganisationUnit.uid)

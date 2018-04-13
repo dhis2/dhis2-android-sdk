@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -223,7 +224,7 @@ public class UserCallShould {
                         User.organisationUnits.with(
                                 OrganisationUnit.uid,
                                 OrganisationUnit.path,
-                                OrganisationUnit.programs.with(Program.uid),
+                                OrganisationUnit.programs.with(ObjectWithUid.uid),
                                 OrganisationUnit.dataSets.with(DataSet.uid)
                         ),
                         User.teiSearchOrganisationUnits.with(

@@ -138,7 +138,7 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response<Payload<TrackedEntityInstance>>>
+    public Call<Response<TrackedEntityInstance>>
     downloadTrackedEntityInstance(String trackedEntityInstanceUid) {
         return TrackedEntityInstanceEndPointCall.create(GenericCallData.create(databaseAdapter, retrofit),
                 new Date(), trackedEntityInstanceUid);

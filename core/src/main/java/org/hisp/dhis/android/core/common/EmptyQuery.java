@@ -2,10 +2,6 @@ package org.hisp.dhis.android.core.common;
 
 import com.google.auto.value.AutoValue;
 
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
 @AutoValue
 public abstract class EmptyQuery extends BaseQuery {
 

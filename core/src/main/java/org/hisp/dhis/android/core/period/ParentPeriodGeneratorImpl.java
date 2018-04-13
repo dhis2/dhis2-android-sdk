@@ -48,29 +48,20 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
     private final PeriodGenerator biWeekly;
     private final PeriodGenerator monthly;
     private final NMonthlyPeriodGenerators nMonthly;
-    private final PeriodGenerator yearly;
-    private final PeriodGenerator financialApril;
-    private final PeriodGenerator financialJuly;
-    private final PeriodGenerator financialOct;
+    private final YearlyPeriodGenerators yearly;
 
     ParentPeriodGeneratorImpl(PeriodGenerator daily,
                               WeeklyPeriodGenerators weekly,
                               PeriodGenerator biWeekly,
                               PeriodGenerator monthly,
                               NMonthlyPeriodGenerators nMonthly,
-                              PeriodGenerator yearly,
-                              PeriodGenerator financialApril,
-                              PeriodGenerator financialJuly,
-                              PeriodGenerator financialOct) {
+                              YearlyPeriodGenerators yearly) {
         this.daily = daily;
         this.weekly = weekly;
         this.biWeekly = biWeekly;
         this.monthly = monthly;
         this.nMonthly = nMonthly;
         this.yearly = yearly;
-        this.financialApril = financialApril;
-        this.financialJuly = financialJuly;
-        this.financialOct = financialOct;
     }
 
     public List<PeriodModel> generatePeriods() {
@@ -92,10 +83,10 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         periods.addAll(nMonthly.sixMonthly.generateLastPeriods(SIXMONTHLY_PERIODS));
         periods.addAll(nMonthly.sixMonthlyApril.generateLastPeriods(SIXMONTHLY_PERIODS));
 
-        periods.addAll(yearly.generateLastPeriods(YEARLY_PERIODS));
-        periods.addAll(financialApril.generateLastPeriods(YEARLY_PERIODS));
-        periods.addAll(financialJuly.generateLastPeriods(YEARLY_PERIODS));
-        periods.addAll(financialOct.generateLastPeriods(YEARLY_PERIODS));
+        periods.addAll(yearly.yearly.generateLastPeriods(YEARLY_PERIODS));
+        periods.addAll(yearly.financialApril.generateLastPeriods(YEARLY_PERIODS));
+        periods.addAll(yearly.financialJuly.generateLastPeriods(YEARLY_PERIODS));
+        periods.addAll(yearly.financialOct.generateLastPeriods(YEARLY_PERIODS));
 
         return periods;
     }
@@ -108,10 +99,7 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
                 new BiWeeklyPeriodGenerator(calendar),
                 new MonthlyPeriodGenerator(calendar),
                 NMonthlyPeriodGenerators.create(calendar),
-                YearlyPeriodGeneratorFactory.yearly(calendar),
-                YearlyPeriodGeneratorFactory.financialApril(calendar),
-                YearlyPeriodGeneratorFactory.financialJuly(calendar),
-                YearlyPeriodGeneratorFactory.financialOct(calendar)
+                YearlyPeriodGenerators.create(calendar)
         );
     }
 }

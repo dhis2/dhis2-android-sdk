@@ -28,8 +28,44 @@
 
 package org.hisp.dhis.android.core.period;
 
-public enum PeriodType {
-    Daily, Weekly, WeeklyWednesday, WeeklyThursday, WeeklySaturday, WeeklySunday, BiWeekly,
-    Monthly, BiMonthly, Quarterly, SixMonthly, SixMonthlyApril, Yearly, FinancialApril,
-    FinancialJuly, FinancialOct
+import java.util.Calendar;
+import java.util.Date;
+
+final class BiWeeklyPeriodGenerator extends AbstractPeriodGenerator {
+
+    BiWeeklyPeriodGenerator(Calendar calendar) {
+        super(calendar, "yyyy", PeriodType.BiWeekly);
+    }
+
+    @Override
+    protected void moveToStartOfCurrentPeriod() {
+        calendar.getTime();
+        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        calendar.setMinimalDaysInFirstWeek(4);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        Calendar cal = (Calendar) calendar.clone();
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY + 3);
+        Integer weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
+        Boolean secondWeekOfBiWeek = weekOfYear % 2 == 0;
+        if (secondWeekOfBiWeek) {
+            calendar.add(Calendar.WEEK_OF_YEAR, -1);
+        }
+    }
+
+    @Override
+    protected void movePeriods(int number) {
+        calendar.add(Calendar.WEEK_OF_YEAR, number * 2);
+    }
+
+    @Override
+    protected String generateId() {
+        Calendar cal = (Calendar) calendar.clone();
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY + 3);
+        Date fourthWeekDay = cal.getTime();
+        String year = idFormatter.format(fourthWeekDay);
+        Integer weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
+        Integer biWeekOfYear = (int) Math.ceil((double) weekOfYear / 2.0);
+        return year + "BiW" + biWeekOfYear;
+    }
 }

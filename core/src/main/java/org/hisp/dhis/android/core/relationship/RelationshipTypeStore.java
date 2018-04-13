@@ -28,36 +28,16 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class RelationshipTypeStore {
 
-import java.util.Date;
+    private RelationshipTypeStore() {}
 
-public interface RelationshipTypeStore extends DeletableStore {
-
-    long insert(
-            @NonNull String uid,
-            @Nullable String code,
-            @NonNull String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @NonNull String aIsToB,
-            @NonNull String bIsToA);
-
-    int update(
-            @NonNull String uid,
-            @Nullable String code,
-            @NonNull String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @NonNull String aIsToB,
-            @NonNull String bIsToA,
-            @NonNull String whereRelationshipTypeUid
-    );
-
-    int delete(@NonNull String uid);
+    public static IdentifiableObjectStore<RelationshipTypeModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.identifiableStore(databaseAdapter, RelationshipTypeModel.TABLE,
+                RelationshipTypeModel.Columns.all());
+    }
 }

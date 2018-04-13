@@ -60,7 +60,7 @@ public final class RelationshipTypeEndpointCall extends GenericEndpointCallImpl<
                 RelationshipType.lastUpdated.gt(lastUpdated), query.paging());
     }
 
-    static final SimpleCallFactory<Payload<RelationshipType>> FACTORY =
+    public static final SimpleCallFactory<Payload<RelationshipType>> FACTORY =
             new SimpleCallFactory<Payload<RelationshipType>>() {
 
                 @Override

@@ -135,7 +135,7 @@ public abstract class Program extends BaseNameableObject {
             = Field.create(PROGRAM_TYPE);
     public static final Field<Program, String> relationshipText
             = Field.create(RELATIONSHIP_TEXT);
-    public static final NestedField<Program, RelationshipType> relationshipType
+    public static final NestedField<Program, ObjectWithUid> relationshipType
             = NestedField.create(RELATIONSHIP_TYPE);
     public static final NestedField<Program, ProgramTrackedEntityAttribute> programTrackedEntityAttributes
             = NestedField.create(PROGRAM_TRACKED_ENTITY_ATTRIBUTES);

@@ -226,11 +226,7 @@ public class ProgramCallShould extends BaseCallShould {
                 ),
                 Program.trackedEntityType.with(TrackedEntityType.uid),
                 Program.categoryCombo.with(CategoryCombo.uid),
-                Program.relationshipType.with(
-                        RelationshipType.uid, RelationshipType.code, RelationshipType.name,
-                        RelationshipType.displayName, RelationshipType.created, RelationshipType.lastUpdated,
-                        RelationshipType.aIsToB, RelationshipType.bIsToA, RelationshipType.deleted
-                ),
+                Program.relationshipType.with(ObjectWithUid.uid),
                 Program.access.with(
                         Access.data.with(
                                 DataAccess.write

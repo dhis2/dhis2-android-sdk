@@ -145,8 +145,7 @@ public abstract class Program extends BaseNameableObject {
             = Field.create(COMPLETE_EVENTS_EXPIRY_DAYS);
     public static final Field<Program, String> expiryPeriodType
             = Field.create(EXPIRY_PERIOD_TYPE);
-
-    public static final NestedField<Program, RelationshipType> relationshipType
+    public static final NestedField<Program, ObjectWithUid> relationshipType
             = NestedField.create(RELATIONSHIP_TYPE);
     public static final NestedField<Program, ProgramTrackedEntityAttribute> programTrackedEntityAttributes
             = NestedField.create(PROGRAM_TRACKED_ENTITY_ATTRIBUTES);

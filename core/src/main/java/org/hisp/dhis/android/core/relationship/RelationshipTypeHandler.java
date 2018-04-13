@@ -27,51 +27,14 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+public final class RelationshipTypeHandler {
+    private RelationshipTypeHandler() {}
 
-public class RelationshipTypeHandler {
-    private final RelationshipTypeStore relationshipTypeStore;
-
-    RelationshipTypeHandler(RelationshipTypeStore relationshipTypeStore) {
-        this.relationshipTypeStore = relationshipTypeStore;
-    }
-
-    public void handleRelationshipType(RelationshipType relationshipType) {
-        if (relationshipType == null) {
-            return;
-        }
-
-        if (isDeleted(relationshipType)) {
-            relationshipTypeStore.delete(relationshipType.uid());
-        } else {
-            int update = relationshipTypeStore.update(
-                    relationshipType.uid(),
-                    relationshipType.code(),
-                    relationshipType.name(),
-                    relationshipType.displayName(),
-                    relationshipType.created(),
-                    relationshipType.lastUpdated(),
-                    relationshipType.aIsToB(),
-                    relationshipType.bIsToA(),
-                    relationshipType.uid());
-
-            if (update <= 0) {
-                relationshipTypeStore.insert(
-                        relationshipType.uid(),
-                        relationshipType.code(),
-                        relationshipType.name(),
-                        relationshipType.displayName(),
-                        relationshipType.created(),
-                        relationshipType.lastUpdated(),
-                        relationshipType.aIsToB(),
-                        relationshipType.bIsToA());
-            }
-        }
-    }
-
-    public static RelationshipTypeHandler create(DatabaseAdapter databaseAdapter) {
-        return new RelationshipTypeHandler(new RelationshipTypeStoreImpl(databaseAdapter));
+    public static GenericHandler<RelationshipType, RelationshipTypeModel> create(DatabaseAdapter databaseAdapter) {
+        return new IdentifiableHandlerImpl<>(RelationshipTypeStore.create(databaseAdapter));
     }
 }

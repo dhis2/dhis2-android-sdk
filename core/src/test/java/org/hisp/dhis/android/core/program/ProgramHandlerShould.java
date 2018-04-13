@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.Before;
 import org.junit.Test;
@@ -103,9 +102,6 @@ public class ProgramHandlerShould {
     @Mock
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
-    @Mock
-    private RelationshipTypeHandler relationshipTypeHandler;
-
     // object to test
     private ProgramHandler programHandler;
 
@@ -115,7 +111,7 @@ public class ProgramHandlerShould {
 
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler, programIndicatorHandler, programRuleHandler,
-                programTrackedEntityAttributeHandler, relationshipTypeHandler, styleHandler);
+                programTrackedEntityAttributeHandler, styleHandler);
         when(relationshipType.uid()).thenReturn("relationshipTypeUid");
 
         when(program.uid()).thenReturn("test_program_uid");

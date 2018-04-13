@@ -40,10 +40,9 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
 import java.util.List;
 import java.util.Set;
@@ -188,11 +187,7 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                 ),
                 Program.trackedEntityType.with(TrackedEntityType.uid),
                 Program.categoryCombo.with(CategoryCombo.uid),
-                Program.relationshipType.with(
-                        RelationshipType.uid, RelationshipType.code, RelationshipType.name,
-                        RelationshipType.displayName, RelationshipType.created, RelationshipType.lastUpdated,
-                        RelationshipType.aIsToB, RelationshipType.bIsToA, RelationshipType.deleted
-                ),
+                Program.relationshipType.with(ObjectWithUid.uid),
                 Program.access.with(
                         Access.data.with(
                                 DataAccess.write

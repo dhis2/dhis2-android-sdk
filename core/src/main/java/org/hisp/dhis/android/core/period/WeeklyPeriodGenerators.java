@@ -28,8 +28,36 @@
 
 package org.hisp.dhis.android.core.period;
 
-public enum PeriodType {
-    Daily, Weekly, WeeklyWednesday, WeeklyThursday, WeeklySaturday, WeeklySunday, BiWeekly,
-    Monthly, BiMonthly, Quarterly, SixMonthly, SixMonthlyApril, Yearly, FinancialApril,
-    FinancialJuly, FinancialOct
+import java.util.Calendar;
+
+final class WeeklyPeriodGenerators {
+
+    final PeriodGenerator weekly;
+    final PeriodGenerator weeklyWednesday;
+    final PeriodGenerator weeklyThursday;
+    final PeriodGenerator weeklySaturday;
+    final PeriodGenerator weeklySunday;
+
+    WeeklyPeriodGenerators(PeriodGenerator weekly,
+                           PeriodGenerator weeklyWednesday,
+                           PeriodGenerator weeklyThursday,
+                           PeriodGenerator weeklySaturday,
+                           PeriodGenerator weeklySunday) {
+        this.weekly = weekly;
+        this.weeklyWednesday = weeklyWednesday;
+        this.weeklyThursday = weeklyThursday;
+        this.weeklySaturday = weeklySaturday;
+        this.weeklySunday = weeklySunday;
+    }
+
+
+    static WeeklyPeriodGenerators create(Calendar calendar) {
+        return new WeeklyPeriodGenerators(
+                WeeklyPeriodGeneratorFactory.weekly(calendar),
+                WeeklyPeriodGeneratorFactory.wednesday(calendar),
+                WeeklyPeriodGeneratorFactory.thursday(calendar),
+                WeeklyPeriodGeneratorFactory.saturday(calendar),
+                WeeklyPeriodGeneratorFactory.sunday(calendar)
+        );
+    }
 }

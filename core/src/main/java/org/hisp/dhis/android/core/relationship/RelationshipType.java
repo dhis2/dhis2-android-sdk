@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
 import java.util.Date;
 
@@ -44,15 +45,18 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
     private static final String B_TO_A = "bIsToA";
     private static final String A_TO_B = "aIsToB";
 
-    public static final Field<RelationshipType, String> uid = Field.create(UID);
-    public static final Field<RelationshipType, String> code = Field.create(CODE);
-    public static final Field<RelationshipType, String> name = Field.create(NAME);
-    public static final Field<RelationshipType, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<RelationshipType, String> created = Field.create(CREATED);
-    public static final Field<RelationshipType, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<RelationshipType, Boolean> deleted = Field.create(DELETED);
-    public static final Field<RelationshipType, String> bIsToA = Field.create(B_TO_A);
-    public static final Field<RelationshipType, String> aIsToB = Field.create(A_TO_B);
+    static final Field<RelationshipType, String> uid = Field.create(UID);
+    private static final Field<RelationshipType, String> code = Field.create(CODE);
+    private static final Field<RelationshipType, String> name = Field.create(NAME);
+    private static final Field<RelationshipType, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<RelationshipType, String> created = Field.create(CREATED);
+    static final Field<RelationshipType, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<RelationshipType, Boolean> deleted = Field.create(DELETED);
+    private static final Field<RelationshipType, String> bIsToA = Field.create(B_TO_A);
+    private static final Field<RelationshipType, String> aIsToB = Field.create(A_TO_B);
+
+    public static final Fields<RelationshipType> allFields = Fields.<RelationshipType>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, aIsToB, bIsToA, deleted).build();
 
     @Nullable
     @JsonProperty(B_TO_A)

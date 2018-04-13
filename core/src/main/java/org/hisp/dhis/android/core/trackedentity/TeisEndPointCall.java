@@ -110,10 +110,7 @@ public final class TeisEndPointCall implements Call<Response<Payload<TrackedEnti
                 TrackedEntityInstance.organisationUnit,
                 TrackedEntityInstance.trackedEntityType,
                 TrackedEntityInstance.deleted,
-                TrackedEntityInstance.relationships.with(
-                        Relationship.trackedEntityInstanceA,
-                        Relationship.trackedEntityInstanceB,
-                        Relationship.displayName),
+                TrackedEntityInstance.relationships.with(Relationship.allFields),
                 TrackedEntityInstance.trackedEntityAttributeValues.with(
                         TrackedEntityAttributeValue.trackedEntityAttribute,
                         TrackedEntityAttributeValue.value,

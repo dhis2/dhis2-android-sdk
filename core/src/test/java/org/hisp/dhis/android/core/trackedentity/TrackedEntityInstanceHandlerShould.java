@@ -4,6 +4,8 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -28,6 +31,9 @@ public class TrackedEntityInstanceHandlerShould {
     private TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     @Mock
+    private RelationshipStore relationshipStore;
+
+    @Mock
     private TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
 
     @Mock
@@ -39,6 +45,9 @@ public class TrackedEntityInstanceHandlerShould {
     @Mock
     private Enrollment enrollment;
 
+    @Mock
+    private Relationship relationship;
+
     // object to test
     private TrackedEntityInstanceHandler trackedEntityInstanceHandler;
 
@@ -48,9 +57,10 @@ public class TrackedEntityInstanceHandlerShould {
 
         when(trackedEntityInstance.uid()).thenReturn("test_tei_uid");
         when(trackedEntityInstance.enrollments()).thenReturn(Collections.singletonList(enrollment));
+        when(trackedEntityInstance.relationships()).thenReturn(Collections.singletonList(relationship));
 
         trackedEntityInstanceHandler = new TrackedEntityInstanceHandler(
-                trackedEntityInstanceStore, trackedEntityAttributeValueHandler, enrollmentHandler
+                trackedEntityInstanceStore, relationshipStore, trackedEntityAttributeValueHandler, enrollmentHandler
         );
 
     }
@@ -149,5 +159,13 @@ public class TrackedEntityInstanceHandlerShould {
 
         // verify that enrollment handler is called once
         verify(enrollmentHandler, times(1)).handle(any(ArrayList.class));
+    }
+
+    @Test
+    public void invoke_relationship_store_insert_when_relationship_exists() throws Exception {
+        trackedEntityInstanceHandler.handle(trackedEntityInstance);
+
+        // verify relationship store is called once
+        verify(relationshipStore, times(1)).insert(anyString(), anyString(), anyString());
     }
 }

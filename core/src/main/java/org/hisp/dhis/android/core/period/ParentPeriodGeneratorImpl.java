@@ -47,10 +47,7 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
     private final WeeklyPeriodGenerators weekly;
     private final PeriodGenerator biWeekly;
     private final PeriodGenerator monthly;
-    private final PeriodGenerator biMonthly;
-    private final PeriodGenerator quarter;
-    private final PeriodGenerator sixMonthly;
-    private final PeriodGenerator sixMonthlyApril;
+    private final NMonthlyPeriodGenerators nMonthly;
     private final PeriodGenerator yearly;
     private final PeriodGenerator financialApril;
     private final PeriodGenerator financialJuly;
@@ -60,10 +57,7 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
                               WeeklyPeriodGenerators weekly,
                               PeriodGenerator biWeekly,
                               PeriodGenerator monthly,
-                              PeriodGenerator biMonthly,
-                              PeriodGenerator quarter,
-                              PeriodGenerator sixMonthly,
-                              PeriodGenerator sixMonthlyApril,
+                              NMonthlyPeriodGenerators nMonthly,
                               PeriodGenerator yearly,
                               PeriodGenerator financialApril,
                               PeriodGenerator financialJuly,
@@ -72,10 +66,7 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         this.weekly = weekly;
         this.biWeekly = biWeekly;
         this.monthly = monthly;
-        this.biMonthly = biMonthly;
-        this.quarter = quarter;
-        this.sixMonthly = sixMonthly;
-        this.sixMonthlyApril = sixMonthlyApril;
+        this.nMonthly = nMonthly;
         this.yearly = yearly;
         this.financialApril = financialApril;
         this.financialJuly = financialJuly;
@@ -96,12 +87,10 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
 
         periods.addAll(monthly.generateLastPeriods(MONTHLY_PERIODS));
 
-        periods.addAll(biMonthly.generateLastPeriods(BIMONTHLY_PERIODS));
-
-        periods.addAll(quarter.generateLastPeriods(QUARTER_PERIODS));
-
-        periods.addAll(sixMonthly.generateLastPeriods(SIXMONTHLY_PERIODS));
-        periods.addAll(sixMonthlyApril.generateLastPeriods(SIXMONTHLY_PERIODS));
+        periods.addAll(nMonthly.biMonthly.generateLastPeriods(BIMONTHLY_PERIODS));
+        periods.addAll(nMonthly.quarter.generateLastPeriods(QUARTER_PERIODS));
+        periods.addAll(nMonthly.sixMonthly.generateLastPeriods(SIXMONTHLY_PERIODS));
+        periods.addAll(nMonthly.sixMonthlyApril.generateLastPeriods(SIXMONTHLY_PERIODS));
 
         periods.addAll(yearly.generateLastPeriods(YEARLY_PERIODS));
         periods.addAll(financialApril.generateLastPeriods(YEARLY_PERIODS));
@@ -118,10 +107,7 @@ final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
                 WeeklyPeriodGenerators.create(calendar),
                 new BiWeeklyPeriodGenerator(calendar),
                 new MonthlyPeriodGenerator(calendar),
-                NMonthlyPeriodGeneratorFactory.biMonthly(calendar),
-                NMonthlyPeriodGeneratorFactory.quarter(calendar),
-                NMonthlyPeriodGeneratorFactory.sixMonthly(calendar),
-                NMonthlyPeriodGeneratorFactory.sixMonthlyApril(calendar),
+                NMonthlyPeriodGenerators.create(calendar),
                 YearlyPeriodGeneratorFactory.yearly(calendar),
                 YearlyPeriodGeneratorFactory.financialApril(calendar),
                 YearlyPeriodGeneratorFactory.financialJuly(calendar),

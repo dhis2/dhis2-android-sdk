@@ -33,7 +33,10 @@ import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeModelBuilder;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
@@ -45,7 +48,7 @@ public class ProgramHandler {
     private final ProgramIndicatorHandler programIndicatorHandler;
     private final ProgramRuleHandler programRuleHandler;
     private final ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
-    private final RelationshipTypeHandler relationshipHandler;
+    private final GenericHandler<RelationshipType, RelationshipTypeModel> relationshipTypeHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     ProgramHandler(ProgramStore programStore,
@@ -53,14 +56,14 @@ public class ProgramHandler {
                           ProgramIndicatorHandler programIndicatorHandler,
                           ProgramRuleHandler programRuleHandler,
                           ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler,
-                          RelationshipTypeHandler relationshipHandler,
+                          GenericHandler<RelationshipType, RelationshipTypeModel> relationshipTypeHandler,
                           GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
         this.programStore = programStore;
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
         this.programRuleHandler = programRuleHandler;
         this.programTrackedEntityAttributeHandler = programTrackedEntityAttributeHandler;
-        this.relationshipHandler = relationshipHandler;
+        this.relationshipTypeHandler = relationshipTypeHandler;
         this.styleHandler = styleHandler;
     }
 
@@ -122,7 +125,7 @@ public class ProgramHandler {
         programIndicatorHandler.handleProgramIndicator(null, program.programIndicators());
         programRuleHandler.handleProgramRules(program.programRules());
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
-        relationshipHandler.handleRelationshipType(program.relationshipType());
+        relationshipTypeHandler.handle(program.relationshipType(), new RelationshipTypeModelBuilder());
         styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(), ProgramModel.TABLE));
     }
 

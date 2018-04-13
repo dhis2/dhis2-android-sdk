@@ -25,16 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-public class RelationshipTypeHandler {
-    private RelationshipTypeHandler() {}
+public class RelationshipTypeModelBuilder extends ModelBuilder<RelationshipType, RelationshipTypeModel> {
 
-    public static GenericHandler<RelationshipType, RelationshipTypeModel> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableHandlerImpl<>(RelationshipTypeStore.create(databaseAdapter));
+    @Override
+    public RelationshipTypeModel buildModel(RelationshipType relationshipType) {
+        return RelationshipTypeModel.builder()
+                .uid(relationshipType.uid())
+                .code(relationshipType.code())
+                .name(relationshipType.name())
+                .displayName(relationshipType.displayName())
+                .created(relationshipType.created())
+                .lastUpdated(relationshipType.lastUpdated())
+                .bIsToA(relationshipType.bIsToA())
+                .aIsToB(relationshipType.aIsToB())
+                .build();
     }
 }

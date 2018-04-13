@@ -95,7 +95,8 @@ public class ProgramHandler {
                     program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
                     program.programType(), relationshipTypeUid, program.relationshipText(),
                     relatedProgramUid, trackedEntityUid, categoryCombo,
-                    program.access().data().write(), program.uid());
+                    program.access().data().write(), program.expiryDays(), program.completeEventsExpiryDays(),
+                    program.expiryPeriodType(), program.uid());
 
             if (updatedRow <= 0) {
                 programStore.insert(
@@ -108,7 +109,8 @@ public class ProgramHandler {
                         program.selectIncidentDatesInFuture(), program.captureCoordinates(),
                         program.useFirstStageDuringRegistration(), program.displayFrontPageList(),
                         program.programType(), relationshipTypeUid, program.relationshipText(),
-                        relatedProgramUid, trackedEntityUid, categoryCombo, program.access().data().write());
+                        relatedProgramUid, trackedEntityUid, categoryCombo, program.access().data().write(),
+                        program.expiryDays(), program.completeEventsExpiryDays(), program.expiryPeriodType());
             }
         }
         // programStageHandler will invoke programStageSectionHandler, programStageDataElementHandler,

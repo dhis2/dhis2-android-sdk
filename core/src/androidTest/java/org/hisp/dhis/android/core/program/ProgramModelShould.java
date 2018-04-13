@@ -33,6 +33,7 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,6 +80,13 @@ public class ProgramModelShould {
     private static final String RELATED_PROGRAM = "ProgramUid";
     private static final String TRACKED_ENTITY = "TrackedEntityUid";
 
+    private static final String CATEGORY_COMBO = "CategoryComboUid";
+
+    private static final Integer ACCESS_DATA_WRITE = 1;
+    private final static Integer EXPIRY_DAYS = 7;
+    private final static Integer COMPLETE_EVENTS_EXPIRY_DAYS = 30;
+    private final static PeriodType EXPIRY_PERIOD_TYPE = PeriodType.Daily;
+
     private final Date date;
     private final String dateString;
 
@@ -119,7 +127,12 @@ public class ProgramModelShould {
                 Columns.RELATIONSHIP_TYPE,
                 Columns.RELATIONSHIP_TEXT,
                 Columns.RELATED_PROGRAM,
-                Columns.TRACKED_ENTITY_TYPE
+                Columns.TRACKED_ENTITY_TYPE,
+                Columns.CATEGORY_COMBO,
+                Columns.ACCESS_DATA_WRITE,
+                Columns.EXPIRY_DAYS,
+                Columns.COMPLETE_EVENTS_EXPIRY_DAYS,
+                Columns.EXPIRY_PERIOD_TYPE
         });
         cursor.addRow(new Object[]{ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
                 SHORT_NAME,
@@ -144,7 +157,12 @@ public class ProgramModelShould {
                 RELATIONSHIP_TYPE,
                 RELATIONSHIP_TEXT,
                 RELATED_PROGRAM,
-                TRACKED_ENTITY
+                TRACKED_ENTITY,
+                CATEGORY_COMBO,
+                ACCESS_DATA_WRITE,
+                EXPIRY_DAYS,
+                COMPLETE_EVENTS_EXPIRY_DAYS,
+                EXPIRY_PERIOD_TYPE
         });
         cursor.moveToFirst();
 
@@ -181,6 +199,12 @@ public class ProgramModelShould {
         assertThat(model.relationshipText()).isEqualTo(RELATIONSHIP_TEXT);
         assertThat(model.relatedProgram()).isEqualTo(RELATED_PROGRAM);
         assertThat(model.trackedEntityType()).isEqualTo(TRACKED_ENTITY);
+
+        assertThat(model.categoryCombo()).isEqualTo(CATEGORY_COMBO);
+        assertThat(model.accessDataWrite()).isEqualTo(toBoolean(ACCESS_DATA_WRITE));
+        assertThat(model.expiryDays()).isEqualTo(EXPIRY_DAYS);
+        assertThat(model.completeEventsExpiryDays()).isEqualTo(COMPLETE_EVENTS_EXPIRY_DAYS);
+        assertThat(model.expiryPeriodType()).isEqualTo(EXPIRY_PERIOD_TYPE);
     }
 
     @Test
@@ -212,6 +236,11 @@ public class ProgramModelShould {
                 .relationshipText(RELATIONSHIP_TEXT)
                 .relatedProgram(RELATED_PROGRAM)
                 .trackedEntityType(TRACKED_ENTITY)
+                .categoryCombo(CATEGORY_COMBO)
+                .accessDataWrite(toBoolean(ACCESS_DATA_WRITE))
+                .expiryDays(EXPIRY_DAYS)
+                .completeEventsExpiryDays(COMPLETE_EVENTS_EXPIRY_DAYS)
+                .expiryPeriodType(EXPIRY_PERIOD_TYPE)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -254,5 +283,13 @@ public class ProgramModelShould {
         assertThat(contentValues.getAsString(ProgramModel.Columns.RELATIONSHIP_TEXT)).isEqualTo(RELATIONSHIP_TEXT);
         assertThat(contentValues.getAsString(ProgramModel.Columns.RELATED_PROGRAM)).isEqualTo(RELATED_PROGRAM);
         assertThat(contentValues.getAsString(ProgramModel.Columns.TRACKED_ENTITY_TYPE)).isEqualTo(TRACKED_ENTITY);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.CATEGORY_COMBO)).isEqualTo(CATEGORY_COMBO);
+        assertThat(contentValues.getAsBoolean(ProgramModel.Columns.ACCESS_DATA_WRITE))
+                .isEqualTo(toBoolean(ACCESS_DATA_WRITE));
+        assertThat(contentValues.getAsInteger(ProgramModel.Columns.EXPIRY_DAYS)).isEqualTo(EXPIRY_DAYS);
+        assertThat(contentValues.getAsInteger(ProgramModel.Columns.COMPLETE_EVENTS_EXPIRY_DAYS))
+                .isEqualTo(COMPLETE_EVENTS_EXPIRY_DAYS);
+        assertThat(contentValues.getAsString(ProgramModel.Columns.EXPIRY_PERIOD_TYPE))
+                .isEqualTo(EXPIRY_PERIOD_TYPE.toString());
     }
 }

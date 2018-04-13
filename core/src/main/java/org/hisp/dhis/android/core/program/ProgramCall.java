@@ -193,7 +193,8 @@ public class ProgramCall implements Call<Response<Payload<Program>>> {
                                 DataAccess.write
                         )
                 ),
-                Program.style.with(ObjectStyle.allFields)
+                Program.style.with(ObjectStyle.allFields),
+                Program.expiryDays, Program.completeEventsExpiryDays, Program.expiryPeriodType
         ).build();
     }
 

@@ -104,7 +104,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
-    public static final int VERSION = 17;
+    public static final int VERSION = 19;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -306,52 +306,45 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             +
             ");";
 
-    private static final String CREATE_PROGRAM_TABLE = "CREATE TABLE " + ProgramModel.TABLE + " (" +
-            ProgramModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ProgramModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            ProgramModel.Columns.CODE + " TEXT," +
-            ProgramModel.Columns.NAME + " TEXT," +
-            ProgramModel.Columns.DISPLAY_NAME + " TEXT," +
-            ProgramModel.Columns.CREATED + " TEXT," +
-            ProgramModel.Columns.LAST_UPDATED + " TEXT," +
-            ProgramModel.Columns.SHORT_NAME + " TEXT," +
-            ProgramModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-            ProgramModel.Columns.DESCRIPTION + " TEXT," +
-            ProgramModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
-            ProgramModel.Columns.VERSION + " INTEGER," +
-            ProgramModel.Columns.ONLY_ENROLL_ONCE + " INTEGER," +
-            ProgramModel.Columns.ENROLLMENT_DATE_LABEL + " TEXT," +
-            ProgramModel.Columns.DISPLAY_INCIDENT_DATE + " INTEGER," +
-            ProgramModel.Columns.INCIDENT_DATE_LABEL + " TEXT," +
-            ProgramModel.Columns.REGISTRATION + " INTEGER," +
-            ProgramModel.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE + " INTEGER," +
-            ProgramModel.Columns.DATA_ENTRY_METHOD + " INTEGER," +
-            ProgramModel.Columns.IGNORE_OVERDUE_EVENTS + " INTEGER," +
-            ProgramModel.Columns.RELATIONSHIP_FROM_A + " INTEGER," +
-            ProgramModel.Columns.SELECT_INCIDENT_DATES_IN_FUTURE + " INTEGER," +
-            ProgramModel.Columns.CAPTURE_COORDINATES + " INTEGER," +
-            ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION + " INTEGER," +
-            ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST + " INTEGER," +
-            ProgramModel.Columns.PROGRAM_TYPE + " TEXT," +
-            ProgramModel.Columns.RELATIONSHIP_TYPE + " TEXT," +
-            ProgramModel.Columns.RELATIONSHIP_TEXT + " TEXT," +
-            ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
-            ProgramModel.Columns.TRACKED_ENTITY_TYPE + " TEXT," +
-            ProgramModel.Columns.CATEGORY_COMBO + " TEXT," +
-            ProgramModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
-            " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
-            " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID
-            + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
-            " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY_TYPE + ")" +
-            " REFERENCES " + TrackedEntityTypeModel.TABLE + " (" + TrackedEntityTypeModel.Columns.UID + ")"
-            +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-            " FOREIGN KEY (" + ProgramModel.Columns.CATEGORY_COMBO + ")" +
-            " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"
-            +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-            ");";
+    private static final String CREATE_PROGRAM_TABLE =
+            SQLStatementBuilder.createNameableModelTable(ProgramModel.TABLE,
+                    ProgramModel.Columns.VERSION + " INTEGER," +
+                            ProgramModel.Columns.ONLY_ENROLL_ONCE + " INTEGER," +
+                            ProgramModel.Columns.ENROLLMENT_DATE_LABEL + " TEXT," +
+                            ProgramModel.Columns.DISPLAY_INCIDENT_DATE + " INTEGER," +
+                            ProgramModel.Columns.INCIDENT_DATE_LABEL + " TEXT," +
+                            ProgramModel.Columns.REGISTRATION + " INTEGER," +
+                            ProgramModel.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE + " INTEGER," +
+                            ProgramModel.Columns.DATA_ENTRY_METHOD + " INTEGER," +
+                            ProgramModel.Columns.IGNORE_OVERDUE_EVENTS + " INTEGER," +
+                            ProgramModel.Columns.RELATIONSHIP_FROM_A + " INTEGER," +
+                            ProgramModel.Columns.SELECT_INCIDENT_DATES_IN_FUTURE + " INTEGER," +
+                            ProgramModel.Columns.CAPTURE_COORDINATES + " INTEGER," +
+                            ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION + " INTEGER," +
+                            ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST + " INTEGER," +
+                            ProgramModel.Columns.PROGRAM_TYPE + " TEXT," +
+                            ProgramModel.Columns.RELATIONSHIP_TYPE + " TEXT," +
+                            ProgramModel.Columns.RELATIONSHIP_TEXT + " TEXT," +
+                            ProgramModel.Columns.RELATED_PROGRAM + " TEXT," +
+                            ProgramModel.Columns.TRACKED_ENTITY_TYPE + " TEXT," +
+                            ProgramModel.Columns.CATEGORY_COMBO + " TEXT," +
+                            ProgramModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
+                            ProgramModel.Columns.EXPIRY_DAYS + " INTEGER," +
+                            ProgramModel.Columns.COMPLETE_EVENTS_EXPIRY_DAYS + " INTEGER," +
+                            ProgramModel.Columns.EXPIRY_PERIOD_TYPE + " TEXT," +
+                            " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
+                            " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID
+                            + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, " +
+                            " FOREIGN KEY (" + ProgramModel.Columns.TRACKED_ENTITY_TYPE + ")" +
+                            " REFERENCES " + TrackedEntityTypeModel.TABLE + " (" + TrackedEntityTypeModel.Columns.UID
+                            + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
+                            " FOREIGN KEY (" + ProgramModel.Columns.CATEGORY_COMBO + ")" +
+                            " REFERENCES " + CategoryComboModel.TABLE + " (" + CategoryComboModel.Columns.UID + ")"
+                            +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
+            );
 
     private static final String CREATE_TRACKED_ENTITY_TABLE =
             "CREATE TABLE " + TrackedEntityTypeModel.TABLE +
@@ -487,6 +480,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             ProgramStageModel.Columns.PROGRAM + " TEXT NOT NULL," +
                             ProgramStageModel.Columns.PERIOD_TYPE + " TEXT," +
                             ProgramStageModel.Columns.ACCESS_DATA_WRITE + " INTEGER," +
+                            ProgramStageModel.Columns.REMIND_COMPLETED + " INTEGER," +
                             " FOREIGN KEY ( " + ProgramStageModel.Columns.PROGRAM + ")" +
                             " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
                             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"

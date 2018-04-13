@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.Before;
@@ -169,14 +170,14 @@ public class ProgramHandlerShould {
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
                 anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyBoolean());
+                anyString(), anyString(), anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class));
 
         verify(programStore, never()).update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyBoolean(), anyString());
+                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class), anyString());
 
         // verify that all the handlers is called once
         verify(programTrackedEntityAttributeHandler, times(1)).handleProgramTrackedEntityAttributes(
@@ -192,8 +193,9 @@ public class ProgramHandlerShould {
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyBoolean(), anyString())).thenReturn(0);
+                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class),
+                anyString())).thenReturn(0);
 
         programHandler.handleProgram(program);
 
@@ -202,16 +204,16 @@ public class ProgramHandlerShould {
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyBoolean());
+                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class));
 
         // verify that update is called since we update before we can insert
         verify(programStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyBoolean(), anyString());
+                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class), anyString());
 
         // verify that delete is never called
         verify(programStore, never()).delete(anyString());
@@ -230,8 +232,8 @@ public class ProgramHandlerShould {
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyBoolean(), anyString())).thenReturn(1);
+                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class), anyString())).thenReturn(1);
 
         programHandler.handleProgram(program);
 
@@ -240,16 +242,16 @@ public class ProgramHandlerShould {
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyBoolean(), anyString());
+                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class), anyString());
 
         // check that insert and delete is never called
         verify(programStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyBoolean());
+                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class));
 
         verify(programStore, never()).delete(anyString());
 
@@ -270,8 +272,8 @@ public class ProgramHandlerShould {
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyBoolean());
+                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class));
 
         verify(programStore, never()).delete(anyString());
 
@@ -279,8 +281,8 @@ public class ProgramHandlerShould {
                 any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
                 anyInt(), anyBoolean(), anyString(), anyBoolean(), anyString(), anyBoolean(),
                 anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyBoolean(), anyString());
+                anyBoolean(), anyBoolean(), any(ProgramType.class), anyString(), anyString(), anyString(), anyString(),
+                anyString(), anyBoolean(), anyInt(), anyInt(), any(PeriodType.class), anyString());
 
         // verify that handlers is never called
         verify(programStageHandler, never()).handleMany(anyListOf(ProgramStage.class),

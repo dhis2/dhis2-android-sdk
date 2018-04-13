@@ -76,6 +76,7 @@ public class ProgramStageShould  extends BaseObjectShould implements ObjectShoul
         assertThat(programStage.standardInterval()).isNull();
         assertThat(programStage.programStageSections()).isEmpty();
         assertThat(programStage.periodType()).isEqualTo(PeriodType.Monthly);
+        assertThat(programStage.remindCompleted()).isEqualTo(false);
 
         assertThat(programStage.programStageDataElements().get(0).uid()).isEqualTo("EQCf1l2Mdr8");
         assertThat(programStage.programStageDataElements().get(1).uid()).isEqualTo("muxw4SGzUwJ");

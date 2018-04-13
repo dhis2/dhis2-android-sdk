@@ -74,6 +74,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     private static final String PERIOD_TYPE = "periodType";
     private static final String PROGRAM = "program";
     private final static String ACCESS = "access";
+    private final static String REMIND_COMPLETED = "remindCompleted";
 
     public static final Field<ProgramStage, String> uid = Field.create(UID);
     public static final Field<ProgramStage, String> code = Field.create(CODE);
@@ -100,6 +101,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     public static final Field<ProgramStage, Integer> minDaysFromStart = Field.create(MIN_DAYS_FROM_START);
     public static final Field<ProgramStage, Integer> standardInterval = Field.create(STANDARD_INTERVAL);
     public static final Field<ProgramStage, PeriodType> periodType = Field.create(PERIOD_TYPE);
+    public static final Field<ProgramStage, Boolean> remindCompleted = Field.create(REMIND_COMPLETED);
 
     public static final NestedField<ProgramStage, ProgramStageSection> programStageSections
             = NestedField.create(PROGRAM_STAGE_SECTIONS);
@@ -117,7 +119,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
             programStageDataElements.with(ProgramStageDataElement.allFields),
             programStageSections.with(ProgramStageSection.allFields),
             style.with(ObjectStyle.allFields), periodType, program.with(ObjectWithUid.uid),
-            access.with(Access.data.with(DataAccess.write))).build();
+            access.with(Access.data.with(DataAccess.write)), remindCompleted).build();
 
     @Nullable
     @JsonProperty(EXECUTION_DATE_LABEL)
@@ -212,6 +214,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     @JsonProperty(ACCESS)
     public abstract Access access();
 
+    @Nullable
+    @JsonProperty(REMIND_COMPLETED)
+    public abstract Boolean remindCompleted();
+
     @JsonCreator
     public static ProgramStage create(
             @JsonProperty(UID) String uid,
@@ -242,6 +248,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
             @JsonProperty(PERIOD_TYPE) PeriodType periodType,
             @JsonProperty(PROGRAM) ObjectWithUid program,
             @JsonProperty(ACCESS) Access access,
+            @JsonProperty(REMIND_COMPLETED) Boolean remindCompleted,
             @JsonProperty(DELETED) Boolean deleted
     ) {
 
@@ -274,7 +281,8 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
                 style,
                 periodType,
                 program,
-                access
+                access,
+                remindCompleted
         );
     }
 }

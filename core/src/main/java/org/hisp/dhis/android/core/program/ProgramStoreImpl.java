@@ -28,16 +28,17 @@
 
 package org.hisp.dhis.android.core.program;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
-
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -74,11 +75,15 @@ public class ProgramStoreImpl implements ProgramStore {
             ProgramModel.Columns.RELATED_PROGRAM + ", " +
             ProgramModel.Columns.TRACKED_ENTITY_TYPE + ", " +
             ProgramModel.Columns.CATEGORY_COMBO + ", " +
-            ProgramModel.Columns.ACCESS_DATA_WRITE + ") " +
+            ProgramModel.Columns.ACCESS_DATA_WRITE + ", " +
+            ProgramModel.Columns.EXPIRY_DAYS + ", " +
+            ProgramModel.Columns.COMPLETE_EVENTS_EXPIRY_DAYS + ", " +
+            ProgramModel.Columns.EXPIRY_PERIOD_TYPE + ") " +
             "VALUES (" +
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
-            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " +
+            "?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + ProgramModel.TABLE + " SET " +
             ProgramModel.Columns.UID + " =?, " +
@@ -111,7 +116,10 @@ public class ProgramStoreImpl implements ProgramStore {
             ProgramModel.Columns.RELATED_PROGRAM + " =?, " +
             ProgramModel.Columns.TRACKED_ENTITY_TYPE + " =?, " +
             ProgramModel.Columns.CATEGORY_COMBO + " =?, " +
-            ProgramModel.Columns.ACCESS_DATA_WRITE + " =? " +
+            ProgramModel.Columns.ACCESS_DATA_WRITE + " =?, " +
+            ProgramModel.Columns.EXPIRY_DAYS + " =?, " +
+            ProgramModel.Columns.COMPLETE_EVENTS_EXPIRY_DAYS + " =?, " +
+            ProgramModel.Columns.EXPIRY_PERIOD_TYPE + " =? " +
             " WHERE " +
             ProgramModel.Columns.UID + " = ?;";
 
@@ -164,8 +172,10 @@ public class ProgramStoreImpl implements ProgramStore {
             @Nullable String relatedProgram,
             @Nullable String trackedEntityType,
             @Nullable String categoryCombo,
-            @Nullable Boolean accessDataWrite
-    ) {
+            @Nullable Boolean accessDataWrite,
+            @Nullable Integer expiryDays,
+            @Nullable Integer completeEventsExpiryDays,
+            @Nullable PeriodType expiryPeriodType) {
 
         isNull(uid);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
@@ -173,7 +183,8 @@ public class ProgramStoreImpl implements ProgramStore {
                 incidentDateLabel, registration, selectEnrollmentDatesInFuture, dataEntryMethod,
                 ignoreOverdueEvents, relationshipFromA, selectIncidentDatesInFuture, captureCoordinates,
                 useFirstStageDuringRegistration, displayInFrontPageList, programType,
-                relationshipType, relationshipText, relatedProgram, trackedEntityType, categoryCombo, accessDataWrite);
+                relationshipType, relationshipText, relatedProgram, trackedEntityType, categoryCombo,
+                accessDataWrite, expiryDays, completeEventsExpiryDays, expiryPeriodType);
 
         Long insert = databaseAdapter.executeInsert(ProgramModel.TABLE, insertStatement);
         insertStatement.clearBindings();
@@ -213,6 +224,9 @@ public class ProgramStoreImpl implements ProgramStore {
                       @Nullable String trackedEntityType,
                       @Nullable String categoryCombo,
                       @Nullable Boolean accessDataWrite,
+                      @Nullable Integer expiryDays,
+                      @Nullable Integer completeEventsExpiryDays,
+                      @Nullable PeriodType expiryPeriodType,
                       @NonNull String whereProgramUid) {
         isNull(uid);
         isNull(whereProgramUid);
@@ -221,11 +235,11 @@ public class ProgramStoreImpl implements ProgramStore {
                 incidentDateLabel, registration, selectEnrollmentDatesInFuture, dataEntryMethod,
                 ignoreOverdueEvents, relationshipFromA, selectIncidentDatesInFuture, captureCoordinates,
                 useFirstStageDuringRegistration, displayInFrontPageList, programType,
-                relationshipType, relationshipText, relatedProgram, trackedEntityType, categoryCombo,
-                accessDataWrite);
+                relationshipType, relationshipText, relatedProgram, trackedEntityType, categoryCombo, accessDataWrite,
+                expiryDays, completeEventsExpiryDays, expiryPeriodType);
 
         // bind the where argument
-        sqLiteBind(updateStatement, 32, whereProgramUid);
+        sqLiteBind(updateStatement, 35, whereProgramUid);
 
         // execute and clear bindings
         int update = databaseAdapter.executeUpdateDelete(ProgramModel.TABLE, updateStatement);
@@ -279,7 +293,10 @@ public class ProgramStoreImpl implements ProgramStore {
                                @Nullable String relatedProgram,
                                @Nullable String trackedEntityType,
                                @Nullable String categoryCombo,
-                               @Nullable boolean accessDataWrite) {
+                               @Nullable Boolean accessDataWrite,
+                               @Nullable Integer expiryDays,
+                               @Nullable Integer completeEventsExpiryDays,
+                               @Nullable PeriodType expiryPeriodType) {
         sqLiteBind(sqLiteStatement, 1, uid);
         sqLiteBind(sqLiteStatement, 2, code);
         sqLiteBind(sqLiteStatement, 3, name);
@@ -311,6 +328,9 @@ public class ProgramStoreImpl implements ProgramStore {
         sqLiteBind(sqLiteStatement, 29, trackedEntityType);
         sqLiteBind(sqLiteStatement, 30, categoryCombo);
         sqLiteBind(sqLiteStatement, 31, accessDataWrite);
+        sqLiteBind(sqLiteStatement, 32, expiryDays);
+        sqLiteBind(sqLiteStatement, 33, completeEventsExpiryDays);
+        sqLiteBind(sqLiteStatement, 34, expiryPeriodType);
     }
 
     @Override

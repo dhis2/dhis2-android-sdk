@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class RelationshipTypeHandler {
+public final class RelationshipTypeHandler {
     private RelationshipTypeHandler() {}
 
     public static GenericHandler<RelationshipType, RelationshipTypeModel> create(DatabaseAdapter databaseAdapter) {

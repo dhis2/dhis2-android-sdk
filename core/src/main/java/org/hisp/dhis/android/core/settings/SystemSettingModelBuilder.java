@@ -33,7 +33,7 @@ import java.util.List;
 
 public class SystemSettingModelBuilder {
 
-    public List<SystemSettingModel> splitSettings(SystemSettings settings) {
+    public List<SystemSettingModel> splitSettings(SystemSetting settings) {
         SystemSettingModel flag = SystemSettingModel.builder().key("flag").value(settings.keyFlag()).build();
         SystemSettingModel style = SystemSettingModel.builder().key("style").value(settings.keyStyle()).build();
 

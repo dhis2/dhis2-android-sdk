@@ -28,35 +28,22 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
+public class SystemSettingHandlerImpl implements SystemSettingHandler {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+    private final ObjectWithoutUidStore<SystemSettingModel> store;
 
-@RunWith(JUnit4.class)
-public class SystemSettingModelBuilderShould {
-
-    private SystemSetting settingsPojo = SystemSetting.create("aFlag", "aStyle");
-    private SystemSettingModelBuilder modelBuilder = new SystemSettingModelBuilder();
-
-    @Test
-    public void build_flag_setting() throws IOException, ParseException {
-        List<SystemSettingModel> modelList = modelBuilder.splitSettings(settingsPojo);
-        SystemSettingModel flagModel = modelList.get(0);
-        assertThat(flagModel.key()).isEqualTo("flag");
-        assertThat(flagModel.value()).isEqualTo("aFlag");
+    public SystemSettingHandlerImpl(ObjectWithoutUidStore<SystemSettingModel> store) {
+        this.store = store;
     }
 
-    @Test
-    public void build_style_setting() throws IOException, ParseException {
-        List<SystemSettingModel> modelList = modelBuilder.splitSettings(settingsPojo);
-        SystemSettingModel flagModel = modelList.get(1);
-        assertThat(flagModel.key()).isEqualTo("style");
-        assertThat(flagModel.value()).isEqualTo("aStyle");
+    @Override
+    public void handle(SystemSetting setting, SystemSettingModelBuilder modelBuilder) {
+        if (setting != null) {
+            for (SystemSettingModel settingModel: modelBuilder.splitSettings(setting)) {
+                store.updateOrInsertWhere(settingModel);
+            }
+        }
     }
 }

@@ -38,13 +38,13 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 
 @AutoValue
-public abstract class SystemSettings {
+public abstract class SystemSetting {
     private static final String KEY_FLAG = "keyFlag";
     private static final String KEY_STYLE = "keyStyle";
 
-    static final Fields<SystemSettings> allFields = Fields.<SystemSettings>builder().fields(
-            Field.<SystemSettings, String>create(KEY_FLAG),
-            Field.<SystemSettings, String>create(KEY_STYLE)
+    static final Fields<SystemSetting> allFields = Fields.<SystemSetting>builder().fields(
+            Field.<SystemSetting, String>create(KEY_FLAG),
+            Field.<SystemSetting, String>create(KEY_STYLE)
     ).build();
 
     @Nullable
@@ -56,11 +56,11 @@ public abstract class SystemSettings {
     public abstract String keyStyle();
 
     @JsonCreator
-    public static SystemSettings create(
+    public static SystemSetting create(
             @JsonProperty(KEY_FLAG) String keyFlag,
             @JsonProperty(KEY_STYLE) String keyStyle) {
 
-        return new AutoValue_SystemSettings(
+        return new AutoValue_SystemSetting(
                 keyFlag,
                 keyStyle
         );

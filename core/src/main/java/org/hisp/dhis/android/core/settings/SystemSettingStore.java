@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.settings;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.PeriodModel;
 
 public final class SystemSettingStore {
 

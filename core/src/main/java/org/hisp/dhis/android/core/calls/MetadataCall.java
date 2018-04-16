@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -44,6 +45,8 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramAccessEndpointCall;
 import org.hisp.dhis.android.core.program.ProgramParentCall;
 import org.hisp.dhis.android.core.program.ProgramParentUidsHelper;
+import org.hisp.dhis.android.core.settings.SystemSetting;
+import org.hisp.dhis.android.core.settings.SystemSettingCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.user.User;
@@ -56,12 +59,12 @@ import retrofit2.Response;
 
 @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ModifiedCyclomaticComplexity",
         "PMD.StdCyclomaticComplexity", "PMD.ExcessiveImports"})
-public class MetadataCall implements Call<Response> {
+public class MetadataCall extends SyncCall {
 
     private final GenericCallData data;
-    private boolean isExecuted;
 
     private final SimpleCallFactory<SystemInfo> systemInfoCallFactory;
+    private final SimpleCallFactory<SystemSetting> systemSettingCallFactory;
     private final SimpleCallFactory<User> userCallFactory;
     private final SimpleCallFactory<Payload<Category>> categoryCallFactory;
     private final SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
@@ -72,6 +75,7 @@ public class MetadataCall implements Call<Response> {
 
     public MetadataCall(@NonNull GenericCallData data,
                         @NonNull SimpleCallFactory<SystemInfo> systemInfoCallFactory,
+                        @NonNull SimpleCallFactory<SystemSetting> systemSettingCallFactory,
                         @NonNull SimpleCallFactory<User> userCallFactory,
                         @NonNull SimpleCallFactory<Payload<Category>> categoryCallFactory,
                         @NonNull SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory,
@@ -81,6 +85,7 @@ public class MetadataCall implements Call<Response> {
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory) {
         this.data = data;
         this.systemInfoCallFactory = systemInfoCallFactory;
+        this.systemSettingCallFactory = systemSettingCallFactory;
         this.userCallFactory = userCallFactory;
         this.categoryCallFactory = categoryCallFactory;
         this.categoryComboCallFactory = categoryComboCallFactory;
@@ -90,31 +95,21 @@ public class MetadataCall implements Call<Response> {
         this.dataSetParentCallFactory = dataSetParentCallFactory;
     }
 
-
-    @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
     @SuppressWarnings("PMD.NPathComplexity")
     @Override
     public Response call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Already executed");
-            }
-
-            isExecuted = true;
-        }
+        super.setExecuted();
 
         Transaction transaction = data.databaseAdapter().beginNewTransaction();
         try {
-
             Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(data).call();
             if (!systemCallResponse.isSuccessful()) {
                 return systemCallResponse;
+            }
+
+            Response<SystemSetting> systemSettingResponse = systemSettingCallFactory.create(data).call();
+            if (!systemSettingResponse.isSuccessful()) {
+                return systemSettingResponse;
             }
 
             Response<User> userResponse = userCallFactory.create(data).call();
@@ -169,6 +164,7 @@ public class MetadataCall implements Call<Response> {
         return new MetadataCall(
                 data,
                 SystemInfoCall.FACTORY,
+                SystemSettingCall.FACTORY,
                 UserCall.FACTORY,
                 CategoryEndpointCall.FACTORY,
                 CategoryComboEndpointCall.FACTORY,

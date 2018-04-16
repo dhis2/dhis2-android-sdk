@@ -29,12 +29,13 @@
 package org.hisp.dhis.android.core.settings;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class SystemSettingHandlerImpl implements SystemSettingHandler {
+public final class SystemSettingHandlerImpl implements SystemSettingHandler {
 
     private final ObjectWithoutUidStore<SystemSettingModel> store;
 
-    public SystemSettingHandlerImpl(ObjectWithoutUidStore<SystemSettingModel> store) {
+    private SystemSettingHandlerImpl(ObjectWithoutUidStore<SystemSettingModel> store) {
         this.store = store;
     }
 
@@ -45,5 +46,9 @@ public class SystemSettingHandlerImpl implements SystemSettingHandler {
                 store.updateOrInsertWhere(settingModel);
             }
         }
+    }
+
+    static SystemSettingHandler create(DatabaseAdapter databaseAdapter) {
+        return new SystemSettingHandlerImpl(SystemSettingStore.create(databaseAdapter));
     }
 }

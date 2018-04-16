@@ -28,19 +28,35 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import java.util.ArrayList;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
-public class SystemSettingModelBuilder {
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    public List<SystemSettingModel> splitSettings(SystemSettings settings) {
-        SystemSettingModel flag = SystemSettingModel.builder().key("flag").value(settings.keyFlag()).build();
-        SystemSettingModel style = SystemSettingModel.builder().key("style").value(settings.keyStyle()).build();
+@RunWith(JUnit4.class)
+public class SystemSettingModelBuilderShould {
 
-        List<SystemSettingModel> settingModelList = new ArrayList<>(2);
-        settingModelList.add(flag);
-        settingModelList.add(style);
+    private SystemSettings settingsPojo = SystemSettings.create("aFlag", "aStyle");
+    private SystemSettingModelBuilder modelBuilder = new SystemSettingModelBuilder();
 
-        return settingModelList;
+    @Test
+    public void build_flag_setting() throws IOException, ParseException {
+        List<SystemSettingModel> modelList = modelBuilder.splitSettings(settingsPojo);
+        SystemSettingModel flagModel = modelList.get(0);
+        assertThat(flagModel.key()).isEqualTo("flag");
+        assertThat(flagModel.value()).isEqualTo("aFlag");
+    }
+
+    @Test
+    public void build_style_setting() throws IOException, ParseException {
+        List<SystemSettingModel> modelList = modelBuilder.splitSettings(settingsPojo);
+        SystemSettingModel flagModel = modelList.get(1);
+        assertThat(flagModel.key()).isEqualTo("style");
+        assertThat(flagModel.value()).isEqualTo("aStyle");
     }
 }

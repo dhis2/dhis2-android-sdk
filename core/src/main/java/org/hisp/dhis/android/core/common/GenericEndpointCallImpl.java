@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
@@ -38,10 +37,9 @@ import java.util.List;
 import retrofit2.Response;
 
 public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
-        implements Call<Response<Payload<P>>> {
+        extends SyncCall<Payload<P>> {
     private final GenericCallData data;
     private final GenericHandler<P, M> handler;
-    private boolean isExecuted;
 
     private final ResourceModel.Type resourceType;
     private final ModelBuilder<P, M> modelBuilder;
@@ -58,21 +56,8 @@ public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends Base
     }
 
     @Override
-    public final boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
-    @Override
     public final Response<Payload<P>> call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalArgumentException("Already executed");
-            }
-
-            isExecuted = true;
-        }
+        super.setExecuted();
 
         if (!query.isValid()) {
             throw new IllegalArgumentException("Invalid query");
@@ -83,10 +68,10 @@ public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends Base
 
         if (isValidResponse(response)) {
             persist(response);
+            return response;
         } else {
             throw CallException.create(response);
         }
-        return response;
     }
 
     protected abstract retrofit2.Call<Payload<P>> getCall(Q query, String lastUpdated) throws IOException;

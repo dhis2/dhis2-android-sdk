@@ -28,18 +28,19 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.PojoBuilder;
 
-public final class RelationshipStore {
+public class RelationshipBuilder extends PojoBuilder<Relationship, RelationshipModel> {
 
-    private RelationshipStore() {}
+    @Override
+    public Relationship buildPojo(RelationshipModel model) {
 
-    public static ObjectWithoutUidStore<RelationshipModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, RelationshipModel.TABLE,
-                RelationshipModel.Columns.all(),
-                RelationshipModel.Columns.whereUpdate());
+        return Relationship.create(
+                model.trackedEntityInstanceA(),
+                model.trackedEntityInstanceB(),
+                model.relationshipType(),
+                null,
+                null
+        );
     }
-
 }

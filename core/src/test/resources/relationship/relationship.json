@@ -1,0 +1,18 @@
+{
+  "trackedEntityInstanceB": "G1afLIEKt8A",
+  "displayName": "Mother-Child",
+  "trackedEntityInstanceA": "Ea0rRdBPAIp",
+  "relationship": "V2kkHafqs8G",
+  "relative": {
+    "created": "2013-09-08T21:40:28.000",
+    "orgUnit": "DiszpKrYNg8",
+    "trackedEntityInstance": "G1afLIEKt8A",
+    "lastUpdated": "2014-07-23T12:18:42.751",
+    "trackedEntityType": "nEenWmSyUEp",
+    "deleted": false,
+    "enrollments": [],
+    "relationships": [],
+    "attributes": []
+  }
+}
+

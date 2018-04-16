@@ -1,11 +1,12 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipStore;
+import org.hisp.dhis.android.core.relationship.RelationshipModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +17,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -31,7 +31,7 @@ public class TrackedEntityInstanceHandlerShould {
     private TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     @Mock
-    private RelationshipStore relationshipStore;
+    private ObjectWithoutUidStore<RelationshipModel> relationshipStore;
 
     @Mock
     private TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
@@ -166,6 +166,6 @@ public class TrackedEntityInstanceHandlerShould {
         trackedEntityInstanceHandler.handle(trackedEntityInstance);
 
         // verify relationship store is called once
-        verify(relationshipStore, times(1)).insert(anyString(), anyString(), anyString());
+        verify(relationshipStore, times(1)).updateOrInsertWhere(any(RelationshipModel.class));
     }
 }

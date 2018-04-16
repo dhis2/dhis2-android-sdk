@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.indicator;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -75,9 +74,6 @@ public abstract class DataSetIndicatorLinkModel extends BaseModel implements Upd
     @Nullable
     @ColumnName(Columns.INDICATOR)
     public abstract String indicator();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {

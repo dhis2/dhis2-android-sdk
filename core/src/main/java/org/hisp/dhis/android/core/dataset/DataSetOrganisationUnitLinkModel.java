@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -77,9 +76,6 @@ public abstract class DataSetOrganisationUnitLinkModel extends BaseModel impleme
     @Nullable
     @ColumnName(Columns.ORGANISATION_UNIT)
     public abstract String organisationUnit();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {

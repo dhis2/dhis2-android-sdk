@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -83,9 +82,6 @@ public abstract class ObjectStyleModel extends BaseModel implements UpdateWhereS
     @Nullable
     @ColumnName(Columns.ICON)
     public abstract String icon();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {

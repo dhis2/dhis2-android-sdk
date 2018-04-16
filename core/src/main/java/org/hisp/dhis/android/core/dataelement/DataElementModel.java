@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -120,9 +119,6 @@ public abstract class DataElementModel extends BaseNameableObjectModel implement
     @Nullable
     @ColumnName(Columns.CATEGORY_COMBO)
     public abstract String categoryCombo();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {

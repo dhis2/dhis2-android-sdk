@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -61,9 +59,6 @@ public abstract class SystemInfoModel extends BaseModel {
     public static Builder builder() {
         return new $$AutoValue_SystemInfoModel.Builder();
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @Nullable
     @ColumnName(Columns.SERVER_DATE)

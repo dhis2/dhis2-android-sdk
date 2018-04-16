@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -53,9 +52,6 @@ public abstract class ProgramStageSectionProgramIndicatorLinkModel extends BaseM
     @Nullable
     @ColumnName(Columns.PROGRAM_INDICATOR)
     public abstract String programIndicator();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @NonNull
     public static ProgramStageSectionProgramIndicatorLinkModel create(Cursor cursor) {

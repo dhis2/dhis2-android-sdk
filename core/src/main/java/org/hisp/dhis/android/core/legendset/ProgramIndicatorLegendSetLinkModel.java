@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.legendset;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -77,9 +76,6 @@ public abstract class ProgramIndicatorLegendSetLinkModel extends BaseModel imple
     @Nullable
     @ColumnName(Columns.LEGEND_SET)
     public abstract String legendSet();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {

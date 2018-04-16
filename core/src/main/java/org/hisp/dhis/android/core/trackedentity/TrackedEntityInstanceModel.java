@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -74,9 +73,6 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
     public static TrackedEntityInstanceModel create(Cursor cursor) {
         return AutoValue_TrackedEntityInstanceModel.createFromCursor(cursor);
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @Nullable
     @ColumnName(Columns.UID)

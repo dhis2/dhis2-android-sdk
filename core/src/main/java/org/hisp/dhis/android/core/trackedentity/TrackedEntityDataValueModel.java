@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -95,9 +94,6 @@ public abstract class TrackedEntityDataValueModel extends BaseModel {
     @Nullable
     @ColumnName(Columns.PROVIDED_ELSEWHERE)
     public abstract Boolean providedElsewhere();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {

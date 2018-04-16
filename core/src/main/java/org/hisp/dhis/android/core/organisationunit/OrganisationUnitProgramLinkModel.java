@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -65,9 +64,6 @@ public abstract class OrganisationUnitProgramLinkModel extends BaseModel impleme
     @Nullable
     @ColumnName(Columns.ORGANISATION_UNIT)
     public abstract String organisationUnit();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @NonNull
     public static OrganisationUnitProgramLinkModel create(Cursor cursor) {

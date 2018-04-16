@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -124,9 +123,6 @@ public abstract class TrackedEntityAttributeModel extends BaseNameableObjectMode
     @Nullable
     @ColumnName(Columns.INHERIT)
     public abstract Boolean inherit();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {

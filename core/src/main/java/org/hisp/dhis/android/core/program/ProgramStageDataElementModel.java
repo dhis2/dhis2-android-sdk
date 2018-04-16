@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -93,9 +91,6 @@ public abstract class ProgramStageDataElementModel extends BaseIdentifiableObjec
     public static Builder builder() {
         return new $$AutoValue_ProgramStageDataElementModel.Builder();
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {

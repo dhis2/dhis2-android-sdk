@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.event;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -76,9 +75,6 @@ public abstract class EventModel extends BaseDataModel {
     public static Builder builder() {
         return new $$AutoValue_EventModel.Builder();
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @NonNull
     @ColumnName(Columns.UID)

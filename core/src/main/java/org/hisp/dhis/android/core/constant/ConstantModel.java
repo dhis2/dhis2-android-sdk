@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -59,9 +57,6 @@ public abstract class ConstantModel extends BaseIdentifiableObjectModel {
     @Nullable
     @ColumnName(Columns.VALUE)
     public abstract String value();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -99,9 +98,6 @@ public abstract class ProgramModel extends BaseNameableObjectModel implements St
     public static Builder builder() {
         return new $$AutoValue_ProgramModel.Builder();
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @Nullable
     @ColumnName(Columns.VERSION)

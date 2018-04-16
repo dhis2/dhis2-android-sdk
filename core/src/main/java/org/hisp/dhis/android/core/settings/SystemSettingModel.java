@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -76,9 +75,6 @@ public abstract class SystemSettingModel extends BaseModel implements UpdateWher
             return create(cursor);
         }
     };
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     public static Builder builder() {
         return new $AutoValue_SystemSettingModel.Builder();

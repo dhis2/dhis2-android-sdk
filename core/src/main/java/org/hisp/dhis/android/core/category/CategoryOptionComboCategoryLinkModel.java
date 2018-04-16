@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.category;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -56,9 +55,6 @@ public abstract class CategoryOptionComboCategoryLinkModel extends BaseModel {
     @NonNull
     @ColumnName(Columns.CATEGORY)
     public abstract String category();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @NonNull
     public static Builder builder() {

@@ -40,7 +40,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class SystemSettingShould extends BaseObjectShould implements ObjectShould {
 
     public SystemSettingShould() {
-        super("settings/system_settings.json");
+        super("settings/system_setting.json");
     }
 
     @Override

@@ -54,7 +54,7 @@ public final class SystemSettingCall extends SyncCall<SystemSetting> {
     }
 
     @Override
-    public final Response<SystemSetting> call() throws Exception {
+    public Response<SystemSetting> call() throws Exception {
         super.setExecuted();
 
         Response<SystemSetting> response = service.getSystemSettings(SystemSetting.allFields).execute();

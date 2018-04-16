@@ -40,8 +40,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    Exception e;
-    CodeGenerator codeGenerator;
+    private CodeGenerator codeGenerator;
 
     private TrackedEntityInstanceStore trackedEntityInstanceStore;
     private EnrollmentStore enrollmentStore;
@@ -174,6 +173,61 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
                 downloadedEvent);
     }
 
+    //@Test
+    public void post_a_tei() throws Exception {
+        downloadMetadata();
+        d2.downloadTrackedEntityInstances(4).call();
+
+        TrackedEntityInstance tei = trackedEntityInstanceStore.queryAll().values().iterator().next();
+
+        FeatureType featureType =
+                tei.featureType() == FeatureType.POLYGON ? FeatureType.POINT : FeatureType.POLYGON;
+
+        String newUid = codeGenerator.generate();
+
+        insertATei(newUid, tei, featureType);
+
+        d2.syncTrackedEntityInstances().call();
+
+        d2.wipeDB().call();
+        downloadMetadata();
+
+        Response<TrackedEntityInstance> response =  d2.downloadTrackedEntityInstance(newUid).call();
+
+        TrackedEntityInstance updatedTei = response.body();
+
+        assertThat(updatedTei.featureType()).isEqualTo(featureType);
+    }
+
+    //@Test
+    public void post_more_than_one_tei() throws Exception {
+        downloadMetadata();
+        d2.downloadTrackedEntityInstances(4).call();
+
+        TrackedEntityInstance tei = trackedEntityInstanceStore.queryAll().values().iterator().next();
+
+        String newUid1 = codeGenerator.generate();
+        String newUid2 = codeGenerator.generate();
+
+        insertATei(newUid1, tei, tei.featureType());
+        insertATei(newUid2, tei, tei.featureType());
+
+        d2.syncTrackedEntityInstances().call();
+
+        d2.wipeDB().call();
+        downloadMetadata();
+
+        Response<TrackedEntityInstance> response =  d2.downloadTrackedEntityInstance(newUid1).call();
+
+        assertThat(response.isSuccessful()).isTrue();
+    }
+
+    private void insertATei(String uid, TrackedEntityInstance tei, FeatureType featureType) {
+        trackedEntityInstanceStore.insert(uid, tei.created(), tei.lastUpdated(), tei.createdAtClient(),
+                tei.lastUpdatedAtClient(), tei.organisationUnit(), tei.trackedEntityType(), tei.coordinates(),
+                featureType, State.TO_POST);
+    }
+
     private void createDummyDataToPost(String orgUnitUid, String programUid, String programStageUid,
                                        String trackedEntityUid, String coordinates, FeatureType featureType,
                                        String eventUid, String enrollmentUid, String trackedEntityInstanceUid,
@@ -259,6 +313,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
     private void downloadMetadata() throws Exception {
         Response response;
+        d2.logout().call();
         response = d2.logIn("android", "Android123").call();
         assertThat(response.isSuccessful()).isTrue();
 

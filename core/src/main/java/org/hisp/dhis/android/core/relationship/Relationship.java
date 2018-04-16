@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import android.support.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
@@ -66,9 +68,11 @@ public abstract class Relationship {
     @JsonProperty(RELATIONSHIP)
     public abstract String relationship();
 
+    @Nullable
     @JsonProperty(DISPLAY_NAME)
     public abstract String displayName();
 
+    @Nullable
     @JsonProperty(RELATIVE)
     public abstract TrackedEntityInstance relative();
 

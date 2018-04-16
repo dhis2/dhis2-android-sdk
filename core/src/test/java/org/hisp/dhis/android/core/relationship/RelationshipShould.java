@@ -28,18 +28,28 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-public final class RelationshipStore {
+import java.io.IOException;
+import java.text.ParseException;
 
-    private RelationshipStore() {}
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    public static ObjectWithoutUidStore<RelationshipModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, RelationshipModel.TABLE,
-                RelationshipModel.Columns.all(),
-                RelationshipModel.Columns.whereUpdate());
+public class RelationshipShould extends BaseObjectShould implements ObjectShould {
+
+    public RelationshipShould() {
+        super("relationship/relationship.json");
     }
 
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Relationship relationship = objectMapper.readValue(jsonStream, Relationship.class);
+
+        assertThat(relationship.trackedEntityInstanceA()).isEqualTo("Ea0rRdBPAIp");
+        assertThat(relationship.trackedEntityInstanceB()).isEqualTo("G1afLIEKt8A");
+        assertThat(relationship.relationship()).isEqualTo("V2kkHafqs8G");
+    }
 }

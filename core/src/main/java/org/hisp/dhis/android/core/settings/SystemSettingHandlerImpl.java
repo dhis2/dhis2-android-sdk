@@ -35,7 +35,7 @@ public final class SystemSettingHandlerImpl implements SystemSettingHandler {
 
     private final ObjectWithoutUidStore<SystemSettingModel> store;
 
-    private SystemSettingHandlerImpl(ObjectWithoutUidStore<SystemSettingModel> store) {
+    SystemSettingHandlerImpl(ObjectWithoutUidStore<SystemSettingModel> store) {
         this.store = store;
     }
 

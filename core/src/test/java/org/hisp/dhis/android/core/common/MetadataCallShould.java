@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramParentCall;
+import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
@@ -67,6 +68,9 @@ import static org.mockito.Mockito.when;
 public class MetadataCallShould extends BaseCallShould {
     @Mock
     private SystemInfo systemInfo;
+
+    @Mock
+    private SystemSetting systemSetting;
 
     @Mock
     private Date serverDateTime;
@@ -123,6 +127,9 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<Response<SystemInfo>> systemInfoEndpointCall;
 
     @Mock
+    private Call<Response<SystemSetting>> systemSettingEndpointCall;
+
+    @Mock
     private Call<Response<User>> userCall;
 
     @Mock
@@ -145,6 +152,9 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private SimpleCallFactory<SystemInfo> systemInfoCallFactory;
+
+    @Mock
+    private SimpleCallFactory<SystemSetting> systemSettingCallFactory;
 
     @Mock
     private SimpleCallFactory<User> userCallFactory;
@@ -195,6 +205,7 @@ public class MetadataCallShould extends BaseCallShould {
 
         // Call factories
         when(systemInfoCallFactory.create(genericCallData)).thenReturn(systemInfoEndpointCall);
+        when(systemSettingCallFactory.create(genericCallData)).thenReturn(systemSettingEndpointCall);
         when(userCallFactory.create(genericCallData)).thenReturn(userCall);
         when(programAccessCallFactory.create(genericCallData)).thenReturn(programAccessEndpointCall);
         when(programParentCallFactory.create(same(genericCallData), anySetOf(String.class)))
@@ -208,6 +219,7 @@ public class MetadataCallShould extends BaseCallShould {
 
         // Calls
         when(systemInfoEndpointCall.call()).thenReturn(Response.success(systemInfo));
+        when(systemSettingEndpointCall.call()).thenReturn(Response.success(systemSetting));
         when(userCall.call()).thenReturn(Response.success(user));
         when(categoryEndpointCall.call()).thenReturn(Response.success(categoryPayload));
         when(categoryComboEndpointCall.call()).thenReturn(Response.success(categoryComboPayload));
@@ -220,6 +232,7 @@ public class MetadataCallShould extends BaseCallShould {
         metadataCall = new MetadataCall(
                 genericCallData,
                 systemInfoCallFactory,
+                systemSettingCallFactory,
                 userCallFactory,
                 categoryCallFactory,
                 categoryComboCallFactory,
@@ -253,6 +266,13 @@ public class MetadataCallShould extends BaseCallShould {
     @SuppressWarnings("unchecked")
     public void fail_when_system_info_call_fail() throws Exception {
         when(systemInfoEndpointCall.call()).thenReturn(errorResponse);
+        verifyFail(metadataCall.call());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void fail_when_system_setting_call_fail() throws Exception {
+        when(systemSettingEndpointCall.call()).thenReturn(errorResponse);
         verifyFail(metadataCall.call());
     }
 

@@ -6,6 +6,8 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
@@ -18,6 +20,10 @@ import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.relationship.RelationshipModel;
+import org.hisp.dhis.android.core.relationship.RelationshipStore;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.Before;
@@ -28,6 +34,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Response;
 
@@ -47,6 +54,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     private EventStore eventStore;
     private TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
+    private ObjectWithoutUidStore<RelationshipModel> relationShipStore;
+    private IdentifiableObjectStore<RelationshipTypeModel> relationshipTypeStore;
     private String orgUnitUid;
     private String programUid;
     private String programStageUid;
@@ -79,6 +88,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         eventStore = new EventStoreImpl(databaseAdapter());
         trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
         trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter());
+        relationShipStore = RelationshipStore.create(databaseAdapter());
+        relationshipTypeStore = RelationshipTypeStore.create(databaseAdapter());
 
         codeGenerator = new CodeGeneratorImpl();
         orgUnitUid = "DiszpKrYNg8";
@@ -220,6 +231,44 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         Response<TrackedEntityInstance> response =  d2.downloadTrackedEntityInstance(newUid1).call();
 
         assertThat(response.isSuccessful()).isTrue();
+    }
+
+    //@Test
+    public void post_new_relationship_to_client_created_tei() throws Exception {
+        downloadMetadata();
+        d2.downloadTrackedEntityInstances(5).call();
+
+        TrackedEntityInstance teiA = trackedEntityInstanceStore.queryAll().values().iterator().next();
+        String relationshipTypeUid = relationshipTypeStore.selectAll(RelationshipTypeModel.factory)
+                .iterator().next().uid();
+
+        // Create a TEI by copying an existing one
+        String teiBUid = codeGenerator.generate();
+        insertATei(teiBUid, teiA, FeatureType.MULTI_POLYGON);
+
+        trackedEntityInstanceStore.setState(teiA.uid(), State.TO_POST);
+
+        RelationshipModel relationshipModel = RelationshipModel.builder()
+                .relationshipType(relationshipTypeUid)
+                .trackedEntityInstanceA(teiA.uid())
+                .trackedEntityInstanceB(teiBUid)
+                .build();
+        relationShipStore.updateOrInsertWhere(relationshipModel);
+
+        Response teiSyncResponse = d2.syncTrackedEntityInstances().call();
+        assertThat(teiSyncResponse.isSuccessful()).isTrue();
+
+        d2.wipeDB().call();
+        downloadMetadata();
+
+        Response<TrackedEntityInstance> responseTeiA =  d2.downloadTrackedEntityInstance(teiA.uid()).call();
+        assertThat(responseTeiA.isSuccessful()).isTrue();
+
+        Response<TrackedEntityInstance> responseTeiB =  d2.downloadTrackedEntityInstance(teiBUid).call();
+        assertThat(responseTeiB.isSuccessful()).isTrue();
+
+        Set<RelationshipModel> relationships = relationShipStore.selectAll(RelationshipModel.factory);
+        assertThat(relationships).contains(relationshipModel);
     }
 
     private void insertATei(String uid, TrackedEntityInstance tei, FeatureType featureType) {

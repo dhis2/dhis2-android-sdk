@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.calls.TrackerEntitiesDataCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
@@ -138,7 +137,7 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response<Payload<TrackedEntityInstance>>>
+    public Call<Response<TrackedEntityInstance>>
     downloadTrackedEntityInstance(String trackedEntityInstanceUid) {
         return TrackedEntityInstanceEndPointCall.create(GenericCallData.create(databaseAdapter, retrofit),
                 new Date(), trackedEntityInstanceUid);

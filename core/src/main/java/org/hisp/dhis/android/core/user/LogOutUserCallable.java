@@ -46,10 +46,14 @@ import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.datavalue.DataValueStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.enrollment.note.NoteStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkStore;
 import org.hisp.dhis.android.core.indicator.IndicatorStore;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeStore;
+import org.hisp.dhis.android.core.legendset.LegendSetStore;
+import org.hisp.dhis.android.core.legendset.LegendStore;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
@@ -154,7 +158,11 @@ public class LogOutUserCallable implements Callable<Void> {
                 PeriodStore.create(databaseAdapter),
                 ObjectStyleStore.create(databaseAdapter),
                 ValueTypeDeviceRenderingStore.create(databaseAdapter),
-                RelationshipTypeStore.create(databaseAdapter));
+                RelationshipTypeStore.create(databaseAdapter),
+                NoteStore.create(databaseAdapter),
+                LegendStore.create(databaseAdapter),
+                LegendSetStore.create(databaseAdapter),
+                ProgramIndicatorLegendSetLinkStore.create(databaseAdapter));
 
         return new LogOutUserCallable(
                 deletableStores

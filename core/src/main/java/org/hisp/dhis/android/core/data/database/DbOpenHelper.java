@@ -79,6 +79,8 @@ import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.relationship.RelationshipModel;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.settings.SystemSetting;
+import org.hisp.dhis.android.core.settings.SystemSettingModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
@@ -104,7 +106,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
-    public static final int VERSION = 19;
+    public static final int VERSION = 20;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -1095,6 +1097,13 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             ProgramIndicatorLegendSetLinkModel.Columns.LEGEND_SET + ")"
             );
 
+    private static final String CREATE_SYSTEM_SETTING_TABLE =
+            SQLStatementBuilder.createModelTable(SystemSettingModel.TABLE,
+                    SystemSettingModel.Columns.KEY + " TEXT," +
+                            SystemSettingModel.Columns.VALUE + " TEXT," +
+                            " UNIQUE (" + SystemSettingModel.Columns.KEY + ")"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1160,6 +1169,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_LEGEND_TABLE);
         database.execSQL(CREATE_LEGEND_SET_TABLE);
         database.execSQL(CREATE_PROGRAM_INDICATOR_LEGEND_SET_LINK_TABLE);
+        database.execSQL(CREATE_SYSTEM_SETTING_TABLE);
         return database;
     }
 

@@ -46,10 +46,14 @@ import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.datavalue.DataValueStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.enrollment.note.NoteStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkStore;
 import org.hisp.dhis.android.core.indicator.IndicatorStore;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeStore;
+import org.hisp.dhis.android.core.legendset.LegendSetStore;
+import org.hisp.dhis.android.core.legendset.LegendStore;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
@@ -65,8 +69,8 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
-import org.hisp.dhis.android.core.relationship.RelationshipStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
+import org.hisp.dhis.android.core.relationship.RelationshipStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
@@ -128,7 +132,7 @@ public class LogOutUserCallable implements Callable<Void> {
 
                 new ProgramStageSectionStoreImpl(databaseAdapter),
                 ProgramStageStore.create(databaseAdapter),
-                new RelationshipStoreImpl(databaseAdapter),
+                RelationshipStore.create(databaseAdapter),
                 new TrackedEntityTypeStoreImpl(databaseAdapter),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
@@ -154,7 +158,11 @@ public class LogOutUserCallable implements Callable<Void> {
                 PeriodStore.create(databaseAdapter),
                 ObjectStyleStore.create(databaseAdapter),
                 ValueTypeDeviceRenderingStore.create(databaseAdapter),
-                RelationshipTypeStore.create(databaseAdapter));
+                RelationshipTypeStore.create(databaseAdapter),
+                NoteStore.create(databaseAdapter),
+                LegendStore.create(databaseAdapter),
+                LegendSetStore.create(databaseAdapter),
+                ProgramIndicatorLegendSetLinkStore.create(databaseAdapter));
 
         return new LogOutUserCallable(
                 deletableStores

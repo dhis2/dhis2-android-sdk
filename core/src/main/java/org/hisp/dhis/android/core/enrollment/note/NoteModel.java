@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -76,6 +77,9 @@ public abstract class NoteModel extends BaseModel implements UpdateWhereStatemen
     public static Builder builder() {
         return new $AutoValue_NoteModel.Builder();
     }
+    
+    @NonNull
+    public abstract ContentValues toContentValues();
 
     public static final CursorModelFactory<NoteModel> factory
             = new CursorModelFactory<NoteModel>() {

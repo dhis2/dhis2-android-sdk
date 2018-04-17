@@ -30,22 +30,39 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class RelationshipModel extends BaseDataModel {
+public abstract class RelationshipModel extends BaseModel implements UpdateWhereStatementBinder {
     public static final String TABLE = "Relationship";
 
-    public static class Columns extends BaseDataModel.Columns {
+    public static class Columns extends BaseModel.Columns {
         public static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
         public static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
         public static final String RELATIONSHIP_TYPE = "relationshipType";
+
+        private Columns() {}
+
+        public static String[] all() {
+            return Utils.appendInNewArray(BaseModel.Columns.all(),
+                    TRACKED_ENTITY_INSTANCE_A, TRACKED_ENTITY_INSTANCE_B, RELATIONSHIP_TYPE);
+        }
+
+        static String[] whereUpdate() {
+            return new String[]{TRACKED_ENTITY_INSTANCE_A, TRACKED_ENTITY_INSTANCE_B, RELATIONSHIP_TYPE};
+        }
     }
 
     public static RelationshipModel create(Cursor cursor) {
@@ -55,6 +72,15 @@ public abstract class RelationshipModel extends BaseDataModel {
     public static Builder builder() {
         return new $$AutoValue_RelationshipModel.Builder();
     }
+
+    public static final CursorModelFactory<RelationshipModel> factory
+            = new CursorModelFactory<RelationshipModel>() {
+        @Override
+        public RelationshipModel fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
+
 
     @NonNull
     public abstract ContentValues toContentValues();
@@ -71,8 +97,22 @@ public abstract class RelationshipModel extends BaseDataModel {
     @ColumnName(Columns.RELATIONSHIP_TYPE)
     public abstract String relationshipType();
 
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, trackedEntityInstanceA());
+        sqLiteBind(sqLiteStatement, 2, trackedEntityInstanceB());
+        sqLiteBind(sqLiteStatement, 3, relationshipType());
+    }
+
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 4, trackedEntityInstanceA());
+        sqLiteBind(sqLiteStatement, 5, trackedEntityInstanceB());
+        sqLiteBind(sqLiteStatement, 6, relationshipType());
+    }
+
     @AutoValue.Builder
-    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder trackedEntityInstanceA(@Nullable String trackedEntityInstanceA);
 
         public abstract Builder trackedEntityInstanceB(@Nullable String trackedEntityInstanceB);

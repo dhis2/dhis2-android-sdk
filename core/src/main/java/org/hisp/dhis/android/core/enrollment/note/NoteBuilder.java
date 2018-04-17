@@ -26,10 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.enrollment.note;
 
-public enum PeriodType {
-    Daily, Weekly, WeeklyWednesday, WeeklyThursday, WeeklySaturday, WeeklySunday, BiWeekly,
-    Monthly, BiMonthly, Quarterly, SixMonthly, SixMonthlyApril, Yearly, FinancialApril,
-    FinancialJuly, FinancialOct
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.PojoBuilder;
+
+import java.text.ParseException;
+
+public class NoteBuilder extends PojoBuilder<Note, NoteModel> {
+
+    @Override
+    public Note buildPojo(NoteModel model) {
+
+        String date;
+        try {
+            date = BaseIdentifiableObject.dateToSpaceDateStr(model.storedDate());
+        } catch (ParseException ignored) {
+            date = null;
+        }
+
+        return Note.create(
+                model.value(),
+                model.storedBy(),
+                date
+        );
+    }
 }

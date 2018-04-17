@@ -51,7 +51,25 @@ public class TrackedEntityInstanceShould {
                 "    \"created\": \"2014-03-28T12:39:39.372+0000\",\n" +
                 "    \"orgUnit\": \"DiszpKrYNg8\",\n" +
                 "    \"trackedEntityInstance\": \"CVUuL8RIpPI\",\n" +
-                "    \"relationships\": [ ],\n" +
+                "    \"relationships\": [\n" +
+                "        {\n" +
+                "            \"trackedEntityInstanceB\": \"G1afLIEKt8A\",\n" +
+                "            \"displayName\": \"Mother-Child\",\n" +
+                "            \"trackedEntityInstanceA\": \"Ea0rRdBPAIp\",\n" +
+                "            \"relationship\": \"V2kkHafqs8G\",\n" +
+                "            \"relative\": {\n" +
+                "                \"created\": \"2013-09-08T21:40:28.000\",\n" +
+                "                \"orgUnit\": \"DiszpKrYNg8\",\n" +
+                "                \"trackedEntityInstance\": \"G1afLIEKt8A\",\n" +
+                "                \"lastUpdated\": \"2014-07-23T12:18:42.751\",\n" +
+                "                \"trackedEntityType\": \"nEenWmSyUEp\",\n" +
+                "                \"deleted\": false,\n" +
+                "                \"enrollments\": [],\n" +
+                "                \"relationships\": [],\n" +
+                "                \"attributes\": []\n" +
+                "            }\n" +
+                "        }\n" +
+                "    ],\n" +
                 "    \"attributes\": [\n" +
                 "        {\n" +
                 "            \"lastUpdated\": \"2016-01-12T09:10:35.884+0000\",\n" +
@@ -239,7 +257,10 @@ public class TrackedEntityInstanceShould {
         assertThat(trackedEntityInstance.uid()).isEqualTo("CVUuL8RIpPI");
         assertThat(trackedEntityInstance.organisationUnit()).isEqualTo("DiszpKrYNg8");
         assertThat(trackedEntityInstance.trackedEntityType()).isEqualTo("nEenWmSyUEp");
-        assertThat(trackedEntityInstance.relationships()).isEmpty();
+
+        assertThat(trackedEntityInstance.relationships().get(0).trackedEntityInstanceA()).isEqualTo("Ea0rRdBPAIp");
+        assertThat(trackedEntityInstance.relationships().get(0).trackedEntityInstanceB()).isEqualTo("G1afLIEKt8A");
+        assertThat(trackedEntityInstance.relationships().get(0).relationship()).isEqualTo("V2kkHafqs8G");
 
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("ruQQnf6rswq");
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(1).trackedEntityAttribute()).isEqualTo("w75KJ2mc4zz");

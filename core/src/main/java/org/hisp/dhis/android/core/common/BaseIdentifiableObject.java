@@ -90,6 +90,10 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject {
         return BaseIdentifiableObject.SPACE_DATE_FORMAT.parse(dateStr);
     }
 
+    public static String dateToSpaceDateStr(Date date) throws ParseException {
+        return BaseIdentifiableObject.SPACE_DATE_FORMAT.format(date);
+    }
+
     protected static abstract class Builder<T extends Builder> {
 
         @JsonProperty(UID)

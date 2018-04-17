@@ -54,13 +54,12 @@ public class RelationshipModelShould {
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
-                Columns.STATE,
                 Columns.TRACKED_ENTITY_INSTANCE_A,
                 Columns.TRACKED_ENTITY_INSTANCE_B,
                 Columns.RELATIONSHIP_TYPE
         });
         cursor.addRow(new Object[]{
-                ID, STATE.name(),
+                ID,
                 TRACKED_ENTITY_INSTANCE_A,
                 TRACKED_ENTITY_INSTANCE_B,
                 RELATIONSHIP_TYPE
@@ -71,7 +70,6 @@ public class RelationshipModelShould {
         cursor.close();
 
         assertThat(model.id()).isEqualTo(ID);
-        assertThat(model.state()).isEqualTo(STATE);
         assertThat(model.trackedEntityInstanceA()).isEqualTo(TRACKED_ENTITY_INSTANCE_A);
         assertThat(model.trackedEntityInstanceB()).isEqualTo(TRACKED_ENTITY_INSTANCE_B);
         assertThat(model.relationshipType()).isEqualTo(RELATIONSHIP_TYPE);
@@ -81,7 +79,6 @@ public class RelationshipModelShould {
     public void create_content_values_when_created_from_builder() {
         RelationshipModel model = RelationshipModel.builder()
                 .id(ID)
-                .state(STATE)
                 .trackedEntityInstanceA(TRACKED_ENTITY_INSTANCE_A)
                 .trackedEntityInstanceB(TRACKED_ENTITY_INSTANCE_B)
                 .relationshipType(RELATIONSHIP_TYPE)
@@ -89,7 +86,6 @@ public class RelationshipModelShould {
         ContentValues contentValues = model.toContentValues();
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.STATE)).isEqualTo(STATE.name());
         assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_INSTANCE_A)).isEqualTo(TRACKED_ENTITY_INSTANCE_A);
         assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_INSTANCE_B)).isEqualTo(TRACKED_ENTITY_INSTANCE_B);
         assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);

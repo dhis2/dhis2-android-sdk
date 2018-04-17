@@ -68,7 +68,8 @@ public abstract class ResourceModel extends BaseModel {
         INDICATOR_TYPE,
         INDICATOR,
         DATA_VALUE,
-        PROGRAM_STAGE
+        PROGRAM_STAGE,
+        RELATIONSHIP_TYPE
     }
 
     @Nullable

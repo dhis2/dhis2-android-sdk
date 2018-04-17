@@ -26,10 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.relationship;
 
-public enum PeriodType {
-    Daily, Weekly, WeeklyWednesday, WeeklyThursday, WeeklySaturday, WeeklySunday, BiWeekly,
-    Monthly, BiMonthly, Quarterly, SixMonthly, SixMonthlyApril, Yearly, FinancialApril,
-    FinancialJuly, FinancialOct
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.text.ParseException;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
+public class RelationshipShould extends BaseObjectShould implements ObjectShould {
+
+    public RelationshipShould() {
+        super("relationship/relationship.json");
+    }
+
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Relationship relationship = objectMapper.readValue(jsonStream, Relationship.class);
+
+        assertThat(relationship.trackedEntityInstanceA()).isEqualTo("Ea0rRdBPAIp");
+        assertThat(relationship.trackedEntityInstanceB()).isEqualTo("G1afLIEKt8A");
+        assertThat(relationship.relationship()).isEqualTo("V2kkHafqs8G");
+    }
 }

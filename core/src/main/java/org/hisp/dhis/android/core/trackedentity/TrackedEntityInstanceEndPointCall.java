@@ -6,7 +6,6 @@ import android.util.Log;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -23,7 +22,7 @@ import retrofit2.Response;
 import static org.hisp.dhis.android.core.resource.ResourceModel.Type.TRACKED_ENTITY_INSTANCE;
 
 public class TrackedEntityInstanceEndPointCall implements
-        Call<Response<Payload<TrackedEntityInstance>>> {
+        Call<Response<TrackedEntityInstance>> {
 
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final DatabaseAdapter databaseAdapter;
@@ -61,7 +60,7 @@ public class TrackedEntityInstanceEndPointCall implements
     }
 
     @Override
-    public Response call() throws Exception {
+    public Response<TrackedEntityInstance> call() throws Exception {
         synchronized (this) {
             if (isExecuted) {
                 throw new IllegalStateException("Already executed");
@@ -114,10 +113,7 @@ public class TrackedEntityInstanceEndPointCall implements
                 TrackedEntityInstance.coordinates,
                 TrackedEntityInstance.featureType,
                 TrackedEntityInstance.deleted,
-                TrackedEntityInstance.relationships.with(
-                        Relationship.trackedEntityInstanceA,
-                        Relationship.trackedEntityInstanceB,
-                        Relationship.displayName),
+                TrackedEntityInstance.relationships.with(Relationship.allFields),
                 TrackedEntityInstance.trackedEntityAttributeValues.with(
                         TrackedEntityAttributeValue.trackedEntityAttribute,
                         TrackedEntityAttributeValue.value,

@@ -26,10 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.relationship;
 
-public enum PeriodType {
-    Daily, Weekly, WeeklyWednesday, WeeklyThursday, WeeklySaturday, WeeklySunday, BiWeekly,
-    Monthly, BiMonthly, Quarterly, SixMonthly, SixMonthlyApril, Yearly, FinancialApril,
-    FinancialJuly, FinancialOct
+import org.hisp.dhis.android.core.common.ModelBuilder;
+
+public class RelationshipModelBuilder extends ModelBuilder<Relationship, RelationshipModel> {
+
+    @Override
+    public RelationshipModel buildModel(Relationship relationship) {
+        return RelationshipModel.builder()
+                .trackedEntityInstanceA(relationship.trackedEntityInstanceA())
+                .trackedEntityInstanceB(relationship.trackedEntityInstanceB())
+                .relationshipType(relationship.relationship())
+                .build();
+    }
 }

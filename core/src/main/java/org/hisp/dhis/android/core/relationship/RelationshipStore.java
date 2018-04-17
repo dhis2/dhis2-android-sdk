@@ -28,17 +28,18 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class RelationshipStore {
 
-public interface RelationshipStore extends DeletableStore {
+    private RelationshipStore() {}
 
-    long insert(
-            @Nullable String trackedEntityInstanceA,
-            @Nullable String trackedEntityInstanceB,
-            @NonNull String relationshipType
-    );
+    public static ObjectWithoutUidStore<RelationshipModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, RelationshipModel.TABLE,
+                RelationshipModel.Columns.all(),
+                RelationshipModel.Columns.whereUpdate());
+    }
 
 }

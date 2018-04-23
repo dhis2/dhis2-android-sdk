@@ -28,37 +28,39 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.BaseEndpointCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.UidsCallFactory;
+import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import retrofit2.Response;
+import java.io.IOException;
+import java.util.Set;
 
-public final class ProgramAccessEndpointCall extends BaseEndpointCall<Program> {
-    private final GenericCallData data;
+import retrofit2.Call;
+
+public final class ProgramEndpointCall extends GenericEndpointCallImpl<Program, ProgramModel, UidsQuery> {
     private final ProgramService programService;
 
-    private ProgramAccessEndpointCall(GenericCallData data, ProgramService programService) {
-        this.data = data;
+    ProgramEndpointCall(GenericCallData data, ProgramService programService,
+                                GenericHandler<Program, ProgramModel> programHandler, UidsQuery uidsQuery) {
+        super(data, programHandler, ResourceModel.Type.PROGRAM, new ProgramModelBuilder(), uidsQuery);
         this.programService = programService;
     }
 
     @Override
-    protected Response<Payload<Program>> callBody() throws Exception {
-        String lastUpdated = data.resourceHandler().getLastUpdated(ResourceModel.Type.PROGRAM);
-        return programService.getProgramsForAccess(Program.uidAndAccessRead, Program.lastUpdated.gt(lastUpdated),
-                Boolean.FALSE).execute();
+    protected Call<Payload<Program>> getCall(UidsQuery query, String lastUpdated) throws IOException {
+        return programService.getPrograms(Program.allFields, Program.lastUpdated.gt(lastUpdated),
+                Program.uid.in(query.uids()), Boolean.FALSE);
     }
 
-    public static final SimpleCallFactory<Payload<Program>> FACTORY
-            = new SimpleCallFactory<Payload<Program>>() {
-
+    static final UidsCallFactory<Program> FACTORY = new UidsCallFactory<Program>() {
         @Override
-        public ProgramAccessEndpointCall create(GenericCallData genericCallData) {
-            return new ProgramAccessEndpointCall(genericCallData,
-                    genericCallData.retrofit().create(ProgramService.class));
+        public ProgramEndpointCall create(GenericCallData data, Set<String> uids) {
+            return new ProgramEndpointCall(data, data.retrofit().create(ProgramService.class),
+                    ProgramHandler.create(data.databaseAdapter()),  UidsQuery.create(uids, 64));
         }
     };
 }

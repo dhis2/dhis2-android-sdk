@@ -83,6 +83,8 @@ public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends Base
 
         if (isValidResponse(response)) {
             persist(response);
+        } else {
+            throw CallException.create(response);
         }
         return response;
     }

@@ -63,7 +63,7 @@ import retrofit2.Response;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
+public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     private static String[] PROGRAM_PROJECTION = {
             ProgramModel.Columns.UID,
             ProgramModel.Columns.CODE,
@@ -99,7 +99,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
     };
 
     private Dhis2MockServer dhis2MockServer;
-    private Call<Response<Payload<Program>>> programCall;
+    private Call<Response<Payload<Program>>> programEndpointCall;
 
     @Override
     @Before
@@ -130,14 +130,14 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
-        programCall = ProgramCall.FACTORY.create(
+        programEndpointCall = ProgramEndpointCall.FACTORY.create(
                 GenericCallData.create(databaseAdapter(), d2.retrofit()), uids);
     }
 
     @Test
     public void persist_program_when_call() throws Exception {
         // Fake call to api
-        programCall.call();
+        programEndpointCall.call();
 
         Cursor programCursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null);
 
@@ -178,7 +178,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void persist_program_rule_variables_on_call() throws Exception {
-        programCall.call();
+        programEndpointCall.call();
         String[] projection = {
                 ProgramRuleVariableModel.Columns.UID,
                 ProgramRuleVariableModel.Columns.CODE,
@@ -215,7 +215,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void persist_program_tracker_entity_attributes_when_call() throws Exception {
-        programCall.call();
+        programEndpointCall.call();
         String[] projection = {
                 ProgramTrackedEntityAttributeModel.Columns.UID,
                 ProgramTrackedEntityAttributeModel.Columns.CODE,
@@ -263,7 +263,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void persist_tracked_entity_attribute_when_call() throws Exception {
-        programCall.call();
+        programEndpointCall.call();
         String[] projection = {
                 TrackedEntityAttributeModel.Columns.UID,
                 TrackedEntityAttributeModel.Columns.CODE,
@@ -322,7 +322,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void persist_program_indicators_when_call() throws Exception {
-        programCall.call();
+        programEndpointCall.call();
 
         String[] projection = {
                 ProgramIndicatorModel.Columns.UID,
@@ -370,7 +370,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void persist_program_rules_when_call() throws Exception {
-        programCall.call();
+        programEndpointCall.call();
         String[] projection = {
                 ProgramRuleModel.Columns.UID,
                 ProgramRuleModel.Columns.CODE,
@@ -403,7 +403,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void persist_program_rule_actions_when_call() throws Exception {
-        programCall.call();
+        programEndpointCall.call();
 
         String[] projection = {
                 ProgramRuleActionModel.Columns.UID,
@@ -455,7 +455,7 @@ public class ProgramCallMockIntegrationShould extends AbsStoreTestCase {
      */
     @Test
     public void not_persist_relationship_type_when_call() throws Exception {
-        programCall.call();
+        programEndpointCall.call();
 
         String[] projection = {
                 RelationshipTypeModel.Columns.UID,

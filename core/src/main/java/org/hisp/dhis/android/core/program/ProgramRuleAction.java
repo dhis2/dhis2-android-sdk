@@ -35,7 +35,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -55,37 +57,38 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject {
     private static final String PROGRAM_STAGE = "programStage";
     private static final String DATA_ELEMENT = "dataElement";
 
-    public static final Field<ProgramRuleAction, String> uid = Field.create(UID);
-    public static final Field<ProgramRuleAction, String> code = Field.create(CODE);
-    public static final Field<ProgramRuleAction, String> name = Field.create(NAME);
-    public static final Field<ProgramRuleAction, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<ProgramRuleAction, String> created = Field.create(CREATED);
-    public static final Field<ProgramRuleAction, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<ProgramRuleAction, String> data = Field.create(DATA);
-    public static final Field<ProgramRuleAction, String> content = Field.create(CONTENT);
-    public static final Field<ProgramRuleAction, String> location = Field.create(LOCATION);
-    public static final Field<ProgramRuleAction, Boolean> deleted = Field.create(DELETED);
+    private static final Field<ProgramRuleAction, String> uid = Field.create(UID);
+    private static final Field<ProgramRuleAction, String> code = Field.create(CODE);
+    private static final Field<ProgramRuleAction, String> name = Field.create(NAME);
+    private static final Field<ProgramRuleAction, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<ProgramRuleAction, String> created = Field.create(CREATED);
+    private static final Field<ProgramRuleAction, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<ProgramRuleAction, String> data = Field.create(DATA);
+    private static final Field<ProgramRuleAction, String> content = Field.create(CONTENT);
+    private static final Field<ProgramRuleAction, String> location = Field.create(LOCATION);
+    private static final Field<ProgramRuleAction, Boolean> deleted = Field.create(DELETED);
 
 
-    public static final NestedField<ProgramRuleAction, ProgramRule> programRule = NestedField.create(PROGRAM_RULE);
-
-    public static final NestedField<ProgramRuleAction, TrackedEntityAttribute> trackedEntityAttribute =
+    private static final NestedField<ProgramRuleAction, ObjectWithUid> programRule = NestedField.create(PROGRAM_RULE);
+    private static final NestedField<ProgramRuleAction, ObjectWithUid> trackedEntityAttribute =
             NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
-
-    public static final NestedField<ProgramRuleAction, ProgramIndicator> programIndicator =
+    private static final NestedField<ProgramRuleAction, ObjectWithUid> programIndicator =
             NestedField.create(PROGRAM_INDICATOR);
-
-    public static final NestedField<ProgramRuleAction, ProgramStageSection> programStageSection =
+    private static final NestedField<ProgramRuleAction, ObjectWithUid> programStageSection =
             NestedField.create(PROGRAM_STAGE_SECTION);
-
-    public static final Field<ProgramRuleAction, ProgramRuleActionType> programRuleActionType =
+    private static final Field<ProgramRuleAction, ProgramRuleActionType> programRuleActionType =
             Field.create(PROGRAM_RULE_ACTION_TYPE);
-
-    public static final NestedField<ProgramRuleAction, ProgramStage> programStage =
+    private static final NestedField<ProgramRuleAction, ObjectWithUid> programStage =
             NestedField.create(PROGRAM_STAGE);
-
-    public static final NestedField<ProgramRuleAction, DataElement> dataElement =
+    private static final NestedField<ProgramRuleAction, ObjectWithUid> dataElement =
             NestedField.create(DATA_ELEMENT);
+
+    static final Fields<ProgramRuleAction> allFields = Fields.<ProgramRuleAction>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, content, data, deleted, location, programRuleActionType,
+            programRule.with(ObjectWithUid.uid), dataElement.with(ObjectWithUid.uid),
+            programIndicator.with(ObjectWithUid.uid), programStage.with(ObjectWithUid.uid),
+            programStageSection.with(ObjectWithUid.uid), trackedEntityAttribute.with(ObjectWithUid.uid)
+    ).build();
 
     @Nullable
     @JsonProperty(DATA)

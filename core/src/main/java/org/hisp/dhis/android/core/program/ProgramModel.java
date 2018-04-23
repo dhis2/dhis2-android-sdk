@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -38,13 +39,17 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.GodClass"})
 @AutoValue
-public abstract class ProgramModel extends BaseNameableObjectModel {
+public abstract class ProgramModel extends BaseNameableObjectModel implements StatementBinder {
 
     public static final String TABLE = "Program";
 
@@ -73,6 +78,18 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
         public final static String EXPIRY_DAYS = "expiryDays";
         public final static String COMPLETE_EVENTS_EXPIRY_DAYS = "completeEventsExpiryDays";
         public final static String EXPIRY_PERIOD_TYPE = "expiryPeriodType";
+
+        private Columns() {}
+
+        public static String[] all() {
+            return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(), VERSION, ONLY_ENROLL_ONCE,
+                    ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE, INCIDENT_DATE_LABEL, REGISTRATION,
+                    SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD, IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A,
+                    SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES, USE_FIRST_STAGE_DURING_REGISTRATION,
+                    DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, RELATED_PROGRAM,
+                    TRACKED_ENTITY_TYPE, CATEGORY_COMBO, ACCESS_DATA_WRITE, EXPIRY_DAYS, COMPLETE_EVENTS_EXPIRY_DAYS,
+                    EXPIRY_PERIOD_TYPE);
+        }
     }
 
     public static ProgramModel create(Cursor cursor) {
@@ -183,6 +200,35 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
     @ColumnName(Columns.EXPIRY_PERIOD_TYPE)
     @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
     public abstract PeriodType expiryPeriodType();
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 11, version());
+        sqLiteBind(sqLiteStatement, 12, onlyEnrollOnce());
+        sqLiteBind(sqLiteStatement, 13, enrollmentDateLabel());
+        sqLiteBind(sqLiteStatement, 14, displayIncidentDate());
+        sqLiteBind(sqLiteStatement, 15, incidentDateLabel());
+        sqLiteBind(sqLiteStatement, 16, registration());
+        sqLiteBind(sqLiteStatement, 17, selectEnrollmentDatesInFuture());
+        sqLiteBind(sqLiteStatement, 18, dataEntryMethod());
+        sqLiteBind(sqLiteStatement, 19, ignoreOverdueEvents());
+        sqLiteBind(sqLiteStatement, 20, relationshipFromA());
+        sqLiteBind(sqLiteStatement, 21, selectIncidentDatesInFuture());
+        sqLiteBind(sqLiteStatement, 22, captureCoordinates());
+        sqLiteBind(sqLiteStatement, 23, useFirstStageDuringRegistration());
+        sqLiteBind(sqLiteStatement, 24, displayFrontPageList());
+        sqLiteBind(sqLiteStatement, 25, programType());
+        sqLiteBind(sqLiteStatement, 26, relationshipType());
+        sqLiteBind(sqLiteStatement, 27, relationshipText());
+        sqLiteBind(sqLiteStatement, 28, relatedProgram());
+        sqLiteBind(sqLiteStatement, 29, trackedEntityType());
+        sqLiteBind(sqLiteStatement, 30, categoryCombo());
+        sqLiteBind(sqLiteStatement, 31, accessDataWrite());
+        sqLiteBind(sqLiteStatement, 32, expiryDays());
+        sqLiteBind(sqLiteStatement, 33, completeEventsExpiryDays());
+        sqLiteBind(sqLiteStatement, 34, expiryPeriodType());
+    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {

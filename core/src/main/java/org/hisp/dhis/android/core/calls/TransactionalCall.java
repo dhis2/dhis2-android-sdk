@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.calls;
 
+import org.hisp.dhis.android.core.common.CallException;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.Transaction;
 
@@ -64,6 +65,8 @@ public abstract class TransactionalCall implements Call<Response> {
             Response response = callBody();
             transaction.setSuccessful();
             return response;
+        } catch (CallException e) {
+            return e.response();
         } finally {
             transaction.end();
         }

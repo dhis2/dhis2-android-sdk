@@ -67,7 +67,7 @@ import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
-import org.hisp.dhis.android.core.program.ProgramStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipStore;
@@ -116,7 +116,7 @@ public class LogOutUserCallable implements Callable<Void> {
                 new ResourceStoreImpl(databaseAdapter),
                 new SystemInfoStoreImpl(databaseAdapter),
                 new UserRoleStoreImpl(databaseAdapter),
-                new ProgramStoreImpl(databaseAdapter),
+                ProgramStore.create(databaseAdapter),
                 new TrackedEntityAttributeStoreImpl(databaseAdapter),
 
                 new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter),

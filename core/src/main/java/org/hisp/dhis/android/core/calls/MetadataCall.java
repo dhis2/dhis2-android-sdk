@@ -33,35 +33,22 @@ import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
-import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
-import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
-import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramAccessEndpointCall;
-import org.hisp.dhis.android.core.program.ProgramCall;
-import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
-import org.hisp.dhis.android.core.program.ProgramStageEndpointCall;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeEndpointCall;
+import org.hisp.dhis.android.core.program.ProgramParentCall;
+import org.hisp.dhis.android.core.program.ProgramParentUidsHelper;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCall;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -79,12 +66,8 @@ public class MetadataCall implements Call<Response> {
     private final SimpleCallFactory<Payload<Category>> categoryCallFactory;
     private final SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
     private final SimpleCallFactory<Payload<Program>> programAccessCallFactory;
-    private final UidsCallFactory<Program> programCallFactory;
-    private final UidsCallFactory<ProgramStage> programStageCallFactory;
-    private final UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
-    private final SimpleCallFactory<Payload<RelationshipType>> relationshipTypeCallFactory;
+    private final ProgramParentCall.Factory programParentCallFactory;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
-    private final UidsCallFactory<OptionSet> optionSetCallFactory;
     private final DataSetParentCall.Factory dataSetParentCallFactory;
 
     public MetadataCall(@NonNull GenericCallData data,
@@ -93,12 +76,8 @@ public class MetadataCall implements Call<Response> {
                         @NonNull SimpleCallFactory<Payload<Category>> categoryCallFactory,
                         @NonNull SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory,
                         @NonNull SimpleCallFactory<Payload<Program>> programAccessCallFactory,
-                        @NonNull UidsCallFactory<Program> programCallFactory,
-                        @NonNull UidsCallFactory<ProgramStage> programStageCallFactory,
-                        @NonNull UidsCallFactory<TrackedEntityType> trackedEntityCallFactory,
-                        @NonNull SimpleCallFactory<Payload<RelationshipType>> relationshipTypeCallFactory,
+                        @NonNull ProgramParentCall.Factory programParentCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
-                        @NonNull UidsCallFactory<OptionSet> optionSetCallFactory,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory) {
         this.data = data;
         this.systemInfoCallFactory = systemInfoCallFactory;
@@ -106,12 +85,8 @@ public class MetadataCall implements Call<Response> {
         this.categoryCallFactory = categoryCallFactory;
         this.categoryComboCallFactory = categoryComboCallFactory;
         this.programAccessCallFactory = programAccessCallFactory;
-        this.programCallFactory = programCallFactory;
-        this.programStageCallFactory = programStageCallFactory;
-        this.trackedEntityCallFactory = trackedEntityCallFactory;
+        this.programParentCallFactory = programParentCallFactory;
         this.organisationUnitCallFactory = organisationUnitCallFactory;
-        this.optionSetCallFactory = optionSetCallFactory;
-        this.relationshipTypeCallFactory = relationshipTypeCallFactory;
         this.dataSetParentCallFactory = dataSetParentCallFactory;
     }
 
@@ -162,31 +137,11 @@ public class MetadataCall implements Call<Response> {
                 return programAccessResponse;
             }
 
-            Set<String> programUids = getProgramUidsWithDataReadAccess(programAccessResponse.body().items());
-            Response<Payload<Program>> programResponse = programCallFactory.create(data, programUids).call();
+            Set<String> programUids = ProgramParentUidsHelper
+                    .getProgramUidsWithDataReadAccess(programAccessResponse.body().items());
+            Response programResponse = programParentCallFactory.create(data, programUids).call();
             if (!programResponse.isSuccessful()) {
                 return programResponse;
-            }
-
-            List<Program> programs = programResponse.body().items();
-            Set<String> assignedProgramStageUids = getAssignedProgramStageUids(programs);
-            Response<Payload<ProgramStage>> programStageResponse = programStageCallFactory.create(data,
-                    assignedProgramStageUids).call();
-            if (!programStageResponse.isSuccessful()) {
-                return programStageResponse;
-            }
-
-            Set<String> trackedEntityUids = getAssignedTrackedEntityUids(programs);
-            Response<Payload<TrackedEntityType>> trackedEntityResponse =
-                    trackedEntityCallFactory.create(data, trackedEntityUids).call();
-            if (!trackedEntityResponse.isSuccessful()) {
-                return trackedEntityResponse;
-            }
-
-            Response<Payload<RelationshipType>> relationshipTypeResponse
-                    = relationshipTypeCallFactory.create(data).call();
-            if (!relationshipTypeResponse.isSuccessful()) {
-                return relationshipTypeResponse;
             }
 
             User user = userResponse.body();
@@ -195,13 +150,6 @@ public class MetadataCall implements Call<Response> {
 
             if (!organisationUnitResponse.isSuccessful()) {
                 return organisationUnitResponse;
-            }
-
-            List<ProgramStage> programStages = programStageResponse.body().items();
-            Set<String> optionSetUids = getAssignedOptionSetUids(programs, programStages);
-            Response<Payload<OptionSet>> optionSetResponse = optionSetCallFactory.create(data, optionSetUids).call();
-            if (!optionSetResponse.isSuccessful()) {
-                return optionSetResponse;
             }
 
             List<OrganisationUnit> organisationUnits = organisationUnitResponse.body().items();
@@ -217,100 +165,6 @@ public class MetadataCall implements Call<Response> {
         }
     }
 
-    /// Utility methods:
-    private Set<String> getAssignedOptionSetUids(List<Program> programs, List<ProgramStage> programStages) {
-        Set<String> uids = new HashSet<>();
-
-        if (programs != null) {
-            for (Program program : programs) {
-                getOptionSetUidsForAttributes(uids, program);
-            }
-        }
-
-        if (programStages != null) {
-            getOptionSetUidsForDataElements(uids, programStages);
-        }
-        return uids;
-    }
-
-    private void getOptionSetUidsForDataElements(Set<String> uids, List<ProgramStage> programStages) {
-        int programStagesSize = programStages.size();
-
-        for (int j = 0; j < programStagesSize; j++) {
-            ProgramStage programStage = programStages.get(j);
-            List<ProgramStageDataElement> programStageDataElements =
-                    programStage.programStageDataElements();
-            int programStageDataElementSize = programStageDataElements.size();
-
-            for (int k = 0; k < programStageDataElementSize; k++) {
-                ProgramStageDataElement programStageDataElement = programStageDataElements.get(k);
-
-                if (programStageDataElement.dataElement() != null &&
-                        programStageDataElement.dataElement().optionSet() != null) {
-                    uids.add(programStageDataElement.dataElement().optionSet().uid());
-                }
-            }
-        }
-    }
-
-    private void getOptionSetUidsForAttributes(Set<String> uids, Program program) {
-        int programTrackedEntityAttributeSize = program.programTrackedEntityAttributes().size();
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                program.programTrackedEntityAttributes();
-
-        for (int j = 0; j < programTrackedEntityAttributeSize; j++) {
-            ProgramTrackedEntityAttribute programTrackedEntityAttribute =
-                    programTrackedEntityAttributes.get(j);
-
-            if (programTrackedEntityAttribute.trackedEntityAttribute() != null &&
-                    programTrackedEntityAttribute.trackedEntityAttribute().optionSet() != null) {
-                uids.add(programTrackedEntityAttribute.trackedEntityAttribute().optionSet().uid());
-            }
-        }
-    }
-
-    private Set<String> getAssignedTrackedEntityUids(List<Program> programs) {
-        if (programs == null) {
-            return null;
-        }
-
-        Set<String> uids = new HashSet<>();
-
-        int size = programs.size();
-        for (int i = 0; i < size; i++) {
-            Program program = programs.get(i);
-
-            if (program.trackedEntityType() != null) {
-                uids.add(program.trackedEntityType().uid());
-            }
-        }
-        return uids;
-    }
-
-    private Set<String> getAssignedProgramStageUids(List<Program> programs) {
-        Set<String> programStageUids = new HashSet<>();
-
-        for (Program program : programs) {
-            for (ObjectWithUid programStage : program.programStages()) {
-                programStageUids.add(programStage.uid());
-            }
-        }
-
-        return programStageUids;
-    }
-
-    private Set<String> getProgramUidsWithDataReadAccess(List<Program> programsWithAccess) {
-        Set<String> programUids = new HashSet<>();
-        for (Program program: programsWithAccess) {
-            Access access = program.access();
-            if (access != null && access.data().read()) {
-                programUids.add(program.uid());
-            }
-        }
-
-        return programUids;
-    }
-
     public static MetadataCall create(GenericCallData data) {
         return new MetadataCall(
                 data,
@@ -319,12 +173,8 @@ public class MetadataCall implements Call<Response> {
                 CategoryEndpointCall.FACTORY,
                 CategoryComboEndpointCall.FACTORY,
                 ProgramAccessEndpointCall.FACTORY,
-                ProgramCall.FACTORY,
-                ProgramStageEndpointCall.FACTORY,
-                TrackedEntityTypeCall.FACTORY,
-                RelationshipTypeEndpointCall.FACTORY,
+                ProgramParentCall.FACTORY,
                 OrganisationUnitCall.FACTORY,
-                OptionSetCall.FACTORY,
                 DataSetParentCall.FACTORY
         );
     }

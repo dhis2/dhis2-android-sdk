@@ -55,7 +55,7 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
     private static final Field<RelationshipType, String> bIsToA = Field.create(B_TO_A);
     private static final Field<RelationshipType, String> aIsToB = Field.create(A_TO_B);
 
-    public static final Fields<RelationshipType> allFields = Fields.<RelationshipType>builder().fields(
+    static final Fields<RelationshipType> allFields = Fields.<RelationshipType>builder().fields(
             uid, code, name, displayName, created, lastUpdated, aIsToB, bIsToA, deleted).build();
 
     @Nullable

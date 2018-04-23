@@ -76,40 +76,41 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     private final static String ACCESS = "access";
     private final static String REMIND_COMPLETED = "remindCompleted";
 
-    public static final Field<ProgramStage, String> uid = Field.create(UID);
-    public static final Field<ProgramStage, String> code = Field.create(CODE);
-    public static final Field<ProgramStage, String> name = Field.create(NAME);
-    public static final Field<ProgramStage, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<ProgramStage, String> created = Field.create(CREATED);
-    public static final Field<ProgramStage, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<ProgramStage, Integer> sortOrder = Field.create(SORT_ORDER);
-    public static final Field<ProgramStage, Boolean> deleted = Field.create(DELETED);
-    public static final Field<ProgramStage, String> executionDateLabel = Field.create(EXECUTION_DATE_LABEL);
-    public static final Field<ProgramStage, Boolean> allowGenerateNextVisit = Field.create(ALLOW_GENERATE_NEXT_VISIT);
-    public static final Field<ProgramStage, Boolean> validCompleteOnly = Field.create(VALID_COMPLETE_ONLY);
-    public static final Field<ProgramStage, String> reportDateToUse = Field.create(REPORT_DATE_TO_USE);
-    public static final Field<ProgramStage, Boolean> openAfterEnrollment = Field.create(OPEN_AFTER_ENROLLMENT);
-    public static final Field<ProgramStage, Boolean> repeatable = Field.create(REPEATABLE);
-    public static final Field<ProgramStage, Boolean> captureCoordinates = Field.create(CAPTURE_COORDINATES);
-    public static final Field<ProgramStage, FormType> formType = Field.create(FORM_TYPE);
-    public static final Field<ProgramStage, Boolean> displayGenerateEventBox = Field.create(DISPLAY_GENERATE_EVENT_BOX);
-    public static final Field<ProgramStage, Boolean> generatedByEnrollmentDate =
+    static final Field<ProgramStage, String> uid = Field.create(UID);
+    private static final Field<ProgramStage, String> code = Field.create(CODE);
+    private static final Field<ProgramStage, String> name = Field.create(NAME);
+    private static final Field<ProgramStage, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<ProgramStage, String> created = Field.create(CREATED);
+    static final Field<ProgramStage, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<ProgramStage, Integer> sortOrder = Field.create(SORT_ORDER);
+    private static final Field<ProgramStage, Boolean> deleted = Field.create(DELETED);
+    private static final Field<ProgramStage, String> executionDateLabel = Field.create(EXECUTION_DATE_LABEL);
+    private static final Field<ProgramStage, Boolean> allowGenerateNextVisit = Field.create(ALLOW_GENERATE_NEXT_VISIT);
+    private static final Field<ProgramStage, Boolean> validCompleteOnly = Field.create(VALID_COMPLETE_ONLY);
+    private static final Field<ProgramStage, String> reportDateToUse = Field.create(REPORT_DATE_TO_USE);
+    private static final Field<ProgramStage, Boolean> openAfterEnrollment = Field.create(OPEN_AFTER_ENROLLMENT);
+    private static final Field<ProgramStage, Boolean> repeatable = Field.create(REPEATABLE);
+    private static final Field<ProgramStage, Boolean> captureCoordinates = Field.create(CAPTURE_COORDINATES);
+    private static final Field<ProgramStage, FormType> formType = Field.create(FORM_TYPE);
+    private static final Field<ProgramStage, Boolean> displayGenerateEventBox
+            = Field.create(DISPLAY_GENERATE_EVENT_BOX);
+    private static final Field<ProgramStage, Boolean> generatedByEnrollmentDate =
             Field.create(GENERATED_BY_ENROLMENT_DATE);
-    public static final Field<ProgramStage, Boolean> autoGenerateEvent = Field.create(AUTO_GENERATE_EVENT);
-    public static final Field<ProgramStage, Boolean> hideDueDate = Field.create(HIDE_DUE_DATE);
-    public static final Field<ProgramStage, Boolean> blockEntryForm = Field.create(BLOCK_ENTRY_FORM);
-    public static final Field<ProgramStage, Integer> minDaysFromStart = Field.create(MIN_DAYS_FROM_START);
-    public static final Field<ProgramStage, Integer> standardInterval = Field.create(STANDARD_INTERVAL);
-    public static final Field<ProgramStage, PeriodType> periodType = Field.create(PERIOD_TYPE);
-    public static final Field<ProgramStage, Boolean> remindCompleted = Field.create(REMIND_COMPLETED);
+    private static final Field<ProgramStage, Boolean> autoGenerateEvent = Field.create(AUTO_GENERATE_EVENT);
+    private static final Field<ProgramStage, Boolean> hideDueDate = Field.create(HIDE_DUE_DATE);
+    private static final Field<ProgramStage, Boolean> blockEntryForm = Field.create(BLOCK_ENTRY_FORM);
+    private static final Field<ProgramStage, Integer> minDaysFromStart = Field.create(MIN_DAYS_FROM_START);
+    private static final Field<ProgramStage, Integer> standardInterval = Field.create(STANDARD_INTERVAL);
+    private static final Field<ProgramStage, PeriodType> periodType = Field.create(PERIOD_TYPE);
+    private static final Field<ProgramStage, Boolean> remindCompleted = Field.create(REMIND_COMPLETED);
 
-    public static final NestedField<ProgramStage, ProgramStageSection> programStageSections
+    private static final NestedField<ProgramStage, ProgramStageSection> programStageSections
             = NestedField.create(PROGRAM_STAGE_SECTIONS);
-    public static final NestedField<ProgramStage, ProgramStageDataElement> programStageDataElements =
+    private static final NestedField<ProgramStage, ProgramStageDataElement> programStageDataElements =
             NestedField.create(PROGRAM_STAGE_DATA_ELEMENTS);
-    public static final NestedField<ProgramStage, ObjectStyle> style = NestedField.create(STYLE);
-    public static final NestedField<ProgramStage, ObjectWithUid> program = NestedField.create(PROGRAM);
-    public static final NestedField<ProgramStage, Access> access = NestedField.create(ACCESS);
+    private static final NestedField<ProgramStage, ObjectStyle> style = NestedField.create(STYLE);
+    private static final NestedField<ProgramStage, ObjectWithUid> program = NestedField.create(PROGRAM);
+    private static final NestedField<ProgramStage, Access> access = NestedField.create(ACCESS);
 
     static final Fields<ProgramStage> allFields = Fields.<ProgramStage>builder().fields(
             uid, code, name, displayName, created, lastUpdated, allowGenerateNextVisit, autoGenerateEvent,

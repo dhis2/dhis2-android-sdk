@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
@@ -54,28 +55,28 @@ public abstract class ProgramIndicator extends BaseNameableObject {
     private static final String LEGEND_SETS = "legendSets";
 
     public static final Field<ProgramIndicator, String> uid = Field.create(UID);
-    public static final Field<ProgramIndicator, String> code = Field.create(CODE);
-    public static final Field<ProgramIndicator, String> name = Field.create(NAME);
-    public static final Field<ProgramIndicator, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<ProgramIndicator, String> created = Field.create(CREATED);
-    public static final Field<ProgramIndicator, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<ProgramIndicator, Boolean> deleted = Field.create(DELETED);
-    public static final Field<ProgramIndicator, String> shortName = Field.create(SHORT_NAME);
-    public static final Field<ProgramIndicator, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    public static final Field<ProgramIndicator, String> description = Field.create(DESCRIPTION);
-    public static final Field<ProgramIndicator, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    public static final Field<ProgramIndicator, Boolean> displayInForm = Field.create(DISPLAY_IN_FORM);
-    public static final Field<ProgramIndicator, String> expression = Field.create(EXPRESSION);
-    public static final Field<ProgramIndicator, String> dimensionItem = Field.create(DIMENSION_ITEM);
-    public static final Field<ProgramIndicator, String> filter = Field.create(FILTER);
-    public static final Field<ProgramIndicator, Integer> decimals = Field.create(DECIMALS);
-    public static final NestedField<ProgramIndicator, Program> program = NestedField.create(PROGRAM);
+    private static final Field<ProgramIndicator, String> code = Field.create(CODE);
+    private static final Field<ProgramIndicator, String> name = Field.create(NAME);
+    private static final Field<ProgramIndicator, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<ProgramIndicator, String> created = Field.create(CREATED);
+    private static final Field<ProgramIndicator, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<ProgramIndicator, Boolean> deleted = Field.create(DELETED);
+    private static final Field<ProgramIndicator, String> shortName = Field.create(SHORT_NAME);
+    private static final Field<ProgramIndicator, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+    private static final Field<ProgramIndicator, String> description = Field.create(DESCRIPTION);
+    private static final Field<ProgramIndicator, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
+    private static final Field<ProgramIndicator, Boolean> displayInForm = Field.create(DISPLAY_IN_FORM);
+    private static final Field<ProgramIndicator, String> expression = Field.create(EXPRESSION);
+    private static final Field<ProgramIndicator, String> dimensionItem = Field.create(DIMENSION_ITEM);
+    private static final Field<ProgramIndicator, String> filter = Field.create(FILTER);
+    private static final Field<ProgramIndicator, Integer> decimals = Field.create(DECIMALS);
+    public static final NestedField<ProgramIndicator, ObjectWithUid> program = NestedField.create(PROGRAM);
     private static final NestedField<ProgramIndicator, LegendSet> legendSets = NestedField.create(LEGEND_SETS);
 
     static final Fields<ProgramIndicator> allFields = Fields.<ProgramIndicator>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, deleted, decimals, dimensionItem, displayInForm, expression, filter,
-            program.with(Program.uid), legendSets.with(LegendSet.allFields)
+            program.with(ObjectWithUid.uid), legendSets.with(LegendSet.allFields)
     ).build();
 
     @Nullable

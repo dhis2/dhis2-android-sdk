@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -43,10 +44,18 @@ import org.mockito.MockitoAnnotations;
 import java.io.IOException;
 import java.util.Date;
 
+import javax.net.ssl.HttpsURLConnection;
+
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public abstract class BaseCallShould {
@@ -70,6 +79,8 @@ public abstract class BaseCallShould {
     @Mock
     protected Transaction transaction;
 
+    protected Response errorResponse;
+
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
@@ -90,9 +101,24 @@ public abstract class BaseCallShould {
         when(resourceHandler.getLastUpdated(any(ResourceModel.Type.class))).thenReturn(null);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
+
+        errorResponse = Response.error(
+                HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
+                ResponseBody.create(MediaType.parse("application/json"), "{}"));
     }
 
     public void tearDown() throws IOException {
         dhis2MockServer.shutdown();
+    }
+
+    protected void whenEndpointCallFails(Call<?> endpointCall) throws Exception {
+        when(endpointCall.call()).thenThrow(CallException.create(errorResponse));
+    }
+
+    protected <T> void verifyFail(Response<T> response) throws Exception {
+        assertThat(response).isEqualTo(errorResponse);
+        verify(databaseAdapter).beginNewTransaction();
+        verify(transaction).end();
+        verify(transaction, never()).setSuccessful();
     }
 }

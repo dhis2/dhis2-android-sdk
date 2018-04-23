@@ -73,7 +73,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
     private static final String PROGRAM = "test_program";
     //foreign keys to program:
     private static final long TRACKED_ENTITY_ID = 1L;
-    private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
+    private static final String TRACKED_ENTITY_UID = "trackedEntityTypeUid";
     private static final long RELATIONSHIP_TYPE_ID = 1L;
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
 

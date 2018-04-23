@@ -26,17 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import com.google.auto.value.AutoValue;
 
-public final class ProgramStore {
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import retrofit2.Response;
 
-    private ProgramStore() {}
+@AutoValue
+public abstract class CallException extends Exception {
 
-    public static IdentifiableObjectStore<ProgramModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, ProgramModel.TABLE, ProgramModel.Columns.all());
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Class can't be changed")
+    public abstract Response response();
+
+    public static CallException create(Response response) {
+        return new AutoValue_CallException(response);
     }
 }

@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
@@ -74,14 +75,14 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     public static final Field<OrganisationUnit, String> level = Field.create(LEVEL);
     public static final Field<OrganisationUnit, Boolean> deleted = Field.create(DELETED);
     public static final NestedField<OrganisationUnit, OrganisationUnit> parent = NestedField.create(PARENT);
-    public static final NestedField<OrganisationUnit, Program> programs = NestedField.create(PROGRAMS);
+    public static final NestedField<OrganisationUnit, ObjectWithUid> programs = NestedField.create(PROGRAMS);
     public static final NestedField<OrganisationUnit, DataSet> dataSets = NestedField.create(DATA_SETS);
     public static final NestedField<OrganisationUnit, OrganisationUnit> ancestors = NestedField.create(ANCESTORS);
 
     static final Fields<OrganisationUnit> allFields = Fields.<OrganisationUnit>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, displayDescription, path, openingDate,
-            closedDate, level, deleted, parent.with(uid), programs.with(Program.uid),
+            closedDate, level, deleted, parent.with(uid), programs.with(ObjectWithUid.uid),
             dataSets.with(DataSet.uid),
             ancestors.with(OrganisationUnit.uid, OrganisationUnit.displayName)).build();
     

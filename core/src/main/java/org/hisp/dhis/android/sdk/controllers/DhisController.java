@@ -64,7 +64,6 @@ import org.hisp.dhis.android.sdk.synchronization.domain.app.SyncAppUseCase;
 import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.IEnrollmentRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance
         .ITrackedEntityInstanceRepository;
-import org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance.SyncTrackedEntityInstanceUseCase;
 import org.hisp.dhis.android.sdk.utils.SyncDateWrapper;
 import org.hisp.dhis.client.sdk.ui.AppPreferencesImpl;
 
@@ -83,6 +82,7 @@ public final class DhisController {
     private final static String PASSWORD = "password";
     private final static String SERVER = "server";
     private final static String CREDENTIALS = "credentials";
+    public static final Float START_LATEST_API_VERSION =2.29f;
 
     /**
      * Variable hasUnSynchronizedDatavalues
@@ -241,4 +241,9 @@ public final class DhisController {
         return getInstance().syncDateWrapper;
     }
 
+    public boolean isLoggedInServerWithLatestApiVersion() {
+        SystemInfo systemInfo = MetaDataController.getSystemInfo();
+        Float serverVersion = systemInfo.getVersionNumber();
+        return serverVersion >= START_LATEST_API_VERSION;
+    }
 }

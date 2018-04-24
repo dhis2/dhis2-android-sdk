@@ -39,6 +39,7 @@ public enum ContextVariableType {
     EVENT_ID( "event_id" ),
     INCIDENT_DATE( "incident_date" ),
     ENROLLMENT_COUNT( "enrollment_count" ),
+    ORG_UNIT_CODE( "orgunit_code" ),
     TEI_COUNT( "tei_count" );
 
     final String value;

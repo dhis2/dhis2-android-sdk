@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -54,9 +53,6 @@ public abstract class EnrollmentModel extends BaseDataModel {
     public static EnrollmentModel.Builder builder() {
         return new $$AutoValue_EnrollmentModel.Builder();
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     public static class Columns extends BaseDataModel.Columns {
         public static final String UID = "uid";

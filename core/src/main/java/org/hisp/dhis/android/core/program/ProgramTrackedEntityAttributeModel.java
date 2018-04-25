@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -81,9 +80,6 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
     @Nullable
     @ColumnName(Columns.SORT_ORDER)
     public abstract Integer sortOrder();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {

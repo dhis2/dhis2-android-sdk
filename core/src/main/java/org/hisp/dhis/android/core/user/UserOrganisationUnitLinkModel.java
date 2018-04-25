@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -71,9 +70,6 @@ public abstract class UserOrganisationUnitLinkModel extends BaseModel implements
     @Nullable
     @ColumnName(Columns.ORGANISATION_UNIT_SCOPE)
     public abstract String organisationUnitScope();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @NonNull
     public static UserOrganisationUnitLinkModel create(Cursor cursor) {

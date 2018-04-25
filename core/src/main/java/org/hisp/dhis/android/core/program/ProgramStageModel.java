@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -96,9 +95,6 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
     public static Builder builder() {
         return new $$AutoValue_ProgramStageModel.Builder();
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @Nullable
     @ColumnName(Columns.EXECUTION_DATE_LABEL)

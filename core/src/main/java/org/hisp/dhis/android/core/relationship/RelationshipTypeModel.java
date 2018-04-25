@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -76,9 +75,6 @@ public abstract class RelationshipTypeModel extends BaseIdentifiableObjectModel 
             return create(cursor);
         }
     };
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @Nullable
     @ColumnName(Columns.B_IS_TO_A)

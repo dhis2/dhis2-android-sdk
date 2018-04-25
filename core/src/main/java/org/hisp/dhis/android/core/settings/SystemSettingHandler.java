@@ -25,37 +25,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.calls;
 
-import org.hisp.dhis.android.core.common.CallException;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.Transaction;
+package org.hisp.dhis.android.core.settings;
 
-import retrofit2.Response;
-
-public abstract class TransactionalCall extends SyncCall {
-    protected final GenericCallData data;
-
-    protected TransactionalCall(GenericCallData data) {
-        this.data = data;
-    }
-
-    public abstract Response callBody() throws Exception;
-
-    @Override
-    public final Response call() throws Exception {
-        super.setExecuted();
-
-        Transaction transaction = data.databaseAdapter().beginNewTransaction();
-        try {
-            Response response = callBody();
-            transaction.setSuccessful();
-            return response;
-        } catch (CallException e) {
-            return e.response();
-        } finally {
-            transaction.end();
-        }
-    }
+public interface SystemSettingHandler {
+    void handle(SystemSetting setting, SystemSettingModelBuilder modelBuilder);
 }

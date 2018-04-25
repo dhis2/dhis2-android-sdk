@@ -25,37 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.calls;
 
-import org.hisp.dhis.android.core.common.CallException;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.Transaction;
+package org.hisp.dhis.android.core.settings;
 
-import retrofit2.Response;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public abstract class TransactionalCall extends SyncCall {
-    protected final GenericCallData data;
+public final class SystemSettingHandlerImpl implements SystemSettingHandler {
 
-    protected TransactionalCall(GenericCallData data) {
-        this.data = data;
+    private final ObjectWithoutUidStore<SystemSettingModel> store;
+
+    SystemSettingHandlerImpl(ObjectWithoutUidStore<SystemSettingModel> store) {
+        this.store = store;
     }
 
-    public abstract Response callBody() throws Exception;
-
     @Override
-    public final Response call() throws Exception {
-        super.setExecuted();
-
-        Transaction transaction = data.databaseAdapter().beginNewTransaction();
-        try {
-            Response response = callBody();
-            transaction.setSuccessful();
-            return response;
-        } catch (CallException e) {
-            return e.response();
-        } finally {
-            transaction.end();
+    public void handle(SystemSetting setting, SystemSettingModelBuilder modelBuilder) {
+        if (setting != null) {
+            for (SystemSettingModel settingModel: modelBuilder.splitSettings(setting)) {
+                store.updateOrInsertWhere(settingModel);
+            }
         }
+    }
+
+    static SystemSettingHandler create(DatabaseAdapter databaseAdapter) {
+        return new SystemSettingHandlerImpl(SystemSettingStore.create(databaseAdapter));
     }
 }

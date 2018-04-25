@@ -25,37 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.calls;
 
-import org.hisp.dhis.android.core.common.CallException;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.Transaction;
+package org.hisp.dhis.android.core.settings;
 
-import retrofit2.Response;
+import android.support.annotation.Nullable;
 
-public abstract class TransactionalCall extends SyncCall {
-    protected final GenericCallData data;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-    protected TransactionalCall(GenericCallData data) {
-        this.data = data;
-    }
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-    public abstract Response callBody() throws Exception;
+@AutoValue
+public abstract class SystemSetting {
+    private static final String KEY_FLAG = "keyFlag";
+    private static final String KEY_STYLE = "keyStyle";
 
-    @Override
-    public final Response call() throws Exception {
-        super.setExecuted();
+    static final Fields<SystemSetting> allFields = Fields.<SystemSetting>builder().fields(
+            Field.<SystemSetting, String>create(KEY_FLAG),
+            Field.<SystemSetting, String>create(KEY_STYLE)
+    ).build();
 
-        Transaction transaction = data.databaseAdapter().beginNewTransaction();
-        try {
-            Response response = callBody();
-            transaction.setSuccessful();
-            return response;
-        } catch (CallException e) {
-            return e.response();
-        } finally {
-            transaction.end();
-        }
+    @Nullable
+    @JsonProperty(KEY_FLAG)
+    public abstract String keyFlag();
+
+    @Nullable
+    @JsonProperty(KEY_STYLE)
+    public abstract String keyStyle();
+
+    @JsonCreator
+    public static SystemSetting create(
+            @JsonProperty(KEY_FLAG) String keyFlag,
+            @JsonProperty(KEY_STYLE) String keyStyle) {
+
+        return new AutoValue_SystemSetting(
+                keyFlag,
+                keyStyle
+        );
     }
 }

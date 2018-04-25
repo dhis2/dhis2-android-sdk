@@ -26,45 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.settings;
 
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.CallException;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.resource.ResourceModel;
-
-import java.io.IOException;
-import java.util.List;
 
 import retrofit2.Response;
 
-public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
-        extends SyncCall<Payload<P>> {
+public final class SystemSettingCall extends SyncCall<SystemSetting> {
     private final GenericCallData data;
-    private final GenericHandler<P, M> handler;
+    private final SystemSettingHandler handler;
+    private final SystemSettingService service;
+    private final SystemSettingModelBuilder modelBuilder;
 
-    private final ResourceModel.Type resourceType;
-    private final ModelBuilder<P, M> modelBuilder;
-    public final Q query;
-
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler,
-                                   ResourceModel.Type resourceType,
-                                   ModelBuilder<P, M> modelBuilder, Q query) {
+    private SystemSettingCall(GenericCallData data,
+                             SystemSettingHandler handler,
+                             SystemSettingService service,
+                             SystemSettingModelBuilder modelBuilder) {
         this.data = data;
         this.handler = handler;
-        this.resourceType = resourceType;
+        this.service = service;
         this.modelBuilder = modelBuilder;
-        this.query = query;
     }
 
     @Override
-    public final Response<Payload<P>> call() throws Exception {
+    public Response<SystemSetting> call() throws Exception {
         super.setExecuted();
 
-        if (!query.isValid()) {
-            throw new IllegalArgumentException("Invalid query");
-        }
-
-        String lastUpdated = data.resourceHandler().getLastUpdated(resourceType);
-        Response<Payload<P>> response = getCall(query, lastUpdated).execute();
+        Response<SystemSetting> response = service.getSystemSettings(SystemSetting.allFields).execute();
 
         if (isValidResponse(response)) {
             persist(response);
@@ -74,20 +67,13 @@ public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends Base
         }
     }
 
-    protected abstract retrofit2.Call<Payload<P>> getCall(Q query, String lastUpdated) throws IOException;
-
-    private void persist(Response<Payload<P>> response) {
-        if (response == null) {
-            throw new RuntimeException("Trying to process call without download data");
-        }
-        List<P> pojoList = response.body().items();
-        if (pojoList != null && !pojoList.isEmpty()) {
+    private void persist(Response<SystemSetting> response) {
+        SystemSetting pojo = response.body();
+        if (pojo != null) {
             Transaction transaction = data.databaseAdapter().beginNewTransaction();
 
             try {
-                handler.handleMany(pojoList, modelBuilder);
-                data.resourceHandler().handleResource(resourceType, data.serverDate());
-
+                handler.handle(pojo, modelBuilder);
                 transaction.setSuccessful();
             } finally {
                 transaction.end();
@@ -95,7 +81,21 @@ public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends Base
         }
     }
 
-    private boolean isValidResponse(Response<Payload<P>> response) {
-        return response.isSuccessful() && response.body().items() != null;
+    private boolean isValidResponse(Response<SystemSetting> response) {
+        return response.isSuccessful() && response.body() != null;
     }
+
+    public static final SimpleCallFactory<SystemSetting> FACTORY =
+            new SimpleCallFactory<SystemSetting>() {
+
+                @Override
+                public Call<Response<SystemSetting>> create(GenericCallData genericCallData) {
+                    return new SystemSettingCall(
+                            genericCallData,
+                            SystemSettingHandlerImpl.create(genericCallData.databaseAdapter()),
+                            genericCallData.retrofit().create(SystemSettingService.class),
+                            new SystemSettingModelBuilder()
+                    );
+                }
+            };
 }

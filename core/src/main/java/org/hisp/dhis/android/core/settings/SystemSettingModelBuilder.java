@@ -25,37 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.calls;
 
-import org.hisp.dhis.android.core.common.CallException;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.Transaction;
+package org.hisp.dhis.android.core.settings;
 
-import retrofit2.Response;
+import java.util.ArrayList;
+import java.util.List;
 
-public abstract class TransactionalCall extends SyncCall {
-    protected final GenericCallData data;
+class SystemSettingModelBuilder {
 
-    protected TransactionalCall(GenericCallData data) {
-        this.data = data;
-    }
+    List<SystemSettingModel> splitSettings(SystemSetting settings) {
+        SystemSettingModel flag = SystemSettingModel.builder().key("flag").value(settings.keyFlag()).build();
+        SystemSettingModel style = SystemSettingModel.builder().key("style").value(settings.keyStyle()).build();
 
-    public abstract Response callBody() throws Exception;
+        List<SystemSettingModel> settingModelList = new ArrayList<>(2);
+        settingModelList.add(flag);
+        settingModelList.add(style);
 
-    @Override
-    public final Response call() throws Exception {
-        super.setExecuted();
-
-        Transaction transaction = data.databaseAdapter().beginNewTransaction();
-        try {
-            Response response = callBody();
-            transaction.setSuccessful();
-            return response;
-        } catch (CallException e) {
-            return e.response();
-        } finally {
-            transaction.end();
-        }
+        return settingModelList;
     }
 }

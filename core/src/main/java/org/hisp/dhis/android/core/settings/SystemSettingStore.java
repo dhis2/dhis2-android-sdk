@@ -25,37 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.calls;
 
-import org.hisp.dhis.android.core.common.CallException;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.Transaction;
+package org.hisp.dhis.android.core.settings;
 
-import retrofit2.Response;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public abstract class TransactionalCall extends SyncCall {
-    protected final GenericCallData data;
+public final class SystemSettingStore {
 
-    protected TransactionalCall(GenericCallData data) {
-        this.data = data;
-    }
+    private SystemSettingStore() {}
 
-    public abstract Response callBody() throws Exception;
-
-    @Override
-    public final Response call() throws Exception {
-        super.setExecuted();
-
-        Transaction transaction = data.databaseAdapter().beginNewTransaction();
-        try {
-            Response response = callBody();
-            transaction.setSuccessful();
-            return response;
-        } catch (CallException e) {
-            return e.response();
-        } finally {
-            transaction.end();
-        }
+    public static ObjectWithoutUidStore<SystemSettingModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemSettingModel.TABLE,
+                SystemSettingModel.Columns.all(), SystemSettingModel.Columns.whereUpdate());
     }
 }

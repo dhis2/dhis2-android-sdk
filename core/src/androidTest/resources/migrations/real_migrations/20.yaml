@@ -1,0 +1,2 @@
+up:
+- CREATE TABLE SystemSetting (_id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT,value TEXT, UNIQUE (key));

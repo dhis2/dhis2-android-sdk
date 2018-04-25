@@ -25,37 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.calls;
 
-import org.hisp.dhis.android.core.common.CallException;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.Transaction;
+package org.hisp.dhis.android.core.settings;
 
-import retrofit2.Response;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-public abstract class TransactionalCall extends SyncCall {
-    protected final GenericCallData data;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
 
-    protected TransactionalCall(GenericCallData data) {
-        this.data = data;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
+@RunWith(JUnit4.class)
+public class SystemSettingModelBuilderShould {
+
+    private SystemSetting settingsPojo = SystemSetting.create("aFlag", "aStyle");
+    private SystemSettingModelBuilder modelBuilder = new SystemSettingModelBuilder();
+
+    @Test
+    public void build_flag_setting() throws IOException, ParseException {
+        List<SystemSettingModel> modelList = modelBuilder.splitSettings(settingsPojo);
+        SystemSettingModel flagModel = modelList.get(0);
+        assertThat(flagModel.key()).isEqualTo("flag");
+        assertThat(flagModel.value()).isEqualTo("aFlag");
     }
 
-    public abstract Response callBody() throws Exception;
-
-    @Override
-    public final Response call() throws Exception {
-        super.setExecuted();
-
-        Transaction transaction = data.databaseAdapter().beginNewTransaction();
-        try {
-            Response response = callBody();
-            transaction.setSuccessful();
-            return response;
-        } catch (CallException e) {
-            return e.response();
-        } finally {
-            transaction.end();
-        }
+    @Test
+    public void build_style_setting() throws IOException, ParseException {
+        List<SystemSettingModel> modelList = modelBuilder.splitSettings(settingsPojo);
+        SystemSettingModel flagModel = modelList.get(1);
+        assertThat(flagModel.key()).isEqualTo("style");
+        assertThat(flagModel.value()).isEqualTo("aStyle");
     }
 }

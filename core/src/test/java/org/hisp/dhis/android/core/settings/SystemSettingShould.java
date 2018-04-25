@@ -25,37 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.calls;
 
-import org.hisp.dhis.android.core.common.CallException;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.Transaction;
+package org.hisp.dhis.android.core.settings;
 
-import retrofit2.Response;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-public abstract class TransactionalCall extends SyncCall {
-    protected final GenericCallData data;
+import java.io.IOException;
+import java.text.ParseException;
 
-    protected TransactionalCall(GenericCallData data) {
-        this.data = data;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
+public class SystemSettingShould extends BaseObjectShould implements ObjectShould {
+
+    public SystemSettingShould() {
+        super("settings/system_setting.json");
     }
 
-    public abstract Response callBody() throws Exception;
-
     @Override
-    public final Response call() throws Exception {
-        super.setExecuted();
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        SystemSetting settings = objectMapper.readValue(jsonStream, SystemSetting.class);
 
-        Transaction transaction = data.databaseAdapter().beginNewTransaction();
-        try {
-            Response response = callBody();
-            transaction.setSuccessful();
-            return response;
-        } catch (CallException e) {
-            return e.response();
-        } finally {
-            transaction.end();
-        }
+        assertThat(settings.keyFlag()).isEqualTo("sierra_leone");
+        assertThat(settings.keyStyle()).isEqualTo("light_blue/light_blue.css");
     }
 }

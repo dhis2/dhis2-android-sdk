@@ -54,11 +54,13 @@ public class IncidentDatePickerRow extends AbsDatePickerRow {
     private static final String TAG = "IncidentDatePickerRow";
     private Enrollment mEnrollment;
     private String mLabel;
+    private boolean isEditable;
 
-    public IncidentDatePickerRow(String label, Enrollment enrollment) {
+    public IncidentDatePickerRow(String label, Enrollment enrollment, boolean editable) {
         super();
         this.mEnrollment = enrollment;
         this.mLabel = label;
+        isEditable = editable;
     }
 
     @Override
@@ -95,6 +97,11 @@ public class IncidentDatePickerRow extends AbsDatePickerRow {
 //            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
 
         return view;
+    }
+
+    @Override
+    public boolean isEditable(){
+        return  isEditable;
     }
 
     @Override

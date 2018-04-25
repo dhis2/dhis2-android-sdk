@@ -29,7 +29,7 @@
 
 package org.hisp.dhis.android.sdk.utils.services;
 
-import android.util.Log;
+import static android.text.TextUtils.isEmpty;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -44,7 +44,6 @@ import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.Option$Table;
-import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
@@ -61,8 +60,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static android.text.TextUtils.isEmpty;
 
 /**
  * Class for handling {@link ProgramRuleVariable}s that can be used in expressions of {@link org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator}
@@ -874,6 +871,21 @@ public class VariableService {
                 }
                 break;
             }
+            case ORG_UNIT_CODE:
+                if (executingEnrollment != null) {
+                    programRuleVariable.setVariableValue(executingEnrollment.getOrgUnit());
+                    programRuleVariable.setHasValue(true);
+                    programRuleVariable.setVariableType(ValueType.TEXT);
+                } else if (executingEvent != null) {
+                    programRuleVariable.setVariableValue(executingEvent.getOrganisationUnitId());
+                    programRuleVariable.setHasValue(true);
+                    programRuleVariable.setVariableType(ValueType.TEXT);
+                } else {
+                    programRuleVariable.setHasValue(false);
+                    programRuleVariable.setVariableValue("");
+                    programRuleVariable.setVariableType(ValueType.TEXT);
+                }
+                break;
             case TEI_COUNT: {
                 if (executingEnrollment != null) {
                     programRuleVariable.setVariableValue("1");

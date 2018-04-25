@@ -121,10 +121,14 @@ public class ProgramWrapper {
             for (DataElement dataElement:programStageSection.getDataElements()){
                 for (ProgramStageDataElement programStageDataElement:
                         programStage.getProgramStageDataElements()) {
-                    if (dataElement.getUid().equals(programStageDataElement.getDataElement().getUid())){
-                        programStageDataElement.setSortOrder(count++); //FIXME: getter changing content
-                        programStageDataElements.add(programStageDataElement);
-                        continue;
+                    if(programStageDataElement.getDataElement()!=null) {
+                        if (dataElement.getUid().equals(
+                                programStageDataElement.getDataElement().getUid())) {
+                            programStageDataElement.setSortOrder(
+                                    count++); //FIXME: getter changing content
+                            programStageDataElements.add(programStageDataElement);
+                            continue;
+                        }
                     }
                 }
             }

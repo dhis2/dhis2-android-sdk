@@ -91,6 +91,7 @@ public abstract class TrackedEntityAttributeReservedValue {
             @JsonProperty(CREATED) Date created,
             @JsonProperty(EXPIRY_DATE) Date expiryDate) {
 
-        return new AutoValue_ReservedValue(ownerObject, ownerUid, key, value, created, expiryDate);
+        return new AutoValue_TrackedEntityAttributeReservedValue(
+                ownerObject, ownerUid, key, value, created, expiryDate);
     }
 }

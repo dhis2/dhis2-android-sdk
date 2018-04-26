@@ -447,7 +447,7 @@ public class EventStoreShould extends AbsStoreTestCase {
         assertThat(events.size()).isEqualTo(1);
 
         Event event = events.get(0);
-        // check that uid and blockCallData values is included
+        // check that uid and data values is included
         assertThat(event.uid()).isEqualTo(EVENT_UID);
     }
 

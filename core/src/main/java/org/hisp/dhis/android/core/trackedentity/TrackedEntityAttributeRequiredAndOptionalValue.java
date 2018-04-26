@@ -39,13 +39,13 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import java.util.List;
 
 @AutoValue
-public abstract class TrackedEntityAttributeRequiredValue {
+public abstract class TrackedEntityAttributeRequiredAndOptionalValue {
     private final static String REQUIRED = "REQUIRED";
     private final static String OPTIONAL = "OPTIONAL";
 
-    private static final NestedField<TrackedEntityAttributeRequiredValue, String> required =
+    private static final NestedField<TrackedEntityAttributeRequiredAndOptionalValue, String> required =
             NestedField.create(REQUIRED);
-    private static final NestedField<TrackedEntityAttributeRequiredValue, String> optional =
+    private static final NestedField<TrackedEntityAttributeRequiredAndOptionalValue, String> optional =
             NestedField.create(OPTIONAL);
 
     @Nullable
@@ -57,7 +57,7 @@ public abstract class TrackedEntityAttributeRequiredValue {
     public abstract List<String> optional();
 
     @JsonCreator
-    public static TrackedEntityAttributeRequiredValue create(
+    public static TrackedEntityAttributeRequiredAndOptionalValue create(
             @JsonProperty(REQUIRED) List<String> required,
             @JsonProperty(OPTIONAL) List<String> optional) {
 

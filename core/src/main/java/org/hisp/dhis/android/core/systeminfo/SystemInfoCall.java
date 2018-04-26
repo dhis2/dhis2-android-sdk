@@ -29,70 +29,50 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.io.IOException;
-
 import retrofit2.Response;
 
-public class SystemInfoCall implements Call<Response<SystemInfo>> {
+public class SystemInfoCall extends SyncCall<SystemInfo> {
     private final DatabaseAdapter databaseAdapter;
-    private final SystemInfoStore systemInfoStore;
+    private final GenericHandler<SystemInfo, SystemInfoModel> systemInfoHandler;
     private final SystemInfoService systemInfoService;
     private final ResourceHandler resourceHandler;
-    private boolean isExecuted;
 
     SystemInfoCall(DatabaseAdapter databaseAdapter,
-                          SystemInfoStore systemInfoStore,
+                   GenericHandler<SystemInfo, SystemInfoModel> systemInfoHandler,
                           SystemInfoService systemInfoService,
                           ResourceHandler resourceHandler) {
         this.databaseAdapter = databaseAdapter;
-        this.systemInfoStore = systemInfoStore;
+        this.systemInfoHandler = systemInfoHandler;
         this.systemInfoService = systemInfoService;
         this.resourceHandler = resourceHandler;
     }
 
     @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-
-    }
-
-    @Override
     public Response<SystemInfo> call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Already executed");
-            }
+        super.setExecuted();
 
-            isExecuted = true;
-        }
-
-        Response<SystemInfo> response = getSystemInfo();
+        Response<SystemInfo> response = systemInfoService.getSystemInfo(SystemInfo.allFields).execute();
         if (response.isSuccessful()) {
             insertOrUpdateSystemInfo(response);
         }
-
 
         return response;
     }
 
     private void insertOrUpdateSystemInfo(Response<SystemInfo> response) {
-        SystemInfoHandler systemInfoHandler = new SystemInfoHandler(systemInfoStore);
-
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             if (response.body() != null) {
                 SystemInfo systemInfo = response.body();
-                systemInfoHandler.handleSystemInfo(systemInfo);
-
+                systemInfoHandler.handle(systemInfo, new SystemInfoModelBuilder());
                 resourceHandler.handleResource(ResourceModel.Type.SYSTEM_INFO, systemInfo.serverDate());
             }
 
@@ -102,24 +82,13 @@ public class SystemInfoCall implements Call<Response<SystemInfo>> {
         }
     }
 
-    private Response<SystemInfo> getSystemInfo() throws IOException {
-        return systemInfoService.getSystemInfo(
-                Fields.<SystemInfo>builder().fields(
-                        SystemInfo.serverDateTime,
-                        SystemInfo.dateFormat,
-                        SystemInfo.version,
-                        SystemInfo.contextPath
-                ).build()
-        ).execute();
-    }
-
     public static final SimpleCallFactory<SystemInfo> FACTORY = new SimpleCallFactory<SystemInfo>() {
 
         @Override
         public Call<Response<SystemInfo>> create(GenericCallData genericCallData) {
             return new SystemInfoCall(
                     genericCallData.databaseAdapter(),
-                    new SystemInfoStoreImpl(genericCallData.databaseAdapter()),
+                    SystemInfoHandler.create(genericCallData.databaseAdapter()),
                     genericCallData.retrofit().create(SystemInfoService.class),
                     genericCallData.resourceHandler()
             );

@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -36,12 +38,16 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
 @AutoValue
-public abstract class SystemInfoModel extends BaseModel {
+public abstract class SystemInfoModel extends BaseModel implements UpdateWhereStatementBinder {
 
     public static final String TABLE = "SystemInfo";
 
@@ -50,6 +56,17 @@ public abstract class SystemInfoModel extends BaseModel {
         public static final String DATE_FORMAT = "dateFormat";
         public static final String VERSION = "version";
         public static final String CONTEXT_PATH = "contextPath";
+
+        private Columns() {}
+
+        public static String[] all() {
+            return Utils.appendInNewArray(BaseModel.Columns.all(),
+                    SERVER_DATE, DATE_FORMAT, VERSION, CONTEXT_PATH);
+        }
+
+        static String[] whereUpdate() {
+            return new String[]{CONTEXT_PATH};
+        }
     }
 
     public static SystemInfoModel create(Cursor cursor) {
@@ -76,6 +93,19 @@ public abstract class SystemInfoModel extends BaseModel {
     @Nullable
     @ColumnName(Columns.CONTEXT_PATH)
     public abstract String contextPath();
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, serverDate());
+        sqLiteBind(sqLiteStatement, 2, dateFormat());
+        sqLiteBind(sqLiteStatement, 3, version());
+        sqLiteBind(sqLiteStatement, 4, contextPath());
+    }
+
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 5, contextPath());
+    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {

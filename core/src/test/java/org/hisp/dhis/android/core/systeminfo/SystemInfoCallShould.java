@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -54,8 +55,8 @@ import retrofit2.Response;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -72,7 +73,7 @@ public class SystemInfoCallShould {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private SystemInfoStore systemInfoStore;
+    private GenericHandler<SystemInfo, SystemInfoModel> systemInfoHandler;
 
     @Mock
     private ResourceHandler resourceHandler;
@@ -100,7 +101,7 @@ public class SystemInfoCallShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         systemInfoSyncCall = new SystemInfoCall(
-                databaseAdapter, systemInfoStore, systemInfoService, resourceHandler
+                databaseAdapter, systemInfoHandler, systemInfoService, resourceHandler
         );
 
         when(systemInfo.version()).thenReturn("test.version-SNAPSHOT");
@@ -142,7 +143,7 @@ public class SystemInfoCallShould {
             verify(transaction, never()).setSuccessful();
             verify(transaction, never()).end();
 
-            verify(systemInfoStore, never()).insert(any(Date.class), anyString(), anyString(), anyString());
+            verifyNoMoreInteractions(systemInfoHandler);
             verifyNoMoreInteractions(resourceHandler);
         }
     }
@@ -163,7 +164,7 @@ public class SystemInfoCallShould {
         verify(transaction, never()).end();
         verify(transaction, never()).setSuccessful();
 
-        verify(systemInfoStore, never()).insert(any(Date.class), anyString(), anyString(), anyString());
+        verifyNoMoreInteractions(systemInfoHandler);
         verifyNoMoreInteractions(resourceHandler);
     }
 
@@ -210,7 +211,8 @@ public class SystemInfoCallShould {
 
         systemInfoSyncCall.call();
 
-        verify(systemInfoStore, times(1)).insert(any(Date.class), anyString(), anyString(), anyString());
+        verify(systemInfoHandler, times(1)).handle(same(systemInfo),
+                any(SystemInfoModelBuilder.class));
         verify(resourceHandler, times(1)).handleResource(
                 eq(ResourceModel.Type.SYSTEM_INFO), any(Date.class));
 

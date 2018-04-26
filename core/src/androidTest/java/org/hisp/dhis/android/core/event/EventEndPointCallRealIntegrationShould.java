@@ -49,7 +49,7 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
         response = eventEndPointCall.call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
-        //TODO: we should create dependant server data verifications in other test suite
+        //TODO: we should create dependant server blockCallData verifications in other test suite
        /* verifyNumberOfDownloadedEvents(49);
         verifyNumberOfDownloadedTrackedEntityDataValue(335);*/
     }

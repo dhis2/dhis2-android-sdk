@@ -4,41 +4,35 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Response;
 
-public class EventEndPointCall implements Call<Response<Payload<Event>>> {
+public class EventEndPointCall extends SyncCall<Payload<Event>> {
 
     private final GenericCallData genericCallData;
     private final EventService eventService;
     private final EventQuery eventQuery;
     private final EventHandler eventHandler;
-    private final Date serverDate;
-
-    private boolean isExecuted;
 
     EventEndPointCall(@NonNull GenericCallData genericCallData,
                       @NonNull EventService eventService,
                       @NonNull EventHandler eventHandler,
-                      @NonNull EventQuery eventQuery,
-                      @NonNull Date serverDate) {
+                      @NonNull EventQuery eventQuery) {
 
         this.genericCallData = genericCallData;
         this.eventService = eventService;
         this.eventHandler = eventHandler;
         this.eventQuery = eventQuery;
-        this.serverDate = serverDate;
 
         if (eventQuery != null && eventQuery.getUIds() != null &&
                 eventQuery.getUIds().size() > MAX_UIDS) {
@@ -49,20 +43,8 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
     }
 
     @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
-    @Override
     public Response<Payload<Event>> call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Already executed");
-            }
-            isExecuted = true;
-        }
+        super.setExecuted();
 
         String lastSyncedEvents = genericCallData.resourceHandler().getLastUpdated(ResourceModel.Type.EVENT);
 
@@ -113,7 +95,8 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
                     transaction.end();
                 }
             }
-            genericCallData.resourceHandler().handleResource(ResourceModel.Type.EVENT, serverDate);
+            genericCallData.resourceHandler().handleResource(ResourceModel.Type.EVENT,
+                    genericCallData.serverDate());
 
         }
         return eventsByLastUpdated;
@@ -130,14 +113,12 @@ public class EventEndPointCall implements Call<Response<Payload<Event>>> {
     }
 
     public static EventEndPointCall create(GenericCallData genericCallData,
-                                           Date serverDate,
                                            EventQuery eventQuery) {
         return new EventEndPointCall(
                 genericCallData,
                 genericCallData.retrofit().create(EventService.class),
                 EventHandler.create(genericCallData.databaseAdapter()),
-                eventQuery,
-                serverDate
+                eventQuery
     );
 }
 }

@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.calls.TrackerEntitiesDataCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BlockCallData;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
@@ -57,7 +56,6 @@ import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
 
-import java.util.Date;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
@@ -88,6 +86,10 @@ public final class D2 {
         return databaseAdapter;
     }
 
+    private BlockCallData blockCallData() {
+        return BlockCallData.create(databaseAdapter, retrofit);
+    }
+
     @NonNull
     public Call<Response<User>> logIn(@NonNull String username, @NonNull String password) {
         if (username == null) {
@@ -97,8 +99,7 @@ public final class D2 {
             throw new NullPointerException("password == null");
         }
 
-        return UserAuthenticateCall.create(GenericCallData.create(databaseAdapter, retrofit),
-                username, password);
+        return UserAuthenticateCall.create(blockCallData(), username, password);
     }
 
     @NonNull
@@ -119,34 +120,33 @@ public final class D2 {
 
     @NonNull
     public Call<Response> syncMetaData() {
-        return MetadataCall.create(BlockCallData.create(databaseAdapter, retrofit));
+        return MetadataCall.create(blockCallData());
     }
 
     @NonNull
     public Call<Response> syncAggregatedData() {
-        return AggregatedDataCall.create(databaseAdapter, retrofit);
+        return AggregatedDataCall.create(blockCallData());
     }
 
     @NonNull
     public Call<Response> syncSingleData(int eventLimitByOrgUnit) {
-        return SingleDataCall.create(GenericCallData.create(databaseAdapter, retrofit), eventLimitByOrgUnit);
+        return SingleDataCall.create(blockCallData(), eventLimitByOrgUnit);
     }
 
     @NonNull
     public Call<Response> syncTrackerData() {
-        return TrackerDataCall.create(GenericCallData.create(databaseAdapter, retrofit));
+        return TrackerDataCall.create(blockCallData());
     }
 
     @NonNull
     public Call<Response<TrackedEntityInstance>>
     downloadTrackedEntityInstance(String trackedEntityInstanceUid) {
-        return TrackedEntityInstanceEndPointCall.create(GenericCallData.create(databaseAdapter, retrofit),
-                new Date(), trackedEntityInstanceUid);
+        return TrackedEntityInstanceEndPointCall.create(blockCallData(), trackedEntityInstanceUid);
     }
 
     @NonNull
     public Call<Response> downloadTrackedEntityInstances(int teiLimitByOrgUnit) {
-        return TrackerEntitiesDataCall.create(GenericCallData.create(databaseAdapter, retrofit), teiLimitByOrgUnit);
+        return TrackerEntitiesDataCall.create(blockCallData(), teiLimitByOrgUnit);
     }
 
     @NonNull

@@ -45,7 +45,7 @@ public abstract class Access {
     private static final String DELETE = "delete";
     private static final String EXTERNALIZE = "externalize";
     private static final String MANAGE = "manage";
-    private static final String DATA = "data";
+    private static final String DATA = "blockCallData";
 
     public static final Field<Access, Boolean> read = Field.create(READ);
     public static final Field<Access, Boolean> write = Field.create(WRITE);

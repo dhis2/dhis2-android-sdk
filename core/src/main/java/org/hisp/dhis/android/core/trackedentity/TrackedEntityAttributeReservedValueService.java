@@ -33,15 +33,10 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface TrackedEntityAttributeReservedValueService {
-    String TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes";
     String TRACKED_ENTITY_ATTRIBUTE_UID = "trackedEntityAttributeUid";
 
-    @GET(TRACKED_ENTITY_ATTRIBUTES + "/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/requiredValues")
-    Call<TrackedEntityAttributeRequiredAndOptionalValue> trackedEntityAttributeRequiredAndOptionalValue(
-            @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityInstanceUid);
-
-    @GET(TRACKED_ENTITY_ATTRIBUTES + "/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
-    Call<TrackedEntityAttributeRequiredAndOptionalValue> generateAndReserve(
+    @GET("trackedEntityAttributes/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
+    Call<TrackedEntityAttributeReservedValue> generateAndReserve(
             @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityInstanceUid,
             @Query("numberToReserve") Integer numberToReserve,
             @Query("ORG_UNIT_CODE") String orgUnitCode);

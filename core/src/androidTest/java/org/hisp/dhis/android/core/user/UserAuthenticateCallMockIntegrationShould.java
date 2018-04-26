@@ -252,20 +252,34 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         assertThatCursor(resource)
                 .hasRow(
                         1L,
-                        ResourceModel.Type.USER,
+                        ResourceModel.Type.SYSTEM_INFO,
                         dateString
                 );
 
         assertThatCursor(resource)
                 .hasRow(
                         2L,
-                        ResourceModel.Type.USER_CREDENTIALS,
+                        ResourceModel.Type.USER,
                         dateString
                 );
 
         assertThatCursor(resource)
                 .hasRow(
                         3L,
+                        ResourceModel.Type.USER,
+                        dateString
+                );
+
+        assertThatCursor(resource)
+                .hasRow(
+                        4L,
+                        ResourceModel.Type.USER_CREDENTIALS,
+                        dateString
+                );
+
+        assertThatCursor(resource)
+                .hasRow(
+                        5L,
                         ResourceModel.Type.AUTHENTICATED_USER,
                         dateString
                 );

@@ -40,16 +40,14 @@ import retrofit2.Retrofit;
 
 @AutoValue
 public abstract class GenericCallData {
+    public abstract DatabaseAdapter databaseAdapter();
+    public abstract ResourceHandler resourceHandler();
+    public abstract Retrofit retrofit();
     public abstract Date serverDate();
 
     public static GenericCallData create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
                                          Date serverDate) {
         return new AutoValue_GenericCallData(databaseAdapter,
-                new ResourceHandler(new ResourceStoreImpl(databaseAdapter)), retrofit, serverDate);
-    }
-
-    public static GenericCallData create(BlockCallData blockCallData, Date serverDate) {
-        return new AutoValue_GenericCallData(blockCallData.databaseAdapter(),
-                blockCallData.resourceHandler(), blockCallData.retrofit(), serverDate);
+                ResourceHandler.create(databaseAdapter), retrofit, serverDate);
     }
 }

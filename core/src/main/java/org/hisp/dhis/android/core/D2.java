@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.calls.TrackerEntitiesDataCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BlockCallData;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
@@ -86,10 +85,6 @@ public final class D2 {
         return databaseAdapter;
     }
 
-    private BlockCallData blockCallData() {
-        return BlockCallData.create(databaseAdapter, retrofit);
-    }
-
     @NonNull
     public Call<Response<User>> logIn(@NonNull String username, @NonNull String password) {
         if (username == null) {
@@ -99,7 +94,7 @@ public final class D2 {
             throw new NullPointerException("password == null");
         }
 
-        return UserAuthenticateCall.create(blockCallData(), username, password);
+        return UserAuthenticateCall.create(databaseAdapter, retrofit, username, password);
     }
 
     @NonNull
@@ -120,33 +115,33 @@ public final class D2 {
 
     @NonNull
     public Call<Response> syncMetaData() {
-        return MetadataCall.create(blockCallData());
+        return MetadataCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
     public Call<Response> syncAggregatedData() {
-        return AggregatedDataCall.create(blockCallData());
+        return AggregatedDataCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
     public Call<Response> syncSingleData(int eventLimitByOrgUnit) {
-        return SingleDataCall.create(blockCallData(), eventLimitByOrgUnit);
+        return SingleDataCall.create(databaseAdapter, retrofit, eventLimitByOrgUnit);
     }
 
     @NonNull
     public Call<Response> syncTrackerData() {
-        return TrackerDataCall.create(blockCallData());
+        return TrackerDataCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
     public Call<Response<TrackedEntityInstance>>
     downloadTrackedEntityInstance(String trackedEntityInstanceUid) {
-        return TrackedEntityInstanceEndPointCall.create(blockCallData(), trackedEntityInstanceUid);
+        return TrackedEntityInstanceEndPointCall.create(databaseAdapter, retrofit, trackedEntityInstanceUid);
     }
 
     @NonNull
     public Call<Response> downloadTrackedEntityInstances(int teiLimitByOrgUnit) {
-        return TrackerEntitiesDataCall.create(blockCallData(), teiLimitByOrgUnit);
+        return TrackerEntitiesDataCall.create(databaseAdapter, retrofit, teiLimitByOrgUnit);
     }
 
     @NonNull

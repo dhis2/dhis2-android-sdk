@@ -2,10 +2,10 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.BlockCallData;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.event.EventEndPointCall;
 import org.hisp.dhis.android.core.event.EventQuery;
@@ -17,21 +17,25 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import java.util.Set;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 public final class SingleDataCall extends SyncCall {
 
-    private final BlockCallData blockCallData;
+    private final DatabaseAdapter databaseAdapter;
+    private final Retrofit retrofit;
 
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
 
     private final int eventLimitByOrgUnit;
 
     private SingleDataCall(
-            @NonNull BlockCallData blockCallData,
+            @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull Retrofit retrofit,
             @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
             int eventLimitByOrgUnit) {
-        this.blockCallData = blockCallData;
+        this.databaseAdapter = databaseAdapter;
+        this.retrofit = retrofit;
         this.organisationUnitStore = organisationUnitStore;
 
         this.eventLimitByOrgUnit = eventLimitByOrgUnit;
@@ -42,16 +46,17 @@ public final class SingleDataCall extends SyncCall {
         super.setExecuted();
 
         Response response = null;
-        Transaction transaction = blockCallData.databaseAdapter().beginNewTransaction();
+        Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            response = SystemInfoCall.FACTORY.create(blockCallData).call();
+            response = SystemInfoCall.FACTORY.create(databaseAdapter, retrofit).call();
 
             if (!response.isSuccessful()) {
                 return response;
             }
 
             SystemInfo systemInfo = (SystemInfo) response.body();
-            GenericCallData genericCallData = GenericCallData.create(blockCallData, systemInfo.serverDate());
+            GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
+                    systemInfo.serverDate());
 
             response = eventCall(genericCallData);
 
@@ -113,11 +118,12 @@ public final class SingleDataCall extends SyncCall {
         return response;
     }
 
-    public static SingleDataCall create(BlockCallData blockCallData,
+    public static SingleDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
                                         int eventLimitByOrgUnit) {
         return new SingleDataCall(
-                blockCallData,
-                OrganisationUnitStore.create(blockCallData.databaseAdapter()),
+                databaseAdapter,
+                retrofit,
+                OrganisationUnitStore.create(databaseAdapter),
                 eventLimitByOrgUnit
         );
     }

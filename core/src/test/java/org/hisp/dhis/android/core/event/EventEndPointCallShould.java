@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -82,7 +81,7 @@ public class EventEndPointCallShould extends BaseCallShould {
                 .withUIds(uIds)
                 .build();
 
-        return EventEndPointCall.create(genericCallData, new Date(), eventQuery);
+        return EventEndPointCall.create(genericCallData, eventQuery);
     }
 
     private EventEndPointCall givenAEventCallByPagination(int page, int pageCount) {
@@ -93,7 +92,7 @@ public class EventEndPointCallShould extends BaseCallShould {
                 .withPaging(true)
                 .build();
 
-        return EventEndPointCall.create(genericCallData, new Date(), eventQuery);
+        return EventEndPointCall.create(genericCallData, eventQuery);
     }
 
     private EventEndPointCall givenAEventCallByOrgUnitAndProgram(String orgUnit, String program) {
@@ -103,6 +102,6 @@ public class EventEndPointCallShould extends BaseCallShould {
                 .withProgram(program)
                 .build();
 
-        return EventEndPointCall.create(genericCallData, new Date(), eventQuery);
+        return EventEndPointCall.create(genericCallData, eventQuery);
     }
 }

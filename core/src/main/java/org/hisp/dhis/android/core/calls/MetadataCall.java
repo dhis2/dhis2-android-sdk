@@ -33,12 +33,12 @@ import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
-import org.hisp.dhis.android.core.common.BlockCallData;
 import org.hisp.dhis.android.core.common.BlockCallFactory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -58,12 +58,14 @@ import java.util.List;
 import java.util.Set;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ModifiedCyclomaticComplexity",
         "PMD.StdCyclomaticComplexity", "PMD.ExcessiveImports"})
 public class MetadataCall extends SyncCall {
 
-    private final BlockCallData blockCallData;
+    private final DatabaseAdapter databaseAdapter;
+    private final Retrofit retrofit;
 
     private final BlockCallFactory<SystemInfo> systemInfoCallFactory;
     private final SimpleCallFactory<SystemSetting> systemSettingCallFactory;
@@ -75,7 +77,8 @@ public class MetadataCall extends SyncCall {
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
     private final DataSetParentCall.Factory dataSetParentCallFactory;
 
-    public MetadataCall(@NonNull BlockCallData blockCallData,
+    public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
+                        @NonNull Retrofit retrofit,
                         @NonNull BlockCallFactory<SystemInfo> systemInfoCallFactory,
                         @NonNull SimpleCallFactory<SystemSetting> systemSettingCallFactory,
                         @NonNull SimpleCallFactory<User> userCallFactory,
@@ -85,7 +88,9 @@ public class MetadataCall extends SyncCall {
                         @NonNull ProgramParentCall.Factory programParentCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory) {
-        this.blockCallData = blockCallData;
+        this.databaseAdapter = databaseAdapter;
+        this.retrofit = retrofit;
+
         this.systemInfoCallFactory = systemInfoCallFactory;
         this.systemSettingCallFactory = systemSettingCallFactory;
         this.userCallFactory = userCallFactory;
@@ -102,14 +107,14 @@ public class MetadataCall extends SyncCall {
     public Response call() throws Exception {
         super.setExecuted();
 
-        Transaction transaction = blockCallData.databaseAdapter().beginNewTransaction();
+        Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(blockCallData).call();
+            Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(databaseAdapter, retrofit).call();
             if (!systemCallResponse.isSuccessful()) {
                 return systemCallResponse;
             }
 
-            GenericCallData genericCallData = GenericCallData.create(blockCallData,
+            GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                     systemCallResponse.body().serverDate());
 
             Response<SystemSetting> systemSettingResponse = systemSettingCallFactory.create(genericCallData).call();
@@ -168,9 +173,10 @@ public class MetadataCall extends SyncCall {
         }
     }
 
-    public static MetadataCall create(BlockCallData blockCallData) {
+    public static MetadataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
         return new MetadataCall(
-                blockCallData,
+                databaseAdapter,
+                retrofit,
                 SystemInfoCall.FACTORY,
                 SystemSettingCall.FACTORY,
                 UserCall.FACTORY,

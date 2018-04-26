@@ -3,9 +3,10 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.BlockCallData;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -18,51 +19,42 @@ import org.hisp.dhis.android.core.trackedentity.TeisEndPointCall;
 import java.util.Set;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
-public final class TrackerEntitiesDataCall implements Call<Response> {
+public final class TrackerEntitiesDataCall extends SyncCall {
 
-    private boolean isExecuted;
     private final int teiLimitByOrgUnit;
-    private final BlockCallData blockCallData;
+    private final DatabaseAdapter databaseAdapter;
+    private final Retrofit retrofit;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
 
-    private TrackerEntitiesDataCall(@NonNull BlockCallData blockCallData,
+    private TrackerEntitiesDataCall(@NonNull DatabaseAdapter databaseAdapter,
+                                    @NonNull Retrofit retrofit,
                                     @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
                                     int teiLimitByOrgUnit) {
-        this.blockCallData = blockCallData;
+        this.databaseAdapter = databaseAdapter;
+        this.retrofit = retrofit;
         this.organisationUnitStore = organisationUnitStore;
         this.teiLimitByOrgUnit = teiLimitByOrgUnit;
     }
 
     @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
-    @Override
     public Response call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Already executed");
-            }
-            isExecuted = true;
-        }
+        this.setExecuted();
 
         Response response = null;
 
-        Transaction transaction = blockCallData.databaseAdapter().beginNewTransaction();
+        Transaction transaction = databaseAdapter.beginNewTransaction();
 
         try {
-            response = SystemInfoCall.FACTORY.create(blockCallData).call();
+            response = SystemInfoCall.FACTORY.create(databaseAdapter, retrofit).call();
 
             if (!response.isSuccessful()) {
                 return response;
             }
 
             SystemInfo systemInfo = (SystemInfo) response.body();
-            GenericCallData genericCallData = GenericCallData.create(blockCallData, systemInfo.serverDate());
+            GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate());
 
             response = trackerCall(genericCallData);
 
@@ -126,10 +118,12 @@ public final class TrackerEntitiesDataCall implements Call<Response> {
     }
 
 
-    public static TrackerEntitiesDataCall create(BlockCallData blockCallData, int teiLimitByOrgUnit) {
+    public static TrackerEntitiesDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+                                                 int teiLimitByOrgUnit) {
         return new TrackerEntitiesDataCall(
-                blockCallData,
-                OrganisationUnitStore.create(blockCallData.databaseAdapter()),
+                databaseAdapter,
+                retrofit,
+                OrganisationUnitStore.create(databaseAdapter),
                 teiLimitByOrgUnit
         );
     }

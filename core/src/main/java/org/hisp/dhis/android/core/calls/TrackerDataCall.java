@@ -2,8 +2,8 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.BlockCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEndPointCall;
@@ -13,16 +13,20 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import java.util.Map;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
 public final class TrackerDataCall extends SyncCall {
 
-    private final BlockCallData blockCallData;
+    private final DatabaseAdapter databaseAdapter;
+    private final Retrofit retrofit;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
 
-    private TrackerDataCall(@NonNull BlockCallData blockCallData,
+    private TrackerDataCall(@NonNull DatabaseAdapter databaseAdapter,
+                            @NonNull Retrofit retrofit,
                             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore) {
-        this.blockCallData = blockCallData;
+        this.databaseAdapter = databaseAdapter;
+        this.retrofit = retrofit;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
     }
 
@@ -36,7 +40,7 @@ public final class TrackerDataCall extends SyncCall {
                 trackedEntityInstanceStore.querySynced();
 
         if (!trackedEntityInstances.isEmpty()) {
-            Transaction transaction = blockCallData.databaseAdapter().beginNewTransaction();
+            Transaction transaction = databaseAdapter.beginNewTransaction();
             try {
                 response = trackedEntityInstanceCall(trackedEntityInstances);
                 transaction.setSuccessful();
@@ -54,7 +58,7 @@ public final class TrackerDataCall extends SyncCall {
 
         for (Map.Entry<String, TrackedEntityInstance> entry : trackedEntityInstances.entrySet()) {
 
-            response = TrackedEntityInstanceEndPointCall.create(blockCallData,
+            response = TrackedEntityInstanceEndPointCall.create(databaseAdapter, retrofit,
                     entry.getValue().uid()).call();
 
             if (!response.isSuccessful()) {
@@ -65,10 +69,11 @@ public final class TrackerDataCall extends SyncCall {
         return response;
     }
 
-    public static TrackerDataCall create(BlockCallData blockCallData) {
+    public static TrackerDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
         return new TrackerDataCall(
-                blockCallData,
-                new TrackedEntityInstanceStoreImpl(blockCallData.databaseAdapter())
+                databaseAdapter,
+                retrofit,
+                new TrackedEntityInstanceStoreImpl(databaseAdapter)
         );
     }
 }

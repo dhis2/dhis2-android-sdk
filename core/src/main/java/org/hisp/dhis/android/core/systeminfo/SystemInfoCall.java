@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.BlockCallData;
+import org.hisp.dhis.android.core.common.BlockCallFactory;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -82,15 +82,15 @@ public class SystemInfoCall extends SyncCall<SystemInfo> {
         }
     }
 
-    public static final SimpleCallFactory<SystemInfo> FACTORY = new SimpleCallFactory<SystemInfo>() {
+    public static final BlockCallFactory<SystemInfo> FACTORY = new BlockCallFactory<SystemInfo>() {
 
         @Override
-        public Call<Response<SystemInfo>> create(GenericCallData genericCallData) {
+        public Call<Response<SystemInfo>> create(BlockCallData blockCallData) {
             return new SystemInfoCall(
-                    genericCallData.databaseAdapter(),
-                    SystemInfoHandler.create(genericCallData.databaseAdapter()),
-                    genericCallData.retrofit().create(SystemInfoService.class),
-                    genericCallData.resourceHandler()
+                    blockCallData.databaseAdapter(),
+                    SystemInfoHandler.create(blockCallData.databaseAdapter()),
+                    blockCallData.retrofit().create(SystemInfoService.class),
+                    blockCallData.resourceHandler()
             );
         }
     };

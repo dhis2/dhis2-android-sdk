@@ -53,12 +53,14 @@ public class EnrollmentDatePickerRow extends AbsDatePickerRow {
     private static final String TAG = "EnrollmentDatePickerRow";
     private Enrollment mEnrollment;
     private String mLabel;
+    private boolean isEditable;
 
-    public EnrollmentDatePickerRow(String label, Enrollment enrollment) {
+    public EnrollmentDatePickerRow(String label, Enrollment enrollment, boolean editable) {
         super();
 
         this.mEnrollment = enrollment;
         this.mLabel = label;
+        isEditable = editable;
     }
 
     @Override
@@ -79,6 +81,8 @@ public class EnrollmentDatePickerRow extends AbsDatePickerRow {
             view = root;
         }
 
+        holder.updateViews(mLabel, mEnrollment, mEnrollment.getEnrollmentDate());
+
         if (!isEditable()) {
             holder.clearButton.setEnabled(false);
             holder.textLabel.setEnabled(false); //change color
@@ -89,12 +93,16 @@ public class EnrollmentDatePickerRow extends AbsDatePickerRow {
             holder.pickerInvoker.setEnabled(true);
         }
 //        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
-        holder.updateViews(mLabel, mEnrollment, mEnrollment.getEnrollmentDate());
 
 //        if (isDetailedInfoButtonHidden())
 //            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
 
         return view;
+    }
+
+    @Override
+    public boolean isEditable(){
+        return  isEditable;
     }
 
     @Override

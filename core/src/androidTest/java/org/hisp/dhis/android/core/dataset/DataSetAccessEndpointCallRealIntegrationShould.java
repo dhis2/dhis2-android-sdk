@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Date;
 
 import retrofit2.Response;
 
@@ -32,7 +33,7 @@ public class DataSetAccessEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private Call<Response<Payload<DataSet>>> createCall() {
-        GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit());
+        GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
 
         return DataSetAccessEndpointCall.FACTORY.create(data);
     }

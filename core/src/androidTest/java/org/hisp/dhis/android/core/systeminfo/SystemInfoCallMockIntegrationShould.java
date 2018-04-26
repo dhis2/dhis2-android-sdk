@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.After;
@@ -116,7 +115,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
                 .build();
 
         systeminfoCall = SystemInfoCall.FACTORY.create(
-                GenericCallData.create(databaseAdapter(), retrofit));
+                databaseAdapter(), retrofit);
     }
 
     @Test

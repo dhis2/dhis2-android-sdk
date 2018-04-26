@@ -163,7 +163,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 OrganisationUnitHandler.create(databaseAdapter(), programUids,
                         OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
 
-        genericCallData = GenericCallData.create(databaseAdapter(), d2.retrofit());
+        genericCallData = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
                 genericCallData, organisationUnitHandler);
     }

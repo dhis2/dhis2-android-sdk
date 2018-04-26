@@ -47,6 +47,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -208,7 +209,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
         uids.add("POc7DkGU3QU");
 
         // TODO fix
-        GenericCallData data = GenericCallData.create(databaseAdapter(), retrofit);
+        GenericCallData data = GenericCallData.create(databaseAdapter(), retrofit, new Date());
 
         GenericHandler<OptionSet, OptionSetModel> optionSetHandler = OptionSetHandler.create(databaseAdapter());
 

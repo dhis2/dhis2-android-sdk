@@ -6,6 +6,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.EventEndPointCall;
 import org.hisp.dhis.android.core.event.EventQuery;
 
+import java.util.Date;
+
 import retrofit2.Retrofit;
 
 public class EventCallFactory {
@@ -18,8 +20,8 @@ public class EventCallFactory {
                 .withPageLimit(pageLimit)
                 .build();
 
-        GenericCallData data = GenericCallData.create(databaseAdapter, retrofit);
-        return EventEndPointCall.create(data, data.serverDate(), eventQuery);
+        GenericCallData data = GenericCallData.create(databaseAdapter, retrofit, new Date());
+        return EventEndPointCall.create(data, eventQuery);
     }
 
     public static EventEndPointCall create(Retrofit retrofit,
@@ -43,7 +45,7 @@ public class EventCallFactory {
                 .withCategoryComboAndCategoryOption(categoryCombo, categoryOption)
                 .build();
 
-        GenericCallData data = GenericCallData.create(databaseAdapter, retrofit);
-        return EventEndPointCall.create(data, data.serverDate(), eventQuery);
+        GenericCallData data = GenericCallData.create(databaseAdapter, retrofit, new Date());
+        return EventEndPointCall.create(data, eventQuery);
     }
 }

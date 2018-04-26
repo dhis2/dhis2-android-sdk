@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -135,7 +134,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
     private Dhis2MockServer dhis2MockServer;
     private Call<Response<User>> authenticateUserCall;
-    private GenericCallData genericCallData;
 
     @Before
     @Override
@@ -146,10 +144,10 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
+        dhis2MockServer.enqueueMockResponse("system_info.json");
         dhis2MockServer.enqueueMockResponse("user.json");
 
-        genericCallData = GenericCallData.create(databaseAdapter(), d2.retrofit());
-        authenticateUserCall = UserAuthenticateCall.create(genericCallData,
+        authenticateUserCall = UserAuthenticateCall.create(databaseAdapter(), d2.retrofit(),
                 "test_user", "test_password");
     }
 
@@ -249,8 +247,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 )
                 .isExhausted();
 
-        String dateString = BaseIdentifiableObject.DATE_FORMAT.format(
-                genericCallData.serverDate());
+        String dateString = "2017-11-29T11:27:46.935";
 
         assertThatCursor(resource)
                 .hasRow(

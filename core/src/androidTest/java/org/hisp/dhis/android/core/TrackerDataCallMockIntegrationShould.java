@@ -142,7 +142,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
         assertThat(response.isSuccessful(), is(true));
         assertThat(syncedInDatabase.size(), is(syncedExpected.size()));
-        assertThat(lastUpdated, is(notNullValue()));
+        assertThat(lastUpdated, is(nullValue()));
         assertThat(toPostInDatabase.size(), is(toPostExpected.size()));
 
         for (TrackedEntityInstance trackedEntityInstance : syncedExpected) {

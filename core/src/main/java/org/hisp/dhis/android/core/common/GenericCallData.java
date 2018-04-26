@@ -40,9 +40,6 @@ import retrofit2.Retrofit;
 
 @AutoValue
 public abstract class GenericCallData {
-    public abstract DatabaseAdapter databaseAdapter();
-    public abstract ResourceHandler resourceHandler();
-    public abstract Retrofit retrofit();
     public abstract Date serverDate();
 
     public static GenericCallData create(DatabaseAdapter databaseAdapter, Retrofit retrofit,

@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.BlockCallData;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -14,7 +15,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.trackedentity.TeiQuery;
 import org.hisp.dhis.android.core.trackedentity.TeisEndPointCall;
 
-import java.util.Date;
 import java.util.Set;
 
 import retrofit2.Response;
@@ -23,13 +23,13 @@ public final class TrackerEntitiesDataCall implements Call<Response> {
 
     private boolean isExecuted;
     private final int teiLimitByOrgUnit;
-    private final GenericCallData genericCallData;
+    private final BlockCallData blockCallData;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
 
-    private TrackerEntitiesDataCall(@NonNull GenericCallData genericCallData,
+    private TrackerEntitiesDataCall(@NonNull BlockCallData blockCallData,
                                     @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
                                     int teiLimitByOrgUnit) {
-        this.genericCallData = genericCallData;
+        this.blockCallData = blockCallData;
         this.organisationUnitStore = organisationUnitStore;
         this.teiLimitByOrgUnit = teiLimitByOrgUnit;
     }
@@ -52,19 +52,19 @@ public final class TrackerEntitiesDataCall implements Call<Response> {
 
         Response response = null;
 
-        Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
+        Transaction transaction = blockCallData.databaseAdapter().beginNewTransaction();
 
         try {
-            response = SystemInfoCall.FACTORY.create(genericCallData).call();
+            response = SystemInfoCall.FACTORY.create(blockCallData).call();
 
             if (!response.isSuccessful()) {
                 return response;
             }
 
             SystemInfo systemInfo = (SystemInfo) response.body();
-            Date serverDate = systemInfo.serverDate();
+            GenericCallData genericCallData = GenericCallData.create(blockCallData, systemInfo.serverDate());
 
-            response = trackerCall(serverDate);
+            response = trackerCall(genericCallData);
 
             if (response == null || !response.isSuccessful()) {
                 return response;
@@ -78,7 +78,7 @@ public final class TrackerEntitiesDataCall implements Call<Response> {
         }
     }
     
-    private Response trackerCall(Date serverDate) throws Exception {
+    private Response trackerCall(GenericCallData genericCallData) throws Exception {
         Response response = null;
 
         Set<String> organisationUnitUids = organisationUnitStore.selectUids();
@@ -118,17 +118,18 @@ public final class TrackerEntitiesDataCall implements Call<Response> {
         }
 
         if (response != null && response.isSuccessful()) {
-            genericCallData.resourceHandler().handleResource(ResourceModel.Type.TRACKED_ENTITY_INSTANCE, serverDate);
+            genericCallData.resourceHandler().handleResource(ResourceModel.Type.TRACKED_ENTITY_INSTANCE,
+                    genericCallData.serverDate());
         }
 
         return response;
     }
 
 
-    public static TrackerEntitiesDataCall create(GenericCallData genericCallData, int teiLimitByOrgUnit) {
+    public static TrackerEntitiesDataCall create(BlockCallData blockCallData, int teiLimitByOrgUnit) {
         return new TrackerEntitiesDataCall(
-                genericCallData,
-                OrganisationUnitStore.create(genericCallData.databaseAdapter()),
+                blockCallData,
+                OrganisationUnitStore.create(blockCallData.databaseAdapter()),
                 teiLimitByOrgUnit
         );
     }

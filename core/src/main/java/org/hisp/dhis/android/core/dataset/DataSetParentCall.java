@@ -79,27 +79,27 @@ public class DataSetParentCall extends TransactionalCall {
 
     @Override
     public Response callBody() throws Exception {
-        Call<Response<Payload<DataSet>>> dataSetAccessEndpointCall = dataSetAccessCallFactory.create(data);
+        Call<Response<Payload<DataSet>>> dataSetAccessEndpointCall = dataSetAccessCallFactory.create(blockCallData);
         Response<Payload<DataSet>> dataSetAccessResponse = dataSetAccessEndpointCall.call();
         List<DataSet> dataSetsWithAccess = dataSetAccessResponse.body().items();
 
         Set<String> dataSetUids = DataSetParentUidsHelper.getAssignedDataSetUids(dataSetsWithAccess);
 
-        Call<Response<Payload<DataSet>>> dataSetEndpointCall = dataSetCallFactory.create(data, dataSetUids);
+        Call<Response<Payload<DataSet>>> dataSetEndpointCall = dataSetCallFactory.create(blockCallData, dataSetUids);
         Response<Payload<DataSet>> dataSetResponse = dataSetEndpointCall.call();
 
         List<DataSet> dataSets = dataSetResponse.body().items();
         Call<Response<Payload<DataElement>>> dataElementEndpointCall =
-                dataElementCallFactory.create(data, DataSetParentUidsHelper.getDataElementUids(dataSets));
+                dataElementCallFactory.create(blockCallData, DataSetParentUidsHelper.getDataElementUids(dataSets));
         Response<Payload<DataElement>> dataElementResponse = dataElementEndpointCall.call();
 
         Call<Response<Payload<Indicator>>> indicatorEndpointCall
-                = indicatorCallFactory.create(data, DataSetParentUidsHelper.getIndicatorUids(dataSets));
+                = indicatorCallFactory.create(blockCallData, DataSetParentUidsHelper.getIndicatorUids(dataSets));
         Response<Payload<Indicator>> indicatorResponse = indicatorEndpointCall.call();
 
         List<Indicator> indicators = indicatorResponse.body().items();
         Call<Response<Payload<IndicatorType>>> indicatorTypeEndpointCall
-                = indicatorTypeCallFactory.create(data, DataSetParentUidsHelper.getIndicatorTypeUids(indicators));
+                = indicatorTypeCallFactory.create(blockCallData, DataSetParentUidsHelper.getIndicatorTypeUids(indicators));
         indicatorTypeEndpointCall.call();
 
         periodHandler.generateAndPersist();

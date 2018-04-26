@@ -30,9 +30,11 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.BlockCallData;
+import org.hisp.dhis.android.core.common.BlockCallFactory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -42,9 +44,10 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModelBuilder;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -55,14 +58,17 @@ import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 
 // ToDo: ask about API changes
 // ToDo: performance tests? Try to feed in a user instance with thousands organisation units
-public final class UserAuthenticateCall implements Call<Response<User>> {
+public final class UserAuthenticateCall extends SyncCall<User> {
+
+    private final BlockCallData blockCallData;
+    private final BlockCallFactory<SystemInfo> systemInfoCallFactory;
+
     // retrofit service
     private final UserService userService;
 
     // stores and databaseAdapter related dependencies
     private final DatabaseAdapter databaseAdapter;
-    private final Date serverDate;
-    private final UserStore userStore;
+    private final UserHandler userHandler;
     private final UserCredentialsHandler userCredentialsHandler;
     private final ResourceHandler resourceHandler;
     private final AuthenticatedUserStore authenticatedUserStore;
@@ -72,24 +78,24 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     private final String username;
     private final String password;
 
-    private boolean isExecuted;
-
     UserAuthenticateCall(
+            @NonNull BlockCallData blockCallData,
+            @NonNull BlockCallFactory<SystemInfo> systemInfoCallFactory,
             @NonNull UserService userService,
             @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull Date serverDate,
-            @NonNull UserStore userStore,
+            @NonNull UserHandler userHandler,
             @NonNull UserCredentialsHandler userCredentialsHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
             @NonNull OrganisationUnitHandlerFactory organisationUnitHandlerFactory,
             @NonNull String username,
             @NonNull String password) {
+        this.blockCallData = blockCallData;
+        this.systemInfoCallFactory = systemInfoCallFactory;
         this.userService = userService;
 
         this.databaseAdapter = databaseAdapter;
-        this.serverDate = serverDate;
-        this.userStore = userStore;
+        this.userHandler = userHandler;
         this.userCredentialsHandler = userCredentialsHandler;
         this.resourceHandler = resourceHandler;
         this.authenticatedUserStore = authenticatedUserStore;
@@ -101,14 +107,8 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     }
 
     @Override
-    public Response<User> call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Already executed");
-            }
-
-            isExecuted = true;
-        }
+    public Response call() throws Exception {
+        this.setExecuted();
 
         List<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.query();
         if (!authenticatedUsers.isEmpty()) {
@@ -116,19 +116,19 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                     authenticatedUsers.get(0));
         }
 
+        Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(blockCallData).call();
+        if (!systemCallResponse.isSuccessful()) {
+            return systemCallResponse;
+        }
+
+        SystemInfo systemInfo = systemCallResponse.body();
+
         Response<User> response = authenticate(basic(username, password));
         if (response.isSuccessful()) {
-            saveUser(response);
+            saveUser(response, GenericCallData.create(blockCallData, systemInfo.serverDate()));
         }
 
         return response;
-    }
-
-    @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
     }
 
     private Response<User> authenticate(String credentials) throws IOException {
@@ -166,7 +166,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
                 ).build()).execute();
     }
 
-    private void saveUser(Response<User> response) throws Exception {
+    private void saveUser(Response<User> response, GenericCallData genericCallData) throws Exception {
         Transaction transaction = databaseAdapter.beginNewTransaction();
 
         // enclosing transaction in try-finally block in
@@ -174,7 +174,7 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
         try {
             User user = response.body();
 
-            handleUser(user, serverDate);
+            handleUser(user, genericCallData);
 
             transaction.setSuccessful();
         } finally {
@@ -183,35 +183,19 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     }
 
     @NonNull
-    private void handleUser(User user, Date serverDateTime) {
+    private void handleUser(User user, GenericCallData genericCallData) {
 
-        int updatedRow = userStore.update(
-                user.uid(), user.code(), user.name(), user.displayName(), user.created(),
-                user.lastUpdated(), user.birthday(), user.education(),
-                user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                user.introduction(), user.employer(), user.interests(), user.languages(),
-                user.email(), user.phoneNumber(), user.nationality(), user.uid()
-        );
+        userHandler.handleUser(user);
 
-        if (updatedRow <= 0) {
-            userStore.insert(
-                    user.uid(), user.code(), user.name(), user.displayName(), user.created(),
-                    user.lastUpdated(), user.birthday(), user.education(),
-                    user.gender(), user.jobTitle(), user.surname(), user.firstName(),
-                    user.introduction(), user.employer(), user.interests(), user.languages(),
-                    user.email(), user.phoneNumber(), user.nationality()
-            );
-        }
-
-        resourceHandler.handleResource(ResourceModel.Type.USER, serverDateTime);
+        resourceHandler.handleResource(ResourceModel.Type.USER, genericCallData.serverDate());
 
         userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
 
-        resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, serverDateTime);
+        resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, genericCallData.serverDate());
 
         authenticatedUserStore.insert(user.uid(), base64(username, password));
 
-        resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, serverDateTime);
+        resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, genericCallData.serverDate());
 
         if (user.organisationUnits() != null) {
             organisationUnitHandlerFactory.organisationUnitHandler(databaseAdapter, user)
@@ -223,17 +207,18 @@ public final class UserAuthenticateCall implements Call<Response<User>> {
     }
 
     public static UserAuthenticateCall create(
-            @NonNull GenericCallData genericCallData,
+            @NonNull BlockCallData blockCallData,
             @NonNull String username,
             @NonNull String password) {
         return new UserAuthenticateCall(
-                genericCallData.retrofit().create(UserService.class),
-                genericCallData.databaseAdapter(),
-                genericCallData.serverDate(),
-                new UserStoreImpl(genericCallData.databaseAdapter()),
-                UserCredentialsHandler.create(genericCallData.databaseAdapter()),
-                ResourceHandler.create(genericCallData.databaseAdapter()),
-                new AuthenticatedUserStoreImpl(genericCallData.databaseAdapter()),
+                blockCallData,
+                SystemInfoCall.FACTORY,
+                blockCallData.retrofit().create(UserService.class),
+                blockCallData.databaseAdapter(),
+                UserHandler.create(blockCallData.databaseAdapter()),
+                UserCredentialsHandler.create(blockCallData.databaseAdapter()),
+                ResourceHandler.create(blockCallData.databaseAdapter()),
+                new AuthenticatedUserStoreImpl(blockCallData.databaseAdapter()),
                 FACTORY,
                 username,
                 password

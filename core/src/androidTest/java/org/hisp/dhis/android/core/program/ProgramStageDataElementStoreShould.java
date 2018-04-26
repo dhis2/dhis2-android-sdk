@@ -526,7 +526,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
         // checking that psde was successfully inserted
         assertThatCursor(cursor).hasRow(UID, DATA_ELEMENT, null);
 
-        // update program stage data element programStageSection link based on data element
+        // update program stage blockCallData element programStageSection link based on blockCallData element
         store.updateWithProgramStageSectionLink(PROGRAM_STAGE_SECTION, DATA_ELEMENT);
 
         cursor = database().query(ProgramStageDataElementModel.TABLE, projection, null, null, null, null, null);

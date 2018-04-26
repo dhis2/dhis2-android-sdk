@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.BlockCallData;
 import org.hisp.dhis.android.core.common.BlockCallFactory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
@@ -52,6 +51,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 import static okhttp3.Credentials.basic;
 import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
@@ -60,14 +60,14 @@ import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 // ToDo: performance tests? Try to feed in a user instance with thousands organisation units
 public final class UserAuthenticateCall extends SyncCall<User> {
 
-    private final BlockCallData blockCallData;
+    private final DatabaseAdapter databaseAdapter;
+    private final Retrofit retrofit;
+
     private final BlockCallFactory<SystemInfo> systemInfoCallFactory;
 
     // retrofit service
     private final UserService userService;
 
-    // stores and databaseAdapter related dependencies
-    private final DatabaseAdapter databaseAdapter;
     private final UserHandler userHandler;
     private final UserCredentialsHandler userCredentialsHandler;
     private final ResourceHandler resourceHandler;
@@ -79,10 +79,10 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     private final String password;
 
     UserAuthenticateCall(
-            @NonNull BlockCallData blockCallData,
+            @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull Retrofit retrofit,
             @NonNull BlockCallFactory<SystemInfo> systemInfoCallFactory,
             @NonNull UserService userService,
-            @NonNull DatabaseAdapter databaseAdapter,
             @NonNull UserHandler userHandler,
             @NonNull UserCredentialsHandler userCredentialsHandler,
             @NonNull ResourceHandler resourceHandler,
@@ -90,11 +90,12 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             @NonNull OrganisationUnitHandlerFactory organisationUnitHandlerFactory,
             @NonNull String username,
             @NonNull String password) {
-        this.blockCallData = blockCallData;
+        this.databaseAdapter = databaseAdapter;
+        this.retrofit = retrofit;
+
         this.systemInfoCallFactory = systemInfoCallFactory;
         this.userService = userService;
 
-        this.databaseAdapter = databaseAdapter;
         this.userHandler = userHandler;
         this.userCredentialsHandler = userCredentialsHandler;
         this.resourceHandler = resourceHandler;
@@ -116,7 +117,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                     authenticatedUsers.get(0));
         }
 
-        Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(blockCallData).call();
+        Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(databaseAdapter, retrofit).call();
         if (!systemCallResponse.isSuccessful()) {
             return systemCallResponse;
         }
@@ -125,7 +126,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
 
         Response<User> response = authenticate(basic(username, password));
         if (response.isSuccessful()) {
-            saveUser(response, GenericCallData.create(blockCallData, systemInfo.serverDate()));
+            saveUser(response, GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate()));
         }
 
         return response;
@@ -207,18 +208,19 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     }
 
     public static UserAuthenticateCall create(
-            @NonNull BlockCallData blockCallData,
+            @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull Retrofit retrofit,
             @NonNull String username,
             @NonNull String password) {
         return new UserAuthenticateCall(
-                blockCallData,
+                databaseAdapter,
+                retrofit,
                 SystemInfoCall.FACTORY,
-                blockCallData.retrofit().create(UserService.class),
-                blockCallData.databaseAdapter(),
-                UserHandler.create(blockCallData.databaseAdapter()),
-                UserCredentialsHandler.create(blockCallData.databaseAdapter()),
-                ResourceHandler.create(blockCallData.databaseAdapter()),
-                new AuthenticatedUserStoreImpl(blockCallData.databaseAdapter()),
+                retrofit.create(UserService.class),
+                UserHandler.create(databaseAdapter),
+                UserCredentialsHandler.create(databaseAdapter),
+                ResourceHandler.create(databaseAdapter),
+                new AuthenticatedUserStoreImpl(databaseAdapter),
                 FACTORY,
                 username,
                 password

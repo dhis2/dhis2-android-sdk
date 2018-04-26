@@ -151,7 +151,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<Response<Payload<OrganisationUnit>>> organisationUnitEndpointCall;
 
     @Mock
-    private SimpleCallFactory<SystemInfo> systemInfoCallFactory;
+    private BlockCallFactory<SystemInfo> systemInfoCallFactory;
 
     @Mock
     private SimpleCallFactory<SystemSetting> systemSettingCallFactory;
@@ -204,17 +204,17 @@ public class MetadataCallShould extends BaseCallShould {
         when(dataElementPayload.items()).thenReturn(Collections.singletonList(dataElement));
 
         // Call factories
-        when(systemInfoCallFactory.create(genericCallData)).thenReturn(systemInfoEndpointCall);
-        when(systemSettingCallFactory.create(genericCallData)).thenReturn(systemSettingEndpointCall);
-        when(userCallFactory.create(genericCallData)).thenReturn(userCall);
-        when(programAccessCallFactory.create(genericCallData)).thenReturn(programAccessEndpointCall);
-        when(programParentCallFactory.create(same(genericCallData), anySetOf(String.class)))
+        when(systemInfoCallFactory.create(databaseAdapter, retrofit)).thenReturn(systemInfoEndpointCall);
+        when(systemSettingCallFactory.create(any(GenericCallData.class))).thenReturn(systemSettingEndpointCall);
+        when(userCallFactory.create(any(GenericCallData.class))).thenReturn(userCall);
+        when(programAccessCallFactory.create(any(GenericCallData.class))).thenReturn(programAccessEndpointCall);
+        when(programParentCallFactory.create(any(GenericCallData.class), anySetOf(String.class)))
                 .thenReturn(programParentCall);
-        when(categoryCallFactory.create(genericCallData)).thenReturn(categoryEndpointCall);
-        when(categoryComboCallFactory.create(genericCallData)).thenReturn(categoryComboEndpointCall);
-        when(organisationUnitCallFactory.create(same(genericCallData), same(user), anySetOf(String.class)))
+        when(categoryCallFactory.create(any(GenericCallData.class))).thenReturn(categoryEndpointCall);
+        when(categoryComboCallFactory.create(any(GenericCallData.class))).thenReturn(categoryComboEndpointCall);
+        when(organisationUnitCallFactory.create(any(GenericCallData.class), same(user), anySetOf(String.class)))
                 .thenReturn(organisationUnitEndpointCall);
-        when(dataSetParentCallFactory.create(same(user), same(genericCallData), any(List.class)))
+        when(dataSetParentCallFactory.create(same(user), any(GenericCallData.class), any(List.class)))
                 .thenReturn(dataSetParentCall);
 
         // Calls
@@ -230,7 +230,8 @@ public class MetadataCallShould extends BaseCallShould {
 
         // Metadata call
         metadataCall = new MetadataCall(
-                genericCallData,
+                databaseAdapter,
+                retrofit,
                 systemInfoCallFactory,
                 systemSettingCallFactory,
                 userCallFactory,

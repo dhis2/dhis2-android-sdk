@@ -1,9 +1,5 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.notNullValue;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
@@ -22,6 +18,10 @@ import java.util.Date;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 public class TrackedEntityInstanceEndPointCallShould {
     @Mock
@@ -73,8 +73,9 @@ public class TrackedEntityInstanceEndPointCallShould {
             String trackedEntityInstanceUid) {
         TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
                 new TrackedEntityInstanceEndPointCall(
-                        trackedEntityInstanceService, databaseAdapter, trackedEntityInstanceHandler,
-                        resourceHandler, serverDate, trackedEntityInstanceUid);
+                        databaseAdapter, retrofit,
+                        trackedEntityInstanceService, trackedEntityInstanceHandler,
+                        trackedEntityInstanceUid);
 
         return trackedEntityInstanceEndPointCall;
     }

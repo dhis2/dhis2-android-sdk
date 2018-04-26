@@ -47,6 +47,7 @@ import retrofit2.Response;
 
 public class ProgramParentCall extends TransactionalCall {
 
+    private final GenericCallData genericCallData;
     private final UidsCallFactory<Program> programCallFactory;
     private final Set<String> programUids;
     private final UidsCallFactory<ProgramStage> programStageCallFactory;
@@ -61,7 +62,8 @@ public class ProgramParentCall extends TransactionalCall {
                       SimpleCallFactory<Payload<RelationshipType>> relationshipTypeCallFactory,
                       UidsCallFactory<OptionSet> optionSetCallFactory,
                       Set<String> programUids) {
-        super(genericCallData);
+        super(genericCallData.databaseAdapter());
+        this.genericCallData = genericCallData;
         this.programCallFactory = programCallFactory;
         this.programUids = programUids;
         this.programStageCallFactory = programStageCallFactory;
@@ -72,22 +74,22 @@ public class ProgramParentCall extends TransactionalCall {
 
     @Override
     public Response callBody() throws Exception {
-        Call<Response<Payload<Program>>> programEndpointCall = programCallFactory.create(blockCallData, programUids);
+        Call<Response<Payload<Program>>> programEndpointCall = programCallFactory.create(genericCallData, programUids);
         Response<Payload<Program>> programResponse = programEndpointCall.call();
 
         List<Program> programs = programResponse.body().items();
         Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);
-        Response<Payload<ProgramStage>> programStageResponse = programStageCallFactory.create(blockCallData,
+        Response<Payload<ProgramStage>> programStageResponse = programStageCallFactory.create(genericCallData,
                 assignedProgramStageUids).call();
 
         Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
-        trackedEntityTypeCallFactory.create(blockCallData, trackedEntityUids).call();
+        trackedEntityTypeCallFactory.create(genericCallData, trackedEntityUids).call();
 
-        relationshipTypeCallFactory.create(blockCallData).call();
+        relationshipTypeCallFactory.create(genericCallData).call();
 
         List<ProgramStage> programStages = programStageResponse.body().items();
         Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
-        return optionSetCallFactory.create(blockCallData, optionSetUids).call();
+        return optionSetCallFactory.create(genericCallData, optionSetUids).call();
     }
 
     public interface Factory {

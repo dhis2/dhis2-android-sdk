@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.BlockCallData;
 import org.hisp.dhis.android.core.common.BlockCallFactory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.datavalue.DataValueEndpointCall;
@@ -48,8 +48,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class AggregatedDataCall extends TransactionalCall {
+
+    private final Retrofit retrofit;
 
     private final BlockCallFactory<SystemInfo> systemInfoCallFactory;
     private final DataValueEndpointCall.Factory dataValueCallFactory;
@@ -57,13 +60,15 @@ public class AggregatedDataCall extends TransactionalCall {
     private final ObjectWithoutUidStore<PeriodModel> periodStore;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
 
-    private AggregatedDataCall(@NonNull BlockCallData blockCallData,
+    private AggregatedDataCall(@NonNull DatabaseAdapter databaseAdapter,
+                               @NonNull Retrofit retrofit,
                                @NonNull BlockCallFactory<SystemInfo> systemInfoCallFactory,
                                @NonNull DataValueEndpointCall.Factory dataValueCallFactory,
                                @NonNull IdentifiableObjectStore<DataSetModel> dataSetStore,
                                @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
                                @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
-        super(blockCallData);
+        super(databaseAdapter);
+        this.retrofit = retrofit;
         this.systemInfoCallFactory = systemInfoCallFactory;
         this.dataValueCallFactory = dataValueCallFactory;
         this.dataSetStore = dataSetStore;
@@ -73,13 +78,13 @@ public class AggregatedDataCall extends TransactionalCall {
 
     @Override
     public Response callBody() throws Exception {
-        Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(blockCallData).call();
+        Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(databaseAdapter, retrofit).call();
         if (!systemCallResponse.isSuccessful()) {
             return systemCallResponse;
         }
 
         SystemInfo systemInfo = systemCallResponse.body();
-        GenericCallData genericCallData = GenericCallData.create(blockCallData, systemInfo.serverDate());
+        GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate());
 
         DataValueEndpointCall dataValueEndpointCall = dataValueCallFactory.create(genericCallData, dataSetStore.selectUids(),
                 selectPeriodIds(periodStore.selectAll(PeriodModel.factory)),
@@ -96,13 +101,14 @@ public class AggregatedDataCall extends TransactionalCall {
         return periodIds;
     }
 
-    public static AggregatedDataCall create(BlockCallData blockCallData) {
+    public static AggregatedDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
         return new AggregatedDataCall(
-                blockCallData,
+                databaseAdapter,
+                retrofit,
                 SystemInfoCall.FACTORY,
                 DataValueEndpointCall.FACTORY,
-                DataSetStore.create(blockCallData.databaseAdapter()),
-                PeriodStore.create(blockCallData.databaseAdapter()),
-                OrganisationUnitStore.create(blockCallData.databaseAdapter()));
+                DataSetStore.create(databaseAdapter),
+                PeriodStore.create(databaseAdapter),
+                OrganisationUnitStore.create(databaseAdapter));
     }
 }

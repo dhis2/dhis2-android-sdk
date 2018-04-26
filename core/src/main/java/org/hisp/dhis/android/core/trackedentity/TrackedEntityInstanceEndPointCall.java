@@ -4,9 +4,9 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.hisp.dhis.android.core.common.BlockCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.note.Note;
@@ -14,20 +14,24 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.relationship.Relationship;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class TrackedEntityInstanceEndPointCall extends SyncCall<TrackedEntityInstance> {
 
-    private final BlockCallData blockCallData;
+    private final DatabaseAdapter databaseAdapter;
+    private final Retrofit retrofit;
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final String trackedEntityInstanceUid;
 
     TrackedEntityInstanceEndPointCall(
-            @NonNull BlockCallData blockCallData,
+            @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull Retrofit retrofit,
             @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
             @NonNull String trackedEntityInstanceUid) {
-        this.blockCallData = blockCallData;
+        this.databaseAdapter = databaseAdapter;
+        this.retrofit = retrofit;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
 
@@ -51,7 +55,7 @@ public class TrackedEntityInstanceEndPointCall extends SyncCall<TrackedEntityIns
             return response;
         }
 
-        Transaction transaction = blockCallData.databaseAdapter().beginNewTransaction();
+        Transaction transaction = databaseAdapter.beginNewTransaction();
 
         try {
             TrackedEntityInstance trackedEntityInstance = response.body();
@@ -118,12 +122,14 @@ public class TrackedEntityInstanceEndPointCall extends SyncCall<TrackedEntityIns
         ).build();
     }
 
-    public static TrackedEntityInstanceEndPointCall create(BlockCallData blockCallData,
+    public static TrackedEntityInstanceEndPointCall create(DatabaseAdapter databaseAdapter,
+                                                           Retrofit retrofit,
                                                            String trackedEntityInstanceUid) {
         return new TrackedEntityInstanceEndPointCall(
-                blockCallData,
-                blockCallData.retrofit().create(TrackedEntityInstanceService.class),
-                TrackedEntityInstanceHandler.create(blockCallData.databaseAdapter()),
+                databaseAdapter,
+                retrofit,
+                retrofit.create(TrackedEntityInstanceService.class),
+                TrackedEntityInstanceHandler.create(databaseAdapter),
                 trackedEntityInstanceUid
         );
     }

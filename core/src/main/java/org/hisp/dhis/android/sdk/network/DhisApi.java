@@ -53,7 +53,6 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGenera
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGroup;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -212,10 +211,10 @@ public interface DhisApi {
     // Methods for working with Meta data
     /////////////////////////////////////////////////////////////////////////
 
-    @GET("/me?fields=organisationUnits[id,displayName,programs[id]],userCredentials[userRoles[programs[id]]],teiSearchOrganisationUnits")
+    @GET("/me?fields=organisationUnits[id,displayName,code,programs[id]],userCredentials[userRoles[programs[id]]],teiSearchOrganisationUnits")
     UserAccount getDeprecatedUserAccount();
 
-    @GET("/29/me?fields=organisationUnits[id,displayName,programs[id]],userCredentials[userRoles[programs[id]]],teiSearchOrganisationUnits,programs")
+    @GET("/29/me?fields=organisationUnits[id,displayName,code,programs[id]],userCredentials[userRoles[programs[id]]],teiSearchOrganisationUnits,programs")
     UserAccount getUserAccount();
 
     @GET("/" + ApiEndpointContainer.ORGANISATIONUNITS + "?paging=false")

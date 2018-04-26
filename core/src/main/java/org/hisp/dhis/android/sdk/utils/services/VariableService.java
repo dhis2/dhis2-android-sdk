@@ -44,6 +44,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.Option$Table;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
@@ -873,11 +874,13 @@ public class VariableService {
             }
             case ORG_UNIT_CODE:
                 if (executingEnrollment != null) {
-                    programRuleVariable.setVariableValue(executingEnrollment.getOrgUnit());
+                    OrganisationUnit organisationUnit = MetaDataController.getOrganisationUnitByUId(executingEnrollment.getOrgUnit());
+                    programRuleVariable.setVariableValue(organisationUnit.getCode());
                     programRuleVariable.setHasValue(true);
                     programRuleVariable.setVariableType(ValueType.TEXT);
                 } else if (executingEvent != null) {
-                    programRuleVariable.setVariableValue(executingEvent.getOrganisationUnitId());
+                    OrganisationUnit organisationUnit = MetaDataController.getOrganisationUnitByUId(executingEvent.getOrganisationUnitId());
+                    programRuleVariable.setVariableValue(organisationUnit.getCode());
                     programRuleVariable.setHasValue(true);
                     programRuleVariable.setVariableType(ValueType.TEXT);
                 } else {

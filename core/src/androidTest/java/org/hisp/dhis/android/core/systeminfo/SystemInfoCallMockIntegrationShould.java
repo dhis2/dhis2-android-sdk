@@ -36,9 +36,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -115,14 +115,8 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-
-        SystemInfoService systemInfoService = retrofit.create(SystemInfoService.class);
-        SystemInfoStore systemInfoStore = new SystemInfoStoreImpl(databaseAdapter());
-        ResourceHandler resourceHandler = ResourceHandler.create(databaseAdapter());
-
-        systeminfoCall = new SystemInfoCall(
-                databaseAdapter(), systemInfoStore, systemInfoService, resourceHandler
-        );
+        systeminfoCall = SystemInfoCall.FACTORY.create(
+                GenericCallData.create(databaseAdapter(), retrofit));
     }
 
     @Test

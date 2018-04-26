@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import java.util.Date;
 
 @AutoValue
-public abstract class ReservedValue {
+public abstract class TrackedEntityAttributeReservedValue {
     private final static String OWNER_OBJECT = "ownerObject";
     private final static String OWNER_UID = "ownerUid";
     private final static String KEY = "key";
@@ -48,14 +48,14 @@ public abstract class ReservedValue {
     private final static String CREATED = "created";
     private final static String EXPIRY_DATE = "expiryDate";
 
-    private static final Field<ReservedValue, String> ownerObject = Field.create(OWNER_OBJECT);
-    private static final Field<ReservedValue, String> ownerUid = Field.create(OWNER_UID);
-    private static final Field<ReservedValue, String> key = Field.create(KEY);
-    private static final Field<ReservedValue, String> value = Field.create(VALUE);
-    private static final Field<ReservedValue, String> created = Field.create(CREATED);
-    private static final Field<ReservedValue, String> expiryDate = Field.create(EXPIRY_DATE);
+    private static final Field<TrackedEntityAttributeReservedValue, String> ownerObject = Field.create(OWNER_OBJECT);
+    private static final Field<TrackedEntityAttributeReservedValue, String> ownerUid = Field.create(OWNER_UID);
+    private static final Field<TrackedEntityAttributeReservedValue, String> key = Field.create(KEY);
+    private static final Field<TrackedEntityAttributeReservedValue, String> value = Field.create(VALUE);
+    private static final Field<TrackedEntityAttributeReservedValue, String> created = Field.create(CREATED);
+    private static final Field<TrackedEntityAttributeReservedValue, String> expiryDate = Field.create(EXPIRY_DATE);
 
-    static final Fields<ReservedValue> allFields = Fields.<ReservedValue>builder().fields(
+    static final Fields<TrackedEntityAttributeReservedValue> allFields = Fields.<TrackedEntityAttributeReservedValue>builder().fields(
             ownerObject, ownerUid, key, value, created, expiryDate).build();
 
     @Nullable
@@ -83,7 +83,7 @@ public abstract class ReservedValue {
     public abstract Date expiryDate();
 
     @JsonCreator
-    public static ReservedValue create(
+    public static TrackedEntityAttributeReservedValue create(
             @JsonProperty(OWNER_OBJECT) String ownerObject,
             @JsonProperty(OWNER_UID) String ownerUid,
             @JsonProperty(KEY) String key,

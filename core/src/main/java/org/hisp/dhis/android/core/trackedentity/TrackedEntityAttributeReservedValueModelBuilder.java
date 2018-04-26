@@ -28,16 +28,28 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-public final class ReservedValueStore {
+public class TrackedEntityAttributeReservedValueModelBuilder extends
+        ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
 
-    private ReservedValueStore() {}
+    private final TrackedEntityAttributeReservedValueModel.Builder builder;
 
-    public static ObjectWithoutUidStore<ReservedValueModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, ReservedValueModel.TABLE,
-                ReservedValueModel.Columns.all(), ReservedValueModel.Columns.whereUpdate());
+    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit organisationUnit) {
+        this.builder = TrackedEntityAttributeReservedValueModel.builder()
+                .organisationUnit(organisationUnit.uid());
+    }
+
+    @Override
+    public TrackedEntityAttributeReservedValueModel buildModel(TrackedEntityAttributeReservedValue reservedValue) {
+        return builder
+                .ownerObject(reservedValue.ownerObject())
+                .ownerUid(reservedValue.ownerUid())
+                .key(reservedValue.key())
+                .value(reservedValue.value())
+                .created(reservedValue.created())
+                .expiryDate(reservedValue.expiryDate())
+                .build();
     }
 }

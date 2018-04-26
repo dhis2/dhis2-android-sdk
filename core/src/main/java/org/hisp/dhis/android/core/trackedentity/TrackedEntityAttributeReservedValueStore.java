@@ -25,24 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public interface ReservedValueService {
-    String TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes";
-    String TRACKED_ENTITY_ATTRIBUTE_UID = "trackedEntityAttributeUid";
+public final class TrackedEntityAttributeReservedValueStore {
 
-    @GET(TRACKED_ENTITY_ATTRIBUTES + "/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/requiredValues")
-    Call<TrackedEntityAttributeRequiredAndOptionalValue> trackedEntityAttributeRequiredAndOptionalValue(
-            @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityInstanceUid);
+    private TrackedEntityAttributeReservedValueStore() {}
 
-    @GET(TRACKED_ENTITY_ATTRIBUTES + "/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
-    Call<TrackedEntityAttributeRequiredAndOptionalValue> generateAndReserve(
-            @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityInstanceUid,
-            @Query("numberToReserve") Integer numberToReserve,
-            @Query("ORG_UNIT_CODE") String orgUnitCode);
+    public static ObjectWithoutUidStore<TrackedEntityAttributeReservedValueModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, TrackedEntityAttributeReservedValueModel.TABLE,
+                TrackedEntityAttributeReservedValueModel.Columns.all(), TrackedEntityAttributeReservedValueModel.Columns.whereUpdate());
+    }
 }

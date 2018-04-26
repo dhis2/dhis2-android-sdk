@@ -27,15 +27,22 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
-public final class ReservedValueHandler {
+public interface TrackedEntityAttributeReservedValueService {
+    String TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes";
+    String TRACKED_ENTITY_ATTRIBUTE_UID = "trackedEntityAttributeUid";
 
-    private ReservedValueHandler() {}
+    @GET(TRACKED_ENTITY_ATTRIBUTES + "/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/requiredValues")
+    Call<TrackedEntityAttributeRequiredAndOptionalValue> trackedEntityAttributeRequiredAndOptionalValue(
+            @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityInstanceUid);
 
-    public static GenericHandler<ReservedValue, ReservedValueModel> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidHandlerImpl<>(ReservedValueStore.create(databaseAdapter));
-    }
+    @GET(TRACKED_ENTITY_ATTRIBUTES + "/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
+    Call<TrackedEntityAttributeRequiredAndOptionalValue> generateAndReserve(
+            @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityInstanceUid,
+            @Query("numberToReserve") Integer numberToReserve,
+            @Query("ORG_UNIT_CODE") String orgUnitCode);
 }

@@ -25,30 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class ReservedValueModelBuilder extends ModelBuilder<ReservedValue, ReservedValueModel> {
+public final class TrackedEntityAttributeReservedValueHandler {
 
-    private final ReservedValueModel.Builder builder;
+    private TrackedEntityAttributeReservedValueHandler() {}
 
-    ReservedValueModelBuilder(OrganisationUnit organisationUnit) {
-        this.builder = ReservedValueModel.builder()
-                .organisationUnit(organisationUnit.uid());
-    }
-
-    @Override
-    public ReservedValueModel buildModel(ReservedValue reservedValue) {
-        return builder
-                .ownerObject(reservedValue.ownerObject())
-                .ownerUid(reservedValue.ownerUid())
-                .key(reservedValue.key())
-                .value(reservedValue.value())
-                .created(reservedValue.created())
-                .expiryDate(reservedValue.expiryDate())
-                .build();
+    public static GenericHandler<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel>
+    create(DatabaseAdapter databaseAdapter) {
+        return new ObjectWithoutUidHandlerImpl<>(TrackedEntityAttributeReservedValueStore.create(databaseAdapter));
     }
 }

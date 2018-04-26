@@ -47,9 +47,9 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class ReservedValueModel extends BaseModel implements UpdateWhereStatementBinder {
+public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel implements UpdateWhereStatementBinder {
 
-    public static final String TABLE = "ReservedValue";
+    public static final String TABLE = "TrackedEntityAttributeReservedValue";
 
     public static class Columns extends BaseModel.Columns {
         public final static String OWNER_OBJECT = "ownerObject";
@@ -72,12 +72,12 @@ public abstract class ReservedValueModel extends BaseModel implements UpdateWher
         }
     }
 
-    static ReservedValueModel create(Cursor cursor) {
-        return AutoValue_ReservedValueModel.createFromCursor(cursor);
+    static TrackedEntityAttributeReservedValueModel create(Cursor cursor) {
+        return AutoValue_TrackedEntityAttribute_ReservedValueModel.createFromCursor(cursor);
     }
 
     public static Builder builder() {
-        return new $AutoValue_ReservedValueModel.Builder();
+        return new $AutoValue_TrackedEntityAttribute_ReservedValueModel.Builder();
     }
 
     @Nullable
@@ -146,6 +146,6 @@ public abstract class ReservedValueModel extends BaseModel implements UpdateWher
 
         public abstract Builder organisationUnit(String organisationUnit);
 
-        public abstract ReservedValueModel build();
+        public abstract TrackedEntityAttributeReservedValueModel build();
     }
 }

@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSetUids;
@@ -35,8 +36,7 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
     }
 
     private DataValueEndpointCall createCall() {
-        GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit());
-
+        GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
         return DataValueEndpointCall.FACTORY.create(data, getDataSetUids(), getPeriodIds(), getOrgUnitUids());
     }
 

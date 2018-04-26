@@ -166,6 +166,7 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenALoginInDatabase() throws Exception {
+        dhis2MockServer.enqueueMockResponse("system_info.json", new Date());
         dhis2MockServer.enqueueMockResponse("login.json", new Date());
 
         Response<User> response = d2.logIn("user", "password").call();
@@ -174,6 +175,7 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenALoginWithSierraLeonaOUInDatabase() throws Exception {
+        dhis2MockServer.enqueueMockResponse("system_info.json", new Date());
         dhis2MockServer.enqueueMockResponse("admin/login.json", new Date());
 
         Response<User> response = d2.logIn("user", "password").call();

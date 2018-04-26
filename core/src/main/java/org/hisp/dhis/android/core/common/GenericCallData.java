@@ -45,12 +45,6 @@ public abstract class GenericCallData {
     public abstract Retrofit retrofit();
     public abstract Date serverDate();
 
-    public static GenericCallData create(DatabaseAdapter databaseAdapter,
-                                         ResourceHandler resourceHandler,
-                                         Retrofit retrofit) {
-        return new AutoValue_GenericCallData(databaseAdapter, resourceHandler, retrofit, new Date());
-    }
-
     public static GenericCallData create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
         return new AutoValue_GenericCallData(databaseAdapter,
                 new ResourceHandler(new ResourceStoreImpl(databaseAdapter)), retrofit, new Date());

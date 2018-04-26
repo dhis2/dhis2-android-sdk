@@ -41,9 +41,6 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -206,14 +203,12 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                 .build();
 
         OptionSetService optionSetService = retrofit.create(OptionSetService.class);
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
         Set<String> uids = new HashSet<>();
         uids.add("POc7DkGU3QU");
 
         // TODO fix
-        GenericCallData data = GenericCallData.create(databaseAdapter(),
-                new ResourceHandler(resourceStore), retrofit);
+        GenericCallData data = GenericCallData.create(databaseAdapter(), retrofit);
 
         GenericHandler<OptionSet, OptionSetModel> optionSetHandler = OptionSetHandler.create(databaseAdapter());
 

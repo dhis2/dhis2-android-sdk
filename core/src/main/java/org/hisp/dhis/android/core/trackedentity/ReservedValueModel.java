@@ -66,6 +66,10 @@ public abstract class ReservedValueModel extends BaseModel implements UpdateWher
             return Utils.appendInNewArray(BaseModel.Columns.all(),
                     OWNER_OBJECT, OWNER_UID, KEY, VALUE, CREATED, EXPIRY_DATE, ORGANISATION_UNIT);
         }
+
+        public static String[] whereUpdate() {
+            return new String[]{OWNER_OBJECT, OWNER_UID, KEY, VALUE, ORGANISATION_UNIT};
+        }
     }
 
     static ReservedValueModel create(Cursor cursor) {

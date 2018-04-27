@@ -241,6 +241,17 @@ public final class MetaDataController extends ResourceController {
     }
 
     /**
+     * Get Organisation unit by uid
+     *
+     * @return Organisation unit
+     */
+    public static OrganisationUnit getOrganisationUnitByUId(String uid) {
+        return new Select().from(OrganisationUnit.class)
+                .where(Condition.column(OrganisationUnit$Table.ID).is(uid))
+                .querySingle();
+    }
+
+    /**
      * Get every entry in AttributeValue table as a List of AttributeValue objects
      *
      * @return List of AttributeValue objects with all the AttributeValue content
@@ -756,7 +767,7 @@ public final class MetaDataController extends ResourceController {
         List<OrganisationUnit> teiSearchOrganisationUnits = null;
         if (teiSearchOrganisationUnitUids != null) {
             Map<String, String> queryMap = new HashMap<>();
-            queryMap.put("fields", "[id,displayName,programs]");
+            queryMap.put("fields", "[id,displayName,code,programs]");
             String filter = "id:in:[";
 
             for (String orgUnitUid : teiSearchOrganisationUnitUids) {

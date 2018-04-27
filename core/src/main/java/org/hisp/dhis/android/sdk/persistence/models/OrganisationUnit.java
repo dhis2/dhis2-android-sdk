@@ -39,9 +39,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Simen Skogly Russnes on 17.02.15.
@@ -65,6 +63,10 @@ public class OrganisationUnit extends BaseModel {
     @JsonProperty("parent")
     @Column(name = "parent")
     String parent;
+
+    @JsonProperty("code")
+    @Column(name = "code")
+    String code;
 
     @JsonProperty("programs")
     List<Program> programs;
@@ -127,6 +129,14 @@ public class OrganisationUnit extends BaseModel {
 
     public void setPrograms(List<Program> programs) {
         this.programs = programs;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public enum TYPE {

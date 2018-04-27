@@ -37,7 +37,8 @@ public final class StoreFactory {
     @SuppressWarnings("PMD.UseVarargs")
     public static <I extends BaseIdentifiableObjectModel & StatementBinder> IdentifiableObjectStore<I>
     identifiableStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{},
+                new String[]{});
         SQLStatementWrapper statements = new SQLStatementWrapper(statementBuilder, databaseAdapter);
         return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder);
     }
@@ -45,19 +46,22 @@ public final class StoreFactory {
     @SuppressWarnings("PMD.UseVarargs")
     static <I extends BaseModel & StatementBinder> ObjectStore<I>
     objectStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{},
+                new String[]{});
         return new ObjectStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(
                 statementBuilder.insert()), statementBuilder);
     }
 
     @SuppressWarnings("PMD.UseVarargs")
-    public static <I extends BaseModel & UpdateWhereStatementBinder> ObjectWithoutUidStore<I>
-    objectWithoutUidStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns,
-                          String[] whereUpdateColumns) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, whereUpdateColumns);
+    public static <I extends BaseModel & UpdateWhereStatementBinder & DeleteWhereStatementBinder>
+    ObjectWithoutUidStore<I> objectWithoutUidStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns,
+                          String[] whereUpdateColumns, String[] whereDeleteColumns) {
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, whereUpdateColumns,
+                whereDeleteColumns);
         return new ObjectWithoutUidStoreImpl<>(databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
                 databaseAdapter.compileStatement(statementBuilder.updateWhere()),
+                databaseAdapter.compileStatement(statementBuilder.deleteWhere()),
                 statementBuilder);
     }
 }

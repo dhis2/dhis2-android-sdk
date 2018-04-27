@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+@SuppressWarnings("PMD.UseUtilityClass")
 public final class TrackedEntityAttributeReservedValueHandler extends
         ObjectWithoutUidHandlerImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
 

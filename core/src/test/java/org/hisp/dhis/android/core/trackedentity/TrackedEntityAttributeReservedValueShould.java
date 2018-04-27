@@ -26,29 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-import java.util.List;
+import java.io.IOException;
+import java.text.ParseException;
 
-import retrofit2.Response;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
-        extends AbstractEndpointCall<P, M, Q, Payload<P>> {
+public class TrackedEntityAttributeReservedValueShould extends BaseObjectShould implements ObjectShould {
 
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler, ResourceModel.Type resourceType,
-                            ModelBuilder<P, M> modelBuilder, Q query) {
-        super(data, handler, resourceType, modelBuilder, query);
+    public TrackedEntityAttributeReservedValueShould() {
+        super("trackedentity/tracked_entity_attribute_reserved_value.json");
     }
 
     @Override
-    protected List<P> getPojoList(Response<Payload<P>> response) {
-        return response.body().items();
-    }
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        TrackedEntityAttributeReservedValue reservedValue =
+                objectMapper.readValue(jsonStream, TrackedEntityAttributeReservedValue.class);
 
-    @Override
-    protected boolean isValidResponse(Response<Payload<P>> response) {
-        return response.isSuccessful() && response.body().items() != null;
+        assertThat(reservedValue.ownerObject()).isEqualTo("TRACKEDENTITYATTRIBUTE");
+        assertThat(reservedValue.ownerUid()).isEqualTo("xeG4wH2I676");
+        assertThat(reservedValue.key()).isEqualTo("RANDOM(###)");
+        assertThat(reservedValue.value()).isEqualTo("046");
+        assertThat(reservedValue.created()).isEqualTo(
+                BaseIdentifiableObject.parseDate("2018-04-26T14:54:53.344"));
+        assertThat(reservedValue.expiryDate()).isEqualTo(
+                BaseIdentifiableObject.parseDate("2018-06-25T14:54:53.344"));
     }
 }

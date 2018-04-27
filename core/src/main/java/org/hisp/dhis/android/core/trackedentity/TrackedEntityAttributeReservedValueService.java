@@ -25,30 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.common;
-
-import org.hisp.dhis.android.core.resource.ResourceModel;
+package org.hisp.dhis.android.core.trackedentity;
 
 import java.util.List;
 
-import retrofit2.Response;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
-public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
-        extends AbstractEndpointCall<P, M, Q, Payload<P>> {
+public interface TrackedEntityAttributeReservedValueService {
+    String TRACKED_ENTITY_ATTRIBUTE_UID = "trackedEntityAttributeUid";
 
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler, ResourceModel.Type resourceType,
-                            ModelBuilder<P, M> modelBuilder, Q query) {
-        super(data, handler, resourceType, modelBuilder, query);
-    }
-
-    @Override
-    protected List<P> getPojoList(Response<Payload<P>> response) {
-        return response.body().items();
-    }
-
-    @Override
-    protected boolean isValidResponse(Response<Payload<P>> response) {
-        return response.isSuccessful() && response.body().items() != null;
-    }
+    @GET("trackedEntityAttributes/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
+    Call<List<TrackedEntityAttributeReservedValue>> generateAndReserve(
+            @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityAttributeUid,
+            @Query("numberToReserve") Integer numberToReserve,
+            @Query("ORG_UNIT_CODE") String orgUnitCode);
 }

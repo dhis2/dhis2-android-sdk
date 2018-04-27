@@ -25,30 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity;
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+@SuppressWarnings("PMD.UseUtilityClass")
+public final class TrackedEntityAttributeReservedValueHandler extends
+        ObjectWithoutUidHandlerImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
 
-import java.util.List;
-
-import retrofit2.Response;
-
-public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
-        extends AbstractEndpointCall<P, M, Q, Payload<P>> {
-
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler, ResourceModel.Type resourceType,
-                            ModelBuilder<P, M> modelBuilder, Q query) {
-        super(data, handler, resourceType, modelBuilder, query);
+    TrackedEntityAttributeReservedValueHandler(ObjectWithoutUidStore<TrackedEntityAttributeReservedValueModel> store) {
+        super(store);
     }
 
-    @Override
-    protected List<P> getPojoList(Response<Payload<P>> response) {
-        return response.body().items();
-    }
-
-    @Override
-    protected boolean isValidResponse(Response<Payload<P>> response) {
-        return response.isSuccessful() && response.body().items() != null;
+    public static GenericHandler<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel>
+    create(DatabaseAdapter databaseAdapter) {
+        return new TrackedEntityAttributeReservedValueHandler(
+                TrackedEntityAttributeReservedValueStore.create(databaseAdapter));
     }
 }

@@ -68,7 +68,8 @@ public abstract class ResourceModel extends BaseModel {
         INDICATOR,
         DATA_VALUE,
         PROGRAM_STAGE,
-        RELATIONSHIP_TYPE
+        RELATIONSHIP_TYPE,
+        TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE
     }
 
     @Nullable

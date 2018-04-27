@@ -34,21 +34,21 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
-        extends AbstractEndpointCall<P, M, Q, Payload<P>> {
+public abstract class GenericListEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
+        extends AbstractEndpointCall<P, M, Q, List<P>> {
 
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler, ResourceModel.Type resourceType,
-                            ModelBuilder<P, M> modelBuilder, Q query) {
+    public GenericListEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler,
+                                       ResourceModel.Type resourceType, ModelBuilder<P, M> modelBuilder, Q query) {
         super(data, handler, resourceType, modelBuilder, query);
     }
 
     @Override
-    protected List<P> getPojoList(Response<Payload<P>> response) {
-        return response.body().items();
+    protected List<P> getPojoList(Response<List<P>> response) {
+        return response.body();
     }
 
     @Override
-    protected boolean isValidResponse(Response<Payload<P>> response) {
-        return response.isSuccessful() && response.body().items() != null;
+    protected boolean isValidResponse(Response<List<P>> response) {
+        return response.isSuccessful() && response.body() != null;
     }
 }

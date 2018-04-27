@@ -25,30 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity;
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+@RunWith(JUnit4.class)
+public class TrackedEntityAttributeReservedValueHandlerShould {
 
-import java.util.List;
-
-import retrofit2.Response;
-
-public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
-        extends AbstractEndpointCall<P, M, Q, Payload<P>> {
-
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler, ResourceModel.Type resourceType,
-                            ModelBuilder<P, M> modelBuilder, Q query) {
-        super(data, handler, resourceType, modelBuilder, query);
-    }
-
-    @Override
-    protected List<P> getPojoList(Response<Payload<P>> response) {
-        return response.body().items();
-    }
-
-    @Override
-    protected boolean isValidResponse(Response<Payload<P>> response) {
-        return response.isSuccessful() && response.body().items() != null;
+    @Test
+    public void extend_identifiable_handler_impl() {
+        ObjectWithoutUidHandlerImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel>
+                genericHandler = new TrackedEntityAttributeReservedValueHandler(null);
     }
 }

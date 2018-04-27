@@ -26,29 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.List;
+public final class TrackedEntityAttributeReservedValueStore {
 
-import retrofit2.Response;
+    private TrackedEntityAttributeReservedValueStore() {}
 
-public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
-        extends AbstractEndpointCall<P, M, Q, Payload<P>> {
-
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler, ResourceModel.Type resourceType,
-                            ModelBuilder<P, M> modelBuilder, Q query) {
-        super(data, handler, resourceType, modelBuilder, query);
-    }
-
-    @Override
-    protected List<P> getPojoList(Response<Payload<P>> response) {
-        return response.body().items();
-    }
-
-    @Override
-    protected boolean isValidResponse(Response<Payload<P>> response) {
-        return response.isSuccessful() && response.body().items() != null;
+    public static ObjectWithoutUidStore<TrackedEntityAttributeReservedValueModel>
+    create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter,
+                TrackedEntityAttributeReservedValueModel.TABLE,
+                TrackedEntityAttributeReservedValueModel.Columns.all(),
+                TrackedEntityAttributeReservedValueModel.Columns.whereUpdate());
     }
 }

@@ -26,29 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-import java.util.List;
+public class TrackedEntityAttributeReservedValueModelBuilder extends
+        ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
 
-import retrofit2.Response;
+    private final TrackedEntityAttributeReservedValueModel.Builder builder;
 
-public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
-        extends AbstractEndpointCall<P, M, Q, Payload<P>> {
-
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler, ResourceModel.Type resourceType,
-                            ModelBuilder<P, M> modelBuilder, Q query) {
-        super(data, handler, resourceType, modelBuilder, query);
+    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit organisationUnit) {
+        this.builder = TrackedEntityAttributeReservedValueModel.builder()
+                .organisationUnit(organisationUnit.uid());
     }
 
     @Override
-    protected List<P> getPojoList(Response<Payload<P>> response) {
-        return response.body().items();
-    }
-
-    @Override
-    protected boolean isValidResponse(Response<Payload<P>> response) {
-        return response.isSuccessful() && response.body().items() != null;
+    public TrackedEntityAttributeReservedValueModel buildModel(TrackedEntityAttributeReservedValue reservedValue) {
+        return builder
+                .ownerObject(reservedValue.ownerObject())
+                .ownerUid(reservedValue.ownerUid())
+                .key(reservedValue.key())
+                .value(reservedValue.value())
+                .created(reservedValue.created())
+                .expiryDate(reservedValue.expiryDate())
+                .build();
     }
 }

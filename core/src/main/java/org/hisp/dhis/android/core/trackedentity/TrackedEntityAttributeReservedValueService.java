@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.Payload;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -38,7 +38,7 @@ public interface TrackedEntityAttributeReservedValueService {
     String TRACKED_ENTITY_ATTRIBUTE_UID = "trackedEntityAttributeUid";
 
     @GET("trackedEntityAttributes/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
-    Call<Payload<TrackedEntityAttributeReservedValue>> generateAndReserve(
+    Call<List<TrackedEntityAttributeReservedValue>> generateAndReserve(
             @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityAttributeUid,
             @Query("numberToReserve") Integer numberToReserve,
             @Query("ORG_UNIT_CODE") String orgUnitCode);

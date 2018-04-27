@@ -41,6 +41,7 @@ public final class TrackedEntityAttributeReservedValueStore {
         return StoreFactory.objectWithoutUidStore(databaseAdapter,
                 TrackedEntityAttributeReservedValueModel.TABLE,
                 TrackedEntityAttributeReservedValueModel.Columns.all(),
-                TrackedEntityAttributeReservedValueModel.Columns.whereUpdate());
+                TrackedEntityAttributeReservedValueModel.Columns.whereUpdate(),
+                TrackedEntityAttributeReservedValueModel.Columns.whereDelete());
     }
 }

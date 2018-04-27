@@ -39,6 +39,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.DeleteWhereStatementBinder;
 import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -48,7 +49,8 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel implements UpdateWhereStatementBinder {
+public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel implements UpdateWhereStatementBinder,
+        DeleteWhereStatementBinder {
 
     public static final String TABLE = "TrackedEntityAttributeReservedValue";
 
@@ -70,6 +72,10 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
 
         public static String[] whereUpdate() {
             return new String[]{OWNER_OBJECT, OWNER_UID, KEY, VALUE, ORGANISATION_UNIT};
+        }
+
+        public static String[] whereDelete() {
+            return new String[]{OWNER_UID, VALUE, ORGANISATION_UNIT};
         }
     }
 
@@ -138,6 +144,13 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
         sqLiteBind(sqLiteStatement, 10, key());
         sqLiteBind(sqLiteStatement, 11, value());
         sqLiteBind(sqLiteStatement, 12, organisationUnit());
+    }
+
+    @Override
+    public void bindToDeleteWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 8, ownerUid());
+        sqLiteBind(sqLiteStatement, 9, value());
+        sqLiteBind(sqLiteStatement, 10, organisationUnit());
     }
 
     @AutoValue.Builder

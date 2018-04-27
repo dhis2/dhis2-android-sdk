@@ -30,9 +30,12 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
-public interface ObjectWithoutUidStore<M extends Model & UpdateWhereStatementBinder> extends ObjectStore<M> {
+public interface ObjectWithoutUidStore<M extends Model & UpdateWhereStatementBinder & DeleteWhereStatementBinder>
+        extends ObjectStore<M> {
 
     void updateWhere(@NonNull M m) throws RuntimeException;
 
     void updateOrInsertWhere(@NonNull M m) throws RuntimeException;
+
+    void deleteWhere(@NonNull M m) throws RuntimeException;
 }

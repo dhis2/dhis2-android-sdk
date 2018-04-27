@@ -35,14 +35,17 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class ObjectWithoutUidStoreImpl<M extends Model & UpdateWhereStatementBinder>
+public class ObjectWithoutUidStoreImpl<M extends Model & UpdateWhereStatementBinder & DeleteWhereStatementBinder>
         extends ObjectStoreImpl<M> implements ObjectWithoutUidStore<M> {
     protected final SQLiteStatement updateWhereStatement;
+    protected final SQLiteStatement deleteWhereStatement;
 
     ObjectWithoutUidStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
-                              SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
+                              SQLiteStatement updateWhereStatement, SQLiteStatement deleteWhereStatement,
+                              SQLStatementBuilder builder) {
         super(databaseAdapter, insertStatement, builder);
         this.updateWhereStatement = updateWhereStatement;
+        this.deleteWhereStatement = deleteWhereStatement;
     }
 
     @Override
@@ -60,5 +63,13 @@ public class ObjectWithoutUidStoreImpl<M extends Model & UpdateWhereStatementBin
         } catch (Exception e){
             insert(m);
         }
+    }
+
+    @Override
+    public void deleteWhere(@NonNull M m) throws RuntimeException {
+        isNull(m);
+        m.bindToStatement(deleteWhereStatement);
+        m.bindToDeleteWhereStatement(deleteWhereStatement);
+        executeUpdateDelete(deleteWhereStatement);
     }
 }

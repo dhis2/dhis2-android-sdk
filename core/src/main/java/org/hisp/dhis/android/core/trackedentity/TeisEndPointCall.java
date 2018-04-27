@@ -4,9 +4,9 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -21,15 +21,13 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public final class TeisEndPointCall implements Call<Response<Payload<TrackedEntityInstance>>> {
+public final class TeisEndPointCall extends SyncCall<Payload<TrackedEntityInstance>> {
 
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final DatabaseAdapter databaseAdapter;
     private final TeiQuery trackerQuery;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
-
-    private boolean isExecuted;
 
     private TeisEndPointCall(@NonNull TrackedEntityInstanceService trackedEntityInstanceService,
                      @NonNull DatabaseAdapter databaseAdapter,
@@ -45,20 +43,8 @@ public final class TeisEndPointCall implements Call<Response<Payload<TrackedEnti
     }
 
     @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
-    @Override
     public Response<Payload<TrackedEntityInstance>> call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Already executed");
-            }
-            isExecuted = true;
-        }
+        super.setExecuted();
 
         String lastSyncedTEIs = resourceHandler.getLastUpdated(ResourceModel.Type.TRACKED_ENTITY_INSTANCE);
 
@@ -74,7 +60,7 @@ public final class TeisEndPointCall implements Call<Response<Payload<TrackedEnti
             int size = trackedEntityInstances.size();
 
             if (trackerQuery.getPageLimit() > 0) {
-                size =  trackerQuery.getPageLimit();
+                size = Math.min(size, trackerQuery.getPageLimit());
             }
 
             for (int i = 0; i < size; i++) {

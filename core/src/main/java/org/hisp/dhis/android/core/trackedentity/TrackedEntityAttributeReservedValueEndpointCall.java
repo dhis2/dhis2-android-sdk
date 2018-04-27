@@ -27,19 +27,19 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.GenericListEndpointCallImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.io.IOException;
+import java.util.List;
 
 import retrofit2.Call;
 
 public final class TrackedEntityAttributeReservedValueEndpointCall extends
-        GenericEndpointCallImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel,
-                TrackedEntityAttributeReservedValueQuery> {
+        GenericListEndpointCallImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel,
+                        TrackedEntityAttributeReservedValueQuery> {
     private final TrackedEntityAttributeReservedValueService service;
 
     private TrackedEntityAttributeReservedValueEndpointCall(
@@ -52,9 +52,9 @@ public final class TrackedEntityAttributeReservedValueEndpointCall extends
     }
 
     @Override
-    protected Call<Payload<TrackedEntityAttributeReservedValue>> getCall(
+    protected Call<List<TrackedEntityAttributeReservedValue>> getCall(
             TrackedEntityAttributeReservedValueQuery query, String lastUpdated) throws IOException {
-        return  service.generateAndReserve(
+        return service.generateAndReserve(
                 query.trackedEntityAttributeUid(),
                 query.numberToReserve(),
                 query.organisationUnit().code());

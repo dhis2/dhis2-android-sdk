@@ -28,74 +28,27 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Response;
 
 public abstract class GenericListEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
-        extends SyncCall<List<P>> {
-    private final GenericCallData data;
-    private final GenericHandler<P, M> handler;
-
-    private final ResourceModel.Type resourceType;
-    private final ModelBuilder<P, M> modelBuilder;
-    public final Q query;
+        extends AbstractEndpointCall<P, M, Q, List<P>> {
 
     public GenericListEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler,
-                                       ResourceModel.Type resourceType,
-                                       ModelBuilder<P, M> modelBuilder, Q query) {
-        this.data = data;
-        this.handler = handler;
-        this.resourceType = resourceType;
-        this.modelBuilder = modelBuilder;
-        this.query = query;
+                                       ResourceModel.Type resourceType, ModelBuilder<P, M> modelBuilder, Q query) {
+        super(data, handler, resourceType, modelBuilder, query);
     }
 
     @Override
-    public final Response<List<P>> call() throws Exception {
-        super.setExecuted();
-
-        if (!query.isValid()) {
-            throw new IllegalArgumentException("Invalid query");
-        }
-
-        String lastUpdated = data.resourceHandler().getLastUpdated(resourceType);
-        Response<List<P>> response = getCall(query, lastUpdated).execute();
-
-        if (isValidResponse(response)) {
-            persist(response);
-            return response;
-        } else {
-            throw CallException.create(response);
-        }
+    protected List<P> getPojoList(Response<List<P>> response) {
+        return response.body();
     }
 
-    protected abstract retrofit2.Call<List<P>> getCall(Q query, String lastUpdated) throws IOException;
-
-    private void persist(Response<List<P>> response) {
-        if (response == null) {
-            throw new RuntimeException("Trying to process call without download data");
-        }
-        List<P> pojoList = response.body();
-        if (pojoList != null && !pojoList.isEmpty()) {
-            Transaction transaction = data.databaseAdapter().beginNewTransaction();
-
-            try {
-                handler.handleMany(pojoList, modelBuilder);
-                data.resourceHandler().handleResource(resourceType, data.serverDate());
-
-                transaction.setSuccessful();
-            } finally {
-                transaction.end();
-            }
-        }
-    }
-
-    private boolean isValidResponse(Response<List<P>> response) {
+    @Override
+    protected boolean isValidResponse(Response<List<P>> response) {
         return response.isSuccessful() && response.body() != null;
     }
 }

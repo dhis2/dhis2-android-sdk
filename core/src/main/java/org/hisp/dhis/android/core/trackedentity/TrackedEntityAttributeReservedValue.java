@@ -55,8 +55,9 @@ public abstract class TrackedEntityAttributeReservedValue {
     private static final Field<TrackedEntityAttributeReservedValue, String> created = Field.create(CREATED);
     private static final Field<TrackedEntityAttributeReservedValue, String> expiryDate = Field.create(EXPIRY_DATE);
 
-    static final Fields<TrackedEntityAttributeReservedValue> allFields = Fields.<TrackedEntityAttributeReservedValue>builder().fields(
-            ownerObject, ownerUid, key, value, created, expiryDate).build();
+    static final Fields<TrackedEntityAttributeReservedValue> allFields =
+            Fields.<TrackedEntityAttributeReservedValue>builder().fields(
+                    ownerObject, ownerUid, key, value, created, expiryDate).build();
 
     @Nullable
     @JsonProperty(OWNER_OBJECT)

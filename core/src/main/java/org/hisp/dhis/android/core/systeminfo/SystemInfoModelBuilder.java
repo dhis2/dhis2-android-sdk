@@ -26,28 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-import retrofit2.Response;
-
-public abstract class SyncCall<C> implements Call<Response<C>> {
-    protected boolean isExecuted;
+public class SystemInfoModelBuilder extends ModelBuilder<SystemInfo, SystemInfoModel> {
 
     @Override
-    public final boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
-    protected final void setExecuted() throws IllegalStateException {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Already executed");
-            }
-            isExecuted = true;
-        }
+    public SystemInfoModel buildModel(SystemInfo systemInfo) {
+        return SystemInfoModel.builder()
+                .serverDate(systemInfo.serverDate())
+                .dateFormat(systemInfo.dateFormat())
+                .version(systemInfo.version())
+                .contextPath(systemInfo.contextPath())
+                .build();
     }
 }

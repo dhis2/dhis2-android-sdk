@@ -28,29 +28,16 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class SystemInfoStore {
 
-import java.util.Date;
+    private SystemInfoStore() {}
 
-public interface SystemInfoStore extends DeletableStore {
-
-    long insert(
-            @NonNull Date serverDate,
-            @NonNull String dateFormat,
-            @NonNull String version,
-            @NonNull String contextPath
-    );
-
-    int update(
-            @NonNull Date serverDate,
-            @NonNull String dateFormat,
-            @NonNull String version,
-            @NonNull String contextPath,
-            @NonNull String whereContextPath
-    );
-
-    int delete(@NonNull String contextPath);
-
+    public static ObjectWithoutUidStore<SystemInfoModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemInfoModel.TABLE,
+                SystemInfoModel.Columns.all(), SystemInfoModel.Columns.whereUpdate());
+    }
 }

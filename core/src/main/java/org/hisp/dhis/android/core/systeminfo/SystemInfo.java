@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
 import java.util.Date;
 
@@ -46,10 +47,13 @@ public abstract class SystemInfo {
     private static final String CONTEXT_PATH = "contextPath";
 
 
-    public static final Field<SystemInfo, String> serverDateTime = Field.create(SERVER_DATE_TIME);
-    public static final Field<SystemInfo, String> dateFormat = Field.create(DATE_FORMAT);
-    public static final Field<SystemInfo, String> version = Field.create(VERSION);
-    public static final Field<SystemInfo, String> contextPath = Field.create(CONTEXT_PATH);
+    static final Field<SystemInfo, String> serverDateTime = Field.create(SERVER_DATE_TIME);
+    static final Field<SystemInfo, String> dateFormat = Field.create(DATE_FORMAT);
+    static final Field<SystemInfo, String> version = Field.create(VERSION);
+    static final Field<SystemInfo, String> contextPath = Field.create(CONTEXT_PATH);
+
+    public static final Fields<SystemInfo> allFields = Fields.<SystemInfo>builder().fields(
+            serverDateTime, dateFormat, version, contextPath).build();
 
     @Nullable
     @JsonProperty(SERVER_DATE_TIME)

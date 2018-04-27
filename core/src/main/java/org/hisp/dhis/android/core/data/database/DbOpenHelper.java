@@ -82,6 +82,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.settings.SystemSettingModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
@@ -1103,6 +1104,17 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             " UNIQUE (" + SystemSettingModel.Columns.KEY + ")"
             );
 
+    private static final String CREATE_TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE_TABLE =
+            SQLStatementBuilder.createModelTable(TrackedEntityAttributeReservedValueModel.TABLE,
+                    TrackedEntityAttributeReservedValueModel.Columns.OWNER_OBJECT + " TEXT," +
+                            TrackedEntityAttributeReservedValueModel.Columns.OWNER_UID + " TEXT," +
+                            TrackedEntityAttributeReservedValueModel.Columns.KEY + " TEXT," +
+                            TrackedEntityAttributeReservedValueModel.Columns.VALUE + " TEXT," +
+                            TrackedEntityAttributeReservedValueModel.Columns.CREATED + " TEXT," +
+                            TrackedEntityAttributeReservedValueModel.Columns.EXPIRY_DATE + " TEXT," +
+                            TrackedEntityAttributeReservedValueModel.Columns.ORGANISATION_UNIT + " TEXT"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1169,6 +1181,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_LEGEND_SET_TABLE);
         database.execSQL(CREATE_PROGRAM_INDICATOR_LEGEND_SET_LINK_TABLE);
         database.execSQL(CREATE_SYSTEM_SETTING_TABLE);
+        database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE_TABLE);
         return database;
     }
 

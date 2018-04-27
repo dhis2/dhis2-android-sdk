@@ -42,7 +42,7 @@ public abstract class SyncCall<C> implements Call<Response<C>> {
         }
     }
 
-    protected final void setExecuted() throws IllegalArgumentException {
+    protected final void setExecuted() throws IllegalStateException {
         synchronized (this) {
             if (isExecuted) {
                 throw new IllegalStateException("Already executed");

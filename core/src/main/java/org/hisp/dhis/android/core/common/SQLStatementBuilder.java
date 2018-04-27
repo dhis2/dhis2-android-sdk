@@ -36,13 +36,15 @@ public class SQLStatementBuilder {
     final String tableName;
     public final String[] columns;
     private final String[] updateWhereColumns;
+    private final String[] deleteWhereColumns;
     private final static String TEXT = " TEXT";
 
     @SuppressWarnings("PMD.UseVarargs")
-    SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
+    SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns, String[] deleteWhereColumns) {
         this.tableName = tableName;
         this.columns = columns.clone();
         this.updateWhereColumns = updateWhereColumns.clone();
+        this.deleteWhereColumns = deleteWhereColumns.clone();
     }
 
     private String commaSeparatedColumns() {
@@ -78,6 +80,13 @@ public class SQLStatementBuilder {
     String deleteById() {
         return "DELETE FROM " + tableName +
                 " WHERE " + BaseIdentifiableObjectModel.Columns.UID + "=?;";
+    }
+
+    String deleteWhere() {
+        String whereClause = deleteWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
+                andSeparatedColumnEqualInterrogationMark(deleteWhereColumns);
+        return "DELETE FROM " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
+                " WHERE " + whereClause + ";";
     }
 
     String selectUids() {

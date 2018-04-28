@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -78,9 +77,6 @@ public abstract class OptionSetModel extends BaseIdentifiableObjectModel impleme
     @ColumnName(Columns.VALUE_TYPE)
     @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {

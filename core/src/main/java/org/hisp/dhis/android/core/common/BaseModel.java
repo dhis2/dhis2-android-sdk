@@ -28,7 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.content.ContentValues;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -43,6 +45,9 @@ public abstract class BaseModel implements Model {
             return new String[] {};
         }
     }
+
+    @NonNull
+    public abstract ContentValues toContentValues();
 
     @Override
     @Nullable

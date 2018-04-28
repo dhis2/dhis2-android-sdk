@@ -27,9 +27,7 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 
@@ -48,9 +46,6 @@ public abstract class UserRoleModel extends BaseIdentifiableObjectModel {
     public static Builder builder() {
         return new $$AutoValue_UserRoleModel.Builder();
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
 
     @AutoValue.Builder

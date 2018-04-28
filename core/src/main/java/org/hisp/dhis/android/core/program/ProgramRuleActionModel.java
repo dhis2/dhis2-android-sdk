@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -107,9 +106,6 @@ public abstract class ProgramRuleActionModel extends BaseIdentifiableObjectModel
     @Nullable
     @ColumnName(Columns.PROGRAM_RULE)
     public abstract String programRule();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {

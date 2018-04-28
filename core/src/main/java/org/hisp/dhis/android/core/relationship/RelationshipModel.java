@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -80,10 +79,6 @@ public abstract class RelationshipModel extends BaseModel implements UpdateWhere
             return create(cursor);
         }
     };
-
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @Nullable
     @ColumnName(Columns.TRACKED_ENTITY_INSTANCE_A)

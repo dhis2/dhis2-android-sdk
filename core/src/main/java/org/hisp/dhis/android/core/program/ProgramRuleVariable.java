@@ -35,7 +35,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -51,33 +53,31 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject {
     private static final String DATA_ELEMENT = "dataElement";
     private static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
 
-    public static final Field<ProgramRuleVariable, String> uid
-            = Field.create(UID);
-    public static final Field<ProgramRuleVariable, String> code
-            = Field.create(CODE);
-    public static final Field<ProgramRuleVariable, String> name
-            = Field.create(NAME);
-    public static final Field<ProgramRuleVariable, String> displayName
-            = Field.create(DISPLAY_NAME);
-    public static final Field<ProgramRuleVariable, String> created
-            = Field.create(CREATED);
-    public static final Field<ProgramRuleVariable, String> lastUpdated
-            = Field.create(LAST_UPDATED);
-    public static final Field<ProgramRuleVariable, Boolean> useCodeForOptionSet
+    private static final Field<ProgramRuleVariable, String> uid = Field.create(UID);
+    private static final Field<ProgramRuleVariable, String> code = Field.create(CODE);
+    private static final Field<ProgramRuleVariable, String> name = Field.create(NAME);
+    private static final Field<ProgramRuleVariable, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<ProgramRuleVariable, String> created = Field.create(CREATED);
+    private static final Field<ProgramRuleVariable, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<ProgramRuleVariable, Boolean> useCodeForOptionSet
             = Field.create(USE_CODE_FOR_OPTION_SET);
-    public static final Field<ProgramRuleVariable, ProgramRuleVariableSourceType> programRuleVariableSourceType
+    private static final Field<ProgramRuleVariable, ProgramRuleVariableSourceType> programRuleVariableSourceType
             = Field.create(PROGRAM_RULE_VARIABLE_SOURCE_TYPE);
-    public static final NestedField<ProgramRuleVariable, Program> program
+    private static final NestedField<ProgramRuleVariable, ObjectWithUid> program
             = NestedField.create(PROGRAM);
-    public static final NestedField<ProgramRuleVariable, ProgramStage> programStage
+    private static final NestedField<ProgramRuleVariable, ObjectWithUid> programStage
             = NestedField.create(PROGRAM_STAGE);
-    public static final NestedField<ProgramRuleVariable, DataElement> dataElement
+    private static final NestedField<ProgramRuleVariable, ObjectWithUid> dataElement
             = NestedField.create(DATA_ELEMENT);
-    public static final NestedField<ProgramRuleVariable, TrackedEntityAttribute> trackedEntityAttribute
+    private static final NestedField<ProgramRuleVariable, ObjectWithUid> trackedEntityAttribute
             = NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
-    public static final Field<ProgramRuleVariable, Boolean> deleted
+    private static final Field<ProgramRuleVariable, Boolean> deleted
             = Field.create(DELETED);
 
+    static final Fields<ProgramRuleVariable> allFields = Fields.<ProgramRuleVariable>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, deleted, programRuleVariableSourceType,
+            useCodeForOptionSet, program.with(ObjectWithUid.uid), dataElement.with(ObjectWithUid.uid),
+            programStage.with(ObjectWithUid.uid), trackedEntityAttribute.with(ObjectWithUid.uid)).build();
 
     @Nullable
     @JsonProperty(USE_CODE_FOR_OPTION_SET)

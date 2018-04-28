@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.configuration;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
@@ -52,9 +51,6 @@ public abstract class ConfigurationModel extends BaseModel {
     @ColumnName(Columns.SERVER_URL)
     @ColumnAdapter(HttpUrlColumnAdapter.class)
     public abstract HttpUrl serverUrl();
-
-    // package visible for access in the store and manager
-    abstract ContentValues toContentValues();
 
     // package visible for access in the store and manager
     static ConfigurationModel create(Cursor cursor) {

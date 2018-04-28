@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -105,9 +104,6 @@ public abstract class ValueTypeDeviceRenderingModel extends BaseModel implements
     @Nullable
     @ColumnName(Columns.DECIMAL_POINTS)
     public abstract Integer decimalPoints();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {

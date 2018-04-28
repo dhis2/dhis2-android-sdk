@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.resource;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -69,7 +68,8 @@ public abstract class ResourceModel extends BaseModel {
         INDICATOR,
         DATA_VALUE,
         PROGRAM_STAGE,
-        RELATIONSHIP_TYPE
+        RELATIONSHIP_TYPE,
+        TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE
     }
 
     @Nullable
@@ -80,9 +80,6 @@ public abstract class ResourceModel extends BaseModel {
     @ColumnName(Columns.LAST_SYNCED)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastSynced();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @NonNull
     public static ResourceModel create(Cursor cursor) {

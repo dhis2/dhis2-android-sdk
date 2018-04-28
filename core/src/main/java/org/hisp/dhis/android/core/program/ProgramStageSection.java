@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
@@ -52,26 +53,26 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
     private static final String DATA_ELEMENTS = "dataElements";
     private static final String RENDER_TYPE = "renderType";
 
-    public static final Field<ProgramStageSection, String> uid = Field.create(UID);
-    public static final Field<ProgramStageSection, String> code = Field.create(CODE);
-    public static final Field<ProgramStageSection, String> name = Field.create(NAME);
-    public static final Field<ProgramStageSection, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<ProgramStageSection, String> created = Field.create(CREATED);
-    public static final Field<ProgramStageSection, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<ProgramStageSection, Integer> sortOrder = Field.create(SORT_ORDER);
-    public static final Field<ProgramStageSection, Boolean> deleted = Field.create(DELETED);
+    private static final Field<ProgramStageSection, String> uid = Field.create(UID);
+    private static final Field<ProgramStageSection, String> code = Field.create(CODE);
+    private static final Field<ProgramStageSection, String> name = Field.create(NAME);
+    private static final Field<ProgramStageSection, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<ProgramStageSection, String> created = Field.create(CREATED);
+    private static final Field<ProgramStageSection, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<ProgramStageSection, Integer> sortOrder = Field.create(SORT_ORDER);
+    private static final Field<ProgramStageSection, Boolean> deleted = Field.create(DELETED);
 
-    public static final NestedField<ProgramStageSection, ProgramIndicator> programIndicators =
+    private static final NestedField<ProgramStageSection, ProgramIndicator> programIndicators =
             NestedField.create(PROGRAM_INDICATORS);
 
-    public static final NestedField<ProgramStageSection, DataElement> dataElements = NestedField.create(DATA_ELEMENTS);
+    private static final NestedField<ProgramStageSection, DataElement> dataElements = NestedField.create(DATA_ELEMENTS);
 
-    static final NestedField<ProgramStageSection, ProgramStageSectionRendering> renderType
+    private static final NestedField<ProgramStageSection, ProgramStageSectionRendering> renderType
             = NestedField.create(RENDER_TYPE);
 
     static final Fields<ProgramStageSection> allFields = Fields.<ProgramStageSection>builder().fields(
             uid, code, name, displayName, created, lastUpdated, sortOrder, deleted, dataElements.with(DataElement.uid),
-            programIndicators.with(ProgramIndicator.uid, ProgramIndicator.program.with(Program.uid)), renderType
+            programIndicators.with(ProgramIndicator.uid, ProgramIndicator.program.with(ObjectWithUid.uid)), renderType
     ).build();
 
     @Nullable

@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.option.OptionSet;
 
@@ -63,56 +64,62 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
     private final static String STYLE = "style";
     private final static String RENDER_TYPE = "renderType";
 
-    public static final Field<TrackedEntityAttribute, String> uid
+    private static final Field<TrackedEntityAttribute, String> uid
             = Field.create(UID);
-    public static final Field<TrackedEntityAttribute, String> code
+    private static final Field<TrackedEntityAttribute, String> code
             = Field.create(CODE);
-    public static final Field<TrackedEntityAttribute, String> name
+    private static final Field<TrackedEntityAttribute, String> name
             = Field.create(NAME);
-    public static final Field<TrackedEntityAttribute, String> displayName
+    private static final Field<TrackedEntityAttribute, String> displayName
             = Field.create(DISPLAY_NAME);
-    public static final Field<TrackedEntityAttribute, String> created
+    private static final Field<TrackedEntityAttribute, String> created
             = Field.create(CREATED);
-    public static final Field<TrackedEntityAttribute, String> lastUpdated
+    private static final Field<TrackedEntityAttribute, String> lastUpdated
             = Field.create(LAST_UPDATED);
-    public static final Field<TrackedEntityAttribute, String> shortName
+    private static final Field<TrackedEntityAttribute, String> shortName
             = Field.create(SHORT_NAME);
-    public static final Field<TrackedEntityAttribute, String> displayShortName
+    private static final Field<TrackedEntityAttribute, String> displayShortName
             = Field.create(DISPLAY_SHORT_NAME);
-    public static final Field<TrackedEntityAttribute, String> description
+    private static final Field<TrackedEntityAttribute, String> description
             = Field.create(DESCRIPTION);
-    public static final Field<TrackedEntityAttribute, String> displayDescription
+    private static final Field<TrackedEntityAttribute, String> displayDescription
             = Field.create(DISPLAY_DESCRIPTION);
-    public static final Field<TrackedEntityAttribute, String> pattern
+    private static final Field<TrackedEntityAttribute, String> pattern
             = Field.create(PATTERN);
-    public static final Field<TrackedEntityAttribute, String> sortOrderInListNoProgram
+    private static final Field<TrackedEntityAttribute, String> sortOrderInListNoProgram
             = Field.create(SORT_ORDER_IN_LIST_NO_PROGRAM);
-    public static final NestedField<TrackedEntityAttribute, OptionSet> optionSet
+    private static final NestedField<TrackedEntityAttribute, OptionSet> optionSet
             = NestedField.create(OPTION_SET);
-    public static final Field<TrackedEntityAttribute, ValueType> valueType
+    private static final Field<TrackedEntityAttribute, ValueType> valueType
             = Field.create(VALUE_TYPE);
-    public static final Field<TrackedEntityAttribute, String> expression
+    private static final Field<TrackedEntityAttribute, String> expression
             = Field.create(EXPRESSION);
-    public static final Field<TrackedEntityAttribute, TrackedEntityAttributeSearchScope> searchScope
+    private static final Field<TrackedEntityAttribute, TrackedEntityAttributeSearchScope> searchScope
             = Field.create(SEARCH_SCOPE);
-    public static final Field<TrackedEntityAttribute, Boolean> programScope
+    private static final Field<TrackedEntityAttribute, Boolean> programScope
             = Field.create(PROGRAM_SCOPE);
-    public static final Field<TrackedEntityAttribute, Boolean> displayInListNoProgram
+    private static final Field<TrackedEntityAttribute, Boolean> displayInListNoProgram
             = Field.create(DISPLAY_IN_LIST_NO_PROGRAM);
-    public static final Field<TrackedEntityAttribute, Boolean> generated
+    private static final Field<TrackedEntityAttribute, Boolean> generated
             = Field.create(GENERATED);
-    public static final Field<TrackedEntityAttribute, Boolean> displayOnVisitSchedule
+    private static final Field<TrackedEntityAttribute, Boolean> displayOnVisitSchedule
             = Field.create(DISPLAY_ON_VISIT_SCHEDULE);
-    public static final Field<TrackedEntityAttribute, Boolean> orgUnitScope
+    private static final Field<TrackedEntityAttribute, Boolean> orgUnitScope
             = Field.create(ORG_UNIT_SCOPE);
-    public static final Field<TrackedEntityAttribute, Boolean> unique
+    private static final Field<TrackedEntityAttribute, Boolean> unique
             = Field.create(UNIQUE);
-    public static final Field<TrackedEntityAttribute, Boolean> inherit
+    private static final Field<TrackedEntityAttribute, Boolean> inherit
             = Field.create(INHERIT);
-    public static final NestedField<TrackedEntityAttribute, ObjectStyle> style
+    private static final NestedField<TrackedEntityAttribute, ObjectStyle> style
             = NestedField.create(STYLE);
-    public static final NestedField<TrackedEntityAttribute, ValueTypeRendering> renderType
+    private static final NestedField<TrackedEntityAttribute, ValueTypeRendering> renderType
             = NestedField.create(RENDER_TYPE);
+
+    public static final Fields<TrackedEntityAttribute> allFields = Fields.<TrackedEntityAttribute>builder().fields(
+            uid, code, created, lastUpdated, name, displayName, shortName, displayShortName, description,
+            displayDescription, displayInListNoProgram, displayOnVisitSchedule, expression, generated, inherit,
+            orgUnitScope, programScope, pattern, sortOrderInListNoProgram, unique, valueType, searchScope,
+            optionSet.with(OptionSet.uid, OptionSet.version), style.with(ObjectStyle.allFields), renderType).build();
 
     @Nullable
     @JsonProperty(PATTERN)

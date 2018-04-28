@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -58,9 +56,6 @@ public abstract class ProgramStageSectionModel extends BaseIdentifiableObjectMod
     public static Builder builder() {
         return new $$AutoValue_ProgramStageSectionModel.Builder();
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @Nullable
     @ColumnName(Columns.SORT_ORDER)

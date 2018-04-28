@@ -67,12 +67,13 @@ import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
-import org.hisp.dhis.android.core.program.ProgramStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipStore;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStoreImpl;
+import org.hisp.dhis.android.core.settings.SystemSettingStore;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
@@ -114,9 +115,9 @@ public class LogOutUserCallable implements Callable<Void> {
                 new AuthenticatedUserStoreImpl(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
                 new ResourceStoreImpl(databaseAdapter),
-                new SystemInfoStoreImpl(databaseAdapter),
+                SystemInfoStore.create(databaseAdapter),
                 new UserRoleStoreImpl(databaseAdapter),
-                new ProgramStoreImpl(databaseAdapter),
+                ProgramStore.create(databaseAdapter),
                 new TrackedEntityAttributeStoreImpl(databaseAdapter),
 
                 new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter),
@@ -162,7 +163,10 @@ public class LogOutUserCallable implements Callable<Void> {
                 NoteStore.create(databaseAdapter),
                 LegendStore.create(databaseAdapter),
                 LegendSetStore.create(databaseAdapter),
-                ProgramIndicatorLegendSetLinkStore.create(databaseAdapter));
+
+                ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
+                SystemSettingStore.create(databaseAdapter)
+        );
 
         return new LogOutUserCallable(
                 deletableStores

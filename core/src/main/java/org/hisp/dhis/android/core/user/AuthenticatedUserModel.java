@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -60,9 +59,6 @@ public abstract class AuthenticatedUserModel extends BaseModel {
     @Nullable
     @ColumnName(Columns.CREDENTIALS)
     public abstract String credentials();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @NonNull
     public static Builder builder() {

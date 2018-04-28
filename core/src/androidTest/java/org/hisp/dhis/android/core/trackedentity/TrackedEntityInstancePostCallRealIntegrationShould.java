@@ -102,8 +102,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         coordinates = "[9,9]";
         featureType = FeatureType.POINT;
 
-        categoryOptionUid = "CW81uF03hvV";
-        categoryComboOptionUid = "l5QR5hJ4u44";
+        categoryOptionUid = "as6ygGvUGNg";
+        categoryComboOptionUid = "bRowv6yZOF2";
         eventUid = codeGenerator.generate();
         enrollmentUid = codeGenerator.generate();
         trackedEntityInstanceUid = codeGenerator.generate();
@@ -281,27 +281,30 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
                                        String trackedEntityUid, String coordinates, FeatureType featureType,
                                        String eventUid, String enrollmentUid, String trackedEntityInstanceUid,
                                        String trackedEntityAttributeUid, String dataElementUid) {
-        trackedEntityInstanceStore.insert(trackedEntityInstanceUid, new Date(), new Date(), null,
+        
+        Date refDate = getCurrentDateMinusTenMinutes();
+
+        trackedEntityInstanceStore.insert(trackedEntityInstanceUid, refDate, refDate, null,
                 null, orgUnitUid, trackedEntityUid, coordinates, featureType, State.TO_POST);
 
         enrollmentStore.insert(
-                enrollmentUid, new Date(), new Date(), null, null, orgUnitUid, programUid, new Date(),
-                new Date(), Boolean.FALSE, EnrollmentStatus.ACTIVE,
+                enrollmentUid, refDate, refDate, null, null, orgUnitUid, programUid, refDate,
+                refDate, Boolean.FALSE, EnrollmentStatus.ACTIVE,
                 trackedEntityInstanceUid, "10.33", "12.231", State.TO_POST
         );
 
         eventStore.insert(
-                eventUid, enrollmentUid, new Date(), new Date(), null, null,
+                eventUid, enrollmentUid, refDate, refDate, null, null,
                 EventStatus.ACTIVE, "13.21", "12.21", programUid, programStageUid, orgUnitUid,
-                new Date(), new Date(), new Date(), State.TO_POST, categoryOptionUid, categoryComboOptionUid, trackedEntityInstanceUid
+                refDate, refDate, refDate, State.TO_POST, categoryOptionUid, categoryComboOptionUid, trackedEntityInstanceUid
         );
 
         trackedEntityDataValueStore.insert(
-                eventUid, new Date(), new Date(), dataElementUid, "user_name", "12", Boolean.FALSE
+                eventUid, refDate, refDate, dataElementUid, "user_name", "12", Boolean.FALSE
         );
 
         trackedEntityAttributeValueStore.insert(
-                "new2", new Date(), new Date(), trackedEntityAttributeUid,
+                "new2", refDate, refDate, trackedEntityAttributeUid,
                 trackedEntityInstanceUid
         );
     }
@@ -375,5 +378,10 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
                 return true;
             }
         return false;
+    }
+
+    private Date getCurrentDateMinusTenMinutes() {
+        Long newTime = (new Date()).getTime() - (10 * 60 * 1000);
+        return new Date(newTime);
     }
 }

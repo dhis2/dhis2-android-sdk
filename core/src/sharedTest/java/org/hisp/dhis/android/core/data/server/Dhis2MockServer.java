@@ -49,7 +49,7 @@ public class Dhis2MockServer {
     private static final int OK_CODE = 200;
 
     private MockWebServer server;
-    IFileReader fileReader;
+    private IFileReader fileReader;
 
     public Dhis2MockServer(IFileReader fileReader) throws IOException {
         this.fileReader = fileReader;
@@ -82,27 +82,22 @@ public class Dhis2MockServer {
     }
 
     public void enqueueMetadataResponses() throws IOException {
-        enqueueMockResponse("system_info.json");
-        enqueueMockResponse("user.json");
-        enqueueMockResponse("categories.json");
-        enqueueMockResponse("category_combos.json");
-        enqueueMockResponse("programs_with_access.json");
-        enqueueMockResponse("programs.json");
-        enqueueMockResponse("program_stages.json");
-        enqueueMockResponse("tracked_entities.json");
-        enqueueMockResponse("relationship_types.json");
-        enqueueMockResponse("organisationUnits.json");
-        enqueueMockResponse("option_sets.json");
-        enqueueMockResponse("data_sets_with_access.json");
-        enqueueMockResponse("data_sets.json");
-        enqueueMockResponse("data_elements.json");
-        enqueueMockResponse("indicators.json");
-        enqueueMockResponse("indicator_types.json");
+        enqueueMetadataResponsesWithUserAndOrgUnits(
+                "user.json",
+                "organisationUnits.json");
     }
 
     public void enqueueMetadataWithDescendentsResponses() throws IOException {
+        enqueueMetadataResponsesWithUserAndOrgUnits(
+                "admin/user.json",
+                "admin/organisation_units.json");
+    }
+
+    private void enqueueMetadataResponsesWithUserAndOrgUnits(String userPath, String orgUnitPath)
+            throws IOException {
         enqueueMockResponse("system_info.json");
-        enqueueMockResponse("admin/user.json");
+        enqueueMockResponse("system_setting.json");
+        enqueueMockResponse(userPath);
         enqueueMockResponse("categories.json");
         enqueueMockResponse("category_combos.json");
         enqueueMockResponse("programs_with_access.json");
@@ -110,8 +105,8 @@ public class Dhis2MockServer {
         enqueueMockResponse("program_stages.json");
         enqueueMockResponse("tracked_entities.json");
         enqueueMockResponse("relationship_types.json");
-        enqueueMockResponse("admin/organisation_units.json");
         enqueueMockResponse("option_sets.json");
+        enqueueMockResponse(orgUnitPath);
         enqueueMockResponse("data_sets_with_access.json");
         enqueueMockResponse("data_sets.json");
         enqueueMockResponse("data_elements.json");

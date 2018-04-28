@@ -35,7 +35,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
 import java.util.Date;
@@ -49,31 +51,25 @@ public abstract class ProgramRule extends BaseIdentifiableObject {
     private static final String CONDITION = "condition";
     private static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
 
-    public static final Field<ProgramRule, String> uid
-            = Field.create(UID);
-    public static final Field<ProgramRule, String> code
-            = Field.create(CODE);
-    public static final Field<ProgramRule, String> name
-            = Field.create(NAME);
-    public static final Field<ProgramRule, String> displayName
-            = Field.create(DISPLAY_NAME);
-    public static final Field<ProgramRule, String> created =
-            Field.create(CREATED);
-    public static final Field<ProgramRule, String> lastUpdated =
-            Field.create(LAST_UPDATED);
-    public static final Field<ProgramRule, Integer> priority
-            = Field.create(PRIORITY);
-    public static final Field<ProgramRule, String> condition
-            = Field.create(CONDITION);
-    public static final NestedField<ProgramRule, Program> program
-            = NestedField.create(PROGRAM);
-    public static final NestedField<ProgramRule, ProgramStage> programStage
-            = NestedField.create(PROGRAM_STAGE);
-    public static final NestedField<ProgramRule, ProgramRuleAction> programRuleActions
-            = NestedField.create(PROGRAM_RULE_ACTIONS);
-    public static final Field<ProgramRule, Boolean> deleted
-            = Field.create(DELETED);
+    private static final Field<ProgramRule, String> uid = Field.create(UID);
+    private static final Field<ProgramRule, String> code = Field.create(CODE);
+    private static final Field<ProgramRule, String> name = Field.create(NAME);
+    private static final Field<ProgramRule, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<ProgramRule, String> created = Field.create(CREATED);
+    private static final Field<ProgramRule, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<ProgramRule, Integer> priority = Field.create(PRIORITY);
+    private static final Field<ProgramRule, String> condition = Field.create(CONDITION);
 
+    private static final NestedField<ProgramRule, ObjectWithUid> program = NestedField.create(PROGRAM);
+    private static final NestedField<ProgramRule, ObjectWithUid> programStage = NestedField.create(PROGRAM_STAGE);
+    private static final NestedField<ProgramRule, ProgramRuleAction> programRuleActions
+            = NestedField.create(PROGRAM_RULE_ACTIONS);
+    private static final Field<ProgramRule, Boolean> deleted = Field.create(DELETED);
+
+    static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, deleted, priority, condition,
+            program.with(ObjectWithUid.uid), programStage.with(ObjectWithUid.uid),
+            programRuleActions.with(ProgramRuleAction.allFields)).build();
 
     @Nullable
     @JsonProperty(PRIORITY)

@@ -29,9 +29,7 @@
 package org.hisp.dhis.android.core.user;
 
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -56,9 +54,6 @@ public abstract class UserCredentialsModel extends BaseIdentifiableObjectModel {
     @Nullable
     @ColumnName(Columns.USER)
     public abstract String user();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     public static UserCredentialsModel create(Cursor cursor) {
         return AutoValue_UserCredentialsModel.createFromCursor(cursor);

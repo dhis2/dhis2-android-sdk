@@ -37,10 +37,9 @@ import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.program.ProgramParentCall;
+import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserRole;
@@ -52,16 +51,10 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
-import javax.net.ssl.HttpsURLConnection;
-
-import okhttp3.MediaType;
-import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 import static junit.framework.Assert.assertTrue;
@@ -69,15 +62,15 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class MetadataCallShould extends BaseCallShould {
     @Mock
     private SystemInfo systemInfo;
+
+    @Mock
+    private SystemSetting systemSetting;
 
     @Mock
     private Date serverDateTime;
@@ -110,25 +103,10 @@ public class MetadataCallShould extends BaseCallShould {
     private Payload<Program> programWithAccessPayload;
 
     @Mock
-    private Payload<Program> programPayload;
-
-    @Mock
-    private Payload<ProgramStage> programStagePayload;
-
-    @Mock
-    private Payload<TrackedEntityType> trackedEntityPayload;
-
-    @Mock
-    private Payload<RelationshipType> relationshipTypePayload;
-
-    @Mock
     private Payload<OptionSet> optionSetPayload;
 
     @Mock
     private Payload<DataElement> dataElementPayload;
-
-    @Mock
-    private OptionSet optionSet;
 
     @Mock
     private Category category;
@@ -146,16 +124,10 @@ public class MetadataCallShould extends BaseCallShould {
     private Program programWithAccess;
 
     @Mock
-    private Program program;
-
-    @Mock
-    private ObjectWithUid programStageWithUid;
-
-    @Mock
-    private TrackedEntityType trackedEntityType;
-
-    @Mock
     private Call<Response<SystemInfo>> systemInfoEndpointCall;
+
+    @Mock
+    private Call<Response<SystemSetting>> systemSettingEndpointCall;
 
     @Mock
     private Call<Response<User>> userCall;
@@ -170,19 +142,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<Response<Payload<Program>>> programAccessEndpointCall;
 
     @Mock
-    private Call<Response<Payload<Program>>> programEndpointCall;
-
-    @Mock
-    private Call<Response<Payload<ProgramStage>>> programStageEndpointCall;
-
-    @Mock
-    private Call<Response<Payload<TrackedEntityType>>> trackedEntityCall;
-
-    @Mock
-    private Call<Response<Payload<RelationshipType>>> relationshipTypeCall;
-
-    @Mock
-    private Call<Response<Payload<OptionSet>>> optionSetCall;
+    private Call<Response> programParentCall;
 
     @Mock
     private Call<Response> dataSetParentCall;
@@ -192,6 +152,9 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private SimpleCallFactory<SystemInfo> systemInfoCallFactory;
+
+    @Mock
+    private SimpleCallFactory<SystemSetting> systemSettingCallFactory;
 
     @Mock
     private SimpleCallFactory<User> userCallFactory;
@@ -206,22 +169,10 @@ public class MetadataCallShould extends BaseCallShould {
     private SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
 
     @Mock
-    private UidsCallFactory<Program> programCallFactory;
-
-    @Mock
-    private UidsCallFactory<ProgramStage> programStageCallFactory;
-
-    @Mock
-    private UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
-
-    @Mock
-    private SimpleCallFactory<Payload<RelationshipType>> relationshipTypeCallFactory;
+    private ProgramParentCall.Factory programParentCallFactory;
 
     @Mock
     private OrganisationUnitCall.Factory organisationUnitCallFactory;
-
-    @Mock
-    private UidsCallFactory<OptionSet> optionSetCallFactory;
 
     @Mock
     private DataSetParentCall.Factory dataSetParentCallFactory;
@@ -229,17 +180,10 @@ public class MetadataCallShould extends BaseCallShould {
     // object to test
     private MetadataCall metadataCall;
 
-
-    private Response errorResponse;
-
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
-
-        errorResponse = Response.error(
-                HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
-                ResponseBody.create(MediaType.parse("application/json"), "{}"));
 
         // Payload data
         when(systemInfo.serverDate()).thenReturn(serverDateTime);
@@ -251,70 +195,50 @@ public class MetadataCallShould extends BaseCallShould {
         when(dataAccess.read()).thenReturn(true);
         when(access.data()).thenReturn(dataAccess);
         when(programWithAccess.access()).thenReturn(access);
-        when(program.trackedEntityType()).thenReturn(trackedEntityType);
-        when(program.access()).thenReturn(access);
-        when(program.programStages()).thenReturn(Collections.singletonList(programStageWithUid));
-        when(programStageWithUid.uid()).thenReturn("program_stage_uid");
-        when(trackedEntityType.uid()).thenReturn("test_tracked_entity_uid");
 
         // Payloads
         when(programWithAccessPayload.items()).thenReturn(Collections.singletonList(programWithAccess));
         when(categoryPayload.items()).thenReturn(Collections.singletonList(category));
         when(categoryComboPayload.items()).thenReturn(Collections.singletonList(categoryCombo));
-        when(programPayload.items()).thenReturn(Collections.singletonList(program));
-        when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntityType));
         when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
-        when(optionSetPayload.items()).thenReturn(Collections.singletonList(optionSet));
         when(dataElementPayload.items()).thenReturn(Collections.singletonList(dataElement));
 
         // Call factories
         when(systemInfoCallFactory.create(genericCallData)).thenReturn(systemInfoEndpointCall);
+        when(systemSettingCallFactory.create(genericCallData)).thenReturn(systemSettingEndpointCall);
         when(userCallFactory.create(genericCallData)).thenReturn(userCall);
         when(programAccessCallFactory.create(genericCallData)).thenReturn(programAccessEndpointCall);
+        when(programParentCallFactory.create(same(genericCallData), anySetOf(String.class)))
+                .thenReturn(programParentCall);
         when(categoryCallFactory.create(genericCallData)).thenReturn(categoryEndpointCall);
         when(categoryComboCallFactory.create(genericCallData)).thenReturn(categoryComboEndpointCall);
-        when(programCallFactory.create(same(genericCallData), any(Set.class)))
-                .thenReturn(programEndpointCall);
-        when(programStageCallFactory.create(same(genericCallData), any(Set.class)))
-                .thenReturn(programStageEndpointCall);
-        when(trackedEntityCallFactory.create(same(genericCallData), any(Set.class)))
-                .thenReturn(trackedEntityCall);
-        when(relationshipTypeCallFactory.create(same(genericCallData))).thenReturn(relationshipTypeCall);
         when(organisationUnitCallFactory.create(same(genericCallData), same(user), anySetOf(String.class)))
                 .thenReturn(organisationUnitEndpointCall);
-        when(optionSetCallFactory.create(same(genericCallData), any(Set.class)))
-                .thenReturn(optionSetCall);
         when(dataSetParentCallFactory.create(same(user), same(genericCallData), any(List.class)))
                 .thenReturn(dataSetParentCall);
 
         // Calls
         when(systemInfoEndpointCall.call()).thenReturn(Response.success(systemInfo));
+        when(systemSettingEndpointCall.call()).thenReturn(Response.success(systemSetting));
         when(userCall.call()).thenReturn(Response.success(user));
         when(categoryEndpointCall.call()).thenReturn(Response.success(categoryPayload));
         when(categoryComboEndpointCall.call()).thenReturn(Response.success(categoryComboPayload));
-        when(programEndpointCall.call()).thenReturn(Response.success(programPayload));
+        when(programParentCall.call()).thenReturn(Response.success(optionSetPayload));
         when(programAccessEndpointCall.call()).thenReturn(Response.success(programWithAccessPayload));
-        when(trackedEntityCall.call()).thenReturn(Response.success(trackedEntityPayload));
-        when(relationshipTypeCall.call()).thenReturn(Response.success(relationshipTypePayload));
-        when(optionSetCall.call()).thenReturn(Response.success(optionSetPayload));
         when(organisationUnitEndpointCall.call()).thenReturn(Response.success(organisationUnitPayload));
         when(dataSetParentCall.call()).thenReturn(Response.success(dataElementPayload));
-        when(programStageEndpointCall.call()).thenReturn(Response.success(programStagePayload));
 
         // Metadata call
         metadataCall = new MetadataCall(
                 genericCallData,
                 systemInfoCallFactory,
+                systemSettingCallFactory,
                 userCallFactory,
                 categoryCallFactory,
                 categoryComboCallFactory,
                 programAccessCallFactory,
-                programCallFactory,
-                programStageCallFactory,
-                trackedEntityCallFactory,
-                relationshipTypeCallFactory,
+                programParentCallFactory,
                 organisationUnitCallFactory,
-                optionSetCallFactory,
                 dataSetParentCallFactory);
     }
 
@@ -324,13 +248,14 @@ public class MetadataCallShould extends BaseCallShould {
     }
 
     @Test
-    public void return_last_response_successful() throws Exception {
+    public void succeed_when_endpoint_calls_succeed() throws Exception {
         Response response = metadataCall.call();
         assertTrue(response.isSuccessful());
     }
 
     @Test
-    public void return_last_response_items_returned() throws Exception {
+    @SuppressWarnings("unchecked")
+    public void return_last_response_items() throws Exception {
         Response response = metadataCall.call();
         Payload<DataElement> payload = (Payload<DataElement>) response.body();
         assertTrue(!payload.items().isEmpty());
@@ -339,86 +264,62 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void verify_transaction_fail_when_system_info_call_fail() throws Exception {
-        final int expectedTransactions = 1;
+    public void fail_when_system_info_call_fail() throws Exception {
         when(systemInfoEndpointCall.call()).thenReturn(errorResponse);
-
-        Response response = metadataCall.call();
-
-        assertThat(response).isEqualTo(errorResponse);
-        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter, times(expectedTransactions)).beginNewTransaction();
-        verify(transaction, times(expectedTransactions)).end();
-        verify(transaction, times(expectedTransactions - 1)).setSuccessful();
+        verifyFail(metadataCall.call());
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void verify_transaction_fail_when_user_call_fail() throws Exception {
+    public void fail_when_system_setting_call_fail() throws Exception {
+        when(systemSettingEndpointCall.call()).thenReturn(errorResponse);
+        verifyFail(metadataCall.call());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void fail_when_user_call_fail() throws Exception {
         when(userCall.call()).thenReturn(errorResponse);
-
-        Response response = metadataCall.call();
-
-        assertThat(response).isEqualTo(errorResponse);
-        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter).beginNewTransaction();
-        verify(transaction).end();
-        verify(transaction, never()).setSuccessful();
+        verifyFail(metadataCall.call());
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void verify_transaction_fail_when_organisation_unit_call_fail() throws Exception {
+    public void fail_when_category_call_fail() throws Exception {
+        when(categoryEndpointCall.call()).thenReturn(errorResponse);
+        verifyFail(metadataCall.call());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void fail_when_category_combo_call_fail() throws Exception {
+        when(categoryComboEndpointCall.call()).thenReturn(errorResponse);
+        verifyFail(metadataCall.call());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void fail_when_program_access_call_fail() throws Exception {
+        when(programAccessEndpointCall.call()).thenReturn(errorResponse);
+        verifyFail(metadataCall.call());
+    }
+
+    @Test
+    public void fail_when_program_call_fail() throws Exception {
+        when(programParentCall.call()).thenReturn(errorResponse);
+        verifyFail(metadataCall.call());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void fail_when_organisation_unit_call_fail() throws Exception {
         when(organisationUnitEndpointCall.call()).thenReturn(errorResponse);
-
-        Response response = metadataCall.call();
-
-        assertThat(response).isEqualTo(errorResponse);
-        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter).beginNewTransaction();
-        verify(transaction).end();
-        verify(transaction, never()).setSuccessful();
+        verifyFail(metadataCall.call());
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void verify_transaction_fail_when_program_call_fail() throws Exception {
-        when(programEndpointCall.call()).thenReturn(errorResponse);
-
-        Response response = metadataCall.call();
-
-        assertThat(response).isEqualTo(errorResponse);
-        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter).beginNewTransaction();
-        verify(transaction).end();
-        verify(transaction, never()).setSuccessful();
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void verify_transaction_fail_when_tracked_entity_call_fail() throws Exception {
-        when(trackedEntityCall.call()).thenReturn(errorResponse);
-
-        Response response = metadataCall.call();
-
-        assertThat(response).isEqualTo(errorResponse);
-        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter).beginNewTransaction();
-        verify(transaction).end();
-        verify(transaction, never()).setSuccessful();
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void verify_transaction_fail_when_option_set_fail() throws Exception {
-        when(optionSetCall.call()).thenReturn(errorResponse);
-
-        Response response = metadataCall.call();
-
-        assertThat(response).isEqualTo(errorResponse);
-        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter).beginNewTransaction();
-        verify(transaction).end();
-        verify(transaction, never()).setSuccessful();
+    public void fail_when_dataset_parent_call_call_fail() throws Exception {
+        when(dataSetParentCall.call()).thenReturn(errorResponse);
+        verifyFail(metadataCall.call());
     }
 }

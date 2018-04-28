@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -104,9 +103,6 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel impl
     @Nullable
     @ColumnName(Columns.DISPLAY_NAME_PATH)
     public abstract String displayNamePath();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {

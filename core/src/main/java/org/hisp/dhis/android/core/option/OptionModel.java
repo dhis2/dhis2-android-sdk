@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -57,9 +55,6 @@ public abstract class OptionModel extends BaseIdentifiableObjectModel {
     @Nullable
     @ColumnName(Columns.OPTION_SET)
     public abstract String optionSet();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {

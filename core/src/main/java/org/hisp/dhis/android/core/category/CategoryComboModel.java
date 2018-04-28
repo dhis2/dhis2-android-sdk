@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.core.category;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,9 +23,6 @@ public abstract class CategoryComboModel extends BaseIdentifiableObjectModel {
         public static final String IS_DEFAULT = "isDefault";
 
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @NonNull
     public static Builder builder() {

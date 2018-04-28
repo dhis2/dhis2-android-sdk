@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -112,9 +111,6 @@ public abstract class UserModel extends BaseIdentifiableObjectModel {
     @Nullable
     @ColumnName(Columns.NATIONALITY)
     public abstract String nationality();
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @NonNull
     public static Builder builder() {

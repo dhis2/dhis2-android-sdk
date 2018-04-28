@@ -31,6 +31,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.CallException;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
@@ -117,6 +118,8 @@ public class TrackedEntityTypeCall implements Call<Response<Payload<TrackedEntit
                         serverDate
                 );
                 transaction.setSuccessful();
+            } else {
+                throw CallException.create(response);
             }
         } finally {
             transaction.end();

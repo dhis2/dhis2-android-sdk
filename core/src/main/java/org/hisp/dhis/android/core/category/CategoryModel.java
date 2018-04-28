@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.category;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -51,10 +50,6 @@ public abstract class CategoryModel extends BaseIdentifiableObjectModel {
     @Nullable
     @ColumnName(Columns.DATA_DIMENSION_TYPE)
     public abstract String dataDimensionType();
-
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @NonNull
     public static Builder builder() {

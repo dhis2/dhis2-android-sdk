@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.DataAccess;
@@ -43,6 +44,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
@@ -80,82 +82,78 @@ public abstract class Program extends BaseNameableObject {
     private static final String PROGRAM_RULE_VARIABLES = "programRuleVariables";
     private final static String ACCESS = "access";
     private final static String STYLE = "style";
+    private final static String EXPIRY_DAYS = "expiryDays";
+    private final static String COMPLETE_EVENTS_EXPIRY_DAYS = "completeEventsExpiryDays";
+    private final static String EXPIRY_PERIOD_TYPE = "expiryPeriodType";
 
-    public static final Field<Program, String> uid
-            = Field.create(UID);
-    public static final Field<Program, String> code
-            = Field.create(CODE);
-    public static final Field<Program, String> name
-            = Field.create(NAME);
-    public static final Field<Program, String> displayName
-            = Field.create(DISPLAY_NAME);
-    public static final Field<Program, String> created
-            = Field.create(CREATED);
-    public static final Field<Program, String> lastUpdated
-            = Field.create(LAST_UPDATED);
-    public static final Field<Program, Boolean> deleted
-            = Field.create(DELETED);
-    public static final Field<Program, String> shortName
-            = Field.create(SHORT_NAME);
-    public static final Field<Program, String> displayShortName
-            = Field.create(DISPLAY_SHORT_NAME);
-    public static final Field<Program, String> description
-            = Field.create(DESCRIPTION);
-    public static final Field<Program, String> displayDescription
-            = Field.create(DISPLAY_DESCRIPTION);
-    public static final Field<Program, Integer> version
-            = Field.create(VERSION);
-    public static final Field<Program, Boolean> onlyEnrollOnce
-            = Field.create(ONLY_ENROLL_ONCE);
-    public static final Field<Program, String> enrollmentDateLabel
-            = Field.create(ENROLLMENT_DATE_LABEL);
-    public static final Field<Program, Boolean> displayIncidentDate
-            = Field.create(DISPLAY_INCIDENT_DATE);
-    public static final Field<Program, String> incidentDateLabel
-            = Field.create(INCIDENT_DATE_LABEL);
-    public static final Field<Program, Boolean> registration
-            = Field.create(REGISTRATION);
-    public static final Field<Program, Boolean> selectEnrollmentDatesInFuture
+    static final Field<Program, String> uid = Field.create(UID);
+    private static final Field<Program, String> code = Field.create(CODE);
+    private static final Field<Program, String> name = Field.create(NAME);
+    private static final Field<Program, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<Program, String> created = Field.create(CREATED);
+    static final Field<Program, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<Program, Boolean> deleted = Field.create(DELETED);
+    private static final Field<Program, String> shortName = Field.create(SHORT_NAME);
+    private static final Field<Program, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
+    private static final Field<Program, String> description = Field.create(DESCRIPTION);
+    private static final Field<Program, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
+    private static final Field<Program, Integer> version = Field.create(VERSION);
+    private static final Field<Program, Boolean> onlyEnrollOnce = Field.create(ONLY_ENROLL_ONCE);
+    private static final Field<Program, String> enrollmentDateLabel = Field.create(ENROLLMENT_DATE_LABEL);
+    private static final Field<Program, Boolean> displayIncidentDate = Field.create(DISPLAY_INCIDENT_DATE);
+    private static final Field<Program, String> incidentDateLabel = Field.create(INCIDENT_DATE_LABEL);
+    private static final Field<Program, Boolean> registration = Field.create(REGISTRATION);
+    private static final Field<Program, Boolean> selectEnrollmentDatesInFuture
             = Field.create(SELECT_ENROLLMENT_DATES_IN_FUTURE);
-    public static final Field<Program, Boolean> dataEntryMethod
-            = Field.create(DATA_ENTRY_METHOD);
-    public static final Field<Program, Boolean> ignoreOverdueEvents
-            = Field.create(IGNORE_OVERDUE_EVENTS);
-    public static final Field<Program, Boolean> relationshipFromA
-            = Field.create(RELATIONSHIP_FROM_A);
-    public static final Field<Program, Boolean> selectIncidentDatesInFuture
+    private static final Field<Program, Boolean> dataEntryMethod = Field.create(DATA_ENTRY_METHOD);
+    private static final Field<Program, Boolean> ignoreOverdueEvents = Field.create(IGNORE_OVERDUE_EVENTS);
+    private static final Field<Program, Boolean> relationshipFromA = Field.create(RELATIONSHIP_FROM_A);
+    private static final Field<Program, Boolean> selectIncidentDatesInFuture
             = Field.create(SELECT_INCIDENT_DATES_IN_FUTURE);
-    public static final Field<Program, Boolean> captureCoordinates
-            = Field.create(CAPTURE_COORDINATES);
-    public static final Field<Program, Boolean> useFirstStageDuringRegistration
+    private static final Field<Program, Boolean> captureCoordinates = Field.create(CAPTURE_COORDINATES);
+    private static final Field<Program, Boolean> useFirstStageDuringRegistration
             = Field.create(USE_FIRST_STAGE_DURING_REGISTRATION);
-    public static final Field<Program, Boolean> displayFrontPageList
-            = Field.create(DISPLAY_FRONT_PAGE_LIST);
-    public static final Field<Program, ProgramType> programType
-            = Field.create(PROGRAM_TYPE);
-    public static final Field<Program, String> relationshipText
-            = Field.create(RELATIONSHIP_TEXT);
-    public static final NestedField<Program, ObjectWithUid> relationshipType
+    private static final Field<Program, Boolean> displayFrontPageList = Field.create(DISPLAY_FRONT_PAGE_LIST);
+    private static final Field<Program, ProgramType> programType = Field.create(PROGRAM_TYPE);
+    private static final Field<Program, String> relationshipText = Field.create(RELATIONSHIP_TEXT);
+    private static final Field<Program, String> expiryDays = Field.create(EXPIRY_DAYS);
+    private static final Field<Program, String> completeEventsExpiryDays
+            = Field.create(COMPLETE_EVENTS_EXPIRY_DAYS);
+    private static final Field<Program, String> expiryPeriodType = Field.create(EXPIRY_PERIOD_TYPE);
+
+    private static final NestedField<Program, ObjectWithUid> relationshipType
             = NestedField.create(RELATIONSHIP_TYPE);
-    public static final NestedField<Program, ProgramTrackedEntityAttribute> programTrackedEntityAttributes
+    private static final NestedField<Program, ProgramTrackedEntityAttribute> programTrackedEntityAttributes
             = NestedField.create(PROGRAM_TRACKED_ENTITY_ATTRIBUTES);
-    public static final NestedField<Program, Program> relatedProgram
+    private static final NestedField<Program, Program> relatedProgram
             = NestedField.create(RELATED_PROGRAM);
-    public static final NestedField<Program, TrackedEntityType> trackedEntityType
+    private static final NestedField<Program, ObjectWithUid> trackedEntityType
             = NestedField.create(TRACKED_ENTITY_TYPE);
-    public static final NestedField<Program, CategoryCombo> categoryCombo
+    private static final NestedField<Program, ObjectWithUid> categoryCombo
             = NestedField.create(CATEGORY_COMBO);
-    static final NestedField<Program, Access> access
-            = NestedField.create(ACCESS);
-    public static final NestedField<Program, ProgramIndicator> programIndicators
+    static final NestedField<Program, Access> access = NestedField.create(ACCESS);
+    private static final NestedField<Program, ProgramIndicator> programIndicators
             = NestedField.create(PROGRAM_INDICATORS);
-    public static final NestedField<Program, ObjectWithUid> programStages
+    private static final NestedField<Program, ObjectWithUid> programStages
             = NestedField.create(PROGRAM_STAGES);
-    public static final NestedField<Program, ProgramRule> programRules
-            = NestedField.create(PROGRAM_RULES);
-    public static final NestedField<Program, ProgramRuleVariable> programRuleVariables
+    private static final NestedField<Program, ProgramRule> programRules = NestedField.create(PROGRAM_RULES);
+    private static final NestedField<Program, ProgramRuleVariable> programRuleVariables
             = NestedField.create(PROGRAM_RULE_VARIABLES);
-    public static final NestedField<Program, ObjectStyle> style = NestedField.create(STYLE);
+    private static final NestedField<Program, ObjectStyle> style = NestedField.create(STYLE);
+
+    static final Fields<Program> allFields = Fields.<Program>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description,
+            displayDescription, version, captureCoordinates, dataEntryMethod, deleted, displayFrontPageList,
+            displayIncidentDate, enrollmentDateLabel, ignoreOverdueEvents, incidentDateLabel, onlyEnrollOnce,
+            programType, registration, relationshipFromA, relationshipText, selectEnrollmentDatesInFuture,
+            selectIncidentDatesInFuture, useFirstStageDuringRegistration, expiryDays, completeEventsExpiryDays,
+            expiryPeriodType, relatedProgram.with(Program.uid), programStages.with(ObjectWithUid.uid),
+            programRules.with(ProgramRule.allFields), programRuleVariables.with(ProgramRuleVariable.allFields),
+            programIndicators.with(ProgramIndicator.allFields),
+            programTrackedEntityAttributes.with(ProgramTrackedEntityAttribute.allFields),
+            trackedEntityType.with(ObjectWithUid.uid), categoryCombo.with(ObjectWithUid.uid),
+            relationshipType.with(ObjectWithUid.uid), access.with(Access.data.with(DataAccess.write)),
+            style.with(ObjectStyle.allFields)).build();
 
     static final Fields<Program> uidAndAccessRead = Fields.<Program>builder().fields(
             uid, access.with(Access.data.with(DataAccess.read))).build();
@@ -224,6 +222,11 @@ public abstract class Program extends BaseNameableObject {
     @JsonProperty(RELATIONSHIP_TYPE)
     public abstract RelationshipType relationshipType();
 
+    String relationshipTypeUid() {
+        RelationshipType relationshipType = relationshipType();
+        return relationshipType == null ? null : relationshipType.uid();
+    }
+
     @Nullable
     @JsonProperty(RELATIONSHIP_TEXT)
     public abstract String relationshipText();
@@ -236,13 +239,28 @@ public abstract class Program extends BaseNameableObject {
     @JsonProperty(RELATED_PROGRAM)
     public abstract Program relatedProgram();
 
+    String relatedProgramUid() {
+        Program relatedProgram = relatedProgram();
+        return relatedProgram == null ? null : relatedProgram.uid();
+    }
+
     @Nullable
     @JsonProperty(TRACKED_ENTITY_TYPE)
     public abstract TrackedEntityType trackedEntityType();
 
+    String trackedEntityTypeUid() {
+        TrackedEntityType trackedEntityType = trackedEntityType();
+        return trackedEntityType == null ? null : trackedEntityType.uid();
+    }
+
     @Nullable
     @JsonProperty(CATEGORY_COMBO)
     public abstract CategoryCombo categoryCombo();
+
+    String categoryComboUid() {
+        CategoryCombo combo = categoryCombo();
+        return combo == null ? CategoryComboModel.DEFAULT_UID : combo.uid();
+    }
 
     @Nullable
     @JsonProperty(ACCESS)
@@ -268,6 +286,18 @@ public abstract class Program extends BaseNameableObject {
     @JsonProperty(STYLE)
     public abstract ObjectStyle style();
 
+    @Nullable
+    @JsonProperty(EXPIRY_DAYS)
+    public abstract Integer expiryDays();
+
+    @Nullable
+    @JsonProperty(COMPLETE_EVENTS_EXPIRY_DAYS)
+    public abstract Integer completeEventsExpiryDays();
+
+    @Nullable
+    @JsonProperty(EXPIRY_PERIOD_TYPE)
+    public abstract PeriodType expiryPeriodType();
+
     @JsonCreator
     public static Program create(
             @JsonProperty(UID) String uid,
@@ -279,7 +309,7 @@ public abstract class Program extends BaseNameableObject {
             @JsonProperty(SHORT_NAME) String shortName,
             @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
             @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDesciption,
+            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
             @JsonProperty(VERSION) Integer version,
             @JsonProperty(ONLY_ENROLL_ONCE) Boolean onlyEnrollOnce,
             @JsonProperty(ENROLLMENT_DATE_LABEL) String enrollmentDateLabel,
@@ -307,6 +337,9 @@ public abstract class Program extends BaseNameableObject {
             @JsonProperty(PROGRAM_RULES) List<ProgramRule> programRules,
             @JsonProperty(PROGRAM_RULE_VARIABLES) List<ProgramRuleVariable> programRuleVariables,
             @JsonProperty(STYLE) ObjectStyle style,
+            @JsonProperty(EXPIRY_DAYS) Integer expiryDays,
+            @JsonProperty(COMPLETE_EVENTS_EXPIRY_DAYS) Integer completeEventsExpiryDays,
+            @JsonProperty(EXPIRY_PERIOD_TYPE) PeriodType expiryPeriodType,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_Program(
@@ -320,7 +353,7 @@ public abstract class Program extends BaseNameableObject {
                 shortName,
                 displayShortName,
                 description,
-                displayDesciption,
+                displayDescription,
                 version,
                 onlyEnrollOnce,
                 enrollmentDateLabel,
@@ -347,6 +380,9 @@ public abstract class Program extends BaseNameableObject {
                 safeUnmodifiableList(programStages),
                 safeUnmodifiableList(programRules),
                 safeUnmodifiableList(programRuleVariables),
-                style);
+                style,
+                expiryDays,
+                completeEventsExpiryDays,
+                expiryPeriodType);
     }
 }

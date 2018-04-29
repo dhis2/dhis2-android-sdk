@@ -42,27 +42,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
-public class LegendModelShould extends IdentifiableModelAbstractShould<Legend, LegendModel> {
-
-    private final Double startValue = 20.0;
-    private final Double endValue = 30.5;
-    private final String color = "#FFFFFF";
-    private final String legendSetUid = "test_legend_set_uid";
+public class LegendModelShould extends IdentifiableModelAbstractShould<LegendModel> {
 
     public LegendModelShould() {
-            super(Columns.all(), 10, new LegendModelBuilder(LegendSet.create(
-                    "test_legend_set_uid", null, null, null,
-                    null, null, null, null, null)));
+            super(Columns.all(), 10);
     }
 
     @Override
@@ -70,10 +56,10 @@ public class LegendModelShould extends IdentifiableModelAbstractShould<Legend, L
         LegendModel.Builder builder = LegendModel.builder();
         fillIdentifiableModelProperties(builder);
         builder
-                .startValue(startValue)
-                .endValue(endValue)
-                .color(color)
-                .legendSet(legendSetUid);
+                .startValue(20.0)
+                .endValue(30.5)
+                .color("#FFFFFF")
+                .legendSet("test_legend_set_uid");
         return builder.build();
     }
 
@@ -83,15 +69,12 @@ public class LegendModelShould extends IdentifiableModelAbstractShould<Legend, L
     }
 
     @Override
-    protected Legend buildPojo() {
-        return Legend.create(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, DELETED,
-                startValue, endValue, color);
-    }
-
-    @Override
     protected Object[] getModelAsObjectArray() {
         return Utils.appendInNewArray(ColumnsArrayUtils.getIdentifiableModelAsObjectArray(model),
-                model.startValue(), model.endValue(), model.color(), model.legendSet());
+                model.startValue(),
+                model.endValue(),
+                model.color(),
+                model.legendSet());
     }
 
     @Test

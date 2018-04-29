@@ -8,13 +8,12 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -38,9 +37,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     }
 
     private TrackedEntityAttributeReservedValueEndpointCall createCall() {
-        ResourceHandler resourceHandler =
-                new ResourceHandler(new ResourceStoreImpl(databaseAdapter()));
-        GenericCallData data = GenericCallData.create(databaseAdapter(), resourceHandler, d2.retrofit());
+        GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
 
         OrganisationUnit organisationUnit =  OrganisationUnit.create("orgUnitUid", "ORG_UNIT",
                 null, null, null, null, null, null,

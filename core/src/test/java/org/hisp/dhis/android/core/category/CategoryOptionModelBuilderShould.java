@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.category;
 
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.NameableModelBuilderAbstractShould;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 
@@ -53,16 +53,10 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 public class CategoryOptionModelBuilderShould extends
         NameableModelBuilderAbstractShould<CategoryOption, CategoryOptionModel> {
 
-    private CategoryOption pojo;
-
-    private CategoryOptionModel model;
-
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-        pojo = buildPojo();
-        model = buildModel();
+        super.setUp();
     }
 
     @Override
@@ -78,14 +72,15 @@ public class CategoryOptionModelBuilderShould extends
                 DISPLAY_SHORT_NAME,
                 DESCRIPTION,
                 DISPLAY_DESCRIPTION,
+
                 CREATED,
                 CREATED
         );
     }
 
     @Override
-    protected CategoryOptionModel buildModel() {
-        return new CategoryOptionModelBuilder().buildModel(pojo);
+    protected ModelBuilder<CategoryOption, CategoryOptionModel> modelBuilder() {
+        return new CategoryOptionModelBuilder();
     }
 
     @Test

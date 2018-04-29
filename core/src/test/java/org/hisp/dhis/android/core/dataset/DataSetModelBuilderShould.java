@@ -39,6 +39,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -59,6 +60,9 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 @RunWith(JUnit4.class)
 public class DataSetModelBuilderShould extends NameableModelBuilderAbstractShould<DataSet, DataSetModel> {
 
+    public void setUp() throws IOException {
+        super.setUp();
+    }
     @Override
     protected DataSet buildPojo() {
         return DataSet.create(

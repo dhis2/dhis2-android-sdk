@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.ModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,23 +45,18 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREA
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class TrackedEntityAttributeReservedValueModelBuilderShould {
-
-    private TrackedEntityAttributeReservedValue pojo;
-
-    private TrackedEntityAttributeReservedValueModel model;
+public class TrackedEntityAttributeReservedValueModelBuilderShould extends ModelBuilderAbstractShould<
+    TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
 
     @Mock
     private OrganisationUnit organisationUnit;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
+        super.setUp();
         MockitoAnnotations.initMocks(this);
 
         when(organisationUnit.uid()).thenReturn("orgUnitUid");
-        pojo = buildPojo();
-        model = buildModel();
     }
 
     protected TrackedEntityAttributeReservedValue buildPojo() {
@@ -73,12 +70,13 @@ public class TrackedEntityAttributeReservedValueModelBuilderShould {
         );
     }
 
-    protected TrackedEntityAttributeReservedValueModel buildModel() {
-        return new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit).buildModel(pojo);
+    @Override
+    protected ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> modelBuilder() {
+        return new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit);
     }
 
     @Test
-    public void copy_pojo_relationship_properties() {
+    public void copy_pojo_reserved_value_properties() {
         assertThat(model.ownerObject()).isEqualTo(pojo.ownerObject());
         assertThat(model.ownerUid()).isEqualTo(pojo.ownerUid());
         assertThat(model.key()).isEqualTo(pojo.key());

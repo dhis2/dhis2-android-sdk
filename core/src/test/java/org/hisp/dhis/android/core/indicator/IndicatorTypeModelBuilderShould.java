@@ -28,55 +28,40 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import android.database.Cursor;
-import android.support.test.runner.AndroidJUnit4;
-
-import org.hisp.dhis.android.core.common.IdentifiableModelAbstractShould;
-import org.hisp.dhis.android.core.indicator.IndicatorTypeModel.Columns;
-import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import java.util.Arrays;
-import java.util.List;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableModelProperties;
+@RunWith(JUnit4.class)
+public class IndicatorTypeModelBuilderShould extends IdentifiableModelBuilderAbstractShould<IndicatorType,
+        IndicatorTypeModel> {
 
-@RunWith(AndroidJUnit4.class)
-public class IndicatorTypeModelShould extends IdentifiableModelAbstractShould<IndicatorTypeModel> {
 
-    public IndicatorTypeModelShould() {
-            super(Columns.all(), 8);
+    @Override
+    protected IndicatorType buildPojo() {
+        return IndicatorType.create(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED,
+                true, 11, DELETED);
     }
 
     @Override
-    protected IndicatorTypeModel buildModel() {
-        IndicatorTypeModel.Builder builder = IndicatorTypeModel.builder();
-        fillIdentifiableModelProperties(builder);
-        builder
-                .number(false)
-                .factor(100);
-        return builder.build();
-    }
-
-    @Override
-    protected IndicatorTypeModel cursorToModel(Cursor cursor) {
-        return IndicatorTypeModel.create(cursor);
-    }
-
-    @Override
-    protected Object[] getModelAsObjectArray() {
-        return Utils.appendInNewArray(ColumnsArrayUtils.getIdentifiableModelAsObjectArray(model),
-                model.number(), model.factor());
+    protected ModelBuilder<IndicatorType, IndicatorTypeModel> modelBuilder() {
+        return new IndicatorTypeModelBuilder();
     }
 
     @Test
-    public void have_extra_indicator_model_columns() {
-        List<String> columnsList = Arrays.asList(columns);
-
-        assertThat(columnsList.contains(Columns.NUMBER)).isEqualTo(true);
-        assertThat(columnsList.contains(Columns.FACTOR)).isEqualTo(true);
+    public void copy_pojo_indicator_type_properties() {
+        assertThat(model.number()).isEqualTo(pojo.number());
+        assertThat(model.factor()).isEqualTo(pojo.factor());
     }
 }

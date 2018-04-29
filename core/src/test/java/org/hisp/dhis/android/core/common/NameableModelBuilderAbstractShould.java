@@ -29,16 +29,19 @@ package org.hisp.dhis.android.core.common;
 
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public abstract class NameableModelBuilderAbstractShould<P extends BaseNameableObject,
         M extends BaseNameableObjectModel> extends IdentifiableModelBuilderAbstractShould<P, M> {
 
+    public void setUp() throws IOException {
+        super.setUp();
+    }
+
     @Test
     public void copy_pojo_nameable_properties() {
-        P pojo = buildPojo();
-        M model = buildModel();
-
         assertThat(model.shortName()).isEqualTo(pojo.shortName());
         assertThat(model.displayShortName()).isEqualTo(pojo.displayShortName());
         assertThat(model.description()).isEqualTo(pojo.description());

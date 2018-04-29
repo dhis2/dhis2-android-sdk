@@ -25,15 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.common;
 
-public abstract class ModelAbstractShould<M extends BaseModel> extends LinkModelAbstractShould<M> {
+import java.io.IOException;
 
-    protected final M model;
+public abstract class ModelBuilderAbstractShould<P, M> {
 
-    public ModelAbstractShould(String[] columns, int columnsLength) {
-        super(columns, columnsLength);
-        this.model = buildModel();
+    protected P pojo;
+    protected M model;
+
+    protected abstract P buildPojo();
+    protected abstract ModelBuilder<P, M> modelBuilder();
+
+    public void setUp() throws IOException {
+        this.pojo = buildPojo();
+        this.model = modelBuilder().buildModel(pojo);
     }
 }

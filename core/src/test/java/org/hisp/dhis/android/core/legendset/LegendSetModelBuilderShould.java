@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.legendset;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,17 +50,9 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 @RunWith(JUnit4.class)
 public class LegendSetModelBuilderShould extends IdentifiableModelBuilderAbstractShould<LegendSet, LegendSetModel> {
 
-    private LegendSet pojo;
-
-    private LegendSetModel model;
-
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
-
-        pojo = buildPojo();
-        model = buildModel();
     }
 
     @Override
@@ -78,8 +71,8 @@ public class LegendSetModelBuilderShould extends IdentifiableModelBuilderAbstrac
     }
 
     @Override
-    protected LegendSetModel buildModel() {
-        return new LegendSetModelBuilder().buildModel(pojo);
+    protected ModelBuilder<LegendSet, LegendSetModel> modelBuilder() {
+        return new LegendSetModelBuilder();
     }
 
     @Test

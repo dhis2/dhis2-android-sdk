@@ -31,11 +31,11 @@ package org.hisp.dhis.android.core.common;
 import org.hisp.dhis.android.core.utils.ColumnsAsserts;
 import org.junit.Test;
 
-public abstract class NameableModelAbstractShould<P extends BaseNameableObject,
-        M extends BaseNameableObjectModel> extends IdentifiableModelAbstractShould<P, M> {
+public abstract class NameableModelAbstractShould<
+        M extends BaseNameableObjectModel> extends IdentifiableModelAbstractShould<M> {
 
-    public NameableModelAbstractShould(String[] columns, int columnsLength, ModelBuilder<P, M> modelBuilder) {
-        super(columns, columnsLength, modelBuilder);
+    public NameableModelAbstractShould(String[] columns, int columnsLength) {
+        super(columns, columnsLength);
     }
 
     @Test

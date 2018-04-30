@@ -73,7 +73,7 @@ public class TrackedEntityInstanceEndPointCallShould {
             String trackedEntityInstanceUid) {
         TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
                 new TrackedEntityInstanceEndPointCall(
-                        databaseAdapter, retrofit,
+                        databaseAdapter,
                         trackedEntityInstanceService, trackedEntityInstanceHandler,
                         trackedEntityInstanceUid);
 

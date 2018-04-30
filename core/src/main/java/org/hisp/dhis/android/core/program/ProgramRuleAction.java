@@ -46,7 +46,7 @@ import java.util.Date;
 
 @AutoValue
 public abstract class ProgramRuleAction extends BaseIdentifiableObject {
-    private static final String DATA = "blockCallData";
+    private static final String DATA = "data";
     private static final String CONTENT = "content";
     private static final String LOCATION = "location";
     private static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";

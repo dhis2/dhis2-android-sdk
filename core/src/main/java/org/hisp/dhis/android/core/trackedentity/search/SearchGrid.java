@@ -50,7 +50,7 @@ public abstract class SearchGrid {
 
     @NonNull
     @JsonProperty(META_DATA)
-    public abstract SearchGridMetadata metadata();
+    public abstract SearchGridMetadata metaData();
 
     @NonNull
     @JsonProperty(WIDTH)

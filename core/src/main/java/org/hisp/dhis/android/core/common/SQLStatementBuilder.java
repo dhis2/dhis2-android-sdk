@@ -72,7 +72,7 @@ public class SQLStatementBuilder {
 
     private String andSeparatedColumnEqualInterrogationMark(String... cols) {
         return commaSeparatedColumnEqualInterrogationMark(cols)
-                .replace(",", " AND ");
+                .replace(",", " AND");
     }
 
     public String insert() {
@@ -88,15 +88,13 @@ public class SQLStatementBuilder {
     String deleteWhere() {
         String whereClause = deleteWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
                 andSeparatedColumnEqualInterrogationMark(deleteWhereColumns);
-        return "DELETE FROM " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
-                " WHERE " + whereClause + ";";
+        return "DELETE FROM " + tableName + " WHERE " + whereClause + ";";
     }
 
     String selectWhere() {
         String whereClause = selectWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
                 andSeparatedColumnEqualInterrogationMark(selectWhereColumns);
-        return  "SELECT " + commaAndSpaceSeparatedArrayValues(selectWhereColumns) + " FROM " + tableName +
-                " WHERE " + whereClause;
+        return  "SELECT * FROM " + tableName + " WHERE " + whereClause;
     }
 
     String selectUids() {

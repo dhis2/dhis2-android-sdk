@@ -32,7 +32,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 
 import java.util.Date;
 

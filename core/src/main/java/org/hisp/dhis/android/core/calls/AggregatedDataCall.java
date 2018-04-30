@@ -86,7 +86,8 @@ public class AggregatedDataCall extends TransactionalCall {
         SystemInfo systemInfo = systemCallResponse.body();
         GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate());
 
-        DataValueEndpointCall dataValueEndpointCall = dataValueCallFactory.create(genericCallData, dataSetStore.selectUids(),
+        DataValueEndpointCall dataValueEndpointCall = dataValueCallFactory.create(genericCallData,
+                dataSetStore.selectUids(),
                 selectPeriodIds(periodStore.selectAll(PeriodModel.factory)),
                 organisationUnitStore.selectUids());
         return dataValueEndpointCall.call();

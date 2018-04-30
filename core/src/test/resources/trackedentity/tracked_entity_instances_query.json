@@ -1,0 +1,98 @@
+{
+  "headers": [
+    {
+      "name": "instance",
+      "column": "Instance",
+      "type": "java.lang.String",
+      "hidden": false,
+      "meta": false
+    },
+    {
+      "name": "created",
+      "column": "Created",
+      "type": "java.lang.String",
+      "hidden": false,
+      "meta": false
+    },
+    {
+      "name": "lastupdated",
+      "column": "Last updated",
+      "type": "java.lang.String",
+      "hidden": false,
+      "meta": false
+    },
+    {
+      "name": "ou",
+      "column": "Organisation unit",
+      "type": "java.lang.String",
+      "hidden": false,
+      "meta": false
+    },
+    {
+      "name": "ouname",
+      "column": "Organisation unit name",
+      "type": "java.lang.String",
+      "hidden": false,
+      "meta": false
+    },
+    {
+      "name": "te",
+      "column": "Tracked entity type",
+      "type": "java.lang.String",
+      "hidden": false,
+      "meta": false
+    },
+    {
+      "name": "inactive",
+      "column": "Inactive",
+      "type": "java.lang.String",
+      "hidden": false,
+      "meta": false
+    },
+    {
+      "name": "w75KJ2mc4zz",
+      "column": "First name",
+      "type": "java.lang.String",
+      "hidden": false,
+      "meta": false
+    },
+    {
+      "name": "zDhUuAYrxNC",
+      "column": "Last name",
+      "type": "java.lang.String",
+      "hidden": false,
+      "meta": false
+    }
+  ],
+  "metaData": {
+    "names": {
+      "nEenWmSyUEp": "Person"
+    }
+  },
+  "width": 9,
+  "height": 2,
+  "rows": [
+    [
+      "PmslDkqLqeG",
+      "2018-04-27 17:34:17.005",
+      "2018-04-27 17:34:28.442",
+      "DiszpKrYNg8",
+      "Ngelehun CHC",
+      "nEenWmSyUEp",
+      "",
+      "Firsty",
+      "Namey"
+    ],
+    [
+      "Lf9FhXshRnd",
+      "2018-04-26 06:10:51.634",
+      "2018-04-26 06:10:52.944",
+      "DiszpKrYNg8",
+      "Ngelehun CHC",
+      "nEenWmSyUEp",
+      "false",
+      "Jorge",
+      "Fernandez"
+    ]
+  ]
+}

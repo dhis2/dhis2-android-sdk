@@ -60,7 +60,7 @@ public class LegendModelShould extends IdentifiableModelAbstractShould<Legend, L
     private final String legendSetUid = "test_legend_set_uid";
 
     public LegendModelShould() {
-            super(Columns.all(), 10, new LegendModelBuilder(LegendSet.create(
+            super(new Columns().all(), 10, new LegendModelBuilder(LegendSet.create(
                     "test_legend_set_uid", null, null, null,
                     null, null, null, null, null)));
     }

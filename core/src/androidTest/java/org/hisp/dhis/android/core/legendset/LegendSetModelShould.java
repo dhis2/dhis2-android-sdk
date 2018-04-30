@@ -57,7 +57,7 @@ public class LegendSetModelShould extends IdentifiableModelAbstractShould<Legend
     private final String symbolizer = "color";
 
     public LegendSetModelShould() {
-            super(Columns.all(), 7, new LegendSetModelBuilder());
+            super(new Columns().all(), 7, new LegendSetModelBuilder());
     }
 
     @Override

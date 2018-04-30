@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
@@ -74,8 +75,12 @@ public class IndicatorModelShould extends NameableModelAbstractShould<IndicatorM
     @Override
     protected Object[] getModelAsObjectArray() {
         return Utils.appendInNewArray(ColumnsArrayUtils.getNameableModelAsObjectArray(model),
-                model.annualized(), model.indicatorType(), model.numerator(),
-                model.numeratorDescription(), model.denominator(), model.denominatorDescription(),
+                toInteger(model.annualized()),
+                model.indicatorType(),
+                model.numerator(),
+                model.numeratorDescription(),
+                model.denominator(),
+                model.denominatorDescription(),
                 model.url());
     }
 

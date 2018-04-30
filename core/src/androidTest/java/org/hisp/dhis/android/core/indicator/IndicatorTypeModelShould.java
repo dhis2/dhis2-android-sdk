@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
@@ -69,7 +70,8 @@ public class IndicatorTypeModelShould extends IdentifiableModelAbstractShould<In
     @Override
     protected Object[] getModelAsObjectArray() {
         return Utils.appendInNewArray(ColumnsArrayUtils.getIdentifiableModelAsObjectArray(model),
-                model.number(), model.factor());
+                toInteger(model.number()),
+                model.factor());
     }
 
     @Test

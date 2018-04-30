@@ -39,8 +39,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.DeleteWhereStatementBinder;
-import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -49,8 +47,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel implements UpdateWhereStatementBinder,
-        DeleteWhereStatementBinder {
+public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel {
 
     public static final String TABLE = "TrackedEntityAttributeReservedValue";
 
@@ -63,19 +60,20 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
         public final static String EXPIRY_DATE = "expiryDate";
         public final static String ORGANISATION_UNIT = "organisationUnit";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(),
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
                     OWNER_OBJECT, OWNER_UID, KEY, VALUE, CREATED, EXPIRY_DATE, ORGANISATION_UNIT);
         }
 
-        public static String[] whereUpdate() {
-            return new String[]{OWNER_OBJECT, OWNER_UID, KEY, VALUE, ORGANISATION_UNIT};
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{OWNER_UID, VALUE, ORGANISATION_UNIT};
         }
 
-        public static String[] whereDelete() {
-            return new String[]{OWNER_UID, VALUE, ORGANISATION_UNIT};
+        @Override
+        public String[] whereSelect() {
+            return new String[]{OWNER_UID, ORGANISATION_UNIT};
         }
     }
 
@@ -139,15 +137,6 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
 
     @Override
     public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 8, ownerObject());
-        sqLiteBind(sqLiteStatement, 9, ownerUid());
-        sqLiteBind(sqLiteStatement, 10, key());
-        sqLiteBind(sqLiteStatement, 11, value());
-        sqLiteBind(sqLiteStatement, 12, organisationUnit());
-    }
-
-    @Override
-    public void bindToDeleteWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
         sqLiteBind(sqLiteStatement, 8, ownerUid());
         sqLiteBind(sqLiteStatement, 9, value());
         sqLiteBind(sqLiteStatement, 10, organisationUnit());

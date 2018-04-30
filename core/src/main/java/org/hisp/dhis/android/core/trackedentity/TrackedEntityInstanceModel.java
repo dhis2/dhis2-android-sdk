@@ -55,10 +55,9 @@ public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataMod
         public static final String COORDINATES = "coordinates";
         public static final String FEATURE_TYPE = "featureType";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(),
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
                     UID, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT, ORGANISATION_UNIT, TRACKED_ENTITY_TYPE, CREATED,
                     LAST_UPDATED, STATE, COORDINATES, FEATURE_TYPE);
         }

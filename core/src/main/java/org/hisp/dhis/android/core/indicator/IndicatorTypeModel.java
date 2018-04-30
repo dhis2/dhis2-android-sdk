@@ -38,23 +38,22 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class IndicatorTypeModel extends BaseIdentifiableObjectModel implements StatementBinder {
+public abstract class IndicatorTypeModel extends BaseIdentifiableObjectModel {
 
     public static final String TABLE = "IndicatorType";
 
-    public abstract static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends BaseNameableObjectModel.Columns {
         public final static String NUMBER = "number";
         public final static String FACTOR = "factor";
 
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(),
-                    NUMBER, FACTOR);
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), NUMBER, FACTOR);
         }
     }
 

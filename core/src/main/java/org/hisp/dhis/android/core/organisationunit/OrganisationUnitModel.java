@@ -38,7 +38,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -47,7 +46,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class OrganisationUnitModel extends BaseNameableObjectModel implements StatementBinder {
+public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
     public static final String TABLE = "OrganisationUnit";
 
     public static class Columns extends BaseNameableObjectModel.Columns {
@@ -58,10 +57,9 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel impl
         public static final String PARENT = "parent";
         public static final String DISPLAY_NAME_PATH = "displayNamePath";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(),
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
                     PATH, OPENING_DATE, CLOSED_DATE, LEVEL, PARENT, DISPLAY_NAME_PATH);
         }
     }

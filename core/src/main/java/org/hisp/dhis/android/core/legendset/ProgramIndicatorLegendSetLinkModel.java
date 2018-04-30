@@ -36,27 +36,28 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class ProgramIndicatorLegendSetLinkModel extends BaseModel implements UpdateWhereStatementBinder {
+public abstract class ProgramIndicatorLegendSetLinkModel extends BaseModel {
     public static final String TABLE = "ProgramIndicatorLegendSetLink";
 
     public static class Columns extends BaseModel.Columns {
         public static final String PROGRAM_INDICATOR = "programIndicator";
         public static final String LEGEND_SET = "legendSet";
 
-        private Columns() {}
+        Columns() {}
 
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(),
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
                     PROGRAM_INDICATOR, LEGEND_SET);
         }
 
-        static String[] whereUpdate() {
+        @Override
+        public String[] whereUpdate() {
             return new String[]{PROGRAM_INDICATOR, LEGEND_SET};
         }
     }

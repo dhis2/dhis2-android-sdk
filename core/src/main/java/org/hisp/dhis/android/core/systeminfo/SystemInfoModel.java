@@ -38,7 +38,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -47,7 +46,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class SystemInfoModel extends BaseModel implements UpdateWhereStatementBinder {
+public abstract class SystemInfoModel extends BaseModel {
 
     public static final String TABLE = "SystemInfo";
 
@@ -57,14 +56,13 @@ public abstract class SystemInfoModel extends BaseModel implements UpdateWhereSt
         public static final String VERSION = "version";
         public static final String CONTEXT_PATH = "contextPath";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(),
-                    SERVER_DATE, DATE_FORMAT, VERSION, CONTEXT_PATH);
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), SERVER_DATE, DATE_FORMAT, VERSION, CONTEXT_PATH);
         }
 
-        static String[] whereUpdate() {
+        @Override
+        public String[] whereUpdate() {
             return new String[]{CONTEXT_PATH};
         }
     }

@@ -37,13 +37,12 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class UserOrganisationUnitLinkModel extends BaseModel implements UpdateWhereStatementBinder {
+public abstract class UserOrganisationUnitLinkModel extends BaseModel {
     public static final String TABLE = "UserOrganisationUnit";
 
     public static class Columns extends BaseModel.Columns {
@@ -51,10 +50,9 @@ public abstract class UserOrganisationUnitLinkModel extends BaseModel implements
         public static final String ORGANISATION_UNIT = "organisationUnit";
         public static final String ORGANISATION_UNIT_SCOPE = "organisationUnitScope";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(),
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
                     USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE);
         }
     }

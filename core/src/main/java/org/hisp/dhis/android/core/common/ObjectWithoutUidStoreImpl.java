@@ -28,14 +28,17 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Set;
+
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class ObjectWithoutUidStoreImpl<M extends Model & UpdateWhereStatementBinder & DeleteWhereStatementBinder>
+public class ObjectWithoutUidStoreImpl<M extends BaseModel>
         extends ObjectStoreImpl<M> implements ObjectWithoutUidStore<M> {
     protected final SQLiteStatement updateWhereStatement;
     protected final SQLiteStatement deleteWhereStatement;
@@ -71,5 +74,12 @@ public class ObjectWithoutUidStoreImpl<M extends Model & UpdateWhereStatementBin
         m.bindToStatement(deleteWhereStatement);
         m.bindToDeleteWhereStatement(deleteWhereStatement);
         executeUpdateDelete(deleteWhereStatement);
+    }
+
+    @Override
+    public Set<M> selectWhere(@NonNull CursorModelFactory<M> modelFactory, @NonNull String... selectionArgs)
+            throws RuntimeException {
+        Cursor cursor = databaseAdapter.query(builder.selectWhere(), selectionArgs);
+        return mapObjectsFromCursor(cursor, modelFactory);
     }
 }

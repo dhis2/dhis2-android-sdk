@@ -39,7 +39,7 @@ import java.util.Set;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class IdentifiableObjectStoreImpl<M extends BaseIdentifiableObjectModel & StatementBinder>
+public class IdentifiableObjectStoreImpl<M extends BaseIdentifiableObjectModel>
         extends ObjectStoreImpl<M> implements IdentifiableObjectStore<M> {
 
     private final SQLStatementWrapper statements;

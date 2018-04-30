@@ -50,7 +50,7 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.VALU
 public class ValueTypeDeviceRenderingModelShould extends LinkModelAbstractShould<ValueTypeDeviceRenderingModel> {
 
     public ValueTypeDeviceRenderingModelShould() {
-        super(Columns.all(), 8);
+        super(new Columns().all(), 8);
     }
 
     @Override

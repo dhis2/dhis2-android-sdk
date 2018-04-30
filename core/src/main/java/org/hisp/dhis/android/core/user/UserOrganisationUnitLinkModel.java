@@ -52,8 +52,12 @@ public abstract class UserOrganisationUnitLinkModel extends BaseModel {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE);
+            return Utils.appendInNewArray(super.all(), USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
         }
     }
 

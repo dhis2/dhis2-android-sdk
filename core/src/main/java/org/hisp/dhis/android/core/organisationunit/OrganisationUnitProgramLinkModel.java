@@ -50,8 +50,12 @@ public abstract class OrganisationUnitProgramLinkModel extends BaseModel {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    PROGRAM, ORGANISATION_UNIT);
+            return Utils.appendInNewArray(super.all(), PROGRAM, ORGANISATION_UNIT);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
         }
     }
 

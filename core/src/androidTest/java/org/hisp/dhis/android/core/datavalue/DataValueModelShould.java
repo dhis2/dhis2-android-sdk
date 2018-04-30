@@ -61,7 +61,7 @@ public class DataValueModelShould extends ModelAbstractShould<DataValue, DataVal
     private static final boolean FOLLOW_UP = false;
 
     public DataValueModelShould() {
-        super(DataValueModel.Columns.all(), 11, new DataValueModelBuilder());
+        super(new DataValueModel.Columns().all(), 11, new DataValueModelBuilder());
     }
 
     @Override
@@ -104,7 +104,7 @@ public class DataValueModelShould extends ModelAbstractShould<DataValue, DataVal
 
     @Test
     public void have_data_value_columns() {
-        List<String> columnsList = Arrays.asList(DataValueModel.Columns.all());
+        List<String> columnsList = Arrays.asList(new DataValueModel.Columns().all());
 
         assertThat(columnsList.contains(DataValueModel.Columns.DATA_ELEMENT)).isEqualTo(true);
         assertThat(columnsList.contains(DataValueModel.Columns.PERIOD)).isEqualTo(true);

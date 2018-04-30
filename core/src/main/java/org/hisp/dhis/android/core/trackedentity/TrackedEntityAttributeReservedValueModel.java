@@ -142,6 +142,13 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
         sqLiteBind(sqLiteStatement, 10, organisationUnit());
     }
 
+    @Override
+    public void bindToDeleteWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, ownerUid());
+        sqLiteBind(sqLiteStatement, 2, value());
+        sqLiteBind(sqLiteStatement, 3, organisationUnit());
+    }
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder ownerObject(String ownerObject);

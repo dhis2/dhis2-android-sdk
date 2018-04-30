@@ -38,6 +38,6 @@ public final class UserOrganisationUnitLinkStore {
 
     public static ObjectWithoutUidStore<UserOrganisationUnitLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, UserOrganisationUnitLinkModel.TABLE,
-                UserOrganisationUnitLinkModel.Columns.all(), UserOrganisationUnitLinkModel.Columns.all());
+                new UserOrganisationUnitLinkModel.Columns());
     }
 }

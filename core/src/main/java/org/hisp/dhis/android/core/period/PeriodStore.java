@@ -37,7 +37,6 @@ public final class PeriodStore {
     private PeriodStore() {}
 
     public static ObjectWithoutUidStore<PeriodModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodModel.TABLE,
-                PeriodModel.Columns.all(), PeriodModel.Columns.whereUpdate());
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodModel.TABLE, new PeriodModel.Columns());
     }
 }

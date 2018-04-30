@@ -38,6 +38,6 @@ public final class OrganisationUnitStore {
 
     public static IdentifiableObjectStore<OrganisationUnitModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, OrganisationUnitModel.TABLE,
-                OrganisationUnitModel.Columns.all());
+                new OrganisationUnitModel.Columns().all());
     }
 }

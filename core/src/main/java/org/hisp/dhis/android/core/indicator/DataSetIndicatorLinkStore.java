@@ -38,6 +38,6 @@ public final class DataSetIndicatorLinkStore {
 
     public static ObjectWithoutUidStore<DataSetIndicatorLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, DataSetIndicatorLinkModel.TABLE,
-                DataSetIndicatorLinkModel.Columns.all(), DataSetIndicatorLinkModel.Columns.whereUpdate());
+                new DataSetIndicatorLinkModel.Columns());
     }
 }

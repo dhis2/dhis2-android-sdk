@@ -38,7 +38,6 @@ public final class ProgramIndicatorLegendSetLinkStore {
 
     public static ObjectWithoutUidStore<ProgramIndicatorLegendSetLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, ProgramIndicatorLegendSetLinkModel.TABLE,
-                ProgramIndicatorLegendSetLinkModel.Columns.all(),
-                ProgramIndicatorLegendSetLinkModel.Columns.whereUpdate());
+                new ProgramIndicatorLegendSetLinkModel.Columns());
     }
 }

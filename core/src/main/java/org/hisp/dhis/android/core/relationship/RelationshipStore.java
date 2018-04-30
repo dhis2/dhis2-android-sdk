@@ -38,8 +38,7 @@ public final class RelationshipStore {
 
     public static ObjectWithoutUidStore<RelationshipModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, RelationshipModel.TABLE,
-                RelationshipModel.Columns.all(),
-                RelationshipModel.Columns.whereUpdate());
+                new RelationshipModel.Columns());
     }
 
 }

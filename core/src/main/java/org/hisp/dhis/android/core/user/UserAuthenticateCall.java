@@ -117,19 +117,36 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                     authenticatedUsers.get(0));
         }
 
-        Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(databaseAdapter, retrofit).call();
-        if (!systemCallResponse.isSuccessful()) {
-            return systemCallResponse;
+        Response<User> authenticateResponse = authenticate(basic(username, password));
+        User user = authenticateResponse.body();
+
+        if (!authenticateResponse.isSuccessful()) {
+            return authenticateResponse;
         }
 
-        SystemInfo systemInfo = systemCallResponse.body();
+        Transaction transaction = databaseAdapter.beginNewTransaction();
 
-        Response<User> response = authenticate(basic(username, password));
-        if (response.isSuccessful()) {
-            saveUser(response, GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate()));
+        // enclosing transaction in try-finally block in
+        // order to make sure that databaseAdapter transaction won't be leaked
+        try {
+            authenticatedUserStore.insert(user.uid(), base64(username, password));
+
+            Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(databaseAdapter, retrofit).call();
+            if (!systemCallResponse.isSuccessful()) {
+                return systemCallResponse;
+            }
+
+            SystemInfo systemInfo = systemCallResponse.body();
+            handleUser(user, GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate()));
+
+            transaction.setSuccessful();
+
+            return authenticateResponse;
+        } finally {
+            transaction.end();
         }
 
-        return response;
+
     }
 
     private Response<User> authenticate(String credentials) throws IOException {
@@ -167,22 +184,6 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                 ).build()).execute();
     }
 
-    private void saveUser(Response<User> response, GenericCallData genericCallData) throws Exception {
-        Transaction transaction = databaseAdapter.beginNewTransaction();
-
-        // enclosing transaction in try-finally block in
-        // order to make sure that databaseAdapter transaction won't be leaked
-        try {
-            User user = response.body();
-
-            handleUser(user, genericCallData);
-
-            transaction.setSuccessful();
-        } finally {
-            transaction.end();
-        }
-    }
-
     @NonNull
     private void handleUser(User user, GenericCallData genericCallData) {
 
@@ -193,8 +194,6 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
 
         resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, genericCallData.serverDate());
-
-        authenticatedUserStore.insert(user.uid(), base64(username, password));
 
         resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, genericCallData.serverDate());
 

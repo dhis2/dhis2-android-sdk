@@ -144,8 +144,8 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
-        dhis2MockServer.enqueueMockResponse("system_info.json");
         dhis2MockServer.enqueueMockResponse("user.json");
+        dhis2MockServer.enqueueMockResponse("system_info.json");
 
         authenticateUserCall = UserAuthenticateCall.create(databaseAdapter(), d2.retrofit(),
                 "test_user", "test_password");

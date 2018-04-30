@@ -19,19 +19,16 @@ import retrofit2.Retrofit;
 public class TrackedEntityInstanceEndPointCall extends SyncCall<TrackedEntityInstance> {
 
     private final DatabaseAdapter databaseAdapter;
-    private final Retrofit retrofit;
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final String trackedEntityInstanceUid;
 
     TrackedEntityInstanceEndPointCall(
             @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull Retrofit retrofit,
             @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
             @NonNull String trackedEntityInstanceUid) {
         this.databaseAdapter = databaseAdapter;
-        this.retrofit = retrofit;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
 
@@ -127,7 +124,6 @@ public class TrackedEntityInstanceEndPointCall extends SyncCall<TrackedEntityIns
                                                            String trackedEntityInstanceUid) {
         return new TrackedEntityInstanceEndPointCall(
                 databaseAdapter,
-                retrofit,
                 retrofit.create(TrackedEntityInstanceService.class),
                 TrackedEntityInstanceHandler.create(databaseAdapter),
                 trackedEntityInstanceUid

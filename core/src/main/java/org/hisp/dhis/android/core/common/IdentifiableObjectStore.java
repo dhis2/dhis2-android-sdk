@@ -32,8 +32,7 @@ import android.support.annotation.NonNull;
 
 import java.util.Set;
 
-public interface IdentifiableObjectStore<M extends BaseIdentifiableObjectModel & StatementBinder>
-        extends ObjectStore<M> {
+public interface IdentifiableObjectStore<M extends BaseIdentifiableObjectModel> extends ObjectStore<M> {
 
     void delete(@NonNull String uid) throws RuntimeException;
 

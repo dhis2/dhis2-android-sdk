@@ -81,7 +81,7 @@ public class IndicatorModelBuilderShould extends IdentifiableModelBuilderAbstrac
 
     @Override
     protected ModelBuilder<Indicator, IndicatorModel> modelBuilder() {
-        return null;
+        return new IndicatorModelBuilder();
     }
 
     @Before

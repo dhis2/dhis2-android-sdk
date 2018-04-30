@@ -118,7 +118,6 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         }
 
         Response<User> authenticateResponse = authenticate(basic(username, password));
-        User user = authenticateResponse.body();
 
         if (!authenticateResponse.isSuccessful()) {
             return authenticateResponse;
@@ -129,6 +128,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         // enclosing transaction in try-finally block in
         // order to make sure that databaseAdapter transaction won't be leaked
         try {
+            User user = authenticateResponse.body();
             authenticatedUserStore.insert(user.uid(), base64(username, password));
 
             Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(databaseAdapter, retrofit).call();

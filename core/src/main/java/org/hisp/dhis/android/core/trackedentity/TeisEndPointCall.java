@@ -8,7 +8,6 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.note.Note;
@@ -23,19 +22,19 @@ import retrofit2.Response;
 
 public final class TeisEndPointCall extends SyncCall<Payload<TrackedEntityInstance>> {
 
+    private final GenericCallData genericCallData;
     private final TrackedEntityInstanceService trackedEntityInstanceService;
-    private final DatabaseAdapter databaseAdapter;
     private final TeiQuery trackerQuery;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final ResourceHandler resourceHandler;
 
-    private TeisEndPointCall(@NonNull TrackedEntityInstanceService trackedEntityInstanceService,
-                     @NonNull DatabaseAdapter databaseAdapter,
-                     @NonNull TeiQuery trackerQuery,
-                     @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
-                     @NonNull ResourceHandler resourceHandler) {
-
-        this.databaseAdapter = databaseAdapter;
+    private TeisEndPointCall(
+            @NonNull GenericCallData genericCallData,
+            @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
+            @NonNull TeiQuery trackerQuery,
+            @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
+            @NonNull ResourceHandler resourceHandler) {
+        this.genericCallData = genericCallData;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.trackerQuery = trackerQuery;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
@@ -64,7 +63,7 @@ public final class TeisEndPointCall extends SyncCall<Payload<TrackedEntityInstan
             }
 
             for (int i = 0; i < size; i++) {
-                Transaction transaction = databaseAdapter.beginNewTransaction();
+                Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
                 TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(i);
                 try {
                     trackedEntityInstanceHandler.handle(trackedEntityInstance);
@@ -84,6 +83,9 @@ public final class TeisEndPointCall extends SyncCall<Payload<TrackedEntityInstan
                     transaction.end();
                 }
             }
+
+            resourceHandler.handleResource(ResourceModel.Type.TRACKED_ENTITY_INSTANCE,
+                    genericCallData.serverDate());
         }
 
         return response;
@@ -133,8 +135,8 @@ public final class TeisEndPointCall extends SyncCall<Payload<TrackedEntityInstan
 
     public static TeisEndPointCall create(GenericCallData genericCallData, TeiQuery teiQuery) {
         return new TeisEndPointCall(
+                genericCallData,
                 genericCallData.retrofit().create(TrackedEntityInstanceService.class),
-                genericCallData.databaseAdapter(),
                 teiQuery,
                 TrackedEntityInstanceHandler.create(genericCallData.databaseAdapter()),
                 genericCallData.resourceHandler()

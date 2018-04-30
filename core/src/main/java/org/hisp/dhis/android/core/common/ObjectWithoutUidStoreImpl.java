@@ -71,7 +71,6 @@ public class ObjectWithoutUidStoreImpl<M extends BaseModel>
     @Override
     public void deleteWhere(@NonNull M m) throws RuntimeException {
         isNull(m);
-        m.bindToStatement(deleteWhereStatement);
         m.bindToDeleteWhereStatement(deleteWhereStatement);
         executeUpdateDelete(deleteWhereStatement);
     }

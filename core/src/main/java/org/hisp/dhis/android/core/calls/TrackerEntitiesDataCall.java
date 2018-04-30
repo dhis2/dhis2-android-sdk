@@ -54,7 +54,8 @@ public final class TrackerEntitiesDataCall extends SyncCall {
             }
 
             SystemInfo systemInfo = (SystemInfo) response.body();
-            GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate());
+            GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
+                    systemInfo.serverDate());
 
             response = trackerCall(genericCallData);
 

@@ -102,7 +102,8 @@ public class DataSetParentCall extends TransactionalCall {
 
         List<Indicator> indicators = indicatorResponse.body().items();
         Call<Response<Payload<IndicatorType>>> indicatorTypeEndpointCall
-                = indicatorTypeCallFactory.create(genericCallData, DataSetParentUidsHelper.getIndicatorTypeUids(indicators));
+                = indicatorTypeCallFactory.create(genericCallData,
+                DataSetParentUidsHelper.getIndicatorTypeUids(indicators));
         indicatorTypeEndpointCall.call();
 
         periodHandler.generateAndPersist();

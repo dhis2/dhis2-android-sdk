@@ -54,9 +54,8 @@ public class TrackedEntityAttributeReservedValueModelBuilderShould extends Model
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        MockitoAnnotations.initMocks(this);
-
         when(organisationUnit.uid()).thenReturn("orgUnitUid");
+        MockitoAnnotations.initMocks(this);
     }
 
     protected TrackedEntityAttributeReservedValue buildPojo() {

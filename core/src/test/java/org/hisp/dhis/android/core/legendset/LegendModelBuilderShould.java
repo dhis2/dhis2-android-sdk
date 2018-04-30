@@ -55,12 +55,11 @@ public class LegendModelBuilderShould extends IdentifiableModelBuilderAbstractSh
     private LegendSet legendSet;
 
     @Before
-    @SuppressWarnings("unchecked")
+    @Override
     public void setUp() throws IOException {
         super.setUp();
-        MockitoAnnotations.initMocks(this);
-
         when(legendSet.uid()).thenReturn("legend_set_uid");
+        MockitoAnnotations.initMocks(this);
     }
 
     @Override

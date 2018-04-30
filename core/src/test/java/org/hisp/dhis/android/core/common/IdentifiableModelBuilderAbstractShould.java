@@ -36,6 +36,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public abstract class IdentifiableModelBuilderAbstractShould<P extends BaseIdentifiableObject,
         M extends BaseIdentifiableObjectModel> extends ModelBuilderAbstractShould<P, M> {
 
+    @Override
     public void setUp() throws IOException {
         super.setUp();
     }

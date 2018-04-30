@@ -30,9 +30,12 @@ package org.hisp.dhis.android.core.indicator;
 
 import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
@@ -47,6 +50,12 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 public class IndicatorTypeModelBuilderShould extends IdentifiableModelBuilderAbstractShould<IndicatorType,
         IndicatorTypeModel> {
 
+
+    @Before
+    @Override
+    public void setUp() throws IOException {
+        super.setUp();
+    }
 
     @Override
     protected IndicatorType buildPojo() {

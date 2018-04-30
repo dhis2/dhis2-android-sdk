@@ -63,14 +63,15 @@ public class OrganisationUnitModelBuilderShould extends NameableModelBuilderAbst
     private OrganisationUnit grandparent;
 
     @Before
-    @SuppressWarnings("unchecked")
+    @Override
     public void setUp() throws IOException {
         super.setUp();
-        MockitoAnnotations.initMocks(this);
 
         when(parent.uid()).thenReturn("parentUid");
         when(parent.displayName()).thenReturn("parentDisplayName");
         when(grandparent.displayName()).thenReturn("grandparentDisplayName");
+
+        MockitoAnnotations.initMocks(this);
     }
 
     @Override

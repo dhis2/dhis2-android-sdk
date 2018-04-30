@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.NameableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.period.PeriodType;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -60,9 +61,12 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 @RunWith(JUnit4.class)
 public class DataSetModelBuilderShould extends NameableModelBuilderAbstractShould<DataSet, DataSetModel> {
 
+    @Override
+    @Before
     public void setUp() throws IOException {
         super.setUp();
     }
+
     @Override
     protected DataSet buildPojo() {
         return DataSet.create(

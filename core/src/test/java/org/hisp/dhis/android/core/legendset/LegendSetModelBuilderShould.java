@@ -35,7 +35,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 
@@ -50,9 +49,10 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 @RunWith(JUnit4.class)
 public class LegendSetModelBuilderShould extends IdentifiableModelBuilderAbstractShould<LegendSet, LegendSetModel> {
 
+    @Override
     @Before
     public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
+        super.setUp();
     }
 
     @Override

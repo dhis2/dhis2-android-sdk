@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import org.mockito.MockitoAnnotations;
+
 import java.io.IOException;
 
 public abstract class ModelBuilderAbstractShould<P, M> {
@@ -38,6 +40,7 @@ public abstract class ModelBuilderAbstractShould<P, M> {
     protected abstract ModelBuilder<P, M> modelBuilder();
 
     public void setUp() throws IOException {
+        MockitoAnnotations.initMocks(this);
         this.pojo = buildPojo();
         this.model = modelBuilder().buildModel(pojo);
     }

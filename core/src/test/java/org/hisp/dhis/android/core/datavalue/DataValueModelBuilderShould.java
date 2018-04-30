@@ -30,9 +30,12 @@ package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ModelBuilderAbstractShould;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
@@ -52,6 +55,12 @@ public class DataValueModelBuilderShould extends ModelBuilderAbstractShould<Data
     private static final String STORED_BY = "storedBy";
     private static final String COMMENT = "comment";
     private static final boolean FOLLOW_UP = false;
+
+    @Override
+    @Before
+    public void setUp() throws IOException {
+        super.setUp();
+    }
 
     @Override
     protected DataValue buildPojo() {

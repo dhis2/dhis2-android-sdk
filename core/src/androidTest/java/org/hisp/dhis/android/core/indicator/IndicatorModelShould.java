@@ -68,7 +68,7 @@ public class IndicatorModelShould extends NameableModelAbstractShould<Indicator,
     private final String url = "dhis2.org";
 
     public IndicatorModelShould() {
-            super(IndicatorModel.Columns.all(), 17, new IndicatorModelBuilder());
+            super(new IndicatorModel.Columns().all(), 17, new IndicatorModelBuilder());
     }
 
     @Override

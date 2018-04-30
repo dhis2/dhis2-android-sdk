@@ -58,7 +58,7 @@ public class IndicatorTypeModelShould extends IdentifiableModelAbstractShould<In
     private final Integer factor = 100;
 
     public IndicatorTypeModelShould() {
-            super(Columns.all(), 8, new IndicatorTypeModelBuilder());
+            super(new Columns().all(), 8, new IndicatorTypeModelBuilder());
     }
 
     @Override

@@ -44,7 +44,7 @@ public abstract class ProgramRuleActionModel extends BaseIdentifiableObjectModel
     public static final String TABLE = "ProgramRuleAction";
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
-        public static final String DATA = "blockCallData";
+        public static final String DATA = "data";
         public static final String CONTENT = "content";
         public static final String LOCATION = "location";
         public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";

@@ -82,6 +82,5 @@ public abstract class BaseModel implements Model, WhereStatementBinder {
 
     @Override
     public void bindToDeleteWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        bindToUpdateWhereStatement(sqLiteStatement);
     }
 }

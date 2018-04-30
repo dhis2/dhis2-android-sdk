@@ -49,7 +49,7 @@ public class SystemSettingModelShould {
     @Test
     public void create_model_when_created_from_database_cursor() {
 
-        String[] columnsWithId = Utils.appendInNewArray(Columns.all(),
+        String[] columnsWithId = Utils.appendInNewArray(new SystemSettingModel.Columns().all(),
                 Columns.ID);
         MatrixCursor cursor = new MatrixCursor(columnsWithId);
         cursor.addRow(new Object[]{

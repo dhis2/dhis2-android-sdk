@@ -51,8 +51,6 @@ public abstract class SystemSettingModel extends BaseModel {
         public static final String KEY = "key";
         public static final String VALUE = "value";
 
-        Columns() {}
-
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),

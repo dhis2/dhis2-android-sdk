@@ -40,17 +40,20 @@ public final class TrackedEntityAttributeReservedValueManager {
         this.store = TrackedEntityAttributeReservedValueStore.create(databaseAdapter);
     }
 
-    public String getValue(String attribute, String organisationUnitUid) {
+    String getValue(String attribute, String organisationUnitUid) throws RuntimeException {
         Set<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attribute,
                 organisationUnitUid);
-        TrackedEntityAttributeReservedValueModel reservedValue = reservedValues.iterator().next();
-        deleteReservedValue(reservedValue);
-        syncReservedValues(attribute, organisationUnitUid);
-
-        return reservedValue.value();
+        try {
+            TrackedEntityAttributeReservedValueModel reservedValue = reservedValues.iterator().next();
+            deleteReservedValue(reservedValue);
+            syncReservedValues(attribute, organisationUnitUid);
+            return reservedValue.value();
+        } catch (Exception e) {
+            throw new RuntimeException("There are no reserved values");
+        }
     }
 
-    private Set<TrackedEntityAttributeReservedValueModel> getReservedValues(String attributeUid, String orgUnitUid) {
+    Set<TrackedEntityAttributeReservedValueModel> getReservedValues(String attributeUid, String orgUnitUid) {
         return this.store.selectWhere(TrackedEntityAttributeReservedValueModel.factory, attributeUid, orgUnitUid);
     }
 

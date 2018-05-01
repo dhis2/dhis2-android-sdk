@@ -106,7 +106,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
-    public static final int VERSION = 20;
+    public static final int VERSION = 22;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -334,6 +334,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             ProgramModel.Columns.EXPIRY_DAYS + " INTEGER," +
                             ProgramModel.Columns.COMPLETE_EVENTS_EXPIRY_DAYS + " INTEGER," +
                             ProgramModel.Columns.EXPIRY_PERIOD_TYPE + " TEXT," +
+                            ProgramModel.Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH + " INTEGER," +
                             " FOREIGN KEY (" + ProgramModel.Columns.RELATIONSHIP_TYPE + ")" +
                             " REFERENCES " + RelationshipTypeModel.TABLE + " (" + RelationshipTypeModel.Columns.UID
                             + ")" +

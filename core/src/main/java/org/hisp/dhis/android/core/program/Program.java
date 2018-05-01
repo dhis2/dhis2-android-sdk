@@ -392,7 +392,7 @@ public abstract class Program extends BaseNameableObject {
                 style,
                 expiryDays,
                 completeEventsExpiryDays,
-                minAttributesRequiredToSearch,
-                expiryPeriodType);
+                expiryPeriodType,
+                minAttributesRequiredToSearch);
     }
 }

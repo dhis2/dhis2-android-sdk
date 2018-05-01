@@ -57,8 +57,6 @@ public abstract class NoteModel extends BaseModel {
         public static final String STORED_BY = "storedBy";
         public static final String STORED_DATE = "storedDate";
 
-        Columns() {}
-
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(), ENROLLMENT, VALUE, STORED_BY, STORED_DATE);

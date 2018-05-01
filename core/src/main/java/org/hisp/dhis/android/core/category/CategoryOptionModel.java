@@ -26,8 +26,6 @@ public abstract class CategoryOptionModel extends BaseNameableObjectModel {
         public static final String START_DATE = "startDate";
         public static final String END_DATE = "endDate";
 
-        Columns() {}
-
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(), START_DATE, END_DATE);

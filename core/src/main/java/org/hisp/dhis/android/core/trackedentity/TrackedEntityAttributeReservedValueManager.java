@@ -55,7 +55,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         try {
             reservedValue = reservedValues.iterator().next();
         } catch (Exception e) {
-            throw new RuntimeException("There are no reserved values");
+            throw new RuntimeException("There are no reserved values", e);
         }
 
         deleteReservedValue(reservedValue);
@@ -63,7 +63,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         try {
             syncReservedValues(attribute, organisationUnitUid);
         } catch (Exception e) {
-            throw new RuntimeException("Synchronization was not successful");
+            throw new RuntimeException("Synchronization was not successful", e);
         }
 
         return reservedValue.value();

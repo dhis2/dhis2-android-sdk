@@ -36,6 +36,7 @@ import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
+@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
 public abstract class BaseModel implements Model, WhereStatementBinder {
 
     @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
@@ -74,13 +75,16 @@ public abstract class BaseModel implements Model, WhereStatementBinder {
     // TODO Delete method when all our old models adopt Generic architecture
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        // Intentional empty method.
     }
 
     @Override
     public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        // Intentional empty method.
     }
 
     @Override
     public void bindToDeleteWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        // Intentional empty method.
     }
 }

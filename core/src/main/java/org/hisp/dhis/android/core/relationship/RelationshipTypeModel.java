@@ -51,8 +51,6 @@ public abstract class RelationshipTypeModel extends BaseIdentifiableObjectModel 
         public static final String B_IS_TO_A = "bIsToA";
         public static final String A_IS_TO_B = "AIsToB";
 
-        Columns() {}
-
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(), B_IS_TO_A, A_IS_TO_B);

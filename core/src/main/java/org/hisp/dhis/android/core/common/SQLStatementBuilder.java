@@ -39,6 +39,7 @@ public class SQLStatementBuilder {
     private final String[] deleteWhereColumns;
     private final String[] selectWhereColumns;
     private final static String TEXT = " TEXT";
+    private final static String WHERE = " WHERE ";
 
     @SuppressWarnings("PMD.UseVarargs")
     SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns, String[] deleteWhereColumns,
@@ -81,20 +82,19 @@ public class SQLStatementBuilder {
     }
 
     String deleteById() {
-        return "DELETE FROM " + tableName +
-                " WHERE " + BaseIdentifiableObjectModel.Columns.UID + "=?;";
+        return "DELETE FROM " + tableName + WHERE + BaseIdentifiableObjectModel.Columns.UID + "=?;";
     }
 
     String deleteWhere() {
         String whereClause = deleteWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
                 andSeparatedColumnEqualInterrogationMark(deleteWhereColumns);
-        return "DELETE FROM " + tableName + " WHERE " + whereClause + ";";
+        return "DELETE FROM " + tableName + WHERE + whereClause + ";";
     }
 
     String selectWhere() {
         String whereClause = selectWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
                 andSeparatedColumnEqualInterrogationMark(selectWhereColumns);
-        return  "SELECT * FROM " + tableName + " WHERE " + whereClause;
+        return  "SELECT * FROM " + tableName + WHERE + whereClause;
     }
 
     String selectUids() {
@@ -102,7 +102,7 @@ public class SQLStatementBuilder {
     }
 
     String selectByUid() {
-        return  "SELECT * FROM " + tableName + " WHERE " +
+        return  "SELECT * FROM " + tableName + WHERE +
                 andSeparatedColumnEqualInterrogationMark(BaseIdentifiableObjectModel.Columns.UID);
     }
 
@@ -112,7 +112,7 @@ public class SQLStatementBuilder {
 
     public String update() {
         return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
-                " WHERE " + BaseIdentifiableObjectModel.Columns.UID + "=?;";
+                WHERE + BaseIdentifiableObjectModel.Columns.UID + "=?;";
     }
 
     String updateWhere() {
@@ -120,7 +120,7 @@ public class SQLStatementBuilder {
         String whereClause = updateWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
                 andSeparatedColumnEqualInterrogationMark(updateWhereColumns);
         return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
-                " WHERE " + whereClause + ";";
+                WHERE + whereClause + ";";
     }
 
     @SuppressWarnings("PMD.UseVarargs")

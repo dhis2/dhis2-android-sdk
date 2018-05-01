@@ -48,8 +48,6 @@ public abstract class ProgramIndicatorLegendSetLinkModel extends BaseModel {
         public static final String PROGRAM_INDICATOR = "programIndicator";
         public static final String LEGEND_SET = "legendSet";
 
-        Columns() {}
-
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),

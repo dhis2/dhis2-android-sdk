@@ -51,8 +51,6 @@ public abstract class RelationshipModel extends BaseModel {
         public static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
         public static final String RELATIONSHIP_TYPE = "relationshipType";
 
-        Columns() {}
-
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),

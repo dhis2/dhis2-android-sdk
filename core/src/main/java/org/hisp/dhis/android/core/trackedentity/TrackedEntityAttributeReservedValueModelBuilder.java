@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 
 public class TrackedEntityAttributeReservedValueModelBuilder extends
         ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
@@ -37,6 +38,11 @@ public class TrackedEntityAttributeReservedValueModelBuilder extends
     private final TrackedEntityAttributeReservedValueModel.Builder builder;
 
     TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit organisationUnit) {
+        this.builder = TrackedEntityAttributeReservedValueModel.builder()
+                .organisationUnit(organisationUnit.uid());
+    }
+
+    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnitModel organisationUnit) {
         this.builder = TrackedEntityAttributeReservedValueModel.builder()
                 .organisationUnit(organisationUnit.uid());
     }

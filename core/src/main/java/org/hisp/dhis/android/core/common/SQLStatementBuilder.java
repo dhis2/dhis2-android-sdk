@@ -101,6 +101,11 @@ public class SQLStatementBuilder {
         return  "SELECT " + BaseIdentifiableObjectModel.Columns.UID + " FROM " + tableName;
     }
 
+    String selectByUid() {
+        return  "SELECT * FROM " + tableName + " WHERE " +
+                andSeparatedColumnEqualInterrogationMark(BaseIdentifiableObjectModel.Columns.UID);
+    }
+
     String selectAll() {
         return  "SELECT " + commaSeparatedColumns() + " FROM " + tableName;
     }

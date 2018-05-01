@@ -41,4 +41,6 @@ public interface IdentifiableObjectStore<M extends BaseIdentifiableObjectModel> 
     void updateOrInsert(@NonNull M m) throws RuntimeException;
 
     Set<String> selectUids() throws RuntimeException;
+
+    M selectByUid(String uid, CursorModelFactory<M> modelFactory) throws RuntimeException;
 }

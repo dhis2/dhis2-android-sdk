@@ -103,6 +103,26 @@ public class IdentifiableObjectStoreImpl<M extends BaseIdentifiableObjectModel>
         }
         return uids;
     }
+
+    @Override
+    public M selectByUid(String uid, CursorModelFactory<M> modelFactory) throws RuntimeException {
+        Cursor cursor = databaseAdapter.query(builder.selectByUid(), uid);
+        return mapObjectFromCursor(cursor, modelFactory);
+    }
+
+    private M mapObjectFromCursor(Cursor cursor, CursorModelFactory<M> modelFactory) {
+        M object = null;
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                object = modelFactory.fromCursor(cursor);
+            }
+        } finally {
+            cursor.close();
+        }
+        return object;
+    }
 }
 
 

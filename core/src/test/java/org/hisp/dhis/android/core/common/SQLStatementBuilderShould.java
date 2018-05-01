@@ -130,4 +130,11 @@ public class SQLStatementBuilderShould {
                 "SELECT * FROM Test_Table WHERE Test_Column_Name1=? AND Test_Column_Name2=?"
         );
     }
+
+    @Test
+    public void generate_select_by_uid_statement() throws Exception {
+        assertThat(builder.selectByUid()).isEqualTo(
+                "SELECT * FROM Test_Table WHERE uid=?"
+        );
+    }
 }

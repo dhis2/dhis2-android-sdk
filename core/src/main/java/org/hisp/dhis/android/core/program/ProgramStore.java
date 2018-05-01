@@ -37,6 +37,6 @@ public final class ProgramStore {
     private ProgramStore() {}
 
     public static IdentifiableObjectStore<ProgramModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, ProgramModel.TABLE, ProgramModel.Columns.all());
+        return StoreFactory.identifiableStore(databaseAdapter, ProgramModel.TABLE, new ProgramModel.Columns().all());
     }
 }

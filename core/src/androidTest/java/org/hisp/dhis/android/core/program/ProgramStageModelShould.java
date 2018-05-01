@@ -85,7 +85,7 @@ public class ProgramStageModelShould {
 
     @Test
     public void create_model_when_created_from_database_cursor() {
-        String[] columnsWithId = Utils.appendInNewArray(ProgramStageModel.Columns.all(), ProgramModel.Columns.ID);
+        String[] columnsWithId = Utils.appendInNewArray(new ProgramStageModel.Columns().all(), ProgramModel.Columns.ID);
         MatrixCursor cursor = new MatrixCursor(columnsWithId);
         cursor.addRow(new Object[]{
                 UID, CODE, NAME, DISPLAY_NAME,

@@ -38,6 +38,6 @@ public final class RelationshipTypeStore {
 
     public static IdentifiableObjectStore<RelationshipTypeModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, RelationshipTypeModel.TABLE,
-                RelationshipTypeModel.Columns.all());
+                new RelationshipTypeModel.Columns().all());
     }
 }

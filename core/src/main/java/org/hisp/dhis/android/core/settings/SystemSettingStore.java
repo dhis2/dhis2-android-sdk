@@ -38,6 +38,6 @@ public final class SystemSettingStore {
 
     public static ObjectWithoutUidStore<SystemSettingModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemSettingModel.TABLE,
-                SystemSettingModel.Columns.all(), SystemSettingModel.Columns.whereUpdate());
+                new SystemSettingModel.Columns());
     }
 }

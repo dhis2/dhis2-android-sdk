@@ -38,13 +38,12 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class RelationshipModel extends BaseModel implements UpdateWhereStatementBinder {
+public abstract class RelationshipModel extends BaseModel {
     public static final String TABLE = "Relationship";
 
     public static class Columns extends BaseModel.Columns {
@@ -52,14 +51,14 @@ public abstract class RelationshipModel extends BaseModel implements UpdateWhere
         public static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
         public static final String RELATIONSHIP_TYPE = "relationshipType";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(),
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
                     TRACKED_ENTITY_INSTANCE_A, TRACKED_ENTITY_INSTANCE_B, RELATIONSHIP_TYPE);
         }
 
-        static String[] whereUpdate() {
+        @Override
+        public String[] whereUpdate() {
             return new String[]{TRACKED_ENTITY_INSTANCE_A, TRACKED_ENTITY_INSTANCE_B, RELATIONSHIP_TYPE};
         }
     }

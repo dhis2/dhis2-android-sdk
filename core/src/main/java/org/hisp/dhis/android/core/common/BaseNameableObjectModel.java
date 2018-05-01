@@ -46,8 +46,9 @@ public abstract class BaseNameableObjectModel extends BaseIdentifiableObjectMode
         public static final String DESCRIPTION = "description";
         public static final String DISPLAY_DESCRIPTION = "displayDescription";
 
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(),
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
                     SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION);
         }
     }

@@ -38,7 +38,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -47,7 +46,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class DataValueModel extends BaseModel implements UpdateWhereStatementBinder {
+public abstract class DataValueModel extends BaseModel {
 
     public static final String TABLE = "DataValue";
 
@@ -64,15 +63,15 @@ public abstract class DataValueModel extends BaseModel implements UpdateWhereSta
         public static final String COMMENT = "comment";
         public static final String FOLLOW_UP = "followUp";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(),
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
                     DATA_ELEMENT, PERIOD, ORGANISATION_UNIT, CATEGORY_OPTION_COMBO,
                     ATTRIBUTE_OPTION_COMBO, VALUE, STORED_BY, CREATED, LAST_UPDATED, COMMENT, FOLLOW_UP);
         }
 
-        public static String[] whereUpdate() {
+        @Override
+        public String[] whereUpdate() {
             return new String[]{DATA_ELEMENT, PERIOD, ORGANISATION_UNIT, CATEGORY_OPTION_COMBO,
             ATTRIBUTE_OPTION_COMBO};
         }

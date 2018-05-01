@@ -38,6 +38,6 @@ public final class DataValueStore {
 
     public static ObjectWithoutUidStore<DataValueModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, DataValueModel.TABLE,
-                DataValueModel.Columns.all(), DataValueModel.Columns.whereUpdate());
+                new DataValueModel.Columns());
     }
 }

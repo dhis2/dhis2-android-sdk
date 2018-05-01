@@ -38,7 +38,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -48,7 +47,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.GodClass"})
 @AutoValue
-public abstract class ProgramModel extends BaseNameableObjectModel implements StatementBinder {
+public abstract class ProgramModel extends BaseNameableObjectModel {
 
     public static final String TABLE = "Program";
 
@@ -78,10 +77,9 @@ public abstract class ProgramModel extends BaseNameableObjectModel implements St
         public final static String COMPLETE_EVENTS_EXPIRY_DAYS = "completeEventsExpiryDays";
         public final static String EXPIRY_PERIOD_TYPE = "expiryPeriodType";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(), VERSION, ONLY_ENROLL_ONCE,
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), VERSION, ONLY_ENROLL_ONCE,
                     ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE, INCIDENT_DATE_LABEL, REGISTRATION,
                     SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD, IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A,
                     SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES, USE_FIRST_STAGE_DURING_REGISTRATION,

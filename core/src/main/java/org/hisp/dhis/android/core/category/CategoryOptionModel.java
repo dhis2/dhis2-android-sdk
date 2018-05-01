@@ -11,7 +11,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -20,17 +19,16 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class CategoryOptionModel extends BaseNameableObjectModel implements StatementBinder {
+public abstract class CategoryOptionModel extends BaseNameableObjectModel {
     public static final String TABLE = "CategoryOption";
 
     public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String START_DATE = "startDate";
         public static final String END_DATE = "endDate";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(), START_DATE, END_DATE);
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), START_DATE, END_DATE);
         }
     }
 

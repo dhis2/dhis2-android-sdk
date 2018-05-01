@@ -55,7 +55,7 @@ public class TrackedEntityAttributeReservedValueModelShould extends
     private final static String ORGANISATION_UNI = "orgUnitUid";
 
     public TrackedEntityAttributeReservedValueModelShould() {
-        super(TrackedEntityAttributeReservedValueModel.Columns.all(), 7);
+        super(new TrackedEntityAttributeReservedValueModel.Columns().all(), 7);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class TrackedEntityAttributeReservedValueModelShould extends
 
     @Test
     public void have_tea_reserved_value_columns() {
-        List<String> columnsList = Arrays.asList(TrackedEntityAttributeReservedValueModel.Columns.all());
+        List<String> columnsList = Arrays.asList(new TrackedEntityAttributeReservedValueModel.Columns().all());
 
         assertThat(columnsList.contains(Columns.OWNER_OBJECT)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.OWNER_UID)).isEqualTo(true);

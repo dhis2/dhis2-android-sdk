@@ -38,7 +38,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -46,18 +45,16 @@ import org.hisp.dhis.android.core.utils.Utils;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class OptionSetModel extends BaseIdentifiableObjectModel implements StatementBinder {
+public abstract class OptionSetModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "OptionSet";
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String VERSION = "version";
         public static final String VALUE_TYPE = "valueType";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(),
-                    VERSION, VALUE_TYPE);
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), VERSION, VALUE_TYPE);
         }
     }
 

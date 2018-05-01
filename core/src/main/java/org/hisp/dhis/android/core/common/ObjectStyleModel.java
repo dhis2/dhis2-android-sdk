@@ -40,21 +40,22 @@ import org.hisp.dhis.android.core.utils.Utils;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class ObjectStyleModel extends BaseModel implements UpdateWhereStatementBinder {
+public abstract class ObjectStyleModel extends BaseModel {
     public static final String TABLE = "ObjectStyle";
 
-    public abstract static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
         public static final String UID = BaseIdentifiableObjectModel.Columns.UID;
         public static final String OBJECT_TABLE = "objectTable";
         public static final String COLOR = "color";
         public static final String ICON = "icon";
 
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(),
-                    UID, OBJECT_TABLE, COLOR, ICON);
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), UID, OBJECT_TABLE, COLOR, ICON);
         }
 
-        static String[] whereUpdate() {
+        @Override
+        public String[] whereUpdate() {
             return new String[]{UID};
         }
     }

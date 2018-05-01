@@ -37,17 +37,16 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class IndicatorModel extends BaseNameableObjectModel implements StatementBinder {
+public abstract class IndicatorModel extends BaseNameableObjectModel {
 
     public static final String TABLE = "Indicator";
 
-    public abstract static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends BaseNameableObjectModel.Columns {
         public final static String ANNUALIZED = "annualized";
         public final static String INDICATOR_TYPE = "indicatorType";
         public final static String NUMERATOR = "numerator";
@@ -56,8 +55,9 @@ public abstract class IndicatorModel extends BaseNameableObjectModel implements 
         public final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
         public final static String URL = "url";
 
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(),
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
                     ANNUALIZED, INDICATOR_TYPE, NUMERATOR, NUMERATOR_DESCRIPTION,
                     DENOMINATOR, DENOMINATOR_DESCRIPTION, URL);
         }

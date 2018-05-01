@@ -38,6 +38,6 @@ public final class IndicatorStore {
 
     public static IdentifiableObjectStore<IndicatorModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, IndicatorModel.TABLE,
-                IndicatorModel.Columns.all());
+                new IndicatorModel.Columns().all());
     }
 }

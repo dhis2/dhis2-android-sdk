@@ -47,7 +47,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class DataSetDataElementLinkModelShould extends LinkModelAbstractShould<DataSetDataElementLinkModel> {
 
     public DataSetDataElementLinkModelShould() {
-        super(DataSetDataElementLinkModel.Columns.all(), 2);
+        super(new DataSetDataElementLinkModel.Columns().all(), 2);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class DataSetDataElementLinkModelShould extends LinkModelAbstractShould<D
 
     @Test
     public void have_data_set_data_element_model_columns() {
-        List<String> columnsList = Arrays.asList(Columns.all());
+        List<String> columnsList = Arrays.asList(new Columns().all());
 
         assertThat(columnsList.contains(Columns.DATA_SET)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.DATA_ELEMENT)).isEqualTo(true);

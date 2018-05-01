@@ -37,7 +37,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableDataModel;
-import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.utils.Utils;

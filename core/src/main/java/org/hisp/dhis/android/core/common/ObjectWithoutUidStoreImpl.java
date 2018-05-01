@@ -34,7 +34,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -76,9 +77,26 @@ public class ObjectWithoutUidStoreImpl<M extends BaseModel>
     }
 
     @Override
-    public Set<M> selectWhere(@NonNull CursorModelFactory<M> modelFactory, @NonNull String... selectionArgs)
+    public List<M> selectWhere(@NonNull CursorModelFactory<M> modelFactory, @NonNull String... selectionArgs)
             throws RuntimeException {
         Cursor cursor = databaseAdapter.query(builder.selectWhere(), selectionArgs);
-        return mapObjectsFromCursor(cursor, modelFactory);
+        return listObjectsFromCursor(cursor, modelFactory);
+    }
+
+    private List<M> listObjectsFromCursor(Cursor cursor, CursorModelFactory<M> modelFactory) {
+        List<M> objects = new ArrayList<>(cursor.getCount());
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    objects.add(modelFactory.fromCursor(cursor));
+                }
+                while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+        return objects;
     }
 }

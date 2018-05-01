@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
-import java.util.Set;
+import java.util.List;
 
 public interface ObjectWithoutUidStore<M extends BaseModel> extends ObjectStore<M> {
 
@@ -40,6 +40,6 @@ public interface ObjectWithoutUidStore<M extends BaseModel> extends ObjectStore<
 
     void deleteWhere(@NonNull M m) throws RuntimeException;
 
-    Set<M> selectWhere(@NonNull CursorModelFactory<M> modelFactory, @NonNull String... selectionArgs)
+    List<M> selectWhere(@NonNull CursorModelFactory<M> modelFactory, @NonNull String... selectionArgs)
             throws RuntimeException;
 }

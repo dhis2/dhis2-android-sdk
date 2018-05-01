@@ -27,9 +27,17 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import com.google.common.truth.Truth;
+
+import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,18 +46,18 @@ import org.junit.runners.JUnit4;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.FUTURE_DATE;
 
 @RunWith(JUnit4.class)
 public class TrackedEntityAttributeReservedValueManagerShould extends AbsStoreTestCase {
 
     private String organisationUnitUid = "org_unit_uid";
-    private String ownerUid1 = "owner_uid1";
-    private String ownerUid2 = "owner_uid2";
+    private String ownerUid1 = "xs8A6tQJY0s";
+    private D2 d2;
 
     // object to test
     private TrackedEntityAttributeReservedValueManager manager;
@@ -57,27 +65,33 @@ public class TrackedEntityAttributeReservedValueManagerShould extends AbsStoreTe
     @Before
     public void setUp() throws IOException {
         super.setUp();
+        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
 
-        manager = TrackedEntityAttributeReservedValueManager.create(databaseAdapter());
+        GenericCallData data = GenericCallData.create(databaseAdapter(), ResourceHandler.create(databaseAdapter()),
+                d2.retrofit());
+
+        login();
+
+        manager = TrackedEntityAttributeReservedValueManager.create(data);
 
         GenericHandler<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> handler =
                 TrackedEntityAttributeReservedValueHandler.create(databaseAdapter());
 
         List<TrackedEntityAttributeReservedValue> trackedEntityAttributeReservedValues = new ArrayList<>();
         TrackedEntityAttributeReservedValue reservedValue1 = TrackedEntityAttributeReservedValue.create(
-                "owner_obj", ownerUid1, "key", "value1", CREATED, CREATED);
+                "owner_obj", ownerUid1, "key", "value1", CREATED, FUTURE_DATE);
         TrackedEntityAttributeReservedValue reservedValue2 = TrackedEntityAttributeReservedValue.create(
-                "owner_obj", ownerUid1, "key", "value2", CREATED, CREATED);
+                "owner_obj", ownerUid1, "key", "value2", CREATED, FUTURE_DATE);
         TrackedEntityAttributeReservedValue reservedValue3 = TrackedEntityAttributeReservedValue.create(
-                "owner_obj", ownerUid2, "key", "value3", CREATED, CREATED);
+                "owner_obj", ownerUid1, "key", "value3", CREATED, FUTURE_DATE);
         trackedEntityAttributeReservedValues.add(reservedValue1);
         trackedEntityAttributeReservedValues.add(reservedValue2);
         trackedEntityAttributeReservedValues.add(reservedValue3);
 
-        OrganisationUnit organisationUnit = OrganisationUnit.create(organisationUnitUid, "org_unit_code",
-                null, null, null, null, null, null,
-                null, null, null, null, null, null,
-                null, null, null, null, null);
+        OrganisationUnitModel organisationUnit =  OrganisationUnitModel.builder()
+                .uid(organisationUnitUid).code("org_unit_code").build();
+
+        OrganisationUnitStore.create(data.databaseAdapter()).insert(organisationUnit);
 
         handler.handleMany(trackedEntityAttributeReservedValues,
                 new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit));
@@ -93,25 +107,48 @@ public class TrackedEntityAttributeReservedValueManagerShould extends AbsStoreTe
     public void get_two_reserved_value() throws Exception {
         String value1 = manager.getValue(ownerUid1, organisationUnitUid);
         String value2 = manager.getValue(ownerUid1, organisationUnitUid);
-        String value3 = manager.getValue(ownerUid2, organisationUnitUid);
+        String value3 = manager.getValue(ownerUid1, organisationUnitUid);
 
         assertThat(value1, is("value1"));
         assertThat(value2, is("value2"));
         assertThat(value3, is("value3"));
     }
 
-    @Test(expected = RuntimeException.class)
-    public void throws_exception_when_no_more_values_reserved_value() throws Exception {
-        manager.getValue(ownerUid1, organisationUnitUid);
-        manager.getValue(ownerUid1, organisationUnitUid);
-        manager.getValue(ownerUid1, organisationUnitUid);
+    @Test
+    public void get_reserved_values() throws Exception {
+        List<TrackedEntityAttributeReservedValueModel> reservedValueModels =
+                manager.getReservedValues(ownerUid1, organisationUnitUid);
+
+        assertThat(reservedValueModels.size(), is(3));
     }
 
     @Test
-    public void get_reserved_values() throws Exception {
-        Set<TrackedEntityAttributeReservedValueModel> reservedValueModels =
+    public void reserve_100_new_values() throws Exception {
+        manager.getValue(ownerUid1, organisationUnitUid);
+        List<TrackedEntityAttributeReservedValueModel> reservedValueModels =
                 manager.getReservedValues(ownerUid1, organisationUnitUid);
 
-        assertThat(reservedValueModels.size(), is(2));
+        assertThat(reservedValueModels.size(), is(100));
+    }
+
+    @Test
+    public void have_99_values_after_sync_and_take_one() throws Exception {
+        manager.getValue(ownerUid1, organisationUnitUid);
+        manager.getValue(ownerUid1, organisationUnitUid);
+
+        List<TrackedEntityAttributeReservedValueModel> reservedValueModels =
+                manager.getReservedValues(ownerUid1, organisationUnitUid);
+
+        assertThat(reservedValueModels.size(), is(99));
+    }
+
+    private void login() {
+        try {
+            if (!d2.isUserLoggedIn().call()) {
+                retrofit2.Response loginResponse = d2.logIn(RealServerMother.user, RealServerMother.password).call();
+                Truth.assertThat(loginResponse.isSuccessful()).isTrue();
+            }
+        } catch (Exception e) {
+        }
     }
 }

@@ -68,6 +68,9 @@ public class FillPropertiesTestUtils {
     public static final ValueTypeDeviceRendering VALUE_TYPE_DEVICE_RENDERING_MODEL =
             ValueTypeDeviceRendering.create(VALUE_TYPE_RENDERING_TYPE, MIN, MAX, STEP, DECIMAL_POINTS);
 
+    public static final String FUTURE_DATE_STR = "3000-12-20T15:08:27.882";
+    public static final Date FUTURE_DATE = parseDate(FUTURE_DATE_STR);
+
     public static final boolean DELETED = false;
 
     private static Date parseDate(String dateStr) {

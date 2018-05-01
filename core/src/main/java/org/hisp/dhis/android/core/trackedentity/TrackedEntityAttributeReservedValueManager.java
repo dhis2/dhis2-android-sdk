@@ -27,33 +27,49 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 
-import java.util.Set;
+import java.util.List;
 
 public final class TrackedEntityAttributeReservedValueManager {
 
     private final ObjectWithoutUidStore<TrackedEntityAttributeReservedValueModel> store;
+    private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    private final GenericCallData data;
 
-    private TrackedEntityAttributeReservedValueManager(DatabaseAdapter databaseAdapter) {
-        this.store = TrackedEntityAttributeReservedValueStore.create(databaseAdapter);
+    private TrackedEntityAttributeReservedValueManager(GenericCallData data) {
+        this.data = data;
+        this.store = TrackedEntityAttributeReservedValueStore.create(data.databaseAdapter());
+        this.organisationUnitStore = OrganisationUnitStore.create(data.databaseAdapter());
     }
 
-    String getValue(String attribute, String organisationUnitUid) throws RuntimeException {
-        Set<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attribute,
+    public String getValue(String attribute, String organisationUnitUid) throws RuntimeException {
+        List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attribute,
                 organisationUnitUid);
+        TrackedEntityAttributeReservedValueModel reservedValue = null;
+
         try {
-            TrackedEntityAttributeReservedValueModel reservedValue = reservedValues.iterator().next();
-            deleteReservedValue(reservedValue);
-            syncReservedValues(attribute, organisationUnitUid);
-            return reservedValue.value();
+            reservedValue = reservedValues.iterator().next();
         } catch (Exception e) {
             throw new RuntimeException("There are no reserved values");
         }
+
+        deleteReservedValue(reservedValue);
+
+        try {
+            syncReservedValues(attribute, organisationUnitUid);
+        } catch (Exception e) {
+            throw new RuntimeException("Synchronization was not successful");
+        }
+
+        return reservedValue.value();
     }
 
-    Set<TrackedEntityAttributeReservedValueModel> getReservedValues(String attributeUid, String orgUnitUid) {
+    List<TrackedEntityAttributeReservedValueModel> getReservedValues(String attributeUid, String orgUnitUid) {
         return this.store.selectWhere(TrackedEntityAttributeReservedValueModel.factory, attributeUid, orgUnitUid);
     }
 
@@ -61,10 +77,31 @@ public final class TrackedEntityAttributeReservedValueManager {
         store.deleteWhere(reservedValueModel);
     }
 
-    private void syncReservedValues(String attribute, String organisationUnitUid) {
+    private void syncReservedValues(String attribute, String organisationUnitUid) throws Exception {
+        List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attribute,
+                organisationUnitUid);
+
+        for (TrackedEntityAttributeReservedValueModel reservedValue : reservedValues) {
+            if (reservedValue.expiryDate().getTime() < System.currentTimeMillis()) {
+                deleteReservedValue(reservedValue);
+            }
+        }
+
+        reservedValues = getReservedValues(attribute, organisationUnitUid);
+        if (reservedValues.size() < 50) {
+            fillReservedValues(attribute, organisationUnitUid, reservedValues.size());
+        }
     }
 
-    public static TrackedEntityAttributeReservedValueManager create(DatabaseAdapter databaseAdapter) {
-        return new TrackedEntityAttributeReservedValueManager(databaseAdapter);
+    private void fillReservedValues(String attribute, String organisationUnitUid, Integer size) throws Exception {
+        Integer numberToReserve = 100 - size;
+        OrganisationUnitModel organisationUnitModel =
+                this.organisationUnitStore.selectByUid(organisationUnitUid, OrganisationUnitModel.factory);
+        TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(
+                data, attribute, numberToReserve, organisationUnitModel).call();
+    }
+
+    public static TrackedEntityAttributeReservedValueManager create(GenericCallData data) {
+        return new TrackedEntityAttributeReservedValueManager(data);
     }
 }

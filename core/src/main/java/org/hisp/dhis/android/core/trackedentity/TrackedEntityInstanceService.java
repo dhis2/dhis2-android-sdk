@@ -18,10 +18,12 @@ public interface TrackedEntityInstanceService {
     String TRACKED_ENTITY_INSTANCES = "trackedEntityInstances";
     String TRACKED_ENTITY_INSTANCES_UID = "trackedEntityInstanceUid";
     String OU = "ou";
+    String OU_MODE = "ouMode";
     String FIELDS = "fields";
     String PAGING = "paging";
     String PAGE = "page";
     String PAGE_SIZE = "pageSize";
+    String PROGRAM = "program";
     String INCLUDE_DELETED = "includeDeleted";
     String FILTER = "filter";
 
@@ -40,6 +42,14 @@ public interface TrackedEntityInstanceService {
             @Query(OU) String orgUnit,
             @Query(FILTER) @Where Filter<TrackedEntityInstance, String> lastUpdated,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
+            @Query(PAGING) Boolean paging, @Query(PAGE) int page,
+            @Query(PAGE_SIZE) int pageSize);
+
+    @GET(TRACKED_ENTITY_INSTANCES + "/query")
+    Call<Payload<TrackedEntityInstance>> query(
+            @Query(OU) String orgUnit,
+            @Query(OU_MODE) String orgUnitMode,
+            @Query(PROGRAM) String program,
             @Query(PAGING) Boolean paging, @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize);
 }

@@ -5,7 +5,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
@@ -170,8 +169,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
 
         TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceEndPointCall.create(GenericCallData.create(
-                        d2.databaseAdapter(), d2.retrofit()), new Date(), trackedEntityInstanceUid);
+                TrackedEntityInstanceEndPointCall.create(
+                        d2.databaseAdapter(), d2.retrofit(), trackedEntityInstanceUid);
 
         trackedEntityInstanceEndPointCall.call();
 

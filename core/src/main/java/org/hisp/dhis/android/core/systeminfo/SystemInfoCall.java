@@ -28,9 +28,8 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.BlockCallFactory;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -38,6 +37,7 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class SystemInfoCall extends SyncCall<SystemInfo> {
     private final DatabaseAdapter databaseAdapter;
@@ -82,15 +82,15 @@ public class SystemInfoCall extends SyncCall<SystemInfo> {
         }
     }
 
-    public static final SimpleCallFactory<SystemInfo> FACTORY = new SimpleCallFactory<SystemInfo>() {
+    public static final BlockCallFactory<SystemInfo> FACTORY = new BlockCallFactory<SystemInfo>() {
 
         @Override
-        public Call<Response<SystemInfo>> create(GenericCallData genericCallData) {
+        public Call<Response<SystemInfo>> create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
             return new SystemInfoCall(
-                    genericCallData.databaseAdapter(),
-                    SystemInfoHandler.create(genericCallData.databaseAdapter()),
-                    genericCallData.retrofit().create(SystemInfoService.class),
-                    genericCallData.resourceHandler()
+                    databaseAdapter,
+                    SystemInfoHandler.create(databaseAdapter),
+                    retrofit.create(SystemInfoService.class),
+                    ResourceHandler.create(databaseAdapter)
             );
         }
     };

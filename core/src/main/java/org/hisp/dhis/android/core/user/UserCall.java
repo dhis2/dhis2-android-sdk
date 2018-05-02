@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -51,7 +52,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public final class UserCall implements Call<Response<User>> {
+public final class UserCall extends SyncCall<User> {
     // retrofit service
     private final UserService userService;
     // databaseAdapter and handlers
@@ -62,7 +63,6 @@ public final class UserCall implements Call<Response<User>> {
     private final ResourceStore resourceStore;
     // server date time
     private final Date serverDate;
-    private boolean isExecuted;
 
     UserCall(UserService userService,
                     DatabaseAdapter databaseAdapter,
@@ -81,20 +81,9 @@ public final class UserCall implements Call<Response<User>> {
     }
 
     @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
-    @Override
     public Response<User> call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Already executed");
-            }
-            isExecuted = true;
-        }
+        super.setExecuted();
+
         Response<User> response = getUser();
         if (response.isSuccessful()) {
             UserHandler userHandler = new UserHandler(userStore);
@@ -165,7 +154,7 @@ public final class UserCall implements Call<Response<User>> {
                     new UserCredentialsStoreImpl(genericCallData.databaseAdapter()),
                     new UserRoleStoreImpl(genericCallData.databaseAdapter()),
                     new ResourceStoreImpl(genericCallData.databaseAdapter()),
-                    new Date()
+                    genericCallData.serverDate()
             );
         }
     };

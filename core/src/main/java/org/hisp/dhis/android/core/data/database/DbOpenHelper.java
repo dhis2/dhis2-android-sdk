@@ -106,7 +106,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
-    public static final int VERSION = 22;
+    public static final int VERSION = 23;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -550,35 +550,23 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
             " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
             ");";
 
-    private static final String CREATE_PROGRAM_TRACKED_ENTITY_ATTRIBUTE_TABLE = "CREATE TABLE " +
-            ProgramTrackedEntityAttributeModel.TABLE + " (" +
-            ProgramTrackedEntityAttributeModel.Columns.ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-            ProgramTrackedEntityAttributeModel.Columns.UID + " TEXT NOT NULL UNIQUE," +
-            ProgramTrackedEntityAttributeModel.Columns.CODE + " TEXT," +
-            ProgramTrackedEntityAttributeModel.Columns.NAME + " TEXT," +
-            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_NAME + " TEXT," +
-            ProgramTrackedEntityAttributeModel.Columns.CREATED + " TEXT," +
-            ProgramTrackedEntityAttributeModel.Columns.LAST_UPDATED + " TEXT," +
-            ProgramTrackedEntityAttributeModel.Columns.SHORT_NAME + " TEXT," +
-            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME + " TEXT," +
-            ProgramTrackedEntityAttributeModel.Columns.DESCRIPTION + " TEXT," +
-            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION + " TEXT," +
-            ProgramTrackedEntityAttributeModel.Columns.MANDATORY + " INTEGER," +
-            ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT NOT NULL,"
-            +
-            ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + " INTEGER," +
-            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + " INTEGER," +
-            ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER + " INTEGER," +
-            ProgramTrackedEntityAttributeModel.Columns.PROGRAM + " TEXT NOT NULL," +
-            " FOREIGN KEY (" + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE
-            + ")" +
-            " REFERENCES " + TrackedEntityAttributeModel.TABLE +
-            " (" + TrackedEntityAttributeModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-            " FOREIGN KEY (" + ProgramTrackedEntityAttributeModel.Columns.PROGRAM + ")" +
-            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
-            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED" +
-            ");";
+    private static final String CREATE_PROGRAM_TRACKED_ENTITY_ATTRIBUTE_TABLE =
+            SQLStatementBuilder.createNameableModelTable(ProgramTrackedEntityAttributeModel.TABLE,
+                    ProgramTrackedEntityAttributeModel.Columns.MANDATORY + " INTEGER," +
+                            ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " TEXT NOT NULL," +
+                            ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES + " INTEGER," +
+                            ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST + " INTEGER," +
+                            ProgramTrackedEntityAttributeModel.Columns.PROGRAM + " TEXT NOT NULL," +
+                            ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER + " INTEGER," +
+                            ProgramTrackedEntityAttributeModel.Columns.SEARCHABLE + " INTEGER," +
+                            " FOREIGN KEY (" + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE
+                            + ")" + " REFERENCES " + TrackedEntityAttributeModel.TABLE +
+                            " (" + TrackedEntityAttributeModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                            " FOREIGN KEY (" + ProgramTrackedEntityAttributeModel.Columns.PROGRAM + ")" +
+                            " REFERENCES " + ProgramModel.TABLE + " (" + ProgramModel.Columns.UID + ")" +
+                            " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
+            );
 
     private static final String CREATE_PROGRAM_RULE_TABLE = "CREATE TABLE " +
             ProgramRuleModel.TABLE + " (" +

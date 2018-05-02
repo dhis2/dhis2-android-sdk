@@ -152,7 +152,7 @@ public class TrackedEntityTypeCall implements Call<Response<Payload<TrackedEntit
                     new TrackedEntityTypeStoreImpl(genericCallData.databaseAdapter()),
                     new ResourceStoreImpl(genericCallData.databaseAdapter()),
                     genericCallData.retrofit().create(TrackedEntityTypeService.class),
-                    new Date()
+                    genericCallData.serverDate()
             );
         }
     };

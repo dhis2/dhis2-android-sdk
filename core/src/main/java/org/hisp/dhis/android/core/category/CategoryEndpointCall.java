@@ -101,7 +101,7 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
                     CategoryHandler.create(genericCallData.databaseAdapter()),
                     ResourceHandler.create(genericCallData.databaseAdapter()),
                     genericCallData.databaseAdapter(),
-                    new Date()
+                    genericCallData.serverDate()
             );
         }
     };

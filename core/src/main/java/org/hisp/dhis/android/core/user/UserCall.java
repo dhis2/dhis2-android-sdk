@@ -154,7 +154,7 @@ public final class UserCall extends SyncCall<User> {
                     new UserCredentialsStoreImpl(genericCallData.databaseAdapter()),
                     new UserRoleStoreImpl(genericCallData.databaseAdapter()),
                     new ResourceStoreImpl(genericCallData.databaseAdapter()),
-                    new Date()
+                    genericCallData.serverDate()
             );
         }
     };

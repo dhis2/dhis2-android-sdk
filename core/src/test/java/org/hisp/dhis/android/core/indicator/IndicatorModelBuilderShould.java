@@ -26,11 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.indicator;
 
-import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,42 +41,63 @@ import java.io.IOException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DESCRIPTION;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_DESCRIPTION;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_SHORT_NAME;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.SHORT_NAME;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 
 @RunWith(JUnit4.class)
-public class LegendSetModelBuilderShould extends IdentifiableModelBuilderAbstractShould<LegendSet, LegendSetModel> {
+public class IndicatorModelBuilderShould extends IdentifiableModelBuilderAbstractShould<Indicator,
+        IndicatorModel> {
 
     @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
-    }
-
-    @Override
-    protected LegendSet buildPojo() {
-        return LegendSet.create(
+    protected Indicator buildPojo() {
+        return Indicator.create(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
                 CREATED,
                 LAST_UPDATED,
+                SHORT_NAME,
+                DISPLAY_SHORT_NAME,
+                DESCRIPTION,
+                DISPLAY_DESCRIPTION,
+
                 false,
-                "color",
-                Lists.<Legend>newArrayList()
-        );
+                ObjectWithUid.create("bWuNrMHEoZ0"),
+                "#{a.b}",
+                "num descr",
+                "#{c.d}",
+                "den descr",
+                "dhis2.org",
+                DELETED);
     }
 
     @Override
-    protected ModelBuilder<LegendSet, LegendSetModel> modelBuilder() {
-        return new LegendSetModelBuilder();
+    protected ModelBuilder<Indicator, IndicatorModel> modelBuilder() {
+        return new IndicatorModelBuilder();
+    }
+
+    @Before
+    @Override
+    public void setUp() throws IOException {
+        super.setUp();
     }
 
     @Test
-    public void copy_pojo_legend_set_properties() {
-        assertThat(model.symbolizer()).isEqualTo(pojo.symbolizer());
+    public void copy_pojo_indicator_properties() {
+        assertThat(model.annualized()).isEqualTo(pojo.annualized());
+        assertThat(model.indicatorType()).isEqualTo(pojo.indicatorType().uid());
+        assertThat(model.numerator()).isEqualTo(pojo.numerator());
+        assertThat(model.numeratorDescription()).isEqualTo(pojo.numeratorDescription());
+        assertThat(model.denominator()).isEqualTo(pojo.denominator());
+        assertThat(model.denominatorDescription()).isEqualTo(pojo.denominatorDescription());
+        assertThat(model.url()).isEqualTo(pojo.url());
     }
 }

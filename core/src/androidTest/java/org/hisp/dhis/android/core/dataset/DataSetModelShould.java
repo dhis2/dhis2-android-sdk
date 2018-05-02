@@ -31,11 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.NameableModelAbstractShould;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.DataSetModel.Columns;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
@@ -43,32 +39,18 @@ import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.COLOR;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DESCRIPTION;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_DESCRIPTION;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_SHORT_NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.ICON;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.SHORT_NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
-public class DataSetModelShould extends NameableModelAbstractShould<DataSet, DataSetModel> {
+public class DataSetModelShould extends NameableModelAbstractShould<DataSetModel> {
 
     public DataSetModelShould() {
-        super(DataSetModel.Columns.all(), 26, new DataSetModelBuilder());
+        super(DataSetModel.Columns.all(), 26);
     }
 
     @Override
@@ -101,28 +83,23 @@ public class DataSetModelShould extends NameableModelAbstractShould<DataSet, Dat
     }
 
     @Override
-    protected DataSet buildPojo() {
-        return DataSet.create(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME,
-                DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, PeriodType.Monthly,
-                ObjectWithUid.create("cc_uid"),
-                false, 1, 10, 100, false,
-                0, false, false,
-                false, false, false,
-                false, false, new ArrayList<DataElementUids>(),
-                new ArrayList<ObjectWithUid>(), Access.create(true, true, false, true,
-                        true, true, DataAccess.create(true, false)),
-                ObjectStyle.create(COLOR, ICON), DELETED);
-    }
-
-    @Override
     protected Object[] getModelAsObjectArray() {
         return Utils.appendInNewArray(ColumnsArrayUtils.getNameableModelAsObjectArray(model),
-                model.periodType(), model.categoryCombo(), toInteger(model.mobile()), model.version(),
-                model.expiryDays(), model.timelyDays(), toInteger(model.notifyCompletingUser()),
-                model.openFuturePeriods(), toInteger(model.fieldCombinationRequired()),
-                toInteger(model.validCompleteOnly()), toInteger(model.noValueRequiresComment()),
-                toInteger(model.skipOffline()), toInteger(model.dataElementDecoration()),
-                toInteger(model.renderAsTabs()), toInteger(model.renderHorizontally()),
+                model.periodType(),
+                model.categoryCombo(),
+                toInteger(model.mobile()),
+                model.version(),
+                model.expiryDays(),
+                model.timelyDays(),
+                toInteger(model.notifyCompletingUser()),
+                model.openFuturePeriods(),
+                toInteger(model.fieldCombinationRequired()),
+                toInteger(model.validCompleteOnly()),
+                toInteger(model.noValueRequiresComment()),
+                toInteger(model.skipOffline()),
+                toInteger(model.dataElementDecoration()),
+                toInteger(model.renderAsTabs()),
+                toInteger(model.renderHorizontally()),
                 toInteger(model.accessDataWrite()));
     }
 

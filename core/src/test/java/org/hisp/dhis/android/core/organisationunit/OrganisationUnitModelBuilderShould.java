@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.NameableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.program.Program;
@@ -55,10 +56,6 @@ import static org.mockito.Mockito.when;
 public class OrganisationUnitModelBuilderShould extends NameableModelBuilderAbstractShould<OrganisationUnit,
         OrganisationUnitModel> {
 
-    private OrganisationUnit pojo;
-
-    private OrganisationUnitModel model;
-
     @Mock
     private OrganisationUnit parent;
 
@@ -66,16 +63,15 @@ public class OrganisationUnitModelBuilderShould extends NameableModelBuilderAbst
     private OrganisationUnit grandparent;
 
     @Before
-    @SuppressWarnings("unchecked")
+    @Override
     public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
+        super.setUp();
 
         when(parent.uid()).thenReturn("parentUid");
         when(parent.displayName()).thenReturn("parentDisplayName");
         when(grandparent.displayName()).thenReturn("grandparentDisplayName");
 
-        pojo = buildPojo();
-        model = buildModel();
+        MockitoAnnotations.initMocks(this);
     }
 
     @Override
@@ -104,8 +100,8 @@ public class OrganisationUnitModelBuilderShould extends NameableModelBuilderAbst
     }
 
     @Override
-    protected OrganisationUnitModel buildModel() {
-        return new OrganisationUnitModelBuilder().buildModel(pojo);
+    protected ModelBuilder<OrganisationUnit, OrganisationUnitModel> modelBuilder() {
+        return new OrganisationUnitModelBuilder();
     }
 
     @Test

@@ -26,11 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.datavalue;
 
-import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.ModelBuilderAbstractShould;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,15 +38,23 @@ import org.junit.runners.JUnit4;
 import java.io.IOException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 
 @RunWith(JUnit4.class)
-public class LegendSetModelBuilderShould extends IdentifiableModelBuilderAbstractShould<LegendSet, LegendSetModel> {
+public class DataValueModelBuilderShould extends ModelBuilderAbstractShould<DataValue,
+        DataValueModel> {
+
+    private static final String DATA_ELEMENT = "dataElement";
+    private static final String PERIOD = "period";
+    private static final String ORGANISATION_UNIT = "organisationUnit";
+    private static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
+    private static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+    private static final String VALUE = "value";
+    private static final String STORED_BY = "storedBy";
+    private static final String COMMENT = "comment";
+    private static final boolean FOLLOW_UP = false;
 
     @Override
     @Before
@@ -56,27 +63,39 @@ public class LegendSetModelBuilderShould extends IdentifiableModelBuilderAbstrac
     }
 
     @Override
-    protected LegendSet buildPojo() {
-        return LegendSet.create(
-                UID,
-                CODE,
-                NAME,
-                DISPLAY_NAME,
+    protected DataValue buildPojo() {
+        return DataValue.create(
+                DATA_ELEMENT,
+                PERIOD,
+                ORGANISATION_UNIT,
+                CATEGORY_OPTION_COMBO,
+                ATTRIBUTE_OPTION_COMBO,
+                VALUE,
+                STORED_BY,
                 CREATED,
                 LAST_UPDATED,
-                false,
-                "color",
-                Lists.<Legend>newArrayList()
-        );
+                COMMENT,
+                FOLLOW_UP,
+                DELETED);
     }
 
     @Override
-    protected ModelBuilder<LegendSet, LegendSetModel> modelBuilder() {
-        return new LegendSetModelBuilder();
+    protected ModelBuilder<DataValue, DataValueModel> modelBuilder() {
+        return new DataValueModelBuilder();
     }
 
     @Test
-    public void copy_pojo_legend_set_properties() {
-        assertThat(model.symbolizer()).isEqualTo(pojo.symbolizer());
+    public void copy_pojo_data_value_properties() {
+        assertThat(model.dataElement()).isEqualTo(pojo.dataElement());
+        assertThat(model.period()).isEqualTo(pojo.period());
+        assertThat(model.organisationUnit()).isEqualTo(pojo.organisationUnit());
+        assertThat(model.categoryOptionCombo()).isEqualTo(pojo.categoryOptionCombo());
+        assertThat(model.attributeOptionCombo()).isEqualTo(pojo.attributeOptionCombo());
+        assertThat(model.value()).isEqualTo(pojo.value());
+        assertThat(model.storedBy()).isEqualTo(pojo.storedBy());
+        assertThat(model.created()).isEqualTo(pojo.created());
+        assertThat(model.lastUpdated()).isEqualTo(pojo.lastUpdated());
+        assertThat(model.comment()).isEqualTo(pojo.comment());
+        assertThat(model.followUp()).isEqualTo(pojo.followUp());
     }
 }

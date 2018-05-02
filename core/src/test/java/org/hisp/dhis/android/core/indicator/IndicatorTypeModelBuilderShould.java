@@ -26,9 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.indicator;
 
-import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.junit.Before;
@@ -41,42 +40,37 @@ import java.io.IOException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 
 @RunWith(JUnit4.class)
-public class LegendSetModelBuilderShould extends IdentifiableModelBuilderAbstractShould<LegendSet, LegendSetModel> {
+public class IndicatorTypeModelBuilderShould extends IdentifiableModelBuilderAbstractShould<IndicatorType,
+        IndicatorTypeModel> {
 
-    @Override
+
     @Before
+    @Override
     public void setUp() throws IOException {
         super.setUp();
     }
 
     @Override
-    protected LegendSet buildPojo() {
-        return LegendSet.create(
-                UID,
-                CODE,
-                NAME,
-                DISPLAY_NAME,
-                CREATED,
-                LAST_UPDATED,
-                false,
-                "color",
-                Lists.<Legend>newArrayList()
-        );
+    protected IndicatorType buildPojo() {
+        return IndicatorType.create(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED,
+                true, 11, DELETED);
     }
 
     @Override
-    protected ModelBuilder<LegendSet, LegendSetModel> modelBuilder() {
-        return new LegendSetModelBuilder();
+    protected ModelBuilder<IndicatorType, IndicatorTypeModel> modelBuilder() {
+        return new IndicatorTypeModelBuilder();
     }
 
     @Test
-    public void copy_pojo_legend_set_properties() {
-        assertThat(model.symbolizer()).isEqualTo(pojo.symbolizer());
+    public void copy_pojo_indicator_type_properties() {
+        assertThat(model.number()).isEqualTo(pojo.number());
+        assertThat(model.factor()).isEqualTo(pojo.factor());
     }
 }

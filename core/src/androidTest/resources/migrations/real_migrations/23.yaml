@@ -1,0 +1,2 @@
+up:
+- ALTER TABLE ProgramTrackedEntityAttribute ADD COLUMN searchable INTEGER;

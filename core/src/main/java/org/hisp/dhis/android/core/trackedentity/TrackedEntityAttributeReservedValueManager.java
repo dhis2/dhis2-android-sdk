@@ -56,6 +56,14 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     public String getValue(String attribute, String organisationUnitUid) throws RuntimeException {
+        deleteExpiredDates(attribute, organisationUnitUid);
+
+        try {
+            syncReservedValues(attribute, organisationUnitUid);
+        } catch (Exception e) {
+            throw new RuntimeException("Synchronization was not successful.", e);
+        }
+
         List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attribute,
                 organisationUnitUid);
         TrackedEntityAttributeReservedValueModel reservedValue = null;
@@ -63,16 +71,10 @@ public final class TrackedEntityAttributeReservedValueManager {
         try {
             reservedValue = reservedValues.iterator().next();
         } catch (Exception e) {
-            throw new RuntimeException("There are no reserved values", e);
+            throw new RuntimeException("There are no reserved values.", e);
         }
 
         deleteReservedValue(reservedValue);
-
-        try {
-            syncReservedValues(attribute, organisationUnitUid);
-        } catch (Exception e) {
-            throw new RuntimeException("Synchronization was not successful", e);
-        }
 
         return reservedValue.value();
     }
@@ -88,26 +90,28 @@ public final class TrackedEntityAttributeReservedValueManager {
     private void syncReservedValues(String attribute, String organisationUnitUid) throws Exception {
         List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attribute,
                 organisationUnitUid);
+        if (reservedValues.size() <= 50) {
+            fillReservedValues(attribute, organisationUnitUid, reservedValues.size());
+        }
+    }
+
+    private void deleteExpiredDates(String attributeUid, String orgUnitUid) {
+        List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attributeUid, orgUnitUid);
 
         for (TrackedEntityAttributeReservedValueModel reservedValue : reservedValues) {
             if (reservedValue.expiryDate().getTime() < System.currentTimeMillis()) {
                 deleteReservedValue(reservedValue);
             }
         }
-
-        reservedValues = getReservedValues(attribute, organisationUnitUid);
-        if (reservedValues.size() < 50) {
-            fillReservedValues(attribute, organisationUnitUid, reservedValues.size());
-        }
     }
 
     private void fillReservedValues(String attribute, String organisationUnitUid, Integer size) throws Exception {
-        Response response = SystemInfoCall.FACTORY.create(databaseAdapter, retrofit).call();
-        if (!response.isSuccessful()) {
+        Response systemInfoResponse = SystemInfoCall.FACTORY.create(databaseAdapter, retrofit).call();
+        if (!systemInfoResponse.isSuccessful()) {
             throw new RuntimeException("SystemInfo call failed.");
         }
 
-        SystemInfo systemInfo = (SystemInfo) response.body();
+        SystemInfo systemInfo = (SystemInfo) systemInfoResponse.body();
         GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                 systemInfo.serverDate());
 
@@ -115,8 +119,11 @@ public final class TrackedEntityAttributeReservedValueManager {
         OrganisationUnitModel organisationUnitModel =
                 this.organisationUnitStore.selectByUid(organisationUnitUid, OrganisationUnitModel.factory);
 
-        TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(
+        Response reservedValueResponse = TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(
                 genericCallData, attribute, numberToReserve, organisationUnitModel).call();
+        if (!reservedValueResponse.isSuccessful()) {
+            throw new RuntimeException("New reserved values call failed.");
+        }
     }
 
     public static TrackedEntityAttributeReservedValueManager create(DatabaseAdapter databaseAdapter,

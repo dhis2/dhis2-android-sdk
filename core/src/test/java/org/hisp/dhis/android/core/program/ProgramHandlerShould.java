@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
@@ -66,7 +67,8 @@ public class ProgramHandlerShould {
     private ProgramRuleHandler programRuleHandler;
 
     @Mock
-    private ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
+    private GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
+            programTrackedEntityAttributeHandler;
 
     @Mock
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
@@ -155,8 +157,8 @@ public class ProgramHandlerShould {
     @Test
     public void call_program_tracked_entity_attributes_handler() throws Exception {
         programHandler.handle(program, new ProgramModelBuilder());
-        verify(programTrackedEntityAttributeHandler)
-                .handleProgramTrackedEntityAttributes(programTrackedEntityAttributes);
+        verify(programTrackedEntityAttributeHandler).handleMany(programTrackedEntityAttributes,
+                new ProgramTrackedEntityAttributeModelBuilder());
     }
 
     @Test

@@ -79,13 +79,38 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
     }
 
     //@Test
-    public void use_filter_to_show_less_attributes() throws Exception {
+    public void use_attribute_to_reduce_attributes_returned() throws Exception {
         login();
 
         List<String> attributeList = new ArrayList<>(1);
         attributeList.add("w75KJ2mc4zz");
 
         TrackedEntityInstanceQuery query = queryBuilder.attribute(attributeList).build();
+        List<TrackedEntityInstance> queryResponse = d2.queryTrackedEntityInstances(query).call();
+        assertThat(queryResponse).isNotEmpty();
+    }
+
+    //@Test
+    public void query_tracked_entity_instances_one_filter() throws Exception {
+        login();
+
+        List<String> filterList = new ArrayList<>(1);
+        filterList.add("w75KJ2mc4zz:like:jorge");
+
+        TrackedEntityInstanceQuery query = queryBuilder.filter(filterList).build();
+        List<TrackedEntityInstance> queryResponse = d2.queryTrackedEntityInstances(query).call();
+        assertThat(queryResponse).isNotEmpty();
+    }
+
+    //@Test
+    public void query_tracked_entity_instances_two_filters() throws Exception {
+        login();
+
+        List<String> filterList = new ArrayList<>(2);
+        filterList.add("w75KJ2mc4zz:like:Filona");
+        filterList.add("zDhUuAYrxNC:like:Ryder");
+
+        TrackedEntityInstanceQuery query = queryBuilder.filter(filterList).build();
         List<TrackedEntityInstance> queryResponse = d2.queryTrackedEntityInstances(query).call();
         assertThat(queryResponse).isNotEmpty();
     }

@@ -16,7 +16,7 @@ import org.hisp.dhis.android.core.relationship.Relationship;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class TrackedEntityInstanceEndPointCall extends SyncCall<TrackedEntityInstance> {
+public class TrackedEntityInstanceEndPointCall extends SyncCall<Response<TrackedEntityInstance>> {
 
     private final DatabaseAdapter databaseAdapter;
     private final TrackedEntityInstanceService trackedEntityInstanceService;

@@ -20,7 +20,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-public final class SingleDataCall extends SyncCall {
+public final class SingleDataCall extends SyncCall<Response> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;

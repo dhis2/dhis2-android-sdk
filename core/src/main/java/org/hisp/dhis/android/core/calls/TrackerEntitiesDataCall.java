@@ -21,7 +21,7 @@ import java.util.Set;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public final class TrackerEntitiesDataCall extends SyncCall {
+public final class TrackerEntitiesDataCall extends SyncCall<Response> {
 
     private final int teiLimitByOrgUnit;
     private final DatabaseAdapter databaseAdapter;

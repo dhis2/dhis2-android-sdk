@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
+import org.hisp.dhis.android.core.utils.Utils;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -41,7 +42,8 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
                 .isHttpError(true).errorDescription("Search Grid call failed");
 
         try {
-            Response<SearchGrid> searchGridResponse = service.query(query.orgUnit(),
+            String orgUnits = Utils.joinCollectionWithSeparator(query.orgUnits(), ";");
+            Response<SearchGrid> searchGridResponse = service.query(orgUnits,
                     orgUnitModeStr, query.program(), query.paging(), query.page(), query.pageSize()).execute();
 
             if (!searchGridResponse.isSuccessful()) {

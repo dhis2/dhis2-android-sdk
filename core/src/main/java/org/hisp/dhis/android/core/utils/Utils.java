@@ -37,9 +37,9 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A collection of utility abstractions
@@ -107,10 +107,14 @@ public final class Utils {
     }
 
     private static String commaSeparatedArrayValues(String... values) {
-        return  commaAndSpaceSeparatedArrayValues(values).replace(" ", "");
+        return commaAndSpaceSeparatedArrayValues(values).replace(" ", "");
     }
 
-    public static String commaSeparatedArrayValuesFromSet(Set<String> values) {
-        return  commaSeparatedArrayValues(values.toArray(new String[values.size()]));
+    public static String commaSeparatedCollectionValues(Collection<String> values) {
+        return commaSeparatedArrayValues(values.toArray(new String[values.size()]));
+    }
+
+    public static String joinCollectionWithSeparator(Collection<String> values, String separator) {
+        return commaSeparatedCollectionValues(values).replace(",", ";");
     }
 }

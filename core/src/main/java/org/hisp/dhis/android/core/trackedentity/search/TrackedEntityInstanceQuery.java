@@ -24,6 +24,15 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
     @Nullable
     public abstract String program();
 
+    @Nullable
+    public abstract String query();
+
+    @Nullable
+    public abstract List<String> attribute();
+
+    @Nullable
+    public abstract List<String> filter();
+
     public static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQuery.Builder();
     }
@@ -35,6 +44,12 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
         public abstract Builder orgUnitMode(OuMode orgUnitMode);
 
         public abstract Builder program(String program);
+
+        public abstract Builder query(String query);
+
+        public abstract Builder attribute(List<String> attribute);
+
+        public abstract Builder filter(List<String> filter);
 
         public abstract TrackedEntityInstanceQuery build();
     }

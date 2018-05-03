@@ -36,7 +36,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-final class SearchGridMapper {
+class SearchGridMapper {
     private static final Integer NON_ATTRIBUTE_LENGTH = 7;
 
     public List<TrackedEntityInstance> transform(SearchGrid searchGrid) throws ParseException {

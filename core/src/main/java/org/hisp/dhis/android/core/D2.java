@@ -51,11 +51,14 @@ import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEndPointCall;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
 import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
@@ -154,6 +157,11 @@ public final class D2 {
     @NonNull
     public Call<Response<WebResponse>> syncTrackedEntityInstances() {
         return TrackedEntityInstancePostCall.create(databaseAdapter, retrofit);
+    }
+
+    @NonNull
+    public Call<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
+        return TrackedEntityInstanceQueryCall.create(retrofit, query);
     }
 
     public Call<Response<WebResponse>> syncSingleEvents() {

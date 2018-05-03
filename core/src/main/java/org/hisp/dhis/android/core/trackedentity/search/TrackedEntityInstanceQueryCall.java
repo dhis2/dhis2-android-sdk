@@ -22,7 +22,7 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
     private final TrackedEntityInstanceQuery query;
     private final SearchGridMapper mapper;
 
-    private TrackedEntityInstanceQueryCall(
+    TrackedEntityInstanceQueryCall(
             @NonNull TrackedEntityInstanceService service,
             @NonNull TrackedEntityInstanceQuery query,
             @NonNull SearchGridMapper mapper) {

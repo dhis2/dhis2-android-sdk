@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
@@ -55,28 +56,25 @@ public final class TrackedEntityAttributeReservedValueManager {
         this.organisationUnitStore = OrganisationUnitStore.create(databaseAdapter);
     }
 
+    @SuppressFBWarnings("DE_MIGHT_IGNORE")
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public String getValue(String attribute, String organisationUnitUid) throws RuntimeException {
-        deleteExpiredDates(attribute, organisationUnitUid);
-
         try {
             syncReservedValues(attribute, organisationUnitUid);
         } catch (Exception e) {
-            throw new RuntimeException("Synchronization was not successful.", e);
+            // Synchronization was not successful.
         }
 
         List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attribute,
                 organisationUnitUid);
-        TrackedEntityAttributeReservedValueModel reservedValue = null;
 
-        try {
-            reservedValue = reservedValues.iterator().next();
-        } catch (Exception e) {
-            throw new RuntimeException("There are no reserved values.", e);
+        if (reservedValues.isEmpty()) {
+            throw new RuntimeException("There are no reserved values.");
+        } else {
+            TrackedEntityAttributeReservedValueModel reservedValue = reservedValues.get(0);
+            deleteReservedValue(reservedValue);
+            return reservedValue.value();
         }
-
-        deleteReservedValue(reservedValue);
-
-        return reservedValue.value();
     }
 
     List<TrackedEntityAttributeReservedValueModel> getReservedValues(String attributeUid, String orgUnitUid) {
@@ -88,6 +86,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     private void syncReservedValues(String attribute, String organisationUnitUid) throws Exception {
+        deleteExpiredDates(attribute, organisationUnitUid);
         List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attribute,
                 organisationUnitUid);
         if (reservedValues.size() <= 50) {

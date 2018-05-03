@@ -8,6 +8,8 @@ import org.hisp.dhis.android.core.data.api.Which;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.search.SearchGrid;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -22,6 +24,7 @@ public interface TrackedEntityInstanceService {
     String OU_MODE = "ouMode";
     String FIELDS = "fields";
     String QUERY = "query";
+    String ATTRIBUTE = "attribute";
     String PAGING = "paging";
     String PAGE = "page";
     String PAGE_SIZE = "pageSize";
@@ -44,7 +47,8 @@ public interface TrackedEntityInstanceService {
             @Query(OU) String orgUnit,
             @Query(FILTER) @Where Filter<TrackedEntityInstance, String> lastUpdated,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
-            @Query(PAGING) Boolean paging, @Query(PAGE) int page,
+            @Query(PAGING) Boolean paging,
+            @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize);
 
     @GET(TRACKED_ENTITY_INSTANCES + "/query")
@@ -53,6 +57,8 @@ public interface TrackedEntityInstanceService {
             @Query(OU_MODE) String orgUnitMode,
             @Query(PROGRAM) String program,
             @Query(QUERY) String query,
+            @Query(ATTRIBUTE) List<String> attribute,
+            @Query(FILTER) List<String> filter,
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize);

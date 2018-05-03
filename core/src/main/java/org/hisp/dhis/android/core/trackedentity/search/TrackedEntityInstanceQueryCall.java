@@ -44,8 +44,8 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
         try {
             String orgUnits = Utils.joinCollectionWithSeparator(query.orgUnits(), ";");
             Response<SearchGrid> searchGridResponse = service.query(orgUnits,
-                    orgUnitModeStr, query.program(), query.query(), query.paging(), query.page(),
-                    query.pageSize()).execute();
+                    orgUnitModeStr, query.program(), query.query(), query.attribute(), query.filter(),
+                    query.paging(), query.page(), query.pageSize()).execute();
 
             if (!searchGridResponse.isSuccessful()) {
                 throw httpExceptionBuilder.httpErrorCode(searchGridResponse.code()).build();

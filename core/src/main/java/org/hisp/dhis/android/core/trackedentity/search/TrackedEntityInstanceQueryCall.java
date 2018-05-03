@@ -47,21 +47,21 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
                     orgUnitModeStr, query.program(), query.query(), query.attribute(), query.filter(),
                     query.paging(), query.page(), query.pageSize()).execute();
 
-            if (!searchGridResponse.isSuccessful()) {
-                throw httpExceptionBuilder.httpErrorCode(searchGridResponse.code()).build();
-            } else {
+            if (searchGridResponse.isSuccessful()) {
                 SearchGrid searchGrid = searchGridResponse.body();
-
                 try {
                     return mapper.transform(searchGrid);
                 } catch (ParseException pe) {
                     throw D2CallException.builder()
                             .isHttpError(false).errorDescription("Search Grid mapping exception")
+                            .originalException(pe)
                             .build();
                 }
+            } else {
+                throw httpExceptionBuilder.httpErrorCode(searchGridResponse.code()).build();
             }
         } catch (IOException e) {
-            throw httpExceptionBuilder.build();
+            throw httpExceptionBuilder.originalException(e).build();
         }
     }
 

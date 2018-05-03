@@ -48,6 +48,9 @@ public abstract class D2CallException extends Exception {
     @Nullable
     public abstract Integer httpErrorCode();
 
+    @Nullable
+    public abstract Exception originalException();
+
     public static Builder builder() {
         return new AutoValue_D2CallException.Builder();
     }
@@ -61,6 +64,8 @@ public abstract class D2CallException extends Exception {
         public abstract Builder isHttpError(Boolean isHttpError);
 
         public abstract Builder httpErrorCode(Integer httpErrorCode);
+
+        public abstract Builder originalException(Exception originalException);
 
         public abstract D2CallException build();
     }

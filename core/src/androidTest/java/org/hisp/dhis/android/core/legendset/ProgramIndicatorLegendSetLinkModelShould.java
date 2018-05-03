@@ -47,7 +47,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class ProgramIndicatorLegendSetLinkModelShould extends LinkModelAbstractShould<ProgramIndicatorLegendSetLinkModel> {
 
     public ProgramIndicatorLegendSetLinkModelShould() {
-        super(Columns.all(), 2);
+        super(new Columns().all(), 2);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class ProgramIndicatorLegendSetLinkModelShould extends LinkModelAbstractS
 
     @Test
     public void have_program_indicator_legend_set_model_columns() {
-        List<String> columnsList = Arrays.asList(Columns.all());
+        List<String> columnsList = Arrays.asList(new Columns().all());
 
         assertThat(columnsList.contains(Columns.PROGRAM_INDICATOR)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.LEGEND_SET)).isEqualTo(true);

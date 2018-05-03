@@ -55,13 +55,13 @@ public class ObjectStoreIntegrationShould extends AbsStoreTestCase {
         super.setUp();
         this.model = StoreMocks.generateOptionSetModel();
         this.store = StoreFactory.objectStore(databaseAdapter(),
-                OptionSetModel.TABLE, OptionSetModel.Columns.all());
+                OptionSetModel.TABLE, new OptionSetModel.Columns().all());
     }
 
     @Test
     public void insert_model() {
         store.insert(model);
-        Cursor cursor = getCursor(OptionSetModel.TABLE, OptionSetModel.Columns.all());
+        Cursor cursor = getCursor(OptionSetModel.TABLE, new OptionSetModel.Columns().all());
         optionSetCursorAssert(cursor, model);
     }
 

@@ -38,6 +38,6 @@ public final class DataSetOrganisationUnitLinkStore {
 
     public static ObjectWithoutUidStore<DataSetOrganisationUnitLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, DataSetOrganisationUnitLinkModel.TABLE,
-                DataSetOrganisationUnitLinkModel.Columns.all(), DataSetOrganisationUnitLinkModel.Columns.whereUpdate());
+                new DataSetOrganisationUnitLinkModel.Columns());
     }
 }

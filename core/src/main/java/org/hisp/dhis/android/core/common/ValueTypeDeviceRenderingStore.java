@@ -36,6 +36,6 @@ public final class ValueTypeDeviceRenderingStore {
 
     public static ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, ValueTypeDeviceRenderingModel.TABLE,
-                ValueTypeDeviceRenderingModel.Columns.all(), ValueTypeDeviceRenderingModel.Columns.whereUpdate());
+                new ValueTypeDeviceRenderingModel.Columns());
     }
 }

@@ -36,6 +36,6 @@ public final class ObjectStyleStore {
 
     public static ObjectWithoutUidStore<ObjectStyleModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, ObjectStyleModel.TABLE,
-                ObjectStyleModel.Columns.all(), ObjectStyleModel.Columns.whereUpdate());
+                new ObjectStyleModel.Columns());
     }
 }

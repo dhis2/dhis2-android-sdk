@@ -51,6 +51,7 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     private static final String DISPLAY_IN_LIST = "displayInList";
     private static final String PROGRAM = "program";
     private static final String SORT_ORDER = "sortOrder";
+    private static final String SEARCHABLE = "searchable";
 
     private static final Field<ProgramTrackedEntityAttribute, String> uid = Field.create(UID);
     private static final Field<ProgramTrackedEntityAttribute, String> code = Field.create(CODE);
@@ -77,11 +78,12 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
             = Field.create(DELETED);
     private static final Field<ProgramTrackedEntityAttribute, Integer> sortOrder
             = Field.create(SORT_ORDER);
+    private static final Field<ProgramTrackedEntityAttribute, Boolean> searchable = Field.create(SEARCHABLE);
 
     static final Fields<ProgramTrackedEntityAttribute> allFields = Fields.<ProgramTrackedEntityAttribute>builder()
             .fields(uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description,
                     displayDescription, allowFutureDate, deleted, displayInList, mandatory,
-                    program.with(ObjectWithUid.uid), sortOrder,
+                    program.with(ObjectWithUid.uid), sortOrder, searchable,
                     trackedEntityAttribute.with(TrackedEntityAttribute.allFields)).build();
 
     @Nullable
@@ -108,6 +110,10 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     @JsonProperty(SORT_ORDER)
     public abstract Integer sortOrder();
 
+    @Nullable
+    @JsonProperty(SEARCHABLE)
+    public abstract Boolean searchable();
+
     @JsonCreator
     public static ProgramTrackedEntityAttribute create(
             @JsonProperty(UID) String uid,
@@ -126,13 +132,14 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
             @JsonProperty(DISPLAY_IN_LIST) Boolean displayInList,
             @JsonProperty(PROGRAM) Program program,
             @JsonProperty(SORT_ORDER) Integer sortOrder,
+            @JsonProperty(SEARCHABLE) Boolean searchable,
             @JsonProperty(DELETED) Boolean deleted
     ) {
         return new AutoValue_ProgramTrackedEntityAttribute(
                 uid, code, name, displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription,
                 mandatory, trackedEntityAttribute, allowFutureDate, displayInList, program,
-                sortOrder);
+                sortOrder, searchable);
     }
 
 }

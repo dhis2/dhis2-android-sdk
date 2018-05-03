@@ -46,6 +46,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -66,7 +67,8 @@ public class ProgramHandlerShould {
     private ProgramRuleHandler programRuleHandler;
 
     @Mock
-    private ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
+    private GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
+            programTrackedEntityAttributeHandler;
 
     @Mock
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
@@ -155,8 +157,8 @@ public class ProgramHandlerShould {
     @Test
     public void call_program_tracked_entity_attributes_handler() throws Exception {
         programHandler.handle(program, new ProgramModelBuilder());
-        verify(programTrackedEntityAttributeHandler)
-                .handleProgramTrackedEntityAttributes(programTrackedEntityAttributes);
+        verify(programTrackedEntityAttributeHandler).handleMany(anyListOf(ProgramTrackedEntityAttribute.class),
+                any(ProgramTrackedEntityAttributeModelBuilder.class));
     }
 
     @Test

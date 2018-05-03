@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEndPointCall;
 import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
@@ -142,6 +143,12 @@ public final class D2 {
     @NonNull
     public Call<Response> downloadTrackedEntityInstances(int teiLimitByOrgUnit) {
         return TrackerEntitiesDataCall.create(databaseAdapter, retrofit, teiLimitByOrgUnit);
+    }
+
+    @NonNull
+    public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid) {
+        return TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit)
+                .getValue(attributeUid, organisationUnitUid);
     }
 
     @NonNull

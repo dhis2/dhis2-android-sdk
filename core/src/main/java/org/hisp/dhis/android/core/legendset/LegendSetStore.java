@@ -37,6 +37,7 @@ public final class LegendSetStore {
     private LegendSetStore() {}
 
     public static IdentifiableObjectStore<LegendSetModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, LegendSetModel.TABLE, LegendSetModel.Columns.all());
+        return StoreFactory.identifiableStore(databaseAdapter, LegendSetModel.TABLE,
+                new LegendSetModel.Columns().all());
     }
 }

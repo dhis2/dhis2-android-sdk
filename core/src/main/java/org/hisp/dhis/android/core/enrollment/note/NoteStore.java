@@ -37,7 +37,6 @@ public final class NoteStore {
     private NoteStore() {}
 
     public static ObjectWithoutUidStore<NoteModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteModel.TABLE,
-                NoteModel.Columns.all(), NoteModel.Columns.whereUpdate());
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteModel.TABLE, new NoteModel.Columns());
     }
 }

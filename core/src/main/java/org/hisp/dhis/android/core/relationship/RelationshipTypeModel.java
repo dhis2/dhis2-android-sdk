@@ -38,13 +38,12 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class RelationshipTypeModel extends BaseIdentifiableObjectModel implements StatementBinder {
+public abstract class RelationshipTypeModel extends BaseIdentifiableObjectModel {
 
     public static final String TABLE = "RelationshipType";
 
@@ -52,11 +51,9 @@ public abstract class RelationshipTypeModel extends BaseIdentifiableObjectModel 
         public static final String B_IS_TO_A = "bIsToA";
         public static final String A_IS_TO_B = "AIsToB";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(),
-                    B_IS_TO_A, A_IS_TO_B);
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), B_IS_TO_A, A_IS_TO_B);
         }
     }
 

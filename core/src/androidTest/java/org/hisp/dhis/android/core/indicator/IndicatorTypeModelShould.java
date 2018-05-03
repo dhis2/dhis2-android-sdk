@@ -49,7 +49,7 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fill
 public class IndicatorTypeModelShould extends IdentifiableModelAbstractShould<IndicatorTypeModel> {
 
     public IndicatorTypeModelShould() {
-            super(Columns.all(), 8);
+            super(new Columns().all(), 8);
     }
 
     @Override

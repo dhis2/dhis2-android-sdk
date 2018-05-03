@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.GenericListEndpointCallImpl;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.io.IOException;
@@ -63,7 +63,7 @@ public final class TrackedEntityAttributeReservedValueEndpointCall extends
     public interface Factory {
         TrackedEntityAttributeReservedValueEndpointCall create(
                 GenericCallData data, String trackedEntityAttributeUid, Integer numberToReserve,
-                OrganisationUnit organisationUnit);
+                OrganisationUnitModel organisationUnit);
     }
 
     public static final TrackedEntityAttributeReservedValueEndpointCall.Factory FACTORY =
@@ -71,7 +71,7 @@ public final class TrackedEntityAttributeReservedValueEndpointCall extends
         @Override
         public TrackedEntityAttributeReservedValueEndpointCall create(
                 GenericCallData data, String trackedEntityAttributeUid, Integer numberToReserve,
-                OrganisationUnit organisationUnit) {
+                OrganisationUnitModel organisationUnit) {
             return new TrackedEntityAttributeReservedValueEndpointCall(data, data.retrofit().create(
                     TrackedEntityAttributeReservedValueService.class),
                     TrackedEntityAttributeReservedValueHandler.create(data.databaseAdapter()),

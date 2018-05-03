@@ -10,6 +10,6 @@ public final class CategoryOptionStore {
 
     public static IdentifiableObjectStore<CategoryOptionModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, CategoryOptionModel.TABLE,
-                CategoryOptionModel.Columns.all());
+                new CategoryOptionModel.Columns().all());
     }
 }

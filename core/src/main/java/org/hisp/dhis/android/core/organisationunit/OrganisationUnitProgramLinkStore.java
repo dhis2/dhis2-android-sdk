@@ -37,6 +37,6 @@ public final class OrganisationUnitProgramLinkStore {
 
     public static ObjectWithoutUidStore<OrganisationUnitProgramLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, OrganisationUnitProgramLinkModel.TABLE,
-                OrganisationUnitProgramLinkModel.Columns.all(), OrganisationUnitProgramLinkModel.Columns.all());
+                new OrganisationUnitProgramLinkModel.Columns());
     }
 }

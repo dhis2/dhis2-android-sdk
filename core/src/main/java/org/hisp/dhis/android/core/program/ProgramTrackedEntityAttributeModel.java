@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -36,6 +37,9 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObjectModel {
@@ -49,6 +53,13 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
         public static final String DISPLAY_IN_LIST = "displayInList";
         public static final String PROGRAM = "program";
         public static final String SORT_ORDER = "sortOrder";
+        public static final String SEARCHABLE = "searchable";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), MANDATORY, TRACKED_ENTITY_ATTRIBUTE, ALLOW_FUTURE_DATES,
+                    DISPLAY_IN_LIST, PROGRAM, SORT_ORDER, SEARCHABLE);
+        }
     }
 
     @NonNull
@@ -78,8 +89,28 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
     public abstract Boolean displayInList();
 
     @Nullable
+    @ColumnName(Columns.PROGRAM)
+    public abstract String program();
+
+    @Nullable
     @ColumnName(Columns.SORT_ORDER)
     public abstract Integer sortOrder();
+
+    @Nullable
+    @ColumnName(Columns.SEARCHABLE)
+    public abstract Boolean searchable();
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 11, mandatory());
+        sqLiteBind(sqLiteStatement, 12, trackedEntityAttribute());
+        sqLiteBind(sqLiteStatement, 13, allowFutureDates());
+        sqLiteBind(sqLiteStatement, 14, displayInList());
+        sqLiteBind(sqLiteStatement, 15, program());
+        sqLiteBind(sqLiteStatement, 16, sortOrder());
+        sqLiteBind(sqLiteStatement, 17, searchable());
+    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
@@ -92,7 +123,11 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
 
         public abstract Builder displayInList(@Nullable Boolean displayInList);
 
+        public abstract Builder program(@Nullable String program);
+
         public abstract Builder sortOrder(@Nullable Integer sortOrder);
+
+        public abstract Builder searchable(@Nullable Boolean searchable);
 
         abstract ProgramTrackedEntityAttributeModel build();
     }

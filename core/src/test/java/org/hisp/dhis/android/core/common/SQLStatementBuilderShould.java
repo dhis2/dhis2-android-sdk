@@ -47,7 +47,7 @@ public class SQLStatementBuilderShould {
                 "Test_Column_Name1",
                 "Test_Column_Name2"
         };
-        this.builder = new SQLStatementBuilder("Test_Table", columns, columns);
+        this.builder = new SQLStatementBuilder("Test_Table", columns, columns, columns, columns);
     }
 
     @Test
@@ -115,5 +115,26 @@ public class SQLStatementBuilderShould {
                         BaseNameableObjectModel.Columns.DESCRIPTION + " TEXT, " +
                         BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION + " TEXT, " +
                         "Test_Column_Name TEXT);");
+    }
+
+    @Test
+    public void generate_delete_where_statement() throws Exception {
+        assertThat(builder.deleteWhere()).isEqualTo(
+                "DELETE FROM Test_Table WHERE Test_Column_Name1=? AND Test_Column_Name2=?;"
+        );
+    }
+
+    @Test
+    public void generate_select_where_statement() throws Exception {
+        assertThat(builder.selectWhere()).isEqualTo(
+                "SELECT * FROM Test_Table WHERE Test_Column_Name1=? AND Test_Column_Name2=?"
+        );
+    }
+
+    @Test
+    public void generate_select_by_uid_statement() throws Exception {
+        assertThat(builder.selectByUid()).isEqualTo(
+                "SELECT * FROM Test_Table WHERE uid=?"
+        );
     }
 }

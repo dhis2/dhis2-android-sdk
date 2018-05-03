@@ -26,36 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 
-public class TrackedEntityAttributeReservedValueModelBuilder extends
-        ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
-
-    private final TrackedEntityAttributeReservedValueModel.Builder builder;
-
-    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit organisationUnit) {
-        this.builder = TrackedEntityAttributeReservedValueModel.builder()
-                .organisationUnit(organisationUnit.uid());
-    }
-
-    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnitModel organisationUnit) {
-        this.builder = TrackedEntityAttributeReservedValueModel.builder()
-                .organisationUnit(organisationUnit.uid());
-    }
+public class ProgramTrackedEntityAttributeModelBuilder extends
+        ModelBuilder<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> {
 
     @Override
-    public TrackedEntityAttributeReservedValueModel buildModel(TrackedEntityAttributeReservedValue reservedValue) {
-        return builder
-                .ownerObject(reservedValue.ownerObject())
-                .ownerUid(reservedValue.ownerUid())
-                .key(reservedValue.key())
-                .value(reservedValue.value())
-                .created(reservedValue.created())
-                .expiryDate(reservedValue.expiryDate())
+    public ProgramTrackedEntityAttributeModel buildModel(ProgramTrackedEntityAttribute programTrackedEntityAttribute) {
+        return ProgramTrackedEntityAttributeModel.builder()
+                .uid(programTrackedEntityAttribute.uid())
+                .code(programTrackedEntityAttribute.code())
+                .name(programTrackedEntityAttribute.name())
+                .displayName(programTrackedEntityAttribute.displayName())
+                .created(programTrackedEntityAttribute.created())
+                .lastUpdated(programTrackedEntityAttribute.lastUpdated())
+                .shortName(programTrackedEntityAttribute.shortName())
+                .displayShortName(programTrackedEntityAttribute.displayShortName())
+                .description(programTrackedEntityAttribute.description())
+                .displayDescription(programTrackedEntityAttribute.displayDescription())
+                .mandatory(programTrackedEntityAttribute.mandatory())
+                .trackedEntityAttribute(programTrackedEntityAttribute.trackedEntityAttribute().uid())
+                .allowFutureDates(programTrackedEntityAttribute.allowFutureDate())
+                .displayInList(programTrackedEntityAttribute.displayInList())
+                .program(programTrackedEntityAttribute.program().uid())
+                .sortOrder(programTrackedEntityAttribute.sortOrder())
+                .searchable(programTrackedEntityAttribute.searchable())
                 .build();
     }
 }

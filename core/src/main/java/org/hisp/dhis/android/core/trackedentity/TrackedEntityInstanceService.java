@@ -6,6 +6,7 @@ import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.trackedentity.search.SearchGrid;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -46,7 +47,7 @@ public interface TrackedEntityInstanceService {
             @Query(PAGE_SIZE) int pageSize);
 
     @GET(TRACKED_ENTITY_INSTANCES + "/query")
-    Call<Payload<TrackedEntityInstance>> query(
+    Call<SearchGrid> query(
             @Query(OU) String orgUnit,
             @Query(OU_MODE) String orgUnitMode,
             @Query(PROGRAM) String program,

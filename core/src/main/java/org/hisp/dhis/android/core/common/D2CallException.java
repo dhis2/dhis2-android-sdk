@@ -33,9 +33,6 @@ import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import retrofit2.Response;
-
 @AutoValue
 public abstract class D2CallException extends Exception {
 

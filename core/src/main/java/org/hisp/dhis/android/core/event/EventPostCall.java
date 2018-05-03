@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
@@ -16,15 +16,13 @@ import java.util.Map;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public final class EventPostCall implements Call<Response<WebResponse>> {
+public final class EventPostCall extends SyncCall<Response<WebResponse>> {
     // retrofit service
     private final EventService eventService;
 
     // adapter and stores
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
-
-    private boolean isExecuted;
 
     private EventPostCall(@NonNull EventService eventService,
                          @NonNull EventStore eventStore,
@@ -35,23 +33,8 @@ public final class EventPostCall implements Call<Response<WebResponse>> {
     }
 
     @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
-
-    @Override
     public Response<WebResponse> call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("EventPostCall is already executed");
-            }
-
-            isExecuted = true;
-
-        }
+        super.setExecuted();
 
         List<Event> eventsToPost = queryEventsToPost();
 

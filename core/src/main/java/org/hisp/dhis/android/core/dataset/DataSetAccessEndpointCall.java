@@ -29,15 +29,15 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.BaseEndpointCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import retrofit2.Response;
 
-public final class DataSetAccessEndpointCall extends BaseEndpointCall<DataSet> {
+public final class DataSetAccessEndpointCall extends SyncCall<Response<Payload<DataSet>>> {
     private final GenericCallData data;
     private final DataSetService dataSetService;
 
@@ -47,7 +47,8 @@ public final class DataSetAccessEndpointCall extends BaseEndpointCall<DataSet> {
     }
 
     @Override
-    protected Response<Payload<DataSet>> callBody() throws Exception {
+    public Response<Payload<DataSet>> call() throws Exception {
+        super.setExecuted();
         String lastUpdated = data.resourceHandler().getLastUpdated(ResourceModel.Type.DATA_SET);
         return dataSetService.getDataSetsForAccess(DataSet.uidAndAccessRead, DataSet.lastUpdated.gt(lastUpdated),
                 Boolean.FALSE).execute();

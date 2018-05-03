@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
@@ -40,7 +41,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
-public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>> {
+public class TrackedEntityInstancePostCall extends SyncCall<Response<WebResponse>> {
     // service
     private final TrackedEntityInstanceService trackedEntityInstanceService;
 
@@ -51,8 +52,6 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private final ObjectWithoutUidStore<RelationshipModel> relationshipStore;
-
-    private boolean isExecuted;
 
     TrackedEntityInstancePostCall(@NonNull TrackedEntityInstanceService trackedEntityInstanceService,
                                   @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
@@ -71,22 +70,8 @@ public class TrackedEntityInstancePostCall implements Call<Response<WebResponse>
     }
 
     @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
-    @Override
     public Response<WebResponse> call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Call is already executed");
-            }
-
-            isExecuted = true;
-
-        }
+        super.setExecuted();
 
         List<TrackedEntityInstance> trackedEntityInstancesToPost = queryDataToSync();
 

@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class SystemInfoCall extends SyncCall<SystemInfo> {
+public class SystemInfoCall extends SyncCall<Response<SystemInfo>> {
     private final DatabaseAdapter databaseAdapter;
     private final GenericHandler<SystemInfo, SystemInfoModel> systemInfoHandler;
     private final SystemInfoService systemInfoService;

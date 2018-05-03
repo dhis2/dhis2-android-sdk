@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -18,7 +19,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public final class CategoryComboEndpointCall implements Call<Response<Payload<CategoryCombo>>> {
+public final class CategoryComboEndpointCall extends SyncCall<Response<Payload<CategoryCombo>>> {
 
     private final CategoryComboQuery query;
     private final CategoryComboService categoryComboService;
@@ -27,7 +28,6 @@ public final class CategoryComboEndpointCall implements Call<Response<Payload<Ca
     private final ResourceHandler resourceHandler;
     private final DatabaseAdapter databaseAdapter;
     private final Date serverDate;
-    private boolean isExecuted;
 
     private CategoryComboEndpointCall(CategoryComboQuery query,
             CategoryComboService categoryComboService,
@@ -44,18 +44,9 @@ public final class CategoryComboEndpointCall implements Call<Response<Payload<Ca
         this.serverDate = new Date(serverDate.getTime());
     }
 
-
-    @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
     @Override
     public Response<Payload<CategoryCombo>> call() throws Exception {
-
-        validateIsNotTryingToExecuteAgain();
+        super.setExecuted();
 
         Response<Payload<CategoryCombo>> response = categoryComboService.getCategoryCombos(getFields(),
                 query.paging(),
@@ -82,15 +73,6 @@ public final class CategoryComboEndpointCall implements Call<Response<Payload<Ca
             transaction.setSuccessful();
         } finally {
             transaction.end();
-        }
-    }
-
-    private void validateIsNotTryingToExecuteAgain() {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Already executed");
-            }
-            isExecuted = true;
         }
     }
 

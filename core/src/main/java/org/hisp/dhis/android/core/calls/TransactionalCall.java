@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 
 import retrofit2.Response;
 
-public abstract class TransactionalCall extends SyncCall {
+public abstract class TransactionalCall extends SyncCall<Response> {
     protected final DatabaseAdapter databaseAdapter;
 
     protected TransactionalCall(DatabaseAdapter databaseAdapter) {

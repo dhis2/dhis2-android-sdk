@@ -20,7 +20,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public final class TeisEndPointCall extends SyncCall<Payload<TrackedEntityInstance>> {
+public final class TeisEndPointCall extends SyncCall<Response<Payload<TrackedEntityInstance>>> {
 
     private final GenericCallData genericCallData;
     private final TrackedEntityInstanceService trackedEntityInstanceService;

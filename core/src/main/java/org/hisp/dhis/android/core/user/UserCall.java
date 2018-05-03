@@ -52,7 +52,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public final class UserCall extends SyncCall<User> {
+public final class UserCall extends SyncCall<Response<User>> {
     // retrofit service
     private final UserService userService;
     // databaseAdapter and handlers

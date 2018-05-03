@@ -62,7 +62,7 @@ import retrofit2.Retrofit;
 
 @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ModifiedCyclomaticComplexity",
         "PMD.StdCyclomaticComplexity", "PMD.ExcessiveImports"})
-public class MetadataCall extends SyncCall {
+public class MetadataCall extends SyncCall<Response> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;

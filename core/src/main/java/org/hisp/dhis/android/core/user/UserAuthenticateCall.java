@@ -58,7 +58,7 @@ import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 
 // ToDo: ask about API changes
 // ToDo: performance tests? Try to feed in a user instance with thousands organisation units
-public final class UserAuthenticateCall extends SyncCall<User> {
+public final class UserAuthenticateCall extends SyncCall<Response<User>> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;

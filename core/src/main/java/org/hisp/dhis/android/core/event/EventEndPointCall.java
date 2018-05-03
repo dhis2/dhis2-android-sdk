@@ -17,7 +17,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public class EventEndPointCall extends SyncCall<Payload<Event>> {
+public class EventEndPointCall extends SyncCall<Response<Payload<Event>>> {
 
     private final GenericCallData genericCallData;
     private final EventService eventService;

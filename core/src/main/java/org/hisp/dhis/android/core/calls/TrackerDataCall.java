@@ -16,7 +16,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-public final class TrackerDataCall extends SyncCall {
+public final class TrackerDataCall extends SyncCall<Response> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;

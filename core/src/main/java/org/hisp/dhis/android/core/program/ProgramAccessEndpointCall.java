@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.BaseEndpointCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import retrofit2.Response;
 
-public final class ProgramAccessEndpointCall extends BaseEndpointCall<Program> {
+public final class ProgramAccessEndpointCall extends SyncCall<Response<Payload<Program>>> {
     private final GenericCallData data;
     private final ProgramService programService;
 
@@ -46,7 +46,8 @@ public final class ProgramAccessEndpointCall extends BaseEndpointCall<Program> {
     }
 
     @Override
-    protected Response<Payload<Program>> callBody() throws Exception {
+    public Response<Payload<Program>> call() throws Exception {
+        super.setExecuted();
         String lastUpdated = data.resourceHandler().getLastUpdated(ResourceModel.Type.PROGRAM);
         return programService.getProgramsForAccess(Program.uidAndAccessRead, Program.lastUpdated.gt(lastUpdated),
                 Boolean.FALSE).execute();

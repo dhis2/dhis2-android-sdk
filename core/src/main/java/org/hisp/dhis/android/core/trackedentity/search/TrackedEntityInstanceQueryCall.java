@@ -16,6 +16,7 @@ import java.util.List;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+@SuppressWarnings({"PMD.PreserveStackTrace"})
 public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedEntityInstance>> {
 
     private final TrackedEntityInstanceService service;

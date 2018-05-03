@@ -21,6 +21,7 @@ public interface TrackedEntityInstanceService {
     String OU = "ou";
     String OU_MODE = "ouMode";
     String FIELDS = "fields";
+    String QUERY = "query";
     String PAGING = "paging";
     String PAGE = "page";
     String PAGE_SIZE = "pageSize";
@@ -51,6 +52,8 @@ public interface TrackedEntityInstanceService {
             @Query(OU) String orgUnit,
             @Query(OU_MODE) String orgUnitMode,
             @Query(PROGRAM) String program,
-            @Query(PAGING) Boolean paging, @Query(PAGE) int page,
+            @Query(QUERY) String query,
+            @Query(PAGING) Boolean paging,
+            @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize);
 }

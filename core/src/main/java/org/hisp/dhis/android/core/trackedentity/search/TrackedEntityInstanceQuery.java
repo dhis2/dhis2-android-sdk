@@ -5,6 +5,8 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseQuery;
 import org.hisp.dhis.android.core.data.api.OuMode;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import io.reactivex.annotations.NonNull;
@@ -14,7 +16,7 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
 
 
     @NonNull
-    public abstract String orgUnit();
+    public abstract List<String> orgUnits();
 
     @Nullable
     public abstract OuMode orgUnitMode();
@@ -28,7 +30,7 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseQuery.Builder<Builder> {
-        public abstract Builder orgUnit(String orgUnit);
+        public abstract Builder orgUnits(List<String> orgUnits);
 
         public abstract Builder orgUnitMode(OuMode orgUnitMode);
 

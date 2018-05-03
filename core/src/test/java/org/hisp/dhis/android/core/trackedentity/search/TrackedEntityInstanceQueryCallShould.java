@@ -51,6 +51,9 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -76,13 +79,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     @Mock
     private List<String> filter;
 
-    private List<String> orgUnits;
-
-    private final String program = "program";
-    private final String queryStr = "queryStr";
-    private final Boolean paging = true;
-    private final Integer page = 2;
-    private final Integer pageSize = 33;
+    private TrackedEntityInstanceQuery query;
 
     // object to test
     private TrackedEntityInstanceQueryCall call;
@@ -91,14 +88,14 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
 
-        orgUnits = new ArrayList<>(2);
+        List<String> orgUnits = new ArrayList<>(2);
         orgUnits.add("ou1");
         orgUnits.add("ou2");
 
-        TrackedEntityInstanceQuery query = TrackedEntityInstanceQuery.builder().
-                orgUnits(orgUnits).orgUnitMode(OuMode.ACCESSIBLE).program(program)
-                .query(queryStr).attribute(attribute).filter(filter)
-                .paging(paging).page(page).pageSize(pageSize).build();
+        query = TrackedEntityInstanceQuery.builder().
+                orgUnits(orgUnits).orgUnitMode(OuMode.ACCESSIBLE).program("program")
+                .query("queryStr").attribute(attribute).filter(filter)
+                .paging(false).page(2).pageSize(33).build();
 
         when(service.query(anyString(), anyString(), anyString(), anyString(),
                 anyListOf(String.class), anyListOf(String.class), anyBoolean(), anyInt(), anyInt()))
@@ -119,5 +116,29 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     public void succeed_when_endpoint_calls_succeed() throws Exception {
         List<TrackedEntityInstance> teisResponse = call.call();
         assertThat(teisResponse).isEqualTo(teis);
+    }
+
+    @Test
+    public void call_mapper_with_search_grid() throws Exception {
+        call.call();
+        verify(mapper).transform(searchGrid);
+        verifyNoMoreInteractions(mapper);
+    }
+
+    @Test
+    public void call_service_with_query_parameters() throws Exception {
+        call.call();
+
+        verify(service).query(
+                eq(query.orgUnits().get(0) + ";" + query.orgUnits().get(1)),
+                eq(query.orgUnitMode().toString()),
+                eq(query.program()),
+                eq(query.query()),
+                eq(query.attribute()),
+                eq(query.filter()),
+                eq(query.paging()),
+                eq(query.page()),
+                eq(query.pageSize()));
+        verifyNoMoreInteractions(service);
     }
 }

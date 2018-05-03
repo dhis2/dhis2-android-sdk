@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
 import org.junit.Before;
@@ -37,15 +40,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,10 +49,13 @@ import static org.mockito.Mockito.when;
 public class ProgramTrackedEntityAttributeHandlerShould {
 
     @Mock
-    private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+    private IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> store;
 
     @Mock
     private TrackedEntityAttributeHandler trackedEntityAttributeHandler;
+
+    @Mock
+    private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
 
     @Mock
     private ProgramTrackedEntityAttribute programTrackedEntityAttribute;
@@ -68,135 +67,30 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     private TrackedEntityAttribute trackedEntityAttribute;
 
     // object to test
-    private ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
-
-    // list of program tracked entity attributes
-    private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
+    private GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> handler;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-
-        programTrackedEntityAttributeHandler = new ProgramTrackedEntityAttributeHandler(
-                programTrackedEntityAttributeStore, trackedEntityAttributeHandler
-        );
-
-        when(programTrackedEntityAttribute.uid()).thenReturn("test_program_tracked_entity_attribute_uid");
-        when(program.uid()).thenReturn("test_program_uid");
-        when(trackedEntityAttribute.uid()).thenReturn("test_tracked_entity_attribute_uid");
-
-        when(programTrackedEntityAttribute.program()).thenReturn(program);
-        when(programTrackedEntityAttribute.trackedEntityAttribute()).thenReturn(trackedEntityAttribute);
-
+        handler = new ProgramTrackedEntityAttributeHandler(store, trackedEntityAttributeHandler);
         programTrackedEntityAttributes = new ArrayList<>();
         programTrackedEntityAttributes.add(programTrackedEntityAttribute);
+
+        when(programTrackedEntityAttribute.trackedEntityAttribute()).thenReturn(trackedEntityAttribute);
+        when(trackedEntityAttribute.uid()).thenReturn("tracked_entity_attribute_uid");
+        when(programTrackedEntityAttribute.program()).thenReturn(program);
+        when(program.uid()).thenReturn("program_uid");
     }
 
     @Test
-    public void do_nothing_when_passing_null_argument() throws Exception {
-        programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(null);
-
-        // verify that store is never called
-        verify(programTrackedEntityAttributeStore, never()).delete(anyString());
-        verify(programTrackedEntityAttributeStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(), anyString(), anyInt(), anyString());
-        verify(programTrackedEntityAttributeStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(), anyString(), anyInt());
-
-        // verify that tracked entity attribute handler is never called
-        verify(trackedEntityAttributeHandler, never()).handleTrackedEntityAttribute(any(TrackedEntityAttribute.class));
-
+    public void extend_identifiable_handler_impl() {
+        IdentifiableHandlerImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> genericHandler =
+                new ProgramTrackedEntityAttributeHandler(null, null);
     }
 
     @Test
-    public void invoke_delete_when_handle_program_tracked_entity_attribute_set_as_deleted() throws Exception {
-        when(programTrackedEntityAttribute.deleted()).thenReturn(Boolean.TRUE);
-
-        programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(programTrackedEntityAttributes);
-
-        // verify that delete is called once
-        verify(programTrackedEntityAttributeStore, times(1)).delete(programTrackedEntityAttribute.uid());
-
-        // verify that update and insert is never called
-        verify(programTrackedEntityAttributeStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(), anyString(), anyInt(), anyString());
-
-        verify(programTrackedEntityAttributeStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(), anyString(), anyInt());
-
-        // verify that tracked entity attribute handler is called once
-        verify(trackedEntityAttributeHandler, times(1)).handleTrackedEntityAttribute(
-                programTrackedEntityAttribute.trackedEntityAttribute()
-        );
-
-    }
-
-    @Test
-    public void invoke_only_update_when_handle_program_stage_section_inserted() throws Exception {
-        when(programTrackedEntityAttributeStore.update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(),
-                anyString(), anyInt(), anyString())
-        ).thenReturn(1);
-
-        programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(programTrackedEntityAttributes);
-
-        // verify that update is called once
-        verify(programTrackedEntityAttributeStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(), anyString(), anyInt(), anyString());
-
-        // verify that insert and delete is never called
-        verify(programTrackedEntityAttributeStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(), anyString(), anyInt());
-
-        verify(programTrackedEntityAttributeStore, never()).delete(anyString());
-
-        // verify that tracked entity attribute handler is called once
-        verify(trackedEntityAttributeHandler, times(1)).handleTrackedEntityAttribute(
-                programTrackedEntityAttribute.trackedEntityAttribute()
-        );
-
-    }
-
-    @Test
-    public void invoke_update_when_handle_program_tracked_entity_attribute_mark_as_inserted() throws Exception {
-        when(programTrackedEntityAttributeStore.update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(),
-                anyString(), anyInt(), anyString())
-        ).thenReturn(0);
-
-        programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(programTrackedEntityAttributes);
-
-        // verify that insert is called once
-        verify(programTrackedEntityAttributeStore, times(1)).insert(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(),
-                anyString(), anyInt());
-
-        // verify that update is called once since we try to update before we insert
-        verify(programTrackedEntityAttributeStore, times(1)).update(
-                anyString(), anyString(), anyString(), anyString(), any(Date.class), any(Date.class),
-                anyString(), anyString(), anyString(), anyString(), anyBoolean(),
-                anyString(), anyBoolean(), anyBoolean(),
-                anyString(), anyInt(), anyString());
-
-        // verify that delete is never called
-        verify(programTrackedEntityAttributeStore, never()).delete(anyString());
-
-        // verify that tracked entity attribute handler is called once
-        verify(trackedEntityAttributeHandler, times(1)).handleTrackedEntityAttribute(
-                programTrackedEntityAttribute.trackedEntityAttribute()
-        );
-
+    public void call_tracked_entity_attribute_handler() throws Exception {
+        handler.handleMany(programTrackedEntityAttributes, new ProgramTrackedEntityAttributeModelBuilder());
+        verify(trackedEntityAttributeHandler).handleTrackedEntityAttribute(trackedEntityAttribute);
     }
 }

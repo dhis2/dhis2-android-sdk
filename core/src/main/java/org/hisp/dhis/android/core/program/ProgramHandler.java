@@ -41,14 +41,16 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
     private final ProgramRuleVariableHandler programRuleVariableHandler;
     private final ProgramIndicatorHandler programIndicatorHandler;
     private final ProgramRuleHandler programRuleHandler;
-    private final ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
+    private final GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
+            programTrackedEntityAttributeHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     ProgramHandler(IdentifiableObjectStore<ProgramModel> programStore,
                    ProgramRuleVariableHandler programRuleVariableHandler,
                    ProgramIndicatorHandler programIndicatorHandler,
                    ProgramRuleHandler programRuleHandler,
-                   ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler,
+                   GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
+                           programTrackedEntityAttributeHandler,
                    GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
@@ -71,8 +73,8 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
 
     @Override
     protected void afterObjectPersisted(Program program) {
-        programTrackedEntityAttributeHandler.handleProgramTrackedEntityAttributes(
-                program.programTrackedEntityAttributes());
+        programTrackedEntityAttributeHandler.handleMany(program.programTrackedEntityAttributes(),
+                new ProgramTrackedEntityAttributeModelBuilder());
         programIndicatorHandler.handleProgramIndicator(null, program.programIndicators());
         programRuleHandler.handleProgramRules(program.programRules());
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());

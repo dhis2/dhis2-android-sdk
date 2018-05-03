@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
@@ -37,8 +38,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
+import org.mockito.stubbing.OngoingStubbing;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +59,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings("unchecked")
 @RunWith(JUnit4.class)
 public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     @Mock
@@ -97,9 +101,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 .query("queryStr").attribute(attribute).filter(filter)
                 .paging(false).page(2).pageSize(33).build();
 
-        when(service.query(anyString(), anyString(), anyString(), anyString(),
-                anyListOf(String.class), anyListOf(String.class), anyBoolean(), anyInt(), anyInt()))
-        .thenReturn(searchGridCall);
+        whenServiceQuery().thenReturn(searchGridCall);
         when(searchGridCall.execute()).thenReturn(Response.success(searchGrid));
         when(mapper.transform(any(SearchGrid.class))).thenReturn(teis);
 
@@ -140,5 +142,28 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 eq(query.page()),
                 eq(query.pageSize()));
         verifyNoMoreInteractions(service);
+    }
+
+    @Test(expected = D2CallException.class)
+    public void throw_D2CallException_when_service_throws_exception() throws Exception {
+        whenServiceQuery().thenThrow(IOException.class);
+        call.call();
+    }
+
+    @Test(expected = D2CallException.class)
+    public void throw_D2CallException_when_service_call_returns_failed_response() throws Exception {
+        when(searchGridCall.execute()).thenReturn(errorResponse);
+        call.call();
+    }
+
+    @Test(expected = D2CallException.class)
+    public void throw_D2CallException_when_mapper_throws_exception() throws Exception {
+        when(mapper.transform(searchGrid)).thenThrow(ParseException.class);
+        call.call();
+    }
+
+    private OngoingStubbing<Call<SearchGrid>> whenServiceQuery() {
+        return when(service.query(anyString(), anyString(), anyString(), anyString(),
+                anyListOf(String.class), anyListOf(String.class), anyBoolean(), anyInt(), anyInt()));
     }
 }

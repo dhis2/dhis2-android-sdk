@@ -7,9 +7,8 @@ import org.hisp.dhis.android.core.data.api.OuMode;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
-import io.reactivex.annotations.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
 @AutoValue
 public abstract class TrackedEntityInstanceQuery extends BaseQuery {

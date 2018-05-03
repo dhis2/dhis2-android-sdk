@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -36,9 +39,16 @@ import retrofit2.Response;
 @AutoValue
 public abstract class D2CallException extends Exception {
 
+    @Nullable
     public abstract String errorCode();
+
+    @Nullable
     public abstract String errorDescription();
+
+    @NonNull
     public abstract Boolean isHttpError();
+
+    @Nullable
     public abstract Integer httpErrorCode();
 
     public static Builder builder() {

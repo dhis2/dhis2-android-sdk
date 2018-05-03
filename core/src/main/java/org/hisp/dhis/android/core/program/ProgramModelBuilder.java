@@ -70,6 +70,7 @@ public class ProgramModelBuilder extends ModelBuilder<Program, ProgramModel> {
                 .completeEventsExpiryDays(program.completeEventsExpiryDays())
                 .expiryPeriodType(program.expiryPeriodType())
                 .minAttributesRequiredToSearch(program.minAttributesRequiredToSearch())
+                .maxTeiCountToReturn(program.maxTeiCountToReturn())
                 .build();
     }
 }

@@ -77,6 +77,7 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
         public final static String COMPLETE_EVENTS_EXPIRY_DAYS = "completeEventsExpiryDays";
         public final static String EXPIRY_PERIOD_TYPE = "expiryPeriodType";
         public final static String MIN_ATTRIBUTES_REQUIRED_TO_SEARCH = "minAttributesRequiredToSearch";
+        public final static String MAX_TEI_COUNT_TO_RETURN = "maxTeiCountToReturn";
 
         @Override
         public String[] all() {
@@ -86,7 +87,7 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
                     SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES, USE_FIRST_STAGE_DURING_REGISTRATION,
                     DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, RELATED_PROGRAM,
                     TRACKED_ENTITY_TYPE, CATEGORY_COMBO, ACCESS_DATA_WRITE, EXPIRY_DAYS, COMPLETE_EVENTS_EXPIRY_DAYS,
-                    EXPIRY_PERIOD_TYPE, MIN_ATTRIBUTES_REQUIRED_TO_SEARCH);
+                    EXPIRY_PERIOD_TYPE, MIN_ATTRIBUTES_REQUIRED_TO_SEARCH, MAX_TEI_COUNT_TO_RETURN);
         }
     }
 
@@ -200,6 +201,10 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
     @ColumnName(Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH)
     public abstract Integer minAttributesRequiredToSearch();
 
+    @Nullable
+    @ColumnName(Columns.MAX_TEI_COUNT_TO_RETURN)
+    public abstract Integer maxTeiCountToReturn();
+
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         super.bindToStatement(sqLiteStatement);
@@ -228,6 +233,7 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
         sqLiteBind(sqLiteStatement, 33, completeEventsExpiryDays());
         sqLiteBind(sqLiteStatement, 34, expiryPeriodType());
         sqLiteBind(sqLiteStatement, 35, minAttributesRequiredToSearch());
+        sqLiteBind(sqLiteStatement, 36, maxTeiCountToReturn());
     }
 
     @AutoValue.Builder
@@ -282,6 +288,8 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
         public abstract Builder expiryPeriodType(@Nullable PeriodType expiryPeriodType);
         
         public abstract Builder minAttributesRequiredToSearch(@Nullable Integer minAttributesRequiredToSearch);
+
+        public abstract Builder maxTeiCountToReturn(@Nullable Integer maxTeiCountToReturn);
 
         public abstract ProgramModel build();
     }

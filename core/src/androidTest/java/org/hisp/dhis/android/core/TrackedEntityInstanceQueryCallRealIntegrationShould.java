@@ -65,6 +65,19 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         assertThat(queryResponse).isNotEmpty();
     }
 
+    //@Test
+    public void query_tracked_entity_instances_two_attributes() throws Exception {
+        login();
+
+        List<String> attributeList = new ArrayList<>(2);
+        attributeList.add("w75KJ2mc4zz:like:Filona");
+        attributeList.add("zDhUuAYrxNC:like:Ryder");
+
+        TrackedEntityInstanceQuery query = queryBuilder.attribute(attributeList).build();
+        List<TrackedEntityInstance> queryResponse = d2.queryTrackedEntityInstances(query).call();
+        assertThat(queryResponse).isNotEmpty();
+    }
+
     private void login() throws Exception {
         d2.logout().call();
         Response<User> loginResponse = d2.logIn("android", "Android123").call();

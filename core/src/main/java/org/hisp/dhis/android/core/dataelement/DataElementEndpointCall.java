@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.io.IOException;
@@ -54,8 +55,9 @@ public final class DataElementEndpointCall extends GenericEndpointCallImpl<DataE
 
     @Override
     protected Call<Payload<DataElement>> getCall(UidsQuery query, String lastUpdated) throws IOException {
+        String prefix = "dataSetElements.dataSet.";
         return dataElementService.getDataElements(DataElement.allFields, DataElement.lastUpdated.gt(lastUpdated),
-                DataElement.uid.in(query.uids()), Boolean.FALSE);
+                prefix + DataSet.uid.in(query.uids()).generateString(), Boolean.FALSE);
     }
 
     public static final UidsCallFactory<DataElement> FACTORY = new UidsCallFactory<DataElement>() {

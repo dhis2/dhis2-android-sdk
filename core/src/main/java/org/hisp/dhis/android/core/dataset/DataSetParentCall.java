@@ -91,11 +91,11 @@ public class DataSetParentCall extends TransactionalCall {
         Call<Response<Payload<DataSet>>> dataSetEndpointCall = dataSetCallFactory.create(genericCallData, dataSetUids);
         Response<Payload<DataSet>> dataSetResponse = dataSetEndpointCall.call();
 
-        List<DataSet> dataSets = dataSetResponse.body().items();
         Call<Response<Payload<DataElement>>> dataElementEndpointCall =
-                dataElementCallFactory.create(genericCallData, DataSetParentUidsHelper.getDataElementUids(dataSets));
+                dataElementCallFactory.create(genericCallData, dataSetUids);
         Response<Payload<DataElement>> dataElementResponse = dataElementEndpointCall.call();
 
+        List<DataSet> dataSets = dataSetResponse.body().items();
         Call<Response<Payload<Indicator>>> indicatorEndpointCall
                 = indicatorCallFactory.create(genericCallData, DataSetParentUidsHelper.getIndicatorUids(dataSets));
         Response<Payload<Indicator>> indicatorResponse = indicatorEndpointCall.call();

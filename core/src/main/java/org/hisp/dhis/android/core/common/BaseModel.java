@@ -29,20 +29,34 @@
 package org.hisp.dhis.android.core.common;
 
 import android.content.ContentValues;
+import android.database.sqlite.SQLiteStatement;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
-public abstract class BaseModel implements Model {
+@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+public abstract class BaseModel implements Model, WhereStatementBinder {
 
     @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
     public abstract static class Columns {
         public static final String ID = BaseColumns._ID;
 
-        public static String[] all() {
+        public String[] all() {
             return new String[] {};
+        }
+
+        public String[] whereUpdate() {
+            return new String[] {};
+        }
+
+        public String[] whereDelete() {
+            return whereUpdate();
+        }
+
+        public String[] whereSelect() {
+            return whereUpdate();
         }
     }
 
@@ -56,5 +70,21 @@ public abstract class BaseModel implements Model {
 
     public static abstract class Builder<T extends Builder> {
         public abstract T id(Long id);
+    }
+
+    // TODO Delete method when all our old models adopt Generic architecture
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        // Intentional empty method.
+    }
+
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        // Intentional empty method.
+    }
+
+    @Override
+    public void bindToDeleteWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        // Intentional empty method.
     }
 }

@@ -48,7 +48,7 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fill
 public class LegendSetModelShould extends IdentifiableModelAbstractShould<LegendSetModel> {
 
     public LegendSetModelShould() {
-            super(Columns.all(), 7);
+            super(new Columns().all(), 7);
     }
 
     @Override

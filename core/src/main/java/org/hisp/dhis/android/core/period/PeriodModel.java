@@ -39,7 +39,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -49,7 +48,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class PeriodModel extends BaseModel implements UpdateWhereStatementBinder {
+public abstract class PeriodModel extends BaseModel {
 
     public static final String TABLE = "Period";
 
@@ -59,14 +58,14 @@ public abstract class PeriodModel extends BaseModel implements UpdateWhereStatem
         public static final String START_DATE = "startDate";
         public static final String END_DATE = "endDate";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(),
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
                     PERIOD_ID, PERIOD_TYPE, START_DATE, END_DATE);
         }
 
-        static String[] whereUpdate() {
+        @Override
+        public String[] whereUpdate() {
             return new String[]{PERIOD_ID};
         }
     }

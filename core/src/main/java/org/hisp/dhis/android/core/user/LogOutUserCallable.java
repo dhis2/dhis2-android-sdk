@@ -74,6 +74,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.settings.SystemSettingStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
@@ -165,7 +166,8 @@ public class LogOutUserCallable implements Callable<Void> {
                 LegendSetStore.create(databaseAdapter),
 
                 ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
-                SystemSettingStore.create(databaseAdapter)
+                SystemSettingStore.create(databaseAdapter),
+                TrackedEntityAttributeReservedValueStore.create(databaseAdapter)
         );
 
         return new LogOutUserCallable(

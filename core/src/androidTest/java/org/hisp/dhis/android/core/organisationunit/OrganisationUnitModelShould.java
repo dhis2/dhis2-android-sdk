@@ -69,7 +69,7 @@ public class OrganisationUnitModelShould {
     @Test
     public void create_model_when_created_from_database_cursor() {
 
-        String[] columnsWithId = Utils.appendInNewArray(OrganisationUnitModel.Columns.all(),
+        String[] columnsWithId = Utils.appendInNewArray(new OrganisationUnitModel.Columns().all(),
                 OrganisationUnitModel.Columns.ID);
         MatrixCursor cursor = new MatrixCursor(columnsWithId);
         cursor.addRow(new Object[]{

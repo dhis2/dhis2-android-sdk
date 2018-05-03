@@ -38,6 +38,6 @@ public final class LegendStore {
 
     public static IdentifiableObjectStore<LegendModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, LegendModel.TABLE,
-                LegendModel.Columns.all());
+                new LegendModel.Columns().all());
     }
 }

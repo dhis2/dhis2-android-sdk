@@ -53,7 +53,7 @@ public class PeriodModelShould {
         String endDateStr = "2018-01-07T23:59:59.999";
         Date endDate = BaseIdentifiableObject.DATE_FORMAT.parse(endDateStr);
 
-        MatrixCursor cursor = new MatrixCursor(PeriodModel.Columns.all());
+        MatrixCursor cursor = new MatrixCursor(new PeriodModel.Columns().all());
         cursor.addRow(new Object[]{
                 periodId,
                 periodType,

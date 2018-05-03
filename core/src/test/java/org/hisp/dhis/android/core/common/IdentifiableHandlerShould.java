@@ -48,7 +48,7 @@ public class IdentifiableHandlerShould {
         void call(A a);
     }
     
-    abstract class NameableMockModelInterface extends BaseIdentifiableObjectModel implements StatementBinder {
+    abstract class NameableMockModelInterface extends BaseIdentifiableObjectModel {
     }
 
     @Mock

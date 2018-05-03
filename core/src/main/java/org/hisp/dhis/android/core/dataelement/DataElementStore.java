@@ -38,6 +38,6 @@ public final class DataElementStore {
 
     public static IdentifiableObjectStore<DataElementModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter,
-                DataElementModel.TABLE, DataElementModel.Columns.all());
+                DataElementModel.TABLE, new DataElementModel.Columns().all());
     }
 }

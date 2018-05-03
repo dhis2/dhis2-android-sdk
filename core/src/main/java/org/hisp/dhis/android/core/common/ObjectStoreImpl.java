@@ -39,7 +39,7 @@ import java.util.Set;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class ObjectStoreImpl<M extends Model & StatementBinder> implements ObjectStore<M> {
+public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
     protected final DatabaseAdapter databaseAdapter;
     protected final SQLiteStatement insertStatement;
     protected final SQLStatementBuilder builder;
@@ -81,7 +81,7 @@ public class ObjectStoreImpl<M extends Model & StatementBinder> implements Objec
         return mapObjectsFromCursor(cursor, modelFactory);
     }
 
-    private Set<M> mapObjectsFromCursor(Cursor cursor, CursorModelFactory<M> modelFactory) {
+    Set<M> mapObjectsFromCursor(Cursor cursor, CursorModelFactory<M> modelFactory) {
         Set<M> objects = new HashSet<>(cursor.getCount());
 
         try {

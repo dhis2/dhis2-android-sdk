@@ -36,24 +36,26 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class OrganisationUnitProgramLinkModel extends BaseModel implements UpdateWhereStatementBinder {
+public abstract class OrganisationUnitProgramLinkModel extends BaseModel {
     public static final String TABLE = "OrganisationUnitProgramLink";
 
     public static class Columns extends BaseModel.Columns {
         public static final String PROGRAM = "program";
         public static final String ORGANISATION_UNIT = "organisationUnit";
 
-        private Columns() {}
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), PROGRAM, ORGANISATION_UNIT);
+        }
 
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(),
-                    PROGRAM, ORGANISATION_UNIT);
+        @Override
+        public String[] whereUpdate() {
+            return all();
         }
     }
 

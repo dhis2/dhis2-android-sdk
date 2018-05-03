@@ -39,7 +39,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbFormTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -49,7 +48,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({"PMD.ExcessivePublicCount"})
 @AutoValue
-public abstract class ProgramStageModel extends BaseIdentifiableObjectModel implements StatementBinder {
+public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
 
     public static final String TABLE = "ProgramStage";
 
@@ -75,10 +74,9 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel impl
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
         public static final String REMIND_COMPLETED = "remindCompleted";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(),
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
                     EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT, VALID_COMPLETE_ONLY,
                     REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT, REPEATABLE, CAPTURE_COORDINATES,
                     FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX, GENERATED_BY_ENROLMENT_DATE,

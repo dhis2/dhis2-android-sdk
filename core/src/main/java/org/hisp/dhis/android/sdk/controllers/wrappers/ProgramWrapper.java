@@ -121,7 +121,7 @@ public class ProgramWrapper {
             for (ProgramStageDataElement programStageDataElement:
                     programStage.getProgramStageDataElements()) {
                 for (DataElement dataElement:programStageSection.getDataElements()){
-                    if (dataElement.getUid().equals(programStageDataElement.getDataElement().getUid())){
+                    if (programStageDataElement.getDataElement()!=null && dataElement.getUid().equals(programStageDataElement.getDataElement().getUid())){
                         programStageDataElements.add(programStageDataElement);
                     }
                 }

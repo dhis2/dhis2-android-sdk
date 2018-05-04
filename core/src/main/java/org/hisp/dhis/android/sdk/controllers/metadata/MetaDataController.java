@@ -914,10 +914,20 @@ public final class MetaDataController extends ResourceController {
             if (trackedEntityAttribute.isGenerated()) {
                 long numberOfGeneratedTrackedEntityAttributesToFetch = shouldFetchGeneratedTrackedEntityAttributeValues(trackedEntityAttribute, serverDateTime);
                 if (numberOfGeneratedTrackedEntityAttributesToFetch > 0) {
-                    List<TrackedEntityAttributeGeneratedValue> trackedEntityAttributeGeneratedValues =
-                            dhisApi.getTrackedEntityAttributeGeneratedValues(trackedEntityAttribute.getUid(), numberOfGeneratedTrackedEntityAttributesToFetch); // Downloading x generated IDs per trackedEntityAttribute
+                    try {
+                        List<TrackedEntityAttributeGeneratedValue>
+                                trackedEntityAttributeGeneratedValues =
+                                dhisApi.getTrackedEntityAttributeGeneratedValues(
+                                        trackedEntityAttribute.getUid(),
+                                        numberOfGeneratedTrackedEntityAttributesToFetch); // Downloading x generated IDs per trackedEntityAttribute
 
-                    saveBaseValueDataFromServer(ResourceType.TRACKEDENTITYATTRIBUTEGENERATEDVALUES, "", trackedEntityAttributeGeneratedValues, getTrackedEntityAttributeGeneratedValues(), serverDateTime, true);
+                        saveBaseValueDataFromServer(
+                                ResourceType.TRACKEDENTITYATTRIBUTEGENERATEDVALUES, "",
+                                trackedEntityAttributeGeneratedValues,
+                                getTrackedEntityAttributeGeneratedValues(), serverDateTime, true);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }
         }

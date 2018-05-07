@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -46,13 +47,12 @@ import retrofit2.Response;
 
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
 
-public class OrganisationUnitCall implements Call<Response<Payload<OrganisationUnit>>> {
+public class OrganisationUnitCall extends SyncCall<Response<Payload<OrganisationUnit>>> {
 
     private final User user;
     private final OrganisationUnitService organisationUnitService;
     private final GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler;
     private final GenericCallData genericCallData;
-    private boolean isExecuted;
 
     OrganisationUnitCall(@NonNull User user,
                          @NonNull OrganisationUnitService organisationUnitService,
@@ -66,20 +66,8 @@ public class OrganisationUnitCall implements Call<Response<Payload<OrganisationU
     }
 
     @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
-    @Override
     public Response<Payload<OrganisationUnit>> call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalArgumentException("AlreadyExecuted");
-            }
-            isExecuted = true;
-        }
+        super.setExecuted();
         Response<Payload<OrganisationUnit>> response = null;
         Response<Payload<OrganisationUnit>> totalResponse = null;
 

@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.calls.Call;
 
-import retrofit2.Response;
-
-public abstract class SyncCall<C> implements Call<Response<C>> {
+public abstract class SyncCall<C> implements Call<C> {
     protected boolean isExecuted;
 
     @Override

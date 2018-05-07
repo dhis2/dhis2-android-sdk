@@ -52,9 +52,9 @@ public abstract class BaseIdentifiableObjectModel extends BaseModel implements I
         public static final String CREATED = "created";
         public static final String LAST_UPDATED = "lastUpdated";
 
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(), UID, CODE, NAME, DISPLAY_NAME,
-                    CREATED, LAST_UPDATED);
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED);
         }
     }
 
@@ -98,6 +98,7 @@ public abstract class BaseIdentifiableObjectModel extends BaseModel implements I
         return BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated());
     }
 
+    @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         sqLiteBind(sqLiteStatement, 1, uid());
         sqLiteBind(sqLiteStatement, 2, code());

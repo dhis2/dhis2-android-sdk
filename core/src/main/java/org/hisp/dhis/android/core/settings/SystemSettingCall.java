@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 
 import retrofit2.Response;
 
-public final class SystemSettingCall extends SyncCall<SystemSetting> {
+public final class SystemSettingCall extends SyncCall<Response<SystemSetting>> {
     private final GenericCallData data;
     private final SystemSettingHandler handler;
     private final SystemSettingService service;

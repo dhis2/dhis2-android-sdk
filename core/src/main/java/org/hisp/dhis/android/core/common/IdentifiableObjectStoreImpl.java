@@ -39,7 +39,7 @@ import java.util.Set;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class IdentifiableObjectStoreImpl<M extends BaseIdentifiableObjectModel & StatementBinder>
+public class IdentifiableObjectStoreImpl<M extends BaseIdentifiableObjectModel>
         extends ObjectStoreImpl<M> implements IdentifiableObjectStore<M> {
 
     private final SQLStatementWrapper statements;
@@ -102,6 +102,26 @@ public class IdentifiableObjectStoreImpl<M extends BaseIdentifiableObjectModel &
             cursor.close();
         }
         return uids;
+    }
+
+    @Override
+    public M selectByUid(String uid, CursorModelFactory<M> modelFactory) throws RuntimeException {
+        Cursor cursor = databaseAdapter.query(builder.selectByUid(), uid);
+        return mapObjectFromCursor(cursor, modelFactory);
+    }
+
+    private M mapObjectFromCursor(Cursor cursor, CursorModelFactory<M> modelFactory) {
+        M object = null;
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                object = modelFactory.fromCursor(cursor);
+            }
+        } finally {
+            cursor.close();
+        }
+        return object;
     }
 }
 

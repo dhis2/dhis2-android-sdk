@@ -100,7 +100,6 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
         TrackedEntityInstance syncedTrackedEntityInstance =
                 givenASyncedTrackedEntityInstanceInDatabase();
 
-        dhis2MockServer.enqueueMockResponse("system_info.json");
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
 
         Response response = d2.syncTrackerData().call();
@@ -118,7 +117,6 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
         List<TrackedEntityInstance> trackedEntityInstances =
                 givenASyncedTrackedEntityInstancesInDatabase();
 
-        dhis2MockServer.enqueueMockResponse("system_info.json");
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance_2.json");
 
@@ -144,7 +142,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
         assertThat(response.isSuccessful(), is(true));
         assertThat(syncedInDatabase.size(), is(syncedExpected.size()));
-        assertThat(lastUpdated, is(notNullValue()));
+        assertThat(lastUpdated, is(nullValue()));
         assertThat(toPostInDatabase.size(), is(toPostExpected.size()));
 
         for (TrackedEntityInstance trackedEntityInstance : syncedExpected) {

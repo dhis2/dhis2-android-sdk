@@ -36,7 +36,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public abstract class AbstractEndpointCall<P, M extends Model, Q extends BaseQuery, C> extends SyncCall<C> {
+public abstract class AbstractEndpointCall<P, M extends Model, Q extends BaseQuery, C> extends SyncCall<Response<C>> {
     private final GenericCallData data;
     private final GenericHandler<P, M> handler;
 

@@ -27,12 +27,14 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class UserHandler {
     private final UserStore userStore;
 
-    public UserHandler(UserStore userStore) {
+    UserHandler(UserStore userStore) {
         this.userStore = userStore;
     }
 
@@ -55,12 +57,16 @@ public class UserHandler {
                     user.email(), user.phoneNumber(), user.nationality(), user.uid());
 
             if (updatedRow <= 0) {
-                userStore.insert(user.uid(), user.code(), user.name(), user.displayName(), user.created(),
+                        userStore.insert(user.uid(), user.code(), user.name(), user.displayName(), user.created(),
                         user.lastUpdated(), user.birthday(), user.education(),
                         user.gender(), user.jobTitle(), user.surname(), user.firstName(),
                         user.introduction(), user.employer(), user.interests(), user.languages(),
                         user.email(), user.phoneNumber(), user.nationality());
             }
         }
+    }
+
+    static UserHandler create(DatabaseAdapter databaseAdapter) {
+        return new UserHandler(new UserStoreImpl(databaseAdapter));
     }
 }

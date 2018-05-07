@@ -41,10 +41,10 @@ import org.hisp.dhis.android.core.utils.Utils;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class ValueTypeDeviceRenderingModel extends BaseModel implements UpdateWhereStatementBinder {
+public abstract class ValueTypeDeviceRenderingModel extends BaseModel {
     public static final String TABLE = "ValueTypeDeviceRendering";
 
-    public abstract static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
         public static final String UID = BaseIdentifiableObjectModel.Columns.UID;
         public static final String OBJECT_TABLE = "objectTable";
         public static final String DEVICE_TYPE = "deviceType";
@@ -54,12 +54,14 @@ public abstract class ValueTypeDeviceRenderingModel extends BaseModel implements
         public static final String STEP = "step";
         public static final String DECIMAL_POINTS = "decimalPoints";
 
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(),
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
                     UID, OBJECT_TABLE, DEVICE_TYPE, TYPE, MIN, MAX, STEP, DECIMAL_POINTS);
         }
 
-        static String[] whereUpdate() {
+        @Override
+        public String[] whereUpdate() {
             return new String[]{UID, DEVICE_TYPE};
         }
     }

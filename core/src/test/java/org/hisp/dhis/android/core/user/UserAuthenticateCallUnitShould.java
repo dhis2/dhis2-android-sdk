@@ -29,15 +29,17 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.common.BlockCallFactory;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.SqLiteTransaction;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModelBuilder;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +49,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -77,19 +78,13 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(JUnit4.class)
-public class UserAuthenticateCallUnitShould {
+public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Mock
     private UserService userService;
 
     @Mock
-    private DatabaseAdapter databaseAdapter;
-
-    @Mock
-    private SqLiteTransaction sqLiteTransaction;
-
-    @Mock
-    private UserStore userStore;
+    private UserHandler userHandler;
 
     @Mock
     private UserCredentialsHandler userCredentialsHandler;
@@ -122,6 +117,9 @@ public class UserAuthenticateCallUnitShould {
     private User user;
 
     @Mock
+    private SystemInfo systemInfo;
+
+    @Mock
     private Date created;
 
     List<OrganisationUnit> organisationUnits;
@@ -132,13 +130,19 @@ public class UserAuthenticateCallUnitShould {
     @Mock
     private AuthenticatedUserModel authenticatedUser;
 
+    @Mock
+    private BlockCallFactory<SystemInfo> systemInfoCallFactory;
+
+    @Mock
+    private Call<Response<SystemInfo>> systemInfoEndpointCall;
+
     // call we are testing
     private Call<Response<User>> userAuthenticateCall;
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
+    public void setUp() throws Exception {
+        super.setUp();
 
         UserAuthenticateCall.OrganisationUnitHandlerFactory organisationUnitHandlerFactory =
                 new UserAuthenticateCall.OrganisationUnitHandlerFactory() {
@@ -149,8 +153,8 @@ public class UserAuthenticateCallUnitShould {
                     }
                 };
 
-        userAuthenticateCall = new UserAuthenticateCall(userService, databaseAdapter, new Date(),
-                userStore, userCredentialsHandler, resourceHandler, authenticatedUserStore,
+        userAuthenticateCall = new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory,
+                userService, userHandler, userCredentialsHandler, resourceHandler, authenticatedUserStore,
                 organisationUnitHandlerFactory, "test_user_name", "test_user_password");
 
         when(userCredentials.uid()).thenReturn("test_user_credentials_uid");
@@ -203,16 +207,20 @@ public class UserAuthenticateCallUnitShould {
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(organisationUnits);
 
+        when(systemInfo.serverDate()).thenReturn(serverDate);
+
         when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(userCall);
+
+        when(systemInfoCallFactory.create(databaseAdapter, retrofit)).thenReturn(systemInfoEndpointCall);
+        when(systemInfoEndpointCall.call()).thenReturn(Response.success(systemInfo));
 
         when(databaseAdapter.beginNewTransaction()).then(new Answer<Transaction>() {
             @Override
             public Transaction answer(InvocationOnMock invocation) throws Throwable {
-                sqLiteTransaction.begin();
-                return sqLiteTransaction;
+                transaction.begin();
+                return transaction;
             }
         });
-
     }
 
     @Test
@@ -273,13 +281,13 @@ public class UserAuthenticateCallUnitShould {
         } catch (Exception exception) {
             // ensure that transaction is not created
             verify(databaseAdapter, never()).beginNewTransaction();
-            verify(sqLiteTransaction, never()).begin();
-            verify(sqLiteTransaction, never()).setSuccessful();
-            verify(sqLiteTransaction, never()).end();
+            verify(transaction, never()).begin();
+            verify(transaction, never()).setSuccessful();
+            verify(transaction, never()).end();
 
             // stores must not be invoked
             verify(authenticatedUserStore, never()).insert(anyString(), anyString());
-            verifyNoMoreInteractions(userStore);
+            verifyNoMoreInteractions(userHandler);
             verifyNoMoreInteractions(userCredentialsHandler);
             verifyNoMoreInteractions(organisationUnitHandler);
         }
@@ -298,14 +306,14 @@ public class UserAuthenticateCallUnitShould {
 
         // ensure that transaction is not created
         verify(databaseAdapter, never()).beginNewTransaction();
-        verify(sqLiteTransaction, never()).begin();
-        verify(sqLiteTransaction, never()).setSuccessful();
-        verify(sqLiteTransaction, never()).end();
+        verify(transaction, never()).begin();
+        verify(transaction, never()).setSuccessful();
+        verify(transaction, never()).end();
 
         // stores must not be invoked
         verify(authenticatedUserStore).query();
         verifyNoMoreInteractions(authenticatedUserStore);
-        verifyNoMoreInteractions(userStore);
+        verifyNoMoreInteractions(userHandler);
         verifyNoMoreInteractions(userCredentialsHandler);
         verifyNoMoreInteractions(organisationUnitHandler);
     }
@@ -318,21 +326,14 @@ public class UserAuthenticateCallUnitShould {
 
         InOrder transactionMethodsOrder = inOrder(databaseAdapter);
         transactionMethodsOrder.verify(databaseAdapter).beginNewTransaction();
-        verify(sqLiteTransaction).begin();
-        verify(sqLiteTransaction).setSuccessful();
-        verify(sqLiteTransaction).end();
+        verify(transaction).begin();
+        verify(transaction).setSuccessful();
+        verify(transaction).end();
 
         verify(authenticatedUserStore, times(1)).insert(
                 "test_user_uid", base64("test_user_name", "test_user_password"));
 
-        verify(userStore, times(1)).insert(
-                "test_user_uid", "test_user_code", "test_user_name", "test_user_display_name",
-                created, lastUpdated, "test_user_birthday", "test_user_education",
-                "test_user_gender", "test_user_job_title", "test_user_surname",
-                "test_user_first_name", "test_user_introduction", "test_user_employer",
-                "test_user_interests", "test_user_languages", "test_user_email",
-                "test_user_phone_number", "test_user_nationality"
-        );
+        verify(userHandler, times(1)).handleUser(user);
 
         verify(userCredentialsHandler, times(1)).handleUserCredentials(
                 userCredentials, user);
@@ -351,16 +352,13 @@ public class UserAuthenticateCallUnitShould {
 
         // ensure that transaction is created
         verify(databaseAdapter).beginNewTransaction();
-        verify(sqLiteTransaction).begin();
-        verify(sqLiteTransaction).setSuccessful();
-        verify(sqLiteTransaction).end();
+        verify(transaction).begin();
+        verify(transaction).setSuccessful();
+        verify(transaction).end();
 
         // stores must not be invoked
         verify(authenticatedUserStore, times(1)).insert(anyString(), anyString());
-        verify(userStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyString(), anyString());
+        verify(userHandler, times(1)).handleUser(user);
 
         verify(userCredentialsHandler, times(1)).handleUserCredentials(
                 userCredentials, user);

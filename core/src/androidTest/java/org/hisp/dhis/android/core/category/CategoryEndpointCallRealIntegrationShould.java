@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Date;
 
 import retrofit2.Response;
 
@@ -36,7 +37,7 @@ public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase 
         Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
 
         Call<Response<Payload<Category>>> categoryEndpointCall = CategoryEndpointCall.FACTORY.create(
-                GenericCallData.create(databaseAdapter(), d2.retrofit())
+                GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date())
         );
         Response<Payload<Category>> responseCategory = categoryEndpointCall.call();
 

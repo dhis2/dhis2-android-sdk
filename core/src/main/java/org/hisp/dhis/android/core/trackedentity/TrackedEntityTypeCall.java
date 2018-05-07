@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.CallException;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -50,7 +51,7 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-public class TrackedEntityTypeCall implements Call<Response<Payload<TrackedEntityType>>> {
+public class TrackedEntityTypeCall extends SyncCall<Response<Payload<TrackedEntityType>>> {
 
     private final TrackedEntityTypeService service;
     private final DatabaseAdapter databaseAdapter;
@@ -59,7 +60,6 @@ public class TrackedEntityTypeCall implements Call<Response<Payload<TrackedEntit
     private final Set<String> uidSet;
     private final Date serverDate;
     private final ResourceModel.Type resourceType = ResourceModel.Type.TRACKED_ENTITY;
-    private Boolean isExecuted = false;
 
     TrackedEntityTypeCall(@Nullable Set<String> uidSet,
                           @NonNull DatabaseAdapter databaseAdapter,
@@ -76,20 +76,8 @@ public class TrackedEntityTypeCall implements Call<Response<Payload<TrackedEntit
     }
 
     @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
-    @Override
     public Response<Payload<TrackedEntityType>> call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Already executed");
-            }
-            isExecuted = true;
-        }
+        super.setExecuted();
 
         if (uidSet.size() > MAX_UIDS) {
             throw new IllegalArgumentException("Can't handle the amount of tracked entities: " + uidSet.size() + ". " +
@@ -152,7 +140,7 @@ public class TrackedEntityTypeCall implements Call<Response<Payload<TrackedEntit
                     new TrackedEntityTypeStoreImpl(genericCallData.databaseAdapter()),
                     new ResourceStoreImpl(genericCallData.databaseAdapter()),
                     genericCallData.retrofit().create(TrackedEntityTypeService.class),
-                    new Date()
+                    genericCallData.serverDate()
             );
         }
     };

@@ -44,12 +44,11 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED_STR;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED_STR;
 
 @RunWith(AndroidJUnit4.class)
-public class DataValueModelShould extends ModelAbstractShould<DataValue, DataValueModel> {
+public class DataValueModelShould extends ModelAbstractShould<DataValueModel> {
     private static final String DATA_ELEMENT = "dataElement";
     private static final String PERIOD = "period";
     private static final String ORGANISATION_UNIT = "organisationUnit";
@@ -61,13 +60,7 @@ public class DataValueModelShould extends ModelAbstractShould<DataValue, DataVal
     private static final boolean FOLLOW_UP = false;
 
     public DataValueModelShould() {
-        super(DataValueModel.Columns.all(), 11, new DataValueModelBuilder());
-    }
-
-    @Override
-    protected DataValue buildPojo() {
-        return DataValue.create(DATA_ELEMENT, PERIOD, ORGANISATION_UNIT, CATEGORY_OPTION_COMBO,
-                ATTRIBUTE_OPTION_COMBO, VALUE, STORED_BY, CREATED, LAST_UPDATED, COMMENT, FOLLOW_UP, DELETED);
+        super(new DataValueModel.Columns().all(), 11);
     }
 
     @Override
@@ -96,15 +89,22 @@ public class DataValueModelShould extends ModelAbstractShould<DataValue, DataVal
     @Override
     protected Object[] getModelAsObjectArray() {
         return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
-                model.dataElement(), model.period(), model.organisationUnit(),
-                model.categoryOptionCombo(), model.attributeOptionCombo(), model.value(),
-                model.storedBy(), CREATED_STR, LAST_UPDATED_STR, model.comment(),
+                model.dataElement(),
+                model.period(),
+                model.organisationUnit(),
+                model.categoryOptionCombo(),
+                model.attributeOptionCombo(),
+                model.value(),
+                model.storedBy(),
+                CREATED_STR,
+                LAST_UPDATED_STR,
+                model.comment(),
                 toInteger(model.followUp()));
     }
 
     @Test
     public void have_data_value_columns() {
-        List<String> columnsList = Arrays.asList(DataValueModel.Columns.all());
+        List<String> columnsList = Arrays.asList(new DataValueModel.Columns().all());
 
         assertThat(columnsList.contains(DataValueModel.Columns.DATA_ELEMENT)).isEqualTo(true);
         assertThat(columnsList.contains(DataValueModel.Columns.PERIOD)).isEqualTo(true);

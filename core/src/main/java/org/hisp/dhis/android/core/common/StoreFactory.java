@@ -35,29 +35,32 @@ public final class StoreFactory {
     private StoreFactory() {}
 
     @SuppressWarnings("PMD.UseVarargs")
-    public static <I extends BaseIdentifiableObjectModel & StatementBinder> IdentifiableObjectStore<I>
+    public static <I extends BaseIdentifiableObjectModel> IdentifiableObjectStore<I>
     identifiableStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{},
+                new String[]{}, new String[]{});
         SQLStatementWrapper statements = new SQLStatementWrapper(statementBuilder, databaseAdapter);
         return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder);
     }
 
     @SuppressWarnings("PMD.UseVarargs")
-    static <I extends BaseModel & StatementBinder> ObjectStore<I>
+    static <I extends BaseModel> ObjectStore<I>
     objectStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{},
+                new String[]{}, new String[]{});
         return new ObjectStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(
                 statementBuilder.insert()), statementBuilder);
     }
 
     @SuppressWarnings("PMD.UseVarargs")
-    public static <I extends BaseModel & UpdateWhereStatementBinder> ObjectWithoutUidStore<I>
-    objectWithoutUidStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns,
-                          String[] whereUpdateColumns) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, whereUpdateColumns);
+    public static <I extends BaseModel> ObjectWithoutUidStore<I> objectWithoutUidStore(
+            DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns) {
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns.all(), columns.whereUpdate(),
+                columns.whereDelete(), columns.whereSelect());
         return new ObjectWithoutUidStoreImpl<>(databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
                 databaseAdapter.compileStatement(statementBuilder.updateWhere()),
+                databaseAdapter.compileStatement(statementBuilder.deleteWhere()),
                 statementBuilder);
     }
 }

@@ -28,27 +28,12 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.junit.Test;
-
-import static com.google.common.truth.Truth.assertThat;
-
-public abstract class ModelAbstractShould<P, M extends BaseModel> extends LinkModelAbstractShould<M> {
+public abstract class ModelAbstractShould<M extends BaseModel> extends LinkModelAbstractShould<M> {
 
     protected final M model;
-    private final P pojo;
-    private final ModelBuilder<P, M> modelBuilder;
 
-    public ModelAbstractShould(String[] columns, int columnsLength, ModelBuilder<P, M> modelBuilder) {
+    public ModelAbstractShould(String[] columns, int columnsLength) {
         super(columns, columnsLength);
         this.model = buildModel();
-        this.pojo = buildPojo();
-        this.modelBuilder = modelBuilder;
-    }
-
-    protected abstract P buildPojo();
-
-    @Test
-    public void create_model_from_pojo() {
-        assertThat(modelBuilder.buildModel(pojo)).isEqualTo(model);
     }
 }

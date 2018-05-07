@@ -42,39 +42,25 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
-public class LegendSetModelShould extends IdentifiableModelAbstractShould<LegendSet, LegendSetModel> {
-
-    private final String symbolizer = "color";
+public class LegendSetModelShould extends IdentifiableModelAbstractShould<LegendSetModel> {
 
     public LegendSetModelShould() {
-            super(Columns.all(), 7, new LegendSetModelBuilder());
+            super(new Columns().all(), 7);
     }
 
     @Override
     protected LegendSetModel buildModel() {
         LegendSetModel.Builder builder = LegendSetModel.builder();
         fillIdentifiableModelProperties(builder);
-        return builder.symbolizer(symbolizer).build();
+        return builder.symbolizer("color").build();
     }
 
     @Override
     protected LegendSetModel cursorToModel(Cursor cursor) {
         return LegendSetModel.create(cursor);
-    }
-
-    @Override
-    protected LegendSet buildPojo() {
-        return LegendSet.create(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, DELETED, symbolizer, null);
     }
 
     @Override

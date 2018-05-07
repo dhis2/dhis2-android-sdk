@@ -5,6 +5,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -15,7 +16,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
+public class CategoryEndpointCall extends SyncCall<Response<Payload<Category>>> {
 
     private final CategoryQuery categoryQuery;
     private final CategoryService categoryService;
@@ -24,7 +25,6 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
     private final ResourceHandler resourceHandler;
     private final DatabaseAdapter databaseAdapter;
     private final Date serverDate;
-    private boolean isExecuted;
 
     CategoryEndpointCall(CategoryQuery categoryQuery,
             CategoryService categoryService,
@@ -41,18 +41,9 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
         this.serverDate = new Date(serverDate.getTime());
     }
 
-
-    @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
     @Override
     public Response<Payload<Category>> call() throws Exception {
-
-        validateIsNotTryingToExcuteAgain();
+        super.setExecuted();
 
         Response<Payload<Category>> response = categoryService.getCategory(Category.allFields, categoryQuery.paging(),
                 categoryQuery.page(), categoryQuery.pageSize()).execute();
@@ -80,15 +71,6 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
         }
     }
 
-    private void validateIsNotTryingToExcuteAgain() {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Already executed");
-            }
-            isExecuted = true;
-        }
-    }
-
     public static final SimpleCallFactory<Payload<Category>> FACTORY
             = new SimpleCallFactory<Payload<Category>>() {
 
@@ -101,7 +83,7 @@ public class CategoryEndpointCall implements Call<Response<Payload<Category>>> {
                     CategoryHandler.create(genericCallData.databaseAdapter()),
                     ResourceHandler.create(genericCallData.databaseAdapter()),
                     genericCallData.databaseAdapter(),
-                    new Date()
+                    genericCallData.serverDate()
             );
         }
     };

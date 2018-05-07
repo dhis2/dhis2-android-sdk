@@ -42,21 +42,23 @@ import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.calls.TrackerEntitiesDataCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEndPointCall;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
 import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
 
-import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
@@ -96,8 +98,7 @@ public final class D2 {
             throw new NullPointerException("password == null");
         }
 
-        return UserAuthenticateCall.create(GenericCallData.create(databaseAdapter, retrofit),
-                username, password);
+        return UserAuthenticateCall.create(databaseAdapter, retrofit, username, password);
     }
 
     @NonNull
@@ -118,7 +119,7 @@ public final class D2 {
 
     @NonNull
     public Call<Response> syncMetaData() {
-        return MetadataCall.create(GenericCallData.create(databaseAdapter, retrofit()));
+        return MetadataCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
@@ -128,29 +129,39 @@ public final class D2 {
 
     @NonNull
     public Call<Response> syncSingleData(int eventLimitByOrgUnit) {
-        return SingleDataCall.create(GenericCallData.create(databaseAdapter, retrofit()), eventLimitByOrgUnit);
+        return SingleDataCall.create(databaseAdapter, retrofit, eventLimitByOrgUnit);
     }
 
     @NonNull
     public Call<Response> syncTrackerData() {
-        return TrackerDataCall.create(GenericCallData.create(databaseAdapter, retrofit()));
+        return TrackerDataCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
     public Call<Response<TrackedEntityInstance>>
     downloadTrackedEntityInstance(String trackedEntityInstanceUid) {
-        return TrackedEntityInstanceEndPointCall.create(GenericCallData.create(databaseAdapter, retrofit),
-                new Date(), trackedEntityInstanceUid);
+        return TrackedEntityInstanceEndPointCall.create(databaseAdapter, retrofit, trackedEntityInstanceUid);
     }
 
     @NonNull
     public Call<Response> downloadTrackedEntityInstances(int teiLimitByOrgUnit) {
-        return TrackerEntitiesDataCall.create(GenericCallData.create(databaseAdapter, retrofit), teiLimitByOrgUnit);
+        return TrackerEntitiesDataCall.create(databaseAdapter, retrofit, teiLimitByOrgUnit);
+    }
+
+    @NonNull
+    public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid) {
+        return TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit)
+                .getValue(attributeUid, organisationUnitUid);
     }
 
     @NonNull
     public Call<Response<WebResponse>> syncTrackedEntityInstances() {
         return TrackedEntityInstancePostCall.create(databaseAdapter, retrofit);
+    }
+
+    @NonNull
+    public Call<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
+        return TrackedEntityInstanceQueryCall.create(retrofit, query);
     }
 
     public Call<Response<WebResponse>> syncSingleEvents() {

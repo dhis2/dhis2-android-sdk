@@ -85,6 +85,8 @@ public abstract class Program extends BaseNameableObject {
     private final static String EXPIRY_DAYS = "expiryDays";
     private final static String COMPLETE_EVENTS_EXPIRY_DAYS = "completeEventsExpiryDays";
     private final static String EXPIRY_PERIOD_TYPE = "expiryPeriodType";
+    private final static String MIN_ATTRIBUTES_REQUIRED_TO_SEARCH = "minAttributesRequiredToSearch";
+    private final static String MAX_TEI_COUNT_TO_RETURN = "maxTeiCountToReturn";
 
     static final Field<Program, String> uid = Field.create(UID);
     private static final Field<Program, String> code = Field.create(CODE);
@@ -120,6 +122,10 @@ public abstract class Program extends BaseNameableObject {
     private static final Field<Program, String> completeEventsExpiryDays
             = Field.create(COMPLETE_EVENTS_EXPIRY_DAYS);
     private static final Field<Program, String> expiryPeriodType = Field.create(EXPIRY_PERIOD_TYPE);
+    private static final Field<Program, Integer> minAttributesRequiredToSearch =
+            Field.create(MIN_ATTRIBUTES_REQUIRED_TO_SEARCH);
+    private static final Field<Program, Integer> maxTeiCountToReturn =
+            Field.create(MAX_TEI_COUNT_TO_RETURN);
 
     private static final NestedField<Program, ObjectWithUid> relationshipType
             = NestedField.create(RELATIONSHIP_TYPE);
@@ -147,7 +153,8 @@ public abstract class Program extends BaseNameableObject {
             displayIncidentDate, enrollmentDateLabel, ignoreOverdueEvents, incidentDateLabel, onlyEnrollOnce,
             programType, registration, relationshipFromA, relationshipText, selectEnrollmentDatesInFuture,
             selectIncidentDatesInFuture, useFirstStageDuringRegistration, expiryDays, completeEventsExpiryDays,
-            expiryPeriodType, relatedProgram.with(Program.uid), programStages.with(ObjectWithUid.uid),
+            expiryPeriodType, minAttributesRequiredToSearch, maxTeiCountToReturn,
+            relatedProgram.with(Program.uid), programStages.with(ObjectWithUid.uid),
             programRules.with(ProgramRule.allFields), programRuleVariables.with(ProgramRuleVariable.allFields),
             programIndicators.with(ProgramIndicator.allFields),
             programTrackedEntityAttributes.with(ProgramTrackedEntityAttribute.allFields),
@@ -298,6 +305,14 @@ public abstract class Program extends BaseNameableObject {
     @JsonProperty(EXPIRY_PERIOD_TYPE)
     public abstract PeriodType expiryPeriodType();
 
+    @Nullable
+    @JsonProperty(MIN_ATTRIBUTES_REQUIRED_TO_SEARCH)
+    public abstract Integer minAttributesRequiredToSearch();
+
+    @Nullable
+    @JsonProperty(MAX_TEI_COUNT_TO_RETURN)
+    public abstract Integer maxTeiCountToReturn();
+
     @JsonCreator
     public static Program create(
             @JsonProperty(UID) String uid,
@@ -340,6 +355,8 @@ public abstract class Program extends BaseNameableObject {
             @JsonProperty(EXPIRY_DAYS) Integer expiryDays,
             @JsonProperty(COMPLETE_EVENTS_EXPIRY_DAYS) Integer completeEventsExpiryDays,
             @JsonProperty(EXPIRY_PERIOD_TYPE) PeriodType expiryPeriodType,
+            @JsonProperty(MIN_ATTRIBUTES_REQUIRED_TO_SEARCH) Integer minAttributesRequiredToSearch,
+            @JsonProperty(MAX_TEI_COUNT_TO_RETURN) Integer maxTeiCountToReturn,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_Program(
@@ -383,6 +400,8 @@ public abstract class Program extends BaseNameableObject {
                 style,
                 expiryDays,
                 completeEventsExpiryDays,
-                expiryPeriodType);
+                expiryPeriodType,
+                minAttributesRequiredToSearch,
+                maxTeiCountToReturn);
     }
 }

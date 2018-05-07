@@ -37,21 +37,21 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class LegendSetModel extends BaseIdentifiableObjectModel implements StatementBinder {
+public abstract class LegendSetModel extends BaseIdentifiableObjectModel {
 
     public static final String TABLE = "LegendSet";
 
-    public abstract static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public final static String SYMBOLIZER = "symbolizer";
 
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseIdentifiableObjectModel.Columns.all(), SYMBOLIZER);
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), SYMBOLIZER);
         }
     }
 

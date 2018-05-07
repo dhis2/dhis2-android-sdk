@@ -55,6 +55,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -131,7 +132,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
         programEndpointCall = ProgramEndpointCall.FACTORY.create(
-                GenericCallData.create(databaseAdapter(), d2.retrofit()), uids);
+                GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date()), uids);
     }
 
     @Test

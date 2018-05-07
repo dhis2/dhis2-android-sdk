@@ -14,6 +14,7 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
 
         Call<Response<Payload<CategoryCombo>>> categoryComboEndpointCall =
                 CategoryComboEndpointCall.FACTORY.create(
-                GenericCallData.create(databaseAdapter(), d2.retrofit()));
+                GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date()));
         Response<Payload<CategoryCombo>> responseCategory = categoryComboEndpointCall.call();
 
         assertResponseIsCorrect(responseCategory);
@@ -68,7 +69,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     private void downloadCategories() throws Exception {
         Call<Response<Payload<Category>>> categoryEndpointCall =
                 CategoryEndpointCall.FACTORY.create(
-                        GenericCallData.create(databaseAdapter(), d2.retrofit()));
+                        GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date()));
         categoryEndpointCall.call();
     }
 

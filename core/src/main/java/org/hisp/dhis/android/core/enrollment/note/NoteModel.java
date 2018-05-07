@@ -39,7 +39,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.UpdateWhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -48,7 +47,7 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class NoteModel extends BaseModel implements UpdateWhereStatementBinder {
+public abstract class NoteModel extends BaseModel {
 
     public static final String TABLE = "Note";
 
@@ -58,13 +57,13 @@ public abstract class NoteModel extends BaseModel implements UpdateWhereStatemen
         public static final String STORED_BY = "storedBy";
         public static final String STORED_DATE = "storedDate";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseModel.Columns.all(), ENROLLMENT, VALUE, STORED_BY, STORED_DATE);
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), ENROLLMENT, VALUE, STORED_BY, STORED_DATE);
         }
 
-        static String[] whereUpdate() {
+        @Override
+        public String[] whereUpdate() {
             return new String[]{ENROLLMENT, VALUE, STORED_BY, STORED_DATE};
         }
     }

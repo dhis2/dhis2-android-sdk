@@ -32,7 +32,6 @@ import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.NameableModelAbstractShould;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.indicator.IndicatorModel.Columns;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -43,32 +42,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DESCRIPTION;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_DESCRIPTION;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_SHORT_NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.SHORT_NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
-public class IndicatorModelShould extends NameableModelAbstractShould<Indicator, IndicatorModel> {
-
-    private final Boolean annualized = false;
-    private final String indicatorType = "bWuNrMHEoZ0";
-    private final String numerator = "#{a.b}";
-    private final String numeratorDescription = "num descr";
-    private final String denominator = "#{c.d}";
-    private final String denominatorDescription = "den descr";
-    private final String url = "dhis2.org";
+public class IndicatorModelShould extends NameableModelAbstractShould<IndicatorModel> {
 
     public IndicatorModelShould() {
-            super(IndicatorModel.Columns.all(), 17, new IndicatorModelBuilder());
+            super(new IndicatorModel.Columns().all(), 17);
     }
 
     @Override
@@ -76,13 +57,13 @@ public class IndicatorModelShould extends NameableModelAbstractShould<Indicator,
         IndicatorModel.Builder indicatorModelBuilder = IndicatorModel.builder();
         fillNameableModelProperties(indicatorModelBuilder);
         indicatorModelBuilder
-                .annualized(annualized)
-                .indicatorType(indicatorType)
-                .numerator(numerator)
-                .numeratorDescription(numeratorDescription)
-                .denominator(denominator)
-                .denominatorDescription(denominatorDescription)
-                .url(url);
+                .annualized(false)
+                .indicatorType("bWuNrMHEoZ0")
+                .numerator("#{a.b}")
+                .numeratorDescription("num descr")
+                .denominator("#{c.d}")
+                .denominatorDescription("den descr")
+                .url("dhis2.org");
         return indicatorModelBuilder.build();
     }
 
@@ -92,18 +73,14 @@ public class IndicatorModelShould extends NameableModelAbstractShould<Indicator,
     }
 
     @Override
-    protected Indicator buildPojo() {
-        return Indicator.create(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED, SHORT_NAME,
-                DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, annualized,
-                ObjectWithUid.create(indicatorType), numerator, numeratorDescription,
-                denominator, denominatorDescription, url, DELETED);
-    }
-
-    @Override
     protected Object[] getModelAsObjectArray() {
         return Utils.appendInNewArray(ColumnsArrayUtils.getNameableModelAsObjectArray(model),
-                model.annualized(), model.indicatorType(), model.numerator(),
-                model.numeratorDescription(), model.denominator(), model.denominatorDescription(),
+                toInteger(model.annualized()),
+                model.indicatorType(),
+                model.numerator(),
+                model.numeratorDescription(),
+                model.denominator(),
+                model.denominatorDescription(),
                 model.url());
     }
 

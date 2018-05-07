@@ -29,20 +29,20 @@ package org.hisp.dhis.android.core.common;
 
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public abstract class IdentifiableModelBuilderAbstractShould<P extends BaseIdentifiableObject,
-        M extends BaseIdentifiableObjectModel> {
+        M extends BaseIdentifiableObjectModel> extends ModelBuilderAbstractShould<P, M> {
 
-    protected abstract P buildPojo();
-
-    protected abstract M buildModel();
+    @Override
+    public void setUp() throws IOException {
+        super.setUp();
+    }
 
     @Test
     public void copy_pojo_identifiable_properties() {
-        P pojo = buildPojo();
-        M model = buildModel();
-
         assertThat(model.uid()).isEqualTo(pojo.uid());
         assertThat(model.code()).isEqualTo(pojo.code());
         assertThat(model.name()).isEqualTo(pojo.name());

@@ -42,23 +42,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
-public class IndicatorTypeModelShould extends IdentifiableModelAbstractShould<IndicatorType, IndicatorTypeModel> {
-
-    private final Boolean number = false;
-    private final Integer factor = 100;
+public class IndicatorTypeModelShould extends IdentifiableModelAbstractShould<IndicatorTypeModel> {
 
     public IndicatorTypeModelShould() {
-            super(Columns.all(), 8, new IndicatorTypeModelBuilder());
+            super(new Columns().all(), 8);
     }
 
     @Override
@@ -66,8 +57,8 @@ public class IndicatorTypeModelShould extends IdentifiableModelAbstractShould<In
         IndicatorTypeModel.Builder builder = IndicatorTypeModel.builder();
         fillIdentifiableModelProperties(builder);
         builder
-                .number(number)
-                .factor(factor);
+                .number(false)
+                .factor(100);
         return builder.build();
     }
 
@@ -77,15 +68,10 @@ public class IndicatorTypeModelShould extends IdentifiableModelAbstractShould<In
     }
 
     @Override
-    protected IndicatorType buildPojo() {
-        return IndicatorType.create(UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED,
-                number, factor, DELETED);
-    }
-
-    @Override
     protected Object[] getModelAsObjectArray() {
         return Utils.appendInNewArray(ColumnsArrayUtils.getIdentifiableModelAsObjectArray(model),
-                model.number(), model.factor());
+                toInteger(model.number()),
+                model.factor());
     }
 
     @Test

@@ -27,93 +27,31 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
 
-import java.util.List;
+public class ProgramTrackedEntityAttributeHandler extends
+        IdentifiableHandlerImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> {
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
-
-public class ProgramTrackedEntityAttributeHandler {
-    private final ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     private final TrackedEntityAttributeHandler trackedEntityAttributeHandler;
 
-    ProgramTrackedEntityAttributeHandler(ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
-                                                TrackedEntityAttributeHandler trackedEntityAttributeHandler) {
-        this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
+    ProgramTrackedEntityAttributeHandler(IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> store,
+                                         TrackedEntityAttributeHandler trackedEntityAttributeHandler) {
+        super(store);
         this.trackedEntityAttributeHandler = trackedEntityAttributeHandler;
-    }
-
-    public void handleProgramTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
-                                                             programTrackedEntityAttributes) {
-        if (programTrackedEntityAttributes == null) {
-            return;
-        }
-
-        deleteOrPersistProgramTrackedEntityAttributes(programTrackedEntityAttributes);
-    }
-
-    /**
-     * Deletes or persists program tracked entity attributes and applies the changes to the database.
-     * Has a nested call to deleteOrPersistTrackedEntityAttributes
-     *
-     * @param programTrackedEntityAttributes
-     */
-    private void deleteOrPersistProgramTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
-                                                                       programTrackedEntityAttributes) {
-        int size = programTrackedEntityAttributes.size();
-
-        for (int i = 0; i < size; i++) {
-            ProgramTrackedEntityAttribute programTrackedEntityAttribute = programTrackedEntityAttributes.get(i);
-
-            if (isDeleted(programTrackedEntityAttribute)) {
-                programTrackedEntityAttributeStore.delete(programTrackedEntityAttribute.uid());
-            } else {
-                int update = programTrackedEntityAttributeStore.update(
-                        programTrackedEntityAttribute.uid(), programTrackedEntityAttribute.code(),
-                        programTrackedEntityAttribute.name(), programTrackedEntityAttribute.displayName(),
-                        programTrackedEntityAttribute.created(), programTrackedEntityAttribute.lastUpdated(),
-                        programTrackedEntityAttribute.shortName(), programTrackedEntityAttribute.displayShortName(),
-                        programTrackedEntityAttribute.description(),
-                        programTrackedEntityAttribute.displayDescription(),
-                        programTrackedEntityAttribute.mandatory(),
-                        programTrackedEntityAttribute.trackedEntityAttribute().uid(),
-                        programTrackedEntityAttribute.allowFutureDate(),
-                        programTrackedEntityAttribute.displayInList(),
-                        programTrackedEntityAttribute.program().uid(), programTrackedEntityAttribute.sortOrder(),
-                        programTrackedEntityAttribute.uid());
-
-                if (update <= 0) {
-                    programTrackedEntityAttributeStore.insert(
-                            programTrackedEntityAttribute.uid(), programTrackedEntityAttribute.code(),
-                            programTrackedEntityAttribute.name(), programTrackedEntityAttribute.displayName(),
-                            programTrackedEntityAttribute.created(), programTrackedEntityAttribute.lastUpdated(),
-                            programTrackedEntityAttribute.shortName(),
-                            programTrackedEntityAttribute.displayShortName(),
-                            programTrackedEntityAttribute.description(),
-                            programTrackedEntityAttribute.displayDescription(),
-                            programTrackedEntityAttribute.mandatory(),
-                            programTrackedEntityAttribute.trackedEntityAttribute().uid(),
-                            programTrackedEntityAttribute.allowFutureDate(),
-                            programTrackedEntityAttribute.displayInList(),
-                            programTrackedEntityAttribute.program().uid(),
-                            programTrackedEntityAttribute.sortOrder()
-                    );
-
-                }
-            }
-
-            trackedEntityAttributeHandler.handleTrackedEntityAttribute(
-                    programTrackedEntityAttribute.trackedEntityAttribute()
-            );
-        }
-
     }
 
     public static ProgramTrackedEntityAttributeHandler create(DatabaseAdapter databaseAdapter) {
         return new ProgramTrackedEntityAttributeHandler(
-                new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter),
-                TrackedEntityAttributeHandler.create(databaseAdapter)
-        );
+                ProgramTrackedEntityAttributeStore.create(databaseAdapter),
+                TrackedEntityAttributeHandler.create(databaseAdapter));
+    }
+
+    @Override
+    protected void afterObjectPersisted(ProgramTrackedEntityAttribute programTrackedEntityAttribute) {
+        trackedEntityAttributeHandler.handleTrackedEntityAttribute(
+                programTrackedEntityAttribute.trackedEntityAttribute());
     }
 }

@@ -68,12 +68,13 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLin
 import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.relationship.RelationshipStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.settings.SystemSettingStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
@@ -120,7 +121,7 @@ public class LogOutUserCallable implements Callable<Void> {
                 ProgramStore.create(databaseAdapter),
                 new TrackedEntityAttributeStoreImpl(databaseAdapter),
 
-                new ProgramTrackedEntityAttributeStoreImpl(databaseAdapter),
+                ProgramTrackedEntityAttributeStore.create(databaseAdapter),
                 new ProgramRuleVariableStoreImpl(databaseAdapter),
                 new ProgramIndicatorStoreImpl(databaseAdapter),
                 new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter),
@@ -165,7 +166,8 @@ public class LogOutUserCallable implements Callable<Void> {
                 LegendSetStore.create(databaseAdapter),
 
                 ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
-                SystemSettingStore.create(databaseAdapter)
+                SystemSettingStore.create(databaseAdapter),
+                TrackedEntityAttributeReservedValueStore.create(databaseAdapter)
         );
 
         return new LogOutUserCallable(

@@ -74,6 +74,8 @@ public class ProgramShould {
                 "    \"relationshipText\": \"Add child\",\n" +
                 "    \"displayIncidentDate\": false,\n" +
                 "    \"expiryDays\": 0,\n" +
+                "    \"minAttributesRequiredToSearch\": 3,\n" +
+                "    \"maxTeiCountToReturn\": 2,\n" +
                 "    \"categoryCombo\": {\n" +
                 "        \"id\": \"p0KPaWEg3cf\"\n" +
                 "    },\n" +
@@ -285,6 +287,8 @@ public class ProgramShould {
         assertThat(program.selectEnrollmentDatesInFuture()).isFalse();
         assertThat(program.registration()).isTrue();
         assertThat(program.useFirstStageDuringRegistration()).isFalse();
+        assertThat(program.minAttributesRequiredToSearch()).isEqualTo(3);
+        assertThat(program.maxTeiCountToReturn()).isEqualTo(2);
 
         assertThat(program.displayFrontPageList()).isFalse();
         assertThat(program.programType()).isEqualTo(ProgramType.WITH_REGISTRATION);

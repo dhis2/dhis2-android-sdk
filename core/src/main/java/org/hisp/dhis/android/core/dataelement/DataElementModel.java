@@ -38,7 +38,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -46,7 +45,7 @@ import org.hisp.dhis.android.core.utils.Utils;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class DataElementModel extends BaseNameableObjectModel implements StatementBinder {
+public abstract class DataElementModel extends BaseNameableObjectModel {
 
     public static final String TABLE = "DataElement";
 
@@ -62,10 +61,9 @@ public abstract class DataElementModel extends BaseNameableObjectModel implement
         public static final String OPTION_SET = "optionSet";
         public static final String CATEGORY_COMBO = "categoryCombo";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(),
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
                     VALUE_TYPE, ZERO_IS_SIGNIFICANT, AGGREGATION_TYPE, FORM_NAME, NUMBER_TYPE,
                     DOMAIN_TYPE, DIMENSION, DISPLAY_FORM_NAME, OPTION_SET, CATEGORY_COMBO);
         }

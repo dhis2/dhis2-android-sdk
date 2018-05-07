@@ -48,7 +48,7 @@ public class DataSetIndicatorLinkModelShould extends
         LinkModelAbstractShould<DataSetIndicatorLinkModel> {
 
     public DataSetIndicatorLinkModelShould() {
-        super(Columns.all(), 2);
+        super(new Columns().all(), 2);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class DataSetIndicatorLinkModelShould extends
 
     @Test
     public void have_data_set_indicator_model_columns() {
-        List<String> columnsList = Arrays.asList(Columns.all());
+        List<String> columnsList = Arrays.asList(new Columns().all());
 
         assertThat(columnsList.contains(Columns.DATA_SET)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.INDICATOR)).isEqualTo(true);

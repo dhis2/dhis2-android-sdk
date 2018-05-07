@@ -4,8 +4,7 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -13,38 +12,25 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-
-import java.util.Date;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
-import static org.hisp.dhis.android.core.resource.ResourceModel.Type.TRACKED_ENTITY_INSTANCE;
+public class TrackedEntityInstanceEndPointCall extends SyncCall<Response<TrackedEntityInstance>> {
 
-public class TrackedEntityInstanceEndPointCall implements
-        Call<Response<TrackedEntityInstance>> {
-
-    private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final DatabaseAdapter databaseAdapter;
+    private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
-    private final ResourceHandler resourceHandler;
-    private final Date serverDate;
     private final String trackedEntityInstanceUid;
 
-    private boolean isExecuted;
-
     TrackedEntityInstanceEndPointCall(
-            @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
             @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
-            @NonNull ResourceHandler resourceHandler,
-            @NonNull Date serverDate,
             @NonNull String trackedEntityInstanceUid) {
-        this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.databaseAdapter = databaseAdapter;
+        this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
-        this.resourceHandler = resourceHandler;
-        this.serverDate = new Date(serverDate.getTime());
 
         if (trackedEntityInstanceUid == null || trackedEntityInstanceUid.isEmpty()) {
             throw new IllegalArgumentException(
@@ -55,19 +41,8 @@ public class TrackedEntityInstanceEndPointCall implements
     }
 
     @Override
-    public boolean isExecuted() {
-        return false;
-    }
-
-    @Override
     public Response<TrackedEntityInstance> call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Already executed");
-            }
-
-            isExecuted = true;
-        }
+        super.setExecuted();
 
         Response<TrackedEntityInstance> response =
                 trackedEntityInstanceService.trackedEntityInstance(trackedEntityInstanceUid,
@@ -81,11 +56,7 @@ public class TrackedEntityInstanceEndPointCall implements
 
         try {
             TrackedEntityInstance trackedEntityInstance = response.body();
-
             trackedEntityInstanceHandler.handle(trackedEntityInstance);
-
-            resourceHandler.handleResource(TRACKED_ENTITY_INSTANCE, serverDate);
-
             transaction.setSuccessful();
 
         } catch (SQLiteConstraintException sql) {
@@ -148,15 +119,13 @@ public class TrackedEntityInstanceEndPointCall implements
         ).build();
     }
 
-    public static TrackedEntityInstanceEndPointCall create(GenericCallData genericCallData,
-                                                           Date serverDate,
+    public static TrackedEntityInstanceEndPointCall create(DatabaseAdapter databaseAdapter,
+                                                           Retrofit retrofit,
                                                            String trackedEntityInstanceUid) {
         return new TrackedEntityInstanceEndPointCall(
-                genericCallData.retrofit().create(TrackedEntityInstanceService.class),
-                genericCallData.databaseAdapter(),
-                TrackedEntityInstanceHandler.create(genericCallData.databaseAdapter()),
-                ResourceHandler.create(genericCallData.databaseAdapter()),
-                serverDate,
+                databaseAdapter,
+                retrofit.create(TrackedEntityInstanceService.class),
+                TrackedEntityInstanceHandler.create(databaseAdapter),
                 trackedEntityInstanceUid
         );
     }

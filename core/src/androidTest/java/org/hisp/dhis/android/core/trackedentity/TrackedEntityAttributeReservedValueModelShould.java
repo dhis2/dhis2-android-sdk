@@ -32,7 +32,6 @@ import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.ModelAbstractShould;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueModel.Columns;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -48,7 +47,7 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREA
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityAttributeReservedValueModelShould extends
-        ModelAbstractShould<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
+        ModelAbstractShould<TrackedEntityAttributeReservedValueModel> {
     private final static String OWNER_OBJECT = "ownerObject";
     private final static String OWNER_UID = "ownerUid";
     private final static String KEY = "key";
@@ -56,16 +55,7 @@ public class TrackedEntityAttributeReservedValueModelShould extends
     private final static String ORGANISATION_UNI = "orgUnitUid";
 
     public TrackedEntityAttributeReservedValueModelShould() {
-        super(TrackedEntityAttributeReservedValueModel.Columns.all(), 7,
-                new TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit.create("orgUnitUid", null,
-                        null, null, null, null, null, null,
-                        null, null, null, null, null, null,
-                        null, null, null, null, null)));
-    }
-
-    @Override
-    protected TrackedEntityAttributeReservedValue buildPojo() {
-        return TrackedEntityAttributeReservedValue.create(OWNER_OBJECT, OWNER_UID, KEY, VALUE, CREATED, CREATED);
+        super(new TrackedEntityAttributeReservedValueModel.Columns().all(), 7);
     }
 
     @Override
@@ -97,7 +87,7 @@ public class TrackedEntityAttributeReservedValueModelShould extends
 
     @Test
     public void have_tea_reserved_value_columns() {
-        List<String> columnsList = Arrays.asList(TrackedEntityAttributeReservedValueModel.Columns.all());
+        List<String> columnsList = Arrays.asList(new TrackedEntityAttributeReservedValueModel.Columns().all());
 
         assertThat(columnsList.contains(Columns.OWNER_OBJECT)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.OWNER_UID)).isEqualTo(true);

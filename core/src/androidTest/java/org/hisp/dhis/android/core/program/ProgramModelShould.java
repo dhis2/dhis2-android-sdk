@@ -86,6 +86,8 @@ public class ProgramModelShould {
     private final static Integer EXPIRY_DAYS = 7;
     private final static Integer COMPLETE_EVENTS_EXPIRY_DAYS = 30;
     private final static PeriodType EXPIRY_PERIOD_TYPE = PeriodType.Daily;
+    private final static Integer MIN_ATTRIBUTES_REQUIRED_TO_SEARCH = 3;
+    private final static Integer MAX_TEI_COUNT_TO_RETURN = 2;
 
     private final Date date;
     private final String dateString;
@@ -132,7 +134,9 @@ public class ProgramModelShould {
                 Columns.ACCESS_DATA_WRITE,
                 Columns.EXPIRY_DAYS,
                 Columns.COMPLETE_EVENTS_EXPIRY_DAYS,
-                Columns.EXPIRY_PERIOD_TYPE
+                Columns.EXPIRY_PERIOD_TYPE,
+                Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH,
+                Columns.MAX_TEI_COUNT_TO_RETURN
         });
         cursor.addRow(new Object[]{ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
                 SHORT_NAME,
@@ -162,7 +166,9 @@ public class ProgramModelShould {
                 ACCESS_DATA_WRITE,
                 EXPIRY_DAYS,
                 COMPLETE_EVENTS_EXPIRY_DAYS,
-                EXPIRY_PERIOD_TYPE
+                EXPIRY_PERIOD_TYPE,
+                MIN_ATTRIBUTES_REQUIRED_TO_SEARCH,
+                MAX_TEI_COUNT_TO_RETURN
         });
         cursor.moveToFirst();
 
@@ -205,6 +211,8 @@ public class ProgramModelShould {
         assertThat(model.expiryDays()).isEqualTo(EXPIRY_DAYS);
         assertThat(model.completeEventsExpiryDays()).isEqualTo(COMPLETE_EVENTS_EXPIRY_DAYS);
         assertThat(model.expiryPeriodType()).isEqualTo(EXPIRY_PERIOD_TYPE);
+        assertThat(model.minAttributesRequiredToSearch()).isEqualTo(MIN_ATTRIBUTES_REQUIRED_TO_SEARCH);
+        assertThat(model.maxTeiCountToReturn()).isEqualTo(MAX_TEI_COUNT_TO_RETURN);
     }
 
     @Test
@@ -241,6 +249,8 @@ public class ProgramModelShould {
                 .expiryDays(EXPIRY_DAYS)
                 .completeEventsExpiryDays(COMPLETE_EVENTS_EXPIRY_DAYS)
                 .expiryPeriodType(EXPIRY_PERIOD_TYPE)
+                .minAttributesRequiredToSearch(MIN_ATTRIBUTES_REQUIRED_TO_SEARCH)
+                .maxTeiCountToReturn(MAX_TEI_COUNT_TO_RETURN)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -291,5 +301,9 @@ public class ProgramModelShould {
                 .isEqualTo(COMPLETE_EVENTS_EXPIRY_DAYS);
         assertThat(contentValues.getAsString(ProgramModel.Columns.EXPIRY_PERIOD_TYPE))
                 .isEqualTo(EXPIRY_PERIOD_TYPE.toString());
+        assertThat(contentValues.getAsInteger(ProgramModel.Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH))
+                .isEqualTo(MIN_ATTRIBUTES_REQUIRED_TO_SEARCH);
+        assertThat(contentValues.getAsInteger(ProgramModel.Columns.MAX_TEI_COUNT_TO_RETURN))
+                .isEqualTo(MAX_TEI_COUNT_TO_RETURN);
     }
 }

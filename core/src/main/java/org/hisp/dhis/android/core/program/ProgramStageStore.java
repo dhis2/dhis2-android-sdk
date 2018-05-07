@@ -38,6 +38,6 @@ public final class ProgramStageStore {
 
     public static IdentifiableObjectStore<ProgramStageModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, ProgramStageModel.TABLE,
-                ProgramStageModel.Columns.all());
+                new ProgramStageModel.Columns().all());
     }
 }

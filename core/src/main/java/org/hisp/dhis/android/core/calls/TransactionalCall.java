@@ -28,17 +28,17 @@
 package org.hisp.dhis.android.core.calls;
 
 import org.hisp.dhis.android.core.common.CallException;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 
 import retrofit2.Response;
 
-public abstract class TransactionalCall extends SyncCall {
-    protected final GenericCallData data;
+public abstract class TransactionalCall extends SyncCall<Response> {
+    protected final DatabaseAdapter databaseAdapter;
 
-    protected TransactionalCall(GenericCallData data) {
-        this.data = data;
+    protected TransactionalCall(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
     }
 
     public abstract Response callBody() throws Exception;
@@ -47,7 +47,7 @@ public abstract class TransactionalCall extends SyncCall {
     public final Response call() throws Exception {
         super.setExecuted();
 
-        Transaction transaction = data.databaseAdapter().beginNewTransaction();
+        Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             Response response = callBody();
             transaction.setSuccessful();

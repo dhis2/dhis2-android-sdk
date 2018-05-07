@@ -29,8 +29,7 @@ package org.hisp.dhis.android.core.common;
 
 import java.util.Collection;
 
-public abstract class GenericHandlerBaseImpl<
-        P, M extends BaseModel & StatementBinder> implements GenericHandler<P, M> {
+public abstract class GenericHandlerBaseImpl<P, M extends BaseModel> implements GenericHandler<P, M> {
 
     @Override
     public final void handle(P p, ModelBuilder<P, M> modelBuilder) {

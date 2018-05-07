@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.event.EventEndPointCall;
 import org.hisp.dhis.android.core.event.EventQuery;
@@ -12,62 +14,51 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 
-import java.util.Date;
 import java.util.Set;
 
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-public final class SingleDataCall implements Call<Response> {
+public final class SingleDataCall extends SyncCall<Response> {
 
-    private final GenericCallData genericCallData;
+    private final DatabaseAdapter databaseAdapter;
+    private final Retrofit retrofit;
 
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
 
     private final int eventLimitByOrgUnit;
 
-    private boolean isExecuted;
-
     private SingleDataCall(
-            @NonNull GenericCallData genericCallData,
+            @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull Retrofit retrofit,
             @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
             int eventLimitByOrgUnit) {
-        this.genericCallData = genericCallData;
+        this.databaseAdapter = databaseAdapter;
+        this.retrofit = retrofit;
         this.organisationUnitStore = organisationUnitStore;
 
         this.eventLimitByOrgUnit = eventLimitByOrgUnit;
     }
 
     @Override
-    public boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
-
-    @Override
     public Response call() throws Exception {
-        synchronized (this) {
-            if (isExecuted) {
-                throw new IllegalStateException("Already executed");
-            }
-            isExecuted = true;
-        }
+        super.setExecuted();
 
         Response response = null;
-        Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
+        Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            response = SystemInfoCall.FACTORY.create(genericCallData).call();
+            response = SystemInfoCall.FACTORY.create(databaseAdapter, retrofit).call();
 
             if (!response.isSuccessful()) {
                 return response;
             }
 
             SystemInfo systemInfo = (SystemInfo) response.body();
-            Date serverDate = systemInfo.serverDate();
+            GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
+                    systemInfo.serverDate());
 
-            response = eventCall(serverDate);
+            response = eventCall(genericCallData);
 
             if (response == null || !response.isSuccessful()) {
                 return response;
@@ -80,7 +71,7 @@ public final class SingleDataCall implements Call<Response> {
         }
     }
 
-    private Response eventCall(Date serverDate) throws Exception {
+    private Response eventCall(GenericCallData genericCallData) throws Exception {
         Response response = null;
 
         Set<String> organisationUnitUids = organisationUnitStore.selectUids();
@@ -113,7 +104,7 @@ public final class SingleDataCall implements Call<Response> {
                         .withPageLimit(pageLimit)
                         .build();
 
-                response = EventEndPointCall.create(genericCallData, serverDate, eventQuery).call();
+                response = EventEndPointCall.create(genericCallData, eventQuery).call();
 
                 if (!response.isSuccessful()) {
                     return response;
@@ -127,11 +118,12 @@ public final class SingleDataCall implements Call<Response> {
         return response;
     }
 
-    public static SingleDataCall create(GenericCallData genericCallData,
+    public static SingleDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
                                         int eventLimitByOrgUnit) {
         return new SingleDataCall(
-                genericCallData,
-                OrganisationUnitStore.create(genericCallData.databaseAdapter()),
+                databaseAdapter,
+                retrofit,
+                OrganisationUnitStore.create(databaseAdapter),
                 eventLimitByOrgUnit
         );
     }

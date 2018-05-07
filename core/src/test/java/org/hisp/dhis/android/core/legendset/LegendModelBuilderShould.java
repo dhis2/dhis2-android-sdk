@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.legendset;
 
 import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,22 +51,15 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class LegendModelBuilderShould extends IdentifiableModelBuilderAbstractShould<Legend, LegendModel> {
 
-    private Legend pojo;
-
-    private LegendModel model;
-
     @Mock
     private LegendSet legendSet;
 
     @Before
-    @SuppressWarnings("unchecked")
+    @Override
     public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-
+        super.setUp();
         when(legendSet.uid()).thenReturn("legend_set_uid");
-
-        pojo = buildPojo();
-        model = buildModel();
+        MockitoAnnotations.initMocks(this);
     }
 
     @Override
@@ -85,8 +79,8 @@ public class LegendModelBuilderShould extends IdentifiableModelBuilderAbstractSh
     }
 
     @Override
-    protected LegendModel buildModel() {
-        return new LegendModelBuilder(legendSet).buildModel(pojo);
+    protected ModelBuilder<Legend, LegendModel> modelBuilder() {
+        return new LegendModelBuilder(legendSet);
     }
 
     @Test

@@ -38,7 +38,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -48,7 +47,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.GodClass"})
 @AutoValue
-public abstract class ProgramModel extends BaseNameableObjectModel implements StatementBinder {
+public abstract class ProgramModel extends BaseNameableObjectModel {
 
     public static final String TABLE = "Program";
 
@@ -77,17 +76,18 @@ public abstract class ProgramModel extends BaseNameableObjectModel implements St
         public final static String EXPIRY_DAYS = "expiryDays";
         public final static String COMPLETE_EVENTS_EXPIRY_DAYS = "completeEventsExpiryDays";
         public final static String EXPIRY_PERIOD_TYPE = "expiryPeriodType";
+        public final static String MIN_ATTRIBUTES_REQUIRED_TO_SEARCH = "minAttributesRequiredToSearch";
+        public final static String MAX_TEI_COUNT_TO_RETURN = "maxTeiCountToReturn";
 
-        private Columns() {}
-
-        public static String[] all() {
-            return Utils.appendInNewArray(BaseNameableObjectModel.Columns.all(), VERSION, ONLY_ENROLL_ONCE,
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), VERSION, ONLY_ENROLL_ONCE,
                     ENROLLMENT_DATE_LABEL, DISPLAY_INCIDENT_DATE, INCIDENT_DATE_LABEL, REGISTRATION,
                     SELECT_ENROLLMENT_DATES_IN_FUTURE, DATA_ENTRY_METHOD, IGNORE_OVERDUE_EVENTS, RELATIONSHIP_FROM_A,
                     SELECT_INCIDENT_DATES_IN_FUTURE, CAPTURE_COORDINATES, USE_FIRST_STAGE_DURING_REGISTRATION,
                     DISPLAY_FRONT_PAGE_LIST, PROGRAM_TYPE, RELATIONSHIP_TYPE, RELATIONSHIP_TEXT, RELATED_PROGRAM,
                     TRACKED_ENTITY_TYPE, CATEGORY_COMBO, ACCESS_DATA_WRITE, EXPIRY_DAYS, COMPLETE_EVENTS_EXPIRY_DAYS,
-                    EXPIRY_PERIOD_TYPE);
+                    EXPIRY_PERIOD_TYPE, MIN_ATTRIBUTES_REQUIRED_TO_SEARCH, MAX_TEI_COUNT_TO_RETURN);
         }
     }
 
@@ -197,6 +197,14 @@ public abstract class ProgramModel extends BaseNameableObjectModel implements St
     @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
     public abstract PeriodType expiryPeriodType();
 
+    @Nullable
+    @ColumnName(Columns.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH)
+    public abstract Integer minAttributesRequiredToSearch();
+
+    @Nullable
+    @ColumnName(Columns.MAX_TEI_COUNT_TO_RETURN)
+    public abstract Integer maxTeiCountToReturn();
+
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         super.bindToStatement(sqLiteStatement);
@@ -224,6 +232,8 @@ public abstract class ProgramModel extends BaseNameableObjectModel implements St
         sqLiteBind(sqLiteStatement, 32, expiryDays());
         sqLiteBind(sqLiteStatement, 33, completeEventsExpiryDays());
         sqLiteBind(sqLiteStatement, 34, expiryPeriodType());
+        sqLiteBind(sqLiteStatement, 35, minAttributesRequiredToSearch());
+        sqLiteBind(sqLiteStatement, 36, maxTeiCountToReturn());
     }
 
     @AutoValue.Builder
@@ -276,6 +286,10 @@ public abstract class ProgramModel extends BaseNameableObjectModel implements St
         public abstract Builder completeEventsExpiryDays(@Nullable Integer completeEventsExpiryDays);
 
         public abstract Builder expiryPeriodType(@Nullable PeriodType expiryPeriodType);
+        
+        public abstract Builder minAttributesRequiredToSearch(@Nullable Integer minAttributesRequiredToSearch);
+
+        public abstract Builder maxTeiCountToReturn(@Nullable Integer maxTeiCountToReturn);
 
         public abstract ProgramModel build();
     }

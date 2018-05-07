@@ -50,6 +50,7 @@ import retrofit2.Response;
 
 public class DataSetParentCall extends TransactionalCall {
     private final DataSetParentLinkManager linkManager;
+    private final GenericCallData genericCallData;
     private final SimpleCallFactory<Payload<DataSet>> dataSetAccessCallFactory;
     private final UidsCallFactory<DataSet> dataSetCallFactory;
     private final UidsCallFactory<DataElement> dataElementCallFactory;
@@ -58,7 +59,8 @@ public class DataSetParentCall extends TransactionalCall {
     private final List<OrganisationUnit> organisationUnits;
     private final PeriodHandler periodHandler;
 
-    private DataSetParentCall(GenericCallData data, DataSetParentLinkManager linkManager,
+    private DataSetParentCall(GenericCallData genericCallData,
+                              DataSetParentLinkManager linkManager,
                               SimpleCallFactory<Payload<DataSet>> dataSetAccessCallFactory,
                               UidsCallFactory<DataSet> dataSetCallFactory,
                               UidsCallFactory<DataElement> dataElementCallFactory,
@@ -66,7 +68,8 @@ public class DataSetParentCall extends TransactionalCall {
                               UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
                               List<OrganisationUnit> organisationUnits,
                               PeriodHandler periodHandler) {
-        super(data);
+        super(genericCallData.databaseAdapter());
+        this.genericCallData = genericCallData;
         this.linkManager = linkManager;
         this.dataSetAccessCallFactory = dataSetAccessCallFactory;
         this.dataSetCallFactory = dataSetCallFactory;
@@ -79,27 +82,28 @@ public class DataSetParentCall extends TransactionalCall {
 
     @Override
     public Response callBody() throws Exception {
-        Call<Response<Payload<DataSet>>> dataSetAccessEndpointCall = dataSetAccessCallFactory.create(data);
+        Call<Response<Payload<DataSet>>> dataSetAccessEndpointCall = dataSetAccessCallFactory.create(genericCallData);
         Response<Payload<DataSet>> dataSetAccessResponse = dataSetAccessEndpointCall.call();
         List<DataSet> dataSetsWithAccess = dataSetAccessResponse.body().items();
 
         Set<String> dataSetUids = DataSetParentUidsHelper.getAssignedDataSetUids(dataSetsWithAccess);
 
-        Call<Response<Payload<DataSet>>> dataSetEndpointCall = dataSetCallFactory.create(data, dataSetUids);
+        Call<Response<Payload<DataSet>>> dataSetEndpointCall = dataSetCallFactory.create(genericCallData, dataSetUids);
         Response<Payload<DataSet>> dataSetResponse = dataSetEndpointCall.call();
 
-        List<DataSet> dataSets = dataSetResponse.body().items();
         Call<Response<Payload<DataElement>>> dataElementEndpointCall =
-                dataElementCallFactory.create(data, DataSetParentUidsHelper.getDataElementUids(dataSets));
+                dataElementCallFactory.create(genericCallData, dataSetUids);
         Response<Payload<DataElement>> dataElementResponse = dataElementEndpointCall.call();
 
+        List<DataSet> dataSets = dataSetResponse.body().items();
         Call<Response<Payload<Indicator>>> indicatorEndpointCall
-                = indicatorCallFactory.create(data, DataSetParentUidsHelper.getIndicatorUids(dataSets));
+                = indicatorCallFactory.create(genericCallData, DataSetParentUidsHelper.getIndicatorUids(dataSets));
         Response<Payload<Indicator>> indicatorResponse = indicatorEndpointCall.call();
 
         List<Indicator> indicators = indicatorResponse.body().items();
         Call<Response<Payload<IndicatorType>>> indicatorTypeEndpointCall
-                = indicatorTypeCallFactory.create(data, DataSetParentUidsHelper.getIndicatorTypeUids(indicators));
+                = indicatorTypeCallFactory.create(genericCallData,
+                DataSetParentUidsHelper.getIndicatorTypeUids(indicators));
         indicatorTypeEndpointCall.call();
 
         periodHandler.generateAndPersist();

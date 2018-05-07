@@ -297,13 +297,13 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void thrown_illegal_argument_exception_on_consecutive_calls() {
+    public void thrown_illegal_state_exception_on_consecutive_calls() {
         try {
             organisationUnitCall.call();
             organisationUnitCall.call();
             fail("Expecting an Exception on Consecutive calls");
         } catch (Exception e) {
-            assertThat(IllegalArgumentException.class.isInstance(e)).isTrue();
+            assertThat(IllegalStateException.class.isInstance(e)).isTrue();
         }
     }
 

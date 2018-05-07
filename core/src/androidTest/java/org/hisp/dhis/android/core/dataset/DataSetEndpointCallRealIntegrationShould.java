@@ -8,13 +8,12 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,9 +39,7 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private Call<Response<Payload<DataSet>>> createCall() {
-        ResourceHandler resourceHandler =
-                new ResourceHandler(new ResourceStoreImpl(databaseAdapter()));
-        GenericCallData data = GenericCallData.create(databaseAdapter(), resourceHandler, d2.retrofit());
+        GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
 
         Set<String> uids = new HashSet<>();
 

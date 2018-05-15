@@ -43,6 +43,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
     private final ProgramRuleHandler programRuleHandler;
     private final GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
             programTrackedEntityAttributeHandler;
+    private final  IdentifiableHandlerImpl<ProgramSection, ProgramSectionModel> programSectionHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     ProgramHandler(IdentifiableObjectStore<ProgramModel> programStore,
@@ -51,12 +52,14 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
                    ProgramRuleHandler programRuleHandler,
                    GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
                            programTrackedEntityAttributeHandler,
+                   IdentifiableHandlerImpl<ProgramSection, ProgramSectionModel> programSectionHandler,
                    GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
         this.programRuleHandler = programRuleHandler;
         this.programTrackedEntityAttributeHandler = programTrackedEntityAttributeHandler;
+        this.programSectionHandler = programSectionHandler;
         this.styleHandler = styleHandler;
     }
 
@@ -67,6 +70,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
                 ProgramIndicatorHandler.create(databaseAdapter),
                 ProgramRuleHandler.create(databaseAdapter),
                 ProgramTrackedEntityAttributeHandler.create(databaseAdapter),
+                ProgramSectionHandler.create(databaseAdapter),
                 ObjectStyleHandler.create(databaseAdapter)
         );
     }
@@ -78,6 +82,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
         programIndicatorHandler.handleProgramIndicator(null, program.programIndicators());
         programRuleHandler.handleProgramRules(program.programRules());
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
+        programSectionHandler.handleMany(program.programSections(), new ProgramSectionModelBuilder());
         styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(), ProgramModel.TABLE));
     }
 }

@@ -62,6 +62,7 @@ public class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSectio
 
     @Override
     protected void afterObjectPersisted(ProgramSection programSection) {
+        saveProgramSectionAttributeLink(programSection);
         styleHandler.handle(programSection.style(), new ObjectStyleModelBuilder(programSection.uid(),
                 ProgramSectionModel.TABLE));
     }

@@ -1,0 +1,3 @@
+up:
+- CREATE TABLE ProgramSection (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, description TEXT,program TEXT,sortOrder INTEGER,formName TEXT);
+- CREATE TABLE ProgramSectionAttributeLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, programSection TEXT NOT NULL,attribute TEXT NOT NULL, FOREIGN KEY (programSection)  REFERENCES ProgramSection (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (attribute)  REFERENCES TrackedEntityAttribute (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (programSection, attribute));

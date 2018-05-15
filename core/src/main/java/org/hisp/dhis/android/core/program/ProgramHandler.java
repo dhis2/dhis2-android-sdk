@@ -43,7 +43,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
     private final ProgramRuleHandler programRuleHandler;
     private final GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
             programTrackedEntityAttributeHandler;
-    private final  IdentifiableHandlerImpl<ProgramSection, ProgramSectionModel> programSectionHandler;
+    private final GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     ProgramHandler(IdentifiableObjectStore<ProgramModel> programStore,
@@ -52,7 +52,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
                    ProgramRuleHandler programRuleHandler,
                    GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
                            programTrackedEntityAttributeHandler,
-                   IdentifiableHandlerImpl<ProgramSection, ProgramSectionModel> programSectionHandler,
+                   GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler,
                    GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;

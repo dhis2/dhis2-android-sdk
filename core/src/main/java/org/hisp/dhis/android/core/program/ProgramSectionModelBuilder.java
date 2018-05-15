@@ -42,7 +42,7 @@ public class ProgramSectionModelBuilder extends ModelBuilder<ProgramSection, Pro
                 .created(programSection.created())
                 .lastUpdated(programSection.lastUpdated())
                 .description(programSection.description())
-                .program(programSection.program().uid())
+                .program(programSection.programUid())
                 .sortOrder(programSection.sortOrder())
                 .formName(programSection.formName())
                 .build();

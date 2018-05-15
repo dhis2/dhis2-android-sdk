@@ -81,6 +81,11 @@ public abstract class ProgramSection extends BaseIdentifiableObject {
     @JsonProperty(PROGRAM)
     public abstract ObjectWithUid program();
 
+    String programUid() {
+        ObjectWithUid program = program();
+        return program == null ? null : program.uid();
+    }
+
     @Nullable
     @JsonProperty(ATTRIBUTES)
     public abstract List<ObjectWithUid> attributes();

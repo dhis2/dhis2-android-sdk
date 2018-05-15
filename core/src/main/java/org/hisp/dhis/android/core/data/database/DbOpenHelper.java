@@ -71,6 +71,7 @@ import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
 import org.hisp.dhis.android.core.program.ProgramRuleModel;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableModel;
+import org.hisp.dhis.android.core.program.ProgramSectionModel;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.program.ProgramStageSectionModel;
@@ -106,7 +107,7 @@ import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel.Colu
 })
 public class DbOpenHelper extends CustomSQLBriteOpenHelper {
 
-    public static final int VERSION = 24;
+    public static final int VERSION = 25;
     public String mockedSqlDatabase = "";
     private static final String CREATE_CONFIGURATION_TABLE =
             "CREATE TABLE " + ConfigurationModel.CONFIGURATION + " (" +
@@ -1105,6 +1106,14 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
                             TrackedEntityAttributeReservedValueModel.Columns.ORGANISATION_UNIT + " TEXT"
             );
 
+    private static final String CREATE_PROGRAM_SECTION_TABLE =
+            SQLStatementBuilder.createIdentifiableModelTable(ProgramSectionModel.TABLE,
+                    ProgramSectionModel.Columns.DESCRIPTION + " TEXT," +
+                            ProgramSectionModel.Columns.PROGRAM + " TEXT," +
+                            ProgramSectionModel.Columns.SORT_ORDER + " INTEGER," +
+                            ProgramSectionModel.Columns.FORM_NAME + " TEXT"
+            );
+
     /**
      * This method should be used only for testing purposes
      */
@@ -1172,6 +1181,7 @@ public class DbOpenHelper extends CustomSQLBriteOpenHelper {
         database.execSQL(CREATE_PROGRAM_INDICATOR_LEGEND_SET_LINK_TABLE);
         database.execSQL(CREATE_SYSTEM_SETTING_TABLE);
         database.execSQL(CREATE_TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE_TABLE);
+        database.execSQL(CREATE_PROGRAM_SECTION_TABLE);
         return database;
     }
 

@@ -68,7 +68,7 @@ public class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSectio
     }
 
     private void saveProgramSectionAttributeLink(ProgramSection programSection) {
-        List<ObjectWithUid> attributes = programSection.programTrackedEntityAttribute();
+        List<ObjectWithUid> attributes = programSection.attributes();
         if (attributes != null) {
             ProgramSectionAttributeLinkModelBuilder builder =
                     new ProgramSectionAttributeLinkModelBuilder(programSection);

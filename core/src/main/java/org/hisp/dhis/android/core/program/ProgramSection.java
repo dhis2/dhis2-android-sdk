@@ -48,7 +48,7 @@ import java.util.List;
 public abstract class ProgramSection extends BaseIdentifiableObject {
     private static final String DESCRIPTION = "description";
     private static final String PROGRAM = "program";
-    private static final String PROGRAM_TRACKED_ENTITY_ATTRIBUTE = "programTrackedEntityAttribute";
+    private static final String ATTRIBUTES = "programTrackedEntityAttribute";
     private static final String SORT_ORDER = "sortOrder";
     private static final String STYLE = "style";
     private static final String FORM_NAME = "formName";
@@ -63,15 +63,15 @@ public abstract class ProgramSection extends BaseIdentifiableObject {
 
     private static final Field<ProgramSection, String> description = Field.create(DESCRIPTION);
     private static final NestedField<ProgramSection, ObjectWithUid> program = NestedField.create(PROGRAM);
-    private static final NestedField<ProgramSection, ObjectWithUid> programTrackedEntityAttribute =
-            NestedField.create(PROGRAM_TRACKED_ENTITY_ATTRIBUTE);
+    private static final NestedField<ProgramSection, ObjectWithUid> attributes =
+            NestedField.create(ATTRIBUTES);
     private static final Field<ProgramSection, Integer> sortOrder = Field.create(SORT_ORDER);
     private static final NestedField<ProgramSection, ObjectStyle> style = NestedField.create(STYLE);
     private static final Field<ProgramSection, String> formName = Field.create(FORM_NAME);
 
     static final Fields<ProgramSection> allFields = Fields.<ProgramSection>builder().fields(
             uid, code, name, displayName, created, lastUpdated, deleted, description, program, sortOrder, formName,
-            programTrackedEntityAttribute.with(ObjectWithUid.uid), style.with(ObjectStyle.allFields)).build();
+            attributes.with(ObjectWithUid.uid), style.with(ObjectStyle.allFields)).build();
 
     @Nullable
     @JsonProperty(DESCRIPTION)
@@ -82,8 +82,8 @@ public abstract class ProgramSection extends BaseIdentifiableObject {
     public abstract ObjectWithUid program();
 
     @Nullable
-    @JsonProperty(PROGRAM_TRACKED_ENTITY_ATTRIBUTE)
-    public abstract List<ObjectWithUid> programTrackedEntityAttribute();
+    @JsonProperty(ATTRIBUTES)
+    public abstract List<ObjectWithUid> attributes();
 
     @Nullable
     @JsonProperty(SORT_ORDER)
@@ -108,7 +108,7 @@ public abstract class ProgramSection extends BaseIdentifiableObject {
 
             @JsonProperty(DESCRIPTION) String description,
             @JsonProperty(PROGRAM) ObjectWithUid program,
-            @JsonProperty(PROGRAM_TRACKED_ENTITY_ATTRIBUTE) List<ObjectWithUid> programTrackedEntityAttribute,
+            @JsonProperty(ATTRIBUTES) List<ObjectWithUid> attributes,
             @JsonProperty(SORT_ORDER) Integer sortOrder,
             @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(FORM_NAME) String formName,
@@ -116,7 +116,7 @@ public abstract class ProgramSection extends BaseIdentifiableObject {
 
         return new AutoValue_ProgramSection(
                 uid, code, name, displayName, created, lastUpdated, deleted, description, program,
-                programTrackedEntityAttribute, sortOrder, style, formName
+                attributes, sortOrder, style, formName
         );
     }
 }

@@ -34,20 +34,28 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.List;
+
 public class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSection, ProgramSectionModel> {
+    private final ObjectWithoutUidStore<ProgramSectionAttributeLinkModel> programSectionAttributeLinkStore;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     ProgramSectionHandler(IdentifiableObjectStore<ProgramSectionModel> programSectionStore,
+                          ObjectWithoutUidStore<ProgramSectionAttributeLinkModel> programSectionAttributeLinkStore,
                           GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
         super(programSectionStore);
+        this.programSectionAttributeLinkStore = programSectionAttributeLinkStore;
         this.styleHandler = styleHandler;
     }
 
     public static ProgramSectionHandler create(DatabaseAdapter databaseAdapter) {
         return new ProgramSectionHandler(
                 ProgramSectionStore.create(databaseAdapter),
+                ProgramSectionAttributeLinkStore.create(databaseAdapter),
                 ObjectStyleHandler.create(databaseAdapter)
         );
     }
@@ -56,5 +64,16 @@ public class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSectio
     protected void afterObjectPersisted(ProgramSection programSection) {
         styleHandler.handle(programSection.style(), new ObjectStyleModelBuilder(programSection.uid(),
                 ProgramSectionModel.TABLE));
+    }
+
+    private void saveProgramSectionAttributeLink(ProgramSection programSection) {
+        List<ObjectWithUid> attributes = programSection.programTrackedEntityAttribute();
+        if (attributes != null) {
+            ProgramSectionAttributeLinkModelBuilder builder =
+                    new ProgramSectionAttributeLinkModelBuilder(programSection);
+            for (ObjectWithUid attribute : attributes) {
+                programSectionAttributeLinkStore.updateOrInsertWhere(builder.buildModel(attribute));
+            }
+        }
     }
 }

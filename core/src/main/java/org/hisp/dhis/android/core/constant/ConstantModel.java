@@ -37,6 +37,7 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -63,6 +64,13 @@ public abstract class ConstantModel extends BaseIdentifiableObjectModel {
         return new $$AutoValue_ConstantModel.Builder();
     }
 
+    public static final CursorModelFactory<ConstantModel> factory
+            = new CursorModelFactory<ConstantModel>() {
+        @Override
+        public ConstantModel fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
 
     @Nullable
     @ColumnName(Columns.VALUE)

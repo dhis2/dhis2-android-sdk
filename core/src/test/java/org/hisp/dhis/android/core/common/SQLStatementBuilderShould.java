@@ -27,6 +27,11 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.dataset.DataSetModel;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.legendset.LegendModel;
+import org.hisp.dhis.android.core.legendset.LegendSetModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,28 +56,28 @@ public class SQLStatementBuilderShould {
     }
 
     @Test
-    public void generate_insert_statement() throws Exception {
+    public void generate_insert_statement() {
         assertThat(builder.insert()).isEqualTo(
                 "INSERT INTO Test_Table (Test_Column_Name1, Test_Column_Name2) VALUES (?, ?);"
         );
     }
 
     @Test
-    public void generate_update_statement() throws Exception {
+    public void generate_update_statement() {
         assertThat(builder.update()).isEqualTo(
                 "UPDATE Test_Table SET Test_Column_Name1=?, Test_Column_Name2=? WHERE uid=?;"
         );
     }
 
     @Test
-    public void generate_delete_statement() throws Exception {
+    public void generate_delete_statement() {
         assertThat(builder.deleteById()).isEqualTo(
                 "DELETE FROM Test_Table WHERE uid=?;"
         );
     }
 
     @Test
-    public void generate_create_model_table_statement() throws Exception {
+    public void generate_create_model_table_statement() {
         String statement = SQLStatementBuilder.createModelTable("Test_Table",
                 "Test_Column_Name TEXT");
 
@@ -82,7 +87,7 @@ public class SQLStatementBuilderShould {
     }
 
     @Test
-    public void generate_create_identifiable_table_statement() throws Exception {
+    public void generate_create_identifiable_table_statement() {
         String statement = SQLStatementBuilder.createIdentifiableModelTable("Test_Table",
                 "Test_Column_Name TEXT");
 
@@ -98,7 +103,7 @@ public class SQLStatementBuilderShould {
     }
 
     @Test
-    public void generate_create_nameable_table_statement() throws Exception {
+    public void generate_create_nameable_table_statement() {
         String statement = SQLStatementBuilder.createNameableModelTable("Test_Table",
                 "Test_Column_Name TEXT");
 
@@ -118,21 +123,72 @@ public class SQLStatementBuilderShould {
     }
 
     @Test
-    public void generate_delete_where_statement() throws Exception {
+    public void generate_create_organisation_unit_table_statement() {
+        String createOrganisationUnitTable =
+                SQLStatementBuilder.createNameableModelTable(OrganisationUnitModel.TABLE,
+                        OrganisationUnitModel.Columns.PATH + " TEXT," +
+                                OrganisationUnitModel.Columns.OPENING_DATE + " TEXT," +
+                                OrganisationUnitModel.Columns.CLOSED_DATE + " TEXT," +
+                                OrganisationUnitModel.Columns.LEVEL + " INTEGER," +
+                                OrganisationUnitModel.Columns.PARENT + " TEXT," +
+                                OrganisationUnitModel.Columns.DISPLAY_NAME_PATH + " TEXT"
+                );
+
+        assertThat(createOrganisationUnitTable).isEqualTo("CREATE TABLE OrganisationUnit (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, path TEXT,openingDate TEXT,closedDate TEXT,level INTEGER,parent TEXT,displayNamePath TEXT);");
+    }
+
+    @Test
+    public void generate_create_data_set_organisation_unit_table_statement() {
+        String createDataSetOrganisationUnitLinkTable =
+                SQLStatementBuilder.createModelTable(DataSetOrganisationUnitLinkModel.TABLE,
+                        DataSetOrganisationUnitLinkModel.Columns.DATA_SET + " TEXT NOT NULL," +
+                                DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+                                " FOREIGN KEY (" + DataSetOrganisationUnitLinkModel.Columns.DATA_SET + ") " +
+                                " REFERENCES " + DataSetModel.TABLE + " (" + DataSetModel.Columns.UID + ")" +
+                                " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                                " FOREIGN KEY (" + DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ") " +
+                                " REFERENCES " + OrganisationUnitModel.TABLE + " (" +
+                                OrganisationUnitModel.Columns.UID + ")" +
+                                " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
+                                " UNIQUE (" + DataSetOrganisationUnitLinkModel.Columns.DATA_SET + ", " +
+                                DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ")"
+                );
+
+        assertThat(createDataSetOrganisationUnitLinkTable).isEqualTo("CREATE TABLE DataSetOrganisationUnitLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataSet TEXT NOT NULL,organisationUnit TEXT NOT NULL, FOREIGN KEY (dataSet)  REFERENCES DataSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit)  REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (dataSet, organisationUnit));");
+    }
+
+    @Test
+    public void generate_create_legend_table_statement() {
+        String createLegendTable =
+                SQLStatementBuilder.createIdentifiableModelTable(LegendModel.TABLE,
+                        LegendModel.Columns.START_VALUE + " REAL," +
+                                LegendModel.Columns.END_VALUE + " REAL," +
+                                LegendModel.Columns.COLOR + " TEXT," +
+                                LegendModel.Columns.LEGEND_SET + " TEXT," +
+                                " FOREIGN KEY ( " + LegendModel.Columns.LEGEND_SET + ")" +
+                                " REFERENCES " + LegendSetModel.TABLE + " (" + LegendSetModel.Columns.UID + ")" +
+                                " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
+                );
+
+        assertThat(createLegendTable).isEqualTo("CREATE TABLE Legend (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, startValue REAL,endValue REAL,color TEXT,legendSet TEXT, FOREIGN KEY ( legendSet) REFERENCES LegendSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);");
+    }
+
+    @Test
+    public void generate_delete_where_statement() {
         assertThat(builder.deleteWhere()).isEqualTo(
                 "DELETE FROM Test_Table WHERE Test_Column_Name1=? AND Test_Column_Name2=?;"
         );
     }
 
     @Test
-    public void generate_select_where_statement() throws Exception {
+    public void generate_select_where_statement() {
         assertThat(builder.selectWhere()).isEqualTo(
                 "SELECT * FROM Test_Table WHERE Test_Column_Name1=? AND Test_Column_Name2=?"
         );
     }
 
     @Test
-    public void generate_select_by_uid_statement() throws Exception {
+    public void generate_select_by_uid_statement() {
         assertThat(builder.selectByUid()).isEqualTo(
                 "SELECT * FROM Test_Table WHERE uid=?"
         );

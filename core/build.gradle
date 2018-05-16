@@ -108,6 +108,10 @@ dependencies {
     compile "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
     compile "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
 
+    // Apache libraries
+    compile group: 'org.apache.commons', name: 'commons-jexl', version: '2.1.1'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+
     // Extension which generates mappers for work with cursor and content values
     compile "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
     annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"

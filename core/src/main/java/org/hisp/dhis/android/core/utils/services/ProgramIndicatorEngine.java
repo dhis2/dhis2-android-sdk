@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.utils.services;
 
 import org.apache.commons.jexl2.JexlException;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStoreImpl;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.constant.ConstantStore;
@@ -93,10 +94,12 @@ public class ProgramIndicatorEngine {
     private final IdentifiableObjectStore<ConstantModel> constantStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
-    private ProgramIndicatorEngine(DatabaseAdapter databaseAdapter) {
-        this.dataElementStore = DataElementStore.create(databaseAdapter);
-        this.constantStore = ConstantStore.create(databaseAdapter);
-        this.trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStoreImpl(databaseAdapter);
+    ProgramIndicatorEngine(IdentifiableObjectStore<DataElementModel> dataElementStore,
+                           IdentifiableObjectStore<ConstantModel> constantStore,
+                           TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
+        this.dataElementStore = dataElementStore;
+        this.constantStore = constantStore;
+        this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
     }
 
     /**
@@ -208,6 +211,7 @@ public class ProgramIndicatorEngine {
                     if (dataValue == null || dataValue.value() == null || dataValue.value().isEmpty()) {
                         value = "0";
                     } else {
+                        String v = dataValue.dataElement();
                         if(dataElementStore.selectByUid(dataValue.dataElement(), DataElementModel.factory)
                                 .valueType() == ValueType.BOOLEAN){
                             if(dataValue.value().equals("true")){
@@ -331,6 +335,7 @@ public class ProgramIndicatorEngine {
     }
 
     public static ProgramIndicatorEngine create(DatabaseAdapter databaseAdapter) {
-        return new ProgramIndicatorEngine(databaseAdapter);
+        return new ProgramIndicatorEngine(DataElementStore.create(databaseAdapter),
+                ConstantStore.create(databaseAdapter), new TrackedEntityAttributeValueStoreImpl(databaseAdapter));
     }
 }

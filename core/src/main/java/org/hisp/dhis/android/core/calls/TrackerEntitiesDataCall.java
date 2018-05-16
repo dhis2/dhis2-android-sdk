@@ -77,17 +77,7 @@ public final class TrackerEntitiesDataCall extends SyncCall<Response> {
     private Response trackerCall(GenericCallData genericCallData) throws Exception {
         Response response = null;
 
-        Set<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll(
-                UserOrganisationUnitLinkModel.factory);
-
-        Set<String> organisationUnitUids = new HashSet<>();
-
-        for (UserOrganisationUnitLinkModel linkModel: userOrganisationUnitLinks) {
-            if (linkModel.organisationUnitScope().equals(
-                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name())) {
-                organisationUnitUids.add(linkModel.organisationUnit());
-            }
-        }
+        Set<String> organisationUnitUids = getOrgUnitUids();
 
         int pageSize = TeiQuery.Builder.create().build().getPageSize();
 
@@ -129,6 +119,22 @@ public final class TrackerEntitiesDataCall extends SyncCall<Response> {
         }
 
         return response;
+    }
+
+    private Set<String> getOrgUnitUids() {
+        Set<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll(
+                UserOrganisationUnitLinkModel.factory);
+
+        Set<String> organisationUnitUids = new HashSet<>();
+
+        for (UserOrganisationUnitLinkModel linkModel: userOrganisationUnitLinks) {
+            if (linkModel.organisationUnitScope().equals(
+                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name())) {
+                organisationUnitUids.add(linkModel.organisationUnit());
+            }
+        }
+
+        return organisationUnitUids;
     }
 
 

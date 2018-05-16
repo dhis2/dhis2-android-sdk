@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -36,6 +38,8 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class ProgramSectionModel extends BaseIdentifiableObjectModel {
@@ -77,6 +81,15 @@ public abstract class ProgramSectionModel extends BaseIdentifiableObjectModel {
     @Nullable
     @ColumnName(Columns.FORM_NAME)
     public abstract String formName();
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 7, description());
+        sqLiteBind(sqLiteStatement, 8, program());
+        sqLiteBind(sqLiteStatement, 9, sortOrder());
+        sqLiteBind(sqLiteStatement, 10, formName());
+    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {

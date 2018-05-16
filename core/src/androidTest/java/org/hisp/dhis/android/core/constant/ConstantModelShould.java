@@ -28,82 +28,51 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import android.content.ContentValues;
-import android.database.MatrixCursor;
+import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.IdentifiableModelAbstractShould;
 import org.hisp.dhis.android.core.constant.ConstantModel.Columns;
+import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
+import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Date;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
-public class ConstantModelShould {
-
-    private static final Long ID = 11L;
-    private static final String UID = "test_uid";
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-    private static final String VALUE = "0.18";
-
-    private final Date date;
-    private final String dateString;
+public class ConstantModelShould extends IdentifiableModelAbstractShould<ConstantModel> {
 
     public ConstantModelShould() {
-        this.date = new Date();
-        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+        super(new Columns().all(), 7);
+    }
+
+    @Override
+    protected ConstantModel buildModel() {
+        ConstantModel.Builder builder = ConstantModel.builder();
+        fillIdentifiableModelProperties(builder);
+        builder.value("0.18");
+        return builder.build();
+    }
+
+    @Override
+    protected ConstantModel cursorToModel(Cursor cursor) {
+        return ConstantModel.create(cursor);
+    }
+
+    @Override
+    protected Object[] getModelAsObjectArray() {
+        return Utils.appendInNewArray(ColumnsArrayUtils.getIdentifiableModelAsObjectArray(model), model.value());
     }
 
     @Test
-    public void create_model_when_created_from_database_cursor() {
-        MatrixCursor cursor = new MatrixCursor(new String[]{
-                Columns.ID, Columns.UID, Columns.CODE, Columns.NAME,
-                Columns.DISPLAY_NAME, Columns.CREATED, Columns.LAST_UPDATED, Columns.VALUE
-        });
-        cursor.addRow(new Object[]{ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, VALUE});
-        cursor.moveToFirst();
+    public void have_extra_legend_model_columns() {
+        List<String> columnsList = Arrays.asList(columns);
 
-        ConstantModel model = ConstantModel.create(cursor);
-        cursor.close();
-
-        assertThat(model.id()).isEqualTo(ID);
-        assertThat(model.uid()).isEqualTo(UID);
-        assertThat(model.code()).isEqualTo(CODE);
-        assertThat(model.name()).isEqualTo(NAME);
-        assertThat(model.displayName()).isEqualTo(DISPLAY_NAME);
-        assertThat(model.created()).isEqualTo(date);
-        assertThat(model.lastUpdated()).isEqualTo(date);
-        assertThat(model.value()).isEqualTo(VALUE);
-    }
-
-    @Test
-    public void create_content_values_when_created_from_builder() {
-        ConstantModel model = ConstantModel.builder()
-                .id(ID)
-                .uid(UID)
-                .code(CODE)
-                .name(NAME)
-                .displayName(DISPLAY_NAME)
-                .created(date)
-                .lastUpdated(date)
-                .value(VALUE)
-                .build();
-
-        ContentValues contentValues = model.toContentValues();
-
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.VALUE)).isEqualTo(VALUE); // Undeprecated in later versions of Truth
-
+        assertThat(columnsList.contains(Columns.VALUE)).isEqualTo(true);
     }
 }

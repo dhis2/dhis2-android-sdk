@@ -4,18 +4,20 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.trackedentity.TeiQuery;
 import org.hisp.dhis.android.core.trackedentity.TeisEndPointCall;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import retrofit2.Response;
@@ -26,15 +28,16 @@ public final class TrackerEntitiesDataCall extends SyncCall<Response> {
     private final int teiLimitByOrgUnit;
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
-    private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    private final ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
 
-    private TrackerEntitiesDataCall(@NonNull DatabaseAdapter databaseAdapter,
-                                    @NonNull Retrofit retrofit,
-                                    @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
-                                    int teiLimitByOrgUnit) {
+    private TrackerEntitiesDataCall(
+            @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull Retrofit retrofit,
+            @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore,
+            int teiLimitByOrgUnit) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
-        this.organisationUnitStore = organisationUnitStore;
+        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.teiLimitByOrgUnit = teiLimitByOrgUnit;
     }
 
@@ -74,7 +77,7 @@ public final class TrackerEntitiesDataCall extends SyncCall<Response> {
     private Response trackerCall(GenericCallData genericCallData) throws Exception {
         Response response = null;
 
-        Set<String> organisationUnitUids = organisationUnitStore.selectUids();
+        Set<String> organisationUnitUids = getOrgUnitUids();
 
         int pageSize = TeiQuery.Builder.create().build().getPageSize();
 
@@ -118,13 +121,29 @@ public final class TrackerEntitiesDataCall extends SyncCall<Response> {
         return response;
     }
 
+    private Set<String> getOrgUnitUids() {
+        Set<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll(
+                UserOrganisationUnitLinkModel.factory);
+
+        Set<String> organisationUnitUids = new HashSet<>();
+
+        for (UserOrganisationUnitLinkModel linkModel: userOrganisationUnitLinks) {
+            if (linkModel.organisationUnitScope().equals(
+                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name())) {
+                organisationUnitUids.add(linkModel.organisationUnit());
+            }
+        }
+
+        return organisationUnitUids;
+    }
+
 
     public static TrackerEntitiesDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
                                                  int teiLimitByOrgUnit) {
         return new TrackerEntitiesDataCall(
                 databaseAdapter,
                 retrofit,
-                OrganisationUnitStore.create(databaseAdapter),
+                UserOrganisationUnitLinkStore.create(databaseAdapter),
                 teiLimitByOrgUnit
         );
     }

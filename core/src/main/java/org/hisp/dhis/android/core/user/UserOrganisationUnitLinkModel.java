@@ -37,6 +37,7 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -77,6 +78,14 @@ public abstract class UserOrganisationUnitLinkModel extends BaseModel {
     public static UserOrganisationUnitLinkModel create(Cursor cursor) {
         return AutoValue_UserOrganisationUnitLinkModel.createFromCursor(cursor);
     }
+
+    public static final CursorModelFactory<UserOrganisationUnitLinkModel> factory
+            = new CursorModelFactory<UserOrganisationUnitLinkModel>() {
+        @Override
+        public UserOrganisationUnitLinkModel fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
 
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {

@@ -93,4 +93,6 @@ public interface EventStore extends DeletableStore {
     List<Event> querySingleEvents();
 
     List<Event> queryAll();
+
+    EventModel queryByUid(String eventUid);
 }

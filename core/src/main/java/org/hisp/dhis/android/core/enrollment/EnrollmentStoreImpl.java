@@ -139,6 +139,10 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
             FIELDS +
             " FROM Enrollment;";
 
+    private static final String QUERY_BY_UID = "SELECT " +
+            FIELDS +
+            " FROM Enrollment WHERE Enrollment.uid = '?'";
+
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
@@ -250,6 +254,15 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
     public Map<String, List<Enrollment>> queryAll() {
         Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
         return mapFromCursor(cursor);
+    }
+
+    @Override
+    public EnrollmentModel queryByUid(String enrollmentUid) {
+        String queryStatement = QUERY_BY_UID.replace("?", enrollmentUid);
+
+        Cursor cursor = databaseAdapter.query(queryStatement);
+
+        return EnrollmentModel.create(cursor);
     }
 
     private Map<String, List<Enrollment>> mapFromCursor(Cursor cursor) {

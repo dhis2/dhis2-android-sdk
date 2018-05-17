@@ -149,6 +149,10 @@ public class EventStoreImpl implements EventStore {
     private static final String QUERY_SINGLE_EVENTS_TO_POST =
             QUERY_SINGLE_EVENTS + "  AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE')";
 
+    private static final String QUERY_BY_UID = "SELECT " +
+            FIELDS +
+            " FROM Event WHERE Event.uid = '?'";
+
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
@@ -308,6 +312,15 @@ public class EventStoreImpl implements EventStore {
         Cursor cursor = databaseAdapter.query(QUERY_ALL_EVENTS);
 
         return mapEventsFromCursor(cursor);
+    }
+
+    @Override
+    public EventModel queryByUid(String eventUid) {
+        String queryStatement = QUERY_BY_UID.replace("?", eventUid);
+
+        Cursor cursor = databaseAdapter.query(queryStatement);
+
+        return EventModel.create(cursor);
     }
 
     private List<Event> mapEventsFromCursor(Cursor cursor) {

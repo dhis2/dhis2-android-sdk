@@ -20,7 +20,6 @@ import org.hisp.dhis.android.core.trackedentity.TeisEndPointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -83,8 +82,11 @@ public final class TrackerEntitiesDataCall extends SyncCall<List<TrackedEntityIn
         int numPages = (int) Math.ceil((double) teiLimit / pageSize);
 
         if (limitByOrgUnit) {
+            Set<String> orgUnitWrapper = new HashSet<>();
             for (String orgUnitUid : organisationUnitUids) {
-                teiQueryBuilder.withOrgUnits(new HashSet<>(Arrays.asList(orgUnitUid)));
+                orgUnitWrapper.clear();
+                orgUnitWrapper.add(orgUnitUid);
+                teiQueryBuilder.withOrgUnits(orgUnitWrapper);
                 trackedEntityInstances.addAll(getTrackedEntityInstances(teiQueryBuilder, genericCallData, pageSize,
                         numPages));
             }
@@ -109,11 +111,13 @@ public final class TrackerEntitiesDataCall extends SyncCall<List<TrackedEntityIn
                 teiQueryBuilder.withPage(page);
                  trackerCallResponse = TeisEndPointCall.create(genericCallData, teiQueryBuilder.build()).call();
 
-                if (trackerCallResponse.isSuccessful()) {
-                    trackedEntityInstances.addAll(trackerCallResponse.body().items());
+                if (!trackerCallResponse.isSuccessful()) {
+                    throw httpExceptionBuilder.httpErrorCode(trackerCallResponse.code()).build();
                 }
+
+                trackedEntityInstances.addAll(trackerCallResponse.body().items());
             } catch (Exception e) {
-                throw httpExceptionBuilder.httpErrorCode(trackerCallResponse.code()).build();
+                throw httpExceptionBuilder.originalException(e).build();
             }
         }
         return trackedEntityInstances;

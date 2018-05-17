@@ -13,7 +13,6 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.List;

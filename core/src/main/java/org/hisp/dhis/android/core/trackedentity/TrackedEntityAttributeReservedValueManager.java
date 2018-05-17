@@ -29,13 +29,13 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 
+import java.util.Date;
 import java.util.List;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -44,16 +44,19 @@ import retrofit2.Retrofit;
 
 public final class TrackedEntityAttributeReservedValueManager {
 
-    private final ObjectWithoutUidStore<TrackedEntityAttributeReservedValueModel> store;
+    private final TrackedEntityAttributeReservedValueStoreInterface store;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
-    private TrackedEntityAttributeReservedValueManager(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
+    private TrackedEntityAttributeReservedValueManager(DatabaseAdapter databaseAdapter,
+                                                       Retrofit retrofit,
+                                                       TrackedEntityAttributeReservedValueStoreInterface store,
+                                                       IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
-        this.store = TrackedEntityAttributeReservedValueStore.create(databaseAdapter);
-        this.organisationUnitStore = OrganisationUnitStore.create(databaseAdapter);
+        this.store = store;
+        this.organisationUnitStore = organisationUnitStore;
     }
 
     @SuppressFBWarnings("DE_MIGHT_IGNORE")
@@ -86,7 +89,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     private void syncReservedValues(String attribute, String organisationUnitUid) throws Exception {
-        deleteExpiredDates(attribute, organisationUnitUid);
+        deleteExpiredDates();
         List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attribute,
                 organisationUnitUid);
         if (reservedValues.size() <= 50) {
@@ -94,14 +97,9 @@ public final class TrackedEntityAttributeReservedValueManager {
         }
     }
 
-    private void deleteExpiredDates(String attributeUid, String orgUnitUid) {
-        List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attributeUid, orgUnitUid);
-
-        for (TrackedEntityAttributeReservedValueModel reservedValue : reservedValues) {
-            if (reservedValue.expiryDate().getTime() < System.currentTimeMillis()) {
-                deleteReservedValue(reservedValue);
-            }
-        }
+    private void deleteExpiredDates() {
+        // TODO use server date
+        store.deleteExpired(new Date());
     }
 
     private void fillReservedValues(String attribute, String organisationUnitUid, Integer size) throws Exception {
@@ -127,6 +125,10 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     public static TrackedEntityAttributeReservedValueManager create(DatabaseAdapter databaseAdapter,
                                                                     Retrofit retrofit) {
-        return new TrackedEntityAttributeReservedValueManager(databaseAdapter, retrofit);
+        return new TrackedEntityAttributeReservedValueManager(
+                databaseAdapter,
+                retrofit,
+                TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
+                OrganisationUnitStore.create(databaseAdapter));
     }
 }

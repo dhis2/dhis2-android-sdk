@@ -28,17 +28,47 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class TrackedEntityAttributeReservedValueStore {
+import java.util.Date;
 
-    private TrackedEntityAttributeReservedValueStore() {}
+public final class TrackedEntityAttributeReservedValueStore
+        extends ObjectWithoutUidStoreImpl<TrackedEntityAttributeReservedValueModel>
+        implements TrackedEntityAttributeReservedValueStoreInterface {
 
-    public static ObjectWithoutUidStore<TrackedEntityAttributeReservedValueModel>
+    private TrackedEntityAttributeReservedValueStore(DatabaseAdapter databaseAdapter,
+                                                     SQLiteStatement insertStatement,
+                                                     SQLiteStatement updateWhereStatement,
+                                                     SQLiteStatement deleteWhereStatement,
+                                                     SQLStatementBuilder builder) {
+        super(databaseAdapter, insertStatement, updateWhereStatement, deleteWhereStatement, builder);
+    }
+
+    @Override
+    public void deleteExpired(@NonNull Date serverDate) throws RuntimeException {
+        super.deleteWhereClause(TrackedEntityAttributeReservedValueModel.Columns.EXPIRY_DATE
+                + " < date('" + BaseIdentifiableObject.DATE_FORMAT.format(serverDate) + "')");
+    }
+
+    public static TrackedEntityAttributeReservedValueStoreInterface
     create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, TrackedEntityAttributeReservedValueModel.TABLE,
-                new TrackedEntityAttributeReservedValueModel.Columns());
+        BaseModel.Columns columns = new TrackedEntityAttributeReservedValueModel.Columns();
+
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+                TrackedEntityAttributeReservedValueModel.TABLE, columns);
+
+        return new TrackedEntityAttributeReservedValueStore(
+                databaseAdapter,
+                databaseAdapter.compileStatement(statementBuilder.insert()),
+                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
+                databaseAdapter.compileStatement(statementBuilder.deleteWhere()),
+                statementBuilder);
     }
 }

@@ -97,4 +97,8 @@ public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
         }
         return objects;
     }
+
+    protected boolean deleteWhereClause(String clause) {
+        return databaseAdapter.database().delete(builder.tableName, clause, null) > 0;
+    }
 }

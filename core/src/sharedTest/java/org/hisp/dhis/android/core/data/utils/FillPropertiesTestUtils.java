@@ -73,7 +73,7 @@ public class FillPropertiesTestUtils {
 
     public static final boolean DELETED = false;
 
-    private static Date parseDate(String dateStr) {
+    public static Date parseDate(String dateStr) {
         try {
             return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
         } catch (ParseException e) {

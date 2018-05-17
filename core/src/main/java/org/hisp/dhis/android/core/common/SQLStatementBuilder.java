@@ -51,6 +51,14 @@ public class SQLStatementBuilder {
         this.selectWhereColumns = selectWhereColumns.clone();
     }
 
+    public SQLStatementBuilder(String tableName, BaseModel.Columns columns) {
+        this.tableName = tableName;
+        this.columns = columns.all().clone();
+        this.updateWhereColumns = columns.whereUpdate().clone();
+        this.deleteWhereColumns = columns.whereUpdate().clone();
+        this.selectWhereColumns = columns.whereSelect().clone();
+    }
+
     private String commaSeparatedColumns() {
         return commaAndSpaceSeparatedArrayValues(columns);
     }
@@ -85,7 +93,7 @@ public class SQLStatementBuilder {
         return "DELETE FROM " + tableName + WHERE + BaseIdentifiableObjectModel.Columns.UID + "=?;";
     }
 
-    String deleteWhere() {
+    public String deleteWhere() {
         String whereClause = deleteWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
                 andSeparatedColumnEqualInterrogationMark(deleteWhereColumns);
         return "DELETE FROM " + tableName + WHERE + whereClause + ";";
@@ -115,7 +123,7 @@ public class SQLStatementBuilder {
                 WHERE + BaseIdentifiableObjectModel.Columns.UID + "=?;";
     }
 
-    String updateWhere() {
+    public String updateWhere() {
         // TODO refactor to only generate for object without uids store.
         String whereClause = updateWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
                 andSeparatedColumnEqualInterrogationMark(updateWhereColumns);

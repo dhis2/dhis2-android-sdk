@@ -45,7 +45,7 @@ public interface TrackedEntityInstanceService {
     @GET(TRACKED_ENTITY_INSTANCES)
     Call<Payload<TrackedEntityInstance>> getTEIs(
             @Query(OU) String orgUnits,
-            @Query(FILTER) @Where Filter<TrackedEntityInstance, String> lastUpdated,
+            @Query(OU_MODE) String orgUnitMode,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,

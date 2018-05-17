@@ -14,7 +14,6 @@ import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.List;
@@ -27,41 +26,31 @@ public final class TeisEndPointCall extends SyncCall<Response<Payload<TrackedEnt
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final TeiQuery trackerQuery;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
-    private final ResourceHandler resourceHandler;
 
     private TeisEndPointCall(
             @NonNull GenericCallData genericCallData,
             @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
             @NonNull TeiQuery trackerQuery,
-            @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
-            @NonNull ResourceHandler resourceHandler) {
+            @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler) {
         this.genericCallData = genericCallData;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.trackerQuery = trackerQuery;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
-        this.resourceHandler = resourceHandler;
     }
 
     @Override
     public Response<Payload<TrackedEntityInstance>> call() throws Exception {
         super.setExecuted();
 
-        String lastSyncedTEIs = resourceHandler.getLastUpdated(ResourceModel.Type.TRACKED_ENTITY_INSTANCE);
-
         Integer teisToRequest = Math.min(trackerQuery.getPageLimit(), trackerQuery.getPageSize());
-
-        Response<Payload<TrackedEntityInstance>> response;
-
-        response = trackedEntityInstanceService.getTEIs(
+        Response<Payload<TrackedEntityInstance>> response = trackedEntityInstanceService.getTEIs(
                 Utils.joinCollectionWithSeparator(trackerQuery.getOrgUnits(), ";"),
-                TrackedEntityInstance.lastUpdated.gt(lastSyncedTEIs), fields(),
-                Boolean.TRUE, trackerQuery.getPage(), teisToRequest).execute();
+                trackerQuery.getOuMode().name(), fields(), Boolean.TRUE, trackerQuery.getPage(), teisToRequest)
+                .execute();
 
-        if (response.isSuccessful() && response.body().items() != null && !response.body().items().isEmpty()) {
+        if (response.isSuccessful() && !response.body().items().isEmpty()) {
             List<TrackedEntityInstance> trackedEntityInstances = response.body().items();
             persistTeis(trackedEntityInstances);
-
-            resourceHandler.handleResource(ResourceModel.Type.TRACKED_ENTITY_INSTANCE, genericCallData.serverDate());
         }
 
         return response;
@@ -131,8 +120,6 @@ public final class TeisEndPointCall extends SyncCall<Response<Payload<TrackedEnt
                 genericCallData,
                 genericCallData.retrofit().create(TrackedEntityInstanceService.class),
                 teiQuery,
-                TrackedEntityInstanceHandler.create(genericCallData.databaseAdapter()),
-                genericCallData.resourceHandler()
-        );
+                TrackedEntityInstanceHandler.create(genericCallData.databaseAdapter()));
     }
 }

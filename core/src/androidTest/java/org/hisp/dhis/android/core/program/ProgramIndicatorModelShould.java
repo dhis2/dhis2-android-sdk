@@ -28,131 +28,74 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.content.ContentValues;
-import android.database.MatrixCursor;
+import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.NameableModelAbstractShould;
 import org.hisp.dhis.android.core.program.ProgramIndicatorModel.Columns;
+import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
+import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Date;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableModelProperties;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramIndicatorModelShould {
-    private static final long ID = 11L;
-    private static final String UID = "test_uid";
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-    private static final String SHORT_NAME = "test_short_name";
-    private static final String DISPLAY_SHORT_NAME = "test_display_short_name";
-    private static final String DESCRIPTION = "test_description";
-    private static final String DISPLAY_DESCRIPTION = "test_display_description";
+public class ProgramIndicatorModelShould extends NameableModelAbstractShould<ProgramIndicatorModel> {
     private static final Boolean DISPLAY_IN_FORM = true;
     private static final String EXPRESSION = "test_expression";
     private static final String DIMENSION_ITEM = "test_dimension_item";
     private static final String FILTER = "test_filter";
     private static final Integer DECIMALS = 3;
-
-    private final Date date;
-    private final String dateString;
+    private static final String PROGRAM = "program_uid";
 
     public ProgramIndicatorModelShould() {
-        this.date = new Date();
-        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+        super(new ProgramIndicatorModel.Columns().all(), 16);
     }
 
-    @Test
-    public void create_model_when_created_from_database_cursor() {
-        MatrixCursor cursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.SHORT_NAME,
-                Columns.DISPLAY_SHORT_NAME,
-                Columns.DESCRIPTION,
-                Columns.DISPLAY_DESCRIPTION,
-                Columns.DISPLAY_IN_FORM,
-                Columns.EXPRESSION,
-                Columns.DIMENSION_ITEM,
-                Columns.FILTER,
-                Columns.DECIMALS
-        });
-        cursor.addRow(new Object[]{
-                ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
-                SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION,
-                toInteger(DISPLAY_IN_FORM), EXPRESSION,
-                DIMENSION_ITEM, FILTER, DECIMALS
-        });
-        cursor.moveToFirst();
-
-        ProgramIndicatorModel model = ProgramIndicatorModel.create(cursor);
-        cursor.close();
-
-        assertThat(model.id()).isEqualTo(ID);
-        assertThat(model.uid()).isEqualTo(UID);
-        assertThat(model.code()).isEqualTo(CODE);
-        assertThat(model.name()).isEqualTo(NAME);
-        assertThat(model.displayName()).isEqualTo(DISPLAY_NAME);
-        assertThat(model.created()).isEqualTo(date);
-        assertThat(model.lastUpdated()).isEqualTo(date);
-        assertThat(model.shortName()).isEqualTo(SHORT_NAME);
-        assertThat(model.displayShortName()).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(model.description()).isEqualTo(DESCRIPTION);
-        assertThat(model.displayDescription()).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(model.displayInForm()).isEqualTo(DISPLAY_IN_FORM);
-        assertThat(model.expression()).isEqualTo(EXPRESSION);
-        assertThat(model.dimensionItem()).isEqualTo(DIMENSION_ITEM);
-        assertThat(model.filter()).isEqualTo(FILTER);
-        assertThat(model.decimals()).isEqualTo(DECIMALS);
-    }
-
-    @Test
-    public void create_content_values_when_created_from_builder() {
-        ProgramIndicatorModel model = ProgramIndicatorModel.builder()
-                .id(ID)
-                .uid(UID)
-                .code(CODE)
-                .name(NAME)
-                .displayName(DISPLAY_NAME)
-                .created(date)
-                .lastUpdated(date)
-                .shortName(SHORT_NAME)
-                .displayShortName(DISPLAY_SHORT_NAME)
-                .description(DESCRIPTION)
-                .displayDescription(DISPLAY_DESCRIPTION)
+    @Override
+    protected ProgramIndicatorModel buildModel() {
+        ProgramIndicatorModel.Builder programIndicatorModelBuilder = ProgramIndicatorModel.builder();
+        fillNameableModelProperties(programIndicatorModelBuilder);
+        programIndicatorModelBuilder
                 .displayInForm(DISPLAY_IN_FORM)
                 .expression(EXPRESSION)
                 .dimensionItem(DIMENSION_ITEM)
                 .filter(FILTER)
                 .decimals(DECIMALS)
-                .build();
-        ContentValues contentValues = model.toContentValues();
+                .program(PROGRAM);
+        return programIndicatorModelBuilder.build();
+    }
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(contentValues.getAsBoolean(Columns.DISPLAY_IN_FORM)).isEqualTo(DISPLAY_IN_FORM);
-        assertThat(contentValues.getAsString(Columns.EXPRESSION)).isEqualTo(EXPRESSION);
-        assertThat(contentValues.getAsString(Columns.DIMENSION_ITEM)).isEqualTo(DIMENSION_ITEM);
-        assertThat(contentValues.getAsString(Columns.FILTER)).isEqualTo(FILTER);
-        assertThat(contentValues.getAsInteger(Columns.DECIMALS)).isEqualTo(DECIMALS);
+    @Override
+    protected ProgramIndicatorModel cursorToModel(Cursor cursor) {
+        return ProgramIndicatorModel.create(cursor);
+    }
+
+    @Override
+    protected Object[] getModelAsObjectArray() {
+        return Utils.appendInNewArray(ColumnsArrayUtils.getNameableModelAsObjectArray(model),
+                model.displayInForm(),
+                model.expression(),
+                model.dimensionItem(),
+                model.filter(),
+                model.decimals(),
+                model.program());
+    }
+
+    @Test
+    public void have_extra_data_set_model_columns() {
+        List<String> columnsList = Arrays.asList(columns);
+
+        assertThat(columnsList.contains(Columns.DISPLAY_IN_FORM)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.EXPRESSION)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.DIMENSION_ITEM)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.FILTER)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.DECIMALS)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.PROGRAM)).isEqualTo(true);
     }
 }

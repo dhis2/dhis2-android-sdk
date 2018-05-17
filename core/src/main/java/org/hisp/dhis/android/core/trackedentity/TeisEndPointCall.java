@@ -15,6 +15,7 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.List;
 
@@ -47,48 +48,40 @@ public final class TeisEndPointCall extends SyncCall<Response<Payload<TrackedEnt
 
         String lastSyncedTEIs = resourceHandler.getLastUpdated(ResourceModel.Type.TRACKED_ENTITY_INSTANCE);
 
+        Integer teisToRequest = Math.min(trackerQuery.getPageLimit(), trackerQuery.getPageSize());
+
         Response<Payload<TrackedEntityInstance>> response;
 
-        response = trackedEntityInstanceService.getTEIs(trackerQuery.getOrgUnit(),
+        response = trackedEntityInstanceService.getTEIs(
+                Utils.joinCollectionWithSeparator(trackerQuery.getOrgUnits(), ";"),
                 TrackedEntityInstance.lastUpdated.gt(lastSyncedTEIs), fields(),
-                Boolean.TRUE, trackerQuery.getPage(), trackerQuery.getPageSize()).execute();
+                Boolean.TRUE, trackerQuery.getPage(), teisToRequest).execute();
 
-        if (response.isSuccessful() && response.body().items() != null
-                && response.body().items().size()>0) {
+        if (response.isSuccessful() && response.body().items() != null && !response.body().items().isEmpty()) {
             List<TrackedEntityInstance> trackedEntityInstances = response.body().items();
-            int size = trackedEntityInstances.size();
+            persistTeis(trackedEntityInstances);
 
-            if (trackerQuery.getPageLimit() > 0) {
-                size = Math.min(size, trackerQuery.getPageLimit());
-            }
-
-            for (int i = 0; i < size; i++) {
-                Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
-                TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(i);
-                try {
-                    trackedEntityInstanceHandler.handle(trackedEntityInstance);
-                    transaction.setSuccessful();
-                } catch (SQLiteConstraintException sql) {
-                    /*
-                    This catch is necessary to ignore events with bad foreign keys exception
-                    More info: If the foreign key have the flag
-                    DEFERRABLE INITIALLY DEFERRED this exception will be throw in transaction
-                    .end()
-                    And the rollback will be executed only when the database is closed.
-                    It is a reported as unfixed bug: https://issuetracker.google
-                    .com/issues/37001653
-                    */
-                    Log.d(this.getClass().getSimpleName(), sql.getMessage());
-                } finally {
-                    transaction.end();
-                }
-            }
-
-            resourceHandler.handleResource(ResourceModel.Type.TRACKED_ENTITY_INSTANCE,
-                    genericCallData.serverDate());
+            resourceHandler.handleResource(ResourceModel.Type.TRACKED_ENTITY_INSTANCE, genericCallData.serverDate());
         }
 
         return response;
+    }
+
+    private void persistTeis(List<TrackedEntityInstance> trackedEntityInstances) {
+        Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
+        try {
+            trackedEntityInstanceHandler.handleMany(trackedEntityInstances);
+            transaction.setSuccessful();
+        } catch (SQLiteConstraintException sql) {
+                /* This catch is necessary to ignore events with bad foreign keys exception
+                More info: If the foreign key have the flag DEFERRABLE INITIALLY DEFERRED this exception will be
+                throw in transaction.end()
+                And the rollback will be executed only when the database is closed.
+                It is a reported as unfixed bug: https://issuetracker.google.com/issues/37001653 */
+            Log.d(this.getClass().getSimpleName(), sql.getMessage());
+        } finally {
+            transaction.end();
+        }
     }
 
     private Fields<TrackedEntityInstance> fields() {

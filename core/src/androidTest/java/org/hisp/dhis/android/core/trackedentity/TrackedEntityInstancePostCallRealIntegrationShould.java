@@ -186,7 +186,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     //@Test
     public void post_a_tei() throws Exception {
         downloadMetadata();
-        d2.downloadTrackedEntityInstances(4).call();
+        d2.downloadTrackedEntityInstances(4, true).call();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.queryAll().values().iterator().next();
 
@@ -212,7 +212,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     //@Test
     public void post_more_than_one_tei() throws Exception {
         downloadMetadata();
-        d2.downloadTrackedEntityInstances(4).call();
+        d2.downloadTrackedEntityInstances(4, true).call();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.queryAll().values().iterator().next();
 
@@ -235,7 +235,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     //@Test
     public void post_new_relationship_to_client_created_tei() throws Exception {
         downloadMetadata();
-        d2.downloadTrackedEntityInstances(5).call();
+        d2.downloadTrackedEntityInstances(5, true).call();
 
         TrackedEntityInstance teiA = trackedEntityInstanceStore.queryAll().values().iterator().next();
         String relationshipTypeUid = relationshipTypeStore.selectAll(RelationshipTypeModel.factory)

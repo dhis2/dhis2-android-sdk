@@ -185,7 +185,7 @@ public class ProgramIndicatorEngine {
                         /*
                         if (eventProgramStageInstance == null || !eventProgramStageInstance.uid().equals
                                 (programStageUid)) {
-                            eventProgramStageInstance = TrackerController.getEvent(enrollmentProgramInstance
+                            eventProgramStageInstance = TrackerController.getEvgit aent(enrollmentProgramInstance
                                     .getLocalId(), programStageUid);
                             if(eventProgramStageInstance == null){
                                 continue;
@@ -211,7 +211,6 @@ public class ProgramIndicatorEngine {
                     if (dataValue == null || dataValue.value() == null || dataValue.value().isEmpty()) {
                         value = "0";
                     } else {
-                        String v = dataValue.dataElement();
                         if(dataElementStore.selectByUid(dataValue.dataElement(), DataElementModel.factory)
                                 .valueType() == ValueType.BOOLEAN){
                             if(dataValue.value().equals("true")){

@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.utils.services;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.ConstantModel;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
@@ -58,9 +57,6 @@ public class ProgramIndicatorEngineShould {
     private ProgramIndicator programIndicator;
 
     @Mock
-    private DatabaseAdapter databaseAdapter;
-
-    @Mock
     private TrackedEntityDataValue value1;
 
     @Mock
@@ -77,6 +73,11 @@ public class ProgramIndicatorEngineShould {
     private String dataElementUid3 = "vJeQc8NlWu6";
 
     private String programStageUid = "un3rUMhluNu";
+
+    @Mock
+    private ConstantModel constantModel;
+
+    private String constantUid1 = "gzlRs2HEGAf";
 
     @Mock
     private IdentifiableObjectStore<DataElementModel> dataElementStore;
@@ -103,11 +104,14 @@ public class ProgramIndicatorEngineShould {
         when(dataElementStore.selectByUid(dataElementUid1, DataElementModel.factory)).thenReturn(dataElementModel);
         when(dataElementStore.selectByUid(dataElementUid2, DataElementModel.factory)).thenReturn(dataElementModel);
         when(dataElementStore.selectByUid(dataElementUid3, DataElementModel.factory)).thenReturn(dataElementModel);
+
+        when(constantModel.uid()).thenReturn(constantUid1);
+        when(constantStore.selectByUid(constantUid1, ConstantModel.factory)).thenReturn(constantModel);
     }
 
     @Test
-    public void calculate_one_dataelement() throws Exception {
-        when(programIndicator.expression()).thenReturn("#{" + programStageUid + "." + dataElementUid1 + "}");
+    public void one_dataelement() throws Exception {
+        when(programIndicator.expression()).thenReturn(de(programStageUid, dataElementUid1));
 
         when(value1.value()).thenReturn("3.5");
 
@@ -117,12 +121,9 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void calculate_addition_two_dataelements() throws Exception {
+    public void addition_two_dataelements() throws Exception {
         when(programIndicator.expression()).thenReturn(
-                "#{" + programStageUid + "." + dataElementUid1 + "}" +
-                " + " +
-                "#{" + programStageUid + "." + dataElementUid2 + "}"
-        );
+                de(programStageUid, dataElementUid1) + " + " + de(programStageUid, dataElementUid2));
 
         when(value1.value()).thenReturn("3.5");
         when(value2.value()).thenReturn("2");
@@ -130,5 +131,67 @@ public class ProgramIndicatorEngineShould {
         String result = programIndicatorEngine.getProgramIndicatorValue(event, programIndicator);
 
         assertThat(result).isEqualTo("5.5");
+    }
+
+    @Test
+    public void subtraction_two_dataelements() throws Exception {
+        when(programIndicator.expression()).thenReturn(
+                de(programStageUid, dataElementUid1) + " - " + de(programStageUid, dataElementUid2));
+
+        when(value1.value()).thenReturn("3.5");
+        when(value2.value()).thenReturn("2");
+
+        String result = programIndicatorEngine.getProgramIndicatorValue(event, programIndicator);
+
+        assertThat(result).isEqualTo("1.5");
+    }
+
+    @Test
+    public void addition_two_dataelements_and_division() throws Exception {
+        when(programIndicator.expression()).thenReturn(
+                "(" + de(programStageUid, dataElementUid1) + " + " + de(programStageUid, dataElementUid2) +
+                ") / " + de(programStageUid, dataElementUid3));
+
+        when(value1.value()).thenReturn("2.5");
+        when(value2.value()).thenReturn("2");
+        when(value3.value()).thenReturn("1.5");
+
+        String result = programIndicatorEngine.getProgramIndicatorValue(event, programIndicator);
+
+        assertThat(result).isEqualTo("3");
+    }
+
+    @Test
+    public void multiplication_two_dataelements() throws Exception {
+        when(programIndicator.expression()).thenReturn(
+                de(programStageUid, dataElementUid1) + " * " + de(programStageUid, dataElementUid2));
+
+        when(value1.value()).thenReturn("3.5");
+        when(value2.value()).thenReturn("2");
+
+        String result = programIndicatorEngine.getProgramIndicatorValue(event, programIndicator);
+
+        assertThat(result).isEqualTo("7");
+    }
+
+    @Test
+    public void addition_dataelement_constant() throws Exception {
+        when(programIndicator.expression()).thenReturn(
+                de(programStageUid, dataElementUid1) + " + " + cons(constantUid1));
+
+        when(value1.value()).thenReturn("3.5");
+        when(constantModel.value()).thenReturn("2");
+
+        String result = programIndicatorEngine.getProgramIndicatorValue(event, programIndicator);
+
+        assertThat(result).isEqualTo("5.5");
+    }
+
+    private String de(String programStageUid, String dataElementUid) {
+        return "#{" + programStageUid + "." + dataElementUid + "}";
+    }
+
+    private String cons(String constantUid) {
+        return "C{" + constantUid + "}";
     }
 }

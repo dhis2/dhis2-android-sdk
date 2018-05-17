@@ -38,4 +38,10 @@ public interface TrackedEntityAttributeReservedValueStoreInterface
         extends ObjectWithoutUidStore<TrackedEntityAttributeReservedValueModel> {
 
     void deleteExpired(@NonNull Date serverDate);
+
+    TrackedEntityAttributeReservedValueModel popOne(@NonNull String ownerUid,
+                                                    @NonNull String organisationUnitUid);
+
+    int count(@NonNull String ownerUid,
+              @NonNull String organisationUnitUid);
 }

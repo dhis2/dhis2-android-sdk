@@ -33,6 +33,4 @@ import android.support.annotation.NonNull;
 
 public interface WhereStatementBinder extends StatementBinder {
     void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement);
-
-    void bindToDeleteWhereStatement(@NonNull SQLiteStatement sqLiteStatement);
 }

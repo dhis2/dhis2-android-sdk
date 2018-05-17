@@ -34,6 +34,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -75,27 +76,62 @@ public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
         }
     }
 
-    @Override
-    public Set<M> selectAll(@NonNull CursorModelFactory<M> modelFactory) throws RuntimeException {
+    private void addAll(@NonNull CursorModelFactory<M> modelFactory,
+                       @NonNull Collection<M> collection) throws RuntimeException {
         Cursor cursor = databaseAdapter.query(builder.selectAll());
-        return mapObjectsFromCursor(cursor, modelFactory);
+        addObjectsToCollection(cursor, modelFactory, collection);
     }
 
-    Set<M> mapObjectsFromCursor(Cursor cursor, CursorModelFactory<M> modelFactory) {
-        Set<M> objects = new HashSet<>(cursor.getCount());
+    @Override
+    public Set<M> selectAll(@NonNull CursorModelFactory<M> modelFactory) throws RuntimeException {
+        Set<M> set = new HashSet<>();
+        addAll(modelFactory, set);
+        return set;
+    }
 
+    @Override
+    public boolean deleteById(@NonNull M m) {
+        return deleteWhereClause(BaseModel.Columns.ID + "='" + m.id() + "';");
+    }
+
+    private M selectOneWhere(@NonNull CursorModelFactory<M> modelFactory,
+                               @NonNull String whereClause)
+            throws RuntimeException {
+        Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClause, 1));
+        if (cursor.getCount() == 1) {
+            return modelFactory.fromCursor(cursor);
+        } else {
+            return null;
+        }
+    }
+
+    protected M popOneWhere(@NonNull CursorModelFactory<M> modelFactory,
+                            @NonNull String whereClause) {
+        M m = selectOneWhere(modelFactory, whereClause);
+        if (m != null) {
+            deleteById(m);
+        }
+        return m;
+    }
+
+    protected int countWhere(@NonNull String whereClause) {
+        Cursor cursor = databaseAdapter.query(builder.countWhere(whereClause));
+        return cursor.getInt(0);
+    }
+
+    private void addObjectsToCollection(Cursor cursor, CursorModelFactory<M> modelFactory,
+                                            Collection<M> collection) {
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
-                    objects.add(modelFactory.fromCursor(cursor));
+                    collection.add(modelFactory.fromCursor(cursor));
                 }
                 while (cursor.moveToNext());
             }
         } finally {
             cursor.close();
         }
-        return objects;
     }
 
     protected boolean deleteWhereClause(String clause) {

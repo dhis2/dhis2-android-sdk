@@ -52,7 +52,7 @@ public class SQLStatementBuilderShould {
                 "Test_Column_Name1",
                 "Test_Column_Name2"
         };
-        this.builder = new SQLStatementBuilder("Test_Table", columns, columns, columns, columns);
+        this.builder = new SQLStatementBuilder("Test_Table", columns, columns);
     }
 
     @Test
@@ -174,23 +174,30 @@ public class SQLStatementBuilderShould {
     }
 
     @Test
-    public void generate_delete_where_statement() {
-        assertThat(builder.deleteWhere()).isEqualTo(
-                "DELETE FROM Test_Table WHERE Test_Column_Name1=? AND Test_Column_Name2=?;"
+    public void generate_select_where_statement() {
+        assertThat(builder.selectWhere("WH_CLAUSE")).isEqualTo(
+                "SELECT * FROM Test_Table WHERE WH_CLAUSE;"
         );
     }
 
     @Test
-    public void generate_select_where_statement() {
-        assertThat(builder.selectWhere()).isEqualTo(
-                "SELECT * FROM Test_Table WHERE Test_Column_Name1=? AND Test_Column_Name2=?"
+    public void generate_select_where_with_limit_statement() {
+        assertThat(builder.selectWhereWithLimit("WH_CLAUSE", 3)).isEqualTo(
+                "SELECT * FROM Test_Table WHERE WH_CLAUSE LIMIT 3;"
+        );
+    }
+
+    @Test
+    public void generate_count_where_statement() {
+        assertThat(builder.countWhere("WH_CLAUSE")).isEqualTo(
+                "SELECT COUNT(*) FROM Test_Table WHERE WH_CLAUSE;"
         );
     }
 
     @Test
     public void generate_select_by_uid_statement() {
         assertThat(builder.selectByUid()).isEqualTo(
-                "SELECT * FROM Test_Table WHERE uid=?"
+                "SELECT * FROM Test_Table WHERE uid=?;"
         );
     }
 }

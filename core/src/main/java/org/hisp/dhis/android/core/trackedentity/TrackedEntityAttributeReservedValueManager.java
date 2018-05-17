@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 
 import java.util.Date;
-import java.util.List;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import retrofit2.Response;
@@ -44,12 +43,15 @@ import retrofit2.Retrofit;
 
 public final class TrackedEntityAttributeReservedValueManager {
 
+    private static final int MIN_TO_TRY_FILL = 50;
+    private static final int FILL_UP_TO = 100;
+
     private final TrackedEntityAttributeReservedValueStoreInterface store;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
-    private TrackedEntityAttributeReservedValueManager(DatabaseAdapter databaseAdapter,
+    TrackedEntityAttributeReservedValueManager(DatabaseAdapter databaseAdapter,
                                                        Retrofit retrofit,
                                                        TrackedEntityAttributeReservedValueStoreInterface store,
                                                        IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
@@ -68,41 +70,28 @@ public final class TrackedEntityAttributeReservedValueManager {
             // Synchronization was not successful.
         }
 
-        List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attribute,
-                organisationUnitUid);
+        TrackedEntityAttributeReservedValueModel reservedValue = store.popOne(attribute, organisationUnitUid);
 
-        if (reservedValues.isEmpty()) {
+        if (reservedValue == null) {
             throw new RuntimeException("There are no reserved values.");
         } else {
-            TrackedEntityAttributeReservedValueModel reservedValue = reservedValues.get(0);
-            deleteReservedValue(reservedValue);
             return reservedValue.value();
         }
     }
 
-    List<TrackedEntityAttributeReservedValueModel> getReservedValues(String attributeUid, String orgUnitUid) {
-        return this.store.selectWhere(TrackedEntityAttributeReservedValueModel.factory, attributeUid, orgUnitUid);
-    }
-
-    private void deleteReservedValue(TrackedEntityAttributeReservedValueModel reservedValueModel) {
-        store.deleteWhere(reservedValueModel);
-    }
-
     private void syncReservedValues(String attribute, String organisationUnitUid) throws Exception {
-        deleteExpiredDates();
-        List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attribute,
-                organisationUnitUid);
-        if (reservedValues.size() <= 50) {
-            fillReservedValues(attribute, organisationUnitUid, reservedValues.size());
+        // TODO use server date
+        store.deleteExpired(new Date());
+
+        int remainingValues = store.count(attribute, organisationUnitUid);
+        if (remainingValues <= MIN_TO_TRY_FILL) {
+            fillReservedValues(attribute, organisationUnitUid, remainingValues);
         }
     }
 
-    private void deleteExpiredDates() {
-        // TODO use server date
-        store.deleteExpired(new Date());
-    }
+    private void fillReservedValues(String attribute, String organisationUnitUid, Integer remainingValues)
+            throws Exception {
 
-    private void fillReservedValues(String attribute, String organisationUnitUid, Integer size) throws Exception {
         Response systemInfoResponse = SystemInfoCall.FACTORY.create(databaseAdapter, retrofit).call();
         if (!systemInfoResponse.isSuccessful()) {
             throw new RuntimeException("SystemInfo call failed.");
@@ -112,7 +101,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                 systemInfo.serverDate());
 
-        Integer numberToReserve = 100 - size;
+        Integer numberToReserve = FILL_UP_TO - remainingValues;
         OrganisationUnitModel organisationUnitModel =
                 this.organisationUnitStore.selectByUid(organisationUnitUid, OrganisationUnitModel.factory);
 

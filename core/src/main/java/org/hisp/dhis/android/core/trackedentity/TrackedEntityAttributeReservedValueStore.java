@@ -36,8 +36,11 @@ import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueModel.Columns;
 
 import java.util.Date;
+
+import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueModel.factory;
 
 public final class TrackedEntityAttributeReservedValueStore
         extends ObjectWithoutUidStoreImpl<TrackedEntityAttributeReservedValueModel>
@@ -46,15 +49,31 @@ public final class TrackedEntityAttributeReservedValueStore
     private TrackedEntityAttributeReservedValueStore(DatabaseAdapter databaseAdapter,
                                                      SQLiteStatement insertStatement,
                                                      SQLiteStatement updateWhereStatement,
-                                                     SQLiteStatement deleteWhereStatement,
                                                      SQLStatementBuilder builder) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, deleteWhereStatement, builder);
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder);
     }
 
     @Override
     public void deleteExpired(@NonNull Date serverDate) throws RuntimeException {
-        super.deleteWhereClause(TrackedEntityAttributeReservedValueModel.Columns.EXPIRY_DATE
+        super.deleteWhereClause(Columns.EXPIRY_DATE
                 + " < date('" + BaseIdentifiableObject.DATE_FORMAT.format(serverDate) + "')");
+    }
+
+    @Override
+    public TrackedEntityAttributeReservedValueModel popOne(@NonNull String ownerUid,
+                                                           @NonNull String organisationUnitUid) {
+        return popOneWhere(factory, where(ownerUid, organisationUnitUid));
+    }
+
+    @Override
+    public int count(@NonNull String ownerUid, @NonNull String organisationUnitUid) {
+        return countWhere(where(ownerUid, organisationUnitUid));
+    }
+
+    private String where(@NonNull String ownerUid,
+                         @NonNull String organisationUnitUid) {
+        return Columns.OWNER_UID + "='" + ownerUid + "' AND " +
+                Columns.ORGANISATION_UNIT + "='" + organisationUnitUid + "';";
     }
 
     public static TrackedEntityAttributeReservedValueStoreInterface
@@ -68,7 +87,6 @@ public final class TrackedEntityAttributeReservedValueStore
                 databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
                 databaseAdapter.compileStatement(statementBuilder.updateWhere()),
-                databaseAdapter.compileStatement(statementBuilder.deleteWhere()),
                 statementBuilder);
     }
 }

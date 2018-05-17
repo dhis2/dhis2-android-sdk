@@ -99,6 +99,7 @@ public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
             throws RuntimeException {
         Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClause, 1));
         if (cursor.getCount() == 1) {
+            cursor.moveToFirst();
             return modelFactory.fromCursor(cursor);
         } else {
             return null;
@@ -116,6 +117,7 @@ public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
 
     protected int countWhere(@NonNull String whereClause) {
         Cursor cursor = databaseAdapter.query(builder.countWhere(whereClause));
+        cursor.moveToFirst();
         return cursor.getInt(0);
     }
 

@@ -73,7 +73,7 @@ public final class TrackedEntityAttributeReservedValueStore
     private String where(@NonNull String ownerUid,
                          @NonNull String organisationUnitUid) {
         return Columns.OWNER_UID + "='" + ownerUid + "' AND " +
-                Columns.ORGANISATION_UNIT + "='" + organisationUnitUid + "';";
+                Columns.ORGANISATION_UNIT + "='" + organisationUnitUid + "'";
     }
 
     public static TrackedEntityAttributeReservedValueStoreInterface

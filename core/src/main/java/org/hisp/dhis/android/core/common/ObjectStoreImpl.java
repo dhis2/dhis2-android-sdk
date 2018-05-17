@@ -77,13 +77,13 @@ public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
     }
 
     private void addAll(@NonNull CursorModelFactory<M> modelFactory,
-                       @NonNull Collection<M> collection) throws RuntimeException {
+                       @NonNull Collection<M> collection) {
         Cursor cursor = databaseAdapter.query(builder.selectAll());
         addObjectsToCollection(cursor, modelFactory, collection);
     }
 
     @Override
-    public Set<M> selectAll(@NonNull CursorModelFactory<M> modelFactory) throws RuntimeException {
+    public Set<M> selectAll(@NonNull CursorModelFactory<M> modelFactory) {
         Set<M> set = new HashSet<>();
         addAll(modelFactory, set);
         return set;
@@ -95,8 +95,7 @@ public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
     }
 
     private M selectOneWhere(@NonNull CursorModelFactory<M> modelFactory,
-                               @NonNull String whereClause)
-            throws RuntimeException {
+                               @NonNull String whereClause) {
         Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClause, 1));
         if (cursor.getCount() == 1) {
             cursor.moveToFirst();

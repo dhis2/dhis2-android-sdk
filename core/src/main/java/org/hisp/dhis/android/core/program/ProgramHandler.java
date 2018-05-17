@@ -75,7 +75,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
     protected void afterObjectPersisted(Program program) {
         programTrackedEntityAttributeHandler.handleMany(program.programTrackedEntityAttributes(),
                 new ProgramTrackedEntityAttributeModelBuilder());
-        programIndicatorHandler.handleProgramIndicator(null, program.programIndicators());
+        programIndicatorHandler.handleMany(program.programIndicators(), new ProgramIndicatorModelBuilder());
         programRuleHandler.handleProgramRules(program.programRules());
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
         styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(), ProgramModel.TABLE));

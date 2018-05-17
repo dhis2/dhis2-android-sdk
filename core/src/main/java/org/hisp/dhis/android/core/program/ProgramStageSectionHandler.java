@@ -108,8 +108,8 @@ public class ProgramStageSectionHandler {
                 );
 
             }
-            programIndicatorHandler.handleProgramIndicator(programStageSection.uid(),
-                    programStageSection.programIndicators());
+            programIndicatorHandler.handleManyWithProgramStageSection(programStageSection.programIndicators(),
+                    new ProgramIndicatorModelBuilder(), programStageSection.uid());
         }
     }
 

@@ -28,6 +28,9 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.legendset.LegendSet;
@@ -38,95 +41,62 @@ import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModelBuilder;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
 
-import java.util.List;
+import java.util.Collection;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
-
-public class ProgramIndicatorHandler {
-    private final ProgramIndicatorStore programIndicatorStore;
+public class ProgramIndicatorHandler extends IdentifiableHandlerImpl<ProgramIndicator, ProgramIndicatorModel> {
     private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
     private final ObjectWithoutUidStore<ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkStore;
     private final GenericHandler<LegendSet, LegendSetModel> legendSetHandler;
 
-    ProgramIndicatorHandler(ProgramIndicatorStore programIndicatorStore,
+    ProgramIndicatorHandler(IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore,
                                    ProgramStageSectionProgramIndicatorLinkStore
                                            programStageSectionProgramIndicatorLinkStore,
                                    ObjectWithoutUidStore<ProgramIndicatorLegendSetLinkModel>
                                            programIndicatorLegendSetLinkStore,
                                    GenericHandler<LegendSet, LegendSetModel> legendSetHandler) {
-        this.programIndicatorStore = programIndicatorStore;
+        super(programIndicatorStore);
         this.programStageSectionProgramIndicatorLinkStore = programStageSectionProgramIndicatorLinkStore;
         this.programIndicatorLegendSetLinkStore = programIndicatorLegendSetLinkStore;
         this.legendSetHandler = legendSetHandler;
     }
 
-    void handleProgramIndicator(String programStageSectionUid, List<ProgramIndicator> programIndicators) {
-        if (programIndicators == null) {
-            return;
-        }
-        deleteOrPersistProgramIndicators(programStageSectionUid, programIndicators);
+    public static ProgramIndicatorHandler create(DatabaseAdapter databaseAdapter) {
+        return new ProgramIndicatorHandler(
+                ProgramIndicatorStore.create(databaseAdapter),
+                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter),
+                ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
+                LegendSetHandler.create(databaseAdapter)
+        );
     }
 
-    /**
-     * This method deletes or persists program indicators and the link table between program stage sections
-     * and program indicators
-     *
-     * @param programStageSectionUid
-     * @param programIndicators
-     */
-    //TODO: Review if this is necessary with saving through sections and then saving through programs
-    //TODO: Morten should have implemented the link between program indicator and program stage section in March.
-    private void deleteOrPersistProgramIndicators(String programStageSectionUid,
-                                                  List<ProgramIndicator> programIndicators) {
-        int size = programIndicators.size();
+    void handleManyWithProgramStageSection(Collection<ProgramIndicator> pCollection, ModelBuilder<ProgramIndicator,
+            ProgramIndicatorModel> modelBuilder, String programStageSection) {
+        super.handleMany(pCollection, modelBuilder);
 
-        for (int i = 0; i < size; i++) {
-            ProgramIndicator programIndicator = programIndicators.get(i);
+        updateProgramStageSectionProgramIndicatorLink(pCollection, programStageSection);
+    }
 
-            if (isDeleted(programIndicator)) {
-                programIndicatorStore.delete(programIndicator.uid());
-            } else {
-                int updatedRow = programIndicatorStore.update(
-                        programIndicator.uid(), programIndicator.code(),
-                        programIndicator.name(), programIndicator.displayName(), programIndicator.created(),
-                        programIndicator.lastUpdated(), programIndicator.shortName(),
-                        programIndicator.displayShortName(), programIndicator.description(),
-                        programIndicator.displayDescription(), programIndicator.displayInForm(),
-                        programIndicator.expression(), programIndicator.dimensionItem(), programIndicator.filter(),
-                        programIndicator.decimals(), programIndicator.program().uid(), programIndicator.uid()
+
+    private void updateProgramStageSectionProgramIndicatorLink(Collection<ProgramIndicator> pCollection,
+                                                       String programStageSection) {
+        for(ProgramIndicator programIndicator : pCollection) {
+            int updatedLink = programStageSectionProgramIndicatorLinkStore.update(
+                    programStageSection, programIndicator.uid(),
+                    programStageSection, programIndicator.uid()
+            );
+
+            if (updatedLink <= 0) {
+                programStageSectionProgramIndicatorLinkStore.insert(
+                        programStageSection, programIndicator.uid()
                 );
-
-                if (updatedRow <= 0) {
-                    programIndicatorStore.insert(
-                            programIndicator.uid(), programIndicator.code(),
-                            programIndicator.name(), programIndicator.displayName(),
-                            programIndicator.created(), programIndicator.lastUpdated(),
-                            programIndicator.shortName(), programIndicator.displayShortName(),
-                            programIndicator.description(),
-                            programIndicator.displayDescription(), programIndicator.displayInForm(),
-                            programIndicator.expression(), programIndicator.dimensionItem(),
-                            programIndicator.filter(),
-                            programIndicator.decimals(), programIndicator.program().uid()
-                    );
-                }
             }
+        }
+    }
 
-            if (programStageSectionUid == null) {
-                handleLegendSet(programIndicator);
-            } else {
-                // since this is many-to-many relationship we need to update link table
-
-                int updatedLink = programStageSectionProgramIndicatorLinkStore.update(
-                        programStageSectionUid, programIndicator.uid(),
-                        programStageSectionUid, programIndicator.uid()
-                );
-
-                if (updatedLink <= 0) {
-                    programStageSectionProgramIndicatorLinkStore.insert(
-                            programStageSectionUid, programIndicator.uid()
-                    );
-                }
-            }
+    @Override
+    protected void afterObjectPersisted(ProgramIndicator programIndicator) {
+        if (programIndicator.legendSets() != null && programIndicator.legendSets().size() > 0) {
+            handleLegendSet(programIndicator);
         }
     }
 
@@ -139,14 +109,5 @@ public class ProgramIndicatorHandler {
         for (LegendSet legendSet : programIndicator.legendSets()) {
             programIndicatorLegendSetLinkStore.updateOrInsertWhere(builder.buildModel(legendSet));
         }
-    }
-
-    public static ProgramIndicatorHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramIndicatorHandler(
-                new ProgramIndicatorStoreImpl(databaseAdapter),
-                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter),
-                ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
-                LegendSetHandler.create(databaseAdapter)
-        );
     }
 }

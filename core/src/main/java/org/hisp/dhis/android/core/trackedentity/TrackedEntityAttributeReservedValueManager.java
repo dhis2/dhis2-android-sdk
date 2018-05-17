@@ -52,9 +52,9 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final Retrofit retrofit;
 
     TrackedEntityAttributeReservedValueManager(DatabaseAdapter databaseAdapter,
-                                                       Retrofit retrofit,
-                                                       TrackedEntityAttributeReservedValueStoreInterface store,
-                                                       IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
+                                               Retrofit retrofit,
+                                               TrackedEntityAttributeReservedValueStoreInterface store,
+                                               IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.store = store;

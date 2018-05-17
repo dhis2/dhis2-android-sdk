@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
-import java.util.Collection;
 import java.util.Set;
 
 public interface ObjectStore<M extends BaseModel> extends DeletableStore {

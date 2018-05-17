@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.Nullable;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class TeiQuery {
@@ -10,7 +11,7 @@ public class TeiQuery {
     private final int page;
     private final int pageSize;
     private final boolean paging;
-    private final String orgUnit;
+    private final Set<String> orgUnits;
     private final int pageLimit;
 
     @Nullable
@@ -18,21 +19,21 @@ public class TeiQuery {
 
 
     public TeiQuery(boolean paging, int page, int pageSize,
-                    String orgUnit, int pageLimit) {
+                    Set<String> orgUnits, int pageLimit) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
-        this.orgUnit = orgUnit;
+        this.orgUnits = orgUnits;
         this.pageLimit = pageLimit;
         uIds = null;
     }
 
     public TeiQuery(boolean paging, int page, int pageSize,
-                    String orgUnit, @Nullable Set<String> uIds, int pageLimit) {
+                    Set<String> orgUnits, @Nullable Set<String> uIds, int pageLimit) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
-        this.orgUnit = orgUnit;
+        this.orgUnits = orgUnits;
         this.uIds = uIds;
         this.pageLimit = pageLimit;
     }
@@ -54,8 +55,8 @@ public class TeiQuery {
         return paging;
     }
 
-    public String getOrgUnit() {
-        return orgUnit;
+    public Set<String> getOrgUnits() {
+        return orgUnits;
     }
 
     public int getPageLimit() {
@@ -66,8 +67,8 @@ public class TeiQuery {
         private int page = 1;
         private int pageSize = 50;
         private boolean paging;
-        private String orgUnit;
-        int pageLimit;
+        private Set<String> orgUnits;
+        int pageLimit = 50;
 
         private Set<String> uIds = new HashSet<>();
 
@@ -93,8 +94,8 @@ public class TeiQuery {
             return this;
         }
 
-        public TeiQuery.Builder withOrgUnit(String orgUnit) {
-            this.orgUnit = orgUnit;
+        public TeiQuery.Builder withOrgUnits(Set<String> orgUnits) {
+            this.orgUnits = orgUnits;
             return this;
         }
 
@@ -115,7 +116,7 @@ public class TeiQuery {
             }
 
             return new TeiQuery(paging, page, pageSize,
-                    orgUnit, uIds, pageLimit);
+                    orgUnits, uIds, pageLimit);
         }
     }
 }

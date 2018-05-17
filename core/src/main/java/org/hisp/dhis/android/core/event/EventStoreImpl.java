@@ -153,6 +153,10 @@ public class EventStoreImpl implements EventStore {
             FIELDS +
             " FROM Event WHERE Event.uid = '?'";
 
+    private static final String QUERY_BY_ENROLLMENT_AND_PROGRAM_STAGE = "SELECT " +
+            FIELDS +
+            " FROM Event WHERE Event.enrollment = '_enrollment' AND Event.programStage = '_programStage'";
+
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
@@ -317,6 +321,17 @@ public class EventStoreImpl implements EventStore {
     @Override
     public EventModel queryByUid(String eventUid) {
         String queryStatement = QUERY_BY_UID.replace("?", eventUid);
+
+        Cursor cursor = databaseAdapter.query(queryStatement);
+
+        return EventModel.create(cursor);
+    }
+
+    @Override
+    public EventModel queryByEnrollmentAndProgramStage(String enrollmentUid, String programStageUid) {
+        String queryStatement = QUERY_BY_ENROLLMENT_AND_PROGRAM_STAGE;
+        queryStatement = queryStatement.replace("_enrollment", enrollmentUid);
+        queryStatement = queryStatement.replace("_programStage", programStageUid);
 
         Cursor cursor = databaseAdapter.query(queryStatement);
 

@@ -74,7 +74,6 @@ import java.util.regex.Pattern;
 
 
 public class ProgramIndicatorEngine {
-    public static final String CLASS_TAG = ProgramIndicatorEngine.class.getSimpleName();
     private static final String NULL_REPLACEMENT = "null";
 
     private static final String SEPARATOR_ID = "\\.";
@@ -129,16 +128,16 @@ public class ProgramIndicatorEngine {
      * Calculate an program indicator value based on program instance and an
      * indicator defined for a TrackedEntityInstance
      *
-     * @param programInstance  ProgramInstance
-     * @param programIndicator ProgramIndicator
+     * @param enrollment  ProgramInstance
+     * @param programIndicatorUid ProgramIndicator
      * @return Indicator value
      */
-    public String getProgramIndicatorValueByEnrollment(String enrollment, String indicatorUid) {
+    public String getProgramIndicatorValueByEnrollment(String enrollment, String programIndicatorUid) {
         if(enrollment == null) {
             return null;
         }
 
-        Double value = getValue(enrollment, null, indicatorUid);
+        Double value = getValue(enrollment, null, programIndicatorUid);
 
         return TextUtils.fromDouble(value);
     }
@@ -147,15 +146,15 @@ public class ProgramIndicatorEngine {
      * Calculate an program indicator value based on a single event
      *
      * @param event            Event
-     * @param programIndicator ProgramIndicator
+     * @param programIndicatorUid ProgramIndicator
      * @return Indicator value
      */
-    public String getProgramIndicatorValueByEvent(String event, String indicatorUid) {
+    public String getProgramIndicatorValueByEvent(String event, String programIndicatorUid) {
         if(event == null) {
             return null;
         }
 
-        Double value = getValue(null, event, indicatorUid);
+        Double value = getValue(null, event, programIndicatorUid);
 
         return TextUtils.fromDouble(value);
     }
@@ -164,13 +163,7 @@ public class ProgramIndicatorEngine {
     // Supportive methods
     // -------------------------------------------------------------------------
 
-    /**
-     * @param enrollment can be null if event is not null in case single event without reg
-     * @param event           can be null if programInstance is not null
-     * @param indicator
-     * @return
-     */
-    private Double getValue(String enrollment, String event, String indicatorUid) {
+    String parseIndicatorExpression(String enrollment, String event, String indicatorUid) {
         StringBuffer buffer = new StringBuffer();
 
         ProgramIndicatorModel programIndicator = this.programIndicatorStore.selectByUid(indicatorUid,
@@ -209,10 +202,12 @@ public class ProgramIndicatorEngine {
                             }
                         }
                     } else {
-                        if (eventProgramStageInstance == null || !eventProgramStageInstance.equals(programStageUid)) {
-                            eventProgramStageInstance = event;
-                            List<TrackedEntityDataValue> trackedEntityDataValues =
-                                    trackedEntityDataValueStore.queryTrackedEntityDataValues(event);
+                        if (programStageInstance == null ||
+                                !programStageInstance.programStage().equals(programStageUid)) {
+                            programStageInstance = eventStore.queryByEnrollmentAndProgramStage(enrollment,
+                                    programStageUid);
+                            List<TrackedEntityDataValue> trackedEntityDataValues = trackedEntityDataValueStore
+                                    .queryTrackedEntityDataValues(programStageInstance.uid());
 
                             dataElementToDataValues.clear();
                             if (trackedEntityDataValues != null) {
@@ -310,6 +305,7 @@ public class ProgramIndicatorEngine {
                     }
 
                     if (date != null) {
+                        valueCount++;
                         matcher.appendReplacement(buffer, TextUtils.quote(DateUtils.getMediumDateString(date)));
                     }
                 }
@@ -340,7 +336,11 @@ public class ProgramIndicatorEngine {
             }
         }
 
-        expression = TextUtils.appendTail(matcher, buffer);
+        return TextUtils.appendTail(matcher, buffer);
+    }
+
+    private Double getValue(String enrollment, String event, String indicatorUid) {
+        String expression = parseIndicatorExpression(enrollment, event, indicatorUid);
         Double value;
         try {
             value = ExpressionUtils.evaluateToDouble(expression, null);

@@ -70,8 +70,8 @@ public abstract class ProgramSection extends BaseIdentifiableObject {
     private static final Field<ProgramSection, String> formName = Field.create(FORM_NAME);
 
     static final Fields<ProgramSection> allFields = Fields.<ProgramSection>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, deleted, description, program, sortOrder, formName,
-            attributes.with(ObjectWithUid.uid), style.with(ObjectStyle.allFields)).build();
+            uid, code, name, displayName, created, lastUpdated, deleted, description, program.with(ObjectWithUid.uid),
+            sortOrder, formName, attributes.with(ObjectWithUid.uid), style.with(ObjectStyle.allFields)).build();
 
     @Nullable
     @JsonProperty(DESCRIPTION)

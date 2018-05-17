@@ -48,7 +48,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -138,44 +140,31 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
-    public void one_dataelement() throws Exception {
+    public void parse_one_dataelement() throws Exception {
         when(programIndicator.expression()).thenReturn(de(programStageUid, dataElementUid1));
 
         when(value1.value()).thenReturn("3.5");
 
-        String result = programIndicatorEngine.getProgramIndicatorValueByEvent(eventUid, programIndicatorUid);
+        String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid, programIndicatorUid);
 
         assertThat(result).isEqualTo("3.5");
     }
 
     @Test
-    public void addition_two_dataelements() throws Exception {
+    public void parse_operation_two_dataelements() throws Exception {
         when(programIndicator.expression()).thenReturn(
                 de(programStageUid, dataElementUid1) + " + " + de(programStageUid, dataElementUid2));
 
         when(value1.value()).thenReturn("3.5");
         when(value2.value()).thenReturn("2");
 
-        String result = programIndicatorEngine.getProgramIndicatorValueByEvent(eventUid, programIndicatorUid);
+        String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid, programIndicatorUid);
 
-        assertThat(result).isEqualTo("5.5");
+        assertThat(result).isEqualTo("3.5 + 2.0");
     }
 
     @Test
-    public void subtraction_two_dataelements() throws Exception {
-        when(programIndicator.expression()).thenReturn(
-                de(programStageUid, dataElementUid1) + " - " + de(programStageUid, dataElementUid2));
-
-        when(value1.value()).thenReturn("3.5");
-        when(value2.value()).thenReturn("2");
-
-        String result = programIndicatorEngine.getProgramIndicatorValueByEvent(eventUid, programIndicatorUid);
-
-        assertThat(result).isEqualTo("1.5");
-    }
-
-    @Test
-    public void addition_two_dataelements_and_division() throws Exception {
+    public void parse_operation_with_parenthesis() throws Exception {
         when(programIndicator.expression()).thenReturn(
                 "(" + de(programStageUid, dataElementUid1) + " + " + de(programStageUid, dataElementUid2) +
                 ") / " + de(programStageUid, dataElementUid3));
@@ -184,36 +173,77 @@ public class ProgramIndicatorEngineShould {
         when(value2.value()).thenReturn("2");
         when(value3.value()).thenReturn("1.5");
 
-        String result = programIndicatorEngine.getProgramIndicatorValueByEvent(eventUid, programIndicatorUid);
+        String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid, programIndicatorUid);
 
-        assertThat(result).isEqualTo("3");
+        assertThat(result).isEqualTo("(2.5 + 2.0) / 1.5");
     }
 
     @Test
-    public void multiplication_two_dataelements() throws Exception {
-        when(programIndicator.expression()).thenReturn(
-                de(programStageUid, dataElementUid1) + " * " + de(programStageUid, dataElementUid2));
-
-        when(value1.value()).thenReturn("3.5");
-        when(value2.value()).thenReturn("2");
-
-        String result = programIndicatorEngine.getProgramIndicatorValueByEvent(eventUid, programIndicatorUid);
-
-        assertThat(result).isEqualTo("7");
-    }
-
-    @Test
-    public void addition_dataelement_constant() throws Exception {
+    public void parse_dataelement_and_constant() throws Exception {
         when(programIndicator.expression()).thenReturn(
                 de(programStageUid, dataElementUid1) + " + " + cons(constantUid1));
 
         when(value1.value()).thenReturn("3.5");
         when(constantModel.value()).thenReturn("2");
 
-        String result = programIndicatorEngine.getProgramIndicatorValueByEvent(eventUid, programIndicatorUid);
+        String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid, programIndicatorUid);
 
-        assertThat(result).isEqualTo("5.5");
+        assertThat(result).isEqualTo("3.5 + 2");
     }
+
+    @Test
+    public void parse_enrollment_date_variable() throws Exception {
+        when(programIndicator.expression()).thenReturn(var("enrollment_date"));
+
+        Date enrollmentDate = new SimpleDateFormat("yyyy-MM-dd").parse("2018-05-05");
+        when(enrollmentModel.dateOfEnrollment()).thenReturn(enrollmentDate);
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
+
+        assertThat(result).isEqualTo("\"2018-05-05\"");
+    }
+
+    @Test
+    public void parse_incident_date_variable() throws Exception {
+        when(programIndicator.expression()).thenReturn(var("incident_date"));
+
+        Date enrollmentDate = new SimpleDateFormat("yyyy-MM-dd").parse("2018-05-05");
+        when(enrollmentModel.dateOfIncident()).thenReturn(enrollmentDate);
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
+
+        assertThat(result).isEqualTo("\"2018-05-05\"");
+    }
+
+    @Test
+    public void parse_event_date_variable() throws Exception {
+        when(programIndicator.expression()).thenReturn(var("event_date"));
+
+        Date enrollmentDate = new SimpleDateFormat("yyyy-MM-dd").parse("2018-05-05");
+        when(eventModel.eventDate()).thenReturn(enrollmentDate);
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid, programIndicatorUid);
+
+        assertThat(result).isEqualTo("\"2018-05-05\"");
+    }
+
+    @Test
+    public void parse_value_count_variable() throws Exception {
+        when(programIndicator.expression()).thenReturn(
+                "(" + de(programStageUid, dataElementUid1) + " + " + de(programStageUid, dataElementUid2) +
+                        ") / " + var("value_count"));
+
+        when(value1.value()).thenReturn("3.5");
+        when(value2.value()).thenReturn("2");
+
+        String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid, programIndicatorUid);
+
+        assertThat(result).isEqualTo("(3.5 + 2.0) / 2");
+    }
+
+    // -------------------------------------------------------------------------
+    // Supportive methods
+    // -------------------------------------------------------------------------
 
     private String de(String programStageUid, String dataElementUid) {
         return "#{" + programStageUid + "." + dataElementUid + "}";
@@ -221,5 +251,9 @@ public class ProgramIndicatorEngineShould {
 
     private String cons(String constantUid) {
         return "C{" + constantUid + "}";
+    }
+
+    private String var(String variable) {
+        return "V{" + variable + "}";
     }
 }

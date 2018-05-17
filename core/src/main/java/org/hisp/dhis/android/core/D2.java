@@ -144,8 +144,8 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response> downloadTrackedEntityInstances(int teiLimitByOrgUnit) {
-        return TrackerEntitiesDataCall.create(databaseAdapter, retrofit, teiLimitByOrgUnit);
+    public Call<List<TrackedEntityInstance>> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
+        return TrackerEntitiesDataCall.create(databaseAdapter, retrofit, teiLimit, limitByOrgUnit);
     }
 
     @NonNull

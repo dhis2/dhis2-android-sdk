@@ -12,6 +12,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipModel;
 import org.hisp.dhis.android.core.relationship.RelationshipModelBuilder;
 import org.hisp.dhis.android.core.relationship.RelationshipStore;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -70,6 +71,12 @@ public class TrackedEntityInstanceHandler {
                 this.handle(relationship.relative());
                 this.relationshipStore.updateOrInsertWhere(relationshipModelBuilder.buildModel(relationship));
             }
+        }
+    }
+
+    public void handleMany(@NonNull Collection<TrackedEntityInstance> trackedEntityInstances) {
+        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
+            handle(trackedEntityInstance);
         }
     }
 

@@ -19,7 +19,7 @@ import retrofit2.http.Query;
 
 public interface TrackedEntityInstanceService {
     String TRACKED_ENTITY_INSTANCES = "trackedEntityInstances";
-    String TRACKED_ENTITY_INSTANCES_UID = "trackedEntityInstanceUid";
+    String TRACKED_ENTITY_INSTANCE_UID = "trackedEntityInstanceUid";
     String OU = "ou";
     String OU_MODE = "ouMode";
     String FIELDS = "fields";
@@ -36,15 +36,15 @@ public interface TrackedEntityInstanceService {
     Call<WebResponse> postTrackedEntityInstances(
             @Body TrackedEntityInstancePayload trackedEntityInstances);
 
-    @GET(TRACKED_ENTITY_INSTANCES + "/{" + TRACKED_ENTITY_INSTANCES_UID + "}")
+    @GET(TRACKED_ENTITY_INSTANCES + "/{" + TRACKED_ENTITY_INSTANCE_UID + "}")
     Call<TrackedEntityInstance> trackedEntityInstance(
-            @Path(TRACKED_ENTITY_INSTANCES_UID) String trackedEntityInstanceUid,
+            @Path(TRACKED_ENTITY_INSTANCE_UID) String trackedEntityInstanceUid,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
             @Query(INCLUDE_DELETED) boolean includeDeleted);
 
     @GET(TRACKED_ENTITY_INSTANCES)
     Call<Payload<TrackedEntityInstance>> getTEIs(
-            @Query(OU) String orgUnit,
+            @Query(OU) String orgUnits,
             @Query(FILTER) @Where Filter<TrackedEntityInstance, String> lastUpdated,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
             @Query(PAGING) Boolean paging,

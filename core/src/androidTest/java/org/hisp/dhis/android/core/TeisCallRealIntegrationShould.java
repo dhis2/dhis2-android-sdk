@@ -6,6 +6,7 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.user.User;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,7 +37,7 @@ public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
         assertThat(metadataResponse.isSuccessful()).isTrue();
 
         List<TrackedEntityInstance> trackedEntityInstances =
-                d2.downloadTrackedEntityInstances(5,  true).call();
+                d2.downloadTrackedEntityInstances(5,  false).call();
         assertThat(trackedEntityInstances.size() == 5).isTrue();
     }
 }

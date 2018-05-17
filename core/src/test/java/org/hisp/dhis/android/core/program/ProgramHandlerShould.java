@@ -164,7 +164,8 @@ public class ProgramHandlerShould {
     @Test
     public void call_program_indicator_handler() throws Exception {
         programHandler.handle(program, new ProgramModelBuilder());
-        verify(programIndicatorHandler).handleProgramIndicator(null, programIndicators);
+        verify(programIndicatorHandler).handleMany(anyListOf(ProgramIndicator.class),
+                any(ProgramIndicatorModelBuilder.class));
     }
 
     @Test

@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.LegendSetModel;
@@ -57,7 +59,7 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class ProgramIndicatorHandlerShould {
     @Mock
-    private ProgramIndicatorStore programIndicatorStore;
+    private IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore;
 
     @Mock
     private ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
@@ -75,7 +77,10 @@ public class ProgramIndicatorHandlerShould {
     private LegendSet legendSet;
 
     @Mock
-    private Program program;
+    private ObjectWithUid program;
+
+    @Mock
+    private ProgramIndicatorModelBuilder programIndicatorModelBuilder;
 
     // object to test
     private ProgramIndicatorHandler programIndicatorHandler;
@@ -108,18 +113,14 @@ public class ProgramIndicatorHandlerShould {
 
     @Test
     public void do_nothing_when_passing_null_argument() throws Exception {
-        programIndicatorHandler.handleProgramIndicator(null, null);
+        programIndicatorHandler.handle(null, null);
 
         // verify that program indicator store is never called
         verify(programIndicatorStore, never()).delete(anyString());
 
-        verify(programIndicatorStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyBoolean(), anyString(), anyString(), anyString(), anyInt(), anyString(), anyString());
+        verify(programIndicatorStore, never()).update(any(ProgramIndicatorModel.class));
 
-        verify(programIndicatorStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyBoolean(), anyString(), anyString(), anyString(), anyInt(), anyString());
+        verify(programIndicatorStore, never()).insert(any(ProgramIndicatorModel.class));
 
         // verify that link store is never called
         verify(programStageSectionProgramIndicatorLinkStore, never()).update(
@@ -134,19 +135,10 @@ public class ProgramIndicatorHandlerShould {
     public void delete_shouldDeleteProgramIndicator() throws Exception {
         when(programIndicator.deleted()).thenReturn(Boolean.TRUE);
 
-        programIndicatorHandler.handleProgramIndicator(null, programIndicators);
+        programIndicatorHandler.handleMany(programIndicators, programIndicatorModelBuilder);
 
         // verify that delete is called once
         verify(programIndicatorStore, times(1)).delete(programIndicator.uid());
-
-        // verify that update and insert is never called
-        verify(programIndicatorStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyBoolean(), anyString(), anyString(), anyString(), anyInt(), anyString(), anyString());
-
-        verify(programIndicatorStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(), anyString(), anyString(),
-                anyBoolean(), anyString(), anyString(), anyString(), anyInt(), anyString());
 
         // verify that link store is never called because it is self-maintained through sqLite
         verify(programStageSectionProgramIndicatorLinkStore, never()).update(
@@ -158,25 +150,13 @@ public class ProgramIndicatorHandlerShould {
 
     @Test
     public void update_shouldUpdateProgramIndicatorWithoutProgramStageSection() throws Exception {
-        when(programIndicatorStore.update(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyBoolean(), anyString(), anyString(),
-                anyString(), anyInt(), anyString(), anyString())).thenReturn(1);
-
-        programIndicatorHandler.handleProgramIndicator(null, programIndicators);
+        programIndicatorHandler.handleMany(programIndicators, programIndicatorModelBuilder);
 
         // verify that update is called once
-        verify(programIndicatorStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyBoolean(), anyString(), anyString(),
-                anyString(), anyInt(), anyString(), anyString());
+        verify(programIndicatorStore, times(1)).update(any(ProgramIndicatorModel.class));
 
         // verify that insert and delete is never called
-        verify(programIndicatorStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyBoolean(), anyString(), anyString(),
-                anyString(), anyInt(), anyString());
+        verify(programIndicatorStore, never()).insert(any(ProgramIndicatorModel.class));
 
         verify(programIndicatorStore, never()).delete(anyString());
 
@@ -191,29 +171,14 @@ public class ProgramIndicatorHandlerShould {
 
     @Test
     public void update_shouldUpdateProgramIndicatorWithProgramStageSection() throws Exception {
-        when(programIndicatorStore.update(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyBoolean(), anyString(), anyString(),
-                anyString(), anyInt(), anyString(), anyString())).thenReturn(1);
-
-        when(programStageSectionProgramIndicatorLinkStore.update(
-                anyString(), anyString(), anyString(), anyString())
-        ).thenReturn(1);
-
-        programIndicatorHandler.handleProgramIndicator("test_program_stage_section", programIndicators);
+        programIndicatorHandler.handleManyWithProgramStageSection(programIndicators, programIndicatorModelBuilder,
+                "test_program_stage_section");
 
         // verify that update is called once
-        verify(programIndicatorStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyBoolean(), anyString(), anyString(),
-                anyString(), anyInt(), anyString(), anyString());
+        verify(programIndicatorStore, times(1)).update(any(ProgramIndicatorModel.class));
 
         // verify that insert and delete is never called
-        verify(programIndicatorStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyBoolean(), anyString(), anyString(),
-                anyString(), anyInt(), anyString());
+        verify(programIndicatorStore, never()).insert(any(ProgramIndicatorModel.class));
 
         verify(programIndicatorStore, never()).delete(anyString());
 
@@ -226,102 +191,8 @@ public class ProgramIndicatorHandlerShould {
     }
 
     @Test
-    public void insert_shouldInsertProgramIndicatorWithoutProgramStageSection() throws Exception {
-        when(programIndicatorStore.update(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyBoolean(), anyString(), anyString(),
-                anyString(), anyInt(), anyString(), anyString())).thenReturn(0);
-
-        programIndicatorHandler.handleProgramIndicator(null, programIndicators);
-
-        // verify that insert is called once
-        verify(programIndicatorStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyBoolean(), anyString(), anyString(),
-                anyString(), anyInt(), anyString());
-
-        // verify that update is called since we update before we insert
-        verify(programIndicatorStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyBoolean(), anyString(), anyString(),
-                anyString(), anyInt(), anyString(), anyString());
-
-        // verify that delete is never called
-        verify(programIndicatorStore, never()).delete(anyString());
-
-        // verify that link store is never called
-        verify(programStageSectionProgramIndicatorLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString()
-        );
-
-        verify(programStageSectionProgramIndicatorLinkStore, never()).insert(anyString(), anyString());
-
-    }
-
-
-    @Test
-    public void insert_shouldInsertProgramIndicatorWithProgramStageSection() throws Exception {
-        when(programIndicatorStore.update(
-                anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyBoolean(), anyString(), anyString(),
-                anyString(), anyInt(), anyString(), anyString())).thenReturn(0);
-
-        when(programStageSectionProgramIndicatorLinkStore.update(
-                anyString(), anyString(), anyString(), anyString())
-        ).thenReturn(0);
-
-        programIndicatorHandler.handleProgramIndicator("test_program_stage_section_uid", programIndicators);
-
-        // verify that insert is called once
-        verify(programIndicatorStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyBoolean(), anyString(), anyString(),
-                anyString(), anyInt(), anyString());
-
-        // verify that update is called since we update before we insert
-        verify(programIndicatorStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), anyBoolean(), anyString(), anyString(),
-                anyString(), anyInt(), anyString(), anyString());
-
-        // verify that delete is never called
-        verify(programIndicatorStore, never()).delete(anyString());
-
-        // verify that link store's insert method is called once
-        verify(programStageSectionProgramIndicatorLinkStore, times(1)).insert(anyString(), anyString());
-
-        // verify that link store's update method is called once since we try to update before we insert
-        verify(programStageSectionProgramIndicatorLinkStore, times(1)).update(
-                anyString(), anyString(), anyString(), anyString()
-        );
-
-    }
-
-    @Test
-    public void call_program_indicator_legend_set_link_store() throws Exception {
-        programIndicatorHandler.handleProgramIndicator(null, programIndicators);
-        verify(programIndicatorLegendSetLinkStore).updateOrInsertWhere(any(ProgramIndicatorLegendSetLinkModel.class));
-    }
-
-    @Test
-    public void not_call_program_indicator_legend_set_link_store_if_program_stage_section_not_null() throws
-            Exception {
-        programIndicatorHandler.handleProgramIndicator("program_stage_section_uid", programIndicators);
-        verify(programIndicatorLegendSetLinkStore, never())
-                .updateOrInsertWhere(any(ProgramIndicatorLegendSetLinkModel.class));
-    }
-
-    @Test
     public void call_program_indicator_legend_set_handler() throws Exception {
-        programIndicatorHandler.handleProgramIndicator(null, programIndicators);
+        programIndicatorHandler.handleMany(programIndicators, programIndicatorModelBuilder);
         verify(legendSetHandler).handleMany(eq(legendSets), any(LegendSetModelBuilder.class));
-    }
-
-    @Test
-    public void not_call_program_indicator_legend_set_handler() throws Exception {
-        programIndicatorHandler.handleProgramIndicator("program_stage_section_uid", programIndicators);
-        verify(legendSetHandler, never()).handleMany(eq(legendSets), any(LegendSetModelBuilder.class));
     }
 }

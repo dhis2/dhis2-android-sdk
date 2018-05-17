@@ -29,17 +29,19 @@
 
 package org.hisp.dhis.android.core.utils.support;
 
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
  * @author Lars Helge Overland
  */
-public class MathUtils {
+public final class MathUtils {
 
     private static final String NUMERIC_REGEXP = "^(-?0|-?[1-9]\\d*)(\\.\\d+)?(E(-)?\\d+)?$";
     private static final Pattern NUMERIC_PATTERN = Pattern.compile(NUMERIC_REGEXP);
 
+    private MathUtils() {
+        // no instances
+    }
 
     /**
      * Returns a number rounded off to the given number of decimals.

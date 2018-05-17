@@ -34,7 +34,12 @@ import java.util.regex.Matcher;
 /**
  * @author Lars Helge Overland
  */
-public class TextUtils {
+public final class TextUtils {
+
+    private TextUtils() {
+        // no instances
+    }
+
     /**
      * Null-safe method for writing the items of a string array out as a string
      * separated by the given char separator.

@@ -39,12 +39,23 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.event.EventStore;
+import org.hisp.dhis.android.core.event.EventStoreImpl;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
+import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.support.DateUtils;
 import org.hisp.dhis.android.core.utils.support.ExpressionUtils;
 import org.hisp.dhis.android.core.utils.support.MathUtils;
@@ -90,13 +101,25 @@ public class ProgramIndicatorEngine {
     private static final String EXPRESSION_NOT_WELL_FORMED = "expression_not_well_formed";
     private static final String SEP_OBJECT = ":";
 
+    private final IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore;
+    private final TrackedEntityDataValueStore trackedEntityDataValueStore;
+    private final EnrollmentStore enrollmentStore;
+    private final EventStore eventStore;
     private final IdentifiableObjectStore<DataElementModel> dataElementStore;
     private final IdentifiableObjectStore<ConstantModel> constantStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
-    ProgramIndicatorEngine(IdentifiableObjectStore<DataElementModel> dataElementStore,
+    ProgramIndicatorEngine(IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore,
+                           TrackedEntityDataValueStore trackedEntityDataValueStore,
+                           EnrollmentStore enrollmentStore,
+                           EventStore eventStore,
+                           IdentifiableObjectStore<DataElementModel> dataElementStore,
                            IdentifiableObjectStore<ConstantModel> constantStore,
                            TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
+        this.programIndicatorStore = programIndicatorStore;
+        this.trackedEntityDataValueStore = trackedEntityDataValueStore;
+        this.enrollmentStore = enrollmentStore;
+        this.eventStore = eventStore;
         this.dataElementStore = dataElementStore;
         this.constantStore = constantStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
@@ -110,12 +133,12 @@ public class ProgramIndicatorEngine {
      * @param programIndicator ProgramIndicator
      * @return Indicator value
      */
-    public String getProgramIndicatorValue(Enrollment programInstance, ProgramIndicator programIndicator) {
-        if(programIndicator == null) {
+    public String getProgramIndicatorValueByEnrollment(String enrollment, String indicatorUid) {
+        if(enrollment == null) {
             return null;
         }
 
-        Double value = getValue(programInstance, null, programIndicator);
+        Double value = getValue(enrollment, null, indicatorUid);
 
         return TextUtils.fromDouble(value);
     }
@@ -127,12 +150,12 @@ public class ProgramIndicatorEngine {
      * @param programIndicator ProgramIndicator
      * @return Indicator value
      */
-    public String getProgramIndicatorValue(Event event, ProgramIndicator programIndicator) {
-        if(programIndicator == null) {
+    public String getProgramIndicatorValueByEvent(String event, String indicatorUid) {
+        if(event == null) {
             return null;
         }
 
-        Double value = getValue(null, event, programIndicator);
+        Double value = getValue(null, event, indicatorUid);
 
         return TextUtils.fromDouble(value);
     }
@@ -147,18 +170,21 @@ public class ProgramIndicatorEngine {
      * @param indicator
      * @return
      */
-    private Double getValue(Enrollment enrollment, Event event, ProgramIndicator indicator) {
+    private Double getValue(String enrollment, String event, String indicatorUid) {
         StringBuffer buffer = new StringBuffer();
 
-        String expression = indicator.expression();
+        ProgramIndicatorModel programIndicator = this.programIndicatorStore.selectByUid(indicatorUid,
+                ProgramIndicatorModel.factory);
+        String expression = programIndicator.expression();
 
         Matcher matcher = EXPRESSION_PATTERN.matcher(expression);
 
         int valueCount = 0;
         int zeroPosValueCount = 0;
-        Event eventProgramStageInstance = null;
+        String eventProgramStageInstance = null;
+        EventModel programStageInstance = null;
         Map<String, TrackedEntityDataValue> dataElementToDataValues = new HashMap<>();
-        Enrollment programInstance = null;
+        EnrollmentModel programInstance = null;
         Map<String, TrackedEntityAttributeValue> attributeToAttributeValues = new HashMap<>();
 
         while (matcher.find()) {
@@ -174,37 +200,30 @@ public class ProgramIndicatorEngine {
                     if (enrollment == null) { //in case single event without reg
                         if(eventProgramStageInstance == null) {
                             eventProgramStageInstance = event;
-                            if (eventProgramStageInstance.trackedEntityDataValues() != null) {
-                                for (TrackedEntityDataValue dataValue : eventProgramStageInstance
-                                        .trackedEntityDataValues()) {
+                            List<TrackedEntityDataValue> trackedEntityDataValues =
+                                    trackedEntityDataValueStore.queryTrackedEntityDataValues(event);
+                            if (trackedEntityDataValues != null) {
+                                for (TrackedEntityDataValue dataValue : trackedEntityDataValues) {
                                     dataElementToDataValues.put(dataValue.dataElement(), dataValue);
                                 }
                             }
                         }
                     } else {
-                        /*
-                        if (eventProgramStageInstance == null || !eventProgramStageInstance.uid().equals
-                                (programStageUid)) {
-                            eventProgramStageInstance = TrackerController.getEvgit aent(enrollmentProgramInstance
-                                    .getLocalId(), programStageUid);
-                            if(eventProgramStageInstance == null){
-                                continue;
-                            }
+                        if (eventProgramStageInstance == null || !eventProgramStageInstance.equals(programStageUid)) {
+                            eventProgramStageInstance = event;
+                            List<TrackedEntityDataValue> trackedEntityDataValues =
+                                    trackedEntityDataValueStore.queryTrackedEntityDataValues(event);
+
                             dataElementToDataValues.clear();
-                            if (eventProgramStageInstance.trackedEntityDataValues() != null) {
-                                for(TrackedEntityDataValue dataValue : eventProgramStageInstance
-                                        .trackedEntityDataValues()) {
+                            if (trackedEntityDataValues != null) {
+                                for(TrackedEntityDataValue dataValue : trackedEntityDataValues) {
                                     dataElementToDataValues.put(dataValue.dataElement(), dataValue);
                                 }
                             }
                         }
-                        */
                     }
 
                     TrackedEntityDataValue dataValue;
-                    if (eventProgramStageInstance.trackedEntityDataValues() == null) {
-                        continue;
-                    }
                     dataValue = dataElementToDataValues.get(de);
 
                     String value;
@@ -240,9 +259,9 @@ public class ProgramIndicatorEngine {
 
                     if (uid != null) {
                         if (programInstance == null) {
-                            programInstance = enrollment;
+                            programInstance = enrollmentStore.queryByUid(enrollment);
                             List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
-                                    trackedEntityAttributeValueStore.queryByTrackedEntityInstance(enrollment
+                                    trackedEntityAttributeValueStore.queryByTrackedEntityInstance(programInstance
                                             .trackedEntityInstance());
                             for (TrackedEntityAttributeValue value : trackedEntityAttributeValues) {
                                 attributeToAttributeValues.put(value.trackedEntityAttribute(), value);
@@ -269,18 +288,24 @@ public class ProgramIndicatorEngine {
                 }
             } else if (KEY_PROGRAM_VARIABLE.equals(key)) {
                 if (enrollment != null) { //in case of single event without reg
+                    if (programInstance == null) {
+                        programInstance = enrollmentStore.queryByUid(enrollment);
+                    }
                     Date currentDate = new Date();
                     Date date = null;
 
                     if (ENROLLMENT_DATE.equals(uid)) {
-                        date = enrollment.dateOfEnrollment();
+                        date = programInstance.dateOfEnrollment();
                     } else if (INCIDENT_DATE.equals(uid)) {
-                        date = enrollment.dateOfIncident();
+                        date = programInstance.dateOfIncident();
                     } else if (CURRENT_DATE.equals(uid)) {
                         date = currentDate;
                     } else if (EVENT_DATE.equals(uid)) {
-                        if(enrollment.events().size()>0) {
-                            date = enrollment.events().get(0).eventDate();
+                        if (event != null) {
+                            if (programStageInstance == null) {
+                                programStageInstance = eventStore.queryByUid(event);
+                            }
+                            date = programStageInstance.eventDate();
                         }
                     }
 
@@ -334,7 +359,11 @@ public class ProgramIndicatorEngine {
     }
 
     public static ProgramIndicatorEngine create(DatabaseAdapter databaseAdapter) {
-        return new ProgramIndicatorEngine(DataElementStore.create(databaseAdapter),
-                ConstantStore.create(databaseAdapter), new TrackedEntityAttributeValueStoreImpl(databaseAdapter));
+        return new ProgramIndicatorEngine(ProgramIndicatorStore.create(databaseAdapter),
+                new TrackedEntityDataValueStoreImpl(databaseAdapter),
+                new EnrollmentStoreImpl(databaseAdapter),
+                new EventStoreImpl(databaseAdapter),
+                DataElementStore.create(databaseAdapter), ConstantStore.create(databaseAdapter),
+                new TrackedEntityAttributeValueStoreImpl(databaseAdapter));
     }
 }

@@ -32,10 +32,16 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,11 +56,18 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramIndicatorEngineShould {
 
-    @Mock
-    private Event event;
+    private String enrollmentUid = "enrollment-uid";
+    private String eventUid = "event-uid";
+    private String programIndicatorUid = "program-indicator-uid";
 
     @Mock
-    private ProgramIndicator programIndicator;
+    private EventModel eventModel;
+
+    @Mock
+    private EnrollmentModel enrollmentModel;
+
+    @Mock
+    private ProgramIndicatorModel programIndicator;
 
     @Mock
     private TrackedEntityDataValue value1;
@@ -80,6 +93,14 @@ public class ProgramIndicatorEngineShould {
     private String constantUid1 = "gzlRs2HEGAf";
 
     @Mock
+    private IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore;
+    @Mock
+    private TrackedEntityDataValueStore trackedEntityDataValueStore;
+    @Mock
+    private EnrollmentStore enrollmentStore;
+    @Mock
+    private EventStore eventStore;
+    @Mock
     private IdentifiableObjectStore<DataElementModel> dataElementStore;
     @Mock
     private IdentifiableObjectStore<ConstantModel> constantStore;
@@ -92,13 +113,20 @@ public class ProgramIndicatorEngineShould {
     @Before
     public void setUp() throws Exception {
 
-        programIndicatorEngine = new ProgramIndicatorEngine(dataElementStore, constantStore,
-                trackedEntityAttributeValueStore);
+        programIndicatorEngine = new ProgramIndicatorEngine(programIndicatorStore, trackedEntityDataValueStore,
+                enrollmentStore, eventStore, dataElementStore, constantStore, trackedEntityAttributeValueStore);
 
         when(value1.dataElement()).thenReturn(dataElementUid1);
         when(value2.dataElement()).thenReturn(dataElementUid2);
         when(value3.dataElement()).thenReturn(dataElementUid3);
-        when(event.trackedEntityDataValues()).thenReturn(Arrays.asList(value1, value2, value3));
+
+        when(trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid))
+                .thenReturn(Arrays.asList(value1, value2, value3));
+
+        when(eventStore.queryByUid(eventUid)).thenReturn(eventModel);
+        when(enrollmentStore.queryByUid(enrollmentUid)).thenReturn(enrollmentModel);
+        when(programIndicatorStore.selectByUid(programIndicatorUid, ProgramIndicatorModel.factory)).thenReturn
+                (programIndicator);
 
         when(dataElementModel.valueType()).thenReturn(ValueType.NUMBER);
         when(dataElementStore.selectByUid(dataElementUid1, DataElementModel.factory)).thenReturn(dataElementModel);
@@ -115,7 +143,7 @@ public class ProgramIndicatorEngineShould {
 
         when(value1.value()).thenReturn("3.5");
 
-        String result = programIndicatorEngine.getProgramIndicatorValue(event, programIndicator);
+        String result = programIndicatorEngine.getProgramIndicatorValueByEvent(eventUid, programIndicatorUid);
 
         assertThat(result).isEqualTo("3.5");
     }
@@ -128,7 +156,7 @@ public class ProgramIndicatorEngineShould {
         when(value1.value()).thenReturn("3.5");
         when(value2.value()).thenReturn("2");
 
-        String result = programIndicatorEngine.getProgramIndicatorValue(event, programIndicator);
+        String result = programIndicatorEngine.getProgramIndicatorValueByEvent(eventUid, programIndicatorUid);
 
         assertThat(result).isEqualTo("5.5");
     }
@@ -141,7 +169,7 @@ public class ProgramIndicatorEngineShould {
         when(value1.value()).thenReturn("3.5");
         when(value2.value()).thenReturn("2");
 
-        String result = programIndicatorEngine.getProgramIndicatorValue(event, programIndicator);
+        String result = programIndicatorEngine.getProgramIndicatorValueByEvent(eventUid, programIndicatorUid);
 
         assertThat(result).isEqualTo("1.5");
     }
@@ -156,7 +184,7 @@ public class ProgramIndicatorEngineShould {
         when(value2.value()).thenReturn("2");
         when(value3.value()).thenReturn("1.5");
 
-        String result = programIndicatorEngine.getProgramIndicatorValue(event, programIndicator);
+        String result = programIndicatorEngine.getProgramIndicatorValueByEvent(eventUid, programIndicatorUid);
 
         assertThat(result).isEqualTo("3");
     }
@@ -169,7 +197,7 @@ public class ProgramIndicatorEngineShould {
         when(value1.value()).thenReturn("3.5");
         when(value2.value()).thenReturn("2");
 
-        String result = programIndicatorEngine.getProgramIndicatorValue(event, programIndicator);
+        String result = programIndicatorEngine.getProgramIndicatorValueByEvent(eventUid, programIndicatorUid);
 
         assertThat(result).isEqualTo("7");
     }
@@ -182,7 +210,7 @@ public class ProgramIndicatorEngineShould {
         when(value1.value()).thenReturn("3.5");
         when(constantModel.value()).thenReturn("2");
 
-        String result = programIndicatorEngine.getProgramIndicatorValue(event, programIndicator);
+        String result = programIndicatorEngine.getProgramIndicatorValueByEvent(eventUid, programIndicatorUid);
 
         assertThat(result).isEqualTo("5.5");
     }

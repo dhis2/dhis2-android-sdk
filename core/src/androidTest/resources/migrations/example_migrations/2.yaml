@@ -1,2 +1,0 @@
-up:
-  - ALTER TABLE USER ADD COLUMN testColumn INTEGER;

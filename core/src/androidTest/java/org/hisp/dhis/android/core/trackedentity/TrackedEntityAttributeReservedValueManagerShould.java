@@ -93,13 +93,13 @@ public class TrackedEntityAttributeReservedValueManagerShould extends AbsStoreTe
     }
 
     @Test
-    public void get_one_reserved_value() throws Exception {
+    public void get_one_reserved_value() {
         String value1 = manager.getValue(ownerUid1, organisationUnitUid);
         assertThat(value1, is("value1"));
     }
 
     @Test
-    public void get_two_reserved_value() throws Exception {
+    public void get_two_reserved_value() {
         String value1 = manager.getValue(ownerUid1, organisationUnitUid);
         String value2 = manager.getValue(ownerUid1, organisationUnitUid);
         String value3 = manager.getValue(ownerUid1, organisationUnitUid);
@@ -110,7 +110,7 @@ public class TrackedEntityAttributeReservedValueManagerShould extends AbsStoreTe
     }
 
     @Test
-    public void get_reserved_values() throws Exception {
+    public void get_reserved_values() {
         List<TrackedEntityAttributeReservedValueModel> reservedValueModels =
                 manager.getReservedValues(ownerUid1, organisationUnitUid);
 
@@ -118,7 +118,7 @@ public class TrackedEntityAttributeReservedValueManagerShould extends AbsStoreTe
     }
 
     @Test
-    public void reserve_100_new_values_and_take_one() throws Exception {
+    public void reserve_100_new_values_and_take_one() {
         manager.getValue(ownerUid1, organisationUnitUid);
         List<TrackedEntityAttributeReservedValueModel> reservedValueModels =
                 manager.getReservedValues(ownerUid1, organisationUnitUid);
@@ -127,7 +127,7 @@ public class TrackedEntityAttributeReservedValueManagerShould extends AbsStoreTe
     }
 
     @Test
-    public void have_98_values_after_sync_and_take_two() throws Exception {
+    public void have_98_values_after_sync_and_take_two() {
         manager.getValue(ownerUid1, organisationUnitUid);
         manager.getValue(ownerUid1, organisationUnitUid);
 

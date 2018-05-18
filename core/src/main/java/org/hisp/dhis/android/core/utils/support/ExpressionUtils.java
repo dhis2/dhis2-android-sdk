@@ -35,6 +35,7 @@ import org.apache.commons.jexl2.JexlEngine;
 import org.apache.commons.jexl2.JexlException;
 import org.apache.commons.jexl2.MapContext;
 import org.apache.commons.lang3.StringUtils;
+import org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class ExpressionUtils {
     static
     {
         Map<String, Object> functions = new HashMap<>();
-        //functions.put( ExpressionFunctions.NAMESPACE, new ExpressionFunctions() );
+        functions.put( ExpressionFunctions.NAMESPACE, new ExpressionFunctions() );
 
         JEXL.setFunctions( functions );
         JEXL.setCache( 512 );

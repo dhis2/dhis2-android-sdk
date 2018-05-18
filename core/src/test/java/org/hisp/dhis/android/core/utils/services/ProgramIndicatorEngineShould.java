@@ -211,7 +211,7 @@ public class ProgramIndicatorEngineShould {
     public void parse_enrollment_date_variable() throws Exception {
         when(programIndicator.expression()).thenReturn(var("enrollment_date"));
 
-        Date enrollmentDate = new SimpleDateFormat("yyyy-MM-dd").parse("2018-05-05");
+        Date enrollmentDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-05T00:00:00.000");
         when(enrollmentModel.dateOfEnrollment()).thenReturn(enrollmentDate);
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
@@ -223,8 +223,8 @@ public class ProgramIndicatorEngineShould {
     public void parse_incident_date_variable() throws Exception {
         when(programIndicator.expression()).thenReturn(var("incident_date"));
 
-        Date enrollmentDate = new SimpleDateFormat("yyyy-MM-dd").parse("2018-05-05");
-        when(enrollmentModel.dateOfIncident()).thenReturn(enrollmentDate);
+        Date incidentDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-05T00:00:00.000");
+        when(enrollmentModel.dateOfIncident()).thenReturn(incidentDate);
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
 
@@ -235,8 +235,8 @@ public class ProgramIndicatorEngineShould {
     public void parse_event_date_variable() throws Exception {
         when(programIndicator.expression()).thenReturn(var("event_date"));
 
-        Date enrollmentDate = new SimpleDateFormat("yyyy-MM-dd").parse("2018-05-05");
-        when(eventModel.eventDate()).thenReturn(enrollmentDate);
+        Date eventDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-05T00:00:00.000");
+        when(eventModel.eventDate()).thenReturn(eventDate);
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid, programIndicatorUid);
 
@@ -266,6 +266,17 @@ public class ProgramIndicatorEngineShould {
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
 
         assertThat(result).isEqualTo("1989");
+    }
+
+    @Test
+    public void do_not_parse_d2_functions() {
+        when(programIndicator.expression()).thenReturn("d2:floor(" + de(programStageUid, dataElementUid1) + ")");
+
+        when(value1.value()).thenReturn("3.5");
+
+        String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid, programIndicatorUid);
+
+        assertThat(result).isEqualTo("d2:floor(3.5)");
     }
 
 

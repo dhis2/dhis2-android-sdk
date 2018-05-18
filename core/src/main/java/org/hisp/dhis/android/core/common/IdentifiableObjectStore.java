@@ -42,5 +42,7 @@ public interface IdentifiableObjectStore<M extends BaseIdentifiableObjectModel> 
 
     Set<String> selectUids() throws RuntimeException;
 
+    Set<String> selectUidsWhere(String whereClause) throws RuntimeException;
+
     M selectByUid(String uid, CursorModelFactory<M> modelFactory) throws RuntimeException;
 }

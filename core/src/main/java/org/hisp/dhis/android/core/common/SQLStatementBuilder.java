@@ -91,6 +91,10 @@ public class SQLStatementBuilder {
         return "SELECT " + BaseIdentifiableObjectModel.Columns.UID + " FROM " + tableName;
     }
 
+    String selectUidsWhere(String whereClause) {
+        return "SELECT " + BaseIdentifiableObjectModel.Columns.UID + " FROM " + tableName + WHERE + whereClause + ";";
+    }
+
     String selectByUid() {
         return selectWhere(andSeparatedColumnEqualInterrogationMark(BaseIdentifiableObjectModel.Columns.UID));
     }

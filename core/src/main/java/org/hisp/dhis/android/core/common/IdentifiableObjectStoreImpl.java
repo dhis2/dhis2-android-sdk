@@ -87,6 +87,11 @@ public class IdentifiableObjectStoreImpl<M extends BaseIdentifiableObjectModel>
         return mapObjectsWithUidFromCursor(cursor);
     }
 
+    public Set<String> selectUidsWhere(String whereClause) throws RuntimeException {
+        Cursor cursor = databaseAdapter.query(builder.selectUidsWhere(whereClause));
+        return mapObjectsWithUidFromCursor(cursor);
+    }
+
     private Set<String> mapObjectsWithUidFromCursor(Cursor cursor) {
         Set<String> uids = new HashSet<>(cursor.getCount());
 

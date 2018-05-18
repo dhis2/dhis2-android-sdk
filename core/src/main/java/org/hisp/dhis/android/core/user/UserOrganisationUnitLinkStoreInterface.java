@@ -26,38 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SimpleCallFactory;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import retrofit2.Response;
+import java.util.Set;
 
-public final class DataSetAccessEndpointCall extends SyncCall<Response<Payload<DataSet>>> {
-    private final GenericCallData data;
-    private final DataSetService dataSetService;
+public interface UserOrganisationUnitLinkStoreInterface extends ObjectWithoutUidStore<UserOrganisationUnitLinkModel> {
 
-    private DataSetAccessEndpointCall(GenericCallData data, DataSetService dataSetService) {
-        this.data = data;
-        this.dataSetService = dataSetService;
-    }
-
-    @Override
-    public Response<Payload<DataSet>> call() throws Exception {
-        super.setExecuted();
-        String lastUpdated = data.resourceHandler().getLastUpdated(ResourceModel.Type.DATA_SET);
-        return dataSetService.getDataSetsForAccess(DataSet.uidAndAccessRead, DataSet.lastUpdated.gt(lastUpdated),
-                Boolean.FALSE).execute();
-    }
-
-    static final SimpleCallFactory<Payload<DataSet>> FACTORY = new SimpleCallFactory<Payload<DataSet>>() {
-        @Override
-        public Call<Response<Payload<DataSet>>> create(GenericCallData data) {
-            return new DataSetAccessEndpointCall(data, data.retrofit().create(DataSetService.class));
-        }
-    };
+    Set<String> queryRootOrganisationUnitUids() throws RuntimeException;
 }

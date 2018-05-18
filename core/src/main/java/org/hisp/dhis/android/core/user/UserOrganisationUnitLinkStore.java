@@ -28,16 +28,38 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
+import android.database.sqlite.SQLiteStatement;
+
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class UserOrganisationUnitLinkStore {
+import java.util.Set;
 
-    private UserOrganisationUnitLinkStore() {}
+public final class UserOrganisationUnitLinkStore extends ObjectWithoutUidStoreImpl<UserOrganisationUnitLinkModel>
+        implements UserOrganisationUnitLinkStoreInterface{
 
-    public static ObjectWithoutUidStore<UserOrganisationUnitLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, UserOrganisationUnitLinkModel.TABLE,
-                new UserOrganisationUnitLinkModel.Columns());
+    private UserOrganisationUnitLinkStore(DatabaseAdapter databaseAdapter,
+                                          SQLiteStatement insertStatement,
+                                          SQLiteStatement updateWhereStatement,
+                                          SQLStatementBuilder builder) {
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder);
+    }
+
+    public static UserOrganisationUnitLinkStoreInterface create(DatabaseAdapter databaseAdapter) {
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+                UserOrganisationUnitLinkModel.TABLE, new UserOrganisationUnitLinkModel.Columns());
+
+        return new UserOrganisationUnitLinkStore(
+                databaseAdapter,
+                databaseAdapter.compileStatement(statementBuilder.insert()),
+                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
+                statementBuilder);
+    }
+
+    @Override
+    public Set<String> queryRootOrganisationUnitUids() throws RuntimeException {
+        return selectStringColumnsWhereClause(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
+                        UserOrganisationUnitLinkModel.Columns.ROOT + " = 1");
     }
 }

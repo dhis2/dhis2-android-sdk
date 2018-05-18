@@ -28,39 +28,38 @@
 
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.EmptyQuery;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.UidsCallFactory;
-import org.hisp.dhis.android.core.common.UidsQuery;
+import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-
-import java.io.IOException;
-import java.util.Set;
 
 import retrofit2.Call;
 
-public final class ProgramEndpointCall extends GenericEndpointCallImpl<Program, ProgramModel, UidsQuery> {
+public final class ProgramEndpointCall extends GenericEndpointCallImpl<Program, ProgramModel, EmptyQuery> {
     private final ProgramService programService;
 
     ProgramEndpointCall(GenericCallData data, ProgramService programService,
-                                GenericHandler<Program, ProgramModel> programHandler, UidsQuery uidsQuery) {
-        super(data, programHandler, ResourceModel.Type.PROGRAM, new ProgramModelBuilder(), uidsQuery);
+                                GenericHandler<Program, ProgramModel> programHandler, EmptyQuery query) {
+        super(data, programHandler, ResourceModel.Type.PROGRAM, new ProgramModelBuilder(), query);
         this.programService = programService;
     }
 
     @Override
-    protected Call<Payload<Program>> getCall(UidsQuery query, String lastUpdated) throws IOException {
+    protected Call<Payload<Program>> getCall(EmptyQuery query, String lastUpdated) {
+        String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
         return programService.getPrograms(Program.allFields, Program.lastUpdated.gt(lastUpdated),
-                Program.uid.in(query.uids()), Boolean.FALSE);
+                accessDataReadFilter, Boolean.FALSE);
     }
 
-    static final UidsCallFactory<Program> FACTORY = new UidsCallFactory<Program>() {
+    static final SimpleCallFactory<Payload<Program>> FACTORY = new SimpleCallFactory<Payload<Program>>() {
         @Override
-        public ProgramEndpointCall create(GenericCallData data, Set<String> uids) {
+        public ProgramEndpointCall create(GenericCallData data) {
             return new ProgramEndpointCall(data, data.retrofit().create(ProgramService.class),
-                    ProgramHandler.create(data.databaseAdapter()),  UidsQuery.create(uids, 64));
+                    ProgramHandler.create(data.databaseAdapter()), EmptyQuery.create());
         }
     };
 }

@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.data.api.OuMode;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,31 +12,33 @@ public class TeiQuery {
     private final int page;
     private final int pageSize;
     private final boolean paging;
-    private final String orgUnit;
+    private final Set<String> orgUnits;
     private final int pageLimit;
+    private final OuMode ouMode;
 
     @Nullable
     private final Set<String> uIds;
 
 
-    public TeiQuery(boolean paging, int page, int pageSize,
-                    String orgUnit, int pageLimit) {
+    public TeiQuery(boolean paging, int page, int pageSize, Set<String> orgUnits, int pageLimit, OuMode ouMode) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
-        this.orgUnit = orgUnit;
+        this.orgUnits = orgUnits;
         this.pageLimit = pageLimit;
+        this.ouMode = ouMode;
         uIds = null;
     }
 
     public TeiQuery(boolean paging, int page, int pageSize,
-                    String orgUnit, @Nullable Set<String> uIds, int pageLimit) {
+                    Set<String> orgUnits, @Nullable Set<String> uIds, int pageLimit, OuMode ouMode) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
-        this.orgUnit = orgUnit;
+        this.orgUnits = orgUnits;
         this.uIds = uIds;
         this.pageLimit = pageLimit;
+        this.ouMode = ouMode;
     }
 
     @Nullable
@@ -54,8 +58,12 @@ public class TeiQuery {
         return paging;
     }
 
-    public String getOrgUnit() {
-        return orgUnit;
+    public OuMode getOuMode() {
+        return ouMode;
+    }
+
+    public Set<String> getOrgUnits() {
+        return orgUnits;
     }
 
     public int getPageLimit() {
@@ -66,8 +74,9 @@ public class TeiQuery {
         private int page = 1;
         private int pageSize = 50;
         private boolean paging;
-        private String orgUnit;
-        int pageLimit;
+        private Set<String> orgUnits;
+        int pageLimit = 50;
+        OuMode ouMode = OuMode.SELECTED;
 
         private Set<String> uIds = new HashSet<>();
 
@@ -93,8 +102,8 @@ public class TeiQuery {
             return this;
         }
 
-        public TeiQuery.Builder withOrgUnit(String orgUnit) {
-            this.orgUnit = orgUnit;
+        public TeiQuery.Builder withOrgUnits(Set<String> orgUnits) {
+            this.orgUnits = orgUnits;
             return this;
         }
 
@@ -108,14 +117,18 @@ public class TeiQuery {
             return this;
         }
 
+        public TeiQuery.Builder withOuMode(OuMode ouMode) {
+            this.ouMode = ouMode;
+            return this;
+        }
+
         public TeiQuery build() {
             if (pageLimit > pageSize) {
                 throw new IllegalArgumentException(
                         "pageLimit can not be more greater than pageSize");
             }
 
-            return new TeiQuery(paging, page, pageSize,
-                    orgUnit, uIds, pageLimit);
+            return new TeiQuery(paging, page, pageSize, orgUnits, uIds, pageLimit, ouMode);
         }
     }
 }

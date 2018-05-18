@@ -9,14 +9,25 @@ import java.util.Collections;
 import java.util.Iterator;
 
 @AutoValue
-public abstract class GtFilter<T, K> implements Filter<T, K> {
-    public static <T, K> Filter<T, K> create(@NonNull Field<T, K> field, @Nullable String value) {
+public abstract class SingleValueFilter<T, K> implements Filter<T, K> {
+
+    private static <T, K> Filter<T, K> create(@NonNull Field<T, K> field,
+                                              @NonNull String operator,
+                                              @Nullable String value) {
         //If the filter is incomplete, returning null, tells Retrofit that this filter should not be included.
         if (value == null || value.equals("")) {
             return null;
         }
-        return new AutoValue_GtFilter<>(field, "gt",
+        return new AutoValue_SingleValueFilter<>(field, operator,
                 Collections.unmodifiableCollection(Collections.singletonList(value)));
+    }
+
+    public static <T, K> Filter<T, K> gt(@NonNull Field<T, K> field, @Nullable String value) {
+        return create(field, "gt", value);
+    }
+
+    public static <T, K> Filter<T, K> eq(@NonNull Field<T, K> field, @Nullable String value) {
+        return create(field, "eq", value);
     }
 
     @Override

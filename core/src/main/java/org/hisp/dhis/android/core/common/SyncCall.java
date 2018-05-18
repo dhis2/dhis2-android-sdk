@@ -40,7 +40,7 @@ public abstract class SyncCall<C> implements Call<C> {
         }
     }
 
-    protected final void setExecuted() throws IllegalStateException {
+    protected final void setExecuted()  {
         synchronized (this) {
             if (isExecuted) {
                 throw new IllegalStateException("Already executed");

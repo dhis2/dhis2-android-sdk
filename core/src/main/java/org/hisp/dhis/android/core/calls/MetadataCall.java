@@ -38,15 +38,14 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramAccessEndpointCall;
 import org.hisp.dhis.android.core.program.ProgramParentCall;
-import org.hisp.dhis.android.core.program.ProgramParentUidsHelper;
 import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.settings.SystemSettingCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
@@ -55,7 +54,6 @@ import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 
 import java.util.List;
-import java.util.Set;
 
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -72,8 +70,7 @@ public class MetadataCall extends SyncCall<Response> {
     private final SimpleCallFactory<User> userCallFactory;
     private final SimpleCallFactory<Payload<Category>> categoryCallFactory;
     private final SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
-    private final SimpleCallFactory<Payload<Program>> programAccessCallFactory;
-    private final ProgramParentCall.Factory programParentCallFactory;
+    private final SimpleCallFactory<Payload<Program>> programParentCallFactory;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
     private final DataSetParentCall.Factory dataSetParentCallFactory;
 
@@ -84,8 +81,7 @@ public class MetadataCall extends SyncCall<Response> {
                         @NonNull SimpleCallFactory<User> userCallFactory,
                         @NonNull SimpleCallFactory<Payload<Category>> categoryCallFactory,
                         @NonNull SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory,
-                        @NonNull SimpleCallFactory<Payload<Program>> programAccessCallFactory,
-                        @NonNull ProgramParentCall.Factory programParentCallFactory,
+                        @NonNull SimpleCallFactory<Payload<Program>> programParentCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory) {
         this.databaseAdapter = databaseAdapter;
@@ -96,7 +92,6 @@ public class MetadataCall extends SyncCall<Response> {
         this.userCallFactory = userCallFactory;
         this.categoryCallFactory = categoryCallFactory;
         this.categoryComboCallFactory = categoryComboCallFactory;
-        this.programAccessCallFactory = programAccessCallFactory;
         this.programParentCallFactory = programParentCallFactory;
         this.organisationUnitCallFactory = organisationUnitCallFactory;
         this.dataSetParentCallFactory = dataSetParentCallFactory;
@@ -138,22 +133,15 @@ public class MetadataCall extends SyncCall<Response> {
                 return categoryComboResponse;
             }
 
-            Response<Payload<Program>> programAccessResponse
-                    = programAccessCallFactory.create(genericCallData).call();
-            if (!programAccessResponse.isSuccessful()) {
-                return programAccessResponse;
-            }
-
-            Set<String> programUids = ProgramParentUidsHelper
-                    .getProgramUidsWithDataReadAccess(programAccessResponse.body().items());
-            Response programResponse = programParentCallFactory.create(genericCallData, programUids).call();
+            Response<Payload<Program>> programResponse = programParentCallFactory.create(genericCallData).call();
             if (!programResponse.isSuccessful()) {
                 return programResponse;
             }
 
             User user = userResponse.body();
             Response<Payload<OrganisationUnit>> organisationUnitResponse =
-                    organisationUnitCallFactory.create(genericCallData, user, programUids).call();
+                    organisationUnitCallFactory.create(genericCallData, user,
+                            UidsHelper.getUids(programResponse.body().items())).call();
 
             if (!organisationUnitResponse.isSuccessful()) {
                 return organisationUnitResponse;
@@ -182,7 +170,6 @@ public class MetadataCall extends SyncCall<Response> {
                 UserCall.FACTORY,
                 CategoryEndpointCall.FACTORY,
                 CategoryComboEndpointCall.FACTORY,
-                ProgramAccessEndpointCall.FACTORY,
                 ProgramParentCall.FACTORY,
                 OrganisationUnitCall.FACTORY,
                 DataSetParentCall.FACTORY

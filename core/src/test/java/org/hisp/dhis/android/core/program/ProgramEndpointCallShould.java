@@ -28,13 +28,11 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.CallException;
-import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.EmptyQuery;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -53,9 +51,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import retrofit2.Response;
 
@@ -63,6 +59,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.inOrder;
@@ -84,12 +81,6 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     private retrofit2.Call<Payload<Program>> programCall;
 
     @Mock
-    private DataAccess dataAccess;
-
-    @Mock
-    private Access access;
-
-    @Mock
     private Program program;
 
     @Captor
@@ -99,7 +90,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     private ArgumentCaptor<Filter<Program, String>> lastUpdatedFilter;
 
     @Captor
-    private ArgumentCaptor<Filter<Program, String>> idInFilter;
+    private ArgumentCaptor<String> accessDataReadFilter;
 
     @Mock
     private Payload<Program> payload;
@@ -114,24 +105,15 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
 
-        Set<String> uids = new HashSet<>();
-        uids.add("test_program_uid");
-        uids.add("test_program1_uid");
-
-        UidsQuery uidsQuery = UidsQuery.create(uids, 64);
-
-        programEndpointCall = new ProgramEndpointCall(genericCallData, programService, programHandler, uidsQuery);
+        programEndpointCall = new ProgramEndpointCall(genericCallData, programService, programHandler,
+                EmptyQuery.create());
 
         when(program.uid()).thenReturn("test_program_uid");
-        when(program.access()).thenReturn(access);
-        when(access.data()).thenReturn(dataAccess);
-        when(dataAccess.read()).thenReturn(true);
-        when(dataAccess.write()).thenReturn(true);
 
         programList = Collections.singletonList(program);
         when(payload.items()).thenReturn(programList);
 
-        when(programService.getPrograms(any(Fields.class), any(Filter.class), any(Filter.class), anyBoolean())
+        when(programService.getPrograms(any(Fields.class), any(Filter.class), anyString(), anyBoolean())
         ).thenReturn(programCall);
     }
 
@@ -146,7 +128,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
         when(programCall.execute()).thenReturn(Response.success(payload));
 
         when(programService.getPrograms(
-                fieldsCaptor.capture(), lastUpdatedFilter.capture(), idInFilter.capture(), anyBoolean())
+                fieldsCaptor.capture(), lastUpdatedFilter.capture(), accessDataReadFilter.capture(), anyBoolean())
         ).thenReturn(programCall);
 
 

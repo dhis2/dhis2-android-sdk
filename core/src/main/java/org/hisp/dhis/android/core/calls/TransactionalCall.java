@@ -34,17 +34,17 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 
 import retrofit2.Response;
 
-public abstract class TransactionalCall extends SyncCall<Response> {
+public abstract class TransactionalCall<C> extends SyncCall<Response<C>> {
     protected final DatabaseAdapter databaseAdapter;
 
     protected TransactionalCall(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
     }
 
-    public abstract Response callBody() throws Exception;
+    public abstract Response<C> callBody() throws Exception;
 
     @Override
-    public final Response call() throws Exception {
+    public final Response<C> call() throws Exception {
         super.setExecuted();
 
         Transaction transaction = databaseAdapter.beginNewTransaction();

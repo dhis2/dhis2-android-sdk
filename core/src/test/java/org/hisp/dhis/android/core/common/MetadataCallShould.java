@@ -33,11 +33,9 @@ import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
-import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramParentCall;
 import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.User;
@@ -100,10 +98,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Payload<OrganisationUnit> organisationUnitPayload;
 
     @Mock
-    private Payload<Program> programWithAccessPayload;
-
-    @Mock
-    private Payload<OptionSet> optionSetPayload;
+    private Payload<Program> programPayload;
 
     @Mock
     private Payload<DataElement> dataElementPayload;
@@ -113,15 +108,6 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private CategoryCombo categoryCombo;
-
-    @Mock
-    private DataAccess dataAccess;
-
-    @Mock
-    private Access access;
-
-    @Mock
-    private Program programWithAccess;
 
     @Mock
     private Call<Response<SystemInfo>> systemInfoEndpointCall;
@@ -139,10 +125,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<Response<Payload<CategoryCombo>>> categoryComboEndpointCall;
 
     @Mock
-    private Call<Response<Payload<Program>>> programAccessEndpointCall;
-
-    @Mock
-    private Call<Response> programParentCall;
+    private Call<Response<Payload<Program>>> programParentCall;
 
     @Mock
     private Call<Response> dataSetParentCall;
@@ -160,16 +143,13 @@ public class MetadataCallShould extends BaseCallShould {
     private SimpleCallFactory<User> userCallFactory;
 
     @Mock
-    private SimpleCallFactory<Payload<Program>> programAccessCallFactory;
-
-    @Mock
     private SimpleCallFactory<Payload<Category>> categoryCallFactory;
 
     @Mock
     private SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
 
     @Mock
-    private ProgramParentCall.Factory programParentCallFactory;
+    private SimpleCallFactory<Payload<Program>> programParentCallFactory;
 
     @Mock
     private OrganisationUnitCall.Factory organisationUnitCallFactory;
@@ -192,12 +172,8 @@ public class MetadataCallShould extends BaseCallShould {
         when(organisationUnit.path()).thenReturn("path/to/org/unit");
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
-        when(dataAccess.read()).thenReturn(true);
-        when(access.data()).thenReturn(dataAccess);
-        when(programWithAccess.access()).thenReturn(access);
 
         // Payloads
-        when(programWithAccessPayload.items()).thenReturn(Collections.singletonList(programWithAccess));
         when(categoryPayload.items()).thenReturn(Collections.singletonList(category));
         when(categoryComboPayload.items()).thenReturn(Collections.singletonList(categoryCombo));
         when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
@@ -207,9 +183,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemInfoCallFactory.create(databaseAdapter, retrofit)).thenReturn(systemInfoEndpointCall);
         when(systemSettingCallFactory.create(any(GenericCallData.class))).thenReturn(systemSettingEndpointCall);
         when(userCallFactory.create(any(GenericCallData.class))).thenReturn(userCall);
-        when(programAccessCallFactory.create(any(GenericCallData.class))).thenReturn(programAccessEndpointCall);
-        when(programParentCallFactory.create(any(GenericCallData.class), anySetOf(String.class)))
-                .thenReturn(programParentCall);
+        when(programParentCallFactory.create(any(GenericCallData.class))).thenReturn(programParentCall);
         when(categoryCallFactory.create(any(GenericCallData.class))).thenReturn(categoryEndpointCall);
         when(categoryComboCallFactory.create(any(GenericCallData.class))).thenReturn(categoryComboEndpointCall);
         when(organisationUnitCallFactory.create(any(GenericCallData.class), same(user), anySetOf(String.class)))
@@ -223,8 +197,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(userCall.call()).thenReturn(Response.success(user));
         when(categoryEndpointCall.call()).thenReturn(Response.success(categoryPayload));
         when(categoryComboEndpointCall.call()).thenReturn(Response.success(categoryComboPayload));
-        when(programParentCall.call()).thenReturn(Response.success(optionSetPayload));
-        when(programAccessEndpointCall.call()).thenReturn(Response.success(programWithAccessPayload));
+        when(programParentCall.call()).thenReturn(Response.success(programPayload));
         when(organisationUnitEndpointCall.call()).thenReturn(Response.success(organisationUnitPayload));
         when(dataSetParentCall.call()).thenReturn(Response.success(dataElementPayload));
 
@@ -237,7 +210,6 @@ public class MetadataCallShould extends BaseCallShould {
                 userCallFactory,
                 categoryCallFactory,
                 categoryComboCallFactory,
-                programAccessCallFactory,
                 programParentCallFactory,
                 organisationUnitCallFactory,
                 dataSetParentCallFactory);
@@ -300,12 +272,6 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void fail_when_program_access_call_fail() throws Exception {
-        when(programAccessEndpointCall.call()).thenReturn(errorResponse);
-        verifyFail(metadataCall.call());
-    }
-
-    @Test
     public void fail_when_program_call_fail() throws Exception {
         when(programParentCall.call()).thenReturn(errorResponse);
         verifyFail(metadataCall.call());

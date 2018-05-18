@@ -117,7 +117,7 @@ public final class TrackedEntityInstanceWithLimitEndpointCall extends SyncCall<L
                     teiQueryBuilder.withPage(page).withPageLimit(teiLimit - ((page - 1) * pageSize));
                 }
                 teiQueryBuilder.withPage(page);
-                 trackerCallResponse = TeisEndPointCall.create(genericCallData, teiQueryBuilder.build()).call();
+                trackerCallResponse = TeisEndPointCall.create(genericCallData, teiQueryBuilder.build()).call();
 
                 if (!trackerCallResponse.isSuccessful()) {
                     throw httpExceptionBuilder.httpErrorCode(trackerCallResponse.code()).build();
@@ -127,7 +127,12 @@ public final class TrackedEntityInstanceWithLimitEndpointCall extends SyncCall<L
             } catch (Exception e) {
                 throw httpExceptionBuilder.originalException(e).build();
             }
+
+            if (trackerCallResponse.body().items().size() < pageSize) {
+                break;
+            }
         }
+
         return trackedEntityInstances;
     }
 

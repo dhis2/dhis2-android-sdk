@@ -45,14 +45,21 @@ import static org.hisp.dhis.android.core.utils.support.StringUtils.isEmpty;
  * This class has been copied/pasted from Android Tracker Capture SDK. Non-compatible methods have been commented out.
  */
 /*
- * Defines a set of functions that can be used in expressions in {@link org.hisp.dhis.android.sdk.persistence.models.ProgramRule}s
+ * Defines a set of functions that can be used in expressions in
+ * {@link org.hisp.dhis.android.sdk.persistence.models.ProgramRule}s
  * and {@link org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator}s
  * Please note that {@link VariableService#initialize(Enrollment, Event)} needs to be called before
  * the functions in this class are called.
  */
-public class ExpressionFunctions {
+
+@SuppressWarnings("PMD.GodClass")
+public final class ExpressionFunctions {
     public static final String CLASS_TAG = ExpressionFunctions.class.getSimpleName();
     public static final String NAMESPACE = "d2";
+
+    private ExpressionFunctions() {
+        // no instances
+    }
 
     /**
      * Function which will return zero if the argument is a negative number.
@@ -80,7 +87,7 @@ public class ExpressionFunctions {
             return null;
         }
 
-        return (value.doubleValue() >= 0d) ? 1d : 0d;
+        return value.doubleValue() >= 0d ? 1d : 0d;
     }    
     
     /**
@@ -132,7 +139,7 @@ public class ExpressionFunctions {
         }
         DateTime startDate = new DateTime(start);
         DateTime endDate = new DateTime(end);
-        return Long.valueOf((endDate.getMillis() - startDate.getMillis()) / 86400000).intValue();
+        return (int) (endDate.getMillis() - startDate.getMillis()) / 86400000;
     }
 
     public static Integer weeksBetween(String start, String end) throws ParseException {
@@ -141,7 +148,7 @@ public class ExpressionFunctions {
         }
         DateTime startDate = new DateTime(start);
         DateTime endDate = new DateTime(end);
-        return Long.valueOf((endDate.getMillis() - startDate.getMillis()) / (86400000 * 7)).intValue();
+        return (int) (endDate.getMillis() - startDate.getMillis()) / (86400000 * 7);
     }
 
     public static Integer monthsBetween(String start, String end)  throws ParseException {
@@ -167,7 +174,7 @@ public class ExpressionFunctions {
         if (value == null) {
             throw new IllegalArgumentException();
         }
-        return Double.valueOf(Math.floor(value.doubleValue())).intValue();
+        return (int) Math.floor(value.doubleValue());
     }
 
     public static Integer modulus(Number dividend, Number divisor) {
@@ -180,7 +187,7 @@ public class ExpressionFunctions {
     public static String concatenate(Object... values) {
         String returnString = "";
         for(Object value : values) {
-            returnString += String.valueOf(value);;
+            returnString = returnString.concat(String.valueOf(value));
         }
         return returnString;
     }
@@ -194,16 +201,18 @@ public class ExpressionFunctions {
         return getMediumDateString(newDateTime.toDate());
     }
 
-    /**
+    /*
     public static Integer count(String variableName) {
-        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap()
+                .get(variableName);
         Integer count = 0;
         if(programRuleVariable != null) {
             if(programRuleVariable.isHasValue()) {
                 if(programRuleVariable.getAllValues() != null) {
                     count = programRuleVariable.getAllValues().size();
                 } else {
-                    //If there is a value found for the variable, the count is 1 even if there is no list of alternate values
+                    //If there is a value found for the variable, the count is 1 even if there is no list of
+                    //alternate values
                     //This happens for variables of "DATAELEMENT_CURRENT_STAGE" and "TEI_ATTRIBUTE"
                     count = 1;
                 }
@@ -213,7 +222,8 @@ public class ExpressionFunctions {
     }
 
     public static Integer countIfZeroPos(String variableName) {
-        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap()
+            .get(variableName);
 
         Integer count = 0;
 
@@ -227,7 +237,8 @@ public class ExpressionFunctions {
                         }
                     }
                 } else {
-                    //The variable has a value, but no list of alternates. This means we only compare the elements real value
+                    //The variable has a value, but no list of alternates.
+                    //This means we only compare the elements real value
                     Double value = getVariableValue(programRuleVariable, programRuleVariable.getVariableValue());
                     if(value != null && value >= 0.0) {
                         count = 1;
@@ -240,7 +251,8 @@ public class ExpressionFunctions {
     }
 
     public static Integer countIfValue(String variableName, String textToCompare) {
-        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap()
+            .get(variableName);
 
         Integer count = 0;
         if(programRuleVariable != null) {
@@ -253,7 +265,8 @@ public class ExpressionFunctions {
                         }
                     }
                 } else {
-                    //The variable has a value, but no list of alternates. This means we compare the standard variablevalue
+                    //The variable has a value, but no list of alternates.
+                    //This means we compare the standard variablevalue
                     if(textToCompare.equals(programRuleVariable.getVariableValue())) {
                         count = 1;
                     }
@@ -275,7 +288,8 @@ public class ExpressionFunctions {
 
     /*
     public static Boolean hasValue(String variableName) {
-        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap()
+            .get(variableName);
         boolean valueFound = false;
         if(programRuleVariable != null) {
             if(programRuleVariable.isHasValue()){
@@ -286,7 +300,8 @@ public class ExpressionFunctions {
     }
 
     public static String lastEventDate(String variableName) {
-        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap()
+            .get(variableName);
         String valueFound = "";
         if(programRuleVariable != null) {
             if(programRuleVariable.getVariableEventDate() != null) {
@@ -316,8 +331,9 @@ public class ExpressionFunctions {
      * @return the left substring.
      */
     public static String left(String inputString, int length) {
-        if (inputString == null)
+        if (inputString == null) {
             return "";
+        }
         int safeLength = Math.min(Math.max(0, length), inputString.length());
         return inputString.substring(0, safeLength);
     }
@@ -330,8 +346,9 @@ public class ExpressionFunctions {
      * @return the right substring.
      */
     public static String right(String inputString, int length) {
-        if (inputString == null)
+        if (inputString == null) {
             return "";
+        }
         int safeLength = Math.min(Math.max(0, length), inputString.length());
         return inputString.substring(inputString.length() - safeLength);
     }
@@ -355,9 +372,10 @@ public class ExpressionFunctions {
      * @return the field after split.
      */
     public static String split(String inputString, String splitString, int fieldIndex) {
-        if (inputString == null || splitString == null)
+        if (inputString == null || splitString == null) {
             return "";
-        String[] fields = inputString == null ? new String[0] : inputString.split(Pattern.quote(splitString));
+        }
+        String[] fields = inputString.split(Pattern.quote(splitString));
         return fieldIndex >= 0 && fieldIndex < fields.length ? fields[fieldIndex] : "";
     }
 
@@ -370,8 +388,9 @@ public class ExpressionFunctions {
      * @return the substring.
      */
     public static String substring(String inputString, int startIndex, int endIndex) {
-        if (inputString == null)
+        if (inputString == null) {
             return "";
+        }
         int safeStartIndex = Math.min(Math.max(0, startIndex), inputString.length());
         int safeEndIndex = Math.min(Math.max(0, endIndex), inputString.length());
         return inputString.substring(safeStartIndex, safeEndIndex);

@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.android.core.utils.support;
 
+import android.util.Log;
+
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
@@ -44,7 +46,7 @@ import java.util.regex.Pattern;
 /**
  * @author Lars Helge Overland
  */
-public class ExpressionUtils {
+public final class ExpressionUtils {
     private static final String CLASS_TAG = ExpressionUtils.class.getSimpleName();
     private static final JexlEngine JEXL = new JexlEngine();
     private static final JexlEngine JEXL_STRICT = new JexlEngine();
@@ -53,26 +55,29 @@ public class ExpressionUtils {
     private static final String IGNORED_KEYWORDS_REGEX =
             "(^|[^:])(SUM|sum|AVERAGE|average|COUNT|count|STDDEV|stddev|VARIANCE|variance|MIN|min|MAX|max|NONE|none)";
 
-    private static final Pattern NUMERIC_PATTERN = Pattern.compile( "^(-?0|-?[1-9]\\d*)(\\.\\d+)?$" );
+    private static final Pattern NUMERIC_PATTERN = Pattern.compile("^(-?0|-?[1-9]\\d*)(\\.\\d+)?$");
 
-    static
-    {
+    private ExpressionUtils() {
+        // no instances
+    }
+
+    static {
         Map<String, Object> functions = new HashMap<>();
-        functions.put( ExpressionFunctions.NAMESPACE, new ExpressionFunctions() );
+        functions.put(ExpressionFunctions.NAMESPACE, ExpressionFunctions.class);
 
-        JEXL.setFunctions( functions );
-        JEXL.setCache( 512 );
-        JEXL.setSilent( false );
-        JEXL.setLenient( true ); // Lenient
+        JEXL.setFunctions(functions);
+        JEXL.setCache(512);
+        JEXL.setSilent(false);
+        JEXL.setLenient(true); // Lenient
 
-        JEXL_STRICT.setFunctions( functions );
-        JEXL_STRICT.setCache( 512 );
-        JEXL_STRICT.setSilent( false );
-        JEXL_STRICT.setStrict( true ); // Strict
+        JEXL_STRICT.setFunctions(functions);
+        JEXL_STRICT.setCache(512);
+        JEXL_STRICT.setSilent(false);
+        JEXL_STRICT.setStrict(true); // Strict
 
-        EL_SQL_MAP.put( "&&", "and" );
-        EL_SQL_MAP.put( "\\|\\|", "or" );
-        EL_SQL_MAP.put( "==", "=" );
+        EL_SQL_MAP.put("&&", "and");
+        EL_SQL_MAP.put("\\|\\|", "or");
+        EL_SQL_MAP.put("==", "=");
 
         //TODO Add support for textual operators like eq, ne and lt
     }
@@ -82,36 +87,34 @@ public class ExpressionUtils {
      * in the expression.
      *
      * @param expression the expression.
-     * @param vars the variables, can be null.
+     * @param vars       the variables, can be null.
      * @return the result of the evaluation.
      */
-    public static Object evaluate(String expression, Map<String, Object> vars )
-    {
+    public static Object evaluate(String expression, Map<String, Object> vars) {
         try {
             return evaluate(expression, vars, false);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(CLASS_TAG, e.toString());
             return null;
         }
     }
 
     /**
      * @param expression the expression.
-     * @param vars the variables, can be null.
-     * @param strict indicates whether to use strict or lenient engine mode.
+     * @param vars       the variables, can be null.
+     * @param strict     indicates whether to use strict or lenient engine mode.
      * @return the result of the evaluation.
      */
-    private static Object evaluate(String expression, Map<String, Object> vars, boolean strict )
-    {
-        expression = expression.replaceAll( IGNORED_KEYWORDS_REGEX, StringUtils.EMPTY );
+    private static Object evaluate(String expression, Map<String, Object> vars, boolean strict) {
+        String formattedExpression = expression.replaceAll(IGNORED_KEYWORDS_REGEX, StringUtils.EMPTY);
 
         JexlEngine engine = strict ? JEXL_STRICT : JEXL;
 
-        Expression exp = engine.createExpression( expression );
+        Expression exp = engine.createExpression(formattedExpression);
 
-        JexlContext context = vars != null ? new MapContext( vars ) : new MapContext();
+        JexlContext context = vars == null ? new MapContext() : new MapContext(vars);
 
-        return exp.evaluate( context );
+        return exp.evaluate(context);
     }
 
     /**
@@ -121,24 +124,21 @@ public class ExpressionUtils {
      * a Double
      *
      * @param expression the expression.
-     * @param vars the variables, can be null.
+     * @param vars       the variables, can be null.
      * @return the result of the evaluation.
      */
-    public static Double evaluateToDouble(String expression, Map<String, Object> vars )
-    {
-        Object result = evaluate( expression, vars );
+    public static Double evaluateToDouble(String expression, Map<String, Object> vars) {
+        Object result = evaluate(expression, vars);
 
-        if ( result == null )
-        {
-            throw new IllegalStateException( "Result must be not null" );
+        if (result == null) {
+            throw new IllegalStateException("Result must be not null");
         }
 
-        if ( !isNumeric( String.valueOf( result ) ) )
-        {
-            throw new IllegalStateException( "Result must be numeric: " + result + ", " + result.getClass() );
+        if (!isNumeric(String.valueOf(result))) {
+            throw new IllegalStateException("Result must be numeric: " + result + ", " + result.getClass());
         }
 
-        return Double.valueOf( String.valueOf( result ) );
+        return Double.valueOf(String.valueOf(result));
     }
 
     /**
@@ -146,14 +146,13 @@ public class ExpressionUtils {
      * be substituted in the expression.
      *
      * @param expression the expression.
-     * @param vars the variables, can be null.
+     * @param vars       the variables, can be null.
      * @return true or false.
      */
-    public static boolean isTrue(String expression, Map<String, Object> vars )
-    {
-        Object result = evaluate( expression, vars );
+    public static boolean isTrue(String expression, Map<String, Object> vars) {
+        Object result = evaluate(expression, vars);
 
-        return ( result != null && result instanceof Boolean) ? (Boolean) result : false;
+        return result instanceof Boolean && (Boolean) result;
     }
 
     /**
@@ -161,31 +160,21 @@ public class ExpressionUtils {
      * false.
      *
      * @param expression the expression.
-     * @param vars the variables, can be null.
+     * @param vars       the variables, can be null.
      * @return true or false.
      */
-    public static boolean isBoolean(String expression, Map<String, Object> vars )
-    {
-        try
-        {
-            Object result = evaluate( expression, vars );
+    public static boolean isBoolean(String expression, Map<String, Object> vars) {
+        try {
+            Object result = evaluate(expression, vars);
 
-            return ( result instanceof Boolean);
-        }
-        catch ( JexlException ex )
-        {
+            return result instanceof Boolean;
+        } catch (JexlException ex) {
             return false;
         }
     }
 
-    public static boolean isBoolean( String value ) {
-        if(value == null) {
-            return false;
-        } else if(value.equals("true") || value.equals("false")) {
-            return true;
-        } else {
-            return false;
-        }
+    public static boolean isBoolean(String value) {
+        return value != null && ("true".equals(value) || "false".equals(value));
     }
 
     /**
@@ -193,25 +182,17 @@ public class ExpressionUtils {
      * evaluated.
      *
      * @param expression the expression.
-     * @param vars the variables, can be null.
+     * @param vars       the variables, can be null.
      * @return true or false.
      */
-    public static boolean isValid(String expression, Map<String, Object> vars )
-    {
-        try
-        {
-            Object result = evaluate( expression, vars, true );
+    public static boolean isValid(String expression, Map<String, Object> vars) {
+        try {
+            Object result = evaluate(expression, vars, true);
 
             return result != null;
-        }
-        catch ( JexlException ex )
-        {
-            if ( ex.getMessage().contains( "divide error" ) )
-            {
-                return true; //TODO Masking bug in Jexl, fix
-            }
-
-            return false;
+        } catch (JexlException ex) {
+            //TODO Masking bug in Jexl, fix
+            return ex.getMessage().contains("divide error");
         }
     }
 
@@ -221,9 +202,8 @@ public class ExpressionUtils {
      * @param value the value.
      * @return true or false.
      */
-    public static boolean isNumeric( String value )
-    {
-        return NUMERIC_PATTERN.matcher( value ).matches();
+    public static boolean isNumeric(String value) {
+        return NUMERIC_PATTERN.matcher(value).matches();
     }
 
     /**
@@ -232,18 +212,16 @@ public class ExpressionUtils {
      * @param expression the expression.
      * @return an SQL clause.
      */
-    public static String asSql(String expression )
-    {
-        if ( expression == null )
-        {
+    public static String asSql(String expression) {
+        if (expression == null) {
             return null;
         }
 
-        for ( String key : EL_SQL_MAP.keySet() )
-        {
-            expression = expression.replaceAll( key, EL_SQL_MAP.get( key ) );
+        String result = "";
+        for (Map.Entry<String, String> entry : EL_SQL_MAP.entrySet()) {
+            result = expression.replaceAll(entry.getKey(), entry.getValue());
         }
 
-        return expression;
+        return result;
     }
 }

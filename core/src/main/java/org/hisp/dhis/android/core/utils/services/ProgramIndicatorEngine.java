@@ -67,7 +67,15 @@ import java.util.regex.Pattern;
  * @author Chau Thu Tran
  */
 
-
+@SuppressWarnings({
+        "PMD.ExcessiveImports",
+        "PMD.ExcessiveMethodLength",
+        "PMD.NPathComplexity",
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity",
+        "PMD.GodClass"
+})
 public class ProgramIndicatorEngine {
     private static final String NULL_REPLACEMENT = "null";
 
@@ -80,20 +88,15 @@ public class ProgramIndicatorEngine {
     private static final String ENROLLMENT_DATE = "enrollment_date";
     private static final String EVENT_DATE = "event_date";
     private static final String CURRENT_DATE = "current_date";
-    private static final String VALUE_COUNT = "value_count";
     private static final String VAR_VALUE_COUNT = "value_count";
     private static final String VAR_ZERO_POS_VALUE_COUNT = "zero_pos_value_count";
-    private static final String VALUE_TYPE_DATE = "date";
-    private static final String VALUE_TYPE_INT = "int";
-    private static final String EXPRESSION_REGEXP = "(" + KEY_DATAELEMENT + "|" + KEY_ATTRIBUTE + "|" + KEY_PROGRAM_VARIABLE + "|" + KEY_CONSTANT + ")\\{(\\w+|" +
-            INCIDENT_DATE + "|" + ENROLLMENT_DATE + "|" + CURRENT_DATE + "|" + EVENT_DATE + ")" + SEPARATOR_ID + "?(\\w*)\\}";
+    private static final String EXPRESSION_REGEXP = "(" + KEY_DATAELEMENT + "|" + KEY_ATTRIBUTE + "|" +
+            KEY_PROGRAM_VARIABLE + "|" + KEY_CONSTANT +
+            ")\\{(\\w+|" + INCIDENT_DATE + "|" + ENROLLMENT_DATE + "|" + CURRENT_DATE + "|" + EVENT_DATE + ")" +
+            SEPARATOR_ID + "?(\\w*)\\}";
     private static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_REGEXP);
-    private static final Pattern DATAELEMENT_PATTERN = Pattern.compile(KEY_DATAELEMENT + "\\{(\\w{11})" + SEPARATOR_ID + "(\\w{11})\\}");
-    private static final Pattern ATTRIBUTE_PATTERN = Pattern.compile(KEY_ATTRIBUTE + "\\{(\\w{11})\\}");
-    private static final Pattern VALUECOUNT_PATTERN = Pattern.compile("V\\{(" + VAR_VALUE_COUNT + "|" + VAR_ZERO_POS_VALUE_COUNT + ")\\}");
-    private static final String VALID = "valid";
-    private static final String EXPRESSION_NOT_WELL_FORMED = "expression_not_well_formed";
-    private static final String SEP_OBJECT = ":";
+    private static final Pattern VALUECOUNT_PATTERN =
+            Pattern.compile("V\\{(" + VAR_VALUE_COUNT + "|" + VAR_ZERO_POS_VALUE_COUNT + ")\\}");
 
     private final IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
@@ -159,6 +162,8 @@ public class ProgramIndicatorEngine {
         EnrollmentModel programInstance = null;
         Map<String, TrackedEntityAttributeValue> attributeToAttributeValues = new HashMap<>();
 
+        Date currentDate = new Date();
+
         while (matcher.find()) {
             String key = matcher.group(1);
             String uid = matcher.group(2);
@@ -167,93 +172,63 @@ public class ProgramIndicatorEngine {
                 String de = matcher.group(3);
                 String programStageUid = uid;
 
-                if (programStageUid != null && de != null) {
-                    if (enrollment == null) {
-                        // Single event without registration
-                        List<TrackedEntityDataValue> trackedEntityDataValues =
-                                trackedEntityDataValueStore.queryTrackedEntityDataValues(event);
-                        if (trackedEntityDataValues != null) {
-                            for (TrackedEntityDataValue dataValue : trackedEntityDataValues) {
-                                dataElementToDataValues.put(dataValue.dataElement(), dataValue);
-                            }
-                        }
-                    } else {
-                        if (programStageInstance == null ||
-                                !programStageInstance.programStage().equals(programStageUid)) {
-                            programStageInstance = eventStore.queryByEnrollmentAndProgramStage(enrollment,
-                                    programStageUid);
+                if (programStageUid == null && de == null) {
+                    continue;
+                }
 
-                            dataElementToDataValues.clear();
-                            if (programStageInstance != null) {
-                                List<TrackedEntityDataValue> trackedEntityDataValues = trackedEntityDataValueStore
-                                        .queryTrackedEntityDataValues(programStageInstance.uid());
+                if (enrollment == null) {
+                    // Single event without registration
+                    dataElementToDataValues = getTrackedEntityDataValues(event);
+                } else {
+                    if (programStageInstance == null ||
+                            !programStageInstance.programStage().equals(programStageUid)) {
+                        programStageInstance = eventStore.queryByEnrollmentAndProgramStage(enrollment,
+                                programStageUid);
 
-                                if (trackedEntityDataValues != null) {
-                                    for(TrackedEntityDataValue dataValue : trackedEntityDataValues) {
-                                        dataElementToDataValues.put(dataValue.dataElement(), dataValue);
-                                    }
-                                }
-                            }
+                        dataElementToDataValues.clear();
+                        if (programStageInstance != null) {
+                            dataElementToDataValues = getTrackedEntityDataValues(programStageInstance.uid());
                         }
                     }
+                }
 
-                    TrackedEntityDataValue dataValue;
-                    dataValue = dataElementToDataValues.get(de);
+                TrackedEntityDataValue dataValue;
+                dataValue = dataElementToDataValues.get(de);
 
+                String value;
+                if (dataValue == null || dataValue.value() == null || dataValue.value().isEmpty()) {
+                    value = "0";
+                } else {
+                    value = formatDataValue(dataValue);
+                    valueCount++;
+                    zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
+                }
+
+                matcher.appendReplacement(buffer, TextUtils.quote(value));
+
+            } else if (KEY_ATTRIBUTE.equals(key)) {
+                if (enrollment == null) {
+                    continue;
+                }
+
+                if (uid != null) {
+                    if (programInstance == null) {
+                        programInstance = enrollmentStore.queryByUid(enrollment);
+                        attributeToAttributeValues = getTrackedEntityAttributeValues(programInstance
+                                .trackedEntityInstance());
+                    }
+                    TrackedEntityAttributeValue attributeValue = attributeToAttributeValues.get(uid);
                     String value;
-                    if (dataValue == null || dataValue.value() == null || dataValue.value().isEmpty()) {
-                        value = "0";
+                    if (attributeValue == null || attributeValue.value() == null ||
+                            attributeValue.value().isEmpty()) {
+                        value = NULL_REPLACEMENT;
                     } else {
-                        if(dataElementStore.selectByUid(dataValue.dataElement(), DataElementModel.factory)
-                                .valueType() == ValueType.BOOLEAN){
-                            if(dataValue.value().equals("true")){
-                                value="1";
-                            }else{
-                                value="0";
-                            }
-                        }
-                        else if(dataValue.value().endsWith(".")) {
-                            value = (dataValue.value() + "0");
-                        }
-                        else if(!(dataValue.value().contains("."))) {
-                            value = dataValue.value() + ".0";
-                        }
-                        else {
-                            value = dataValue.value();
-                        }
+                        value = attributeValue.value();
 
                         valueCount++;
                         zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
                     }
-
                     matcher.appendReplacement(buffer, TextUtils.quote(value));
-                }
-            } else if (KEY_ATTRIBUTE.equals(key)) {
-                if (enrollment != null) {
-
-                    if (uid != null) {
-                        if (programInstance == null) {
-                            programInstance = enrollmentStore.queryByUid(enrollment);
-                            List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
-                                    trackedEntityAttributeValueStore.queryByTrackedEntityInstance(programInstance
-                                            .trackedEntityInstance());
-                            for (TrackedEntityAttributeValue value : trackedEntityAttributeValues) {
-                                attributeToAttributeValues.put(value.trackedEntityAttribute(), value);
-                            }
-                        }
-                        TrackedEntityAttributeValue attributeValue = attributeToAttributeValues.get(uid);
-                        String value;
-                        if (attributeValue == null || attributeValue.value() == null ||
-                                attributeValue.value().isEmpty()) {
-                            value = NULL_REPLACEMENT;
-                        } else {
-                            value = attributeValue.value();
-
-                            valueCount++;
-                            zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
-                        }
-                        matcher.appendReplacement(buffer, TextUtils.quote(value));
-                    }
                 }
             } else if (KEY_CONSTANT.equals(key)) {
                 ConstantModel constant = constantStore.selectByUid(uid, ConstantModel.factory);
@@ -262,7 +237,6 @@ public class ProgramIndicatorEngine {
                     matcher.appendReplacement(buffer, String.valueOf(constant.value()));
                 }
             } else if (KEY_PROGRAM_VARIABLE.equals(key)) {
-                Date currentDate = new Date();
                 Date date = null;
 
                 if (enrollment != null) { //in case of single event without reg
@@ -277,11 +251,9 @@ public class ProgramIndicatorEngine {
                     }
                 }
 
-                if (event != null) {
-                    if (EVENT_DATE.equals(uid)) {
-                        programStageInstance = eventStore.queryByUid(event);
-                        date = programStageInstance.eventDate();
-                    }
+                if (EVENT_DATE.equals(uid) && event != null) {
+                    programStageInstance = eventStore.queryByUid(event);
+                    date = programStageInstance.eventDate();
                 }
 
                 if (CURRENT_DATE.equals(uid)) {
@@ -296,15 +268,10 @@ public class ProgramIndicatorEngine {
         }
 
         if(valueCount <= 0) {
-            //returning null in case there are now values in the expression.
             return null;
         }
 
         expression = TextUtils.appendTail(matcher, buffer);
-
-        // ---------------------------------------------------------------------
-        // Value count variable
-        // ---------------------------------------------------------------------
 
         buffer = new StringBuffer();
         matcher = VALUECOUNT_PATTERN.matcher(expression);
@@ -322,16 +289,55 @@ public class ProgramIndicatorEngine {
         return TextUtils.appendTail(matcher, buffer);
     }
 
+    private Map<String, TrackedEntityAttributeValue> getTrackedEntityAttributeValues(String tei) {
+        Map<String, TrackedEntityAttributeValue> attributeToAttributeValues = new HashMap<>();
+        List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
+                trackedEntityAttributeValueStore.queryByTrackedEntityInstance(tei);
+        if(trackedEntityAttributeValues != null) {
+            for (TrackedEntityAttributeValue value : trackedEntityAttributeValues) {
+                attributeToAttributeValues.put(value.trackedEntityAttribute(), value);
+            }
+        }
+        return attributeToAttributeValues;
+    }
+
+    private Map<String, TrackedEntityDataValue> getTrackedEntityDataValues(String eventUid) {
+        Map<String, TrackedEntityDataValue> dataElementToDataValues = new HashMap<>();
+        List<TrackedEntityDataValue> trackedEntityDataValues =
+                trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid);
+        if (trackedEntityDataValues != null) {
+            for (TrackedEntityDataValue dataValue : trackedEntityDataValues) {
+                dataElementToDataValues.put(dataValue.dataElement(), dataValue);
+            }
+        }
+        return dataElementToDataValues;
+    }
+
+    private String formatDataValue(TrackedEntityDataValue dataValue) {
+        if(dataElementStore.selectByUid(dataValue.dataElement(), DataElementModel.factory)
+                .valueType() == ValueType.BOOLEAN) {
+            if(dataValue.value().equals("true")) {
+                return "1";
+            } else {
+                return "0";
+            }
+        } else if(dataValue.value().endsWith(".")) {
+            return (dataValue.value() + "0");
+        } else if(dataValue.value().contains(".")) {
+            return dataValue.value();
+        } else {
+            return dataValue.value() + ".0";
+        }
+    }
+
     private Double getValue(String enrollment, String event, String indicatorUid) {
         String expression = parseIndicatorExpression(enrollment, event, indicatorUid);
         Double value;
         try {
             value = ExpressionUtils.evaluateToDouble(expression, null);
         } catch (JexlException e) {
-            e.printStackTrace();
             value = null;
         } catch (IllegalStateException e){
-            e.printStackTrace();
             value = null;
         }
         return value;

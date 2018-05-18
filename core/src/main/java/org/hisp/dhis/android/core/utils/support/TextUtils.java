@@ -70,7 +70,7 @@ public final class TextUtils {
      * @return the string representation.
      */
     public static String toString(Object object) {
-        return object != null ? object.toString() : null;
+        return object == null ? null : object.toString();
     }
 
     /**
@@ -104,8 +104,8 @@ public final class TextUtils {
      */
     public static String fromDouble(Double value) {
         if (value != null && !Double.isNaN(value)) {
-            value = MathUtils.getRounded(value, 2);
-            return String.valueOf(value).replaceAll("\\.0+$", "");
+            Double rounded = MathUtils.getRounded(value, 2);
+            return String.valueOf(rounded).replaceAll("\\.0+$", "");
         }
 
         return "";

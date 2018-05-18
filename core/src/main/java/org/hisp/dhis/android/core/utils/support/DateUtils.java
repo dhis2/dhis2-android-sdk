@@ -36,19 +36,13 @@ import java.util.Date;
  * @author Lars Helge Overland
  * @version $Id$
  */
-public class DateUtils {
-    public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
-    public static final SimpleDateFormat[] SUPPORTED_DATE_FORMATS = new SimpleDateFormat[]{
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ"),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm"),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH"),
-            new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ"),
-            new SimpleDateFormat("yyyy-MM-dd"),
-            new SimpleDateFormat("yyyy-MM"),
-            new SimpleDateFormat("yyyy")
-    };
+public final class DateUtils {
+
+    static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+
+    private DateUtils() {
+        // no instances
+    }
 
     /**
      * Formats a Date to the format YYYY-MM-DD.
@@ -61,6 +55,6 @@ public class DateUtils {
 
         format.applyPattern(DEFAULT_DATE_FORMAT);
 
-        return date != null ? format.format(date) : null;
+        return date == null ? null : format.format(date);
     }
 }

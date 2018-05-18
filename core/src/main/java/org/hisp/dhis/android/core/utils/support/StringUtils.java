@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.utils.support;
 
-public class StringUtils {
+public final class StringUtils {
 
     private StringUtils() {
         // no instances

@@ -61,6 +61,8 @@ public class ProgramStageSectionHandler {
         if (programStageUid == null || programStageSections == null) {
             return;
         }
+
+        ProgramIndicatorModelBuilder programIndicatorModelBuilder = new ProgramIndicatorModelBuilder();
         for (int i = 0, size = programStageSections.size(); i < size; i++) {
             ProgramStageSection programStageSection = programStageSections.get(i);
 
@@ -109,7 +111,7 @@ public class ProgramStageSectionHandler {
 
             }
             programIndicatorHandler.handleManyWithProgramStageSection(programStageSection.programIndicators(),
-                    new ProgramIndicatorModelBuilder(), programStageSection.uid());
+                    programIndicatorModelBuilder, programStageSection.uid());
         }
     }
 

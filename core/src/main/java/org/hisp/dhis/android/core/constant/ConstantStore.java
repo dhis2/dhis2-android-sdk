@@ -28,15 +28,9 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-import java.util.Date;
 
 public final class ConstantStore {
 

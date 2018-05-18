@@ -27,16 +27,19 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public final class UidsHelper {
 
     private UidsHelper() {}
 
-    public static <O extends IdentifiableObject> Set<String> getUids(List<O> objects) {
-        Set<String> uids = new HashSet<>();
+    public static <O extends IdentifiableObject> Set<String> getUids(Collection<O> objects) {
+        return addUids(new HashSet<String>(), objects);
+    }
+
+    public static <O extends IdentifiableObject> Set<String> addUids(Set<String> uids, Collection<O> objects) {
         for (IdentifiableObject object: objects) {
             uids.add(object.uid());
         }

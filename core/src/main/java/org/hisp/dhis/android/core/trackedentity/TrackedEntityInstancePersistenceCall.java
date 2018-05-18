@@ -7,19 +7,24 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 
 import java.util.Collection;
+import java.util.Set;
 
 public class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
 
     private final DatabaseAdapter databaseAdapter;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
+    private final TrackedEntityInstanceUidHelper uidsHelper;
+
     private final Collection<TrackedEntityInstance> trackedEntityInstances;
 
     private TrackedEntityInstancePersistenceCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
+            @NonNull TrackedEntityInstanceUidHelper uidsHelper,
             @NonNull Collection<TrackedEntityInstance> trackedEntityInstances) {
         this.databaseAdapter = databaseAdapter;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
+        this.uidsHelper = uidsHelper;
         this.trackedEntityInstances = trackedEntityInstances;
     }
 
@@ -30,8 +35,8 @@ public class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
         Transaction transaction = databaseAdapter.beginNewTransaction();
         trackedEntityInstanceHandler.handleMany(trackedEntityInstances);
 
-        // TODO download enrollments
-        // TODO download events
+        Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
+
         // TODO get organisation units
         // TODO persist organisationUnits
 
@@ -47,6 +52,7 @@ public class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
         return new TrackedEntityInstancePersistenceCall(
                 databaseAdapter,
                 TrackedEntityInstanceHandler.create(databaseAdapter),
+                TrackedEntityInstanceUidHelperImpl.create(databaseAdapter),
                 trackedEntityInstances
         );
     }

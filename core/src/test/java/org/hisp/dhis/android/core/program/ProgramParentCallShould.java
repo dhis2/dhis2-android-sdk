@@ -27,11 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
@@ -83,12 +80,6 @@ public class ProgramParentCallShould extends BaseCallShould {
     private OptionSet optionSet;
 
     @Mock
-    private DataAccess dataAccess;
-
-    @Mock
-    private Access access;
-
-    @Mock
     private Program programWithAccess;
 
     @Mock
@@ -116,7 +107,7 @@ public class ProgramParentCallShould extends BaseCallShould {
     private Call<Response<Payload<OptionSet>>> optionSetCall;
 
     @Mock
-    private UidsCallFactory<Program> programCallFactory;
+    private SimpleCallFactory<Payload<Program>> programCallFactory;
 
     @Mock
     private UidsCallFactory<ProgramStage> programStageCallFactory;
@@ -143,11 +134,7 @@ public class ProgramParentCallShould extends BaseCallShould {
                 ResponseBody.create(MediaType.parse("application/json"), "{}"));
 
         // Payload data
-        when(dataAccess.read()).thenReturn(true);
-        when(access.data()).thenReturn(dataAccess);
-        when(programWithAccess.access()).thenReturn(access);
         when(program.trackedEntityType()).thenReturn(trackedEntityType);
-        when(program.access()).thenReturn(access);
         when(program.programStages()).thenReturn(Collections.singletonList(programStageWithUid));
         when(programStageWithUid.uid()).thenReturn("program_stage_uid");
         when(trackedEntityType.uid()).thenReturn("test_tracked_entity_uid");
@@ -158,7 +145,7 @@ public class ProgramParentCallShould extends BaseCallShould {
         when(optionSetPayload.items()).thenReturn(Collections.singletonList(optionSet));
 
         // Call factories
-        when(programCallFactory.create(same(genericCallData), any(Set.class)))
+        when(programCallFactory.create(same(genericCallData)))
                 .thenReturn(programEndpointCall);
         when(programStageCallFactory.create(same(genericCallData), any(Set.class)))
                 .thenReturn(programStageEndpointCall);
@@ -176,8 +163,6 @@ public class ProgramParentCallShould extends BaseCallShould {
         when(optionSetCall.call()).thenReturn(Response.success(optionSetPayload));
         when(programStageEndpointCall.call()).thenReturn(Response.success(programStagePayload));
 
-        Set<String> uids = Sets.newLinkedHashSet("programUid");
-
         // Metadata call
         programParentCall = new ProgramParentCall(
                 genericCallData,
@@ -185,8 +170,7 @@ public class ProgramParentCallShould extends BaseCallShould {
                 programStageCallFactory,
                 trackedEntityCallFactory,
                 relationshiptTypeCallFactory,
-                optionSetCallFactory,
-                uids);
+                optionSetCallFactory);
     }
 
     @After
@@ -202,11 +186,11 @@ public class ProgramParentCallShould extends BaseCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void return_last_response_items() throws Exception {
+    public void return_programs() throws Exception {
         Response response = programParentCall.call();
         Payload<OptionSet> payload = (Payload<OptionSet>) response.body();
         assertTrue(!payload.items().isEmpty());
-        assertThat(payload.items().get(0)).isEqualTo(optionSet);
+        assertThat(payload.items().get(0)).isEqualTo(program);
     }
 
     @Test

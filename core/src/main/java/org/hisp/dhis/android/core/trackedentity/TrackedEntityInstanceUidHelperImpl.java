@@ -35,14 +35,14 @@ class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelp
                 for (Enrollment enrollment: enrollments) {
                     if (enrollment.organisationUnit() != null) {
                         uids.add(enrollment.organisationUnit());
+                    }
 
-                        List<Event> events = enrollment.events();
+                    List<Event> events = enrollment.events();
 
-                        if (events != null) {
-                            for (Event event: events) {
-                                if (event.organisationUnit() != null) {
-                                    uids.add(event.organisationUnit());
-                                }
+                    if (events != null) {
+                        for (Event event: events) {
+                            if (event.organisationUnit() != null) {
+                                uids.add(event.organisationUnit());
                             }
                         }
                     }

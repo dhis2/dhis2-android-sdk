@@ -122,7 +122,8 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                     "  Enrollment.status, " +
                     "  Enrollment.trackedEntityInstance, " +
                     "  Enrollment.latitude, " +
-                    "  Enrollment.longitude ";
+                    "  Enrollment.longitude, " +
+                    "  Enrollment.state ";
 
     private static final String QUERY_STATEMENT_TO_POST = "SELECT " +
             FIELDS +
@@ -262,7 +263,17 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
 
         Cursor cursor = databaseAdapter.query(queryStatement);
 
-        return EnrollmentModel.create(cursor);
+        EnrollmentModel object = null;
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                object = EnrollmentModel.create(cursor);
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return object;
     }
 
     private Map<String, List<Enrollment>> mapFromCursor(Cursor cursor) {

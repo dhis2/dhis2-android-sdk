@@ -37,6 +37,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.EventModel.Columns;
@@ -127,6 +128,7 @@ public class EventStoreImpl implements EventStore {
             "  Event.eventDate, " +
             "  Event.completedDate, " +
             "  Event.dueDate, "  +
+            "  Event.state, " +
             "  Event.attributeCategoryOptions, "  +
             "  Event.attributeOptionCombo, "  +
             "  Event.trackedEntityInstance ";
@@ -335,7 +337,17 @@ public class EventStoreImpl implements EventStore {
 
         Cursor cursor = databaseAdapter.query(queryStatement);
 
-        return EventModel.create(cursor);
+        EventModel object = null;
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                object = EventModel.create(cursor);
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return object;
     }
 
     private List<Event> mapEventsFromCursor(Cursor cursor) {

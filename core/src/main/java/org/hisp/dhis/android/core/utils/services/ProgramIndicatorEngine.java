@@ -174,7 +174,7 @@ public class ProgramIndicatorEngine {
 
         int valueCount = 0;
         int zeroPosValueCount = 0;
-        String eventProgramStageInstance = null;
+
         EventModel programStageInstance = null;
         Map<String, TrackedEntityDataValue> dataElementToDataValues = new HashMap<>();
         EnrollmentModel programInstance = null;
@@ -189,16 +189,13 @@ public class ProgramIndicatorEngine {
                 String programStageUid = uid;
 
                 if (programStageUid != null && de != null) {
-                    // If event is passed. Data values are cached
-                    if (enrollment == null) { //in case single event without reg
-                        if(eventProgramStageInstance == null) {
-                            eventProgramStageInstance = event;
-                            List<TrackedEntityDataValue> trackedEntityDataValues =
-                                    trackedEntityDataValueStore.queryTrackedEntityDataValues(event);
-                            if (trackedEntityDataValues != null) {
-                                for (TrackedEntityDataValue dataValue : trackedEntityDataValues) {
-                                    dataElementToDataValues.put(dataValue.dataElement(), dataValue);
-                                }
+                    if (enrollment == null) {
+                        // Single event without registration
+                        List<TrackedEntityDataValue> trackedEntityDataValues =
+                                trackedEntityDataValueStore.queryTrackedEntityDataValues(event);
+                        if (trackedEntityDataValues != null) {
+                            for (TrackedEntityDataValue dataValue : trackedEntityDataValues) {
+                                dataElementToDataValues.put(dataValue.dataElement(), dataValue);
                             }
                         }
                     } else {
@@ -206,13 +203,16 @@ public class ProgramIndicatorEngine {
                                 !programStageInstance.programStage().equals(programStageUid)) {
                             programStageInstance = eventStore.queryByEnrollmentAndProgramStage(enrollment,
                                     programStageUid);
-                            List<TrackedEntityDataValue> trackedEntityDataValues = trackedEntityDataValueStore
-                                    .queryTrackedEntityDataValues(programStageInstance.uid());
 
                             dataElementToDataValues.clear();
-                            if (trackedEntityDataValues != null) {
-                                for(TrackedEntityDataValue dataValue : trackedEntityDataValues) {
-                                    dataElementToDataValues.put(dataValue.dataElement(), dataValue);
+                            if (programStageInstance != null) {
+                                List<TrackedEntityDataValue> trackedEntityDataValues = trackedEntityDataValueStore
+                                        .queryTrackedEntityDataValues(programStageInstance.uid());
+
+                                if (trackedEntityDataValues != null) {
+                                    for(TrackedEntityDataValue dataValue : trackedEntityDataValues) {
+                                        dataElementToDataValues.put(dataValue.dataElement(), dataValue);
+                                    }
                                 }
                             }
                         }
@@ -250,7 +250,7 @@ public class ProgramIndicatorEngine {
                     matcher.appendReplacement(buffer, TextUtils.quote(value));
                 }
             } else if (KEY_ATTRIBUTE.equals(key)) {
-                if (enrollment != null) { //in case single event without reg
+                if (enrollment != null) {
 
                     if (uid != null) {
                         if (programInstance == null) {
@@ -264,7 +264,8 @@ public class ProgramIndicatorEngine {
                         }
                         TrackedEntityAttributeValue attributeValue = attributeToAttributeValues.get(uid);
                         String value;
-                        if (attributeValue == null || attributeValue.value() == null || attributeValue.value().isEmpty()) {
+                        if (attributeValue == null || attributeValue.value() == null ||
+                                attributeValue.value().isEmpty()) {
                             value = NULL_REPLACEMENT;
                         } else {
                             value = attributeValue.value();
@@ -282,32 +283,35 @@ public class ProgramIndicatorEngine {
                     matcher.appendReplacement(buffer, String.valueOf(constant.value()));
                 }
             } else if (KEY_PROGRAM_VARIABLE.equals(key)) {
+                Date currentDate = new Date();
+                Date date = null;
+
                 if (enrollment != null) { //in case of single event without reg
                     if (programInstance == null) {
                         programInstance = enrollmentStore.queryByUid(enrollment);
                     }
-                    Date currentDate = new Date();
-                    Date date = null;
 
                     if (ENROLLMENT_DATE.equals(uid)) {
                         date = programInstance.dateOfEnrollment();
                     } else if (INCIDENT_DATE.equals(uid)) {
                         date = programInstance.dateOfIncident();
-                    } else if (CURRENT_DATE.equals(uid)) {
-                        date = currentDate;
-                    } else if (EVENT_DATE.equals(uid)) {
-                        if (event != null) {
-                            if (programStageInstance == null) {
-                                programStageInstance = eventStore.queryByUid(event);
-                            }
-                            date = programStageInstance.eventDate();
-                        }
                     }
+                }
 
-                    if (date != null) {
-                        valueCount++;
-                        matcher.appendReplacement(buffer, TextUtils.quote(DateUtils.getMediumDateString(date)));
+                if (event != null) {
+                    if (EVENT_DATE.equals(uid)) {
+                        programStageInstance = eventStore.queryByUid(event);
+                        date = programStageInstance.eventDate();
                     }
+                }
+
+                if (CURRENT_DATE.equals(uid)) {
+                    date = currentDate;
+                }
+
+                if (date != null) {
+                    valueCount++;
+                    matcher.appendReplacement(buffer, TextUtils.quote(DateUtils.getMediumDateString(date)));
                 }
             }
         }

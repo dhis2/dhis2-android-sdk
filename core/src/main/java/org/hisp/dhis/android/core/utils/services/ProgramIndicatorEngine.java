@@ -123,33 +123,17 @@ public class ProgramIndicatorEngine {
      * Calculate an program indicator value based on program instance and an
      * indicator defined for a TrackedEntityInstance
      *
-     * @param enrollment  ProgramInstance
+     * @param enrollment  Enrollment uid
+     * @param event Event uid
      * @param programIndicatorUid ProgramIndicator
      * @return Indicator value
      */
-    public String getProgramIndicatorValueByEnrollment(String enrollment, String programIndicatorUid) {
-        if(enrollment == null) {
+    public String getProgramIndicatorValue(String enrollment, String event, String programIndicatorUid) {
+        if(enrollment == null && event == null) {
             return null;
         }
 
-        Double value = getValue(enrollment, null, programIndicatorUid);
-
-        return TextUtils.fromDouble(value);
-    }
-
-    /**
-     * Calculate an program indicator value based on a single event
-     *
-     * @param event            Event
-     * @param programIndicatorUid ProgramIndicator
-     * @return Indicator value
-     */
-    public String getProgramIndicatorValueByEvent(String event, String programIndicatorUid) {
-        if(event == null) {
-            return null;
-        }
-
-        Double value = getValue(null, event, programIndicatorUid);
+        Double value = getValue(enrollment, event, programIndicatorUid);
 
         return TextUtils.fromDouble(value);
     }

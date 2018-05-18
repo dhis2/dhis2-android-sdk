@@ -57,6 +57,7 @@ import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
 import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
+import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -166,6 +167,11 @@ public final class D2 {
 
     public Call<Response<WebResponse>> syncSingleEvents() {
         return EventPostCall.create(databaseAdapter, retrofit);
+    }
+
+    public String evaluateProgramIndicator(String enrollmentUid, String eventUid, String programIndicatorUid) {
+        return ProgramIndicatorEngine.create(databaseAdapter)
+                .getProgramIndicatorValue(enrollmentUid, eventUid, programIndicatorUid);
     }
 
     public static class Builder {

@@ -29,7 +29,7 @@ import java.util.Set;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public final class TrackerEntitiesDataCall extends SyncCall<List<TrackedEntityInstance>> {
+public final class TrackedEntityInstanceWithLimitEndpointCall extends SyncCall<List<TrackedEntityInstance>> {
 
     private final boolean limitByOrgUnit;
     private final int teiLimit;
@@ -39,7 +39,7 @@ public final class TrackerEntitiesDataCall extends SyncCall<List<TrackedEntityIn
     private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
     private final D2CallException.Builder httpExceptionBuilder;
 
-    private TrackerEntitiesDataCall(
+    private TrackedEntityInstanceWithLimitEndpointCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
             @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
@@ -131,9 +131,9 @@ public final class TrackerEntitiesDataCall extends SyncCall<List<TrackedEntityIn
         return trackedEntityInstances;
     }
 
-    public static TrackerEntitiesDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                                 int teiLimit, boolean limitByOrgUnit) {
-        return new TrackerEntitiesDataCall(
+    public static TrackedEntityInstanceWithLimitEndpointCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+                                                                    int teiLimit, boolean limitByOrgUnit) {
+        return new TrackedEntityInstanceWithLimitEndpointCall(
                 databaseAdapter,
                 retrofit,
                 OrganisationUnitStore.create(databaseAdapter),

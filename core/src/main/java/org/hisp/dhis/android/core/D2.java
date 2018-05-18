@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
-import org.hisp.dhis.android.core.calls.TrackerEntitiesDataCall;
+import org.hisp.dhis.android.core.calls.TrackedEntityInstanceWithLimitEndpointCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
@@ -144,7 +144,7 @@ public final class D2 {
 
     @NonNull
     public Call<List<TrackedEntityInstance>> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
-        return TrackerEntitiesDataCall.create(databaseAdapter, retrofit, teiLimit, limitByOrgUnit);
+        return TrackedEntityInstanceWithLimitEndpointCall.create(databaseAdapter, retrofit, teiLimit, limitByOrgUnit);
     }
 
     @NonNull

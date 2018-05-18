@@ -14,8 +14,6 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import retrofit2.Response;
 
@@ -40,14 +38,7 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private Call<Response<Payload<DataSet>>> createCall() {
         GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
-
-        Set<String> uids = new HashSet<>();
-
-        uids.add("BfMAe6Itzgt");
-        uids.add("Lpw6GcnTrmS");
-        uids.add("TuL8IOPzpHh");
-
-        return DataSetEndpointCall.FACTORY.create(data, uids);
+        return DataSetEndpointCall.FACTORY.create(data);
     }
 
     // @Test

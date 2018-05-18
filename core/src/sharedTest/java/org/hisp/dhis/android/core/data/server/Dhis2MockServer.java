@@ -106,7 +106,6 @@ public class Dhis2MockServer {
         enqueueMockResponse("relationship_types.json");
         enqueueMockResponse("option_sets.json");
         enqueueMockResponse(orgUnitPath);
-        enqueueMockResponse("data_sets_with_access.json");
         enqueueMockResponse("data_sets.json");
         enqueueMockResponse("data_elements.json");
         enqueueMockResponse("indicators.json");

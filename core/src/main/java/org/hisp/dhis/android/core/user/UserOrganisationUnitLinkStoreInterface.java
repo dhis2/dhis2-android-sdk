@@ -26,23 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.user;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
 import java.util.Set;
 
-public interface IdentifiableObjectStore<M extends BaseIdentifiableObjectModel> extends ObjectStore<M> {
+public interface UserOrganisationUnitLinkStoreInterface extends ObjectWithoutUidStore<UserOrganisationUnitLinkModel> {
 
-    void delete(@NonNull String uid) throws RuntimeException;
-
-    void update(@NonNull M m) throws RuntimeException;
-
-    void updateOrInsert(@NonNull M m) throws RuntimeException;
-
-    Set<String> selectUids() throws RuntimeException;
-
-    Set<String> selectUidsWhere(String whereClause) throws RuntimeException;
-
-    M selectByUid(String uid, CursorModelFactory<M> modelFactory) throws RuntimeException;
+    Set<String> queryRootOrganisationUnitUids() throws RuntimeException;
 }

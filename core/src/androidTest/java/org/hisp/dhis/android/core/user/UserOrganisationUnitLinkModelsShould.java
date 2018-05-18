@@ -37,6 +37,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toBoolean;
 
 @RunWith(AndroidJUnit4.class)
 public class UserOrganisationUnitLinkModelsShould {
@@ -44,13 +45,14 @@ public class UserOrganisationUnitLinkModelsShould {
     private static final String USER = "test_user_uid";
     private static final String ORGANISATION_UNIT = "test_organisation_unit_uid";
     private static final String ORGANISATION_UNIT_SCOPE = "test_organisation_unit_scope";
+    private static final Integer ROOT = 1;
 
     @Test
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
-                Columns.ID, Columns.USER, Columns.ORGANISATION_UNIT, Columns.ORGANISATION_UNIT_SCOPE
+                Columns.ID, Columns.USER, Columns.ORGANISATION_UNIT, Columns.ORGANISATION_UNIT_SCOPE, Columns.ROOT
         });
-        cursor.addRow(new Object[]{ID, USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE});
+        cursor.addRow(new Object[]{ID, USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE, ROOT});
         cursor.moveToFirst();
 
         UserOrganisationUnitLinkModel model = UserOrganisationUnitLinkModel.create(cursor);
@@ -59,6 +61,7 @@ public class UserOrganisationUnitLinkModelsShould {
         assertThat(model.id()).isEqualTo(ID);
         assertThat(model.user()).isEqualTo(USER);
         assertThat(model.organisationUnit()).isEqualTo(ORGANISATION_UNIT);
+        assertThat(model.root()).isEqualTo(toBoolean(ROOT));
     }
 
     @Test
@@ -68,6 +71,7 @@ public class UserOrganisationUnitLinkModelsShould {
                         .user(USER)
                         .organisationUnit(ORGANISATION_UNIT)
                         .organisationUnitScope(ORGANISATION_UNIT_SCOPE)
+                        .root(toBoolean(ROOT))
                         .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -75,5 +79,6 @@ public class UserOrganisationUnitLinkModelsShould {
         assertThat(contentValues.getAsString(Columns.USER)).isEqualTo(USER);
         assertThat(contentValues.getAsString(Columns.ORGANISATION_UNIT)).isEqualTo(ORGANISATION_UNIT);
         assertThat(contentValues.getAsString(Columns.ORGANISATION_UNIT_SCOPE)).isEqualTo(ORGANISATION_UNIT_SCOPE);
+        assertThat(contentValues.getAsBoolean(Columns.ROOT)).isEqualTo(toBoolean(ROOT));
     }
 }

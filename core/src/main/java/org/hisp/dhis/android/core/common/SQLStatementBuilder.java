@@ -39,6 +39,8 @@ public class SQLStatementBuilder {
     private final static String TEXT = " TEXT";
     private final static String WHERE = " WHERE ";
     private final static String LIMIT = " LIMIT ";
+    private final static String FROM = " FROM ";
+    private final static String SELECT = "SELECT ";
 
     @SuppressWarnings("PMD.UseVarargs")
     SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
@@ -84,11 +86,19 @@ public class SQLStatementBuilder {
     }
 
     String deleteById() {
-        return "DELETE FROM " + tableName + WHERE + BaseIdentifiableObjectModel.Columns.UID + "=?;";
+        return "DELETE" + FROM + tableName + WHERE + BaseIdentifiableObjectModel.Columns.UID + "=?;";
     }
 
     String selectUids() {
-        return "SELECT " + BaseIdentifiableObjectModel.Columns.UID + " FROM " + tableName;
+        return SELECT + BaseIdentifiableObjectModel.Columns.UID + FROM + tableName;
+    }
+
+    String selectUidsWhere(String whereClause) {
+        return SELECT + BaseIdentifiableObjectModel.Columns.UID + FROM + tableName + WHERE + whereClause + ";";
+    }
+
+    String selectColumnWhere(String column, String whereClause) {
+        return SELECT + column + FROM + tableName + WHERE + whereClause + ";";
     }
 
     String selectByUid() {
@@ -96,7 +106,7 @@ public class SQLStatementBuilder {
     }
 
     String selectWhere(String whereClause) {
-        return "SELECT * FROM " + tableName + WHERE + whereClause + ";";
+        return SELECT + "*" + FROM + tableName + WHERE + whereClause + ";";
     }
 
     String selectWhereWithLimit(String whereClause, int limit) {
@@ -104,11 +114,11 @@ public class SQLStatementBuilder {
     }
 
     String selectAll() {
-        return  "SELECT " + commaSeparatedColumns() + " FROM " + tableName;
+        return  SELECT + commaSeparatedColumns() + FROM + tableName;
     }
 
     String countWhere(String whereClause) {
-        return "SELECT COUNT(*) FROM " + tableName + WHERE + whereClause + ";";
+        return SELECT + "COUNT(*)" + FROM + tableName + WHERE + whereClause + ";";
     }
 
     public String update() {

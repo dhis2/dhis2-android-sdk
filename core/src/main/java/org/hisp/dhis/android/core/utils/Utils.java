@@ -115,6 +115,6 @@ public final class Utils {
     }
 
     public static String joinCollectionWithSeparator(Collection<String> values, String separator) {
-        return commaSeparatedCollectionValues(values).replace(",", ";");
+        return commaSeparatedCollectionValues(values).replace(",", separator);
     }
 }

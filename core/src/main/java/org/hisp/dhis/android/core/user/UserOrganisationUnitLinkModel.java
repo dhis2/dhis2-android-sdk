@@ -49,10 +49,11 @@ public abstract class UserOrganisationUnitLinkModel extends BaseModel {
         public static final String USER = "user";
         public static final String ORGANISATION_UNIT = "organisationUnit";
         public static final String ORGANISATION_UNIT_SCOPE = "organisationUnitScope";
+        public static final String ROOT = "root";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE);
+            return Utils.appendInNewArray(super.all(), USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE, ROOT);
         }
 
         @Override
@@ -73,6 +74,10 @@ public abstract class UserOrganisationUnitLinkModel extends BaseModel {
     @ColumnName(Columns.ORGANISATION_UNIT_SCOPE)
     public abstract String organisationUnitScope();
 
+    @Nullable
+    @ColumnName(Columns.ROOT)
+    public abstract Boolean root();
+
     @NonNull
     public static UserOrganisationUnitLinkModel create(Cursor cursor) {
         return AutoValue_UserOrganisationUnitLinkModel.createFromCursor(cursor);
@@ -83,13 +88,15 @@ public abstract class UserOrganisationUnitLinkModel extends BaseModel {
         sqLiteBind(sqLiteStatement, 1, user());
         sqLiteBind(sqLiteStatement, 2, organisationUnit());
         sqLiteBind(sqLiteStatement, 3, organisationUnitScope());
+        sqLiteBind(sqLiteStatement, 4, root());
     }
 
     @Override
     public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 4, user());
-        sqLiteBind(sqLiteStatement, 5, organisationUnit());
-        sqLiteBind(sqLiteStatement, 6, organisationUnitScope());
+        sqLiteBind(sqLiteStatement, 5, user());
+        sqLiteBind(sqLiteStatement, 6, organisationUnit());
+        sqLiteBind(sqLiteStatement, 7, organisationUnitScope());
+        sqLiteBind(sqLiteStatement, 8, root());
     }
 
     @NonNull
@@ -104,6 +111,8 @@ public abstract class UserOrganisationUnitLinkModel extends BaseModel {
         public abstract Builder organisationUnit(@Nullable String organisationUnit);
 
         public abstract Builder organisationUnitScope(@Nullable String organisationUnitScope);
+
+        public abstract Builder root(@Nullable Boolean root);
 
         public abstract UserOrganisationUnitLinkModel build();
     }

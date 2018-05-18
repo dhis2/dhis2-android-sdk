@@ -118,16 +118,4 @@ public final class ProgramParentUidsHelper {
 
         return programStageUids;
     }
-
-    public static Set<String> getProgramUidsWithDataReadAccess(List<Program> programsWithAccess) {
-        Set<String> programUids = new HashSet<>();
-        for (Program program: programsWithAccess) {
-            Access access = program.access();
-            if (access != null && access.data().read()) {
-                programUids.add(program.uid());
-            }
-        }
-
-        return programUids;
-    }
 }

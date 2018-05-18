@@ -25,41 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common;
 
-package org.hisp.dhis.android.core.program;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SimpleCallFactory;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+public final class UidsHelper {
 
-import retrofit2.Response;
+    private UidsHelper() {}
 
-public final class ProgramAccessEndpointCall extends SyncCall<Response<Payload<Program>>> {
-    private final GenericCallData data;
-    private final ProgramService programService;
-
-    private ProgramAccessEndpointCall(GenericCallData data, ProgramService programService) {
-        this.data = data;
-        this.programService = programService;
-    }
-
-    @Override
-    public Response<Payload<Program>> call() throws Exception {
-        super.setExecuted();
-        String lastUpdated = data.resourceHandler().getLastUpdated(ResourceModel.Type.PROGRAM);
-        return programService.getProgramsForAccess(Program.uidAndAccessRead, Program.lastUpdated.gt(lastUpdated),
-                Boolean.FALSE).execute();
-    }
-
-    public static final SimpleCallFactory<Payload<Program>> FACTORY
-            = new SimpleCallFactory<Payload<Program>>() {
-
-        @Override
-        public ProgramAccessEndpointCall create(GenericCallData genericCallData) {
-            return new ProgramAccessEndpointCall(genericCallData,
-                    genericCallData.retrofit().create(ProgramService.class));
+    public static <O extends IdentifiableObject> Set<String> getUids(List<O> objects) {
+        Set<String> uids = new HashSet<>();
+        for (IdentifiableObject object: objects) {
+            uids.add(object.uid());
         }
-    };
+        return uids;
+    }
 }

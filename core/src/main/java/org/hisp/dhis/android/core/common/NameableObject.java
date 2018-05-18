@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-public interface NameableObject {
+public interface NameableObject extends IdentifiableObject {
     String shortName();
 
     String displayShortName();

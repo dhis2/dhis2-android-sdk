@@ -33,7 +33,6 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;

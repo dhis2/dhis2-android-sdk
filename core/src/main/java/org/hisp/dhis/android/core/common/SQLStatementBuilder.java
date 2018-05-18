@@ -36,19 +36,21 @@ public class SQLStatementBuilder {
     final String tableName;
     public final String[] columns;
     private final String[] updateWhereColumns;
-    private final String[] deleteWhereColumns;
-    private final String[] selectWhereColumns;
     private final static String TEXT = " TEXT";
     private final static String WHERE = " WHERE ";
+    private final static String LIMIT = " LIMIT ";
 
     @SuppressWarnings("PMD.UseVarargs")
-    SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns, String[] deleteWhereColumns,
-                        String[] selectWhereColumns) {
+    SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
         this.tableName = tableName;
         this.columns = columns.clone();
         this.updateWhereColumns = updateWhereColumns.clone();
-        this.deleteWhereColumns = deleteWhereColumns.clone();
-        this.selectWhereColumns = selectWhereColumns.clone();
+    }
+
+    public SQLStatementBuilder(String tableName, BaseModel.Columns columns) {
+        this.tableName = tableName;
+        this.columns = columns.all().clone();
+        this.updateWhereColumns = columns.whereUpdate().clone();
     }
 
     private String commaSeparatedColumns() {
@@ -85,29 +87,28 @@ public class SQLStatementBuilder {
         return "DELETE FROM " + tableName + WHERE + BaseIdentifiableObjectModel.Columns.UID + "=?;";
     }
 
-    String deleteWhere() {
-        String whereClause = deleteWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
-                andSeparatedColumnEqualInterrogationMark(deleteWhereColumns);
-        return "DELETE FROM " + tableName + WHERE + whereClause + ";";
-    }
-
-    String selectWhere() {
-        String whereClause = selectWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
-                andSeparatedColumnEqualInterrogationMark(selectWhereColumns);
-        return  "SELECT * FROM " + tableName + WHERE + whereClause;
-    }
-
     String selectUids() {
-        return  "SELECT " + BaseIdentifiableObjectModel.Columns.UID + " FROM " + tableName;
+        return "SELECT " + BaseIdentifiableObjectModel.Columns.UID + " FROM " + tableName;
     }
 
     String selectByUid() {
-        return  "SELECT * FROM " + tableName + WHERE +
-                andSeparatedColumnEqualInterrogationMark(BaseIdentifiableObjectModel.Columns.UID);
+        return selectWhere(andSeparatedColumnEqualInterrogationMark(BaseIdentifiableObjectModel.Columns.UID));
+    }
+
+    String selectWhere(String whereClause) {
+        return "SELECT * FROM " + tableName + WHERE + whereClause + ";";
+    }
+
+    String selectWhereWithLimit(String whereClause, int limit) {
+        return selectWhere(whereClause + LIMIT + limit);
     }
 
     String selectAll() {
         return  "SELECT " + commaSeparatedColumns() + " FROM " + tableName;
+    }
+
+    String countWhere(String whereClause) {
+        return "SELECT COUNT(*) FROM " + tableName + WHERE + whereClause + ";";
     }
 
     public String update() {
@@ -115,7 +116,7 @@ public class SQLStatementBuilder {
                 WHERE + BaseIdentifiableObjectModel.Columns.UID + "=?;";
     }
 
-    String updateWhere() {
+    public String updateWhere() {
         // TODO refactor to only generate for object without uids store.
         String whereClause = updateWhereColumns.length == 0 ? BaseModel.Columns.ID + " = -1" :
                 andSeparatedColumnEqualInterrogationMark(updateWhereColumns);

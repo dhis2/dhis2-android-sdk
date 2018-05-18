@@ -37,8 +37,7 @@ public final class StoreFactory {
     @SuppressWarnings("PMD.UseVarargs")
     public static <I extends BaseIdentifiableObjectModel> IdentifiableObjectStore<I>
     identifiableStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{},
-                new String[]{}, new String[]{});
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
         SQLStatementWrapper statements = new SQLStatementWrapper(statementBuilder, databaseAdapter);
         return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder);
     }
@@ -46,8 +45,7 @@ public final class StoreFactory {
     @SuppressWarnings("PMD.UseVarargs")
     static <I extends BaseModel> ObjectStore<I>
     objectStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{},
-                new String[]{}, new String[]{});
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
         return new ObjectStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(
                 statementBuilder.insert()), statementBuilder);
     }
@@ -55,12 +53,10 @@ public final class StoreFactory {
     @SuppressWarnings("PMD.UseVarargs")
     public static <I extends BaseModel> ObjectWithoutUidStore<I> objectWithoutUidStore(
             DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns.all(), columns.whereUpdate(),
-                columns.whereDelete(), columns.whereSelect());
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns.all(), columns.whereUpdate());
         return new ObjectWithoutUidStoreImpl<>(databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
                 databaseAdapter.compileStatement(statementBuilder.updateWhere()),
-                databaseAdapter.compileStatement(statementBuilder.deleteWhere()),
                 statementBuilder);
     }
 }

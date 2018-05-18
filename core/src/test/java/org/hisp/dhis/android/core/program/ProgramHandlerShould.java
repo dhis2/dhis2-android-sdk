@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
@@ -71,6 +72,9 @@ public class ProgramHandlerShould {
             programTrackedEntityAttributeHandler;
 
     @Mock
+    private GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler;
+
+    @Mock
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
@@ -103,6 +107,9 @@ public class ProgramHandlerShould {
     @Mock
     private List<ProgramRuleVariable> programRuleVariables;
 
+    @Mock
+    private List<ProgramSection> programSections;
+
     // object to test
     private ProgramHandler programHandler;
 
@@ -112,7 +119,7 @@ public class ProgramHandlerShould {
 
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler, programIndicatorHandler, programRuleHandler,
-                programTrackedEntityAttributeHandler, styleHandler);
+                programTrackedEntityAttributeHandler, programSectionHandler, styleHandler);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.code()).thenReturn("test_program_code");
@@ -148,6 +155,7 @@ public class ProgramHandlerShould {
         when(program.programIndicators()).thenReturn(programIndicators);
         when(program.programRules()).thenReturn(programRules);
         when(program.programRuleVariables()).thenReturn(programRuleVariables);
+        when(program.programSections()).thenReturn(programSections);
         when(program.access()).thenReturn(access);
         when(access.data()).thenReturn(dataAccess);
         when(dataAccess.read()).thenReturn(true);
@@ -184,5 +192,12 @@ public class ProgramHandlerShould {
     public void call_style_handler() throws Exception {
         programHandler.handle(program, new ProgramModelBuilder());
         verify(styleHandler).handle(same(program.style()), any(ObjectStyleModelBuilder.class));
+    }
+
+    @Test
+    public void call_program_section_handler() throws Exception {
+        programHandler.handle(program, new ProgramModelBuilder());
+        verify(programSectionHandler).handleMany(anyListOf(ProgramSection.class),
+                any(ProgramSectionModelBuilder.class));
     }
 }

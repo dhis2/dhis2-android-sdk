@@ -25,53 +25,74 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program;
 
-package org.hisp.dhis.android.core.common;
-
-import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
-import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
+import com.google.auto.value.AutoValue;
 
-@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-public abstract class BaseModel implements Model, WhereStatementBinder {
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-    @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
-    public abstract static class Columns {
-        public static final String ID = BaseColumns._ID;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@AutoValue
+public abstract class ProgramSectionAttributeLinkModel extends BaseModel {
+    public static final String TABLE = "ProgramSectionAttributeLink";
+
+    public static class Columns extends BaseModel.Columns {
+        public static final String PROGRAM_SECTION = "programSection";
+        public static final String ATTRIBUTE = "attribute";
+
+        @Override
         public String[] all() {
-            return new String[] {};
+            return Utils.appendInNewArray(super.all(), PROGRAM_SECTION, ATTRIBUTE);
         }
 
+        @Override
         public String[] whereUpdate() {
-            return new String[] {};
+            return new String[]{PROGRAM_SECTION, ATTRIBUTE};
         }
     }
 
-    @NonNull
-    public abstract ContentValues toContentValues();
-
-    @Override
-    @Nullable
-    @ColumnName(BaseModel.Columns.ID)
-    public abstract Long id();
-
-    public static abstract class Builder<T extends Builder> {
-        public abstract T id(Long id);
+    public static ProgramSectionAttributeLinkModel create(Cursor cursor) {
+        return AutoValue_ProgramSectionAttributeLinkModel.createFromCursor(cursor);
     }
 
-    // TODO Delete method when all our old models adopt Generic architecture
+    public static Builder builder() {
+        return new $$AutoValue_ProgramSectionAttributeLinkModel.Builder();
+    }
+
+    @Nullable
+    @ColumnName(Columns.PROGRAM_SECTION)
+    public abstract String programSection();
+
+    @Nullable
+    @ColumnName(Columns.ATTRIBUTE)
+    public abstract String attribute();
+
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        // Intentional empty method.
+        sqLiteBind(sqLiteStatement, 1, programSection());
+        sqLiteBind(sqLiteStatement, 2, attribute());
     }
 
     @Override
     public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        // Intentional empty method.
+        sqLiteBind(sqLiteStatement, 3, programSection());
+        sqLiteBind(sqLiteStatement, 4, attribute());
+    }
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder programSection(String programSection);
+
+        public abstract Builder attribute(String attribute);
+
+        public abstract ProgramSectionAttributeLinkModel build();
     }
 }

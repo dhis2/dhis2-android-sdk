@@ -70,11 +70,6 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
         public String[] whereUpdate() {
             return new String[]{OWNER_UID, VALUE, ORGANISATION_UNIT};
         }
-
-        @Override
-        public String[] whereSelect() {
-            return new String[]{OWNER_UID, ORGANISATION_UNIT};
-        }
     }
 
     static TrackedEntityAttributeReservedValueModel create(Cursor cursor) {
@@ -140,13 +135,6 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
         sqLiteBind(sqLiteStatement, 8, ownerUid());
         sqLiteBind(sqLiteStatement, 9, value());
         sqLiteBind(sqLiteStatement, 10, organisationUnit());
-    }
-
-    @Override
-    public void bindToDeleteWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, ownerUid());
-        sqLiteBind(sqLiteStatement, 2, value());
-        sqLiteBind(sqLiteStatement, 3, organisationUnit());
     }
 
     @AutoValue.Builder

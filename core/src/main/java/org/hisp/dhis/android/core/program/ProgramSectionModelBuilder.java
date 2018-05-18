@@ -26,48 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.program;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-public class DbOpenHelper extends SQLBriteOpenHelper {
-
-    public static final int VERSION = 2;
-
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
-    }
-
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
-    }
+public class ProgramSectionModelBuilder extends ModelBuilder<ProgramSection, ProgramSectionModel> {
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        // enable foreign key support in database
-        db.execSQL("PRAGMA foreign_keys = ON;");
-    }
-
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
-        }
-        return versionMigrations;
+    public ProgramSectionModel buildModel(ProgramSection programSection) {
+        return ProgramSectionModel.builder()
+                .uid(programSection.uid())
+                .code(programSection.code())
+                .name(programSection.name())
+                .displayName(programSection.displayName())
+                .created(programSection.created())
+                .lastUpdated(programSection.lastUpdated())
+                .description(programSection.description())
+                .program(programSection.programUid())
+                .sortOrder(programSection.sortOrder())
+                .formName(programSection.formName())
+                .build();
     }
 }

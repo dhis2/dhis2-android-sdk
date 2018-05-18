@@ -87,6 +87,7 @@ public abstract class Program extends BaseNameableObject {
     private final static String EXPIRY_PERIOD_TYPE = "expiryPeriodType";
     private final static String MIN_ATTRIBUTES_REQUIRED_TO_SEARCH = "minAttributesRequiredToSearch";
     private final static String MAX_TEI_COUNT_TO_RETURN = "maxTeiCountToReturn";
+    private final static String PROGRAM_SECTIONS = "programSections";
 
     static final Field<Program, String> uid = Field.create(UID);
     private static final Field<Program, String> code = Field.create(CODE);
@@ -146,6 +147,7 @@ public abstract class Program extends BaseNameableObject {
     private static final NestedField<Program, ProgramRuleVariable> programRuleVariables
             = NestedField.create(PROGRAM_RULE_VARIABLES);
     private static final NestedField<Program, ObjectStyle> style = NestedField.create(STYLE);
+    private static final NestedField<Program, ProgramSection> programSections = NestedField.create(PROGRAM_SECTIONS);
 
     static final Fields<Program> allFields = Fields.<Program>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description,
@@ -160,7 +162,7 @@ public abstract class Program extends BaseNameableObject {
             programTrackedEntityAttributes.with(ProgramTrackedEntityAttribute.allFields),
             trackedEntityType.with(ObjectWithUid.uid), categoryCombo.with(ObjectWithUid.uid),
             relationshipType.with(ObjectWithUid.uid), access.with(Access.data.with(DataAccess.write)),
-            style.with(ObjectStyle.allFields)).build();
+            style.with(ObjectStyle.allFields), programSections.with(ProgramSection.allFields)).build();
 
     static final Fields<Program> uidAndAccessRead = Fields.<Program>builder().fields(
             uid, access.with(Access.data.with(DataAccess.read))).build();
@@ -313,6 +315,10 @@ public abstract class Program extends BaseNameableObject {
     @JsonProperty(MAX_TEI_COUNT_TO_RETURN)
     public abstract Integer maxTeiCountToReturn();
 
+    @Nullable
+    @JsonProperty(PROGRAM_SECTIONS)
+    public abstract List<ProgramSection> programSections();
+
     @JsonCreator
     public static Program create(
             @JsonProperty(UID) String uid,
@@ -357,6 +363,7 @@ public abstract class Program extends BaseNameableObject {
             @JsonProperty(EXPIRY_PERIOD_TYPE) PeriodType expiryPeriodType,
             @JsonProperty(MIN_ATTRIBUTES_REQUIRED_TO_SEARCH) Integer minAttributesRequiredToSearch,
             @JsonProperty(MAX_TEI_COUNT_TO_RETURN) Integer maxTeiCountToReturn,
+            @JsonProperty(PROGRAM_SECTIONS) List<ProgramSection> programSections,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_Program(
@@ -402,6 +409,7 @@ public abstract class Program extends BaseNameableObject {
                 completeEventsExpiryDays,
                 expiryPeriodType,
                 minAttributesRequiredToSearch,
-                maxTeiCountToReturn);
+                maxTeiCountToReturn,
+                programSections);
     }
 }

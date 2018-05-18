@@ -26,41 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
+import java.util.Date;
 
-public class ObjectWithoutUidStoreImpl<M extends BaseModel>
-        extends ObjectStoreImpl<M> implements ObjectWithoutUidStore<M> {
-    private final SQLiteStatement updateWhereStatement;
+public interface TrackedEntityAttributeReservedValueStoreInterface
+        extends ObjectWithoutUidStore<TrackedEntityAttributeReservedValueModel> {
 
-    public ObjectWithoutUidStoreImpl(DatabaseAdapter databaseAdapter,
-                              SQLiteStatement insertStatement,
-                              SQLiteStatement updateWhereStatement,
-                              SQLStatementBuilder builder) {
-        super(databaseAdapter, insertStatement, builder);
-        this.updateWhereStatement = updateWhereStatement;
-    }
+    void deleteExpired(@NonNull Date serverDate);
 
-    @Override
-    public void updateWhere(@NonNull M m) throws RuntimeException {
-        isNull(m);
-        m.bindToStatement(updateWhereStatement);
-        m.bindToUpdateWhereStatement(updateWhereStatement);
-        executeUpdateDelete(updateWhereStatement);
-    }
+    TrackedEntityAttributeReservedValueModel popOne(@NonNull String ownerUid,
+                                                    @NonNull String organisationUnitUid);
 
-    @Override
-    public void updateOrInsertWhere(@NonNull M m) throws RuntimeException {
-        try {
-            updateWhere(m);
-        } catch (Exception e){
-            insert(m);
-        }
-    }
+    int count(@NonNull String ownerUid,
+              @NonNull String organisationUnitUid);
 }

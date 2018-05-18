@@ -30,16 +30,9 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
-import java.util.List;
-
 public interface ObjectWithoutUidStore<M extends BaseModel> extends ObjectStore<M> {
 
     void updateWhere(@NonNull M m) throws RuntimeException;
 
     void updateOrInsertWhere(@NonNull M m) throws RuntimeException;
-
-    void deleteWhere(@NonNull M m) throws RuntimeException;
-
-    List<M> selectWhere(@NonNull CursorModelFactory<M> modelFactory, @NonNull String... selectionArgs)
-            throws RuntimeException;
 }

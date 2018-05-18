@@ -100,7 +100,6 @@ public class Dhis2MockServer {
         enqueueMockResponse(userPath);
         enqueueMockResponse("categories.json");
         enqueueMockResponse("category_combos.json");
-        enqueueMockResponse("programs_with_access.json");
         enqueueMockResponse("programs.json");
         enqueueMockResponse("program_stages.json");
         enqueueMockResponse("tracked_entities.json");

@@ -18,6 +18,8 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.trackedentity.TeiQuery;
 import org.hisp.dhis.android.core.trackedentity.TeisEndPointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,16 +36,20 @@ public final class TrackerEntitiesDataCall extends SyncCall<List<TrackedEntityIn
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
     private final D2CallException.Builder httpExceptionBuilder;
 
-    private TrackerEntitiesDataCall(@NonNull DatabaseAdapter databaseAdapter,
-                                    @NonNull Retrofit retrofit,
-                                    @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
-                                    int teiLimit,
-                                    boolean limitByOrgUnit) {
+    private TrackerEntitiesDataCall(
+            @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull Retrofit retrofit,
+            @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
+            @NonNull UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
+            int teiLimit,
+            boolean limitByOrgUnit) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.organisationUnitStore = organisationUnitStore;
+        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.teiLimit = teiLimit;
         this.limitByOrgUnit = limitByOrgUnit;
         this.httpExceptionBuilder = D2CallException.builder().isHttpError(true).errorDescription("TEIs call failed");
@@ -75,13 +81,14 @@ public final class TrackerEntitiesDataCall extends SyncCall<List<TrackedEntityIn
     }
     
     private List<TrackedEntityInstance> trackerCall(GenericCallData genericCallData) throws D2CallException {
-        Set<String> organisationUnitUids = organisationUnitStore.selectUids();
+        Set<String> organisationUnitUids;
         List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
         TeiQuery.Builder teiQueryBuilder = TeiQuery.Builder.create();
         int pageSize = TeiQuery.Builder.create().build().getPageSize();
         int numPages = (int) Math.ceil((double) teiLimit / pageSize);
 
         if (limitByOrgUnit) {
+            organisationUnitUids = organisationUnitStore.selectUids();
             Set<String> orgUnitWrapper = new HashSet<>();
             for (String orgUnitUid : organisationUnitUids) {
                 orgUnitWrapper.clear();
@@ -91,6 +98,7 @@ public final class TrackerEntitiesDataCall extends SyncCall<List<TrackedEntityIn
                         numPages));
             }
         } else {
+            organisationUnitUids = userOrganisationUnitLinkStore.queryRootOrganisationUnitUids();
             teiQueryBuilder.withOrgUnits(organisationUnitUids).withOuMode(OuMode.DESCENDANTS);
             trackedEntityInstances = getTrackedEntityInstances(teiQueryBuilder, genericCallData, pageSize, numPages);
         }
@@ -100,7 +108,7 @@ public final class TrackerEntitiesDataCall extends SyncCall<List<TrackedEntityIn
 
     private List<TrackedEntityInstance> getTrackedEntityInstances(TeiQuery.Builder teiQueryBuilder,
             GenericCallData genericCallData, int pageSize, int numPages) throws D2CallException {
-        Response<Payload<TrackedEntityInstance>> trackerCallResponse = null;
+        Response<Payload<TrackedEntityInstance>> trackerCallResponse;
         List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
 
         for (int page = 1; page <= numPages; page++) {
@@ -129,6 +137,7 @@ public final class TrackerEntitiesDataCall extends SyncCall<List<TrackedEntityIn
                 databaseAdapter,
                 retrofit,
                 OrganisationUnitStore.create(databaseAdapter),
+                UserOrganisationUnitLinkStore.create(databaseAdapter),
                 teiLimit,
                 limitByOrgUnit
         );

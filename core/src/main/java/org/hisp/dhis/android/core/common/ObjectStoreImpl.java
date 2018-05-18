@@ -138,4 +138,27 @@ public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
     protected boolean deleteWhereClause(String clause) {
         return databaseAdapter.database().delete(builder.tableName, clause, null) > 0;
     }
+
+    @Override
+    public Set<String> selectStringColumnsWhereClause(String column, String clause) {
+        Cursor cursor = databaseAdapter.query(builder.selectColumnWhere(column, clause));
+        return mapStringColumnSetFromCursor(cursor);
+    }
+
+    Set<String> mapStringColumnSetFromCursor(Cursor cursor) {
+        Set<String> columns = new HashSet<>(cursor.getCount());
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    columns.add(cursor.getString(0));
+                }
+                while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+        return columns;
+    }
 }

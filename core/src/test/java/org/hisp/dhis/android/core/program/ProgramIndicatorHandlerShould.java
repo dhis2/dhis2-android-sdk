@@ -43,12 +43,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -79,7 +76,6 @@ public class ProgramIndicatorHandlerShould {
     @Mock
     private ObjectWithUid program;
 
-    @Mock
     private ProgramIndicatorModelBuilder programIndicatorModelBuilder;
 
     // object to test
@@ -101,6 +97,8 @@ public class ProgramIndicatorHandlerShould {
 
         programIndicators = new ArrayList<>();
         programIndicators.add(programIndicator);
+
+        programIndicatorModelBuilder = new ProgramIndicatorModelBuilder();
 
         legendSets = new ArrayList<>();
         legendSets.add(legendSet);
@@ -153,10 +151,7 @@ public class ProgramIndicatorHandlerShould {
         programIndicatorHandler.handleMany(programIndicators, programIndicatorModelBuilder);
 
         // verify that update is called once
-        verify(programIndicatorStore, times(1)).update(any(ProgramIndicatorModel.class));
-
-        // verify that insert and delete is never called
-        verify(programIndicatorStore, never()).insert(any(ProgramIndicatorModel.class));
+        verify(programIndicatorStore, times(1)).updateOrInsert(any(ProgramIndicatorModel.class));
 
         verify(programIndicatorStore, never()).delete(anyString());
 
@@ -175,10 +170,7 @@ public class ProgramIndicatorHandlerShould {
                 "test_program_stage_section");
 
         // verify that update is called once
-        verify(programIndicatorStore, times(1)).update(any(ProgramIndicatorModel.class));
-
-        // verify that insert and delete is never called
-        verify(programIndicatorStore, never()).insert(any(ProgramIndicatorModel.class));
+        verify(programIndicatorStore, times(1)).updateOrInsert(any(ProgramIndicatorModel.class));
 
         verify(programIndicatorStore, never()).delete(anyString());
 
@@ -186,8 +178,6 @@ public class ProgramIndicatorHandlerShould {
         verify(programStageSectionProgramIndicatorLinkStore, times(1)).update(
                 anyString(), anyString(), anyString(), anyString()
         );
-
-        verify(programStageSectionProgramIndicatorLinkStore, never()).insert(anyString(), anyString());
     }
 
     @Test

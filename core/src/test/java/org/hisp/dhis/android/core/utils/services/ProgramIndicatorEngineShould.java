@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
@@ -50,6 +51,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -61,6 +63,7 @@ public class ProgramIndicatorEngineShould {
     private String enrollmentUid = "enrollment-uid";
     private String eventUid = "event-uid";
     private String programIndicatorUid = "program-indicator-uid";
+    private String trackedEntityInstanceUid = "tei-uid";
 
     @Mock
     private EventModel eventModel;
@@ -81,11 +84,16 @@ public class ProgramIndicatorEngineShould {
     private TrackedEntityDataValue value3;
 
     @Mock
+    private TrackedEntityAttributeValue attributeValue;
+
+    @Mock
     private DataElementModel dataElementModel;
 
     private String dataElementUid1 = "HhyfnvrrKpN";
     private String dataElementUid2 = "nM4RZkpgMcP";
     private String dataElementUid3 = "vJeQc8NlWu6";
+
+    private String attributeUid = "UQ0qSNHEpLt";
 
     private String programStageUid = "un3rUMhluNu";
 
@@ -121,12 +129,17 @@ public class ProgramIndicatorEngineShould {
         when(value1.dataElement()).thenReturn(dataElementUid1);
         when(value2.dataElement()).thenReturn(dataElementUid2);
         when(value3.dataElement()).thenReturn(dataElementUid3);
+        when(attributeValue.trackedEntityAttribute()).thenReturn(attributeUid);
 
         when(trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid))
                 .thenReturn(Arrays.asList(value1, value2, value3));
 
         when(eventStore.queryByUid(eventUid)).thenReturn(eventModel);
+
+        when(enrollmentModel.uid()).thenReturn(enrollmentUid);
+        when(enrollmentModel.trackedEntityInstance()).thenReturn(trackedEntityInstanceUid);
         when(enrollmentStore.queryByUid(enrollmentUid)).thenReturn(enrollmentModel);
+
         when(programIndicatorStore.selectByUid(programIndicatorUid, ProgramIndicatorModel.factory)).thenReturn
                 (programIndicator);
 
@@ -134,6 +147,9 @@ public class ProgramIndicatorEngineShould {
         when(dataElementStore.selectByUid(dataElementUid1, DataElementModel.factory)).thenReturn(dataElementModel);
         when(dataElementStore.selectByUid(dataElementUid2, DataElementModel.factory)).thenReturn(dataElementModel);
         when(dataElementStore.selectByUid(dataElementUid3, DataElementModel.factory)).thenReturn(dataElementModel);
+
+        when(trackedEntityAttributeValueStore.queryByTrackedEntityInstance(trackedEntityInstanceUid))
+                .thenReturn(Collections.singletonList(attributeValue));
 
         when(constantModel.uid()).thenReturn(constantUid1);
         when(constantStore.selectByUid(constantUid1, ConstantModel.factory)).thenReturn(constantModel);
@@ -241,6 +257,18 @@ public class ProgramIndicatorEngineShould {
         assertThat(result).isEqualTo("(3.5 + 2.0) / 2");
     }
 
+    @Test
+    public void parse_tracked_entity_attribute() {
+        when(programIndicator.expression()).thenReturn(att(attributeUid));
+
+        when(attributeValue.value()).thenReturn("1989");
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
+
+        assertThat(result).isEqualTo("1989");
+    }
+
+
     // -------------------------------------------------------------------------
     // Supportive methods
     // -------------------------------------------------------------------------
@@ -255,5 +283,9 @@ public class ProgramIndicatorEngineShould {
 
     private String var(String variable) {
         return "V{" + variable + "}";
+    }
+
+    private String att(String attributeUid) {
+        return "A{" + attributeUid + "}";
     }
 }

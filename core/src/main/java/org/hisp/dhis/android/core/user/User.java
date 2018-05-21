@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -39,13 +39,10 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
-// @JsonDeserialize(builder = AutoValue_User.Builder.class)
+@JsonDeserialize(builder = AutoValue_User.Builder.class)
 public abstract class User extends BaseIdentifiableObject {
     public static final String GENDER_MALE = "gender_male";
     public static final String GENDER_FEMALE = "gender_female";
@@ -171,6 +168,7 @@ public abstract class User extends BaseIdentifiableObject {
     @JsonProperty(NATIONALITY)
     public abstract String nationality();
 
+    @Nullable
     @JsonProperty(USER_CREDENTIALS)
     public abstract UserCredentials userCredentials();
 
@@ -186,42 +184,46 @@ public abstract class User extends BaseIdentifiableObject {
     @JsonProperty(DATA_VIEW_ORGANISATION_UNITS)
     public abstract List<OrganisationUnit> dataViewOrganisationUnits();
 
-    @JsonCreator
-    public static User create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(BIRTHDAY) String birthday,
-            @JsonProperty(EDUCATION) String education,
-            @JsonProperty(GENDER) String gender,
-            @JsonProperty(JOB_TITLE) String jobTitle,
-            @JsonProperty(SURNAME) String surname,
-            @JsonProperty(FIRST_NAME) String firstName,
-            @JsonProperty(INTRODUCTION) String introduction,
-            @JsonProperty(EMPLOYER) String employer,
-            @JsonProperty(INTERESTS) String interests,
-            @JsonProperty(LANGUAGES) String languages,
-            @JsonProperty(EMAIL) String email,
-            @JsonProperty(PHONE_NUMBER) String phoneNumber,
-            @JsonProperty(NATIONALITY) String nationality,
-            @JsonProperty(USER_CREDENTIALS) UserCredentials userCredentials,
-            @JsonProperty(ORGANISATION_UNITS) List<OrganisationUnit> orgUnits,
-            @JsonProperty(TEI_SEARCH_ORGANISATION_UNITS) List<OrganisationUnit> searchOrgUnits,
-            @JsonProperty(DATA_VIEW_ORGANISATION_UNITS) List<OrganisationUnit> dataViewOrgUnits,
-            @JsonProperty(DELETED) Boolean deleted) {
-        // ToDo: change from jackson to gson and implement autovalue-gson extension
-
-        return new AutoValue_User(
-                uid, code, name, displayName, created, lastUpdated, deleted, birthday, education, gender,
-                jobTitle, surname, firstName, introduction, employer, interests, languages, email,
-                phoneNumber, nationality, userCredentials,
-                safeUnmodifiableList(orgUnits),
-                safeUnmodifiableList(searchOrgUnits),
-                safeUnmodifiableList(dataViewOrgUnits)
-        );
+    public static User.Builder builder() {
+        return new AutoValue_User.Builder();
     }
 
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<User.Builder> {
+        public abstract Builder birthday(String birthday);
+
+        public abstract Builder education(String education);
+
+        public abstract Builder gender(String gender);
+
+        public abstract Builder jobTitle(String jobTitle);
+
+        public abstract Builder surname(String surname);
+
+        public abstract Builder firstName(String firstName);
+
+        public abstract Builder introduction(String introduction);
+
+        public abstract Builder employer(String employer);
+
+        public abstract Builder interests(String interests);
+
+        public abstract Builder languages(String languages);
+
+        public abstract Builder email(String email);
+
+        public abstract Builder phoneNumber(String phoneNumber);
+
+        public abstract Builder nationality(String nationality);
+
+        public abstract Builder userCredentials(UserCredentials userCredentials);
+
+        public abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
+
+        public abstract Builder teiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits);
+
+        public abstract Builder dataViewOrganisationUnits(List<OrganisationUnit> dataViewOrganisationUnits);
+
+        public abstract User build();
+    }
 }

@@ -51,12 +51,18 @@ public class UserOrganisationUnitLinkModelBuilder
 
     @Override
     public UserOrganisationUnitLinkModel buildModel(OrganisationUnit organisationUnit) {
-        Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
-        boolean root = rootOrgUnitUids.contains(organisationUnit.uid());
-
         return builder
                 .organisationUnit(organisationUnit.uid())
-                .root(root)
+                .root(isRoot(organisationUnit))
                 .build();
+    }
+
+    private boolean isRoot(OrganisationUnit organisationUnit) {
+        if (user.organisationUnits() == null) {
+            return false;
+        } else {
+            Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
+            return rootOrgUnitUids.contains(organisationUnit.uid());
+        }
     }
 }

@@ -90,7 +90,7 @@ public final class ExpressionUtils {
      * @param vars       the variables, can be null.
      * @return the result of the evaluation.
      */
-    public static Object evaluate(String expression, Map<String, Object> vars) {
+    private static Object evaluate(String expression, Map<String, Object> vars) {
         try {
             return evaluate(expression, vars, false);
         } catch (Exception e) {

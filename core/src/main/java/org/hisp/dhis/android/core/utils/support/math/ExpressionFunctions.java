@@ -54,7 +54,6 @@ import static org.hisp.dhis.android.core.utils.support.StringUtils.isEmpty;
 
 @SuppressWarnings("PMD.GodClass")
 public final class ExpressionFunctions {
-    public static final String CLASS_TAG = ExpressionFunctions.class.getSimpleName();
     public static final String NAMESPACE = "d2";
 
     private ExpressionFunctions() {

@@ -34,7 +34,6 @@ import java.util.Date;
 
 /**
  * @author Lars Helge Overland
- * @version $Id$
  */
 public final class DateUtils {
 

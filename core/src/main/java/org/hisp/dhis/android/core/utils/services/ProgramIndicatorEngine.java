@@ -157,9 +157,9 @@ public class ProgramIndicatorEngine {
         int valueCount = 0;
         int zeroPosValueCount = 0;
 
-        EventModel programStageInstance = null;
+        EventModel cachedEventModel = null;
         Map<String, TrackedEntityDataValue> dataElementToDataValues = new HashMap<>();
-        EnrollmentModel programInstance = null;
+        EnrollmentModel cachedEnrollment = null;
         Map<String, TrackedEntityAttributeValue> attributeToAttributeValues = new HashMap<>();
 
         Date currentDate = new Date();
@@ -172,7 +172,7 @@ public class ProgramIndicatorEngine {
                 String de = matcher.group(3);
                 String programStageUid = uid;
 
-                if (programStageUid == null && de == null) {
+                if (programStageUid == null || de == null) {
                     continue;
                 }
 
@@ -180,14 +180,14 @@ public class ProgramIndicatorEngine {
                     // Single event without registration
                     dataElementToDataValues = getTrackedEntityDataValues(event);
                 } else {
-                    if (programStageInstance == null ||
-                            !programStageInstance.programStage().equals(programStageUid)) {
-                        programStageInstance = eventStore.queryByEnrollmentAndProgramStage(enrollment,
+                    if (cachedEventModel == null ||
+                            !cachedEventModel.programStage().equals(programStageUid)) {
+                        cachedEventModel = eventStore.queryByEnrollmentAndProgramStage(enrollment,
                                 programStageUid);
 
                         dataElementToDataValues.clear();
-                        if (programStageInstance != null) {
-                            dataElementToDataValues = getTrackedEntityDataValues(programStageInstance.uid());
+                        if (cachedEventModel != null) {
+                            dataElementToDataValues = getTrackedEntityDataValues(cachedEventModel.uid());
                         }
                     }
                 }
@@ -212,9 +212,9 @@ public class ProgramIndicatorEngine {
                 }
 
                 if (uid != null) {
-                    if (programInstance == null) {
-                        programInstance = enrollmentStore.queryByUid(enrollment);
-                        attributeToAttributeValues = getTrackedEntityAttributeValues(programInstance
+                    if (cachedEnrollment == null) {
+                        cachedEnrollment = enrollmentStore.queryByUid(enrollment);
+                        attributeToAttributeValues = getTrackedEntityAttributeValues(cachedEnrollment
                                 .trackedEntityInstance());
                     }
                     TrackedEntityAttributeValue attributeValue = attributeToAttributeValues.get(uid);
@@ -240,20 +240,20 @@ public class ProgramIndicatorEngine {
                 Date date = null;
 
                 if (enrollment != null) { //in case of single event without reg
-                    if (programInstance == null) {
-                        programInstance = enrollmentStore.queryByUid(enrollment);
+                    if (cachedEnrollment == null) {
+                        cachedEnrollment = enrollmentStore.queryByUid(enrollment);
                     }
 
                     if (ENROLLMENT_DATE.equals(uid)) {
-                        date = programInstance.dateOfEnrollment();
+                        date = cachedEnrollment.dateOfEnrollment();
                     } else if (INCIDENT_DATE.equals(uid)) {
-                        date = programInstance.dateOfIncident();
+                        date = cachedEnrollment.dateOfIncident();
                     }
                 }
 
                 if (EVENT_DATE.equals(uid) && event != null) {
-                    programStageInstance = eventStore.queryByUid(event);
-                    date = programStageInstance.eventDate();
+                    cachedEventModel = eventStore.queryByUid(event);
+                    date = cachedEventModel.eventDate();
                 }
 
                 if (CURRENT_DATE.equals(uid)) {

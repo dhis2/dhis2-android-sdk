@@ -308,7 +308,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                             : cursor.getString(11);
                     String latitude = cursor.getString(12) == null ? null : cursor.getString(12);
                     String longitude = cursor.getString(13) == null ? null : cursor.getString(13);
-                    String state = cursor.getString(14) == null ? null : cursor.getString(14);
+                    // "state" field is ignored
 
                     if (enrollmentMap.get(trackedEntityInstance) == null) {
                         enrollmentMap.put(trackedEntityInstance, new ArrayList<Enrollment>());

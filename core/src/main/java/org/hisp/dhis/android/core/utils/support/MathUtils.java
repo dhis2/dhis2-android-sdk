@@ -58,7 +58,6 @@ public final class MathUtils {
 
     /**
      * Returns a rounded off number.
-     * <p/>
      * <ul>
      * <li>If value is exclusively between 1 and -1 it will have 2 decimals.</li>
      * <li>If value if greater or equal to 1 the value will have 1 decimal.</li>

@@ -41,11 +41,18 @@ import retrofit2.http.Query;
 public interface OrganisationUnitService {
 
     @GET("organisationUnits/{uid}")
-    Call<Payload<OrganisationUnit>> getOrganisationUnits(
+    Call<Payload<OrganisationUnit>> getOrganisationUnitWithDescendants(
             @Path("uid") String organisationUnitUid,
             @Query("fields") @Which Fields<OrganisationUnit> fields,
             @Query("filter") @Where Filter<OrganisationUnit, String> lastUpdated,
             @Query("includeDescendants") Boolean descendants,
+            @Query("paging") Boolean paging
+    );
+
+    @GET("organisationUnits")
+    Call<Payload<OrganisationUnit>> getSearchOrganisationUnits(
+            @Query("fields") @Which Fields<OrganisationUnit> fields,
+            @Query("filter") @Where Filter<OrganisationUnit, String> filter,
             @Query("paging") Boolean paging
     );
 }

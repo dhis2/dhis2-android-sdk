@@ -7,12 +7,7 @@ import android.util.Log;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.List;
@@ -44,7 +39,8 @@ public final class TeisEndPointCall extends SyncCall<Response<Payload<TrackedEnt
         Integer teisToRequest = Math.min(trackerQuery.getPageLimit(), trackerQuery.getPageSize());
         Response<Payload<TrackedEntityInstance>> response = trackedEntityInstanceService.getTEIs(
                 Utils.joinCollectionWithSeparator(trackerQuery.getOrgUnits(), ";"),
-                trackerQuery.getOuMode().name(), fields(), Boolean.TRUE, trackerQuery.getPage(), teisToRequest)
+                trackerQuery.getOuMode().name(), TrackedEntityInstance.allFields, Boolean.TRUE,
+                trackerQuery.getPage(), teisToRequest)
                 .execute();
 
         if (response.isSuccessful() && !response.body().items().isEmpty()) {
@@ -70,48 +66,6 @@ public final class TeisEndPointCall extends SyncCall<Response<Payload<TrackedEnt
         } finally {
             transaction.end();
         }
-    }
-
-    private Fields<TrackedEntityInstance> fields() {
-        return Fields.<TrackedEntityInstance>builder().fields(
-                TrackedEntityInstance.uid, TrackedEntityInstance.created,
-                TrackedEntityInstance.lastUpdated,
-                TrackedEntityInstance.organisationUnit,
-                TrackedEntityInstance.trackedEntityType,
-                TrackedEntityInstance.deleted,
-                TrackedEntityInstance.relationships.with(Relationship.allFields),
-                TrackedEntityInstance.trackedEntityAttributeValues.with(
-                        TrackedEntityAttributeValue.trackedEntityAttribute,
-                        TrackedEntityAttributeValue.value,
-                        TrackedEntityAttributeValue.created,
-                        TrackedEntityAttributeValue.lastUpdated),
-                TrackedEntityInstance.enrollment.with(
-                        Enrollment.uid, Enrollment.created, Enrollment.lastUpdated,
-                        Enrollment.coordinate,
-                        Enrollment.dateOfEnrollment, Enrollment.dateOfIncident,
-                        Enrollment.enrollmentStatus,
-                        Enrollment.followUp, Enrollment.program, Enrollment.organisationUnit,
-                        Enrollment.trackedEntityInstance,
-                        Enrollment.deleted,
-                        Enrollment.events.with(
-                                Event.attributeCategoryOptions, Event.attributeOptionCombo,
-                                Event.uid, Event.created, Event.lastUpdated, Event.completeDate,
-                                Event.coordinates,
-                                Event.dueDate, Event.enrollment, Event.eventDate, Event.eventStatus,
-                                Event.organisationUnit, Event.program, Event.programStage,
-                                Event.deleted,
-                                Event.trackedEntityDataValues.with(
-                                        TrackedEntityDataValue.created,
-                                        TrackedEntityDataValue.lastUpdated,
-                                        TrackedEntityDataValue.dataElement,
-                                        TrackedEntityDataValue.providedElsewhere,
-                                        TrackedEntityDataValue.storedBy,
-                                        TrackedEntityDataValue.value
-                                )
-                        ),
-                        Enrollment.notes.with(Note.allFields)
-                )
-        ).build();
     }
 
     public static TeisEndPointCall create(GenericCallData genericCallData, TeiQuery teiQuery) {

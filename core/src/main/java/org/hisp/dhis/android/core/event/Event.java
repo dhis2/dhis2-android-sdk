@@ -38,6 +38,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
@@ -66,27 +67,32 @@ public abstract class Event {
     private static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
     private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
 
-    public static final Field<Event, String> uid = Field.create(UID);
-    public static final Field<Event, String> enrollment = Field.create(ENROLLMENT_UID);
-    public static final Field<Event, String> created = Field.create(CREATED);
-    public static final Field<Event, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<Event, String> createdAtClient = Field.create(CREATED_AT_CLIENT);
-    public static final Field<Event, String> lastUpdatedAtClient = Field.create(LAST_UPDATED_AT_CLIENT);
-    public static final Field<Event, EventStatus> eventStatus = Field.create(STATUS);
-    public static final Field<Event, Coordinates> coordinates = Field.create(COORDINATE);
-    public static final Field<Event, String> program = Field.create(PROGRAM);
-    public static final Field<Event, String> programStage = Field.create(PROGRAM_STAGE);
-    public static final Field<Event, String> organisationUnit = Field.create(ORGANISATION_UNIT);
-    public static final Field<Event, String> eventDate = Field.create(EVENT_DATE);
-    public static final Field<Event, String> completeDate = Field.create(COMPLETE_DATE);
-    public static final Field<Event, Boolean> deleted = Field.create(DELETED);
-    public static final Field<Event, String> dueDate = Field.create(DUE_DATE);
-    public static final Field<Event, String> attributeCategoryOptions = Field.create(ATTRIBUTE_CATEGORY_OPTIONS);
-    public static final Field<Event, String> attributeOptionCombo = Field.create(ATTRIBUTE_OPTION_COMBO);
-    public static final Field<Event, String> trackedEntityInstance = Field.create(TRACKED_ENTITY_INSTANCE);
+    private static final Field<Event, String> uid = Field.create(UID);
+    private static final Field<Event, String> enrollment = Field.create(ENROLLMENT_UID);
+    private static final Field<Event, String> created = Field.create(CREATED);
+    private static final Field<Event, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<Event, EventStatus> eventStatus = Field.create(STATUS);
+    private static final Field<Event, Coordinates> coordinates = Field.create(COORDINATE);
+    private static final Field<Event, String> program = Field.create(PROGRAM);
+    private static final Field<Event, String> programStage = Field.create(PROGRAM_STAGE);
+    private static final Field<Event, String> organisationUnit = Field.create(ORGANISATION_UNIT);
+    private static final Field<Event, String> eventDate = Field.create(EVENT_DATE);
+    private static final Field<Event, String> completeDate = Field.create(COMPLETE_DATE);
+    private static final Field<Event, Boolean> deleted = Field.create(DELETED);
+    private static final Field<Event, String> dueDate = Field.create(DUE_DATE);
+    private static final Field<Event, String> attributeCategoryOptions = Field.create(ATTRIBUTE_CATEGORY_OPTIONS);
+    private static final Field<Event, String> attributeOptionCombo = Field.create(ATTRIBUTE_OPTION_COMBO);
 
-    public static final NestedField<Event, TrackedEntityDataValue> trackedEntityDataValues
+    private static final NestedField<Event, TrackedEntityDataValue> trackedEntityDataValues
             = NestedField.create(TRACKED_ENTITY_DATA_VALUES);
+
+    public static final Fields<Event> allFields = Fields.<Event>builder().fields(
+            attributeCategoryOptions, attributeOptionCombo, uid, created, lastUpdated, completeDate,
+            coordinates, dueDate, enrollment, eventDate, eventStatus, organisationUnit, program, programStage,
+            deleted, trackedEntityDataValues.with(TrackedEntityDataValue.allFields)
+    ).build();
+
+
 
     @JsonProperty(UID)
     public abstract String uid();

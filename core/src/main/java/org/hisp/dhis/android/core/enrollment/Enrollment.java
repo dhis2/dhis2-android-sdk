@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
@@ -64,23 +65,27 @@ public abstract class Enrollment {
     private static final String EVENTS = "events";
     private static final String NOTES = "notes";
 
-    public static final Field<Enrollment, String> uid = Field.create(UID);
-    public static final Field<Enrollment, String> created = Field.create(CREATED);
-    public static final Field<Enrollment, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<Enrollment, String> createdAtClient = Field.create(CREATED_AT_CLIENT);
-    public static final Field<Enrollment, String> lastUpdatedAtClient = Field.create(LAST_UPDATED_AT_CLIENT);
-    public static final Field<Enrollment, String> organisationUnit = Field.create(ORGANISATION_UNIT);
-    public static final Field<Enrollment, String> program = Field.create(PROGRAM);
-    public static final Field<Enrollment, String> dateOfEnrollment = Field.create(DATE_OF_ENROLLMENT);
-    public static final Field<Enrollment, String> dateOfIncident = Field.create(DATE_OF_INCIDENT);
-    public static final Field<Enrollment, String> followUp = Field.create(FOLLOW_UP);
-    public static final Field<Enrollment, String> enrollmentStatus = Field.create(ENROLLMENT_STATUS);
-    public static final Field<Enrollment, Boolean> deleted = Field.create(DELETED);
-    public static final Field<Enrollment, String> trackedEntityInstance = Field.create(TRACKED_ENTITY_INSTANCE);
-    public static final Field<Enrollment, Coordinates> coordinate = Field.create(COORDINATE);
+    private static final Field<Enrollment, String> uid = Field.create(UID);
+    private static final Field<Enrollment, String> created = Field.create(CREATED);
+    private static final Field<Enrollment, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<Enrollment, String> organisationUnit = Field.create(ORGANISATION_UNIT);
+    private static final Field<Enrollment, String> program = Field.create(PROGRAM);
+    private static final Field<Enrollment, String> dateOfEnrollment = Field.create(DATE_OF_ENROLLMENT);
+    private static final Field<Enrollment, String> dateOfIncident = Field.create(DATE_OF_INCIDENT);
+    private static final Field<Enrollment, String> followUp = Field.create(FOLLOW_UP);
+    private static final Field<Enrollment, String> enrollmentStatus = Field.create(ENROLLMENT_STATUS);
+    private static final Field<Enrollment, Boolean> deleted = Field.create(DELETED);
+    private static final Field<Enrollment, String> trackedEntityInstance = Field.create(TRACKED_ENTITY_INSTANCE);
+    private static final Field<Enrollment, Coordinates> coordinate = Field.create(COORDINATE);
 
-    public static final NestedField<Enrollment, Event> events = NestedField.create(EVENTS);
-    public static final NestedField<Enrollment, Note> notes = NestedField.create(NOTES);
+    private static final NestedField<Enrollment, Event> events = NestedField.create(EVENTS);
+    private static final NestedField<Enrollment, Note> notes = NestedField.create(NOTES);
+
+    public static final Fields<Enrollment> allFields = Fields.<Enrollment>builder().fields(
+            uid, created, lastUpdated, coordinate, dateOfEnrollment, dateOfIncident, enrollmentStatus,
+            followUp, program, organisationUnit, trackedEntityInstance, deleted, events.with(Event.allFields),
+            notes.with(Note.allFields)
+    ).build();
 
     @JsonProperty(UID)
     public abstract String uid();

@@ -5,13 +5,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.relationship.Relationship;
 
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -46,7 +41,7 @@ public class TrackedEntityInstanceEndPointCall extends SyncCall<Response<Tracked
 
         Response<TrackedEntityInstance> response =
                 trackedEntityInstanceService.trackedEntityInstance(trackedEntityInstanceUid,
-                        fields(), true).execute();
+                        TrackedEntityInstance.allFields, true).execute();
 
         if (response == null || !response.isSuccessful()) {
             return response;
@@ -73,50 +68,6 @@ public class TrackedEntityInstanceEndPointCall extends SyncCall<Response<Tracked
         }
 
         return response;
-    }
-
-    private Fields<TrackedEntityInstance> fields() {
-        return Fields.<TrackedEntityInstance>builder().fields(
-                TrackedEntityInstance.uid, TrackedEntityInstance.created,
-                TrackedEntityInstance.lastUpdated,
-                TrackedEntityInstance.organisationUnit,
-                TrackedEntityInstance.trackedEntityType,
-                TrackedEntityInstance.coordinates,
-                TrackedEntityInstance.featureType,
-                TrackedEntityInstance.deleted,
-                TrackedEntityInstance.relationships.with(Relationship.allFields),
-                TrackedEntityInstance.trackedEntityAttributeValues.with(
-                        TrackedEntityAttributeValue.trackedEntityAttribute,
-                        TrackedEntityAttributeValue.value,
-                        TrackedEntityAttributeValue.created,
-                        TrackedEntityAttributeValue.lastUpdated),
-                TrackedEntityInstance.enrollment.with(
-                        Enrollment.uid, Enrollment.created, Enrollment.lastUpdated,
-                        Enrollment.coordinate,
-                        Enrollment.dateOfEnrollment, Enrollment.dateOfIncident,
-                        Enrollment.enrollmentStatus,
-                        Enrollment.followUp, Enrollment.program, Enrollment.organisationUnit,
-                        Enrollment.trackedEntityInstance,
-                        Enrollment.deleted,
-                        Enrollment.events.with(
-                                Event.attributeCategoryOptions, Event.attributeOptionCombo,
-                                Event.uid, Event.created, Event.lastUpdated, Event.completeDate,
-                                Event.coordinates,
-                                Event.dueDate, Event.enrollment, Event.eventDate, Event.eventStatus,
-                                Event.organisationUnit, Event.program, Event.programStage,
-                                Event.deleted,
-                                Event.trackedEntityDataValues.with(
-                                        TrackedEntityDataValue.created,
-                                        TrackedEntityDataValue.lastUpdated,
-                                        TrackedEntityDataValue.dataElement,
-                                        TrackedEntityDataValue.providedElsewhere,
-                                        TrackedEntityDataValue.storedBy,
-                                        TrackedEntityDataValue.value
-                                )
-                        ),
-                        Enrollment.notes.with(Note.allFields)
-                )
-        ).build();
     }
 
     public static TrackedEntityInstanceEndPointCall create(DatabaseAdapter databaseAdapter,

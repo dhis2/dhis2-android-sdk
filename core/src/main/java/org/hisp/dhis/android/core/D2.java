@@ -39,8 +39,8 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
-import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceWithLimitEndpointCall;
+import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
@@ -50,7 +50,7 @@ import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEndPointCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceByUidEndPointCall;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
@@ -59,6 +59,7 @@ import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
 import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -139,8 +140,9 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response<TrackedEntityInstance>> downloadTrackedEntityInstance(String trackedEntityInstanceUid) {
-        return TrackedEntityInstanceEndPointCall.create(databaseAdapter, retrofit, trackedEntityInstanceUid);
+    public Call<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(
+            Collection<String> trackedEntityInstanceUid) {
+        return TrackedEntityInstanceByUidEndPointCall.create(databaseAdapter, retrofit, trackedEntityInstanceUid);
     }
 
     @NonNull

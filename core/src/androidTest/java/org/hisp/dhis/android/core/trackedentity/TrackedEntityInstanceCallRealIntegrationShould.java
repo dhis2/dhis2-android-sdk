@@ -36,11 +36,11 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTest
         response = d2.syncMetaData().call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
-        TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceEndPointCall.create(
+        TrackedEntityInstanceByUidEndPointCall trackedEntityInstanceByUidEndPointCall =
+                TrackedEntityInstanceByUidEndPointCall.create(
                         d2.databaseAdapter(), d2.retrofit(), "IaxoagO9899");
 
-        response = trackedEntityInstanceEndPointCall.call();
+        response = trackedEntityInstanceByUidEndPointCall.call();
 
         Truth.assertThat(response.isSuccessful()).isTrue();
     }

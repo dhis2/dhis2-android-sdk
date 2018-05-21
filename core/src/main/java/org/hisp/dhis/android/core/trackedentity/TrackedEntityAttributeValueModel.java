@@ -49,7 +49,7 @@ public abstract class TrackedEntityAttributeValueModel extends BaseModel {
         public static final String CREATED = "created";
         public static final String LAST_UPDATED = "lastUpdated";
         public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-        public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+        public static final String TRACKED_ENTITY_INSTANCE = "getTrackedEntityInstancesById";
     }
 
     public static TrackedEntityAttributeValueModel create(Cursor cursor) {

@@ -120,7 +120,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                     "  Enrollment.incidentDate, " +
                     "  Enrollment.followup, " +
                     "  Enrollment.status, " +
-                    "  Enrollment.trackedEntityInstance, " +
+                    "  Enrollment.getTrackedEntityInstancesById, " +
                     "  Enrollment.latitude, " +
                     "  Enrollment.longitude, " +
                     "  Enrollment.state ";
@@ -128,7 +128,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
     private static final String QUERY_STATEMENT_TO_POST = "SELECT " +
             FIELDS +
             "FROM (Enrollment " +
-            "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid "
+            "  INNER JOIN TrackedEntityInstance ON Enrollment.getTrackedEntityInstancesById = TrackedEntityInstance.uid "
 
             +
             ") " +

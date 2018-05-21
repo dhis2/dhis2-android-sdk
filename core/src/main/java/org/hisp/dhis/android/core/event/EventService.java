@@ -17,7 +17,7 @@ public interface EventService {
     String FILTER = "filter";
     String ORG_UNIT = "orgUnit";
     String PROGRAM = "program";
-    String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+    String TRACKED_ENTITY_INSTANCE = "getTrackedEntityInstancesById";
     String FIELDS = "fields";
     String PAGING = "paging";
     String PAGE_SIZE = "pageSize";

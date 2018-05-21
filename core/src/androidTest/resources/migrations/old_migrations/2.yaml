@@ -3,7 +3,7 @@ up:
   - ALTER TABLE Program ADD COLUMN categoryCombo Text;
   - ALTER TABLE Event ADD COLUMN attributeCategoryOptions Text;
   - ALTER TABLE Event ADD COLUMN attributeOptionCombo Text;
-  - ALTER TABLE Event ADD COLUMN trackedEntityInstance Text;
+  - ALTER TABLE Event ADD COLUMN getTrackedEntityInstancesById Text;
   - CREATE TABLE CategoryCategoryOptionLink (_id INTEGER PRIMARY KEY AUTOINCREMENT,category TEXT NOT NULL,option TEXT NOT NULL,  FOREIGN KEY (category)  REFERENCES Category (uid)  ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (option)  REFERENCES CategoryOption (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,UNIQUE (category, option));
   - CREATE TABLE CategoryOptionComboCategoryLink (_id INTEGER PRIMARY KEY AUTOINCREMENT,categoryOptionCombo TEXT NOT NULL,category TEXT NOT NULL,  FOREIGN KEY (categoryOptionCombo)  REFERENCES CategoryOptionCombo (uid)  ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (category)  REFERENCES CategoryOption (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,UNIQUE (categoryOptionCombo, category));
   - CREATE TABLE CategoryOptionCombo (_id INTEGER PRIMARY KEY AUTOINCREMENT,uid TEXT NOT NULL UNIQUE,code TEXT,name TEXT,displayName TEXT,created TEXT,lastUpdated TEXT, categoryCombo TEXT,  FOREIGN KEY (categoryCombo)  REFERENCES CategoryCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED );

@@ -262,7 +262,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
 
         cursor = database().query(TrackedEntityInstanceModel.TABLE, projection, null, null, null, null, null);
 
-        // check that trackedEntityInstance is updated with updated state
+        // check that getTrackedEntityInstancesById is updated with updated state
         assertThatCursor(cursor).hasRow(UID, ORGANISATION_UNIT, TRACKED_ENTITY, updatedState).isExhausted();
     }
 

@@ -6,7 +6,7 @@ import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEndPointCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceByUidEndPointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 
@@ -58,7 +58,7 @@ public final class TrackerDataCall extends SyncCall<Response> {
 
         for (Map.Entry<String, TrackedEntityInstance> entry : trackedEntityInstances.entrySet()) {
 
-            response = TrackedEntityInstanceEndPointCall.create(databaseAdapter, retrofit,
+            response = TrackedEntityInstanceByUidEndPointCall.create(databaseAdapter, retrofit,
                     entry.getValue().uid()).call();
 
             if (!response.isSuccessful()) {

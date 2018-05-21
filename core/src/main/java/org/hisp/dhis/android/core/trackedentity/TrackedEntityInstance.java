@@ -48,7 +48,7 @@ import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
 public abstract class TrackedEntityInstance {
-    private static final String UID = "trackedEntityInstance";
+    private static final String UID = "getTrackedEntityInstancesById";
     private static final String CREATED_AT_CLIENT = "createdAtClient";
     private static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
     private static final String CREATED = "created";
@@ -62,7 +62,7 @@ public abstract class TrackedEntityInstance {
     private static final String DELETED = "deleted";
     private static final String ENROLLMENTS = "enrollments";
 
-    private static final Field<TrackedEntityInstance, String> uid = Field.create(UID);
+    static final Field<TrackedEntityInstance, String> uid = Field.create(UID);
     private static final Field<TrackedEntityInstance, String> created = Field.create(CREATED);
     private static final Field<TrackedEntityInstance, String> lastUpdated = Field.create(LAST_UPDATED);
     private static final Field<TrackedEntityInstance, String> createdAtClient = Field.create(CREATED_AT_CLIENT);
@@ -84,7 +84,7 @@ public abstract class TrackedEntityInstance {
             uid, created, lastUpdated, organisationUnit, trackedEntityType, deleted,
             relationships.with(Relationship.allFields),
             trackedEntityAttributeValues.with(TrackedEntityAttributeValue.allFields),
-            enrollment.with(Enrollment.allFields)
+            enrollment.with(Enrollment.allFields), coordinates, featureType
     ).build();
 
     @JsonProperty(UID)

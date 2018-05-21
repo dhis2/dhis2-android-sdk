@@ -57,13 +57,13 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         givenAMetadataInDatabase();
 
-        TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceEndPointCall.create(
+        TrackedEntityInstanceByUidEndPointCall trackedEntityInstanceByUidEndPointCall =
+                TrackedEntityInstanceByUidEndPointCall.create(
                         d2.databaseAdapter(), d2.retrofit(), teiUid);
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
 
-        trackedEntityInstanceEndPointCall.call();
+        trackedEntityInstanceByUidEndPointCall.call();
 
         verifyDownloadedTrackedEntityInstance("tracked_entity_instance.json", teiUid);
     }
@@ -75,22 +75,22 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         givenAMetadataInDatabase();
 
-        TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceEndPointCall.create(
+        TrackedEntityInstanceByUidEndPointCall trackedEntityInstanceByUidEndPointCall =
+                TrackedEntityInstanceByUidEndPointCall.create(
                         d2.databaseAdapter(), d2.retrofit(), teiUid);
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
 
-        trackedEntityInstanceEndPointCall.call();
+        trackedEntityInstanceByUidEndPointCall.call();
 
-        trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceEndPointCall.create(
+        trackedEntityInstanceByUidEndPointCall =
+                TrackedEntityInstanceByUidEndPointCall.create(
                         databaseAdapter(), d2.retrofit(), teiUid);
 
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance_with_removed_data.json");
 
-        trackedEntityInstanceEndPointCall.call();
+        trackedEntityInstanceByUidEndPointCall.call();
 
         verifyDownloadedTrackedEntityInstance("tracked_entity_instance_with_removed_data.json",
                 teiUid);

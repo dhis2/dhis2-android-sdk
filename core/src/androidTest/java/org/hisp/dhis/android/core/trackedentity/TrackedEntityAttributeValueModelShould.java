@@ -52,7 +52,7 @@ public class TrackedEntityAttributeValueModelShould {
     //TrackedEntityAttributeValueModel:
     private static final String VALUE = "TestValue";
     private static final String TRACKED_ENTITY_ATTRIBUTE = "TestAttribute";
-    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+    private static final String TRACKED_ENTITY_INSTANCE = "getTrackedEntityInstancesById";
 
     private Date date;
     private String dateString;

@@ -76,13 +76,13 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
                     "  TrackedEntityAttributeValue.created, " +
                     "  TrackedEntityAttributeValue.lastUpdated, " +
                     "  TrackedEntityAttributeValue.trackedEntityAttribute, " +
-                    "  TrackedEntityAttributeValue.trackedEntityInstance ";
+                    "  TrackedEntityAttributeValue.getTrackedEntityInstancesById ";
 
     private static final String QUERY_STATEMENT_TO_POST =
             "SELECT " + FIELDS +
                     "FROM (TrackedEntityAttributeValue " +
                     "  INNER JOIN TrackedEntityInstance " +
-                    "    ON TrackedEntityAttributeValue.trackedEntityInstance = "
+                    "    ON TrackedEntityAttributeValue.getTrackedEntityInstancesById = "
                     + "TrackedEntityInstance.uid) "
                     +
                     "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state"
@@ -95,7 +95,7 @@ public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttrib
 
     private static final String QUERY_BY_TRACKED_ENTITY_INSTANCE_STATEMENT =
             "SELECT " + FIELDS +
-                    "FROM TrackedEntityAttributeValue where trackedEntityInstance = '?'";
+                    "FROM TrackedEntityAttributeValue where getTrackedEntityInstancesById = '?'";
 
     private final SQLiteStatement insertRowStatement;
     private final SQLiteStatement updateRowStatement;

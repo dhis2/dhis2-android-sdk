@@ -65,7 +65,7 @@ public abstract class EventModel extends BaseDataModel {
         public static final String DUE_DATE = "dueDate";
         public static final String ATTRIBUTE_CATEGORY_OPTIONS = "attributeCategoryOptions";
         public static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
-        public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+        public static final String TRACKED_ENTITY_INSTANCE = "getTrackedEntityInstancesById";
     }
 
     public static EventModel create(Cursor cursor) {

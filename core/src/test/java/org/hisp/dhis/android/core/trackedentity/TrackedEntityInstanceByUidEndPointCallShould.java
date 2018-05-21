@@ -23,7 +23,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
-public class TrackedEntityInstanceEndPointCallShould {
+public class TrackedEntityInstanceByUidEndPointCallShould {
     @Mock
     private TrackedEntityInstanceService trackedEntityInstanceService;
 
@@ -64,19 +64,19 @@ public class TrackedEntityInstanceEndPointCallShould {
 
     @Test
     public void create_call_if_uid_is_not_null() {
-        TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
+        TrackedEntityInstanceByUidEndPointCall trackedEntityInstanceByUidEndPointCall =
                 givenATrackedEntityInstanceEndPointCall("PgmUFEQYZdt");
-        assertThat(trackedEntityInstanceEndPointCall, is(notNullValue()));
+        assertThat(trackedEntityInstanceByUidEndPointCall, is(notNullValue()));
     }
 
-    private TrackedEntityInstanceEndPointCall givenATrackedEntityInstanceEndPointCall(
+    private TrackedEntityInstanceByUidEndPointCall givenATrackedEntityInstanceEndPointCall(
             String trackedEntityInstanceUid) {
-        TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
-                new TrackedEntityInstanceEndPointCall(
+        TrackedEntityInstanceByUidEndPointCall trackedEntityInstanceByUidEndPointCall =
+                new TrackedEntityInstanceByUidEndPointCall(
                         databaseAdapter,
                         trackedEntityInstanceService, trackedEntityInstanceHandler,
                         trackedEntityInstanceUid);
 
-        return trackedEntityInstanceEndPointCall;
+        return trackedEntityInstanceByUidEndPointCall;
     }
 }

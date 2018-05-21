@@ -50,7 +50,7 @@ public class TrackedEntityInstanceShould {
                 "    \"trackedEntityType\": \"nEenWmSyUEp\",\n" +
                 "    \"created\": \"2014-03-28T12:39:39.372+0000\",\n" +
                 "    \"orgUnit\": \"DiszpKrYNg8\",\n" +
-                "    \"trackedEntityInstance\": \"CVUuL8RIpPI\",\n" +
+                "    \"getTrackedEntityInstancesById\": \"CVUuL8RIpPI\",\n" +
                 "    \"relationships\": [\n" +
                 "        {\n" +
                 "            \"trackedEntityInstanceB\": \"G1afLIEKt8A\",\n" +
@@ -60,7 +60,7 @@ public class TrackedEntityInstanceShould {
                 "            \"relative\": {\n" +
                 "                \"created\": \"2013-09-08T21:40:28.000\",\n" +
                 "                \"orgUnit\": \"DiszpKrYNg8\",\n" +
-                "                \"trackedEntityInstance\": \"G1afLIEKt8A\",\n" +
+                "                \"getTrackedEntityInstancesById\": \"G1afLIEKt8A\",\n" +
                 "                \"lastUpdated\": \"2014-07-23T12:18:42.751\",\n" +
                 "                \"trackedEntityType\": \"nEenWmSyUEp\",\n" +
                 "                \"deleted\": false,\n" +

@@ -37,7 +37,7 @@ public final class TeisEndPointCall extends SyncCall<Response<Payload<TrackedEnt
         super.setExecuted();
 
         Integer teisToRequest = Math.min(trackerQuery.getPageLimit(), trackerQuery.getPageSize());
-        Response<Payload<TrackedEntityInstance>> response = trackedEntityInstanceService.getTEIs(
+        Response<Payload<TrackedEntityInstance>> response = trackedEntityInstanceService.getTrackedEntityInstances(
                 Utils.joinCollectionWithSeparator(trackerQuery.getOrgUnits(), ";"),
                 trackerQuery.getOuMode().name(), TrackedEntityInstance.allFields, Boolean.TRUE,
                 trackerQuery.getPage(), teisToRequest)

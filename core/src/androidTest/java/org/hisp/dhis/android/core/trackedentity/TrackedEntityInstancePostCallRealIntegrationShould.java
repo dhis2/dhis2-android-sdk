@@ -168,11 +168,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         downloadMetadata();
 
 
-        TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceEndPointCall.create(
+        TrackedEntityInstanceByUidEndPointCall trackedEntityInstanceByUidEndPointCall =
+                TrackedEntityInstanceByUidEndPointCall.create(
                         d2.databaseAdapter(), d2.retrofit(), trackedEntityInstanceUid);
 
-        trackedEntityInstanceEndPointCall.call();
+        trackedEntityInstanceByUidEndPointCall.call();
 
         TrackedEntityInstance downloadedTrackedEntityInstance = getTrackedEntityInstanceFromDB(trackedEntityInstanceUid);
         Enrollment downloadedEnrollment = getEnrollmentsByTrackedEntityInstanceFromDb(trackedEntityInstanceUid);
@@ -202,7 +202,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.wipeDB().call();
         downloadMetadata();
 
-        Response<TrackedEntityInstance> response =  d2.downloadTrackedEntityInstance(newUid).call();
+        Response<TrackedEntityInstance> response =  d2.downloadTrackedEntityInstancesByUid(newUid).call();
 
         TrackedEntityInstance updatedTei = response.body();
 
@@ -227,7 +227,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.wipeDB().call();
         downloadMetadata();
 
-        Response<TrackedEntityInstance> response =  d2.downloadTrackedEntityInstance(newUid1).call();
+        Response<TrackedEntityInstance> response =  d2.downloadTrackedEntityInstancesByUid(newUid1).call();
 
         assertThat(response.isSuccessful()).isTrue();
     }
@@ -260,10 +260,10 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.wipeDB().call();
         downloadMetadata();
 
-        Response<TrackedEntityInstance> responseTeiA =  d2.downloadTrackedEntityInstance(teiA.uid()).call();
+        Response<TrackedEntityInstance> responseTeiA =  d2.downloadTrackedEntityInstancesByUid(teiA.uid()).call();
         assertThat(responseTeiA.isSuccessful()).isTrue();
 
-        Response<TrackedEntityInstance> responseTeiB =  d2.downloadTrackedEntityInstance(teiBUid).call();
+        Response<TrackedEntityInstance> responseTeiB =  d2.downloadTrackedEntityInstancesByUid(teiBUid).call();
         assertThat(responseTeiB.isSuccessful()).isTrue();
 
         Set<RelationshipModel> relationships = relationShipStore.selectAll(RelationshipModel.factory);

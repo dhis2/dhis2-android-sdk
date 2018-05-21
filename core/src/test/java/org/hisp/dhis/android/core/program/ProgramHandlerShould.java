@@ -61,7 +61,7 @@ public class ProgramHandlerShould {
     private ProgramRuleVariableHandler programRuleVariableHandler;
 
     @Mock
-    private ProgramIndicatorHandler programIndicatorHandler;
+    private GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler;
 
     @Mock
     private ProgramRuleHandler programRuleHandler;

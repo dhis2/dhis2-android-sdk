@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramModel> {
 
     private final ProgramRuleVariableHandler programRuleVariableHandler;
-    private final ProgramIndicatorHandler programIndicatorHandler;
+    private final GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler;
     private final ProgramRuleHandler programRuleHandler;
     private final GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
             programTrackedEntityAttributeHandler;
@@ -48,7 +48,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
 
     ProgramHandler(IdentifiableObjectStore<ProgramModel> programStore,
                    ProgramRuleVariableHandler programRuleVariableHandler,
-                   ProgramIndicatorHandler programIndicatorHandler,
+                   GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler,
                    ProgramRuleHandler programRuleHandler,
                    GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
                            programTrackedEntityAttributeHandler,

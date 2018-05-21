@@ -125,7 +125,7 @@ public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
         @ColumnName(Columns.PROGRAM)
         public abstract Builder program(@Nullable String program);
 
-        abstract ProgramIndicatorModel build();
+        public abstract ProgramIndicatorModel build();
     }
 
     @Override

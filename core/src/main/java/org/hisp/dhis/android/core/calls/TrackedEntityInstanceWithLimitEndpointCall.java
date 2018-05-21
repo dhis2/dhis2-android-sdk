@@ -18,6 +18,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.trackedentity.TeiQuery;
 import org.hisp.dhis.android.core.trackedentity.TeisEndPointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 
@@ -88,7 +89,7 @@ public final class TrackedEntityInstanceWithLimitEndpointCall extends SyncCall<L
         int numPages = (int) Math.ceil((double) teiLimit / pageSize);
 
         if (limitByOrgUnit) {
-            organisationUnitUids = organisationUnitStore.selectUids();
+            organisationUnitUids = getOrgUnitUids();
             Set<String> orgUnitWrapper = new HashSet<>();
             for (String orgUnitUid : organisationUnitUids) {
                 orgUnitWrapper.clear();
@@ -134,6 +135,22 @@ public final class TrackedEntityInstanceWithLimitEndpointCall extends SyncCall<L
         }
 
         return trackedEntityInstances;
+    }
+
+    private Set<String> getOrgUnitUids() {
+        Set<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll(
+                UserOrganisationUnitLinkModel.factory);
+
+        Set<String> organisationUnitUids = new HashSet<>();
+
+        for (UserOrganisationUnitLinkModel linkModel: userOrganisationUnitLinks) {
+            if (linkModel.organisationUnitScope().equals(
+                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name())) {
+                organisationUnitUids.add(linkModel.organisationUnit());
+            }
+        }
+
+        return organisationUnitUids;
     }
 
     public static TrackedEntityInstanceWithLimitEndpointCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,

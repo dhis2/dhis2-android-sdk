@@ -26,18 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.utils.support;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
-public final class ProgramIndicatorStore {
+import nl.jqno.equalsverifier.internal.lib.bytebuddy.implementation.bytecode.constant.DoubleConstant;
 
-    private ProgramIndicatorStore() {}
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    public static IdentifiableObjectStore<ProgramIndicatorModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter,
-                ProgramIndicatorModel.TABLE, new ProgramIndicatorModel.Columns().all());
+@RunWith(MockitoJUnitRunner.class)
+public class ExpressionUtilsShould {
+
+    @Test
+    public void evaluate_one_value() throws Exception {
+        assertThat(evaluateToDouble("2.3")).isEqualTo(2.3);
     }
+
+    @Test
+    public void evaluate_base_mathematical_operations() throws Exception {
+        assertThat(evaluateToDouble("2.3 + 4")).isEqualTo(6.3);
+        assertThat(evaluateToDouble("4.3 - 2")).isEqualTo(2.3);
+        assertThat(evaluateToDouble("4.3 * 2")).isEqualTo(8.6);
+        assertThat(evaluateToDouble("7.5 / 2")).isEqualTo(3.75);
+    }
+
+    @Test
+    public void evaluate_operations_with_parenthesis() throws Exception {
+        assertThat(evaluateToDouble("(2.3 + 4) * 2")).isEqualTo(12.6);
+        assertThat(evaluateToDouble("6 / (2 - 0.5)")).isEqualTo(4.0);
+    }
+
+
+    private Double evaluateToDouble(String expression) {
+        return ExpressionUtils.evaluateToDouble(expression, null);
+    }
+
 }

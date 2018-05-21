@@ -28,19 +28,15 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class ConstantStore {
 
-import java.util.Date;
+    private ConstantStore() {}
 
-public interface ConstantStore extends DeletableStore {
-
-    long insert(
-            @NonNull String uid, @Nullable String code, @Nullable String name,
-            @Nullable String displayName, @Nullable Date created,
-            @Nullable Date lastUpdated, @NonNull String value
-    );
-
+    public static IdentifiableObjectStore<ConstantModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.identifiableStore(databaseAdapter, ConstantModel.TABLE, new ConstantModel.Columns().all());
+    }
 }

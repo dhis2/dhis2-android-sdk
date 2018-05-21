@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
@@ -62,7 +61,7 @@ public class ProgramHandlerShould {
     private ProgramRuleVariableHandler programRuleVariableHandler;
 
     @Mock
-    private ProgramIndicatorHandler programIndicatorHandler;
+    private GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler;
 
     @Mock
     private ProgramRuleHandler programRuleHandler;
@@ -172,7 +171,8 @@ public class ProgramHandlerShould {
     @Test
     public void call_program_indicator_handler() throws Exception {
         programHandler.handle(program, new ProgramModelBuilder());
-        verify(programIndicatorHandler).handleProgramIndicator(null, programIndicators);
+        verify(programIndicatorHandler).handleMany(anyListOf(ProgramIndicator.class),
+                any(ProgramIndicatorModelBuilder.class));
     }
 
     @Test

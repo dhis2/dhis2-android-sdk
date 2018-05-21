@@ -47,7 +47,6 @@ import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.junit.After;
@@ -115,20 +114,11 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         List<OrganisationUnit> organisationUnits = Collections.singletonList(OrganisationUnit.create("O6uvpzGd5pu",
                 null, null, null, null, null, null, null, null, null, null, "/ImspTQPwCqd/O6uvpzGd5pu", null, null,
                 null, null, null, null, false));
-        UserCredentials userCredentials = UserCredentials.create("credentials_uid", "code", "name", null, null,
-                null, null, null, null);
         //dependencies for the OrganisationUnitCall:
         OrganisationUnitService organisationUnitService = d2.retrofit().create(OrganisationUnitService.class);
 
         // Create a user with the root as assigned organisation unit (for the test):
-        User user = User.create("user_uid", "code", "name", "display_name", new Date(), new Date(), "birthday",
-                "education", "gender", "job_title", "surname", "firstName", "introduction", "employer", "interests",
-                "languages", "email", "phoneNumber", "nationality",
-                userCredentials,
-                organisationUnits,
-                organisationUnits,
-                organisationUnits,
-                false);
+        User user = User.builder().uid("user_uid").organisationUnits(organisationUnits).build();
 
         ContentValues userContentValues = new ContentValues();
         userContentValues.put(UserModel.Columns.ID, "user_uid");

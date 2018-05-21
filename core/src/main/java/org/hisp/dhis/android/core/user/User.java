@@ -190,38 +190,56 @@ public abstract class User extends BaseIdentifiableObject {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObject.Builder<User.Builder> {
+
+        @JsonProperty(BIRTHDAY)
         public abstract Builder birthday(String birthday);
 
+        @JsonProperty(EDUCATION)
         public abstract Builder education(String education);
 
+        @JsonProperty(GENDER)
         public abstract Builder gender(String gender);
 
+        @JsonProperty(JOB_TITLE)
         public abstract Builder jobTitle(String jobTitle);
 
+        @JsonProperty(SURNAME)
         public abstract Builder surname(String surname);
 
+        @JsonProperty(FIRST_NAME)
         public abstract Builder firstName(String firstName);
 
+        @JsonProperty(INTRODUCTION)
         public abstract Builder introduction(String introduction);
 
+        @JsonProperty(EMPLOYER)
         public abstract Builder employer(String employer);
 
+        @JsonProperty(INTERESTS)
         public abstract Builder interests(String interests);
 
+        @JsonProperty(LANGUAGES)
         public abstract Builder languages(String languages);
 
+        @JsonProperty(EMAIL)
         public abstract Builder email(String email);
 
+        @JsonProperty(PHONE_NUMBER)
         public abstract Builder phoneNumber(String phoneNumber);
 
+        @JsonProperty(NATIONALITY)
         public abstract Builder nationality(String nationality);
 
+        @JsonProperty(USER_CREDENTIALS)
         public abstract Builder userCredentials(UserCredentials userCredentials);
 
+        @JsonProperty(ORGANISATION_UNITS)
         public abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
 
+        @JsonProperty(TEI_SEARCH_ORGANISATION_UNITS)
         public abstract Builder teiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits);
 
+        @JsonProperty(DATA_VIEW_ORGANISATION_UNITS)
         public abstract Builder dataViewOrganisationUnits(List<OrganisationUnit> dataViewOrganisationUnits);
 
         public abstract User build();

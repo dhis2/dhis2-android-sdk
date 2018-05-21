@@ -41,20 +41,16 @@ import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
-import org.hisp.dhis.android.core.program.ProgramIndicatorModelBuilder;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramModel;
-import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeStoreImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,8 +76,6 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     private String attribute1 = "Kmtdopp5GC1";
     private String programIndicatorUid = "rg3JkCv0skl";
 
-    private TrackedEntityInstanceStore teiStore;
-
     // Auxiliary variables
     private String orgunitUid = "orgunit_uid";
     private String teiTypeUid = "tei_type_uid";
@@ -97,15 +91,14 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         super.setUp();
 
         programIndicatorEngine = ProgramIndicatorEngine.create(databaseAdapter());
-
-
+        
         OrganisationUnitModel orgunit = OrganisationUnitModel.builder().uid(orgunitUid).build();
         OrganisationUnitStore.create(databaseAdapter()).insert(orgunit);
 
         new TrackedEntityTypeStoreImpl(databaseAdapter()).insert(teiTypeUid, null, null, null, null, null,
                 null, null,null, null);
 
-        this.teiStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
+        TrackedEntityInstanceStore teiStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
         teiStore.insert(teiUid, new Date(), new Date(), null, null, orgunitUid, teiTypeUid, null, null,
                 null);
 

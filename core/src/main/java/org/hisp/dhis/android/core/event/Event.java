@@ -67,10 +67,10 @@ public abstract class Event {
     private static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
     private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
 
-    private static final Field<Event, String> uid = Field.create(UID);
+    static final Field<Event, String> uid = Field.create(UID);
     private static final Field<Event, String> enrollment = Field.create(ENROLLMENT_UID);
     private static final Field<Event, String> created = Field.create(CREATED);
-    private static final Field<Event, String> lastUpdated = Field.create(LAST_UPDATED);
+    static final Field<Event, String> lastUpdated = Field.create(LAST_UPDATED);
     private static final Field<Event, EventStatus> eventStatus = Field.create(STATUS);
     private static final Field<Event, Coordinates> coordinates = Field.create(COORDINATE);
     private static final Field<Event, String> program = Field.create(PROGRAM);

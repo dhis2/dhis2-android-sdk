@@ -9,7 +9,6 @@ import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
@@ -55,7 +54,7 @@ public class EventEndPointCall extends SyncCall<Response<Payload<Event>>> {
 
             eventsByLastUpdated = eventService.getEvents(
                     eventQuery.getOrgUnit(), eventQuery.getProgram(),
-                    eventQuery.getTrackedEntityInstance(), getSingleFields(),
+                    eventQuery.getTrackedEntityInstance(), Event.allFields,
                     Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
                     Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize()).execute();
         } else {
@@ -64,7 +63,7 @@ public class EventEndPointCall extends SyncCall<Response<Payload<Event>>> {
 
             eventsByLastUpdated = eventService.getEvents(
                     eventQuery.getOrgUnit(), eventQuery.getProgram(),
-                    eventQuery.getTrackedEntityInstance(), getSingleFields(),
+                    eventQuery.getTrackedEntityInstance(), Event.allFields,
                     Event.lastUpdated.gt(lastSyncedEvents), Event.uid.in(eventQuery.getUIds()),
                     Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize(),
                     categoryCombo.uid(), categoryOption.uid()).execute();
@@ -100,16 +99,6 @@ public class EventEndPointCall extends SyncCall<Response<Payload<Event>>> {
 
         }
         return eventsByLastUpdated;
-    }
-
-    private Fields<Event> getSingleFields() {
-        return Fields.<Event>builder().fields(
-                Event.attributeCategoryOptions, Event.attributeOptionCombo,
-                Event.uid, Event.created, Event.lastUpdated,
-                Event.eventStatus, Event.coordinates, Event.program, Event.programStage,
-                Event.organisationUnit, Event.eventDate, Event.completeDate,
-                Event.dueDate, Event.deleted, Event.trackedEntityDataValues
-        ).build();
     }
 
     public static EventEndPointCall create(GenericCallData genericCallData,

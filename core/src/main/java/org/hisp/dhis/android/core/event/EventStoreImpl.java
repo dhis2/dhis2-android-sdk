@@ -325,7 +325,17 @@ public class EventStoreImpl implements EventStore {
 
         Cursor cursor = databaseAdapter.query(queryStatement);
 
-        return EventModel.create(cursor);
+        EventModel object = null;
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                object = EventModel.create(cursor);
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return object;
     }
 
     @Override

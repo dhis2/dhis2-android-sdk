@@ -28,16 +28,29 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-public final class ProgramIndicatorStore {
+public class ProgramIndicatorModelBuilder extends ModelBuilder<ProgramIndicator, ProgramIndicatorModel> {
 
-    private ProgramIndicatorStore() {}
-
-    public static IdentifiableObjectStore<ProgramIndicatorModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter,
-                ProgramIndicatorModel.TABLE, new ProgramIndicatorModel.Columns().all());
+    @Override
+    public ProgramIndicatorModel buildModel(ProgramIndicator programIndicator) {
+        return ProgramIndicatorModel.builder()
+                .uid(programIndicator.uid())
+                .code(programIndicator.code())
+                .name(programIndicator.name())
+                .displayName(programIndicator.displayName())
+                .created(programIndicator.created())
+                .lastUpdated(programIndicator.lastUpdated())
+                .shortName(programIndicator.shortName())
+                .displayShortName(programIndicator.displayShortName())
+                .description(programIndicator.description())
+                .displayDescription(programIndicator.displayDescription())
+                .displayInForm(programIndicator.displayInForm())
+                .expression(programIndicator.expression())
+                .dimensionItem(programIndicator.dimensionItem())
+                .filter(programIndicator.filter())
+                .decimals(programIndicator.decimals())
+                .program(programIndicator.program().uid())
+                .build();
     }
 }

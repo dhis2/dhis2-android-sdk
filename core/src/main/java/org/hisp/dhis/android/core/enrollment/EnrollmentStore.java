@@ -80,4 +80,6 @@ public interface EnrollmentStore extends DeletableStore {
     Map<String, List<Enrollment>> query();
 
     Map<String, List<Enrollment>> queryAll();
+
+    EnrollmentModel queryByUid(String enrollmentUid);
 }

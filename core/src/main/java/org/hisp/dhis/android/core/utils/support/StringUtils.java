@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,18 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.utils.support;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+public final class StringUtils {
 
-public final class ProgramIndicatorStore {
+    private StringUtils() {
+        // no instances
+    }
 
-    private ProgramIndicatorStore() {}
-
-    public static IdentifiableObjectStore<ProgramIndicatorModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter,
-                ProgramIndicatorModel.TABLE, new ProgramIndicatorModel.Columns().all());
+    public static boolean isEmpty(CharSequence charSequence) {
+        return charSequence == null || charSequence.length() == 0;
     }
 }

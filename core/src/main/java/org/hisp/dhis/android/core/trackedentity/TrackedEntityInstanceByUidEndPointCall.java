@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.Payload;
@@ -12,7 +13,6 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import java.util.Collection;
 import java.util.List;
 
-import retrofit2.Call;
 import retrofit2.Retrofit;
 
 public class TrackedEntityInstanceByUidEndPointCall extends SyncCall<List<TrackedEntityInstance>> {
@@ -43,24 +43,19 @@ public class TrackedEntityInstanceByUidEndPointCall extends SyncCall<List<Tracke
             throw D2CallException.builder().isHttpError(false).errorDescription("UID list null").build();
         }
 
-        Call<Payload<TrackedEntityInstance>> call =
+        retrofit2.Call<Payload<TrackedEntityInstance>> call =
                 trackedEntityInstanceService.getTrackedEntityInstancesById(
                         TrackedEntityInstance.uid.in(trackedEntityInstanceUids),
                         TrackedEntityInstance.allFields, true);
 
         List<TrackedEntityInstance> teis = new APICallExecutor().executePayloadCall(call);
-        Transaction transaction = databaseAdapter.beginNewTransaction();
-
         TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, teis).call();
-
-        transaction.setSuccessful();
-        transaction.end();
         return teis;
     }
 
-    public static SyncCall<List<TrackedEntityInstance>> create(DatabaseAdapter databaseAdapter,
-                                                               Retrofit retrofit,
-                                                               Collection<String> trackedEntityInstanceUids) {
+    public static Call<List<TrackedEntityInstance>> create(DatabaseAdapter databaseAdapter,
+                                                           Retrofit retrofit,
+                                                           Collection<String> trackedEntityInstanceUids) {
         return new TrackedEntityInstanceByUidEndPointCall(
                 databaseAdapter,
                 retrofit,

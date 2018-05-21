@@ -4,8 +4,10 @@ import android.support.annotation.NonNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -57,9 +59,9 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         givenAMetadataInDatabase();
 
-        TrackedEntityInstanceByUidEndPointCall trackedEntityInstanceByUidEndPointCall =
+        Call<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
                 TrackedEntityInstanceByUidEndPointCall.create(
-                        d2.databaseAdapter(), d2.retrofit(), teiUid);
+                        d2.databaseAdapter(), d2.retrofit(), Lists.newArrayList(teiUid));
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
 
@@ -75,9 +77,9 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         givenAMetadataInDatabase();
 
-        TrackedEntityInstanceByUidEndPointCall trackedEntityInstanceByUidEndPointCall =
+        Call<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
                 TrackedEntityInstanceByUidEndPointCall.create(
-                        d2.databaseAdapter(), d2.retrofit(), teiUid);
+                        d2.databaseAdapter(), d2.retrofit(), Lists.newArrayList(teiUid));
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
 
@@ -85,7 +87,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         trackedEntityInstanceByUidEndPointCall =
                 TrackedEntityInstanceByUidEndPointCall.create(
-                        databaseAdapter(), d2.retrofit(), teiUid);
+                        databaseAdapter(), d2.retrofit(), Lists.newArrayList(teiUid));
 
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance_with_removed_data.json");

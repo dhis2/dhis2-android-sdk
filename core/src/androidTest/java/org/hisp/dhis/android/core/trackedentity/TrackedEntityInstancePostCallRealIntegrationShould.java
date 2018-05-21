@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -168,9 +170,9 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         downloadMetadata();
 
 
-        TrackedEntityInstanceByUidEndPointCall trackedEntityInstanceByUidEndPointCall =
+        Call<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
                 TrackedEntityInstanceByUidEndPointCall.create(
-                        d2.databaseAdapter(), d2.retrofit(), trackedEntityInstanceUid);
+                        d2.databaseAdapter(), d2.retrofit(), Lists.newArrayList(trackedEntityInstanceUid));
 
         trackedEntityInstanceByUidEndPointCall.call();
 
@@ -202,9 +204,9 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.wipeDB().call();
         downloadMetadata();
 
-        Response<TrackedEntityInstance> response =  d2.downloadTrackedEntityInstancesByUid(newUid).call();
+        List<TrackedEntityInstance> response =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
 
-        TrackedEntityInstance updatedTei = response.body();
+        TrackedEntityInstance updatedTei = response.get(0);
 
         assertThat(updatedTei.featureType()).isEqualTo(featureType);
     }
@@ -227,9 +229,9 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.wipeDB().call();
         downloadMetadata();
 
-        Response<TrackedEntityInstance> response =  d2.downloadTrackedEntityInstancesByUid(newUid1).call();
+        List<TrackedEntityInstance> teiList =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid1)).call();
 
-        assertThat(response.isSuccessful()).isTrue();
+        assertThat(teiList.size() == 1).isTrue();
     }
 
     //@Test
@@ -260,11 +262,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.wipeDB().call();
         downloadMetadata();
 
-        Response<TrackedEntityInstance> responseTeiA =  d2.downloadTrackedEntityInstancesByUid(teiA.uid()).call();
-        assertThat(responseTeiA.isSuccessful()).isTrue();
+        List<TrackedEntityInstance> responseTeiA =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiA.uid())).call();
+        assertThat(responseTeiA.size() == 1).isTrue();
 
-        Response<TrackedEntityInstance> responseTeiB =  d2.downloadTrackedEntityInstancesByUid(teiBUid).call();
-        assertThat(responseTeiB.isSuccessful()).isTrue();
+        List<TrackedEntityInstance> responseTeiB =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiBUid)).call();
+        assertThat(responseTeiB.size() == 1).isTrue();
 
         Set<RelationshipModel> relationships = relationShipStore.selectAll(RelationshipModel.factory);
         assertThat(relationships).contains(relationshipModel);

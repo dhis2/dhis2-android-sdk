@@ -140,9 +140,8 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(
-            Collection<String> trackedEntityInstanceUid) {
-        return TrackedEntityInstanceByUidEndPointCall.create(databaseAdapter, retrofit, trackedEntityInstanceUid);
+    public Call<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
+        return TrackedEntityInstanceByUidEndPointCall.create(databaseAdapter, retrofit, uids);
     }
 
     @NonNull

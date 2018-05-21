@@ -65,7 +65,7 @@ public abstract class Event {
     private static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
     private static final String ATTRIBUTE_CATEGORY_OPTIONS = "attributeCategoryOptions";
     private static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
-    private static final String TRACKED_ENTITY_INSTANCE = "getTrackedEntityInstancesById";
+    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
 
     static final Field<Event, String> uid = Field.create(UID);
     private static final Field<Event, String> enrollment = Field.create(ENROLLMENT_UID);

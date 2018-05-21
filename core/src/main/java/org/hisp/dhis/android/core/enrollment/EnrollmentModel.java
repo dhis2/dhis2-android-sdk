@@ -66,7 +66,7 @@ public abstract class EnrollmentModel extends BaseDataModel {
         public static final String DATE_OF_INCIDENT = "incidentDate";
         public static final String FOLLOW_UP = "followup";
         public static final String ENROLLMENT_STATUS = "status";
-        public static final String TRACKED_ENTITY_INSTANCE = "getTrackedEntityInstancesById";
+        public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
         public static final String LATITUDE = "latitude";
         public static final String LONGITUDE = "longitude";
         public static final String STATE = "state";

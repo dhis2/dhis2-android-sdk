@@ -59,7 +59,7 @@ public abstract class Enrollment {
     private static final String DATE_OF_INCIDENT = "incidentDate";
     private static final String FOLLOW_UP = "followup";
     private static final String ENROLLMENT_STATUS = "status";
-    private static final String TRACKED_ENTITY_INSTANCE = "getTrackedEntityInstancesById";
+    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
     private static final String COORDINATE = "coordinate";
     private static final String DELETED = "deleted";
     private static final String EVENTS = "events";

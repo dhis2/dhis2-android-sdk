@@ -49,7 +49,7 @@ public class EnrollmentShould {
                 "    \"created\": \"2015-03-28T12:27:50.740\",\n " +
                 "    \"orgUnit\": \"Rp268JB6Ne4\",\n " +
                 "    \"program\": \"ur1Edk5Oe2n\",\n " +
-                "    \"getTrackedEntityInstancesById\": \"D2dUWKQErfQ\",\n " +
+                "    \"trackedEntityInstance\": \"D2dUWKQErfQ\",\n " +
                 "    \"enrollment\": \"BVJQIxoM2o4\",\n " +
                 "    \"lastUpdated\": \"2015-03-28T12:27:50.748\",\n " +
                 "    \"orgUnitName\": \"Adonkia CHP\",\n " +

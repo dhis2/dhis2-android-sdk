@@ -105,7 +105,7 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
                     + ".event = Event.uid "
                     +
                     "  INNER JOIN Enrollment ON Event.enrollment = Enrollment.uid " +
-                    "  INNER JOIN TrackedEntityInstance ON Enrollment.getTrackedEntityInstancesById = "
+                    "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = "
                     + "TrackedEntityInstance.uid) "
                     +
                     "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state"

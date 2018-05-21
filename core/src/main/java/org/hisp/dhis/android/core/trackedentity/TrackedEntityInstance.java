@@ -48,7 +48,7 @@ import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
 public abstract class TrackedEntityInstance {
-    private static final String UID = "getTrackedEntityInstancesById";
+    private static final String UID = "trackedEntityInstance";
     private static final String CREATED_AT_CLIENT = "createdAtClient";
     private static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
     private static final String CREATED = "created";
@@ -65,8 +65,6 @@ public abstract class TrackedEntityInstance {
     static final Field<TrackedEntityInstance, String> uid = Field.create(UID);
     private static final Field<TrackedEntityInstance, String> created = Field.create(CREATED);
     private static final Field<TrackedEntityInstance, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<TrackedEntityInstance, String> createdAtClient = Field.create(CREATED_AT_CLIENT);
-    private static final Field<TrackedEntityInstance, String> lastUpdatedAtClient = Field.create(LAST_UPDATED_AT_CLIENT);
     private static final Field<TrackedEntityInstance, String> organisationUnit = Field.create(ORGANISATION_UNIT);
     private static final Field<TrackedEntityInstance, String> trackedEntityType = Field.create(TRACKED_ENTITY_TYPE);
     private static final Field<TrackedEntityInstance, String> coordinates = Field.create(COORDINATES);

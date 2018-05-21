@@ -2,21 +2,20 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceByUidEndPointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 
+import java.util.List;
 import java.util.Map;
 
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
-@SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-public final class TrackerDataCall extends SyncCall<Response> {
+public final class TrackerDataCall extends SyncCall<List<TrackedEntityInstance>> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
@@ -31,42 +30,23 @@ public final class TrackerDataCall extends SyncCall<Response> {
     }
 
     @Override
-    public Response call() throws Exception {
+    public List<TrackedEntityInstance> call() throws D2CallException {
         super.setExecuted();
 
-        Response response = null;
+        Map<String, TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.querySynced();
 
-        Map<String, TrackedEntityInstance> trackedEntityInstances =
-                trackedEntityInstanceStore.querySynced();
-
-        if (!trackedEntityInstances.isEmpty()) {
-            Transaction transaction = databaseAdapter.beginNewTransaction();
-            try {
-                response = trackedEntityInstanceCall(trackedEntityInstances);
-                transaction.setSuccessful();
-            } finally {
-                transaction.end();
-            }
+        try {
+            return TrackedEntityInstanceByUidEndPointCall.create(databaseAdapter,
+                    retrofit, trackedEntityInstances.keySet()).call();
+        } catch (D2CallException d2E) {
+            throw d2E;
+        } catch (Exception e) {
+            throw D2CallException
+                    .builder()
+                    .errorDescription("Unexpected exception in TrackedEntityInstanceByUidEndPointCall")
+                    .originalException(e)
+                    .isHttpError(false).build();
         }
-
-        return response;
-    }
-
-    private Response trackedEntityInstanceCall(
-            Map<String, TrackedEntityInstance> trackedEntityInstances) throws Exception {
-        Response response = null;
-
-        for (Map.Entry<String, TrackedEntityInstance> entry : trackedEntityInstances.entrySet()) {
-
-            response = TrackedEntityInstanceByUidEndPointCall.create(databaseAdapter, retrofit,
-                    entry.getValue().uid()).call();
-
-            if (!response.isSuccessful()) {
-                return response;
-            }
-        }
-
-        return response;
     }
 
     public static TrackerDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {

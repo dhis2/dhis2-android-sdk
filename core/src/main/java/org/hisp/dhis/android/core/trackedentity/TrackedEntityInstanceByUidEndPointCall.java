@@ -39,6 +39,10 @@ public class TrackedEntityInstanceByUidEndPointCall extends SyncCall<List<Tracke
     public List<TrackedEntityInstance> call() throws D2CallException {
         super.setExecuted();
 
+        if (trackedEntityInstanceUids == null) {
+            throw D2CallException.builder().isHttpError(false).errorDescription("UID list null").build();
+        }
+
         Call<Payload<TrackedEntityInstance>> call =
                 trackedEntityInstanceService.getTrackedEntityInstancesById(
                         TrackedEntityInstance.uid.in(trackedEntityInstanceUids),

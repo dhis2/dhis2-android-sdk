@@ -135,7 +135,7 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response> syncTrackerData() {
+    public Call<List<TrackedEntityInstance>> syncTrackerData() {
         return TrackerDataCall.create(databaseAdapter, retrofit);
     }
 

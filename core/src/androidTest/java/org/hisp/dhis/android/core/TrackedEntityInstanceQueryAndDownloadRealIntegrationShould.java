@@ -8,7 +8,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.hisp.dhis.android.core.user.User;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -66,21 +66,14 @@ public abstract class AbstractEndpointCall<P, M extends Model, Q extends BaseQue
             throw new IllegalArgumentException("Invalid query");
         }
 
-        Response<C> response = getCall(query, getLastUpdated()).execute();
+        String lastUpdated = data.resourceHandler().getLastUpdated(resourceType);
+        Response<C> response = getCall(query, lastUpdated).execute();
 
         if (isValidResponse(response)) {
             persist(response);
             return response;
         } else {
             throw CallException.create(response);
-        }
-    }
-
-    private String getLastUpdated() {
-        if (resourceType == null) {
-            return null;
-        } else {
-            return data.resourceHandler().getLastUpdated(resourceType);
         }
     }
 
@@ -94,10 +87,7 @@ public abstract class AbstractEndpointCall<P, M extends Model, Q extends BaseQue
 
             try {
                 handler.handleMany(pojoList, modelBuilder);
-
-                if (resourceType != null) {
-                    data.resourceHandler().handleResource(resourceType, data.serverDate());
-                }
+                data.resourceHandler().handleResource(resourceType, data.serverDate());
 
                 transaction.setSuccessful();
             } finally {

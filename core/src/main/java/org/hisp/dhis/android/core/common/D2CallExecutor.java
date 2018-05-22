@@ -28,8 +28,11 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.util.Log;
+
 import org.hisp.dhis.android.core.calls.Call;
 
+@SuppressWarnings({"PMD.PreserveStackTrace"})
 public final class D2CallExecutor {
 
     private final D2CallException.Builder exceptionBuilder = D2CallException
@@ -43,6 +46,7 @@ public final class D2CallExecutor {
             throw d2e;
 
         } catch (Exception e) {
+            Log.e(this.getClass().getSimpleName(), e.toString());
             throw exceptionBuilder.errorDescription("Unexpected error calling " + call).build();
         }
     }

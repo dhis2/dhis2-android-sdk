@@ -14,7 +14,7 @@ import java.util.List;
 
 import retrofit2.Retrofit;
 
-public class TrackedEntityInstanceListDownloadAndPersistCall extends SyncCall<List<TrackedEntityInstance>> {
+public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncCall<List<TrackedEntityInstance>> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -75,7 +77,7 @@ public final class APICallExecutor {
     }
 
     private D2CallException ioException(IOException e) {
-        e.printStackTrace();
+        Log.e(this.getClass().getSimpleName(), e.toString());
         return exceptionBuilder
                 .errorDescription("API call threw IOException")
                 .originalException(e)

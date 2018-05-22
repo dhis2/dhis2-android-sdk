@@ -16,7 +16,7 @@ import java.util.Set;
 
 import retrofit2.Retrofit;
 
-public class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
+final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;

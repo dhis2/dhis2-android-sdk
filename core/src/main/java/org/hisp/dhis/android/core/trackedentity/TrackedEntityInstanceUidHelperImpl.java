@@ -30,28 +30,31 @@ class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelp
             if (tei.organisationUnit() != null) {
                 uids.add(tei.organisationUnit());
             }
-
-            List<Enrollment> enrollments = tei.enrollments();
-            if (enrollments != null) {
-                for (Enrollment enrollment: enrollments) {
-                    if (enrollment.organisationUnit() != null) {
-                        uids.add(enrollment.organisationUnit());
-                    }
-
-                    List<Event> events = enrollment.events();
-
-                    if (events != null) {
-                        for (Event event: events) {
-                            if (event.organisationUnit() != null) {
-                                uids.add(event.organisationUnit());
-                            }
-                        }
-                    }
-                }
-            }
+            addEnrollmentsUids(tei.enrollments(), uids);
         }
         uids.removeAll(organisationUnitStore.selectUids());
         return uids;
+    }
+
+    private void addEnrollmentsUids(List<Enrollment> enrollments, Set<String> uids) {
+        if (enrollments != null) {
+            for (Enrollment enrollment: enrollments) {
+                if (enrollment.organisationUnit() != null) {
+                    uids.add(enrollment.organisationUnit());
+                }
+                addEventsUids(enrollment.events(), uids);
+            }
+        }
+    }
+
+    private void addEventsUids(List<Event> events, Set<String> uids) {
+        if (events != null) {
+            for (Event event: events) {
+                if (event.organisationUnit() != null) {
+                    uids.add(event.organisationUnit());
+                }
+            }
+        }
     }
 
     public static TrackedEntityInstanceUidHelperImpl create(DatabaseAdapter databaseAdapter) {

@@ -3,10 +3,11 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceByUidEndPointCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloadAndPersistCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 
@@ -32,21 +33,10 @@ public final class TrackerDataCall extends SyncCall<List<TrackedEntityInstance>>
     @Override
     public List<TrackedEntityInstance> call() throws D2CallException {
         super.setExecuted();
-
         Map<String, TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.querySynced();
-
-        try {
-            return TrackedEntityInstanceByUidEndPointCall.create(databaseAdapter,
-                    retrofit, trackedEntityInstances.keySet()).call();
-        } catch (D2CallException d2E) {
-            throw d2E;
-        } catch (Exception e) {
-            throw D2CallException
-                    .builder()
-                    .errorDescription("Unexpected exception in TrackedEntityInstanceByUidEndPointCall")
-                    .originalException(e)
-                    .isHttpError(false).build();
-        }
+        Call<List<TrackedEntityInstance>> call = TrackedEntityInstanceListDownloadAndPersistCall
+                .create(databaseAdapter, retrofit, trackedEntityInstances.keySet());
+        return new D2CallExecutor().executeD2Call(call);
     }
 
     public static TrackerDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {

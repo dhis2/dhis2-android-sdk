@@ -36,9 +36,9 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
-    TrackedEntityInstanceStore trackedEntityInstanceStore;
-    ResourceStore resourceStore;
-    EnrollmentStore enrollmentStore;
+    private TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private ResourceStore resourceStore;
+    private EnrollmentStore enrollmentStore;
 
     @Override
     @Before

@@ -26,43 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import android.util.Log;
 
-import java.util.Set;
+import org.hisp.dhis.android.core.calls.Call;
 
-import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
+@SuppressWarnings({"PMD.PreserveStackTrace"})
+public final class D2CallExecutor {
 
-public class UserOrganisationUnitLinkModelBuilder
-        extends ModelBuilder<OrganisationUnit, UserOrganisationUnitLinkModel> {
+    private final D2CallException.Builder exceptionBuilder = D2CallException
+            .builder()
+            .isHttpError(false);
 
-    private final UserOrganisationUnitLinkModel.Builder builder;
-    private final User user;
+    public <P> P executeD2Call(Call<P> call) throws D2CallException {
+        try {
+            return call.call();
+        } catch (D2CallException d2e) {
+            throw d2e;
 
-    public UserOrganisationUnitLinkModelBuilder(OrganisationUnitModel.Scope scope, User user) {
-        this.user = user;
-        this.builder = UserOrganisationUnitLinkModel.builder()
-                .organisationUnitScope(scope.name())
-                .user(user.uid());
-    }
-
-    @Override
-    public UserOrganisationUnitLinkModel buildModel(OrganisationUnit organisationUnit) {
-        return builder
-                .organisationUnit(organisationUnit.uid())
-                .root(isRoot(organisationUnit))
-                .build();
-    }
-
-    private boolean isRoot(OrganisationUnit organisationUnit) {
-        if (user.organisationUnits() == null) {
-            return false;
-        } else {
-            Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
-            return rootOrgUnitUids.contains(organisationUnit.uid());
+        } catch (Exception e) {
+            Log.e(this.getClass().getSimpleName(), e.toString());
+            throw exceptionBuilder.errorDescription("Unexpected error calling " + call).build();
         }
     }
 }

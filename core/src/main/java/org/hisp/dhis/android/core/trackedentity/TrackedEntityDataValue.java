@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
 import java.util.Date;
 
@@ -47,12 +48,15 @@ public abstract class TrackedEntityDataValue {
     private final static String LAST_UPDATED = "lastUpdated";
     private final static String PROVIDED_ELSEWHERE = "providedElsewhere";
 
-    public static final Field<TrackedEntityDataValue, String> dataElement = Field.create(DATA_ELEMENT);
-    public static final Field<TrackedEntityDataValue, String> storedBy = Field.create(STORED_BY);
-    public static final Field<TrackedEntityDataValue, String> value = Field.create(VALUE);
-    public static final Field<TrackedEntityDataValue, Date> created = Field.create(CREATED);
-    public static final Field<TrackedEntityDataValue, Date> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<TrackedEntityDataValue, Boolean> providedElsewhere = Field.create(PROVIDED_ELSEWHERE);
+    private static final Field<TrackedEntityDataValue, String> dataElement = Field.create(DATA_ELEMENT);
+    private static final Field<TrackedEntityDataValue, String> storedBy = Field.create(STORED_BY);
+    private static final Field<TrackedEntityDataValue, String> value = Field.create(VALUE);
+    private static final Field<TrackedEntityDataValue, Date> created = Field.create(CREATED);
+    private static final Field<TrackedEntityDataValue, Date> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<TrackedEntityDataValue, Boolean> providedElsewhere = Field.create(PROVIDED_ELSEWHERE);
+
+    public static final Fields<TrackedEntityDataValue> allFields = Fields.<TrackedEntityDataValue>builder().fields(
+            dataElement, storedBy, value, created, lastUpdated, providedElsewhere).build();
 
     @Nullable
     @JsonProperty(CREATED)

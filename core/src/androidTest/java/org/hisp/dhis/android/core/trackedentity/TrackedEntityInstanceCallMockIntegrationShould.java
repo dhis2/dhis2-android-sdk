@@ -4,8 +4,10 @@ import android.support.annotation.NonNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -57,13 +59,13 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         givenAMetadataInDatabase();
 
-        TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceEndPointCall.create(
-                        d2.databaseAdapter(), d2.retrofit(), teiUid);
+        Call<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
+                TrackedEntityInstanceListDownloadAndPersistCall.create(
+                        d2.databaseAdapter(), d2.retrofit(), Lists.newArrayList(teiUid));
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
 
-        trackedEntityInstanceEndPointCall.call();
+        trackedEntityInstanceByUidEndPointCall.call();
 
         verifyDownloadedTrackedEntityInstance("tracked_entity_instance.json", teiUid);
     }
@@ -75,22 +77,22 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         givenAMetadataInDatabase();
 
-        TrackedEntityInstanceEndPointCall trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceEndPointCall.create(
-                        d2.databaseAdapter(), d2.retrofit(), teiUid);
+        Call<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
+                TrackedEntityInstanceListDownloadAndPersistCall.create(
+                        d2.databaseAdapter(), d2.retrofit(), Lists.newArrayList(teiUid));
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
 
-        trackedEntityInstanceEndPointCall.call();
+        trackedEntityInstanceByUidEndPointCall.call();
 
-        trackedEntityInstanceEndPointCall =
-                TrackedEntityInstanceEndPointCall.create(
-                        databaseAdapter(), d2.retrofit(), teiUid);
+        trackedEntityInstanceByUidEndPointCall =
+                TrackedEntityInstanceListDownloadAndPersistCall.create(
+                        databaseAdapter(), d2.retrofit(), Lists.newArrayList(teiUid));
 
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance_with_removed_data.json");
 
-        trackedEntityInstanceEndPointCall.call();
+        trackedEntityInstanceByUidEndPointCall.call();
 
         verifyDownloadedTrackedEntityInstance("tracked_entity_instance_with_removed_data.json",
                 teiUid);

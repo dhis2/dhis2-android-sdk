@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.period.FeatureType;
@@ -61,23 +62,28 @@ public abstract class TrackedEntityInstance {
     private static final String DELETED = "deleted";
     private static final String ENROLLMENTS = "enrollments";
 
-    public static final Field<TrackedEntityInstance, String> uid = Field.create(UID);
-    public static final Field<TrackedEntityInstance, String> created = Field.create(CREATED);
-    public static final Field<TrackedEntityInstance, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<TrackedEntityInstance, String> createdAtClient = Field.create(CREATED_AT_CLIENT);
-    public static final Field<TrackedEntityInstance, String> lastUpdatedAtClient = Field.create(LAST_UPDATED_AT_CLIENT);
-    public static final Field<TrackedEntityInstance, String> organisationUnit = Field.create(ORGANISATION_UNIT);
-    public static final Field<TrackedEntityInstance, String> trackedEntityType = Field.create(TRACKED_ENTITY_TYPE);
-    public static final Field<TrackedEntityInstance, String> coordinates = Field.create(COORDINATES);
-    public static final Field<TrackedEntityInstance, FeatureType> featureType = Field.create(FEATURE_TYPE);
-    public static final Field<TrackedEntityInstance, Boolean> deleted = Field.create(DELETED);
+    static final Field<TrackedEntityInstance, String> uid = Field.create(UID);
+    private static final Field<TrackedEntityInstance, String> created = Field.create(CREATED);
+    private static final Field<TrackedEntityInstance, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<TrackedEntityInstance, String> organisationUnit = Field.create(ORGANISATION_UNIT);
+    private static final Field<TrackedEntityInstance, String> trackedEntityType = Field.create(TRACKED_ENTITY_TYPE);
+    private static final Field<TrackedEntityInstance, String> coordinates = Field.create(COORDINATES);
+    private static final Field<TrackedEntityInstance, FeatureType> featureType = Field.create(FEATURE_TYPE);
+    private static final Field<TrackedEntityInstance, Boolean> deleted = Field.create(DELETED);
 
-    public static final NestedField<TrackedEntityInstance, Enrollment> enrollment
+    private static final NestedField<TrackedEntityInstance, Enrollment> enrollment
             = NestedField.create(ENROLLMENTS);
-    public static final NestedField<TrackedEntityInstance, TrackedEntityAttributeValue> trackedEntityAttributeValues
+    private static final NestedField<TrackedEntityInstance, TrackedEntityAttributeValue> trackedEntityAttributeValues
             = NestedField.create(TRACKED_ENTITY_ATTRIBUTE_VALUES);
-    public static final NestedField<TrackedEntityInstance, Relationship> relationships
+    private static final NestedField<TrackedEntityInstance, Relationship> relationships
             = NestedField.create(RELATIONSHIPS);
+
+    public static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder().fields(
+            uid, created, lastUpdated, organisationUnit, trackedEntityType, deleted,
+            relationships.with(Relationship.allFields),
+            trackedEntityAttributeValues.with(TrackedEntityAttributeValue.allFields),
+            enrollment.with(Enrollment.allFields), coordinates, featureType
+    ).build();
 
     @JsonProperty(UID)
     public abstract String uid();

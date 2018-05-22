@@ -35,13 +35,13 @@ public interface TrackedEntityInstanceService {
             @Body TrackedEntityInstancePayload trackedEntityInstances);
 
     @GET(TRACKED_ENTITY_INSTANCES + "/{" + TRACKED_ENTITY_INSTANCE_UID + "}")
-    Call<TrackedEntityInstance> trackedEntityInstance(
+    Call<TrackedEntityInstance> getTrackedEntityInstance(
             @Path(TRACKED_ENTITY_INSTANCE_UID) String trackedEntityInstanceUid,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
             @Query(INCLUDE_DELETED) boolean includeDeleted);
 
     @GET(TRACKED_ENTITY_INSTANCES)
-    Call<Payload<TrackedEntityInstance>> getTEIs(
+    Call<Payload<TrackedEntityInstance>> getTrackedEntityInstances(
             @Query(OU) String orgUnits,
             @Query(OU_MODE) String orgUnitMode,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,

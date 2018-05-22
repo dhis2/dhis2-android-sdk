@@ -42,7 +42,7 @@ public final class APICallExecutor {
 
     public <P> List<P> executePayloadCall(Call<Payload<P>> call) throws D2CallException {
         try {
-            Response<Payload<P>>response = call.execute();
+            Response<Payload<P>> response = call.execute();
             if (response.isSuccessful()) {
                 return response.body().items();
             } else {
@@ -56,7 +56,7 @@ public final class APICallExecutor {
 
     public <P> P executeObjectCall(Call<P> call) throws D2CallException {
         try {
-            Response<P>response = call.execute();
+            Response<P> response = call.execute();
             if (response.isSuccessful()) {
                 return response.body();
             } else {

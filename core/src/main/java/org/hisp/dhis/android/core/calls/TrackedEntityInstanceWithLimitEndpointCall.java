@@ -5,19 +5,18 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.trackedentity.TeiQuery;
 import org.hisp.dhis.android.core.trackedentity.TeisEndPointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 
@@ -35,20 +34,17 @@ public final class TrackedEntityInstanceWithLimitEndpointCall extends SyncCall<L
     private final int teiLimit;
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
-    private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
     private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
     private final D2CallException.Builder httpExceptionBuilder;
 
     private TrackedEntityInstanceWithLimitEndpointCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
-            @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
             @NonNull UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
             int teiLimit,
             boolean limitByOrgUnit) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
-        this.organisationUnitStore = organisationUnitStore;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.teiLimit = teiLimit;
         this.limitByOrgUnit = limitByOrgUnit;
@@ -88,7 +84,7 @@ public final class TrackedEntityInstanceWithLimitEndpointCall extends SyncCall<L
         int numPages = (int) Math.ceil((double) teiLimit / pageSize);
 
         if (limitByOrgUnit) {
-            organisationUnitUids = organisationUnitStore.selectUids();
+            organisationUnitUids = getOrgUnitUids();
             Set<String> orgUnitWrapper = new HashSet<>();
             for (String orgUnitUid : organisationUnitUids) {
                 orgUnitWrapper.clear();
@@ -136,12 +132,27 @@ public final class TrackedEntityInstanceWithLimitEndpointCall extends SyncCall<L
         return trackedEntityInstances;
     }
 
+    private Set<String> getOrgUnitUids() {
+        Set<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll(
+                UserOrganisationUnitLinkModel.factory);
+
+        Set<String> organisationUnitUids = new HashSet<>();
+
+        for (UserOrganisationUnitLinkModel linkModel: userOrganisationUnitLinks) {
+            if (linkModel.organisationUnitScope().equals(
+                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name())) {
+                organisationUnitUids.add(linkModel.organisationUnit());
+            }
+        }
+
+        return organisationUnitUids;
+    }
+
     public static TrackedEntityInstanceWithLimitEndpointCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
                                                                     int teiLimit, boolean limitByOrgUnit) {
         return new TrackedEntityInstanceWithLimitEndpointCall(
                 databaseAdapter,
                 retrofit,
-                OrganisationUnitStore.create(databaseAdapter),
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
                 teiLimit,
                 limitByOrgUnit

@@ -40,7 +40,7 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
                 .orgUnits(orgUnits).orgUnitMode(OuMode.ACCESSIBLE);
     }
 
-    @Test
+    //@Test
     public void query_and_download_tracked_entity_instances() throws Exception {
         login();
 

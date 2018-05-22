@@ -171,7 +171,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
 
         Call<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                TrackedEntityInstanceDownloadByUidEndPointCall.create(
+                TrackedEntityInstanceListDownloadAndPersistCall.create(
                         d2.databaseAdapter(), d2.retrofit(), Lists.newArrayList(trackedEntityInstanceUid));
 
         trackedEntityInstanceByUidEndPointCall.call();

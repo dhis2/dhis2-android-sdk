@@ -40,7 +40,7 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTest
         Truth.assertThat(response.isSuccessful()).isTrue();
 
         Call<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                TrackedEntityInstanceByUidEndPointCall.create(
+                TrackedEntityInstanceDownloadByUidEndPointCall.create(
                         d2.databaseAdapter(), d2.retrofit(), Lists.newArrayList("IaxoagO9899"));
 
         List<TrackedEntityInstance> teiResponse = trackedEntityInstanceByUidEndPointCall.call();

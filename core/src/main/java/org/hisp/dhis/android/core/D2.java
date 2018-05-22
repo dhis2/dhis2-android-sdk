@@ -50,7 +50,7 @@ import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceByUidEndPointCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloadAndPersistCall;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
@@ -141,7 +141,7 @@ public final class D2 {
 
     @NonNull
     public Call<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
-        return TrackedEntityInstanceByUidEndPointCall.create(databaseAdapter, retrofit, uids);
+        return TrackedEntityInstanceListDownloadAndPersistCall.create(databaseAdapter, retrofit, uids);
     }
 
     @NonNull

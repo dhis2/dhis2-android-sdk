@@ -60,7 +60,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         givenAMetadataInDatabase();
 
         Call<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                TrackedEntityInstanceByUidEndPointCall.create(
+                TrackedEntityInstanceDownloadByUidEndPointCall.create(
                         d2.databaseAdapter(), d2.retrofit(), Lists.newArrayList(teiUid));
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
@@ -78,7 +78,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         givenAMetadataInDatabase();
 
         Call<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                TrackedEntityInstanceByUidEndPointCall.create(
+                TrackedEntityInstanceDownloadByUidEndPointCall.create(
                         d2.databaseAdapter(), d2.retrofit(), Lists.newArrayList(teiUid));
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
@@ -86,7 +86,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         trackedEntityInstanceByUidEndPointCall.call();
 
         trackedEntityInstanceByUidEndPointCall =
-                TrackedEntityInstanceByUidEndPointCall.create(
+                TrackedEntityInstanceDownloadByUidEndPointCall.create(
                         databaseAdapter(), d2.retrofit(), Lists.newArrayList(teiUid));
 
 

@@ -28,57 +28,22 @@
 
 package org.hisp.dhis.android.core.common;
 
-import java.io.IOException;
-import java.util.List;
+import org.hisp.dhis.android.core.calls.Call;
 
-import retrofit2.Call;
-import retrofit2.Response;
-
-public final class APICallExecutor {
+public final class D2CallExecutor {
 
     private final D2CallException.Builder exceptionBuilder = D2CallException
             .builder()
-            .isHttpError(true);
+            .isHttpError(false);
 
-    public <P> List<P> executePayloadCall(Call<Payload<P>> call) throws D2CallException {
+    public <P> P executeD2Call(Call<P> call) throws D2CallException {
         try {
-            Response<Payload<P>>response = call.execute();
-            if (response.isSuccessful()) {
-                return response.body().items();
-            } else {
-                throw responseException(response);
-            }
-        } catch (IOException e) {
-            throw ioException(e);
+            return call.call();
+        } catch (D2CallException d2e) {
+            throw d2e;
 
+        } catch (Exception e) {
+            throw exceptionBuilder.errorDescription("Unexpected error calling " + call).build();
         }
-    }
-
-    public <P> P executeObjectCall(Call<P> call) throws D2CallException {
-        try {
-            Response<P>response = call.execute();
-            if (response.isSuccessful()) {
-                return response.body();
-            } else {
-                throw responseException(response);
-            }
-        } catch (IOException e) {
-            throw ioException(e);
-        }
-    }
-
-    private D2CallException responseException(Response<?> response) {
-        return exceptionBuilder
-                .httpErrorCode(response.code())
-                .errorDescription("API call failed, response: " + response.toString())
-                .build();
-    }
-
-    private D2CallException ioException(IOException e) {
-        e.printStackTrace();
-        return exceptionBuilder
-                .errorDescription("API call threw IOException")
-                .originalException(e)
-                .build();
     }
 }

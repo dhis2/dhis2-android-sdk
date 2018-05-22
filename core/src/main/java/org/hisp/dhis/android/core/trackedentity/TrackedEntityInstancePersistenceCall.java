@@ -49,19 +49,23 @@ public class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
         super.setExecuted();
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
-        trackedEntityInstanceHandler.handleMany(trackedEntityInstances);
 
-        Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
+        try {
+            trackedEntityInstanceHandler.handleMany(trackedEntityInstances);
 
-        AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.query().get(0);
+            Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
 
-        SearchOrganisationUnitCall organisationUnitCall = organisationUnitCallFactory.create(
-                databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
+            AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.query().get(0);
 
-        organisationUnitCall.call();
+            SearchOrganisationUnitCall organisationUnitCall = organisationUnitCallFactory.create(
+                    databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
 
-        transaction.setSuccessful();
-        transaction.end();
+            organisationUnitCall.call();
+
+            transaction.setSuccessful();
+        } finally {
+            transaction.end();
+        }
 
         return null;
     }

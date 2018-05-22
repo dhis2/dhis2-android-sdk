@@ -81,6 +81,11 @@ public class Dhis2MockServer {
         server.enqueue(response);
     }
 
+    public void enqueueLoginResponses() throws IOException {
+        enqueueMockResponse("login.json");
+        enqueueMockResponse("system_info.json");
+    }
+
     public void enqueueMetadataResponses() throws IOException {
         enqueueMetadataResponsesWithUserAndOrgUnits(
                 "user.json",

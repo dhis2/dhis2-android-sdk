@@ -55,12 +55,12 @@ public class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
 
             Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
 
-            AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.query().get(0);
-
-            SearchOrganisationUnitCall organisationUnitCall = organisationUnitCallFactory.create(
-                    databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
-
-            organisationUnitCall.call();
+            if (!searchOrgUnitUids.isEmpty()) {
+                AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.query().get(0);
+                SearchOrganisationUnitCall organisationUnitCall = organisationUnitCallFactory.create(
+                        databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
+                organisationUnitCall.call();
+            }
 
             transaction.setSuccessful();
         } finally {

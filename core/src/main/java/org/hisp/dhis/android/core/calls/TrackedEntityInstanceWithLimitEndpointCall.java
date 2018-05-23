@@ -67,7 +67,11 @@ public final class TrackedEntityInstanceWithLimitEndpointCall extends SyncCall<L
             GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                     systemInfo.serverDate());
 
-            return trackerCall(genericCallData);
+            List<TrackedEntityInstance> trackedEntityInstances = trackerCall(genericCallData);
+
+            transaction.setSuccessful();
+
+            return trackedEntityInstances;
 
         } catch (Exception e) {
             throw httpExceptionBuilder.originalException(e).build();

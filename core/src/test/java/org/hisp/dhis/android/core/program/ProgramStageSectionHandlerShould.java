@@ -114,8 +114,8 @@ public class ProgramStageSectionHandlerShould {
                 anyString(), anyString()
         );
 
-        verify(programIndicatorHandler, times(1)).handleProgramIndicator(
-                anyString(), anyListOf(ProgramIndicator.class)
+        verify(programIndicatorHandler, times(1)).handleManyWithProgramStageSection(
+                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class), anyString()
         );
 
     }
@@ -152,8 +152,8 @@ public class ProgramStageSectionHandlerShould {
                 anyString(), anyString()
         );
 
-        verify(programIndicatorHandler, times(1)).handleProgramIndicator(
-                anyString(), anyListOf(ProgramIndicator.class)
+        verify(programIndicatorHandler, times(1)).handleManyWithProgramStageSection(
+                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class), anyString()
         );
     }
 
@@ -190,8 +190,8 @@ public class ProgramStageSectionHandlerShould {
                 anyString(), anyString()
         );
 
-        verify(programIndicatorHandler, times(1)).handleProgramIndicator(
-                anyString(), anyListOf(ProgramIndicator.class)
+        verify(programIndicatorHandler, times(1)).handleManyWithProgramStageSection(
+                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class), anyString()
         );
 
     }
@@ -216,8 +216,8 @@ public class ProgramStageSectionHandlerShould {
                 anyString(), anyString()
         );
 
-        verify(programIndicatorHandler, never()).handleProgramIndicator(
-                anyString(), anyListOf(ProgramIndicator.class)
+        verify(programIndicatorHandler, never()).handleManyWithProgramStageSection(
+                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class), anyString()
         );
     }
 
@@ -242,8 +242,8 @@ public class ProgramStageSectionHandlerShould {
                 anyString(), anyString()
         );
 
-        verify(programIndicatorHandler, never()).handleProgramIndicator(
-                anyString(), anyListOf(ProgramIndicator.class)
+        verify(programIndicatorHandler, never()).handleManyWithProgramStageSection(
+                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class), anyString()
         );
     }
 
@@ -267,8 +267,8 @@ public class ProgramStageSectionHandlerShould {
                 anyString(), anyString()
         );
 
-        verify(programIndicatorHandler, never()).handleProgramIndicator(
-                anyString(), anyListOf(ProgramIndicator.class)
+        verify(programIndicatorHandler, never()).handleManyWithProgramStageSection(
+                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class), anyString()
         );
     }
 }

@@ -36,5 +36,9 @@ public interface ObjectStore<M extends BaseModel> extends DeletableStore {
 
     void insert(@NonNull M m) throws RuntimeException;
 
-    Set<M> selectAll(CursorModelFactory<M> modelFactory) throws RuntimeException;
+    Set<M> selectAll(CursorModelFactory<M> modelFactory);
+
+    Set<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
+
+    boolean deleteById(@NonNull M m);
 }

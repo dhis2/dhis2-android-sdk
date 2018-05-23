@@ -3,10 +3,13 @@ package org.hisp.dhis.android.core;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.user.User;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import retrofit2.Response;
 
@@ -33,7 +36,8 @@ public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
         Response metadataResponse = d2.syncMetaData().call();
         assertThat(metadataResponse.isSuccessful()).isTrue();
 
-        Response teiResponse = d2.downloadTrackedEntityInstances(5).call();
-        assertThat(teiResponse.isSuccessful()).isTrue();
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.downloadTrackedEntityInstances(5,  false).call();
+        assertThat(trackedEntityInstances.size() == 5).isTrue();
     }
 }

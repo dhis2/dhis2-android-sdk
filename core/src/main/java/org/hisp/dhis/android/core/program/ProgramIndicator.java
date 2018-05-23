@@ -101,7 +101,7 @@ public abstract class ProgramIndicator extends BaseNameableObject {
 
     @Nullable
     @JsonProperty(PROGRAM)
-    public abstract Program program();
+    public abstract ObjectWithUid program();
 
     @Nullable
     @JsonProperty(LEGEND_SETS)
@@ -125,7 +125,7 @@ public abstract class ProgramIndicator extends BaseNameableObject {
             @JsonProperty(FILTER) String filter,
             @JsonProperty(DECIMALS) Integer decimals,
             @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(PROGRAM) Program program,
+            @JsonProperty(PROGRAM) ObjectWithUid program,
             @JsonProperty(LEGEND_SETS) List<LegendSet> legendSets
     ) {
         return new AutoValue_ProgramIndicator(

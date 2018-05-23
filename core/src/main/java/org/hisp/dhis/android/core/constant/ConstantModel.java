@@ -29,12 +29,18 @@
 package org.hisp.dhis.android.core.constant;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class ConstantModel extends BaseIdentifiableObjectModel {
@@ -43,6 +49,11 @@ public abstract class ConstantModel extends BaseIdentifiableObjectModel {
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String VALUE = "value";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), VALUE);
+        }
     }
 
     public static ConstantModel create(Cursor cursor) {
@@ -53,10 +64,23 @@ public abstract class ConstantModel extends BaseIdentifiableObjectModel {
         return new $$AutoValue_ConstantModel.Builder();
     }
 
+    public static final CursorModelFactory<ConstantModel> factory
+            = new CursorModelFactory<ConstantModel>() {
+        @Override
+        public ConstantModel fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
 
     @Nullable
     @ColumnName(Columns.VALUE)
     public abstract String value();
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 7, value());
+    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {

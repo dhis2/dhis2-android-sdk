@@ -39,24 +39,27 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramModel> {
 
     private final ProgramRuleVariableHandler programRuleVariableHandler;
-    private final ProgramIndicatorHandler programIndicatorHandler;
+    private final GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler;
     private final ProgramRuleHandler programRuleHandler;
     private final GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
             programTrackedEntityAttributeHandler;
+    private final GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     ProgramHandler(IdentifiableObjectStore<ProgramModel> programStore,
                    ProgramRuleVariableHandler programRuleVariableHandler,
-                   ProgramIndicatorHandler programIndicatorHandler,
+                   GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler,
                    ProgramRuleHandler programRuleHandler,
                    GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
                            programTrackedEntityAttributeHandler,
+                   GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler,
                    GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
         this.programRuleHandler = programRuleHandler;
         this.programTrackedEntityAttributeHandler = programTrackedEntityAttributeHandler;
+        this.programSectionHandler = programSectionHandler;
         this.styleHandler = styleHandler;
     }
 
@@ -67,6 +70,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
                 ProgramIndicatorHandler.create(databaseAdapter),
                 ProgramRuleHandler.create(databaseAdapter),
                 ProgramTrackedEntityAttributeHandler.create(databaseAdapter),
+                ProgramSectionHandler.create(databaseAdapter),
                 ObjectStyleHandler.create(databaseAdapter)
         );
     }
@@ -75,9 +79,10 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
     protected void afterObjectPersisted(Program program) {
         programTrackedEntityAttributeHandler.handleMany(program.programTrackedEntityAttributes(),
                 new ProgramTrackedEntityAttributeModelBuilder());
-        programIndicatorHandler.handleProgramIndicator(null, program.programIndicators());
+        programIndicatorHandler.handleMany(program.programIndicators(), new ProgramIndicatorModelBuilder());
         programRuleHandler.handleProgramRules(program.programRules());
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
+        programSectionHandler.handleMany(program.programSections(), new ProgramSectionModelBuilder());
         styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(), ProgramModel.TABLE));
     }
 }

@@ -56,8 +56,6 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import retrofit2.Response;
 
@@ -117,10 +115,6 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        Set<String> uids = new HashSet<>();
-        uids.add("uid1");
-        uids.add("uids2");
-
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, "nM3u9s5a52V");
         database().insert(CategoryComboModel.TABLE, null, categoryCombo);
 
@@ -132,7 +126,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
         programEndpointCall = ProgramEndpointCall.FACTORY.create(
-                GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date()), uids);
+                GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date()));
     }
 
     @Test

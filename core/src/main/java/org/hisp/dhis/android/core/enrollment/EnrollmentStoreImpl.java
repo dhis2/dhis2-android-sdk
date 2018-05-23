@@ -122,7 +122,8 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                     "  Enrollment.status, " +
                     "  Enrollment.trackedEntityInstance, " +
                     "  Enrollment.latitude, " +
-                    "  Enrollment.longitude ";
+                    "  Enrollment.longitude, " +
+                    "  Enrollment.state ";
 
     private static final String QUERY_STATEMENT_TO_POST = "SELECT " +
             FIELDS +
@@ -138,6 +139,10 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
     private static final String QUERY_STATEMENT = "SELECT " +
             FIELDS +
             " FROM Enrollment;";
+
+    private static final String QUERY_BY_UID = "SELECT " +
+            FIELDS +
+            " FROM Enrollment WHERE Enrollment.uid = '?'";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -252,6 +257,25 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         return mapFromCursor(cursor);
     }
 
+    @Override
+    public EnrollmentModel queryByUid(String enrollmentUid) {
+        String queryStatement = QUERY_BY_UID.replace("?", enrollmentUid);
+
+        Cursor cursor = databaseAdapter.query(queryStatement);
+
+        EnrollmentModel object = null;
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                object = EnrollmentModel.create(cursor);
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return object;
+    }
+
     private Map<String, List<Enrollment>> mapFromCursor(Cursor cursor) {
         Map<String, List<Enrollment>> enrollmentMap = new HashMap<>();
 
@@ -284,6 +308,7 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
                             : cursor.getString(11);
                     String latitude = cursor.getString(12) == null ? null : cursor.getString(12);
                     String longitude = cursor.getString(13) == null ? null : cursor.getString(13);
+                    // "state" field is ignored
 
                     if (enrollmentMap.get(trackedEntityInstance) == null) {
                         enrollmentMap.put(trackedEntityInstance, new ArrayList<Enrollment>());

@@ -50,14 +50,6 @@ public abstract class BaseModel implements Model, WhereStatementBinder {
         public String[] whereUpdate() {
             return new String[] {};
         }
-
-        public String[] whereDelete() {
-            return whereUpdate();
-        }
-
-        public String[] whereSelect() {
-            return whereUpdate();
-        }
     }
 
     @NonNull
@@ -80,11 +72,6 @@ public abstract class BaseModel implements Model, WhereStatementBinder {
 
     @Override
     public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        // Intentional empty method.
-    }
-
-    @Override
-    public void bindToDeleteWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
         // Intentional empty method.
     }
 }

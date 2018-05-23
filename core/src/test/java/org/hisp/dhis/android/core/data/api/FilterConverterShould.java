@@ -78,7 +78,7 @@ public class FilterConverterShould {
         TestService service = retrofit.create(TestService.class);
         service.test(
                 InFilter.create(Field.create("id"), values),
-                GtFilter.create(Field.create("lastUpdated"), "updatedDate")
+                SingleValueFilter.gt(Field.create("lastUpdated"), "updatedDate")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -105,7 +105,7 @@ public class FilterConverterShould {
         TestService service = retrofit.create(TestService.class);
         service.test(
                 InFilter.create(Field.create("id"), values),
-                GtFilter.create(Field.create("lastUpdated"), "updatedDate")
+                SingleValueFilter.gt(Field.create("lastUpdated"), "updatedDate")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -137,7 +137,7 @@ public class FilterConverterShould {
                         Field.create("name"), Field.create("displayName")
                 ).build(),
                 InFilter.create(Field.create("id"), values),
-                GtFilter.create(Field.create("lastUpdated"), "updatedDate")
+                SingleValueFilter.gt(Field.create("lastUpdated"), "updatedDate")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -165,7 +165,7 @@ public class FilterConverterShould {
         TestService service = retrofit.create(TestService.class);
         service.test(
                 InFilter.create(Field.create("id"), values),
-                GtFilter.create(Field.create("lastUpdated"), null)
+                SingleValueFilter.gt(Field.create("lastUpdated"), null)
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -192,7 +192,7 @@ public class FilterConverterShould {
         TestService service = retrofit.create(TestService.class);
         service.test(
                 InFilter.create(Field.create("id"), values),
-                GtFilter.create(Field.create("lastUpdated"), "")
+                SingleValueFilter.gt(Field.create("lastUpdated"), "")
         ).execute();
 
         RecordedRequest request = server.takeRequest();
@@ -217,7 +217,7 @@ public class FilterConverterShould {
         TestService service = retrofit.create(TestService.class);
         service.test(
                 InFilter.create(Field.create("id"), values),
-                GtFilter.create(Field.create("lastUpdated"), "")
+                SingleValueFilter.gt(Field.create("lastUpdated"), "")
         ).execute();
 
         RecordedRequest request = server.takeRequest();

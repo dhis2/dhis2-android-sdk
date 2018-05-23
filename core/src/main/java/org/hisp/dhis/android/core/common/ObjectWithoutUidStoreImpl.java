@@ -28,28 +28,23 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 public class ObjectWithoutUidStoreImpl<M extends BaseModel>
         extends ObjectStoreImpl<M> implements ObjectWithoutUidStore<M> {
-    protected final SQLiteStatement updateWhereStatement;
-    protected final SQLiteStatement deleteWhereStatement;
+    private final SQLiteStatement updateWhereStatement;
 
-    ObjectWithoutUidStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
-                              SQLiteStatement updateWhereStatement, SQLiteStatement deleteWhereStatement,
+    public ObjectWithoutUidStoreImpl(DatabaseAdapter databaseAdapter,
+                              SQLiteStatement insertStatement,
+                              SQLiteStatement updateWhereStatement,
                               SQLStatementBuilder builder) {
         super(databaseAdapter, insertStatement, builder);
         this.updateWhereStatement = updateWhereStatement;
-        this.deleteWhereStatement = deleteWhereStatement;
     }
 
     @Override
@@ -67,36 +62,5 @@ public class ObjectWithoutUidStoreImpl<M extends BaseModel>
         } catch (Exception e){
             insert(m);
         }
-    }
-
-    @Override
-    public void deleteWhere(@NonNull M m) throws RuntimeException {
-        isNull(m);
-        m.bindToDeleteWhereStatement(deleteWhereStatement);
-        executeUpdateDelete(deleteWhereStatement);
-    }
-
-    @Override
-    public List<M> selectWhere(@NonNull CursorModelFactory<M> modelFactory, @NonNull String... selectionArgs)
-            throws RuntimeException {
-        Cursor cursor = databaseAdapter.query(builder.selectWhere(), selectionArgs);
-        return listObjectsFromCursor(cursor, modelFactory);
-    }
-
-    private List<M> listObjectsFromCursor(Cursor cursor, CursorModelFactory<M> modelFactory) {
-        List<M> objects = new ArrayList<>(cursor.getCount());
-
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                do {
-                    objects.add(modelFactory.fromCursor(cursor));
-                }
-                while (cursor.moveToNext());
-            }
-        } finally {
-            cursor.close();
-        }
-        return objects;
     }
 }

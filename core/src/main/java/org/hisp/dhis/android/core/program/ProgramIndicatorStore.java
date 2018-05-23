@@ -28,30 +28,16 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class ProgramIndicatorStore {
 
-import java.util.Date;
+    private ProgramIndicatorStore() {}
 
-public interface ProgramIndicatorStore extends DeletableStore {
-    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-                @Nullable String shortName, @Nullable String displayShortName,
-                @Nullable String description, @Nullable String displayDescription,
-                @Nullable Boolean displayInForm, @Nullable String expression,
-                @Nullable String dimensionItem, @Nullable String filter,
-                @Nullable Integer decimals, @Nullable String program);
-
-    int update(@NonNull String uid, @Nullable String code, @NonNull String name,
-               @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-               @Nullable String shortName, @Nullable String displayShortName,
-               @Nullable String description, @Nullable String displayDescription,
-               @Nullable Boolean displayInForm, @Nullable String expression,
-               @Nullable String dimensionItem, @Nullable String filter,
-               @Nullable Integer decimals, @Nullable String program, @NonNull String whereProgramIndicatorUid
-    );
-
-    int delete(String uid);
+    public static IdentifiableObjectStore<ProgramIndicatorModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.identifiableStore(databaseAdapter,
+                ProgramIndicatorModel.TABLE, new ProgramIndicatorModel.Columns().all());
+    }
 }

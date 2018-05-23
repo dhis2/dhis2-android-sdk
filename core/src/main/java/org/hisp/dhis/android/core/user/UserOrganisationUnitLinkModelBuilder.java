@@ -32,12 +32,18 @@ import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 
+import java.util.Set;
+
+import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
+
 public class UserOrganisationUnitLinkModelBuilder
         extends ModelBuilder<OrganisationUnit, UserOrganisationUnitLinkModel> {
 
     private final UserOrganisationUnitLinkModel.Builder builder;
+    private final User user;
 
     public UserOrganisationUnitLinkModelBuilder(OrganisationUnitModel.Scope scope, User user) {
+        this.user = user;
         this.builder = UserOrganisationUnitLinkModel.builder()
                 .organisationUnitScope(scope.name())
                 .user(user.uid());
@@ -47,6 +53,16 @@ public class UserOrganisationUnitLinkModelBuilder
     public UserOrganisationUnitLinkModel buildModel(OrganisationUnit organisationUnit) {
         return builder
                 .organisationUnit(organisationUnit.uid())
+                .root(isRoot(organisationUnit))
                 .build();
+    }
+
+    private boolean isRoot(OrganisationUnit organisationUnit) {
+        if (user.organisationUnits() == null) {
+            return false;
+        } else {
+            Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
+            return rootOrgUnitUids.contains(organisationUnit.uid());
+        }
     }
 }

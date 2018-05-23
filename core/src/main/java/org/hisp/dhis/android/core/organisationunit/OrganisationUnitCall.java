@@ -111,7 +111,7 @@ public class OrganisationUnitCall extends SyncCall<Response<Payload<Organisation
             @NonNull String uid,
             @Nullable Filter<OrganisationUnit, String> lastUpdatedFilter) throws IOException {
 
-        return organisationUnitService.getOrganisationUnits(uid, OrganisationUnit.allFields,
+        return organisationUnitService.getOrganisationUnitWithDescendants(uid, OrganisationUnit.allFields,
                 lastUpdatedFilter, true, false).execute();
     }
 

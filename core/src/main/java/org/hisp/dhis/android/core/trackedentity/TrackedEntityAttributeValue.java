@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
 import java.util.Date;
 
@@ -45,12 +46,17 @@ public abstract class TrackedEntityAttributeValue {
     private final static String CREATED = "created";
     private final static String LAST_UPDATED = "lastUpdated";
 
-    public static final Field<TrackedEntityAttributeValue, String> trackedEntityAttribute =
+    private static final Field<TrackedEntityAttributeValue, String> trackedEntityAttribute =
             Field.create(ATTRIBUTE);
-    public static final Field<TrackedEntityAttributeValue, String> value = Field.create(VALUE);
-    public static final Field<TrackedEntityAttributeValue, Date> created = Field.create(CREATED);
-    public static final Field<TrackedEntityAttributeValue, Date> lastUpdated = Field.create(
+    private static final Field<TrackedEntityAttributeValue, String> value = Field.create(VALUE);
+    private static final Field<TrackedEntityAttributeValue, Date> created = Field.create(CREATED);
+    private static final Field<TrackedEntityAttributeValue, Date> lastUpdated = Field.create(
             LAST_UPDATED);
+
+    public static final Fields<TrackedEntityAttributeValue> allFields = Fields
+            .<TrackedEntityAttributeValue>builder().fields(
+            trackedEntityAttribute, value, created, lastUpdated
+    ).build();
 
     @Nullable
     @JsonProperty(ATTRIBUTE)

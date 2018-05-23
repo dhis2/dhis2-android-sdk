@@ -27,8 +27,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import retrofit2.Response;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -38,9 +36,9 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
-    TrackedEntityInstanceStore trackedEntityInstanceStore;
-    ResourceStore resourceStore;
-    EnrollmentStore enrollmentStore;
+    private TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private ResourceStore resourceStore;
+    private EnrollmentStore enrollmentStore;
 
     @Override
     @Before
@@ -70,9 +68,9 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
         givenAMetadataInDatabase();
 
-        Response response = d2.syncTrackerData().call();
+        d2.syncTrackerData().call();
 
-        verifyHaveNotSynchronized(response, Collections.EMPTY_LIST);
+        verifyHaveNotSynchronized(Collections.EMPTY_LIST);
     }
 
     @Test
@@ -84,9 +82,9 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
         TrackedEntityInstance toPostTrackedEntityInstance =
                 givenAToPostTrackedEntityInstanceInDatabase();
 
-        Response response = d2.syncTrackerData().call();
+        d2.syncTrackerData().call();
 
-        verifyHaveNotSynchronized(response, Arrays.asList(toPostTrackedEntityInstance));
+        verifyHaveNotSynchronized(Arrays.asList(toPostTrackedEntityInstance));
     }
 
     @Test
@@ -102,10 +100,9 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
 
-        Response response = d2.syncTrackerData().call();
+        d2.syncTrackerData().call();
 
-        verifyHaveSynchronized(response,
-                Arrays.asList(syncedTrackedEntityInstance),
+        verifyHaveSynchronized(Arrays.asList(syncedTrackedEntityInstance),
                 Arrays.asList(toPostTrackedEntityInstance));
     }
 
@@ -114,20 +111,18 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
             throws Exception {
         givenAMetadataInDatabase();
 
-        List<TrackedEntityInstance> trackedEntityInstances =
-                givenASyncedTrackedEntityInstancesInDatabase();
+        List<TrackedEntityInstance> trackedEntityInstances = givenASyncedTrackedEntityInstancesInDatabase();
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance_2.json");
 
-        Response response = d2.syncTrackerData().call();
+        d2.syncTrackerData().call();
 
-        verifyHaveSynchronized(response, trackedEntityInstances, Collections.EMPTY_LIST);
+        verifyHaveSynchronized(trackedEntityInstances, Collections.EMPTY_LIST);
     }
 
-    private void verifyHaveSynchronized(Response response,
-            List<TrackedEntityInstance> syncedExpected,
-            List<TrackedEntityInstance> toPostExpected) {
+    private void verifyHaveSynchronized(List<TrackedEntityInstance> syncedExpected,
+                                        List<TrackedEntityInstance> toPostExpected) {
 
         Map<String, TrackedEntityInstance> toPostInDatabase =
                 trackedEntityInstanceStore.queryToPost();
@@ -140,7 +135,6 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
         Map<String, List<Enrollment>> enrollmentsMap = enrollmentStore.queryAll();
 
-        assertThat(response.isSuccessful(), is(true));
         assertThat(syncedInDatabase.size(), is(syncedExpected.size()));
         assertThat(lastUpdated, is(nullValue()));
         assertThat(toPostInDatabase.size(), is(toPostExpected.size()));
@@ -156,7 +150,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
         }
     }
 
-    private void verifyHaveNotSynchronized(Response response,
+    private void verifyHaveNotSynchronized(
             List<TrackedEntityInstance> expectedToPost) {
 
         Map<String, TrackedEntityInstance> inDatabaseToPost =
@@ -168,7 +162,6 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
         String lastUpdated = resourceStore.getLastUpdated(
                 ResourceModel.Type.TRACKED_ENTITY_INSTANCE);
 
-        assertThat(response, is(nullValue()));
         assertThat(inDatabaseSynced.size(), is(0));
         assertThat(lastUpdated, is(nullValue()));
 

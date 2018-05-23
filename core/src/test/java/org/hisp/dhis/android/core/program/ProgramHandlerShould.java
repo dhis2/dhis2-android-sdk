@@ -61,7 +61,7 @@ public class ProgramHandlerShould {
     private ProgramRuleVariableHandler programRuleVariableHandler;
 
     @Mock
-    private ProgramIndicatorHandler programIndicatorHandler;
+    private GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler;
 
     @Mock
     private ProgramRuleHandler programRuleHandler;
@@ -69,6 +69,9 @@ public class ProgramHandlerShould {
     @Mock
     private GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
             programTrackedEntityAttributeHandler;
+
+    @Mock
+    private GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler;
 
     @Mock
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
@@ -103,6 +106,9 @@ public class ProgramHandlerShould {
     @Mock
     private List<ProgramRuleVariable> programRuleVariables;
 
+    @Mock
+    private List<ProgramSection> programSections;
+
     // object to test
     private ProgramHandler programHandler;
 
@@ -112,7 +118,7 @@ public class ProgramHandlerShould {
 
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler, programIndicatorHandler, programRuleHandler,
-                programTrackedEntityAttributeHandler, styleHandler);
+                programTrackedEntityAttributeHandler, programSectionHandler, styleHandler);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.code()).thenReturn("test_program_code");
@@ -148,6 +154,7 @@ public class ProgramHandlerShould {
         when(program.programIndicators()).thenReturn(programIndicators);
         when(program.programRules()).thenReturn(programRules);
         when(program.programRuleVariables()).thenReturn(programRuleVariables);
+        when(program.programSections()).thenReturn(programSections);
         when(program.access()).thenReturn(access);
         when(access.data()).thenReturn(dataAccess);
         when(dataAccess.read()).thenReturn(true);
@@ -164,7 +171,8 @@ public class ProgramHandlerShould {
     @Test
     public void call_program_indicator_handler() throws Exception {
         programHandler.handle(program, new ProgramModelBuilder());
-        verify(programIndicatorHandler).handleProgramIndicator(null, programIndicators);
+        verify(programIndicatorHandler).handleMany(anyListOf(ProgramIndicator.class),
+                any(ProgramIndicatorModelBuilder.class));
     }
 
     @Test
@@ -183,5 +191,12 @@ public class ProgramHandlerShould {
     public void call_style_handler() throws Exception {
         programHandler.handle(program, new ProgramModelBuilder());
         verify(styleHandler).handle(same(program.style()), any(ObjectStyleModelBuilder.class));
+    }
+
+    @Test
+    public void call_program_section_handler() throws Exception {
+        programHandler.handle(program, new ProgramModelBuilder());
+        verify(programSectionHandler).handleMany(anyListOf(ProgramSection.class),
+                any(ProgramSectionModelBuilder.class));
     }
 }

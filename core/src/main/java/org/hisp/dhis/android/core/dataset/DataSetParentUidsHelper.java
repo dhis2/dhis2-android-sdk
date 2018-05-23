@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.indicator.Indicator;
 
@@ -38,18 +37,6 @@ import java.util.Set;
 final class DataSetParentUidsHelper {
 
     private DataSetParentUidsHelper() {}
-
-    static Set<String> getAssignedDataSetUids(List<DataSet> dataSetsWithAccess) {
-        Set<String> dataSetUids = new HashSet<>();
-        for (DataSet dataSet: dataSetsWithAccess) {
-            Access access = dataSet.access();
-            if (access != null && access.data().read()) {
-                dataSetUids.add(dataSet.uid());
-            }
-        }
-
-        return dataSetUids;
-    }
 
     static Set<String> getIndicatorUids(List<DataSet> dataSets) {
         Set<String> uids = new HashSet<>();

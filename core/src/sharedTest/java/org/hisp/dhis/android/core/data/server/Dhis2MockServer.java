@@ -81,6 +81,11 @@ public class Dhis2MockServer {
         server.enqueue(response);
     }
 
+    public void enqueueLoginResponses() throws IOException {
+        enqueueMockResponse("login.json");
+        enqueueMockResponse("system_info.json");
+    }
+
     public void enqueueMetadataResponses() throws IOException {
         enqueueMetadataResponsesWithUserAndOrgUnits(
                 "user.json",
@@ -100,14 +105,12 @@ public class Dhis2MockServer {
         enqueueMockResponse(userPath);
         enqueueMockResponse("categories.json");
         enqueueMockResponse("category_combos.json");
-        enqueueMockResponse("programs_with_access.json");
         enqueueMockResponse("programs.json");
         enqueueMockResponse("program_stages.json");
         enqueueMockResponse("tracked_entities.json");
         enqueueMockResponse("relationship_types.json");
         enqueueMockResponse("option_sets.json");
         enqueueMockResponse(orgUnitPath);
-        enqueueMockResponse("data_sets_with_access.json");
         enqueueMockResponse("data_sets.json");
         enqueueMockResponse("data_elements.json");
         enqueueMockResponse("indicators.json");

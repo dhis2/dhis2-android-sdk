@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.event;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -46,6 +43,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals",
@@ -127,6 +127,7 @@ public class EventStoreImpl implements EventStore {
             "  Event.eventDate, " +
             "  Event.completedDate, " +
             "  Event.dueDate, "  +
+            "  Event.state, " +
             "  Event.attributeCategoryOptions, "  +
             "  Event.attributeOptionCombo, "  +
             "  Event.trackedEntityInstance ";
@@ -148,6 +149,14 @@ public class EventStoreImpl implements EventStore {
 
     private static final String QUERY_SINGLE_EVENTS_TO_POST =
             QUERY_SINGLE_EVENTS + "  AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE')";
+
+    private static final String QUERY_BY_UID = "SELECT " +
+            FIELDS +
+            " FROM Event WHERE Event.uid = '?'";
+
+    private static final String QUERY_BY_ENROLLMENT_AND_PROGRAM_STAGE = "SELECT " +
+            FIELDS +
+            " FROM Event WHERE Event.enrollment = '_enrollment' AND Event.programStage = '_programStage'";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -310,6 +319,46 @@ public class EventStoreImpl implements EventStore {
         return mapEventsFromCursor(cursor);
     }
 
+    @Override
+    public EventModel queryByUid(String eventUid) {
+        String queryStatement = QUERY_BY_UID.replace("?", eventUid);
+
+        Cursor cursor = databaseAdapter.query(queryStatement);
+
+        EventModel object = null;
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                object = EventModel.create(cursor);
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return object;
+    }
+
+    @Override
+    public EventModel queryByEnrollmentAndProgramStage(String enrollmentUid, String programStageUid) {
+        String queryStatement = QUERY_BY_ENROLLMENT_AND_PROGRAM_STAGE;
+        queryStatement = queryStatement.replace("_enrollment", enrollmentUid);
+        queryStatement = queryStatement.replace("_programStage", programStageUid);
+
+        Cursor cursor = databaseAdapter.query(queryStatement);
+
+        EventModel object = null;
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                object = EventModel.create(cursor);
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return object;
+    }
+
     private List<Event> mapEventsFromCursor(Cursor cursor) {
         List<Event> events = new ArrayList<>(cursor.getCount());
 
@@ -350,9 +399,10 @@ public class EventStoreImpl implements EventStore {
         Date eventDate = cursor.getString(12) == null ? null : parse(cursor.getString(12));
         Date completedDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
         Date dueDate = cursor.getString(14) == null ? null : parse(cursor.getString(14));
-        String categoryCombo = cursor.getString(15) == null ? null : cursor.getString(15);
-        String optionCombo = cursor.getString(16) == null ? null : cursor.getString(16);
-        String trackedEntityInstance = cursor.getString(17) == null ? null : cursor.getString(17);
+        // "state" field is ignored
+        String categoryCombo = cursor.getString(16) == null ? null : cursor.getString(16);
+        String optionCombo = cursor.getString(17) == null ? null : cursor.getString(17);
+        String trackedEntityInstance = cursor.getString(18) == null ? null : cursor.getString(18);
 
         Coordinates coordinates = null;
 

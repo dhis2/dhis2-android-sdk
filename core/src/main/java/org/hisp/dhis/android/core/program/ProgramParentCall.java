@@ -45,27 +45,24 @@ import java.util.Set;
 
 import retrofit2.Response;
 
-public class ProgramParentCall extends TransactionalCall {
+public class ProgramParentCall extends TransactionalCall<Payload<Program>> {
 
     private final GenericCallData genericCallData;
-    private final UidsCallFactory<Program> programCallFactory;
-    private final Set<String> programUids;
+    private final SimpleCallFactory<Payload<Program>> programCallFactory;
     private final UidsCallFactory<ProgramStage> programStageCallFactory;
     private final UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory;
     private final SimpleCallFactory<Payload<RelationshipType>> relationshipTypeCallFactory;
     private final UidsCallFactory<OptionSet> optionSetCallFactory;
 
     ProgramParentCall(GenericCallData genericCallData,
-                      UidsCallFactory<Program> programCallFactory,
+                      SimpleCallFactory<Payload<Program>> programCallFactory,
                       UidsCallFactory<ProgramStage> programStageCallFactory,
                       UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
                       SimpleCallFactory<Payload<RelationshipType>> relationshipTypeCallFactory,
-                      UidsCallFactory<OptionSet> optionSetCallFactory,
-                      Set<String> programUids) {
+                      UidsCallFactory<OptionSet> optionSetCallFactory) {
         super(genericCallData.databaseAdapter());
         this.genericCallData = genericCallData;
         this.programCallFactory = programCallFactory;
-        this.programUids = programUids;
         this.programStageCallFactory = programStageCallFactory;
         this.trackedEntityTypeCallFactory = trackedEntityTypeCallFactory;
         this.relationshipTypeCallFactory = relationshipTypeCallFactory;
@@ -73,8 +70,8 @@ public class ProgramParentCall extends TransactionalCall {
     }
 
     @Override
-    public Response callBody() throws Exception {
-        Call<Response<Payload<Program>>> programEndpointCall = programCallFactory.create(genericCallData, programUids);
+    public Response<Payload<Program>> callBody() throws Exception {
+        Call<Response<Payload<Program>>> programEndpointCall = programCallFactory.create(genericCallData);
         Response<Payload<Program>> programResponse = programEndpointCall.call();
 
         List<Program> programs = programResponse.body().items();
@@ -89,24 +86,21 @@ public class ProgramParentCall extends TransactionalCall {
 
         List<ProgramStage> programStages = programStageResponse.body().items();
         Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
-        return optionSetCallFactory.create(genericCallData, optionSetUids).call();
+        optionSetCallFactory.create(genericCallData, optionSetUids).call();
+
+        return programResponse;
     }
 
-    public interface Factory {
-        Call<Response> create(GenericCallData genericCallData, Set<String> uids);
-    }
-
-    public static final Factory FACTORY = new Factory() {
+    public static final SimpleCallFactory<Payload<Program>> FACTORY = new SimpleCallFactory<Payload<Program>>() {
         @Override
-        public Call<Response> create(GenericCallData genericCallData, Set<String> programUids) {
+        public Call<Response<Payload<Program>>> create(GenericCallData genericCallData) {
             return new ProgramParentCall(
                     genericCallData,
                     ProgramEndpointCall.FACTORY,
                     ProgramStageEndpointCall.FACTORY,
                     TrackedEntityTypeCall.FACTORY,
                     RelationshipTypeEndpointCall.FACTORY,
-                    OptionSetCall.FACTORY,
-                    programUids);
+                    OptionSetCall.FACTORY);
         }
     };
 }

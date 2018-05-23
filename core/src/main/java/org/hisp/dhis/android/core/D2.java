@@ -39,8 +39,8 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
+import org.hisp.dhis.android.core.calls.TrackedEntityInstanceWithLimitEndpointCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
-import org.hisp.dhis.android.core.calls.TrackerEntitiesDataCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
@@ -50,14 +50,16 @@ import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEndPointCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloadAndPersistCall;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
 import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
+import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -133,19 +135,18 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response> syncTrackerData() {
+    public Call<List<TrackedEntityInstance>> syncTrackerData() {
         return TrackerDataCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
-    public Call<Response<TrackedEntityInstance>>
-    downloadTrackedEntityInstance(String trackedEntityInstanceUid) {
-        return TrackedEntityInstanceEndPointCall.create(databaseAdapter, retrofit, trackedEntityInstanceUid);
+    public Call<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
+        return TrackedEntityInstanceListDownloadAndPersistCall.create(databaseAdapter, retrofit, uids);
     }
 
     @NonNull
-    public Call<Response> downloadTrackedEntityInstances(int teiLimitByOrgUnit) {
-        return TrackerEntitiesDataCall.create(databaseAdapter, retrofit, teiLimitByOrgUnit);
+    public Call<List<TrackedEntityInstance>> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
+        return TrackedEntityInstanceWithLimitEndpointCall.create(databaseAdapter, retrofit, teiLimit, limitByOrgUnit);
     }
 
     @NonNull
@@ -166,6 +167,11 @@ public final class D2 {
 
     public Call<Response<WebResponse>> syncSingleEvents() {
         return EventPostCall.create(databaseAdapter, retrofit);
+    }
+
+    public String evaluateProgramIndicator(String enrollmentUid, String eventUid, String programIndicatorUid) {
+        return ProgramIndicatorEngine.create(databaseAdapter)
+                .getProgramIndicatorValue(enrollmentUid, eventUid, programIndicatorUid);
     }
 
     public static class Builder {

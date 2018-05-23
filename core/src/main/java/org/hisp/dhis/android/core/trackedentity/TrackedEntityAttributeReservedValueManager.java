@@ -29,14 +29,13 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 
-import java.util.List;
+import java.util.Date;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import retrofit2.Response;
@@ -44,16 +43,22 @@ import retrofit2.Retrofit;
 
 public final class TrackedEntityAttributeReservedValueManager {
 
-    private final ObjectWithoutUidStore<TrackedEntityAttributeReservedValueModel> store;
+    private static final int MIN_TO_TRY_FILL = 50;
+    private static final int FILL_UP_TO = 100;
+
+    private final TrackedEntityAttributeReservedValueStoreInterface store;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
-    private TrackedEntityAttributeReservedValueManager(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
+    TrackedEntityAttributeReservedValueManager(DatabaseAdapter databaseAdapter,
+                                               Retrofit retrofit,
+                                               TrackedEntityAttributeReservedValueStoreInterface store,
+                                               IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
-        this.store = TrackedEntityAttributeReservedValueStore.create(databaseAdapter);
-        this.organisationUnitStore = OrganisationUnitStore.create(databaseAdapter);
+        this.store = store;
+        this.organisationUnitStore = organisationUnitStore;
     }
 
     @SuppressFBWarnings("DE_MIGHT_IGNORE")
@@ -65,46 +70,28 @@ public final class TrackedEntityAttributeReservedValueManager {
             // Synchronization was not successful.
         }
 
-        List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attribute,
-                organisationUnitUid);
+        TrackedEntityAttributeReservedValueModel reservedValue = store.popOne(attribute, organisationUnitUid);
 
-        if (reservedValues.isEmpty()) {
+        if (reservedValue == null) {
             throw new RuntimeException("There are no reserved values.");
         } else {
-            TrackedEntityAttributeReservedValueModel reservedValue = reservedValues.get(0);
-            deleteReservedValue(reservedValue);
             return reservedValue.value();
         }
     }
 
-    List<TrackedEntityAttributeReservedValueModel> getReservedValues(String attributeUid, String orgUnitUid) {
-        return this.store.selectWhere(TrackedEntityAttributeReservedValueModel.factory, attributeUid, orgUnitUid);
-    }
-
-    private void deleteReservedValue(TrackedEntityAttributeReservedValueModel reservedValueModel) {
-        store.deleteWhere(reservedValueModel);
-    }
-
     private void syncReservedValues(String attribute, String organisationUnitUid) throws Exception {
-        deleteExpiredDates(attribute, organisationUnitUid);
-        List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attribute,
-                organisationUnitUid);
-        if (reservedValues.size() <= 50) {
-            fillReservedValues(attribute, organisationUnitUid, reservedValues.size());
+        // TODO use server date
+        store.deleteExpired(new Date());
+
+        int remainingValues = store.count(attribute, organisationUnitUid);
+        if (remainingValues <= MIN_TO_TRY_FILL) {
+            fillReservedValues(attribute, organisationUnitUid, remainingValues);
         }
     }
 
-    private void deleteExpiredDates(String attributeUid, String orgUnitUid) {
-        List<TrackedEntityAttributeReservedValueModel> reservedValues = getReservedValues(attributeUid, orgUnitUid);
+    private void fillReservedValues(String attribute, String organisationUnitUid, Integer remainingValues)
+            throws Exception {
 
-        for (TrackedEntityAttributeReservedValueModel reservedValue : reservedValues) {
-            if (reservedValue.expiryDate().getTime() < System.currentTimeMillis()) {
-                deleteReservedValue(reservedValue);
-            }
-        }
-    }
-
-    private void fillReservedValues(String attribute, String organisationUnitUid, Integer size) throws Exception {
         Response systemInfoResponse = SystemInfoCall.FACTORY.create(databaseAdapter, retrofit).call();
         if (!systemInfoResponse.isSuccessful()) {
             throw new RuntimeException("SystemInfo call failed.");
@@ -114,7 +101,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                 systemInfo.serverDate());
 
-        Integer numberToReserve = 100 - size;
+        Integer numberToReserve = FILL_UP_TO - remainingValues;
         OrganisationUnitModel organisationUnitModel =
                 this.organisationUnitStore.selectByUid(organisationUnitUid, OrganisationUnitModel.factory);
 
@@ -127,6 +114,10 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     public static TrackedEntityAttributeReservedValueManager create(DatabaseAdapter databaseAdapter,
                                                                     Retrofit retrofit) {
-        return new TrackedEntityAttributeReservedValueManager(databaseAdapter, retrofit);
+        return new TrackedEntityAttributeReservedValueManager(
+                databaseAdapter,
+                retrofit,
+                TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
+                OrganisationUnitStore.create(databaseAdapter));
     }
 }

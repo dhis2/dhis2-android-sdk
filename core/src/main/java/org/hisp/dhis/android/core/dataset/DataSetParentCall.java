@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementEndpointCall;
 import org.hisp.dhis.android.core.indicator.Indicator;
@@ -51,8 +52,7 @@ import retrofit2.Response;
 public class DataSetParentCall extends TransactionalCall {
     private final DataSetParentLinkManager linkManager;
     private final GenericCallData genericCallData;
-    private final SimpleCallFactory<Payload<DataSet>> dataSetAccessCallFactory;
-    private final UidsCallFactory<DataSet> dataSetCallFactory;
+    private final SimpleCallFactory<Payload<DataSet>> dataSetCallFactory;
     private final UidsCallFactory<DataElement> dataElementCallFactory;
     private final UidsCallFactory<Indicator> indicatorCallFactory;
     private final UidsCallFactory<IndicatorType> indicatorTypeCallFactory;
@@ -61,8 +61,7 @@ public class DataSetParentCall extends TransactionalCall {
 
     private DataSetParentCall(GenericCallData genericCallData,
                               DataSetParentLinkManager linkManager,
-                              SimpleCallFactory<Payload<DataSet>> dataSetAccessCallFactory,
-                              UidsCallFactory<DataSet> dataSetCallFactory,
+                              SimpleCallFactory<Payload<DataSet>> dataSetCallFactory,
                               UidsCallFactory<DataElement> dataElementCallFactory,
                               UidsCallFactory<Indicator> indicatorCallFactory,
                               UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
@@ -71,7 +70,6 @@ public class DataSetParentCall extends TransactionalCall {
         super(genericCallData.databaseAdapter());
         this.genericCallData = genericCallData;
         this.linkManager = linkManager;
-        this.dataSetAccessCallFactory = dataSetAccessCallFactory;
         this.dataSetCallFactory = dataSetCallFactory;
         this.dataElementCallFactory = dataElementCallFactory;
         this.indicatorCallFactory = indicatorCallFactory;
@@ -82,14 +80,10 @@ public class DataSetParentCall extends TransactionalCall {
 
     @Override
     public Response callBody() throws Exception {
-        Call<Response<Payload<DataSet>>> dataSetAccessEndpointCall = dataSetAccessCallFactory.create(genericCallData);
-        Response<Payload<DataSet>> dataSetAccessResponse = dataSetAccessEndpointCall.call();
-        List<DataSet> dataSetsWithAccess = dataSetAccessResponse.body().items();
-
-        Set<String> dataSetUids = DataSetParentUidsHelper.getAssignedDataSetUids(dataSetsWithAccess);
-
-        Call<Response<Payload<DataSet>>> dataSetEndpointCall = dataSetCallFactory.create(genericCallData, dataSetUids);
+        Call<Response<Payload<DataSet>>> dataSetEndpointCall = dataSetCallFactory.create(genericCallData);
         Response<Payload<DataSet>> dataSetResponse = dataSetEndpointCall.call();
+
+        Set<String> dataSetUids = UidsHelper.getUids(dataSetResponse.body().items());
 
         Call<Response<Payload<DataElement>>> dataElementEndpointCall =
                 dataElementCallFactory.create(genericCallData, dataSetUids);
@@ -123,7 +117,6 @@ public class DataSetParentCall extends TransactionalCall {
         public Call<Response> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits) {
             return new DataSetParentCall(data,
                     DataSetParentLinkManager.create(data.databaseAdapter()),
-                    DataSetAccessEndpointCall.FACTORY,
                     DataSetEndpointCall.FACTORY,
                     DataElementEndpointCall.FACTORY,
                     IndicatorEndpointCall.FACTORY,

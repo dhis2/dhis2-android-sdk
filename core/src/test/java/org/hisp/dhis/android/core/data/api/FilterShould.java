@@ -41,7 +41,7 @@ public class FilterShould {
 
     @Test
     public void return_null_filter_when_creates_with_null_params() {
-        Filter<String, String> filter = GtFilter.create(null, null);
+        Filter<String, String> filter = SingleValueFilter.gt(null, null);
         assertThat(filter).isNull();
     }
 
@@ -56,7 +56,7 @@ public class FilterShould {
 
     @Test
     public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(GtFilter.create(Field.create(""), "a").getClass())
+        EqualsVerifier.forClass(SingleValueFilter.gt(Field.create(""), "a").getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();
     }

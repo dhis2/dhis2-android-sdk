@@ -189,7 +189,7 @@ public class OrganisationUnitCallUnitShould {
         organisationUnits = Collections.singletonList(organisationUnit);
         when(user.organisationUnits()).thenReturn(organisationUnits);
 
-        when(organisationUnitService.getOrganisationUnits(
+        when(organisationUnitService.getOrganisationUnitWithDescendants(
                 uidCaptor.capture(), fieldsCaptor.capture(), filterCaptor.capture(), descendantsCaptor.capture(),
                 pagingCaptor.capture()
         )).thenReturn(retrofitCall);

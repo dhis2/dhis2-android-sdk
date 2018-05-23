@@ -39,8 +39,12 @@ import java.util.Collection;
 @AutoValue
 public abstract class Field<Parent, Child> implements Property<Parent, Child> {
 
+    public <V> Filter<Parent, Child> eq(V value) {
+        return SingleValueFilter.eq(this, value.toString());
+    }
+
     public Filter<Parent, Child> gt(String value) {
-        return GtFilter.create(this, value);
+        return SingleValueFilter.gt(this, value);
     }
 
     public Filter<Parent, Child> in(Collection<String> values) {

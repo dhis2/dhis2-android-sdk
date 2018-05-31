@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -53,7 +52,7 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREA
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.FUTURE_DATE;
 
 @RunWith(JUnit4.class)
-public class TrackedEntityAttributeReservedValueManagerShould extends AbsStoreTestCase {
+public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould extends AbsStoreTestCase {
 
     private TrackedEntityAttributeReservedValueStoreInterface store;
     private String organisationUnitUid = "org_unit_uid";
@@ -100,13 +99,13 @@ public class TrackedEntityAttributeReservedValueManagerShould extends AbsStoreTe
                 new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit));
     }
 
-    @Test
+    //@Test
     public void get_one_reserved_value() {
         String value1 = manager.getValue(ownerUid1, organisationUnitUid);
         assertThat(value1, is("value1"));
     }
 
-    @Test
+    //@Test
     public void get_two_reserved_value() {
         String value1 = manager.getValue(ownerUid1, organisationUnitUid);
         String value2 = manager.getValue(ownerUid1, organisationUnitUid);
@@ -117,18 +116,18 @@ public class TrackedEntityAttributeReservedValueManagerShould extends AbsStoreTe
         assertThat(value3, is("value3"));
     }
 
-    @Test
+    //@Test
     public void get_reserved_values() {
         assertThat(selectAll().size(), is(3));
     }
 
-    @Test
+    //@Test
     public void reserve_100_new_values_and_take_one() {
         manager.getValue(ownerUid1, organisationUnitUid);
         assertThat(selectAll().size(), is(99));
     }
 
-    @Test
+    //@Test
     public void have_98_values_after_sync_and_take_two() {
         manager.getValue(ownerUid1, organisationUnitUid);
         manager.getValue(ownerUid1, organisationUnitUid);

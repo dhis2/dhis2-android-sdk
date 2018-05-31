@@ -40,7 +40,6 @@ import retrofit2.http.Query;
 public interface ProgramStageService {
     @GET("programStages")
     Call<Payload<ProgramStage>> getProgramStages(@Query("fields") @Which Fields<ProgramStage> fields,
-                                                 @Query("filter") @Where Filter<ProgramStage, String> lastUpdated,
                                                  @Query("filter") @Where Filter<ProgramStage, String> uids,
                                                  @Query("paging") Boolean paging);
 }

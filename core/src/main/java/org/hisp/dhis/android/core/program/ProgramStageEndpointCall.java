@@ -56,7 +56,7 @@ public final class ProgramStageEndpointCall extends
 
     @Override
     protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query, String lastUpdated) throws IOException {
-        return programStageService.getProgramStages(ProgramStage.allFields, ProgramStage.lastUpdated.gt(lastUpdated),
+        return programStageService.getProgramStages(ProgramStage.allFields,
                 ProgramStage.uid.in(query.uids()), Boolean.FALSE);
     }
 

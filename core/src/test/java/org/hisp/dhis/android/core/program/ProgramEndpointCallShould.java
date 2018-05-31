@@ -87,9 +87,6 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     private ArgumentCaptor<Fields<Program>> fieldsCaptor;
 
     @Captor
-    private ArgumentCaptor<Filter<Program, String>> lastUpdatedFilter;
-
-    @Captor
     private ArgumentCaptor<String> accessDataReadFilter;
 
     @Mock
@@ -113,7 +110,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
         programList = Collections.singletonList(program);
         when(payload.items()).thenReturn(programList);
 
-        when(programService.getPrograms(any(Fields.class), any(Filter.class), anyString(), anyBoolean())
+        when(programService.getPrograms(any(Fields.class), anyString(), anyBoolean())
         ).thenReturn(programCall);
     }
 
@@ -128,7 +125,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
         when(programCall.execute()).thenReturn(Response.success(payload));
 
         when(programService.getPrograms(
-                fieldsCaptor.capture(), lastUpdatedFilter.capture(), accessDataReadFilter.capture(), anyBoolean())
+                fieldsCaptor.capture(), accessDataReadFilter.capture(), anyBoolean())
         ).thenReturn(programCall);
 
 

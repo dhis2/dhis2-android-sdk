@@ -38,8 +38,6 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,7 +49,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.FUTURE_DATE;
 
-@RunWith(JUnit4.class)
 public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould extends AbsStoreTestCase {
 
     private TrackedEntityAttributeReservedValueStoreInterface store;

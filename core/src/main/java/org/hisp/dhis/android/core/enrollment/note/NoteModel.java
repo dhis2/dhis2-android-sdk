@@ -68,7 +68,7 @@ public abstract class NoteModel extends BaseModel {
         }
     }
 
-    static NoteModel create(Cursor cursor) {
+    public static NoteModel create(Cursor cursor) {
         return AutoValue_NoteModel.createFromCursor(cursor);
     }
 

@@ -129,7 +129,7 @@ public class EnrollmentHandlerShould {
         );
 
         // event handler should be invoked once
-        verify(eventHandler, times(1)).handle(any(ArrayList.class));
+        verify(eventHandler, times(1)).handleMany(any(ArrayList.class));
     }
 
     @Test
@@ -163,6 +163,6 @@ public class EnrollmentHandlerShould {
 
 
         // event handler should be invoked once
-        verify(eventHandler, times(1)).handle(any(ArrayList.class));
+        verify(eventHandler, times(1)).handleMany(any(ArrayList.class));
     }
 }

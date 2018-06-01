@@ -18,7 +18,7 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.List;
 
-public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
+public class EventEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
 
@@ -43,11 +43,11 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
         response = d2.syncMetaData().call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
-        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
-        response = eventEndPointCall.call();
-        Truth.assertThat(response.isSuccessful()).isTrue();
+        List<Event> events = eventEndpointCall.call();
+        Truth.assertThat(events.isEmpty()).isFalse();
 
         //TODO: we should create dependant server data verifications in other test suite
        /* verifyNumberOfDownloadedEvents(49);
@@ -65,10 +65,10 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
         response = d2.syncMetaData().call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
-        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
-        eventEndPointCall.call();
+        eventEndpointCall.call();
 
         assertTrue(verifyAtLeastOneEventWithCategoryOption());
     }

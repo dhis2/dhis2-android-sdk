@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(AndroidJUnit4.class)
-public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
+public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
@@ -56,12 +56,12 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
     public void download_events_according_to_default_query() throws Exception {
         givenAMetadataInDatabase();
 
-        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("events_1.json");
 
-        eventEndPointCall.call();
+        eventEndpointCall.call();
 
         verifyDownloadedEvents("events_1.json");
     }
@@ -72,12 +72,12 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
 
         int pageLimit = 12;
 
-        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", pageLimit);
 
         dhis2MockServer.enqueueMockResponse("events_1.json");
 
-        eventEndPointCall.call();
+        eventEndpointCall.call();
 
         EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
 
@@ -91,19 +91,19 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
             throws Exception {
         givenAMetadataInDatabase();
 
-        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("event_1_with_all_data_values.json");
 
-        eventEndPointCall.call();
+        eventEndpointCall.call();
 
-        eventEndPointCall = EventCallFactory.create(
+        eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("event_1_with_only_one_data_values.json");
 
-        eventEndPointCall.call();
+        eventEndpointCall.call();
 
         verifyDownloadedEvents("event_1_with_only_one_data_values.json");
     }
@@ -114,13 +114,13 @@ public class EventEndPointCallMockIntegrationShould extends AbsStoreTestCase {
             throws Exception {
         givenAMetadataInDatabase();
 
-        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse(
                 "two_events_first_good_second_wrong_foreign_key.json");
 
-        eventEndPointCall.call();
+        eventEndpointCall.call();
 
         verifyNumberOfDownloadedEvents(1);
         verifyNumberOfDownloadedTrackedEntityDataValue(6);

@@ -26,22 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.program;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import java.util.Set;
 
-import java.util.Date;
+public interface ProgramStoreInterface extends IdentifiableObjectStore<ProgramModel> {
 
-public interface TrackedEntityAttributeReservedValueStoreInterface
-        extends ObjectWithoutUidStore<TrackedEntityAttributeReservedValueModel> {
-
-    void deleteExpired(@NonNull Date serverDate);
-
-    TrackedEntityAttributeReservedValueModel popOne(@NonNull String ownerUid,
-                                                    @NonNull String organisationUnitUid);
-
-    int count(@NonNull String ownerUid,
-              @NonNull String organisationUnitUid);
+    Set<String> queryWithoutRegistrationProgramUids() throws RuntimeException;
 }

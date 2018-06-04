@@ -99,19 +99,17 @@ public abstract class User extends BaseIdentifiableObject {
             = NestedField.create(TEI_SEARCH_ORGANISATION_UNITS);
 
     static final Fields<User> allFields = Fields.<User>builder().fields(
-            User.uid, User.code, User.name, User.displayName,
-            User.created, User.lastUpdated, User.birthday, User.education,
-            User.gender, User.jobTitle, User.surname, User.firstName,
-            User.introduction, User.employer, User.interests, User.languages,
-            User.email, User.phoneNumber, User.nationality,
-            User.userCredentials.with(UserCredentials.allFields),
-            User.organisationUnits.with(
+            uid, code, name, displayName, created, lastUpdated, birthday, education, gender, jobTitle,
+            surname, firstName, introduction, employer, interests, languages, email, phoneNumber, nationality,
+            deleted,
+            userCredentials.with(UserCredentials.allFields),
+            organisationUnits.with(
                     OrganisationUnit.uid,
                     OrganisationUnit.path,
                     OrganisationUnit.programs.with(ObjectWithUid.uid),
                     OrganisationUnit.dataSets.with(DataSet.uid)
             ),
-            User.teiSearchOrganisationUnits.with(OrganisationUnit.uid)
+            teiSearchOrganisationUnits.with(OrganisationUnit.uid)
     ).build();
 
     @Nullable

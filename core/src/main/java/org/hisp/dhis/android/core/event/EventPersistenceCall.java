@@ -20,7 +20,7 @@ import java.util.Set;
 
 import retrofit2.Retrofit;
 
-final class EventPersistenceCall extends SyncCall<Void> {
+public final class EventPersistenceCall extends SyncCall<Void> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;

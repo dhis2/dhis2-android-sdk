@@ -61,7 +61,9 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         dhis2MockServer.enqueueMockResponse("events_1.json");
 
-        eventEndpointCall.call();
+        List<Event> events = eventEndpointCall.call();
+
+        EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
 
         verifyDownloadedEvents("events_1.json");
     }
@@ -70,42 +72,22 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void download_number_of_events_according_to_page_limit() throws Exception {
         givenAMetadataInDatabase();
 
-        int pageLimit = 12;
+        int pageLimit = 3;
 
         EventEndpointCall eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", pageLimit);
 
-        dhis2MockServer.enqueueMockResponse("events_1.json");
+        dhis2MockServer.enqueueMockResponse("events_2.json");
 
-        eventEndpointCall.call();
+        List<Event> events = eventEndpointCall.call();
+
+        EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
 
         EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
 
-        List<Event> downloadedEvents = eventStore.querySingleEvents();
+        List<Event> downloadedEvents = eventStore.queryAll();
 
         assertThat(downloadedEvents.size(), is(pageLimit));
-    }
-
-    @Test
-    public void remove_data_values_removed_in_server_after_second_events_download()
-            throws Exception {
-        givenAMetadataInDatabase();
-
-        EventEndpointCall eventEndpointCall = EventCallFactory.create(
-                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
-
-        dhis2MockServer.enqueueMockResponse("event_1_with_all_data_values.json");
-
-        eventEndpointCall.call();
-
-        eventEndpointCall = EventCallFactory.create(
-                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
-
-        dhis2MockServer.enqueueMockResponse("event_1_with_only_one_data_values.json");
-
-        eventEndpointCall.call();
-
-        verifyDownloadedEvents("event_1_with_only_one_data_values.json");
     }
 
     //@Test

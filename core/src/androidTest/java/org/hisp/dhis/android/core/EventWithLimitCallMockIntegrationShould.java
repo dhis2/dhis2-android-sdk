@@ -44,14 +44,13 @@ public class EventWithLimitCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void download_number_of_events_according_to_limit_by_org_unit() throws Exception {
-        int eventLimitByOrgUnit = 145;
+    public void download_events() throws Exception {
+        int eventLimitByOrgUnit = 53;
 
         givenAMetadataInDatabase();
 
         dhis2MockServer.enqueueMockResponse("events_1.json");
         dhis2MockServer.enqueueMockResponse("events_2.json");
-        dhis2MockServer.enqueueMockResponse("events_3.json");
 
         d2.syncSingleData(eventLimitByOrgUnit, false).call();
 

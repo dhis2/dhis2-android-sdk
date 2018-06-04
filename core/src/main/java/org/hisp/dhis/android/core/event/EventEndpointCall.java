@@ -14,7 +14,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 
-public class EventEndpointCall extends SyncCall<List<Event>> {
+public final class EventEndpointCall extends SyncCall<List<Event>> {
 
     private final EventService eventService;
     private final EventQuery eventQuery;

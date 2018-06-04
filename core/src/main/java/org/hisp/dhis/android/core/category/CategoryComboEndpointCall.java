@@ -108,7 +108,7 @@ public final class CategoryComboEndpointCall extends SyncCall<Response<Payload<C
                     genericCallData.retrofit().create(CategoryComboService.class),
                     new ResponseValidator<CategoryCombo>(),
                     CategoryComboHandler.create(genericCallData.databaseAdapter()),
-                    ResourceHandler.create(genericCallData.databaseAdapter()),
+                    genericCallData.resourceHandler(),
                     genericCallData.databaseAdapter(),
                     genericCallData.serverDate()
             );

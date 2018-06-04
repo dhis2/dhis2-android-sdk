@@ -35,8 +35,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.List;
@@ -67,54 +70,49 @@ public abstract class User extends BaseIdentifiableObject {
     private static final String DATA_VIEW_ORGANISATION_UNITS = "dataViewOrganisationUnits";
     private static final String DELETED = "deleted";
 
-    public static final Field<User, String> uid
-            = Field.create(UID);
-    public static final Field<User, String> code
-            = Field.create(CODE);
-    public static final Field<User, String> name
-            = Field.create(NAME);
-    public static final Field<User, String> displayName
-            = Field.create(DISPLAY_NAME);
-    public static final Field<User, String> created
-            = Field.create(CREATED);
-    public static final Field<User, String> lastUpdated
-            = Field.create(LAST_UPDATED);
-    public static final Field<User, String> birthday
-            = Field.create(BIRTHDAY);
-    public static final Field<User, String> education
-            = Field.create(EDUCATION);
-    public static final Field<User, String> gender
-            = Field.create(GENDER);
-    public static final Field<User, String> jobTitle
-            = Field.create(JOB_TITLE);
-    public static final Field<User, String> surname
-            = Field.create(SURNAME);
-    public static final Field<User, String> firstName
-            = Field.create(FIRST_NAME);
-    public static final Field<User, String> introduction
-            = Field.create(INTRODUCTION);
-    public static final Field<User, String> employer
-            = Field.create(EMPLOYER);
-    public static final Field<User, String> interests
-            = Field.create(INTERESTS);
-    public static final Field<User, String> languages
-            = Field.create(LANGUAGES);
-    public static final Field<User, String> email
-            = Field.create(EMAIL);
-    public static final Field<User, String> phoneNumber
-            = Field.create(PHONE_NUMBER);
-    public static final Field<User, String> nationality
-            = Field.create(NATIONALITY);
-    public static final Field<User, Boolean> deleted
-            = Field.create(DELETED);
-    public static final NestedField<User, UserCredentials> userCredentials
+    private static final Field<User, String> uid = Field.create(UID);
+    private static final Field<User, String> code = Field.create(CODE);
+    private static final Field<User, String> name = Field.create(NAME);
+    private static final Field<User, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<User, String> created = Field.create(CREATED);
+    private static final Field<User, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<User, String> birthday = Field.create(BIRTHDAY);
+    private static final Field<User, String> education = Field.create(EDUCATION);
+    private static final Field<User, String> gender = Field.create(GENDER);
+    private static final Field<User, String> jobTitle = Field.create(JOB_TITLE);
+    private static final Field<User, String> surname = Field.create(SURNAME);
+    private static final Field<User, String> firstName = Field.create(FIRST_NAME);
+    private static final Field<User, String> introduction = Field.create(INTRODUCTION);
+    private static final Field<User, String> employer = Field.create(EMPLOYER);
+    private static final Field<User, String> interests = Field.create(INTERESTS);
+    private static final Field<User, String> languages = Field.create(LANGUAGES);
+    private static final Field<User, String> email = Field.create(EMAIL);
+    private static final Field<User, String> phoneNumber = Field.create(PHONE_NUMBER);
+    private static final Field<User, String> nationality = Field.create(NATIONALITY);
+    private static final Field<User, Boolean> deleted = Field.create(DELETED);
+    
+    private static final NestedField<User, UserCredentials> userCredentials
             = NestedField.create(USER_CREDENTIALS);
-    public static final NestedField<User, OrganisationUnit> organisationUnits
+    private static final NestedField<User, OrganisationUnit> organisationUnits
             = NestedField.create(ORGANISATION_UNITS);
-    public static final NestedField<User, OrganisationUnit> teiSearchOrganisationUnits
+    private static final NestedField<User, OrganisationUnit> teiSearchOrganisationUnits
             = NestedField.create(TEI_SEARCH_ORGANISATION_UNITS);
-    public static final NestedField<User, OrganisationUnit> dataViewOrganisationUnits
-            = NestedField.create(DATA_VIEW_ORGANISATION_UNITS);
+
+    static final Fields<User> allFields = Fields.<User>builder().fields(
+            User.uid, User.code, User.name, User.displayName,
+            User.created, User.lastUpdated, User.birthday, User.education,
+            User.gender, User.jobTitle, User.surname, User.firstName,
+            User.introduction, User.employer, User.interests, User.languages,
+            User.email, User.phoneNumber, User.nationality,
+            User.userCredentials.with(UserCredentials.allFields),
+            User.organisationUnits.with(
+                    OrganisationUnit.uid,
+                    OrganisationUnit.path,
+                    OrganisationUnit.programs.with(ObjectWithUid.uid),
+                    OrganisationUnit.dataSets.with(DataSet.uid)
+            ),
+            User.teiSearchOrganisationUnits.with(OrganisationUnit.uid)
+    ).build();
 
     @Nullable
     @JsonProperty(BIRTHDAY)

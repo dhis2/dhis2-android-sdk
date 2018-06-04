@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.BlockCallFactory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -68,8 +67,7 @@ public final class UserAuthenticateCall extends SyncCall<Response<User>> {
     // retrofit service
     private final UserService userService;
 
-    private final UserHandler userHandler;
-    private final UserCredentialsHandler userCredentialsHandler;
+    private final GenericHandler<User, UserModel> userHandler;
     private final ResourceHandler resourceHandler;
     private final AuthenticatedUserStore authenticatedUserStore;
     private final OrganisationUnitHandlerFactory organisationUnitHandlerFactory;
@@ -83,8 +81,7 @@ public final class UserAuthenticateCall extends SyncCall<Response<User>> {
             @NonNull Retrofit retrofit,
             @NonNull BlockCallFactory<SystemInfo> systemInfoCallFactory,
             @NonNull UserService userService,
-            @NonNull UserHandler userHandler,
-            @NonNull UserCredentialsHandler userCredentialsHandler,
+            @NonNull GenericHandler<User, UserModel> userHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
             @NonNull OrganisationUnitHandlerFactory organisationUnitHandlerFactory,
@@ -97,7 +94,6 @@ public final class UserAuthenticateCall extends SyncCall<Response<User>> {
         this.userService = userService;
 
         this.userHandler = userHandler;
-        this.userCredentialsHandler = userCredentialsHandler;
         this.resourceHandler = resourceHandler;
         this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitHandlerFactory = organisationUnitHandlerFactory;
@@ -150,48 +146,15 @@ public final class UserAuthenticateCall extends SyncCall<Response<User>> {
     }
 
     private Response<User> authenticate(String credentials) throws IOException {
-        return userService.authenticate(credentials, Fields.<User>builder().fields(
-                User.uid, User.code, User.name, User.displayName,
-                User.created, User.lastUpdated, User.birthday, User.education,
-                User.gender, User.jobTitle, User.surname, User.firstName,
-                User.introduction, User.employer, User.interests, User.languages,
-                User.email, User.phoneNumber, User.nationality,
-                User.userCredentials.with(
-                        UserCredentials.uid,
-                        UserCredentials.code,
-                        UserCredentials.name,
-                        UserCredentials.displayName,
-                        UserCredentials.created,
-                        UserCredentials.lastUpdated,
-                        UserCredentials.username),
-                User.organisationUnits.with(
-                        OrganisationUnit.uid,
-                        OrganisationUnit.code,
-                        OrganisationUnit.name,
-                        OrganisationUnit.displayName,
-                        OrganisationUnit.created,
-                        OrganisationUnit.lastUpdated,
-                        OrganisationUnit.shortName,
-                        OrganisationUnit.displayShortName,
-                        OrganisationUnit.description,
-                        OrganisationUnit.displayDescription,
-                        OrganisationUnit.path,
-                        OrganisationUnit.openingDate,
-                        OrganisationUnit.closedDate,
-                        OrganisationUnit.level,
-                        OrganisationUnit.parent.with(OrganisationUnit.uid),
-                        OrganisationUnit.ancestors.with(OrganisationUnit.uid, OrganisationUnit.displayName))
-                ).build()).execute();
+        return userService.authenticate(credentials, User.allFields).execute();
     }
 
     @NonNull
     private void handleUser(User user, GenericCallData genericCallData) {
 
-        userHandler.handleUser(user);
+        userHandler.handle(user, new UserModelBuilder());
 
         resourceHandler.handleResource(ResourceModel.Type.USER, genericCallData.serverDate());
-
-        userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
 
         resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, genericCallData.serverDate());
 
@@ -217,7 +180,6 @@ public final class UserAuthenticateCall extends SyncCall<Response<User>> {
                 SystemInfoCall.FACTORY,
                 retrofit.create(UserService.class),
                 UserHandler.create(databaseAdapter),
-                UserCredentialsHandler.create(databaseAdapter),
                 ResourceHandler.create(databaseAdapter),
                 new AuthenticatedUserStoreImpl(databaseAdapter),
                 FACTORY,

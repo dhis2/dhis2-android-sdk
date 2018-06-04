@@ -36,7 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.api.Fields;
 
 import java.util.Date;
 import java.util.List;
@@ -49,15 +49,17 @@ public abstract class UserCredentials extends BaseIdentifiableObject {
     private static final String USERNAME = "username";
     private static final String DELETED = "deleted";
 
-    public static final Field<UserCredentials, String> uid = Field.create(UID);
-    public static final Field<UserCredentials, String> code = Field.create(CODE);
-    public static final Field<UserCredentials, String> name = Field.create(NAME);
-    public static final Field<UserCredentials, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<UserCredentials, String> created = Field.create(CREATED);
-    public static final Field<UserCredentials, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<UserCredentials, String> username = Field.create(USERNAME);
-    public static final Field<UserCredentials, Boolean> deleted = Field.create(DELETED);
-    public static final NestedField<UserCredentials, UserRole> userRoles = NestedField.create(USER_ROLES);
+    private static final Field<UserCredentials, String> uid = Field.create(UID);
+    private static final Field<UserCredentials, String> code = Field.create(CODE);
+    private static final Field<UserCredentials, String> name = Field.create(NAME);
+    private static final Field<UserCredentials, String> displayName = Field.create(DISPLAY_NAME);
+    private static final Field<UserCredentials, String> created = Field.create(CREATED);
+    private static final Field<UserCredentials, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<UserCredentials, String> username = Field.create(USERNAME);
+    private static final Field<UserCredentials, Boolean> deleted = Field.create(DELETED);
+
+    static final Fields<UserCredentials> allFields = Fields.<UserCredentials>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, username, deleted).build();
 
     @Nullable
     @JsonProperty(USERNAME)

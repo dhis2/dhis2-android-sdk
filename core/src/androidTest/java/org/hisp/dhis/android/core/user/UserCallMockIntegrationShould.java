@@ -34,13 +34,13 @@ import android.support.test.runner.AndroidJUnit4;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -84,7 +84,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     };
 
     private MockWebServer mockWebServer;
-    private UserCall userCall;
+    private Call<User> userCall;
 
     @Override
     @Before
@@ -210,16 +210,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-        UserService userService = retrofit.create(UserService.class);
-
-        UserCredentialsStore userCredentialsStore = new UserCredentialsStoreImpl(databaseAdapter());
-        UserRoleStore userRoleStore = new UserRoleStoreImpl(databaseAdapter());
-        UserStore userStore = new UserStoreImpl(databaseAdapter());
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
-
-
-        userCall = new UserCall(userService, databaseAdapter(),
-                userStore, userCredentialsStore, userRoleStore, resourceStore, new Date());
+        userCall = UserCall.FACTORY.create(GenericCallData.create(databaseAdapter(), retrofit, new Date()));
 
         ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
         ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);
@@ -294,32 +285,6 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
                 "2017-02-01T14:31:54.370",
                 "android",
                 "DXyJmlo9rge"
-        ).isExhausted();
-    }
-
-    @Test
-    public void persist_user_roles_in_data_base_when_call() throws Exception {
-        userCall.call();
-
-        String[] userRoleProjection = {
-                UserRoleModel.Columns.UID,
-                UserRoleModel.Columns.CODE,
-                UserRoleModel.Columns.NAME,
-                UserRoleModel.Columns.DISPLAY_NAME,
-                UserRoleModel.Columns.CREATED,
-                UserRoleModel.Columns.LAST_UPDATED
-        };
-
-        Cursor userRoleCursor = database().query(UserRoleModel.TABLE, userRoleProjection,
-                UserRoleModel.Columns.UID + "=?", new String[]{"cUlTcejWree"}, null, null, null);
-
-        assertThatCursor(userRoleCursor).hasRow(
-                "cUlTcejWree",
-                null,
-                null,
-                null,
-                null,
-                null
         ).isExhausted();
     }
 

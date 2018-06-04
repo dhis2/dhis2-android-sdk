@@ -49,7 +49,7 @@ import static org.mockito.Mockito.verify;
 public class LogOutUserCallableShould {
 
     @Mock
-    private UserStore userStore;
+    private IdentifiableObjectStore<UserModel> userStore;
 
     @Mock
     private UserCredentialsStore userCredentialsStore;

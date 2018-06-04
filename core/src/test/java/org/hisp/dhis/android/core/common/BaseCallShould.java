@@ -79,6 +79,9 @@ public abstract class BaseCallShould {
     @Mock
     protected Transaction transaction;
 
+    @Mock
+    protected D2CallException d2CallException;
+
     protected Response errorResponse;
 
     public void setUp() throws Exception {

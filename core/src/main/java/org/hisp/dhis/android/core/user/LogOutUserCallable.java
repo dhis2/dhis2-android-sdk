@@ -110,7 +110,7 @@ public class LogOutUserCallable implements Callable<Void> {
     public static LogOutUserCallable createToWipe(DatabaseAdapter databaseAdapter) {
 
         List<DeletableStore> deletableStores = Arrays.asList(
-                new UserStoreImpl(databaseAdapter),
+                UserStore.create(databaseAdapter),
                 new UserCredentialsStoreImpl(databaseAdapter),
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
                 new AuthenticatedUserStoreImpl(databaseAdapter),

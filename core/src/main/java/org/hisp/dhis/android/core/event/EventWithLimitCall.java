@@ -8,6 +8,8 @@ import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.program.ProgramStore;
+import org.hisp.dhis.android.core.program.ProgramStoreInterface;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
@@ -25,17 +27,20 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
     private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
+    private final ProgramStoreInterface programStore;
     private final D2CallException.Builder httpExceptionBuilder;
 
     private EventWithLimitCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
             @NonNull UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
+            @NonNull ProgramStoreInterface programStore,
             int eventLimit,
             boolean limitByOrgUnit) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
+        this.programStore = programStore;
         this.eventLimit = eventLimit;
         this.limitByOrgUnit = limitByOrgUnit;
         this.httpExceptionBuilder = D2CallException.builder().isHttpError(true).errorDescription("Events call failed");
@@ -62,10 +67,10 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
 
     private List<Event> getEvents() throws D2CallException {
         Set<String> organisationUnitUids;
+        Set<String> programUids = programStore.queryWithoutRegistrationProgramUids();
         List<Event> events = new ArrayList<>();
         EventQuery.Builder eventQueryBuilder = EventQuery.Builder.create();
         int pageSize = eventQueryBuilder.build().getPageSize();
-        int numPages = (int) Math.ceil((double) eventLimit / pageSize);
 
         if (limitByOrgUnit) {
             organisationUnitUids = getOrgUnitUids();
@@ -75,33 +80,51 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
         }
 
         for (String orgUnitUid : organisationUnitUids) {
+            if (!limitByOrgUnit && events.size() == eventLimit) {
+                break;
+            }
             eventQueryBuilder.withOrgUnit(orgUnitUid);
-            events.addAll(getEventsWithPaging(eventQueryBuilder, pageSize, numPages));
+            events.addAll(getEventsWithPaging(eventQueryBuilder, pageSize, programUids, events.size()));
         }
 
         return events;
     }
 
-    private List<Event> getEventsWithPaging(EventQuery.Builder eventQueryBuilder, int pageSize, int numPages)
-            throws D2CallException {
+    private List<Event> getEventsWithPaging(EventQuery.Builder eventQueryBuilder, int pageSize, Set<String> programUids,
+                                            int globalEventsSize) throws D2CallException {
         List<Event> events = new ArrayList<>();
 
-        for (int page = 1; page <= numPages; page++) {
-            if (page == numPages) {
-                eventQueryBuilder.withPage(page).withPageLimit(eventLimit - ((page - 1) * pageSize));
+        for (String programUid : programUids) {
+            eventQueryBuilder.withProgram(programUid);
+
+            int eventLimitForProgram = limitByOrgUnit ? eventLimit : eventLimit - globalEventsSize;
+
+            int numPages = (int) Math.ceil((double) (eventLimitForProgram - events.size()) / pageSize);
+            eventQueryBuilder.withPageLimit(50);
+
+            for (int page = 1; page <= numPages; page++) {
+                if (page == numPages) {
+                    int pageLimit = Math.min(
+                            eventLimitForProgram - ((page - 1) * pageSize),
+                            eventLimitForProgram - events.size());
+                    eventQueryBuilder.withPageLimit(pageLimit);
+                }
+
+                if (!limitByOrgUnit && eventQueryBuilder.pageLimit + events.size() > eventLimitForProgram) {
+                    eventQueryBuilder.withPageLimit(eventLimitForProgram - events.size());
+                }
+
+                eventQueryBuilder.withPage(page);
+
+                List<Event> pageEvents = EventEndpointCall.create(retrofit, eventQueryBuilder.build()).call();
+                events.addAll(pageEvents);
+
+                if (pageEvents.size() < pageSize) {
+                    break;
+                }
             }
 
-            if (!limitByOrgUnit && eventQueryBuilder.pageLimit + events.size() > eventLimit) {
-                eventQueryBuilder.withPageLimit(eventLimit - events.size());
-            }
-
-            eventQueryBuilder.withPage(page);
-            List<Event> pageEvents = EventEndpointCall.create(
-                    retrofit, eventQueryBuilder.build()).call();
-
-            events.addAll(pageEvents);
-
-            if (pageEvents.size() < pageSize) {
+            if (events.size() == eventLimitForProgram) {
                 break;
             }
         }
@@ -133,6 +156,7 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
                 databaseAdapter,
                 retrofit,
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
+                ProgramStore.create(databaseAdapter),
                 eventLimit,
                 limitByOrgUnit
         );

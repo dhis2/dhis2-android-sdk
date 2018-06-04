@@ -30,11 +30,6 @@ public class EventEndpointCallShould extends BaseCallShould {
         super.tearDown();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void throw_illegal_argument_exception_if_uids_size_exceeds_the_limit() {
-        EventEndpointCall eventEndpointCall = givenAEventCallByUIds(MAX_UIDS + 1);
-    }
-
     @Test
     public void create_event_call_if_uids_size_does_not_exceeds_the_limit() {
         EventEndpointCall eventEndpointCall = givenAEventCallByUIds(MAX_UIDS);
@@ -89,6 +84,7 @@ public class EventEndpointCallShould extends BaseCallShould {
                 .create()
                 .withPage(page)
                 .withPageSize(pageCount)
+                .withPageLimit(pageCount)
                 .withPaging(true)
                 .build();
 

@@ -35,7 +35,7 @@ public class EventWithLimitCallRealIntegrationShould extends AbsStoreTestCase {
         Response metadataResponse = d2.syncMetaData().call();
         assertThat(metadataResponse.isSuccessful()).isTrue();
 
-        List<Event> events = d2.downloadSingleEvents(20,  true).call();
+        List<Event> events = d2.downloadSingleEvents(20,  false).call();
         assertThat(events.size()).isEqualTo(20);
     }
 }

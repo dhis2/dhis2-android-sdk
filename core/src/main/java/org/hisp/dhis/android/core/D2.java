@@ -131,7 +131,7 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<List<Event>> syncSingleData(int eventLimit, boolean limitByOrgUnit) {
+    public Call<List<Event>> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {
         return EventWithLimitCall.create(databaseAdapter, retrofit, eventLimit, limitByOrgUnit);
     }
 

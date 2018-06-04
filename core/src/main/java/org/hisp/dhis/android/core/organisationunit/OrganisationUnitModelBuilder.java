@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
+import java.util.List;
+
 public class OrganisationUnitModelBuilder extends ModelBuilder<OrganisationUnit, OrganisationUnitModel> {
 
     @Override
@@ -57,12 +59,17 @@ public class OrganisationUnitModelBuilder extends ModelBuilder<OrganisationUnit,
     }
 
     private String displayNamePath(OrganisationUnit organisationUnit) {
-        String separator = "/";
-        StringBuilder sb = new StringBuilder();
-        for (OrganisationUnit ancestor: organisationUnit.ancestors()) {
-            sb.append(separator).append(ancestor.displayName());
+        List<OrganisationUnit> ancestors = organisationUnit.ancestors();
+        if (ancestors == null) {
+            return "";
+        } else {
+            String separator = "/";
+            StringBuilder sb = new StringBuilder();
+            for (OrganisationUnit ancestor: ancestors) {
+                sb.append(separator).append(ancestor.displayName());
+            }
+            sb.append(separator).append(organisationUnit.displayName());
+            return sb.toString();
         }
-        sb.append(separator).append(organisationUnit.displayName());
-        return sb.toString();
     }
 }

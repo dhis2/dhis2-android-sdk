@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -93,7 +94,7 @@ public class SystemInfoCallShould {
     @Mock
     private Date serverDate;
 
-    private Call<Response<SystemInfo>> systemInfoSyncCall;
+    private Call<SystemInfo> systemInfoSyncCall;
 
 
     @Before
@@ -104,7 +105,7 @@ public class SystemInfoCallShould {
                 databaseAdapter, systemInfoHandler, systemInfoService, resourceHandler
         );
 
-        when(systemInfo.version()).thenReturn("test.version-SNAPSHOT");
+        when(systemInfo.version()).thenReturn("2.29");
         when(systemInfo.serverDate()).thenReturn(serverDate);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
@@ -129,6 +130,13 @@ public class SystemInfoCallShould {
 
     }
 
+    @Test(expected = D2CallException.class)
+    @SuppressWarnings("unchecked")
+    public void throw_d2_call_exception_on_call_io_exception() throws Exception {
+        when(systemInfoCall.execute()).thenThrow(IOException.class);
+        systemInfoSyncCall.call();
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void never_invoke_handlers_on_call_io_exception() throws Exception {
@@ -137,7 +145,7 @@ public class SystemInfoCallShould {
         try {
             systemInfoSyncCall.call();
             fail("Exception was not thrown");
-        } catch (IOException ioexception) {
+        } catch (D2CallException d2CallException) {
             verify(databaseAdapter, never()).beginNewTransaction();
             verify(transaction, never()).begin();
             verify(transaction, never()).setSuccessful();
@@ -154,10 +162,10 @@ public class SystemInfoCallShould {
         when(systemInfoCall.execute()).thenReturn(Response.<SystemInfo>error(HttpURLConnection.HTTP_UNAUTHORIZED,
                 ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
-        Response<SystemInfo> response = systemInfoSyncCall.call();
-
-        // check that response code is equal to unauthorized
-        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_UNAUTHORIZED);
+        try {
+            systemInfoSyncCall.call();
+        } catch(D2CallException d2e) {
+        }
 
         // verify that adapter and handlers was not touched
         verify(databaseAdapter, never()).beginNewTransaction();
@@ -186,12 +194,12 @@ public class SystemInfoCallShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void return_true_when_ask_if_is_executed_before_io_exception() throws Exception {
+    public void return_true_when_ask_if_is_executed_before_exception() throws Exception {
         when(systemInfoCall.execute()).thenThrow(IOException.class);
 
         try {
             systemInfoSyncCall.call();
-        } catch (IOException ioexception) {
+        } catch (D2CallException d2Exception) {
             // do nothing
         }
 
@@ -207,6 +215,20 @@ public class SystemInfoCallShould {
 
     @Test
     public void invoke_stores_after_successful_call() throws Exception {
+        when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
+
+        systemInfoSyncCall.call();
+
+        verify(systemInfoHandler, times(1)).handle(same(systemInfo),
+                any(SystemInfoModelBuilder.class));
+        verify(resourceHandler, times(1)).handleResource(
+                eq(ResourceModel.Type.SYSTEM_INFO), any(Date.class));
+
+    }
+
+    @Test(expected = D2CallException.class)
+    public void throw_d2_call_exception_when_system_version_different_to_2_29() throws Exception {
+        when(systemInfo.version()).thenReturn("2.28");
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
 
         systemInfoSyncCall.call();

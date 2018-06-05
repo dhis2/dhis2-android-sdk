@@ -30,9 +30,15 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.BlockCallFactory;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.BasicCallFactory;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -44,25 +50,25 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-import retrofit2.Response;
+import retrofit2.Call;
 import retrofit2.Retrofit;
 
 import static okhttp3.Credentials.basic;
 import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 
-// ToDo: ask about API changes
-// ToDo: performance tests? Try to feed in a user instance with thousands organisation units
-public final class UserAuthenticateCall extends SyncCall<Response<User>> {
+public final class UserAuthenticateCall extends SyncCall<User> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
-    private final BlockCallFactory<SystemInfo> systemInfoCallFactory;
+    private final BasicCallFactory<SystemInfo> systemInfoCallFactory;
 
     // retrofit service
     private final UserService userService;
@@ -70,7 +76,10 @@ public final class UserAuthenticateCall extends SyncCall<Response<User>> {
     private final GenericHandler<User, UserModel> userHandler;
     private final ResourceHandler resourceHandler;
     private final AuthenticatedUserStore authenticatedUserStore;
+    private final ObjectWithoutUidStore<SystemInfoModel> systemInfoStore;
+    private final IdentifiableObjectStore<UserModel> userStore;
     private final OrganisationUnitHandlerFactory organisationUnitHandlerFactory;
+    private final Callable<Void> dbWipe;
 
     // username and password of candidate
     private final String username;
@@ -79,12 +88,15 @@ public final class UserAuthenticateCall extends SyncCall<Response<User>> {
     UserAuthenticateCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
-            @NonNull BlockCallFactory<SystemInfo> systemInfoCallFactory,
+            @NonNull BasicCallFactory<SystemInfo> systemInfoCallFactory,
             @NonNull UserService userService,
             @NonNull GenericHandler<User, UserModel> userHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
+            @NonNull ObjectWithoutUidStore<SystemInfoModel> systemInfoStore,
+            @NonNull IdentifiableObjectStore<UserModel> userStore,
             @NonNull OrganisationUnitHandlerFactory organisationUnitHandlerFactory,
+            @NonNull Callable<Void> dbWipe,
             @NonNull String username,
             @NonNull String password) {
         this.databaseAdapter = databaseAdapter;
@@ -96,7 +108,10 @@ public final class UserAuthenticateCall extends SyncCall<Response<User>> {
         this.userHandler = userHandler;
         this.resourceHandler = resourceHandler;
         this.authenticatedUserStore = authenticatedUserStore;
+        this.systemInfoStore = systemInfoStore;
+        this.userStore = userStore;
         this.organisationUnitHandlerFactory = organisationUnitHandlerFactory;
+        this.dbWipe = dbWipe;
 
         // credentials
         this.username = username;
@@ -104,68 +119,79 @@ public final class UserAuthenticateCall extends SyncCall<Response<User>> {
     }
 
     @Override
-    public Response call() throws Exception {
-        this.setExecuted();
+    public User call() throws D2CallException {
+        setExecuted();
+        throwExceptionIfUsernameNull();
+        throwExceptionIfPasswordNull();
+        throwExceptionIfAlreadyAuthenticated();
 
-        List<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.query();
-        if (!authenticatedUsers.isEmpty()) {
-            throw new IllegalStateException("Another user has already been authenticated: " +
-                    authenticatedUsers.get(0));
+        if (wasLoggedAndUserIsNew()) {
+            new D2CallExecutor().executeD2Call(dbWipe);
         }
 
-        Response<User> authenticateResponse = authenticate(basic(username, password));
-
-        if (!authenticateResponse.isSuccessful()) {
-            return authenticateResponse;
-        }
+        Call<User> authenticateCall = userService.authenticate(basic(username, password), User.allFields);
+        User authenticatedUser = new APICallExecutor().executeObjectCall(authenticateCall);
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
-
-        // enclosing transaction in try-finally block in
-        // order to make sure that databaseAdapter transaction won't be leaked
         try {
-            User user = authenticateResponse.body();
-            authenticatedUserStore.insert(user.uid(), base64(username, password));
-
-            Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(databaseAdapter, retrofit).call();
-            if (!systemCallResponse.isSuccessful()) {
-                return systemCallResponse;
-            }
-
-            SystemInfo systemInfo = systemCallResponse.body();
-            handleUser(user, GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate()));
-
+            authenticatedUserStore.insert(authenticatedUser.uid(), base64(username, password));
+            SystemInfo systemInfo = new D2CallExecutor().executeD2Call(systemInfoCallFactory
+                    .create(databaseAdapter, retrofit));
+            handleUser(authenticatedUser, GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate()));
             transaction.setSuccessful();
-
-            return authenticateResponse;
+            return authenticatedUser;
         } finally {
             transaction.end();
         }
-
-
     }
 
-    private Response<User> authenticate(String credentials) throws IOException {
-        return userService.authenticate(credentials, User.allFields).execute();
+    private void throwExceptionIfUsernameNull() throws D2CallException {
+        if (username == null) {
+            throw D2CallException.builder()
+                    .errorCode(D2ErrorCode.LOGIN_USERNAME_NULL)
+                    .errorDescription("Username is null")
+                    .isHttpError(false)
+                    .build();
+        }
     }
 
-    @NonNull
+    private void throwExceptionIfPasswordNull() throws D2CallException {
+        if (password == null) {
+            throw D2CallException.builder()
+                    .errorCode(D2ErrorCode.LOGIN_PASSWORD_NULL)
+                    .errorDescription("Password is null")
+                    .isHttpError(false)
+                    .build();
+        }
+    }
+
+    private void throwExceptionIfAlreadyAuthenticated() throws D2CallException {
+        List<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.query();
+        if (!authenticatedUsers.isEmpty()) {
+            throw D2CallException.builder()
+                    .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
+                    .errorDescription("A user is already authenticated: " + authenticatedUsers.get(0).user())
+                    .isHttpError(false)
+                    .build();
+        }
+    }
+
+    private boolean wasLoggedAndUserIsNew() {
+        SystemInfoModel lastSystemInfo = systemInfoStore.selectFirst(SystemInfoModel.factory);
+        UserModel lastUser = userStore.selectFirst(UserModel.factory);
+        return lastUser != null && lastSystemInfo != null && (
+                !lastUser.uid().equals(username) || lastSystemInfo.contextPath().equals(retrofit.baseUrl().toString()));
+    }
+
     private void handleUser(User user, GenericCallData genericCallData) {
-
         userHandler.handle(user, new UserModelBuilder());
-
         resourceHandler.handleResource(ResourceModel.Type.USER, genericCallData.serverDate());
-
         resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, genericCallData.serverDate());
-
         resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, genericCallData.serverDate());
 
         if (user.organisationUnits() != null) {
             organisationUnitHandlerFactory.organisationUnitHandler(databaseAdapter, user)
                     .handleMany(user.organisationUnits(), new OrganisationUnitModelBuilder());
-
-            // TODO: This is introduced to download all descendants
-            // resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT, serverDateTime);
         }
     }
 
@@ -182,7 +208,10 @@ public final class UserAuthenticateCall extends SyncCall<Response<User>> {
                 UserHandler.create(databaseAdapter),
                 ResourceHandler.create(databaseAdapter),
                 new AuthenticatedUserStoreImpl(databaseAdapter),
+                SystemInfoStore.create(databaseAdapter),
+                UserStore.create(databaseAdapter),
                 FACTORY,
+                LogOutUserCallable.createToWipe(databaseAdapter),
                 username,
                 password
         );

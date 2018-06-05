@@ -37,6 +37,7 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -150,6 +151,13 @@ public abstract class UserModel extends BaseIdentifiableObjectModel {
         sqLiteBind(sqLiteStatement, 18, phoneNumber());
         sqLiteBind(sqLiteStatement, 19, nationality());
     }
+
+    public static final CursorModelFactory<UserModel> factory = new CursorModelFactory<UserModel>() {
+        @Override
+        public UserModel fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {

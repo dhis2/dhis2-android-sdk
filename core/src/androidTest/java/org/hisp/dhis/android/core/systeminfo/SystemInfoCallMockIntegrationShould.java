@@ -47,7 +47,6 @@ import java.io.IOException;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
@@ -63,7 +62,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
     };
 
     private MockWebServer mockWebServer;
-    private Call<Response<SystemInfo>> systeminfoCall;
+    private Call<SystemInfo> systeminfoCall;
 
     @Override
     @Before

@@ -30,8 +30,11 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.BlockCallFactory;
+import org.hisp.dhis.android.core.common.BasicCallFactory;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -40,6 +43,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModelBuilder;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +61,7 @@ import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -126,13 +131,22 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private AuthenticatedUserModel authenticatedUser;
 
     @Mock
-    private BlockCallFactory<SystemInfo> systemInfoCallFactory;
+    private IdentifiableObjectStore<UserModel> userStore;
 
     @Mock
-    private Call<Response<SystemInfo>> systemInfoEndpointCall;
+    private ObjectWithoutUidStore<SystemInfoModel> systemInfoStore;
+
+    @Mock
+    private BasicCallFactory<SystemInfo> systemInfoCallFactory;
+
+    @Mock
+    private Call<SystemInfo> systemInfoEndpointCall;
+
+    @Mock
+    private Callable<Void> dbWipeCall;
 
     // call we are testing
-    private Call<Response<User>> userAuthenticateCall;
+    private Call<User> userAuthenticateCall;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -150,7 +164,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         userAuthenticateCall = new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
-                organisationUnitHandlerFactory, "test_user_name", "test_user_password");
+                systemInfoStore, userStore,
+                organisationUnitHandlerFactory, dbWipeCall,"test_user_name", "test_user_password");
 
         when(organisationUnit.uid()).thenReturn("test_organisation_unit_uid");
         when(organisationUnit.code()).thenReturn("test_organisation_unit_code");
@@ -198,7 +213,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(userCall);
 
         when(systemInfoCallFactory.create(databaseAdapter, retrofit)).thenReturn(systemInfoEndpointCall);
-        when(systemInfoEndpointCall.call()).thenReturn(Response.success(systemInfo));
+        when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
 
         when(databaseAdapter.beginNewTransaction()).then(new Answer<Transaction>() {
             @Override
@@ -253,9 +268,11 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
                 Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
                         ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
-        Response<User> userResponse = userAuthenticateCall.call();
+        try {
+            userAuthenticateCall.call();
+        } catch (D2CallException d2e) {
 
-        assertThat(userResponse.code()).isEqualTo(HttpURLConnection.HTTP_UNAUTHORIZED);
+        }
 
         // ensure that transaction is not created
         verify(databaseAdapter, never()).beginNewTransaction();
@@ -336,7 +353,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         try {
             userAuthenticateCall.call();
-        } catch (IOException ioException) {
+        } catch (D2CallException ioException) {
             // swallow exception
         }
 
@@ -351,16 +368,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         }
     }
 
-    @Test
-    public void throw_illegal_state_exception_if_user_already_signed_in() throws Exception {
+    @Test(expected = D2CallException.class)
+    public void throw_d2_call_exception_state_exception_if_user_already_signed_in() throws Exception {
         when(authenticatedUserStore.query()).thenReturn(Arrays.asList(authenticatedUser));
-
-        try {
-            userAuthenticateCall.call();
-
-            fail("IllegalStateException was expected");
-        } catch (IllegalStateException illegalStateException) {
-            // swallow exception
-        }
+        userAuthenticateCall.call();
     }
 }

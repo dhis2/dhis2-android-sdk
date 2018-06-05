@@ -35,10 +35,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class TrackedEntityAttributeReservedValueValidatorHelper {
-
-    TrackedEntityAttributeReservedValueValidatorHelper() {
-    }
-
     Date getExpiryDateCode(String pattern) throws IllegalStateException {
         List<String> matches = getCurrentDatePatternStrList(pattern);
 

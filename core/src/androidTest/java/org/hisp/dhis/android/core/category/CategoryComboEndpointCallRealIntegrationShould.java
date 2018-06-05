@@ -64,10 +64,8 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void downloadCategories() throws Exception {
-        Call<Response<Payload<Category>>> categoryEndpointCall =
-                CategoryEndpointCall.FACTORY.create(
-                        GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date()));
-        categoryEndpointCall.call();
+        CategoryEndpointCall.FACTORY.create(
+                        GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date())).call();
     }
 
     private void assertNotCombosInDB() {

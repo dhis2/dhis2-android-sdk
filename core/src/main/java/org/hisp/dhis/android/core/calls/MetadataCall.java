@@ -70,7 +70,7 @@ public class MetadataCall extends SyncCall<Response> {
     private final BasicCallFactory<SystemInfo> systemInfoCallFactory;
     private final GenericCallFactory<SystemSetting> systemSettingCallFactory;
     private final GenericCallFactory<User> userCallFactory;
-    private final SimpleCallFactory<Payload<Category>> categoryCallFactory;
+    private final GenericCallFactory<List<Category>> categoryCallFactory;
     private final SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
     private final SimpleCallFactory<Payload<Program>> programParentCallFactory;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
@@ -81,7 +81,7 @@ public class MetadataCall extends SyncCall<Response> {
                         @NonNull BasicCallFactory<SystemInfo> systemInfoCallFactory,
                         @NonNull GenericCallFactory<SystemSetting> systemSettingCallFactory,
                         @NonNull GenericCallFactory<User> userCallFactory,
-                        @NonNull SimpleCallFactory<Payload<Category>> categoryCallFactory,
+                        @NonNull GenericCallFactory<List<Category>> categoryCallFactory,
                         @NonNull SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory,
                         @NonNull SimpleCallFactory<Payload<Program>> programParentCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
@@ -106,21 +106,17 @@ public class MetadataCall extends SyncCall<Response> {
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
+            D2CallExecutor executor = new D2CallExecutor();
 
-            SystemInfo systemInfo = new D2CallExecutor().executeD2Call(
+            SystemInfo systemInfo = executor.executeD2Call(
                     systemInfoCallFactory.create(databaseAdapter, retrofit));
 
             GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                     systemInfo.serverDate());
 
-            systemSettingCallFactory.create(genericCallData).call();
-
-            User user = userCallFactory.create(genericCallData).call();
-
-            Response<Payload<Category>> categoryResponse = categoryCallFactory.create(genericCallData).call();
-            if (!categoryResponse.isSuccessful()) {
-                return categoryResponse;
-            }
+            executor.executeD2Call(systemSettingCallFactory.create(genericCallData));
+            User user = executor.executeD2Call(userCallFactory.create(genericCallData));
+            executor.executeD2Call(categoryCallFactory.create(genericCallData));
 
             Response<Payload<CategoryCombo>> categoryComboResponse
                     = categoryComboCallFactory.create(genericCallData).call();

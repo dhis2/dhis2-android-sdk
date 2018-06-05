@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.Category;
@@ -89,9 +90,6 @@ public class MetadataCallShould extends BaseCallShould {
     private OrganisationUnit organisationUnit;
 
     @Mock
-    private Payload<Category> categoryPayload;
-
-    @Mock
     private Payload<CategoryCombo> categoryComboPayload;
 
     @Mock
@@ -119,7 +117,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<User> userCall;
 
     @Mock
-    private Call<Response<Payload<Category>>> categoryEndpointCall;
+    private Call<List<Category>> categoryEndpointCall;
 
     @Mock
     private Call<Response<Payload<CategoryCombo>>> categoryComboEndpointCall;
@@ -143,7 +141,7 @@ public class MetadataCallShould extends BaseCallShould {
     private GenericCallFactory<User> userCallFactory;
 
     @Mock
-    private SimpleCallFactory<Payload<Category>> categoryCallFactory;
+    private GenericCallFactory<List<Category>> categoryCallFactory;
 
     @Mock
     private SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
@@ -174,7 +172,6 @@ public class MetadataCallShould extends BaseCallShould {
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
 
         // Payloads
-        when(categoryPayload.items()).thenReturn(Collections.singletonList(category));
         when(categoryComboPayload.items()).thenReturn(Collections.singletonList(categoryCombo));
         when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
         when(dataElementPayload.items()).thenReturn(Collections.singletonList(dataElement));
@@ -195,7 +192,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
         when(systemSettingEndpointCall.call()).thenReturn(systemSetting);
         when(userCall.call()).thenReturn(user);
-        when(categoryEndpointCall.call()).thenReturn(Response.success(categoryPayload));
+        when(categoryEndpointCall.call()).thenReturn(Lists.newArrayList(category));
         when(categoryComboEndpointCall.call()).thenReturn(Response.success(categoryComboPayload));
         when(programParentCall.call()).thenReturn(Response.success(programPayload));
         when(organisationUnitEndpointCall.call()).thenReturn(Response.success(organisationUnitPayload));
@@ -256,14 +253,14 @@ public class MetadataCallShould extends BaseCallShould {
     public void fail_when_user_call_fail() throws Exception {
         when(userCall.call()).thenThrow(d2CallException);
         verifyFail(metadataCall.call());
-    }*/
+    }
 
     @Test
     @SuppressWarnings("unchecked")
     public void fail_when_category_call_fail() throws Exception {
         when(categoryEndpointCall.call()).thenReturn(errorResponse);
         verifyFail(metadataCall.call());
-    }
+    }*/
 
     @Test
     @SuppressWarnings("unchecked")

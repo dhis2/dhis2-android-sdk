@@ -7,9 +7,9 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+import java.util.Collection;
 
-import java.util.List;
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class EventHandler {
     private final EventStore eventStore;
@@ -21,15 +21,9 @@ public class EventHandler {
         this.trackedEntityDataValueHandler = trackedEntityDataValueHandler;
     }
 
-    public void handle(@NonNull List<Event> events) {
-
-        if (events != null && !events.isEmpty()) {
-            int size = events.size();
-
-            for (int i = 0; i < size; i++) {
-                Event event = events.get(i);
-                handle(event);
-            }
+    public void handleMany(@NonNull Collection<Event> events) {
+        for (Event event : events) {
+            handle(event);
         }
     }
 

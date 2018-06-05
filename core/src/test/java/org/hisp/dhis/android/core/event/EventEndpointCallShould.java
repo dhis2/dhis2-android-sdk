@@ -17,7 +17,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hisp.dhis.android.core.calls.Call.MAX_UIDS;
 
-public class EventEndPointCallShould extends BaseCallShould {
+public class EventEndpointCallShould extends BaseCallShould {
 
     @Before
     @SuppressWarnings("unchecked")
@@ -30,25 +30,20 @@ public class EventEndPointCallShould extends BaseCallShould {
         super.tearDown();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void throw_illegal_argument_exception_if_uids_size_exceeds_the_limit() {
-        EventEndPointCall eventEndPointCall = givenAEventCallByUIds(MAX_UIDS + 1);
-    }
-
     @Test
     public void create_event_call_if_uids_size_does_not_exceeds_the_limit() {
-        EventEndPointCall eventEndPointCall = givenAEventCallByUIds(MAX_UIDS);
-        assertThat(eventEndPointCall, is(notNullValue()));
+        EventEndpointCall eventEndpointCall = givenAEventCallByUIds(MAX_UIDS);
+        assertThat(eventEndpointCall, is(notNullValue()));
     }
 
     @Test
     public void realize_request_with_page_filters_when_included_in_query()
             throws Exception {
-        EventEndPointCall eventEndPointCall = givenAEventCallByPagination(2, 32);
+        EventEndpointCall eventEndpointCall = givenAEventCallByPagination(2, 32);
 
         dhis2MockServer.enqueueMockResponse();
 
-        eventEndPointCall.call();
+        eventEndpointCall.call();
 
         RecordedRequest request = dhis2MockServer.takeRequest();
 
@@ -58,18 +53,18 @@ public class EventEndPointCallShould extends BaseCallShould {
     @Test
     public void realize_request_with_orgUnit_program_filters_when_included_in_query()
             throws Exception {
-        EventEndPointCall eventEndPointCall = givenAEventCallByOrgUnitAndProgram("OU", "P");
+        EventEndpointCall eventEndpointCall = givenAEventCallByOrgUnitAndProgram("OU", "P");
 
         dhis2MockServer.enqueueMockResponse();
 
-        eventEndPointCall.call();
+        eventEndpointCall.call();
 
         RecordedRequest request = dhis2MockServer.takeRequest();
 
         assertThat(request.getPath(), containsString("orgUnit=OU&program=P"));
     }
 
-    private EventEndPointCall givenAEventCallByUIds(int numUIds) {
+    private EventEndpointCall givenAEventCallByUIds(int numUIds) {
         Set<String> uIds = new HashSet<>();
 
         for (int i = 0; i < numUIds; i++) {
@@ -81,27 +76,28 @@ public class EventEndPointCallShould extends BaseCallShould {
                 .withUIds(uIds)
                 .build();
 
-        return EventEndPointCall.create(genericCallData, eventQuery);
+        return EventEndpointCall.create(genericCallData.retrofit(), eventQuery);
     }
 
-    private EventEndPointCall givenAEventCallByPagination(int page, int pageCount) {
+    private EventEndpointCall givenAEventCallByPagination(int page, int pageCount) {
         EventQuery eventQuery = EventQuery.Builder
                 .create()
                 .withPage(page)
                 .withPageSize(pageCount)
+                .withPageLimit(pageCount)
                 .withPaging(true)
                 .build();
 
-        return EventEndPointCall.create(genericCallData, eventQuery);
+        return EventEndpointCall.create(genericCallData.retrofit(), eventQuery);
     }
 
-    private EventEndPointCall givenAEventCallByOrgUnitAndProgram(String orgUnit, String program) {
+    private EventEndpointCall givenAEventCallByOrgUnitAndProgram(String orgUnit, String program) {
         EventQuery eventQuery = EventQuery.Builder
                 .create()
                 .withOrgUnit(orgUnit)
                 .withProgram(program)
                 .build();
 
-        return EventEndPointCall.create(genericCallData, eventQuery);
+        return EventEndpointCall.create(genericCallData.retrofit(), eventQuery);
     }
 }

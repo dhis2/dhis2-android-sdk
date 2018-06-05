@@ -78,7 +78,7 @@ public class EnrollmentHandler {
                         State.SYNCED);
             }
 
-            eventHandler.handle(enrollment.events());
+            eventHandler.handleMany(enrollment.events());
             noteHandler.handleMany(enrollment.notes(), new NoteModelBuilder(enrollment));
         }
     }

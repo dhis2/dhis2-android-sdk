@@ -15,8 +15,10 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.event.EventEndPointCall;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventEndpointCall;
 import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.event.EventPersistenceCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -30,6 +32,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Response;
 
@@ -196,14 +199,16 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenAEventInDatabase() throws Exception {
-        EventEndPointCall eventCall = EventCallFactory.create(
+        EventEndpointCall eventCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("events.json");
 
-        Response response = eventCall.call();
+        List<Event> events = eventCall.call();
 
-        assertThat(response.isSuccessful(), is(true));
+        EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
+
+        assertThat(events.isEmpty(), is(false));
     }
 
     private void verifyExistsAsignedOrgUnitAndDescendants() {

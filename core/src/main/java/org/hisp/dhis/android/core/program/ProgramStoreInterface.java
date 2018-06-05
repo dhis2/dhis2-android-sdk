@@ -26,22 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteStatement;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import java.util.Set;
 
-public class SQLStatementWrapper {
-    public final SQLiteStatement insert;
-    public final SQLiteStatement update;
-    final SQLiteStatement deleteById;
-    final String selectUids;
+public interface ProgramStoreInterface extends IdentifiableObjectStore<ProgramModel> {
 
-    public SQLStatementWrapper(SQLStatementBuilder builder, DatabaseAdapter databaseAdapter) {
-        this.insert = databaseAdapter.compileStatement(builder.insert());
-        this.update = databaseAdapter.compileStatement(builder.update());
-        this.deleteById = databaseAdapter.compileStatement(builder.deleteById());
-        this.selectUids = builder.selectUids();
-    }
+    Set<String> queryWithoutRegistrationProgramUids() throws RuntimeException;
 }

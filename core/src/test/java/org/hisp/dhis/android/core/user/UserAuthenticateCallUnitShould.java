@@ -51,7 +51,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -75,7 +74,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -167,47 +165,10 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
                 systemInfoStore, userStore,
                 organisationUnitHandlerFactory, dbWipeCall,"test_user_name", "test_user_password");
 
-        when(organisationUnit.uid()).thenReturn("test_organisation_unit_uid");
-        when(organisationUnit.code()).thenReturn("test_organisation_unit_code");
-        when(organisationUnit.name()).thenReturn("test_organisation_unit_name");
-        when(organisationUnit.displayName()).thenReturn("test_organisation_unit_display_name");
-        when(organisationUnit.created()).thenReturn(created);
-        when(organisationUnit.lastUpdated()).thenReturn(lastUpdated);
-        when(organisationUnit.shortName()).thenReturn("test_organisation_unit_short_name");
-        when(organisationUnit.displayShortName()).thenReturn(
-                "test_organisation_unit_display_short_name");
-        when(organisationUnit.description()).thenReturn("test_organisation_unit_description");
-        when(organisationUnit.displayDescription()).thenReturn(
-                "test_organisation_unit_display_description");
-        when(organisationUnit.path()).thenReturn("test_organisation_unit_path");
-        when(organisationUnit.openingDate()).thenReturn(created);
-        when(organisationUnit.closedDate()).thenReturn(lastUpdated);
-        when(organisationUnit.level()).thenReturn(4);
-        when(organisationUnit.parent()).thenReturn(null);
 
         organisationUnits = Arrays.asList(organisationUnit);
 
         when(user.uid()).thenReturn("test_user_uid");
-        when(user.code()).thenReturn("test_user_code");
-        when(user.name()).thenReturn("test_user_name");
-        when(user.displayName()).thenReturn("test_user_display_name");
-        when(user.created()).thenReturn(created);
-        when(user.lastUpdated()).thenReturn(lastUpdated);
-        when(user.birthday()).thenReturn("test_user_birthday");
-        when(user.education()).thenReturn("test_user_education");
-        when(user.gender()).thenReturn("test_user_gender");
-        when(user.jobTitle()).thenReturn("test_user_job_title");
-        when(user.surname()).thenReturn("test_user_surname");
-        when(user.firstName()).thenReturn("test_user_first_name");
-        when(user.introduction()).thenReturn("test_user_introduction");
-        when(user.employer()).thenReturn("test_user_employer");
-        when(user.interests()).thenReturn("test_user_interests");
-        when(user.languages()).thenReturn("test_user_languages");
-        when(user.email()).thenReturn("test_user_email");
-        when(user.phoneNumber()).thenReturn("test_user_phone_number");
-        when(user.nationality()).thenReturn("test_user_nationality");
-        when(user.organisationUnits()).thenReturn(organisationUnits);
-
         when(systemInfo.serverDate()).thenReturn(serverDate);
 
         when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(userCall);
@@ -285,11 +246,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         userAuthenticateCall.call();
 
-        InOrder transactionMethodsOrder = inOrder(databaseAdapter);
-        transactionMethodsOrder.verify(databaseAdapter).beginNewTransaction();
-        verify(transaction).begin();
-        verify(transaction).setSuccessful();
-        verify(transaction).end();
+        verifyTransactionComplete();
 
         verify(authenticatedUserStore, times(1)).insert(
                 "test_user_uid", base64("test_user_name", "test_user_password"));
@@ -308,11 +265,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         userAuthenticateCall.call();
 
-        // ensure that transaction is created
-        verify(databaseAdapter).beginNewTransaction();
-        verify(transaction).begin();
-        verify(transaction).setSuccessful();
-        verify(transaction).end();
+        verifyTransactionComplete();
 
         // stores must not be invoked
         verify(authenticatedUserStore, times(1)).insert(anyString(), anyString());

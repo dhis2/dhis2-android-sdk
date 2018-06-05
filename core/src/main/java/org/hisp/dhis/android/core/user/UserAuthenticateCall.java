@@ -84,6 +84,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     // username and password of candidate
     private final String username;
     private final String password;
+    private final String apiURL;
 
     UserAuthenticateCall(
             @NonNull DatabaseAdapter databaseAdapter,
@@ -98,7 +99,8 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             @NonNull OrganisationUnitHandlerFactory organisationUnitHandlerFactory,
             @NonNull Callable<Void> dbWipe,
             @NonNull String username,
-            @NonNull String password) {
+            @NonNull String password,
+            @NonNull String apiURL) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
 
@@ -113,9 +115,11 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         this.organisationUnitHandlerFactory = organisationUnitHandlerFactory;
         this.dbWipe = dbWipe;
 
-        // credentials
         this.username = username;
         this.password = password;
+
+        this.apiURL = apiURL;
+
     }
 
     @Override
@@ -181,7 +185,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         UserModel lastUser = userStore.selectFirst(UserModel.factory);
         return lastUser != null && lastSystemInfo != null && (
                 !lastUser.uid().equals(newUser.uid()) ||
-                        !(lastSystemInfo.contextPath() + "/api/").equals(retrofit.baseUrl().toString()));
+                        !(lastSystemInfo.contextPath() + "/api/").equals(apiURL));
     }
 
     private void handleUser(User user, GenericCallData genericCallData) {
@@ -214,7 +218,8 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                 FACTORY,
                 LogOutUserCallable.createToWipe(databaseAdapter),
                 username,
-                password
+                password,
+                retrofit.baseUrl().toString()
         );
     }
 

@@ -139,6 +139,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     private UserAuthenticateCall.OrganisationUnitHandlerFactory organisationUnitHandlerFactory;
 
+    private String baseEndpoint;
+
     // call we are testing
     private Call<User> userAuthenticateCall;
 
@@ -164,8 +166,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(user.uid()).thenReturn(UID);
         when(userModel.uid()).thenReturn(UID);
         when(systemInfo.serverDate()).thenReturn(serverDate);
-        when(systemInfo.contextPath()).thenReturn(dhis2MockServer.getBaseEndpoint());
-        when(systemInfoModel.contextPath()).thenReturn(dhis2MockServer.getBaseEndpoint());
+
+        baseEndpoint = "https://dhis-instance.org";
+        when(systemInfo.contextPath()).thenReturn(baseEndpoint);
 
         when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(authenticateAPICall);
 
@@ -186,7 +189,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         return new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
                 systemInfoStore, userStore, organisationUnitHandlerFactory, dbWipeCall,
-                username, password);
+                username, password, baseEndpoint + "/api/");
     }
 
     @Test(expected = D2CallException.class)

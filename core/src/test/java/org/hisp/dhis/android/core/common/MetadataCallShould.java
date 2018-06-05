@@ -120,7 +120,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<List<Category>> categoryEndpointCall;
 
     @Mock
-    private Call<Response<Payload<CategoryCombo>>> categoryComboEndpointCall;
+    private Call<List<CategoryCombo>> categoryComboEndpointCall;
 
     @Mock
     private Call<Response<Payload<Program>>> programParentCall;
@@ -144,7 +144,7 @@ public class MetadataCallShould extends BaseCallShould {
     private GenericCallFactory<List<Category>> categoryCallFactory;
 
     @Mock
-    private SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
+    private GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory;
 
     @Mock
     private SimpleCallFactory<Payload<Program>> programParentCallFactory;
@@ -172,7 +172,6 @@ public class MetadataCallShould extends BaseCallShould {
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
 
         // Payloads
-        when(categoryComboPayload.items()).thenReturn(Collections.singletonList(categoryCombo));
         when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
         when(dataElementPayload.items()).thenReturn(Collections.singletonList(dataElement));
 
@@ -193,7 +192,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemSettingEndpointCall.call()).thenReturn(systemSetting);
         when(userCall.call()).thenReturn(user);
         when(categoryEndpointCall.call()).thenReturn(Lists.newArrayList(category));
-        when(categoryComboEndpointCall.call()).thenReturn(Response.success(categoryComboPayload));
+        when(categoryComboEndpointCall.call()).thenReturn(Lists.newArrayList(categoryCombo));
         when(programParentCall.call()).thenReturn(Response.success(programPayload));
         when(organisationUnitEndpointCall.call()).thenReturn(Response.success(organisationUnitPayload));
         when(dataSetParentCall.call()).thenReturn(Response.success(dataElementPayload));
@@ -260,14 +259,14 @@ public class MetadataCallShould extends BaseCallShould {
     public void fail_when_category_call_fail() throws Exception {
         when(categoryEndpointCall.call()).thenReturn(errorResponse);
         verifyFail(metadataCall.call());
-    }*/
+    }
 
     @Test
     @SuppressWarnings("unchecked")
     public void fail_when_category_combo_call_fail() throws Exception {
         when(categoryComboEndpointCall.call()).thenReturn(errorResponse);
         verifyFail(metadataCall.call());
-    }
+    }*/
 
     @Test
     @SuppressWarnings("unchecked")

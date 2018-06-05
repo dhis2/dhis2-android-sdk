@@ -71,7 +71,7 @@ public class MetadataCall extends SyncCall<Response> {
     private final GenericCallFactory<SystemSetting> systemSettingCallFactory;
     private final GenericCallFactory<User> userCallFactory;
     private final GenericCallFactory<List<Category>> categoryCallFactory;
-    private final SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
+    private final GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory;
     private final SimpleCallFactory<Payload<Program>> programParentCallFactory;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
     private final DataSetParentCall.Factory dataSetParentCallFactory;
@@ -82,7 +82,7 @@ public class MetadataCall extends SyncCall<Response> {
                         @NonNull GenericCallFactory<SystemSetting> systemSettingCallFactory,
                         @NonNull GenericCallFactory<User> userCallFactory,
                         @NonNull GenericCallFactory<List<Category>> categoryCallFactory,
-                        @NonNull SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory,
+                        @NonNull GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory,
                         @NonNull SimpleCallFactory<Payload<Program>> programParentCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory) {
@@ -117,12 +117,7 @@ public class MetadataCall extends SyncCall<Response> {
             executor.executeD2Call(systemSettingCallFactory.create(genericCallData));
             User user = executor.executeD2Call(userCallFactory.create(genericCallData));
             executor.executeD2Call(categoryCallFactory.create(genericCallData));
-
-            Response<Payload<CategoryCombo>> categoryComboResponse
-                    = categoryComboCallFactory.create(genericCallData).call();
-            if (!categoryComboResponse.isSuccessful()) {
-                return categoryComboResponse;
-            }
+            executor.executeD2Call(categoryComboCallFactory.create(genericCallData));
 
             Response<Payload<Program>> programResponse = programParentCallFactory.create(genericCallData).call();
             if (!programResponse.isSuccessful()) {

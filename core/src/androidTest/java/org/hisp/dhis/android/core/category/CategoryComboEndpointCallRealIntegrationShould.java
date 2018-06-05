@@ -6,7 +6,6 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
@@ -16,8 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import retrofit2.Response;
-
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTestCase {
@@ -41,19 +39,14 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertNotCombosInDB();
         assertThereAreNotCategoryCombosLinkInDB();
 
-        Call<Response<Payload<CategoryCombo>>> categoryComboEndpointCall =
+        Call<List<CategoryCombo>> categoryComboEndpointCall =
                 CategoryComboEndpointCall.FACTORY.create(
                 GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date()));
-        Response<Payload<CategoryCombo>> responseCategory = categoryComboEndpointCall.call();
+        List<CategoryCombo> categoryCombos = categoryComboEndpointCall.call();
 
-        assertResponseIsCorrect(responseCategory);
+        assertFalse(categoryCombos.isEmpty());
 
         assertDataIsProperlyParsedAndInsertedInTheDB();
-    }
-
-    private void assertResponseIsCorrect(Response<Payload<CategoryCombo>> responseCategory) {
-        assertTrue(responseCategory.isSuccessful());
-        assertTrue(hasCombos(responseCategory));
     }
 
     private void assertDataIsProperlyParsedAndInsertedInTheDB() {
@@ -104,9 +97,5 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         IdentifiableObjectStore<CategoryOptionModel> categoryOptionStore = CategoryOptionStore.create(databaseAdapter());
         Set<String> categoryOptionUids = categoryOptionStore.selectUids();
         assertTrue(categoryOptionUids.size() > 0);
-    }
-
-    private boolean hasCombos(Response<Payload<CategoryCombo>> response) {
-        return !response.body().items().isEmpty();
     }
 }

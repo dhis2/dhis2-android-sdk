@@ -7,6 +7,8 @@ import org.junit.Before;
 
 import java.io.IOException;
 
+import retrofit2.Response;
+
 import static com.google.common.truth.Truth.assertThat;
 
 public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
@@ -47,12 +49,10 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     //@Test
     public void response_successful_on_sync_meta_data_once() throws Exception {
-        retrofit2.Response response = null;
         d2.logout().call();
-        response = d2.logIn("android", "Android123").call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.logIn("android", "Android123").call();
 
-        response = d2.syncMetaData().call();
+        Response response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 
         //TODO: add aditional sync + break point.
@@ -64,41 +64,33 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
 
     //@Test
     public void response_successful_on_sync_meta_data_two_times() throws Exception {
-        retrofit2.Response response = null;
         d2.logout().call();
-        response = d2.logIn("android", "Android123").call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.logIn("android", "Android123").call();
 
         //first sync:
-        response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        Response response1 = d2.syncMetaData().call();
+        assertThat(response1.isSuccessful()).isTrue();
 
         //second sync:
-        response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        Response response2 = d2.syncMetaData().call();
+        assertThat(response2.isSuccessful()).isTrue();
     }
 
     //@Test
     public void response_successful_on_login_wipe_db_and_login() throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn("android", "Android123").call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.logIn("android", "Android123").call();
 
         d2.wipeDB().call();
 
-        response = d2.logIn("android", "Android123").call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.logIn("android", "Android123").call();
     }
 
     //@Test
     public void response_successful_on_login_logout_and_login() throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn("android", "Android123").call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.logIn("android", "Android123").call();
 
         d2.logout().call();
 
-        response = d2.logIn("android", "Android123").call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.logIn("android", "Android123").call();
     }
 }

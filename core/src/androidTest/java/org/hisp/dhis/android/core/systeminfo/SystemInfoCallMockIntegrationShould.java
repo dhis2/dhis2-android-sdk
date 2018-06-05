@@ -83,7 +83,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
                 "    \"lastAnalyticsTableSuccess\": \"2017-01-26T23:19:34.009\",\n" +
                 "    \"intervalSinceLastAnalyticsTableSuccess\": \"759 h, 36 m, 11 s\",\n" +
                 "    \"lastAnalyticsTableRuntime\": \"5 m, 17 s\",\n" +
-                "    \"version\": \"2.27-SNAPSHOT\",\n" +
+                "    \"version\": \"2.29\",\n" +
                 "    \"revision\": \"0223dac\",\n" +
                 "    \"buildTime\": \"2017-02-27T11:32:16.000\",\n" +
                 "    \"jasperReportsVersion\": \"6.3.1\",\n" +
@@ -125,12 +125,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
         Cursor systemInfoCursor = database().query(SystemInfoModel.TABLE, SYSTEM_INFO_PROJECTION,
                 null, null, null, null, null);
 
-        assertThatCursor(systemInfoCursor).hasRow(
-                "2017-02-27T14:55:45.808",
-                "yyyy-mm-dd",
-                "2.27-SNAPSHOT",
-                "https://play.dhis2.org/dev"
-        ).isExhausted();
+        assertCursor(systemInfoCursor);
     }
 
     @Test
@@ -162,11 +157,14 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
                 null, null, null, null, null);
 
         // check that systemInfo is updated
+        assertCursor(systemInfoCursor);
+    }
 
-        assertThatCursor(systemInfoCursor).hasRow(
+    private void assertCursor(Cursor cursor) {
+        assertThatCursor(cursor).hasRow(
                 "2017-02-27T14:55:45.808",
                 "yyyy-mm-dd",
-                "2.27-SNAPSHOT",
+                "2.29",
                 "https://play.dhis2.org/dev"
         ).isExhausted();
     }

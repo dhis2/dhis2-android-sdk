@@ -43,8 +43,7 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
     // @Test
     public void download_data_values() throws Exception {
         if (!d2.isUserLoggedIn().call()) {
-            retrofit2.Response loginResponse = d2.logIn("android", "Android123").call();
-            assertThat(loginResponse.isSuccessful()).isTrue();
+            d2.logIn("android", "Android123").call();
         }
 
         /*  This test won't pass independently of the sync of metadata, as the foreign keys

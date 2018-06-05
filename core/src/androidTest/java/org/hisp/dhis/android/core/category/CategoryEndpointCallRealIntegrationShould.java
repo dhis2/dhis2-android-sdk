@@ -1,8 +1,6 @@
 package org.hisp.dhis.android.core.category;
 
 
-import com.google.common.truth.Truth;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -33,8 +31,7 @@ public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase 
 
     @Test
     public void call_categories_endpoint() throws Exception {
-        Response responseLogIn = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        Truth.assertThat(responseLogIn.isSuccessful()).isTrue();
+        d2.logIn(RealServerMother.user, RealServerMother.password).call();
 
         Call<Response<Payload<Category>>> categoryEndpointCall = CategoryEndpointCall.FACTORY.create(
                 GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date())

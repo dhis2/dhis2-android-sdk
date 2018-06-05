@@ -6,7 +6,6 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
-import org.hisp.dhis.android.core.user.User;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -14,8 +13,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import retrofit2.Response;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -61,7 +58,6 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
 
     private void login() throws Exception {
         d2.logout().call();
-        Response<User> loginResponse = d2.logIn("android", "Android123").call();
-        assertThat(loginResponse.isSuccessful()).isTrue();
+        d2.logIn("android", "Android123").call();
     }
 }

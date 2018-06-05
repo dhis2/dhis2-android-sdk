@@ -67,8 +67,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
 
     private void login() throws Exception {
         if (!d2.isUserLoggedIn().call()) {
-            retrofit2.Response loginResponse = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-            assertThat(loginResponse.isSuccessful()).isTrue();
+            d2.logIn(RealServerMother.user, RealServerMother.password).call();
         }
     }
 

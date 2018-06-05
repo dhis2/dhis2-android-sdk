@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import com.google.common.truth.Truth;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericHandler;
@@ -138,8 +136,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
     private void login() {
         try {
             if (!d2.isUserLoggedIn().call()) {
-                retrofit2.Response loginResponse = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-                Truth.assertThat(loginResponse.isSuccessful()).isTrue();
+                d2.logIn(RealServerMother.user, RealServerMother.password).call();
             }
         } catch (Exception e) {
         }

@@ -50,6 +50,8 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends A
 
     private TrackedEntityAttributeReservedValueModel expiredValue;
     private TrackedEntityAttributeReservedValueModel notExpiredValue;
+    private TrackedEntityAttributeReservedValueModel temporalValidityExpiredValue;
+    private TrackedEntityAttributeReservedValueModel notExpiredTemporalValidityExpiredValue;
 
     private Date serverDate;
     private final String orgUnitUid = "orgu1";
@@ -79,8 +81,12 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends A
                 .organisationUnit(orgUnitUid)
                 .created(new Date());
 
-        expiredValue = builder.expiryDate(expiredDate).value("v1").build();
-        notExpiredValue = builder.expiryDate(notExpiredDate).value("v2").build();
+        expiredValue = builder.expiryDate(expiredDate).temporalValidityDate(null).value("v1").build();
+        notExpiredValue = builder.expiryDate(notExpiredDate).temporalValidityDate(null).value("v2").build();
+        temporalValidityExpiredValue = builder.expiryDate(notExpiredDate).temporalValidityDate(expiredDate).value("v3")
+                .build();
+        notExpiredTemporalValidityExpiredValue = builder.expiryDate(notExpiredDate).temporalValidityDate(notExpiredDate)
+                .value("v3").build();
     }
 
     @After
@@ -95,6 +101,20 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends A
         store.insert(expiredValue);
         store.deleteExpired(serverDate);
         storeContains(expiredValue, false);
+    }
+
+    @Test
+    public void delete_temporal_validity_expired_reserved_values() {
+        store.insert(temporalValidityExpiredValue);
+        store.deleteExpired(serverDate);
+        storeContains(temporalValidityExpiredValue, false);
+    }
+
+    @Test
+    public void not_delete_temporal_validity_not_expired_reserved_values() {
+        store.insert(notExpiredTemporalValidityExpiredValue);
+        store.deleteExpired(serverDate);
+        storeContains(notExpiredTemporalValidityExpiredValue, true);
     }
 
     @Test

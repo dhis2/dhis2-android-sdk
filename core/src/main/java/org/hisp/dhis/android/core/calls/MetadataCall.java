@@ -68,7 +68,7 @@ public class MetadataCall extends SyncCall<Response> {
     private final Retrofit retrofit;
 
     private final BasicCallFactory<SystemInfo> systemInfoCallFactory;
-    private final SimpleCallFactory<SystemSetting> systemSettingCallFactory;
+    private final GenericCallFactory<SystemSetting> systemSettingCallFactory;
     private final GenericCallFactory<User> userCallFactory;
     private final SimpleCallFactory<Payload<Category>> categoryCallFactory;
     private final SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
@@ -79,7 +79,7 @@ public class MetadataCall extends SyncCall<Response> {
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
                         @NonNull Retrofit retrofit,
                         @NonNull BasicCallFactory<SystemInfo> systemInfoCallFactory,
-                        @NonNull SimpleCallFactory<SystemSetting> systemSettingCallFactory,
+                        @NonNull GenericCallFactory<SystemSetting> systemSettingCallFactory,
                         @NonNull GenericCallFactory<User> userCallFactory,
                         @NonNull SimpleCallFactory<Payload<Category>> categoryCallFactory,
                         @NonNull SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory,
@@ -113,10 +113,7 @@ public class MetadataCall extends SyncCall<Response> {
             GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                     systemInfo.serverDate());
 
-            Response<SystemSetting> systemSettingResponse = systemSettingCallFactory.create(genericCallData).call();
-            if (!systemSettingResponse.isSuccessful()) {
-                return systemSettingResponse;
-            }
+            systemSettingCallFactory.create(genericCallData).call();
 
             User user = userCallFactory.create(genericCallData).call();
 

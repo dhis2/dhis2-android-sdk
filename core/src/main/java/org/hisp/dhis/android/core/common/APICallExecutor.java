@@ -46,7 +46,11 @@ public final class APICallExecutor {
         try {
             Response<Payload<P>> response = call.execute();
             if (response.isSuccessful()) {
-                return response.body().items();
+                if (response.body() == null) {
+                    throw responseException(response);
+                } else {
+                    return response.body().items();
+                }
             } else {
                 throw responseException(response);
             }
@@ -60,7 +64,11 @@ public final class APICallExecutor {
         try {
             Response<P> response = call.execute();
             if (response.isSuccessful()) {
-                return response.body();
+                if (response.body() == null) {
+                    throw responseException(response);
+                } else {
+                    return response.body();
+                }
             } else {
                 throw responseException(response);
             }

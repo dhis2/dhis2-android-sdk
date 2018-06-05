@@ -113,7 +113,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<SystemInfo> systemInfoEndpointCall;
 
     @Mock
-    private Call<Response<SystemSetting>> systemSettingEndpointCall;
+    private Call<SystemSetting> systemSettingEndpointCall;
 
     @Mock
     private Call<User> userCall;
@@ -137,7 +137,7 @@ public class MetadataCallShould extends BaseCallShould {
     private BasicCallFactory<SystemInfo> systemInfoCallFactory;
 
     @Mock
-    private SimpleCallFactory<SystemSetting> systemSettingCallFactory;
+    private GenericCallFactory<SystemSetting> systemSettingCallFactory;
 
     @Mock
     private GenericCallFactory<User> userCallFactory;
@@ -193,7 +193,7 @@ public class MetadataCallShould extends BaseCallShould {
 
         // Calls
         when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
-        when(systemSettingEndpointCall.call()).thenReturn(Response.success(systemSetting));
+        when(systemSettingEndpointCall.call()).thenReturn(systemSetting);
         when(userCall.call()).thenReturn(user);
         when(categoryEndpointCall.call()).thenReturn(Response.success(categoryPayload));
         when(categoryComboEndpointCall.call()).thenReturn(Response.success(categoryComboPayload));
@@ -241,14 +241,14 @@ public class MetadataCallShould extends BaseCallShould {
     public void fail_when_system_info_call_fail() throws Exception {
         when(systemInfoEndpointCall.call()).thenThrow(d2CallException);
         verifyFail(metadataCall.call());
-    }*/
+    }
 
     @Test
     @SuppressWarnings("unchecked")
     public void fail_when_system_setting_call_fail() throws Exception {
-        when(systemSettingEndpointCall.call()).thenReturn(errorResponse);
+        when(systemInfoEndpointCall.call()).thenThrow(d2CallException);
         verifyFail(metadataCall.call());
-    }
+    }*/
 
     /* TODO will be fixed in ANDROSDK-186
     @Test

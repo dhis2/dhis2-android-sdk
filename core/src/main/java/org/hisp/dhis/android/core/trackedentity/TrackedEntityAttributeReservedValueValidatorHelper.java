@@ -39,8 +39,8 @@ public final class TrackedEntityAttributeReservedValueValidatorHelper {
     TrackedEntityAttributeReservedValueValidatorHelper() {
     }
 
-    Date getExpiryDateCode(String idCode) {
-        List<String> matches = getCurrentDatePatternStrList(idCode);
+    Date getExpiryDateCode(String pattern) throws IllegalArgumentException {
+        List<String> matches = getCurrentDatePatternStrList(pattern);
 
         boolean yearly = false;
         boolean monthly = false;
@@ -82,7 +82,7 @@ public final class TrackedEntityAttributeReservedValueValidatorHelper {
         return matches;
     }
 
-    Date nextExpiryDate(boolean yearly, boolean monthly, boolean weekly) {
+    Date nextExpiryDate(boolean yearly, boolean monthly, boolean weekly) throws IllegalArgumentException {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.clear(Calendar.MINUTE);

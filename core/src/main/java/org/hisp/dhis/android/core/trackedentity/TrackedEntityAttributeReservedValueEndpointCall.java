@@ -45,9 +45,10 @@ public final class TrackedEntityAttributeReservedValueEndpointCall extends
     private TrackedEntityAttributeReservedValueEndpointCall(
             GenericCallData data, TrackedEntityAttributeReservedValueService service,
             GenericHandler<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> handler,
-            TrackedEntityAttributeReservedValueQuery query) {
+            TrackedEntityAttributeReservedValueQuery query, String trackedEntityAttributePattern) {
         super(data, handler, ResourceModel.Type.TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE,
-                new TrackedEntityAttributeReservedValueModelBuilder(query.organisationUnit()), query);
+                new TrackedEntityAttributeReservedValueModelBuilder(
+                        query.organisationUnit(), trackedEntityAttributePattern), query);
         this.service = service;
     }
 
@@ -72,11 +73,16 @@ public final class TrackedEntityAttributeReservedValueEndpointCall extends
         public TrackedEntityAttributeReservedValueEndpointCall create(
                 GenericCallData data, String trackedEntityAttributeUid, Integer numberToReserve,
                 OrganisationUnitModel organisationUnit) {
+
+            String trackedEntityAttributePattern = new TrackedEntityAttributeStoreImpl(data.databaseAdapter())
+                    .getPattern(trackedEntityAttributeUid);
+
             return new TrackedEntityAttributeReservedValueEndpointCall(data, data.retrofit().create(
                     TrackedEntityAttributeReservedValueService.class),
                     TrackedEntityAttributeReservedValueHandler.create(data.databaseAdapter()),
                     TrackedEntityAttributeReservedValueQuery.create(trackedEntityAttributeUid, numberToReserve,
-                            organisationUnit));
+                            organisationUnit),
+                    trackedEntityAttributePattern);
         }
     };
 }

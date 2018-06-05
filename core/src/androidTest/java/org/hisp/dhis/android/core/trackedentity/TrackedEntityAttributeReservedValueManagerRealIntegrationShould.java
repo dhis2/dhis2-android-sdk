@@ -52,6 +52,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
     private TrackedEntityAttributeReservedValueStoreInterface store;
     private String organisationUnitUid = "org_unit_uid";
     private String ownerUid1 = "xs8A6tQJY0s";
+    private String pattern = "CURRENT_DATE(YYYYMM) + \"-\" + CURRENT_DATE(ww)";
     private D2 d2;
 
     // object to test
@@ -67,6 +68,8 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         store = TrackedEntityAttributeReservedValueStore.create(databaseAdapter());
         IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore =
                 OrganisationUnitStore.create(databaseAdapter());
+        TrackedEntityAttributeStore trackedEntityAttributeStore =
+                new TrackedEntityAttributeStoreImpl(databaseAdapter());
 
         manager = new TrackedEntityAttributeReservedValueManager(databaseAdapter(), d2.retrofit(),
                 store, organisationUnitStore);
@@ -90,8 +93,13 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
         organisationUnitStore.insert(organisationUnit);
 
+        trackedEntityAttributeStore.insert(ownerUid1, null, null, null, null, null,
+                null, null, null, null, pattern, null,
+                null, null, null, null, null, null,
+                null, null, null, null, null);
+
         handler.handleMany(trackedEntityAttributeReservedValues,
-                new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit));
+                new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit, ""));
     }
 
     //@Test

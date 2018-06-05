@@ -58,8 +58,6 @@ import org.mockito.stubbing.Answer;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
@@ -100,7 +98,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private AuthenticatedUserStore authenticatedUserStore;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<User> userCall;
+    private retrofit2.Call<User> authenticateAPICall;
 
     @Captor
     private ArgumentCaptor<String> credentialsCaptor;
@@ -109,21 +107,10 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private ArgumentCaptor<Fields<User>> filterCaptor;
 
     @Mock
-    private OrganisationUnit organisationUnit;
-
-    @Mock
     private User user;
 
     @Mock
     private SystemInfo systemInfo;
-
-    @Mock
-    private Date created;
-
-    List<OrganisationUnit> organisationUnits;
-
-    @Mock
-    private Date lastUpdated;
 
     @Mock
     private AuthenticatedUserModel authenticatedUser;
@@ -143,6 +130,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Mock
     private Callable<Void> dbWipeCall;
 
+    private UserAuthenticateCall.OrganisationUnitHandlerFactory organisationUnitHandlerFactory;
+
     // call we are testing
     private Call<User> userAuthenticateCall;
 
@@ -151,27 +140,20 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
 
-        UserAuthenticateCall.OrganisationUnitHandlerFactory organisationUnitHandlerFactory =
-                new UserAuthenticateCall.OrganisationUnitHandlerFactory() {
-                    @Override
-                    public GenericHandler<OrganisationUnit, OrganisationUnitModel>
-                    organisationUnitHandler(DatabaseAdapter databaseAdapter, User user) {
-                        return organisationUnitHandler;
-                    }
-                };
+        organisationUnitHandlerFactory = new UserAuthenticateCall.OrganisationUnitHandlerFactory() {
+            @Override
+            public GenericHandler<OrganisationUnit, OrganisationUnitModel>
+            organisationUnitHandler(DatabaseAdapter databaseAdapter, User user) {
+                return organisationUnitHandler;
+            }
+        };
 
-        userAuthenticateCall = new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory,
-                userService, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoStore, userStore,
-                organisationUnitHandlerFactory, dbWipeCall,"test_user_name", "test_user_password");
-
-
-        organisationUnits = Arrays.asList(organisationUnit);
+        userAuthenticateCall = instantiateCall("test_user_name", "test_user_password");
 
         when(user.uid()).thenReturn("test_user_uid");
         when(systemInfo.serverDate()).thenReturn(serverDate);
 
-        when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(userCall);
+        when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(authenticateAPICall);
 
         when(systemInfoCallFactory.create(databaseAdapter, retrofit)).thenReturn(systemInfoEndpointCall);
         when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
@@ -185,13 +167,29 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         });
     }
 
+    private UserAuthenticateCall instantiateCall(String username, String password) {
+        return new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory,
+                userService, userHandler, resourceHandler, authenticatedUserStore,
+                systemInfoStore, userStore, organisationUnitHandlerFactory, dbWipeCall,
+                username, password);
+    }
+
+    @Test(expected = D2CallException.class)
+    public void throw_d2_call_exception_for_null_username() throws Exception {
+        instantiateCall(null, "test_user_password").call();
+    }
+
+    @Test(expected = D2CallException.class)
+    public void throw_d2_call_exception_for_null_password() throws Exception {
+        instantiateCall("test_username", null).call();
+    }
+
     @Test
-    @SuppressWarnings("unchecked")
     public void invoke_server_with_correct_parameters_after_call() throws Exception {
-        when(userCall.execute()).thenReturn(Response.success(user));
+        when(authenticateAPICall.execute()).thenReturn(Response.success(user));
         when(userService.authenticate(
                 credentialsCaptor.capture(), filterCaptor.capture())
-        ).thenReturn(userCall);
+        ).thenReturn(authenticateAPICall);
 
         userAuthenticateCall.call();
 
@@ -202,7 +200,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void not_invoke_stores_on_exception_on_call() throws IOException {
-        when(userCall.execute()).thenThrow(IOException.class);
+        when(authenticateAPICall.execute()).thenThrow(IOException.class);
 
         try {
             userAuthenticateCall.call();
@@ -221,7 +219,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void not_invoke_stores_on_exception_on_request_fail() throws Exception {
-        when(userCall.execute()).thenReturn(
+        when(authenticateAPICall.execute()).thenReturn(
                 Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
                         ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
@@ -242,7 +240,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void persist_objects_after_successful_call() throws Exception {
-        when(userCall.execute()).thenReturn(Response.success(user));
+        when(authenticateAPICall.execute()).thenReturn(Response.success(user));
 
         userAuthenticateCall.call();
 
@@ -261,7 +259,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     public void not_fail_after_call_a_user_without_organisation_unit() throws Exception {
         when(user.organisationUnits()).thenReturn(null);
-        when(userCall.execute()).thenReturn(Response.success(user));
+        when(authenticateAPICall.execute()).thenReturn(Response.success(user));
 
         userAuthenticateCall.call();
 
@@ -276,7 +274,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void mark_as_executed_when_call_is_success() throws Exception {
-        when(userCall.execute()).thenReturn(Response.success(user));
+        when(authenticateAPICall.execute()).thenReturn(Response.success(user));
 
         userAuthenticateCall.call();
 
@@ -294,7 +292,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void mark_as_executed_when_call_is_failure() throws Exception {
-        when(userCall.execute()).thenThrow(IOException.class);
+        when(authenticateAPICall.execute()).thenThrow(IOException.class);
 
         try {
             userAuthenticateCall.call();

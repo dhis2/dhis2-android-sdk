@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -36,6 +37,9 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class UserModel extends BaseIdentifiableObjectModel {
@@ -58,6 +62,13 @@ public abstract class UserModel extends BaseIdentifiableObjectModel {
         public static final String EMAIL = "email";
         public static final String PHONE_NUMBER = "phoneNumber";
         public static final String NATIONALITY = "nationality";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    BIRTHDAY, EDUCATION, GENDER, JOB_TITLE, SURNAME, FIRST_NAME, INTRODUCTION,
+                    EMPLOYER, INTERESTS, LANGUAGES, EMAIL, PHONE_NUMBER, NATIONALITY);
+        }
     }
 
     @Nullable
@@ -120,6 +131,24 @@ public abstract class UserModel extends BaseIdentifiableObjectModel {
     @NonNull
     public static UserModel create(Cursor cursor) {
         return AutoValue_UserModel.createFromCursor(cursor);
+    }
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 7, birthday());
+        sqLiteBind(sqLiteStatement, 8, education());
+        sqLiteBind(sqLiteStatement, 9, gender());
+        sqLiteBind(sqLiteStatement, 10, jobTitle());
+        sqLiteBind(sqLiteStatement, 11, surname());
+        sqLiteBind(sqLiteStatement, 12, firstName());
+        sqLiteBind(sqLiteStatement, 13, introduction());
+        sqLiteBind(sqLiteStatement, 14, employer());
+        sqLiteBind(sqLiteStatement, 15, interests());
+        sqLiteBind(sqLiteStatement, 16, languages());
+        sqLiteBind(sqLiteStatement, 17, email());
+        sqLiteBind(sqLiteStatement, 18, phoneNumber());
+        sqLiteBind(sqLiteStatement, 19, nationality());
     }
 
     @AutoValue.Builder

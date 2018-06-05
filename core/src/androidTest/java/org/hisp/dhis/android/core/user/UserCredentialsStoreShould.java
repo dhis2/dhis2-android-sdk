@@ -91,7 +91,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
         store = new UserCredentialsStoreImpl(databaseAdapter());
 
         // row which will be referenced
-        ContentValues userRow = UserStoreShould.create(1L, USER_UID);
+        ContentValues userRow = UserModel.builder().id(1L).uid(USER_UID).build().toContentValues();
         database().insert(UserModel.TABLE, null, userRow);
     }
 
@@ -136,7 +136,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
                 date, date,
                 USER_CREDENTIALS_USERNAME,
                 deferredUid);
-        ContentValues userRow = UserStoreShould.create(2L, deferredUid);
+        ContentValues userRow = UserModel.builder().id(2L).uid(deferredUid).build().toContentValues();
         database().insert(UserModel.TABLE, null, userRow);
 
         database().setTransactionSuccessful();

@@ -28,34 +28,16 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class UserStore {
+    private UserStore() {}
 
-import java.util.Date;
-
-public interface UserStore extends DeletableStore{
-    long insert(
-            @NonNull String uid, @Nullable String code, @Nullable String name, @Nullable String displayName,
-            @Nullable Date created, @Nullable Date lastUpdated,
-            @Nullable String birthday, @Nullable String education, @Nullable String gender,
-            @Nullable String jobTitle, @Nullable String surname, @Nullable String firstName,
-            @Nullable String introduction, @Nullable String employer, @Nullable String interests,
-            @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
-            @Nullable String nationality);
-
-    int update(
-            @NonNull String uid, @Nullable String code, @Nullable String name, @Nullable String displayName,
-            @Nullable Date created, @Nullable Date lastUpdated,
-            @Nullable String birthday, @Nullable String education, @Nullable String gender,
-            @Nullable String jobTitle, @Nullable String surname, @Nullable String firstName,
-            @Nullable String introduction, @Nullable String employer, @Nullable String interests,
-            @Nullable String languages, @Nullable String email, @Nullable String phoneNumber,
-            @Nullable String nationality, @NonNull String whereUid);
-
-    int delete(@NonNull String uid);
-
-    int delete();
+    public static IdentifiableObjectStore<UserModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.identifiableStore(databaseAdapter, UserModel.TABLE,
+                new UserModel.Columns().all());
+    }
 
 }

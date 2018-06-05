@@ -69,6 +69,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -84,10 +85,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private UserService userService;
 
     @Mock
-    private UserHandler userHandler;
-
-    @Mock
-    private UserCredentialsHandler userCredentialsHandler;
+    private GenericHandler<User, UserModel> userHandler;
 
     @Mock
     private ResourceHandler resourceHandler;
@@ -109,9 +107,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Mock
     private OrganisationUnit organisationUnit;
-
-    @Mock
-    private UserCredentials userCredentials;
 
     @Mock
     private User user;
@@ -154,16 +149,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
                 };
 
         userAuthenticateCall = new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory,
-                userService, userHandler, userCredentialsHandler, resourceHandler, authenticatedUserStore,
+                userService, userHandler, resourceHandler, authenticatedUserStore,
                 organisationUnitHandlerFactory, "test_user_name", "test_user_password");
-
-        when(userCredentials.uid()).thenReturn("test_user_credentials_uid");
-        when(userCredentials.code()).thenReturn("test_user_credentials_code");
-        when(userCredentials.name()).thenReturn("test_user_credentials_name");
-        when(userCredentials.displayName()).thenReturn("test_user_credentials_display_name");
-        when(userCredentials.created()).thenReturn(created);
-        when(userCredentials.lastUpdated()).thenReturn(lastUpdated);
-        when(userCredentials.username()).thenReturn("test_user_credentials_username");
 
         when(organisationUnit.uid()).thenReturn("test_organisation_unit_uid");
         when(organisationUnit.code()).thenReturn("test_organisation_unit_code");
@@ -204,7 +191,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(user.email()).thenReturn("test_user_email");
         when(user.phoneNumber()).thenReturn("test_user_phone_number");
         when(user.nationality()).thenReturn("test_user_nationality");
-        when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(organisationUnits);
 
         when(systemInfo.serverDate()).thenReturn(serverDate);
@@ -235,38 +221,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         assertThat(basic("test_user_name", "test_user_password"))
                 .isEqualTo(credentialsCaptor.getValue());
-
-        assertThat(filterCaptor.getValue().fields())
-                .contains(User.uid, User.code, User.name, User.displayName, User.created,
-                        User.lastUpdated, User.birthday, User.education, User.gender, User.jobTitle,
-                        User.surname, User.firstName, User.introduction, User.employer,
-                        User.interests,
-                        User.languages, User.email, User.phoneNumber, User.nationality,
-                        User.userCredentials.with(
-                                UserCredentials.uid,
-                                UserCredentials.code,
-                                UserCredentials.name,
-                                UserCredentials.displayName,
-                                UserCredentials.created,
-                                UserCredentials.lastUpdated,
-                                UserCredentials.username),
-                        User.organisationUnits.with(
-                                OrganisationUnit.uid,
-                                OrganisationUnit.code,
-                                OrganisationUnit.name,
-                                OrganisationUnit.displayName,
-                                OrganisationUnit.created,
-                                OrganisationUnit.lastUpdated,
-                                OrganisationUnit.shortName,
-                                OrganisationUnit.displayShortName,
-                                OrganisationUnit.description,
-                                OrganisationUnit.displayDescription,
-                                OrganisationUnit.path,
-                                OrganisationUnit.openingDate,
-                                OrganisationUnit.closedDate,
-                                OrganisationUnit.level,
-                                OrganisationUnit.parent.with(OrganisationUnit.uid),
-                                OrganisationUnit.ancestors.with(OrganisationUnit.uid, OrganisationUnit.displayName)));
     }
 
     @Test
@@ -288,7 +242,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
             // stores must not be invoked
             verify(authenticatedUserStore, never()).insert(anyString(), anyString());
             verifyNoMoreInteractions(userHandler);
-            verifyNoMoreInteractions(userCredentialsHandler);
             verifyNoMoreInteractions(organisationUnitHandler);
         }
     }
@@ -314,7 +267,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         verify(authenticatedUserStore).query();
         verifyNoMoreInteractions(authenticatedUserStore);
         verifyNoMoreInteractions(userHandler);
-        verifyNoMoreInteractions(userCredentialsHandler);
         verifyNoMoreInteractions(organisationUnitHandler);
     }
 
@@ -333,10 +285,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         verify(authenticatedUserStore, times(1)).insert(
                 "test_user_uid", base64("test_user_name", "test_user_password"));
 
-        verify(userHandler, times(1)).handleUser(user);
-
-        verify(userCredentialsHandler, times(1)).handleUserCredentials(
-                userCredentials, user);
+        verify(userHandler, times(1)).handle(eq(user), any(UserModelBuilder.class));
 
         verify(organisationUnitHandler).handleMany(
                 anyListOf(OrganisationUnit.class), any(OrganisationUnitModelBuilder.class));
@@ -358,10 +307,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         // stores must not be invoked
         verify(authenticatedUserStore, times(1)).insert(anyString(), anyString());
-        verify(userHandler, times(1)).handleUser(user);
-
-        verify(userCredentialsHandler, times(1)).handleUserCredentials(
-                userCredentials, user);
+        verify(userHandler, times(1)).handle(eq(user), any(UserModelBuilder.class));
 
         verifyNoMoreInteractions(organisationUnitHandler);
     }

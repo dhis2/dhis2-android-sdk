@@ -124,4 +124,11 @@ public abstract class BaseCallShould {
         verify(transaction).end();
         verify(transaction, never()).setSuccessful();
     }
+
+    protected void verifyNoTransactionStarted() {
+        verify(databaseAdapter, never()).beginNewTransaction();
+        verify(transaction, never()).begin();
+        verify(transaction, never()).setSuccessful();
+        verify(transaction, never()).end();
+    }
 }

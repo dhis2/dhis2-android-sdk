@@ -248,11 +248,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
             fail("Expected exception was not thrown");
         } catch (Exception exception) {
-            // ensure that transaction is not created
-            verify(databaseAdapter, never()).beginNewTransaction();
-            verify(transaction, never()).begin();
-            verify(transaction, never()).setSuccessful();
-            verify(transaction, never()).end();
+            verifyNoTransactionStarted();
 
             // stores must not be invoked
             verify(authenticatedUserStore, never()).insert(anyString(), anyString());
@@ -274,11 +270,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         }
 
-        // ensure that transaction is not created
-        verify(databaseAdapter, never()).beginNewTransaction();
-        verify(transaction, never()).begin();
-        verify(transaction, never()).setSuccessful();
-        verify(transaction, never()).end();
+        verifyNoTransactionStarted();
 
         // stores must not be invoked
         verify(authenticatedUserStore).query();

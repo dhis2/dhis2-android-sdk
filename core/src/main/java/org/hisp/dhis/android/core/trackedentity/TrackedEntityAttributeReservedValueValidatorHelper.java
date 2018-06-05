@@ -39,7 +39,7 @@ public final class TrackedEntityAttributeReservedValueValidatorHelper {
     TrackedEntityAttributeReservedValueValidatorHelper() {
     }
 
-    Date getExpiryDateCode(String pattern) throws IllegalArgumentException {
+    Date getExpiryDateCode(String pattern) throws IllegalStateException {
         List<String> matches = getCurrentDatePatternStrList(pattern);
 
         boolean yearly = false;
@@ -82,7 +82,7 @@ public final class TrackedEntityAttributeReservedValueValidatorHelper {
         return matches;
     }
 
-    Date nextExpiryDate(boolean yearly, boolean monthly, boolean weekly) throws IllegalArgumentException {
+    Date nextExpiryDate(boolean yearly, boolean monthly, boolean weekly) throws IllegalStateException {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.clear(Calendar.MINUTE);
@@ -90,8 +90,9 @@ public final class TrackedEntityAttributeReservedValueValidatorHelper {
         cal.clear(Calendar.MILLISECOND);
 
         if (weekly) {
+            cal.setFirstDayOfWeek(Calendar.MONDAY);
             cal.add(Calendar.WEEK_OF_YEAR, 1);
-            cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+            cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         } else if (monthly) {
             cal.add(Calendar.MONTH, 1);
             cal.set(Calendar.DAY_OF_MONTH, 1);
@@ -99,7 +100,7 @@ public final class TrackedEntityAttributeReservedValueValidatorHelper {
             cal.add(Calendar.YEAR, 1);
             cal.set(Calendar.DAY_OF_YEAR, 1);
         } else {
-            throw new IllegalArgumentException("No expiry date available for this pattern.");
+            throw new IllegalStateException("No expiry date available for this pattern.");
         }
 
         return cal.getTime();

@@ -71,7 +71,7 @@ public class TrackedEntityAttributeReservedValueModelBuilderShould extends Model
 
     @Override
     protected ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> modelBuilder() {
-        return new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit);
+        return new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit, "");
     }
 
     @Test

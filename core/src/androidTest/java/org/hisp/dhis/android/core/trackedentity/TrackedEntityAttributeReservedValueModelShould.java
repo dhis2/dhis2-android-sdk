@@ -52,10 +52,10 @@ public class TrackedEntityAttributeReservedValueModelShould extends
     private final static String OWNER_UID = "ownerUid";
     private final static String KEY = "key";
     private final static String VALUE = "value";
-    private final static String ORGANISATION_UNI = "orgUnitUid";
+    private final static String ORGANISATION_UNIT = "orgUnitUid";
 
     public TrackedEntityAttributeReservedValueModelShould() {
-        super(new TrackedEntityAttributeReservedValueModel.Columns().all(), 7);
+        super(new TrackedEntityAttributeReservedValueModel.Columns().all(), 8);
     }
 
     @Override
@@ -74,7 +74,8 @@ public class TrackedEntityAttributeReservedValueModelShould extends
                 .value(VALUE)
                 .created(CREATED)
                 .expiryDate(CREATED)
-                .organisationUnit(ORGANISATION_UNI);
+                .organisationUnit(ORGANISATION_UNIT)
+                .temporalValidityDate(CREATED);
         return modelBuilder.build();
     }
 
@@ -82,7 +83,7 @@ public class TrackedEntityAttributeReservedValueModelShould extends
     protected Object[] getModelAsObjectArray() {
         return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
                 model.ownerObject(), model.ownerUid(), model.key(), model.value(), CREATED_STR, CREATED_STR,
-                ORGANISATION_UNI);
+                ORGANISATION_UNIT, CREATED_STR);
     }
 
     @Test
@@ -96,5 +97,6 @@ public class TrackedEntityAttributeReservedValueModelShould extends
         assertThat(columnsList.contains(Columns.CREATED)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.EXPIRY_DATE)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.ORGANISATION_UNIT)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.TEMPORAL_VALIDITY_DATE)).isEqualTo(true);
     }
 }

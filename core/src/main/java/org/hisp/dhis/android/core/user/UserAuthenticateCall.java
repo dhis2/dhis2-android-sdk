@@ -181,7 +181,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         UserModel lastUser = userStore.selectFirst(UserModel.factory);
         return lastUser != null && lastSystemInfo != null && (
                 !lastUser.uid().equals(newUser.uid()) ||
-                        !lastSystemInfo.contextPath().equals(retrofit.baseUrl().toString()));
+                        !(lastSystemInfo.contextPath() + "/api/").equals(retrofit.baseUrl().toString()));
     }
 
     private void handleUser(User user, GenericCallData genericCallData) {

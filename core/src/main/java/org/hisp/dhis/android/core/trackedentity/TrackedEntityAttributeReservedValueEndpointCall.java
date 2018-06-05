@@ -73,9 +73,13 @@ public final class TrackedEntityAttributeReservedValueEndpointCall extends
         public TrackedEntityAttributeReservedValueEndpointCall create(
                 GenericCallData data, String trackedEntityAttributeUid, Integer numberToReserve,
                 OrganisationUnitModel organisationUnit) {
-
-            String trackedEntityAttributePattern = new TrackedEntityAttributeStoreImpl(data.databaseAdapter())
-                    .getPattern(trackedEntityAttributeUid);
+            String trackedEntityAttributePattern;
+            try {
+                trackedEntityAttributePattern = new TrackedEntityAttributeStoreImpl(data.databaseAdapter())
+                        .getPattern(trackedEntityAttributeUid);
+            } catch (Exception e) {
+                trackedEntityAttributePattern = "";
+            }
 
             return new TrackedEntityAttributeReservedValueEndpointCall(data, data.retrofit().create(
                     TrackedEntityAttributeReservedValueService.class),

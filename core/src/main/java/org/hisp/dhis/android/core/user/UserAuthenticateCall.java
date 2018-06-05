@@ -63,6 +63,7 @@ import retrofit2.Retrofit;
 import static okhttp3.Credentials.basic;
 import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class UserAuthenticateCall extends SyncCall<User> {
 
     private final DatabaseAdapter databaseAdapter;
@@ -119,7 +120,6 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         this.password = password;
 
         this.apiURL = apiURL;
-
     }
 
     @Override

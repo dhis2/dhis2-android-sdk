@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.BasicCallFactory;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -110,7 +111,13 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private User user;
 
     @Mock
+    private UserModel userModel;
+
+    @Mock
     private SystemInfo systemInfo;
+
+    @Mock
+    private SystemInfoModel systemInfoModel;
 
     @Mock
     private AuthenticatedUserModel authenticatedUser;
@@ -135,6 +142,10 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     // call we are testing
     private Call<User> userAuthenticateCall;
 
+    private static final String USERNAME = "test_username";
+    private static final String UID = "test_uid";
+    private static final String PASSWORD = "test_password";
+
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
@@ -148,19 +159,23 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
             }
         };
 
-        userAuthenticateCall = instantiateCall("test_user_name", "test_user_password");
+        userAuthenticateCall = instantiateCall(USERNAME, PASSWORD);
 
-        when(user.uid()).thenReturn("test_user_uid");
+        when(user.uid()).thenReturn(UID);
+        when(userModel.uid()).thenReturn(UID);
         when(systemInfo.serverDate()).thenReturn(serverDate);
+        when(systemInfo.contextPath()).thenReturn(dhis2MockServer.getBaseEndpoint());
+        when(systemInfoModel.contextPath()).thenReturn(dhis2MockServer.getBaseEndpoint());
 
         when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(authenticateAPICall);
 
         when(systemInfoCallFactory.create(databaseAdapter, retrofit)).thenReturn(systemInfoEndpointCall);
         when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
+        when(authenticateAPICall.execute()).thenReturn(Response.success(user));
 
         when(databaseAdapter.beginNewTransaction()).then(new Answer<Transaction>() {
             @Override
-            public Transaction answer(InvocationOnMock invocation) throws Throwable {
+            public Transaction answer(InvocationOnMock invocation) {
                 transaction.begin();
                 return transaction;
             }
@@ -176,12 +191,12 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test(expected = D2CallException.class)
     public void throw_d2_call_exception_for_null_username() throws Exception {
-        instantiateCall(null, "test_user_password").call();
+        instantiateCall(null, PASSWORD).call();
     }
 
     @Test(expected = D2CallException.class)
     public void throw_d2_call_exception_for_null_password() throws Exception {
-        instantiateCall("test_username", null).call();
+        instantiateCall(USERNAME, null).call();
     }
 
     @Test
@@ -193,7 +208,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         userAuthenticateCall.call();
 
-        assertThat(basic("test_user_name", "test_user_password"))
+        assertThat(basic(USERNAME, PASSWORD))
                 .isEqualTo(credentialsCaptor.getValue());
     }
 
@@ -239,27 +254,63 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     @Test
-    public void persist_objects_after_successful_call() throws Exception {
-        when(authenticateAPICall.execute()).thenReturn(Response.success(user));
+    public void succeed_when_no_previous_user_or_system_info() throws Exception {
+        userAuthenticateCall.call();
+        verifySuccess();
+    }
+
+    @Test
+    public void not_wipe_db_when_no_previous_user_or_system_info() throws Exception {
+        userAuthenticateCall.call();
+        verify(dbWipeCall, never()).call();
+        verifySuccess();
+    }
+
+    @Test
+    public void wipe_db_when_previously_another_user() throws Exception {
+        userAuthenticateCall.call();
+        verify(dbWipeCall, never()).call();
+        verifySuccess();
+    }
+
+    @Test
+    public void wipe_db_when_previously_equal_user_but_different_server() throws Exception {
+        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(userModel);
+        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
+        when(systemInfoModel.contextPath()).thenReturn("https://another-instance.org/");
 
         userAuthenticateCall.call();
 
-        verifyTransactionComplete();
-
-        verify(authenticatedUserStore, times(1)).insert(
-                "test_user_uid", base64("test_user_name", "test_user_password"));
-
-        verify(userHandler, times(1)).handle(eq(user), any(UserModelBuilder.class));
-
-        verify(organisationUnitHandler).handleMany(
-                anyListOf(OrganisationUnit.class), any(OrganisationUnitModelBuilder.class));
+        verify(dbWipeCall).call();
+        verifySuccess();
     }
 
+    @Test
+    public void not_wipe_db_when_previously_same_user() throws Exception {
+        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(userModel);
+        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
+
+        userAuthenticateCall.call();
+
+        verify(dbWipeCall, never()).call();
+        verifySuccess();
+    }
+
+    @Test
+    public void wipe_db_when_previously_different_user() throws Exception {
+        when(userModel.uid()).thenReturn("previous_user");
+        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(userModel);
+        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
+
+        userAuthenticateCall.call();
+
+        verify(dbWipeCall).call();
+        verifySuccess();
+    }
 
     @Test
     public void not_fail_after_call_a_user_without_organisation_unit() throws Exception {
         when(user.organisationUnits()).thenReturn(null);
-        when(authenticateAPICall.execute()).thenReturn(Response.success(user));
 
         userAuthenticateCall.call();
 
@@ -315,5 +366,13 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void throw_d2_call_exception_state_exception_if_user_already_signed_in() throws Exception {
         when(authenticatedUserStore.query()).thenReturn(Arrays.asList(authenticatedUser));
         userAuthenticateCall.call();
+    }
+
+    private void verifySuccess() {
+        verifyTransactionComplete();
+        verify(authenticatedUserStore).insert(UID, base64(USERNAME, PASSWORD));
+        verify(userHandler).handle(eq(user), any(UserModelBuilder.class));
+        verify(organisationUnitHandler).handleMany(
+                anyListOf(OrganisationUnit.class), any(OrganisationUnitModelBuilder.class));
     }
 }

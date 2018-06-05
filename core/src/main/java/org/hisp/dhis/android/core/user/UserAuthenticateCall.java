@@ -125,12 +125,12 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         throwExceptionIfPasswordNull();
         throwExceptionIfAlreadyAuthenticated();
 
-        if (wasLoggedAndUserIsNew()) {
-            new D2CallExecutor().executeD2Call(dbWipe);
-        }
-
         Call<User> authenticateCall = userService.authenticate(basic(username, password), User.allFields);
         User authenticatedUser = new APICallExecutor().executeObjectCall(authenticateCall);
+
+        if (wasLoggedAndUserIsNew(authenticatedUser)) {
+            new D2CallExecutor().executeD2Call(dbWipe);
+        }
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
@@ -176,11 +176,12 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         }
     }
 
-    private boolean wasLoggedAndUserIsNew() {
+    private boolean wasLoggedAndUserIsNew(User newUser) {
         SystemInfoModel lastSystemInfo = systemInfoStore.selectFirst(SystemInfoModel.factory);
         UserModel lastUser = userStore.selectFirst(UserModel.factory);
         return lastUser != null && lastSystemInfo != null && (
-                !lastUser.uid().equals(username) || lastSystemInfo.contextPath().equals(retrofit.baseUrl().toString()));
+                !lastUser.uid().equals(newUser.uid()) ||
+                        !lastSystemInfo.contextPath().equals(retrofit.baseUrl().toString()));
     }
 
     private void handleUser(User user, GenericCallData genericCallData) {

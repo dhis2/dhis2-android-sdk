@@ -34,8 +34,6 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.common.BasicCallFactory;
-import org.hisp.dhis.android.core.common.BlockCallFactory;
-import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericCallFactory;
@@ -112,7 +110,8 @@ public class MetadataCall extends SyncCall<Response> {
             SystemInfo systemInfo = new D2CallExecutor().executeD2Call(
                     systemInfoCallFactory.create(databaseAdapter, retrofit));
 
-            GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate());
+            GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
+                    systemInfo.serverDate());
 
             Response<SystemSetting> systemSettingResponse = systemSettingCallFactory.create(genericCallData).call();
             if (!systemSettingResponse.isSuccessful()) {

@@ -36,7 +36,7 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class D2CallException extends Exception {
 
-    @Nullable
+    @NonNull
     public abstract D2ErrorCode errorCode();
 
     @Nullable

@@ -65,7 +65,9 @@ public final class D2CallExecutor {
             throw d2E;
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), e.toString());
-            throw exceptionBuilder.errorDescription("Unexpected error calling " + call).build();
+            throw exceptionBuilder
+                    .errorCode(D2ErrorCode.UNEXPECTED)
+                    .errorDescription("Unexpected error calling " + call).build();
         } finally {
             transaction.end();
         }

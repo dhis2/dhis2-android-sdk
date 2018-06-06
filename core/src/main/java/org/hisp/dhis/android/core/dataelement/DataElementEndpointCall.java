@@ -42,8 +42,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.util.List;
 import java.util.Set;
 
-public final class DataElementEndpointCall extends EndpointPayloadCall<DataElement,
-        DataElementModel, UidsQuery> {
+public final class DataElementEndpointCall extends EndpointPayloadCall<DataElement, UidsQuery> {
     private final DataElementService dataElementService;
 
     private DataElementEndpointCall(GenericCallData data,

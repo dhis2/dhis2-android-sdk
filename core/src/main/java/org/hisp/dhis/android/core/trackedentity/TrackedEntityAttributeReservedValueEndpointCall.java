@@ -26,35 +26,32 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.EndpointListCall;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.ListPersistor;
+import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
 
 public final class TrackedEntityAttributeReservedValueEndpointCall extends
-        EndpointListCall<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel,
-                                TrackedEntityAttributeReservedValueQuery> {
+        EndpointListCall<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueQuery> {
     private final TrackedEntityAttributeReservedValueService service;
 
     private TrackedEntityAttributeReservedValueEndpointCall(
             GenericCallData data, TrackedEntityAttributeReservedValueService service,
-            GenericHandler<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> handler,
-            TrackedEntityAttributeReservedValueQuery query, String trackedEntityAttributePattern) {
-        super(data, handler, ResourceModel.Type.TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE,
-                new TrackedEntityAttributeReservedValueModelBuilder(
-                        query.organisationUnit(), trackedEntityAttributePattern), query);
+            TrackedEntityAttributeReservedValueQuery query,
+            ListPersistor<TrackedEntityAttributeReservedValue> persistor) {
+        super(data, ResourceModel.Type.TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE, query, persistor);
         this.service = service;
     }
 
     @Override
-    protected Call<List<TrackedEntityAttributeReservedValue>> getList(
-            TrackedEntityAttributeReservedValueQuery query, String lastUpdated) throws IOException {
+    protected Call<List<TrackedEntityAttributeReservedValue>> getCall(
+            TrackedEntityAttributeReservedValueQuery query, String lastUpdated) {
         return service.generateAndReserve(
                 query.trackedEntityAttributeUid(),
                 query.numberToReserve(),
@@ -81,12 +78,18 @@ public final class TrackedEntityAttributeReservedValueEndpointCall extends
                 trackedEntityAttributePattern = "";
             }
 
-            return new TrackedEntityAttributeReservedValueEndpointCall(data, data.retrofit().create(
-                    TrackedEntityAttributeReservedValueService.class),
-                    TrackedEntityAttributeReservedValueHandler.create(data.databaseAdapter()),
+            return new TrackedEntityAttributeReservedValueEndpointCall(data,
+                    data.retrofit().create(TrackedEntityAttributeReservedValueService.class),
                     TrackedEntityAttributeReservedValueQuery.create(trackedEntityAttributeUid, numberToReserve,
                             organisationUnit),
-                    trackedEntityAttributePattern);
+                    new TransactionalResourceListPersistor<>(
+                            data,
+                            TrackedEntityAttributeReservedValueHandler.create(data.databaseAdapter()),
+                            ResourceModel.Type.TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE,
+                            new TrackedEntityAttributeReservedValueModelBuilder(
+                                    organisationUnit, trackedEntityAttributePattern)
+                    )
+            );
         }
     };
 }

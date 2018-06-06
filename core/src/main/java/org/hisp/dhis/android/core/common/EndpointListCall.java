@@ -34,13 +34,12 @@ import java.util.List;
 
 import retrofit2.Call;
 
-public abstract class EndpointListCall<P, M extends Model, Q extends BaseQuery>
-        extends AbstractEndpointListCall<P, M, Q, List<P>> {
+public abstract class EndpointListCall<P, Q extends BaseQuery> extends AbstractEndpointListCall<P, Q, List<P>> {
 
     public EndpointListCall(GenericCallData data,
                             ResourceModel.Type resourceType,
                             Q query,
-                            ListPersistor<P, M> persistor) {
+                            ListPersistor<P> persistor) {
 
         super(data, resourceType, query, persistor);
     }

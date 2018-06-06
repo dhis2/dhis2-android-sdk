@@ -39,8 +39,7 @@ import java.util.Set;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
-public final class DataValueEndpointCall extends EndpointPayloadCall<DataValue, DataValueModel,
-        DataValueQuery> {
+public final class DataValueEndpointCall extends EndpointPayloadCall<DataValue, DataValueQuery> {
     private final DataValueService dataValueService;
 
     private DataValueEndpointCall(GenericCallData data, DataValueService dataValueService, DataValueQuery query,

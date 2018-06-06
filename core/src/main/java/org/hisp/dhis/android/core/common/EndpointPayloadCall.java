@@ -34,8 +34,7 @@ import java.util.List;
 
 import retrofit2.Call;
 
-public abstract class EndpointPayloadCall<P, M extends Model, Q extends BaseQuery>
-        extends AbstractEndpointListCall<P, M, Q, Payload<P>> {
+public abstract class EndpointPayloadCall<P, Q extends BaseQuery> extends AbstractEndpointListCall<P, Q, Payload<P>> {
 
     public EndpointPayloadCall(GenericCallData data,
                                ResourceModel.Type resourceType,

@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
 
-public final class ProgramEndpointCall extends EndpointPayloadCall<Program, ProgramModel, EmptyQuery> {
+public final class ProgramEndpointCall extends EndpointPayloadCall<Program, EmptyQuery> {
     private final ProgramService programService;
 
     ProgramEndpointCall(GenericCallData data, ProgramService programService, EmptyQuery query,

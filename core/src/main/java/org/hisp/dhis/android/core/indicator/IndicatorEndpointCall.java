@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.util.List;
 import java.util.Set;
 
-public final class IndicatorEndpointCall extends EndpointPayloadCall<Indicator, IndicatorModel, UidsQuery> {
+public final class IndicatorEndpointCall extends EndpointPayloadCall<Indicator, UidsQuery> {
     private final IndicatorService indicatorService;
 
     private IndicatorEndpointCall(GenericCallData data, IndicatorService indicatorService, UidsQuery uidsQuery,

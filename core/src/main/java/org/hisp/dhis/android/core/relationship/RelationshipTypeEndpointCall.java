@@ -40,8 +40,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
 
-public final class RelationshipTypeEndpointCall extends EndpointPayloadCall<RelationshipType,
-        RelationshipTypeModel, EmptyQuery> {
+public final class RelationshipTypeEndpointCall extends EndpointPayloadCall<RelationshipType, EmptyQuery> {
 
     private final RelationshipTypeService relationshipTypeService;
 

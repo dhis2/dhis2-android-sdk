@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
 
-public final class DataSetEndpointCall extends EndpointPayloadCall<DataSet, DataSetModel, EmptyQuery> {
+public final class DataSetEndpointCall extends EndpointPayloadCall<DataSet, EmptyQuery> {
     private final DataSetService dataSetService;
 
     private DataSetEndpointCall(GenericCallData data, DataSetService dataSetService, EmptyQuery query,

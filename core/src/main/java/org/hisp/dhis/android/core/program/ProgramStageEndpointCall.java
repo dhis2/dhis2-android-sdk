@@ -41,8 +41,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.util.List;
 import java.util.Set;
 
-public final class ProgramStageEndpointCall extends
-        EndpointPayloadCall<ProgramStage, ProgramStageModel, UidsQuery> {
+public final class ProgramStageEndpointCall extends EndpointPayloadCall<ProgramStage, UidsQuery> {
     private final ProgramStageService programStageService;
 
     private ProgramStageEndpointCall(GenericCallData data, ProgramStageService programStageService, UidsQuery query,

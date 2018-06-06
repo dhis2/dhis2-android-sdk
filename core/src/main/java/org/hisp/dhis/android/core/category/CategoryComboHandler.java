@@ -45,8 +45,9 @@ public class CategoryComboHandler {
 
             if (!updated) {
                 store.insert(combo);
-                handleRelations(combo);
             }
+
+            handleRelations(combo);
         }
     }
 

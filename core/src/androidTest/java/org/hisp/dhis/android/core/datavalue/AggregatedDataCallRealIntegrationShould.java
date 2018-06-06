@@ -16,7 +16,6 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    Exception e;
 
     @Before
     @Override
@@ -49,10 +48,7 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
         d2.logout().call();
         d2.logIn("android", "Android123").call();
 
-        //first metaData sync:
         d2.syncMetaData().call();
-
-        //first dataValues sync:
         d2.syncAggregatedData().call();
     }
 
@@ -61,17 +57,10 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
         d2.logout().call();
         d2.logIn("android", "Android123").call();
 
-        //first metaData sync:
-        retrofit2.Response response = null;
         d2.syncMetaData().call();
-
-        //first dataValues sync:
         d2.syncAggregatedData().call();
 
-        //second sync:
         d2.syncMetaData().call();
-
-        //second dataValues sync:
         d2.syncAggregatedData().call();
     }
 

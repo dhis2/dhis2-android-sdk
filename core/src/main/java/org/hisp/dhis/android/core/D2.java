@@ -149,6 +149,11 @@ public final class D2 {
                 .getValue(attributeUid, organisationUnitUid);
     }
 
+    public void syncTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid) {
+        TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit)
+                .forceSyncReservedValues(attributeUid, organisationUnitUid);
+    }
+
     @NonNull
     public Call<Response<WebResponse>> syncTrackedEntityInstances() {
         return TrackedEntityInstancePostCall.create(databaseAdapter, retrofit);

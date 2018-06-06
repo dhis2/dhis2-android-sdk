@@ -31,7 +31,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.CallException;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -44,14 +45,11 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.resource.ResourceStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import retrofit2.Response;
-
-public class TrackedEntityTypeCall extends SyncCall<Response<Payload<TrackedEntityType>>> {
+public class TrackedEntityTypeCall extends SyncCall<List<TrackedEntityType>> {
 
     private final TrackedEntityTypeService service;
     private final DatabaseAdapter databaseAdapter;
@@ -76,7 +74,7 @@ public class TrackedEntityTypeCall extends SyncCall<Response<Payload<TrackedEnti
     }
 
     @Override
-    public Response<Payload<TrackedEntityType>> call() throws Exception {
+    public List<TrackedEntityType> call() throws D2CallException {
         super.setExecuted();
 
         if (uidSet.size() > MAX_UIDS) {
@@ -86,36 +84,34 @@ public class TrackedEntityTypeCall extends SyncCall<Response<Payload<TrackedEnti
         ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
 
         String lastUpdated = resourceHandler.getLastUpdated(resourceType);
-        Response<Payload<TrackedEntityType>> response = getTrackedEntities(lastUpdated);
+
+        List<TrackedEntityType> trackedEntities
+                = new APICallExecutor().executePayloadCall(getTrackedEntities(lastUpdated));
 
         TrackedEntityTypeHandler trackedEntityTypeHandler = new TrackedEntityTypeHandler(trackedEntityTypeStore);
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
 
-            if (response != null && response.isSuccessful()) {
-                List<TrackedEntityType> trackedEntities = response.body().items();
-                int size = trackedEntities.size();
+            int size = trackedEntities.size();
 
-                for (int i = 0; i < size; i++) {
-                    TrackedEntityType trackedEntityType = trackedEntities.get(i);
+            for (int i = 0; i < size; i++) {
+                TrackedEntityType trackedEntityType = trackedEntities.get(i);
 
-                    trackedEntityTypeHandler.handleTrackedEntity(trackedEntityType);
-                }
-                resourceHandler.handleResource(
-                        resourceType,
-                        serverDate
-                );
-                transaction.setSuccessful();
-            } else {
-                throw CallException.create(response);
+                trackedEntityTypeHandler.handleTrackedEntity(trackedEntityType);
             }
+            resourceHandler.handleResource(
+                    resourceType,
+                    serverDate
+            );
+            transaction.setSuccessful();
         } finally {
             transaction.end();
         }
-        return response;
+
+        return trackedEntities;
     }
 
-    private Response<Payload<TrackedEntityType>> getTrackedEntities(String lastUpdated) throws IOException {
+    private retrofit2.Call<Payload<TrackedEntityType>> getTrackedEntities(String lastUpdated) {
         return service.trackedEntities(
                 Fields.<TrackedEntityType>builder().fields(
                         TrackedEntityType.uid, TrackedEntityType.code, TrackedEntityType.name,
@@ -127,13 +123,13 @@ public class TrackedEntityTypeCall extends SyncCall<Response<Payload<TrackedEnti
                 TrackedEntityType.uid.in(uidSet),
                 TrackedEntityType.lastUpdated.gt(lastUpdated),
                 false
-        ).execute();
+        );
     }
 
     public static final UidsCallFactory<TrackedEntityType> FACTORY = new UidsCallFactory<TrackedEntityType>() {
 
         @Override
-        public Call<Response<Payload<TrackedEntityType>>> create(GenericCallData genericCallData, Set<String> uids) {
+        public Call<List<TrackedEntityType>> create(GenericCallData genericCallData, Set<String> uids) {
             return new TrackedEntityTypeCall(
                     uids,
                     genericCallData.databaseAdapter(),

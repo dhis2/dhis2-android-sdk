@@ -28,33 +28,31 @@
 
 package org.hisp.dhis.android.core.indicator;
 
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
-import retrofit2.Call;
-
-public final class IndicatorTypeEndpointCall extends GenericEndpointCallImpl<IndicatorType,
+public final class IndicatorTypeEndpointCall extends EndpointPayloadCall<IndicatorType,
         IndicatorTypeModel, UidsQuery> {
     private final IndicatorTypeService indicatorTypeService;
 
     private IndicatorTypeEndpointCall(GenericCallData data, IndicatorTypeService indicatorTypeService,
-                                      GenericHandler<IndicatorType, IndicatorTypeModel> indicatorTypeHandler,
-                                      UidsQuery query) {
-        super(data, indicatorTypeHandler, ResourceModel.Type.INDICATOR_TYPE,
-                new IndicatorTypeModelBuilder(), query);
+                                      UidsQuery query, ListPersistor<IndicatorType> persistor) {
+        super(data, ResourceModel.Type.INDICATOR_TYPE, query, persistor);
         this.indicatorTypeService = indicatorTypeService;
     }
 
     @Override
-    protected Call<Payload<IndicatorType>> getCall(UidsQuery query, String lastUpdated) throws IOException {
+    protected retrofit2.Call<Payload<IndicatorType>> getCall(UidsQuery query, String lastUpdated) {
         return indicatorTypeService.getIndicatorTypes(
                 IndicatorType.allFields,
                 IndicatorType.lastUpdated.gt(lastUpdated),
@@ -64,9 +62,17 @@ public final class IndicatorTypeEndpointCall extends GenericEndpointCallImpl<Ind
 
     public static final UidsCallFactory<IndicatorType> FACTORY = new UidsCallFactory<IndicatorType>() {
         @Override
-        public IndicatorTypeEndpointCall create(GenericCallData data, Set<String> uids) {
-            return new IndicatorTypeEndpointCall(data, data.retrofit().create(IndicatorTypeService.class),
-                    IndicatorTypeHandler.create(data.databaseAdapter()), UidsQuery.create(uids, null));
+        public Call<List<IndicatorType>> create(GenericCallData data, Set<String> uids) {
+            return new IndicatorTypeEndpointCall(data,
+                    data.retrofit().create(IndicatorTypeService.class),
+                    UidsQuery.create(uids, null),
+                    new TransactionalResourceListPersistor<>(
+                            data,
+                            IndicatorTypeHandler.create(data.databaseAdapter()),
+                            ResourceModel.Type.INDICATOR_TYPE,
+                            new IndicatorTypeModelBuilder()
+                    )
+            );
         }
     };
 }

@@ -26,32 +26,31 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.io.IOException;
+import java.util.List;
 import java.util.Set;
-
-import retrofit2.Call;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
-public final class DataValueEndpointCall extends GenericEndpointCallImpl<DataValue, DataValueModel,
+public final class DataValueEndpointCall extends EndpointPayloadCall<DataValue, DataValueModel,
         DataValueQuery> {
     private final DataValueService dataValueService;
 
-    private DataValueEndpointCall(GenericCallData data, DataValueService dataValueService,
-                                  GenericHandler<DataValue, DataValueModel> dataValueHandler,
-                                  DataValueQuery query) {
-        super(data, dataValueHandler, ResourceModel.Type.DATA_VALUE, new DataValueModelBuilder(), query);
+    private DataValueEndpointCall(GenericCallData data, DataValueService dataValueService, DataValueQuery query,
+                                  ListPersistor<DataValue> persistor) {
+        super(data, ResourceModel.Type.DATA_VALUE, query, persistor);
         this.dataValueService = dataValueService;
     }
 
     @Override
-    protected Call<Payload<DataValue>> getCall(DataValueQuery query, String lastUpdated) throws IOException {
+    protected retrofit2.Call<Payload<DataValue>> getCall(DataValueQuery query, String lastUpdated) {
         return dataValueService.getDataValues(
                 DataValue.allFields,
                 DataValue.lastUpdated.gt(lastUpdated),
@@ -62,17 +61,24 @@ public final class DataValueEndpointCall extends GenericEndpointCallImpl<DataVal
     }
 
     public interface Factory {
-        DataValueEndpointCall create(GenericCallData data, Set<String> dataSetUids, Set<String> periodIds,
+        Call<List<DataValue>> create(GenericCallData data, Set<String> dataSetUids, Set<String> periodIds,
                                      Set<String> orgUnitUids);
     }
 
     public static final DataValueEndpointCall.Factory FACTORY = new DataValueEndpointCall.Factory() {
         @Override
-        public DataValueEndpointCall create(GenericCallData data, Set<String> dataSetUids, Set<String> periodIds,
+        public Call<List<DataValue>> create(GenericCallData data, Set<String> dataSetUids, Set<String> periodIds,
                                             Set<String> orgUnitUids) {
-            return new DataValueEndpointCall(data, data.retrofit().create(DataValueService.class),
-                    DataValueHandler.create(data.databaseAdapter()), DataValueQuery.create(dataSetUids, periodIds,
-                    orgUnitUids));
+            return new DataValueEndpointCall(data,
+                    data.retrofit().create(DataValueService.class),
+                    DataValueQuery.create(dataSetUids, periodIds, orgUnitUids),
+                    new TransactionalResourceListPersistor<>(
+                            data,
+                            DataValueHandler.create(data.databaseAdapter()),
+                            ResourceModel.Type.DATA_VALUE,
+                            new DataValueModelBuilder()
+                    )
+            );
         }
     };
 }

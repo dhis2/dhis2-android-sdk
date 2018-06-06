@@ -28,10 +28,11 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.TransactionalCall;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.GenericCallFactory;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
@@ -42,25 +43,23 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCall;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
-import retrofit2.Response;
-
-public class ProgramParentCall extends TransactionalCall<Payload<Program>> {
+public class ProgramParentCall extends SyncCall<List<Program>> {
 
     private final GenericCallData genericCallData;
-    private final SimpleCallFactory<Payload<Program>> programCallFactory;
+    private final GenericCallFactory<List<Program>> programCallFactory;
     private final UidsCallFactory<ProgramStage> programStageCallFactory;
     private final UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory;
-    private final SimpleCallFactory<Payload<RelationshipType>> relationshipTypeCallFactory;
+    private final GenericCallFactory<List<RelationshipType>> relationshipTypeCallFactory;
     private final UidsCallFactory<OptionSet> optionSetCallFactory;
 
     ProgramParentCall(GenericCallData genericCallData,
-                      SimpleCallFactory<Payload<Program>> programCallFactory,
+                      GenericCallFactory<List<Program>> programCallFactory,
                       UidsCallFactory<ProgramStage> programStageCallFactory,
                       UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
-                      SimpleCallFactory<Payload<RelationshipType>> relationshipTypeCallFactory,
+                      GenericCallFactory<List<RelationshipType>> relationshipTypeCallFactory,
                       UidsCallFactory<OptionSet> optionSetCallFactory) {
-        super(genericCallData.databaseAdapter());
         this.genericCallData = genericCallData;
         this.programCallFactory = programCallFactory;
         this.programStageCallFactory = programStageCallFactory;
@@ -70,30 +69,36 @@ public class ProgramParentCall extends TransactionalCall<Payload<Program>> {
     }
 
     @Override
-    public Response<Payload<Program>> callBody() throws Exception {
-        Call<Response<Payload<Program>>> programEndpointCall = programCallFactory.create(genericCallData);
-        Response<Payload<Program>> programResponse = programEndpointCall.call();
+    public List<Program> call() throws Exception {
+        setExecuted();
 
-        List<Program> programs = programResponse.body().items();
-        Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);
-        Response<Payload<ProgramStage>> programStageResponse = programStageCallFactory.create(genericCallData,
-                assignedProgramStageUids).call();
+        final D2CallExecutor executor = new D2CallExecutor();
 
-        Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
-        trackedEntityTypeCallFactory.create(genericCallData, trackedEntityUids).call();
+        return executor.executeD2CallTransactionally(genericCallData.databaseAdapter(), new Callable<List<Program>>() {
+            @Override
+            public List<Program> call() throws D2CallException {
+                List<Program> programs = executor.executeD2Call(programCallFactory.create(genericCallData));
 
-        relationshipTypeCallFactory.create(genericCallData).call();
+                Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);
+                List<ProgramStage> programStages = executor.executeD2Call(programStageCallFactory.create(genericCallData,
+                        assignedProgramStageUids));
 
-        List<ProgramStage> programStages = programStageResponse.body().items();
-        Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
-        optionSetCallFactory.create(genericCallData, optionSetUids).call();
+                Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
 
-        return programResponse;
+                executor.executeD2Call(trackedEntityTypeCallFactory.create(genericCallData, trackedEntityUids));
+                executor.executeD2Call(relationshipTypeCallFactory.create(genericCallData));
+
+                Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
+                executor.executeD2Call(optionSetCallFactory.create(genericCallData, optionSetUids));
+
+                return programs;
+            }
+        });
     }
 
-    public static final SimpleCallFactory<Payload<Program>> FACTORY = new SimpleCallFactory<Payload<Program>>() {
+    public static final GenericCallFactory<List<Program>> FACTORY = new GenericCallFactory<List<Program>>() {
         @Override
-        public Call<Response<Payload<Program>>> create(GenericCallData genericCallData) {
+        public Call<List<Program>> create(GenericCallData genericCallData) {
             return new ProgramParentCall(
                     genericCallData,
                     ProgramEndpointCall.FACTORY,

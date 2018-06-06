@@ -28,10 +28,11 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.TransactionalCall;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.GenericCallFactory;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -46,29 +47,27 @@ import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
-import retrofit2.Response;
-
-public class DataSetParentCall extends TransactionalCall {
+public class DataSetParentCall extends SyncCall<Void> {
     private final DataSetParentLinkManager linkManager;
-    private final GenericCallData genericCallData;
-    private final SimpleCallFactory<Payload<DataSet>> dataSetCallFactory;
+    private final GenericCallData data;
+    private final GenericCallFactory<List<DataSet>> dataSetCallFactory;
     private final UidsCallFactory<DataElement> dataElementCallFactory;
     private final UidsCallFactory<Indicator> indicatorCallFactory;
     private final UidsCallFactory<IndicatorType> indicatorTypeCallFactory;
     private final List<OrganisationUnit> organisationUnits;
     private final PeriodHandler periodHandler;
 
-    private DataSetParentCall(GenericCallData genericCallData,
+    private DataSetParentCall(GenericCallData data,
                               DataSetParentLinkManager linkManager,
-                              SimpleCallFactory<Payload<DataSet>> dataSetCallFactory,
+                              GenericCallFactory<List<DataSet>> dataSetCallFactory,
                               UidsCallFactory<DataElement> dataElementCallFactory,
                               UidsCallFactory<Indicator> indicatorCallFactory,
                               UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
                               List<OrganisationUnit> organisationUnits,
                               PeriodHandler periodHandler) {
-        super(genericCallData.databaseAdapter());
-        this.genericCallData = genericCallData;
+        this.data = data;
         this.linkManager = linkManager;
         this.dataSetCallFactory = dataSetCallFactory;
         this.dataElementCallFactory = dataElementCallFactory;
@@ -79,42 +78,43 @@ public class DataSetParentCall extends TransactionalCall {
     }
 
     @Override
-    public Response callBody() throws Exception {
-        Call<Response<Payload<DataSet>>> dataSetEndpointCall = dataSetCallFactory.create(genericCallData);
-        Response<Payload<DataSet>> dataSetResponse = dataSetEndpointCall.call();
+    public Void call() throws D2CallException {
+        setExecuted();
 
-        Set<String> dataSetUids = UidsHelper.getUids(dataSetResponse.body().items());
+        final D2CallExecutor executor = new D2CallExecutor();
 
-        Call<Response<Payload<DataElement>>> dataElementEndpointCall =
-                dataElementCallFactory.create(genericCallData, dataSetUids);
-        Response<Payload<DataElement>> dataElementResponse = dataElementEndpointCall.call();
+        return executor.executeD2CallTransactionally(data.databaseAdapter(), new Callable<Void>() {
+            @Override
+            public Void call() throws D2CallException {
+                List<DataSet> dataSets = executor.executeD2Call(dataSetCallFactory.create(data));
+                Set<String> dataSetUids = UidsHelper.getUids(dataSets);
 
-        List<DataSet> dataSets = dataSetResponse.body().items();
-        Call<Response<Payload<Indicator>>> indicatorEndpointCall
-                = indicatorCallFactory.create(genericCallData, DataSetParentUidsHelper.getIndicatorUids(dataSets));
-        Response<Payload<Indicator>> indicatorResponse = indicatorEndpointCall.call();
+                executor.executeD2Call(dataElementCallFactory.create(data, dataSetUids));
+                List<Indicator> indicators = executor.executeD2Call(indicatorCallFactory.create(data,
+                        DataSetParentUidsHelper.getIndicatorUids(dataSets)));
 
-        List<Indicator> indicators = indicatorResponse.body().items();
-        Call<Response<Payload<IndicatorType>>> indicatorTypeEndpointCall
-                = indicatorTypeCallFactory.create(genericCallData,
-                DataSetParentUidsHelper.getIndicatorTypeUids(indicators));
-        indicatorTypeEndpointCall.call();
+                executor.executeD2Call(indicatorTypeCallFactory.create(data,
+                        DataSetParentUidsHelper.getIndicatorTypeUids(indicators)));
 
-        periodHandler.generateAndPersist();
+                periodHandler.generateAndPersist();
 
-        linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);
-        linkManager.saveDataSetOrganisationUnitLinks(organisationUnits, dataSetUids);
+                linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);
+                linkManager.saveDataSetOrganisationUnitLinks(organisationUnits, dataSetUids);
 
-        return dataElementResponse;
+                return null;
+            }
+        });
+
+
     }
 
     public interface Factory {
-        Call<Response> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits);
+        Call<Void> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits);
     }
 
     public static final Factory FACTORY = new Factory() {
         @Override
-        public Call<Response> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits) {
+        public Call<Void> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits) {
             return new DataSetParentCall(data,
                     DataSetParentLinkManager.create(data.databaseAdapter()),
                     DataSetEndpointCall.FACTORY,

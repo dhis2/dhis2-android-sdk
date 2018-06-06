@@ -25,37 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.calls;
 
-import org.hisp.dhis.android.core.common.CallException;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
+package org.hisp.dhis.android.core.common;
 
-import retrofit2.Response;
+import java.util.List;
 
-public abstract class TransactionalCall<C> extends SyncCall<Response<C>> {
-    protected final DatabaseAdapter databaseAdapter;
-
-    protected TransactionalCall(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
-    }
-
-    public abstract Response<C> callBody() throws Exception;
-
-    @Override
-    public final Response<C> call() throws Exception {
-        super.setExecuted();
-
-        Transaction transaction = databaseAdapter.beginNewTransaction();
-        try {
-            Response response = callBody();
-            transaction.setSuccessful();
-            return response;
-        } catch (CallException e) {
-            return e.response();
-        } finally {
-            transaction.end();
-        }
-    }
+public interface ListPersistor<P> {
+    void persist(List<P> objectList);
 }

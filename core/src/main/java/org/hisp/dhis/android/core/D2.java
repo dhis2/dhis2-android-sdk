@@ -114,12 +114,12 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response> syncMetaData() {
+    public Call<Void> syncMetaData() {
         return MetadataCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
-    public Call<Response> syncAggregatedData() {
+    public Call<Void> syncAggregatedData() {
         return AggregatedDataCall.create(databaseAdapter, retrofit);
     }
 

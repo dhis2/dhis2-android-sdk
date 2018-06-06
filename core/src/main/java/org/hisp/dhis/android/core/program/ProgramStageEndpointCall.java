@@ -29,42 +29,47 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
-import retrofit2.Response;
-
 public final class ProgramStageEndpointCall extends
-        GenericEndpointCallImpl<ProgramStage, ProgramStageModel, UidsQuery> {
+        EndpointPayloadCall<ProgramStage, ProgramStageModel, UidsQuery> {
     private final ProgramStageService programStageService;
 
-    private ProgramStageEndpointCall(GenericCallData data, ProgramStageService programStageService,
-                                     GenericHandler<ProgramStage, ProgramStageModel> programStageHandler,
-                                     UidsQuery uidsQuery) {
-        super(data, programStageHandler, ResourceModel.Type.PROGRAM_STAGE, new ProgramStageModelBuilder(),
-                uidsQuery);
+    private ProgramStageEndpointCall(GenericCallData data, ProgramStageService programStageService, UidsQuery query,
+                                     ListPersistor<ProgramStage> persistor) {
+        super(data, ResourceModel.Type.PROGRAM_STAGE, query, persistor);
         this.programStageService = programStageService;
     }
 
     @Override
-    protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query, String lastUpdated) throws IOException {
+    protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query, String lastUpdated) {
         return programStageService.getProgramStages(ProgramStage.allFields,
                 ProgramStage.uid.in(query.uids()), Boolean.FALSE);
     }
 
     public static final UidsCallFactory<ProgramStage> FACTORY = new UidsCallFactory<ProgramStage>() {
         @Override
-        public Call<Response<Payload<ProgramStage>>> create(GenericCallData data, Set<String> uids) {
-            return new ProgramStageEndpointCall(data, data.retrofit().create(ProgramStageService.class),
-                    ProgramStageHandler.create(data.databaseAdapter()),  UidsQuery.create(uids, 64));
+        public Call<List<ProgramStage>> create(GenericCallData data, Set<String> uids) {
+            return new ProgramStageEndpointCall(data,
+                    data.retrofit().create(ProgramStageService.class),
+                    UidsQuery.create(uids, 64),
+                    new TransactionalResourceListPersistor<>(
+                            data,
+                            ProgramStageHandler.create(data.databaseAdapter()),
+                            ResourceModel.Type.PROGRAM_STAGE,
+                            new ProgramStageModelBuilder()
+                    )
+            );
         }
     };
 }

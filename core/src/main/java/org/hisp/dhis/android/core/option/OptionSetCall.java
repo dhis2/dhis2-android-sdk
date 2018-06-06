@@ -28,38 +28,34 @@
 
 package org.hisp.dhis.android.core.option;
 
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
-import retrofit2.Call;
-import retrofit2.Response;
-
-public class OptionSetCall extends GenericEndpointCallImpl<OptionSet, OptionSetModel, UidsQuery> {
+public class OptionSetCall extends EndpointPayloadCall<OptionSet, OptionSetModel, UidsQuery> {
     private final OptionSetService optionSetService;
-    private final UidsQuery uidsQuery;
 
-    OptionSetCall(GenericCallData data, OptionSetService optionSetService,
-                  GenericHandler<OptionSet, OptionSetModel> optionSetHandler, Set<String> uids) {
-        super(data, optionSetHandler, ResourceModel.Type.OPTION_SET, new OptionSetModelBuilder(),
-                UidsQuery.create(uids, 64));
-        this.uidsQuery = UidsQuery.create(uids, 64);
+    OptionSetCall(GenericCallData data, OptionSetService optionSetService, UidsQuery query,
+                  ListPersistor<OptionSet> persistor) {
+        super(data, ResourceModel.Type.OPTION_SET, query, persistor);
         this.optionSetService = optionSetService;
     }
 
     @Override
-    protected Call<Payload<OptionSet>> getCall(UidsQuery query, String lastUpdated) throws IOException {
+    protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query, String lastUpdated) {
         return optionSetService.optionSets(false,
-                getFields(), OptionSet.uid.in(uidsQuery.uids()));
+                getFields(), OptionSet.uid.in(query.uids()));
     }
 
     private Fields<OptionSet> getFields() {
@@ -82,13 +78,17 @@ public class OptionSetCall extends GenericEndpointCallImpl<OptionSet, OptionSetM
     public static final UidsCallFactory<OptionSet> FACTORY = new UidsCallFactory<OptionSet>() {
 
         @Override
-        public org.hisp.dhis.android.core.calls.Call<Response<Payload<OptionSet>>> create(
-                GenericCallData genericCallData, Set<String> uids) {
+        public Call<List<OptionSet>> create(GenericCallData data, Set<String> uids) {
             return new OptionSetCall(
-                    genericCallData,
-                    genericCallData.retrofit().create(OptionSetService.class),
-                    OptionSetHandler.create(genericCallData.databaseAdapter()),
-                    uids
+                    data,
+                    data.retrofit().create(OptionSetService.class),
+                    UidsQuery.create(uids, 64),
+                    new TransactionalResourceListPersistor<>(
+                            data,
+                            OptionSetHandler.create(data.databaseAdapter()),
+                            ResourceModel.Type.OPTION_SET,
+                            new OptionSetModelBuilder()
+                    )
             );
         }
     };

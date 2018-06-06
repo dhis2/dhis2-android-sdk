@@ -28,38 +28,48 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.EmptyQuery;
+import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.GenericCallFactory;
+import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import retrofit2.Call;
+import java.util.List;
 
-public final class DataSetEndpointCall extends GenericEndpointCallImpl<DataSet, DataSetModel, EmptyQuery> {
+public final class DataSetEndpointCall extends EndpointPayloadCall<DataSet, DataSetModel, EmptyQuery> {
     private final DataSetService dataSetService;
 
-    private DataSetEndpointCall(GenericCallData data, DataSetService dataSetService,
-                                GenericHandler<DataSet, DataSetModel> dataSetHandler, EmptyQuery query) {
-        super(data, dataSetHandler, ResourceModel.Type.DATA_SET, new DataSetModelBuilder(), query);
+    private DataSetEndpointCall(GenericCallData data, DataSetService dataSetService, EmptyQuery query,
+                                ListPersistor<DataSet> persistor) {
+        super(data, ResourceModel.Type.DATA_SET, query, persistor);
         this.dataSetService = dataSetService;
     }
 
     @Override
-    protected Call<Payload<DataSet>> getCall(EmptyQuery query, String lastUpdated) {
+    protected retrofit2.Call<Payload<DataSet>> getCall(EmptyQuery query, String lastUpdated) {
         String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
         return dataSetService.getDataSets(DataSet.allFields, DataSet.lastUpdated.gt(lastUpdated),
                 accessDataReadFilter, Boolean.FALSE);
     }
 
-    static final SimpleCallFactory<Payload<DataSet>> FACTORY = new SimpleCallFactory<Payload<DataSet>>() {
+    static final GenericCallFactory<List<DataSet>> FACTORY = new GenericCallFactory<List<DataSet>>() {
         @Override
-        public DataSetEndpointCall create(GenericCallData data) {
-            return new DataSetEndpointCall(data, data.retrofit().create(DataSetService.class),
-                    DataSetHandler.create(data.databaseAdapter()), EmptyQuery.create());
+        public Call<List<DataSet>> create(GenericCallData data) {
+            return new DataSetEndpointCall(data,
+                    data.retrofit().create(DataSetService.class),
+                    EmptyQuery.create(),
+                    new TransactionalResourceListPersistor<>(
+                            data,
+                            DataSetHandler.create(data.databaseAdapter()),
+                            ResourceModel.Type.DATA_SET,
+                            new DataSetModelBuilder()
+                    )
+            );
         }
     };
 }

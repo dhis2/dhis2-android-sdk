@@ -28,33 +28,34 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
-import retrofit2.Call;
-
-public final class DataElementEndpointCall extends GenericEndpointCallImpl<DataElement,
+public final class DataElementEndpointCall extends EndpointPayloadCall<DataElement,
         DataElementModel, UidsQuery> {
     private final DataElementService dataElementService;
 
-    private DataElementEndpointCall(GenericCallData data, DataElementService dataElementService,
-                                    GenericHandler<DataElement, DataElementModel> dataElementHandler,
-                                    UidsQuery query) {
-        super(data, dataElementHandler, ResourceModel.Type.DATA_ELEMENT, new DataElementModelBuilder(), query);
+    private DataElementEndpointCall(GenericCallData data,
+                                    DataElementService dataElementService,
+                                    UidsQuery query,
+                                    ListPersistor<DataElement> persistor) {
+        super(data, ResourceModel.Type.DATA_ELEMENT, query, persistor);
         this.dataElementService = dataElementService;
     }
 
     @Override
-    protected Call<Payload<DataElement>> getCall(UidsQuery query, String lastUpdated) throws IOException {
+    protected retrofit2.Call<Payload<DataElement>> getCall(UidsQuery query, String lastUpdated) {
         String prefix = "dataSetElements.dataSet.";
         return dataElementService.getDataElements(DataElement.allFields, DataElement.lastUpdated.gt(lastUpdated),
                 prefix + DataSet.uid.in(query.uids()).generateString(), Boolean.FALSE);
@@ -62,10 +63,17 @@ public final class DataElementEndpointCall extends GenericEndpointCallImpl<DataE
 
     public static final UidsCallFactory<DataElement> FACTORY = new UidsCallFactory<DataElement>() {
         @Override
-        public DataElementEndpointCall create(GenericCallData data, Set<String> uids) {
-            return new DataElementEndpointCall(data, data.retrofit().create(DataElementService.class),
-                    DataElementHandler.create(data.databaseAdapter()),
-                    UidsQuery.create(uids, null));
+        public Call<List<DataElement>> create(GenericCallData data, Set<String> uids) {
+            return new DataElementEndpointCall(data,
+                    data.retrofit().create(DataElementService.class),
+                    UidsQuery.create(uids, null),
+                    new TransactionalResourceListPersistor<>(
+                            data,
+                            DataElementHandler.create(data.databaseAdapter()),
+                            ResourceModel.Type.DATA_ELEMENT,
+                            new DataElementModelBuilder()
+                    )
+            );
         }
     };
 }

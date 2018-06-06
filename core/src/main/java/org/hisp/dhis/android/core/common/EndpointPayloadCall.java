@@ -28,46 +28,25 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.util.Log;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
+import java.util.List;
 
-import java.util.concurrent.Callable;
+import retrofit2.Call;
 
-@SuppressWarnings({"PMD.PreserveStackTrace"})
-public final class D2CallExecutor {
+public abstract class EndpointPayloadCall<P, M extends Model, Q extends BaseQuery>
+        extends AbstractEndpointListCall<P, M, Q, Payload<P>> {
 
-    private final D2CallException.Builder exceptionBuilder = D2CallException
-            .builder()
-            .isHttpError(false);
+    public EndpointPayloadCall(GenericCallData data,
+                               ResourceModel.Type resourceType,
+                               Q query,
+                               ListPersistor<P> persistor) {
 
-    public <C> C executeD2Call(Callable<C> call) throws D2CallException {
-        try {
-            return call.call();
-        } catch (D2CallException d2e) {
-            throw d2e;
-
-        } catch (Exception e) {
-            Log.e(this.getClass().getSimpleName(), e.toString());
-            throw exceptionBuilder.errorDescription("Unexpected error calling " + call).build();
-        }
+        super(data, resourceType, query, persistor);
     }
 
-    public <C> C executeD2CallTransactionally(DatabaseAdapter databaseAdapter, Callable<C> call)
-            throws D2CallException {
-        Transaction transaction = databaseAdapter.beginNewTransaction();
-        try {
-            C response = call.call();
-            transaction.setSuccessful();
-            return response;
-        } catch (D2CallException d2E) {
-            throw d2E;
-        } catch (Exception e) {
-            Log.e(this.getClass().getSimpleName(), e.toString());
-            throw exceptionBuilder.errorDescription("Unexpected error calling " + call).build();
-        } finally {
-            transaction.end();
-        }
+    @Override
+    protected List<P> executeCall(Call<Payload<P>> call) throws D2CallException {
+        return new APICallExecutor().executePayloadCall(call);
     }
 }

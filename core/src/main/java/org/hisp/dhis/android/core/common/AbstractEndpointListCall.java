@@ -32,23 +32,38 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
 
-import retrofit2.Response;
+public abstract class AbstractEndpointListCall<P, M extends Model, Q extends BaseQuery, C> extends SyncCall<List<P>> {
+    private final GenericCallData data;
 
-public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
-        extends AbstractEndpointCall<P, M, Q, Payload<P>> {
+    private final ResourceModel.Type resourceType;
+    public final Q query;
 
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler, ResourceModel.Type resourceType,
-                            ModelBuilder<P, M> modelBuilder, Q query) {
-        super(data, handler, resourceType, modelBuilder, query);
+    private final ListPersistor<P, M> persistor;
+
+    AbstractEndpointListCall(GenericCallData data,
+                             ResourceModel.Type resourceType,
+                             Q query,
+                             ListPersistor<P, M> persistor) {
+        this.data = data;
+        this.resourceType = resourceType;
+        this.query = query;
+        this.persistor = persistor;
     }
 
-    @Override
-    protected List<P> getPojoList(Response<Payload<P>> response) {
-        return response.body().items();
-    }
+    protected abstract retrofit2.Call<C> getCall(Q query, String lastUpdated);
+    abstract List<P> executeCall(retrofit2.Call<C> call) throws D2CallException;
 
     @Override
-    protected boolean isValidResponse(Response<Payload<P>> response) {
-        return response.isSuccessful() && response.body().items() != null;
+    public final List<P> call() throws Exception {
+        super.setExecuted();
+
+        if (!query.isValid()) {
+            throw new IllegalArgumentException("Invalid query");
+        }
+
+        String lastUpdated = resourceType == null ? null : data.resourceHandler().getLastUpdated(resourceType);
+        List<P> responseList = executeCall(getCall(query, lastUpdated));
+        persistor.persist(responseList);
+        return responseList;
     }
 }

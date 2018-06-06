@@ -30,13 +30,16 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.BasicCallFactory;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
+import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueEndpointCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -46,14 +49,16 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public final class AggregatedDataCall extends TransactionalCall {
+public final class AggregatedDataCall extends SyncCall<Void> {
 
     private final Retrofit retrofit;
+    private final DatabaseAdapter databaseAdapter;
 
     private final BasicCallFactory<SystemInfo> systemInfoCallFactory;
     private final DataValueEndpointCall.Factory dataValueCallFactory;
@@ -68,7 +73,7 @@ public final class AggregatedDataCall extends TransactionalCall {
                                @NonNull IdentifiableObjectStore<DataSetModel> dataSetStore,
                                @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
                                @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
-        super(databaseAdapter);
+        this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.systemInfoCallFactory = systemInfoCallFactory;
         this.dataValueCallFactory = dataValueCallFactory;
@@ -78,16 +83,28 @@ public final class AggregatedDataCall extends TransactionalCall {
     }
 
     @Override
-    public Response callBody() throws Exception {
-        SystemInfo systemInfo = new D2CallExecutor().executeD2Call(
-                systemInfoCallFactory.create(databaseAdapter, retrofit));
-        GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate());
+    public Void call() throws Exception {
+        setExecuted();
 
-        DataValueEndpointCall dataValueEndpointCall = dataValueCallFactory.create(genericCallData,
-                dataSetStore.selectUids(),
-                selectPeriodIds(periodStore.selectAll(PeriodModel.factory)),
-                organisationUnitStore.selectUids());
-        return dataValueEndpointCall.call();
+        final D2CallExecutor executor = new D2CallExecutor();
+
+        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
+
+            @Override
+            public Void call() throws D2CallException {
+                SystemInfo systemInfo = executor.executeD2Call(
+                        systemInfoCallFactory.create(databaseAdapter, retrofit));
+                GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate());
+
+                Call<List<DataValue>> dataValueEndpointCall = dataValueCallFactory.create(genericCallData,
+                        dataSetStore.selectUids(),
+                        selectPeriodIds(periodStore.selectAll(PeriodModel.factory)),
+                        organisationUnitStore.selectUids());
+                executor.executeD2Call(dataValueEndpointCall);
+                return null;
+            }
+        });
+
     }
 
     private Set<String> selectPeriodIds(Set<PeriodModel> periodModels) {

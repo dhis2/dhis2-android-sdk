@@ -28,47 +28,52 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.EmptyQuery;
+import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericEndpointCallImpl;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.GenericCallFactory;
+import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.io.IOException;
+import java.util.List;
 
-import retrofit2.Call;
-
-public final class RelationshipTypeEndpointCall extends GenericEndpointCallImpl<RelationshipType,
+public final class RelationshipTypeEndpointCall extends EndpointPayloadCall<RelationshipType,
         RelationshipTypeModel, EmptyQuery> {
 
     private final RelationshipTypeService relationshipTypeService;
 
     private RelationshipTypeEndpointCall(GenericCallData data,
                                          RelationshipTypeService relationshipTypeService,
-                                         GenericHandler<RelationshipType, RelationshipTypeModel> handler,
-                                         EmptyQuery query) {
-        super(data, handler, ResourceModel.Type.RELATIONSHIP_TYPE, new RelationshipTypeModelBuilder(), query);
+                                         EmptyQuery query,
+                                         ListPersistor<RelationshipType> persistor) {
+        super(data, ResourceModel.Type.RELATIONSHIP_TYPE, query, persistor);
         this.relationshipTypeService = relationshipTypeService;
     }
 
     @Override
-    protected Call<Payload<RelationshipType>> getCall(EmptyQuery query, String lastUpdated) throws IOException {
+    protected retrofit2.Call<Payload<RelationshipType>> getCall(EmptyQuery query, String lastUpdated) {
         return relationshipTypeService.getRelationshipTypes(RelationshipType.allFields,
                 RelationshipType.lastUpdated.gt(lastUpdated), query.paging());
     }
 
-    public static final SimpleCallFactory<Payload<RelationshipType>> FACTORY =
-            new SimpleCallFactory<Payload<RelationshipType>>() {
+    public static final GenericCallFactory<List<RelationshipType>> FACTORY =
+            new GenericCallFactory<List<RelationshipType>>() {
 
                 @Override
-                public RelationshipTypeEndpointCall create(GenericCallData genericCallData) {
+                public Call<List<RelationshipType>> create(GenericCallData data) {
                     return new RelationshipTypeEndpointCall(
-                            genericCallData,
-                            genericCallData.retrofit().create(RelationshipTypeService.class),
-                            RelationshipTypeHandler.create(genericCallData.databaseAdapter()),
-                            EmptyQuery.create()
+                            data,
+                            data.retrofit().create(RelationshipTypeService.class),
+                            EmptyQuery.create(),
+                            new TransactionalResourceListPersistor<>(
+                                    data,
+                                    RelationshipTypeHandler.create(data.databaseAdapter()),
+                                    ResourceModel.Type.RELATIONSHIP_TYPE,
+                                    new RelationshipTypeModelBuilder()
+                            )
                     );
                 }
             };

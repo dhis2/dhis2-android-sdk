@@ -72,8 +72,9 @@ public class TrackedEntityAttributeReservedValueValidatorHelperShould {
     public void get_expiry_date_from_pattern() {
         Date date = helper.getExpiryDateCode("CURRENT_DATE(YYYYMM) + RANDOM(###) + CURRENT_DATE(MMww)");
         Calendar cal = setCalendarToDayInit();
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
         cal.add(Calendar.WEEK_OF_YEAR, 1);
-        cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
         assertThat(date).isEqualTo(cal.getTime());
     }

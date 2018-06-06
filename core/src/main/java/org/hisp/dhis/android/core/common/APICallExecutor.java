@@ -71,6 +71,7 @@ public final class APICallExecutor {
 
     private D2CallException responseException(Response<?> response) {
         return exceptionBuilder
+                .errorCode(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
                 .httpErrorCode(response.code())
                 .errorDescription("API call failed, response: " + response.toString())
                 .build();
@@ -79,6 +80,7 @@ public final class APICallExecutor {
     private D2CallException ioException(IOException e) {
         Log.e(this.getClass().getSimpleName(), e.toString());
         return exceptionBuilder
+                .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
                 .errorDescription("API call threw IOException")
                 .originalException(e)
                 .build();

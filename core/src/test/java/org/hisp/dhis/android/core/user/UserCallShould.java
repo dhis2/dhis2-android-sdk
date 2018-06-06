@@ -71,6 +71,7 @@ public class UserCallShould extends BaseCallShould {
 
     private Call<User> userSyncCall;
 
+    @Override
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {

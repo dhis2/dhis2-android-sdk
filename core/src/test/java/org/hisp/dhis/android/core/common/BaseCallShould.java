@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -54,6 +55,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -123,5 +125,20 @@ public abstract class BaseCallShould {
         verify(databaseAdapter).beginNewTransaction();
         verify(transaction).end();
         verify(transaction, never()).setSuccessful();
+    }
+
+    protected void verifyNoTransactionStarted() {
+        verify(databaseAdapter, never()).beginNewTransaction();
+        verify(transaction, never()).begin();
+        verify(transaction, never()).setSuccessful();
+        verify(transaction, never()).end();
+    }
+
+    protected void verifyTransactionComplete() {
+        InOrder transactionMethodsOrder = inOrder(databaseAdapter);
+        transactionMethodsOrder.verify(databaseAdapter).beginNewTransaction();
+        verify(transaction).begin();
+        verify(transaction).setSuccessful();
+        verify(transaction).end();
     }
 }

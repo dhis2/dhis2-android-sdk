@@ -33,7 +33,8 @@ import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
-import org.hisp.dhis.android.core.common.BlockCallFactory;
+import org.hisp.dhis.android.core.common.BasicCallFactory;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericCallFactory;
 import org.hisp.dhis.android.core.common.Payload;
@@ -66,7 +67,7 @@ public class MetadataCall extends SyncCall<Response> {
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
-    private final BlockCallFactory<SystemInfo> systemInfoCallFactory;
+    private final BasicCallFactory<SystemInfo> systemInfoCallFactory;
     private final SimpleCallFactory<SystemSetting> systemSettingCallFactory;
     private final GenericCallFactory<User> userCallFactory;
     private final SimpleCallFactory<Payload<Category>> categoryCallFactory;
@@ -77,7 +78,7 @@ public class MetadataCall extends SyncCall<Response> {
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
                         @NonNull Retrofit retrofit,
-                        @NonNull BlockCallFactory<SystemInfo> systemInfoCallFactory,
+                        @NonNull BasicCallFactory<SystemInfo> systemInfoCallFactory,
                         @NonNull SimpleCallFactory<SystemSetting> systemSettingCallFactory,
                         @NonNull GenericCallFactory<User> userCallFactory,
                         @NonNull SimpleCallFactory<Payload<Category>> categoryCallFactory,
@@ -105,13 +106,12 @@ public class MetadataCall extends SyncCall<Response> {
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(databaseAdapter, retrofit).call();
-            if (!systemCallResponse.isSuccessful()) {
-                return systemCallResponse;
-            }
+
+            SystemInfo systemInfo = new D2CallExecutor().executeD2Call(
+                    systemInfoCallFactory.create(databaseAdapter, retrofit));
 
             GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
-                    systemCallResponse.body().serverDate());
+                    systemInfo.serverDate());
 
             Response<SystemSetting> systemSettingResponse = systemSettingCallFactory.create(genericCallData).call();
             if (!systemSettingResponse.isSuccessful()) {

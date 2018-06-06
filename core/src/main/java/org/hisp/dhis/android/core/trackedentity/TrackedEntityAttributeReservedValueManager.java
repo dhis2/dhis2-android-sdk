@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -92,12 +93,9 @@ public final class TrackedEntityAttributeReservedValueManager {
     private void fillReservedValues(String attribute, String organisationUnitUid, Integer remainingValues)
             throws Exception {
 
-        Response systemInfoResponse = SystemInfoCall.FACTORY.create(databaseAdapter, retrofit).call();
-        if (!systemInfoResponse.isSuccessful()) {
-            throw new RuntimeException("SystemInfo call failed.");
-        }
+        SystemInfo systemInfo = new D2CallExecutor().executeD2Call(
+                SystemInfoCall.FACTORY.create(databaseAdapter, retrofit));
 
-        SystemInfo systemInfo = (SystemInfo) systemInfoResponse.body();
         GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                 systemInfo.serverDate());
 

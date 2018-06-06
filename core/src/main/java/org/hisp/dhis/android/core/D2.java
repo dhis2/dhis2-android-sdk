@@ -93,14 +93,7 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response<User>> logIn(@NonNull String username, @NonNull String password) {
-        if (username == null) {
-            throw new NullPointerException("username == null");
-        }
-        if (password == null) {
-            throw new NullPointerException("password == null");
-        }
-
+    public Call<User> logIn(@NonNull String username, @NonNull String password) {
         return UserAuthenticateCall.create(databaseAdapter, retrofit, username, password);
     }
 

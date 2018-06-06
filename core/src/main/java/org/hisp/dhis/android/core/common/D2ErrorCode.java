@@ -28,45 +28,11 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class D2CallException extends Exception {
-
-    @Nullable
-    public abstract D2ErrorCode errorCode();
-
-    @Nullable
-    public abstract String errorDescription();
-
-    @NonNull
-    public abstract Boolean isHttpError();
-
-    @Nullable
-    public abstract Integer httpErrorCode();
-
-    @Nullable
-    public abstract Exception originalException();
-
-    public static Builder builder() {
-        return new AutoValue_D2CallException.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder errorCode(D2ErrorCode errorCode);
-
-        public abstract Builder errorDescription(String errorDescription);
-
-        public abstract Builder isHttpError(Boolean isHttpError);
-
-        public abstract Builder httpErrorCode(Integer httpErrorCode);
-
-        public abstract Builder originalException(Exception originalException);
-
-        public abstract D2CallException build();
-    }
+public enum D2ErrorCode {
+    ALREADY_AUTHENTICATED,
+    API_UNSUCCESSFUL_RESPONSE,
+    API_RESPONSE_PROCESS_ERROR,
+    LOGIN_USERNAME_NULL,
+    LOGIN_PASSWORD_NULL,
+    INVALID_DHIS_VERSION
 }

@@ -90,6 +90,12 @@ public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
     }
 
     @Override
+    public M selectFirst(@NonNull CursorModelFactory<M> modelFactory) {
+        Cursor cursor = databaseAdapter.query(builder.selectAll());
+        return getFirstFromCursor(cursor, modelFactory);
+    }
+
+    @Override
     public boolean deleteById(@NonNull M m) {
         return deleteWhereClause(BaseModel.Columns.ID + "='" + m.id() + "';");
     }
@@ -97,11 +103,19 @@ public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
     private M selectOneWhere(@NonNull CursorModelFactory<M> modelFactory,
                                @NonNull String whereClause) {
         Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClause, 1));
-        if (cursor.getCount() == 1) {
-            cursor.moveToFirst();
-            return modelFactory.fromCursor(cursor);
-        } else {
-            return null;
+        return getFirstFromCursor(cursor, modelFactory);
+    }
+
+    private M getFirstFromCursor(@NonNull Cursor cursor, @NonNull CursorModelFactory<M> modelFactory) {
+        try {
+            if (cursor.getCount() >= 1) {
+                cursor.moveToFirst();
+                return modelFactory.fromCursor(cursor);
+            } else {
+                return null;
+            }
+        } finally {
+            cursor.close();
         }
     }
 
@@ -116,8 +130,12 @@ public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
 
     protected int countWhere(@NonNull String whereClause) {
         Cursor cursor = databaseAdapter.query(builder.countWhere(whereClause));
-        cursor.moveToFirst();
-        return cursor.getInt(0);
+        try {
+            cursor.moveToFirst();
+            return cursor.getInt(0);
+        } finally {
+            cursor.close();
+        }
     }
 
     private void addObjectsToCollection(Cursor cursor, CursorModelFactory<M> modelFactory,

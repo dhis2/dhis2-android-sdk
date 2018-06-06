@@ -78,11 +78,9 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void successful_response_after_sync_events() throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn(user, password).call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.logIn(user, password).call();
 
-        response = d2.syncMetaData().call();
+        Response response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid, dataElementUid, attributeCategoryOption, attributeOptionCombo, null);
@@ -166,11 +164,9 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private void dowloadMetadata() throws Exception {
-        Response response;
-        response = d2.logIn(user, password).call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.logIn(user, password).call();
 
-        response = d2.syncMetaData().call();
+        Response response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
     }
 

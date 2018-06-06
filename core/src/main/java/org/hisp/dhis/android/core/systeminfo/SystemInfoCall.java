@@ -28,7 +28,10 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.BlockCallFactory;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.BasicCallFactory;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -36,10 +39,9 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class SystemInfoCall extends SyncCall<Response<SystemInfo>> {
+public class SystemInfoCall extends SyncCall<SystemInfo> {
     private final DatabaseAdapter databaseAdapter;
     private final GenericHandler<SystemInfo, SystemInfoModel> systemInfoHandler;
     private final SystemInfoService systemInfoService;
@@ -47,8 +49,8 @@ public class SystemInfoCall extends SyncCall<Response<SystemInfo>> {
 
     SystemInfoCall(DatabaseAdapter databaseAdapter,
                    GenericHandler<SystemInfo, SystemInfoModel> systemInfoHandler,
-                          SystemInfoService systemInfoService,
-                          ResourceHandler resourceHandler) {
+                   SystemInfoService systemInfoService,
+                   ResourceHandler resourceHandler) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoHandler = systemInfoHandler;
         this.systemInfoService = systemInfoService;
@@ -56,36 +58,40 @@ public class SystemInfoCall extends SyncCall<Response<SystemInfo>> {
     }
 
     @Override
-    public Response<SystemInfo> call() throws Exception {
+    public SystemInfo call() throws D2CallException {
         super.setExecuted();
 
-        Response<SystemInfo> response = systemInfoService.getSystemInfo(SystemInfo.allFields).execute();
-        if (response.isSuccessful()) {
-            insertOrUpdateSystemInfo(response);
+        SystemInfo systemInfo = new APICallExecutor().executeObjectCall(
+                systemInfoService.getSystemInfo(SystemInfo.allFields));
+
+        if (!systemInfo.version().equals("2.29")) {
+            throw D2CallException.builder()
+                    .isHttpError(false)
+                    .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
+                    .errorDescription("Server DHIS version (" + systemInfo.version() + ") not valid. "
+                            + "Please use a server with DHIS 2.29")
+                    .build();
         }
 
-        return response;
+        insertOrUpdateSystemInfo(systemInfo);
+        return systemInfo;
     }
 
-    private void insertOrUpdateSystemInfo(Response<SystemInfo> response) {
+    private void insertOrUpdateSystemInfo(SystemInfo systemInfo) {
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            if (response.body() != null) {
-                SystemInfo systemInfo = response.body();
-                systemInfoHandler.handle(systemInfo, new SystemInfoModelBuilder());
-                resourceHandler.handleResource(ResourceModel.Type.SYSTEM_INFO, systemInfo.serverDate());
-            }
-
+            systemInfoHandler.handle(systemInfo, new SystemInfoModelBuilder());
+            resourceHandler.handleResource(ResourceModel.Type.SYSTEM_INFO, systemInfo.serverDate());
             transaction.setSuccessful();
         } finally {
             transaction.end();
         }
     }
 
-    public static final BlockCallFactory<SystemInfo> FACTORY = new BlockCallFactory<SystemInfo>() {
+    public static final BasicCallFactory<SystemInfo> FACTORY = new BasicCallFactory<SystemInfo>() {
 
         @Override
-        public Call<Response<SystemInfo>> create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
+        public Call<SystemInfo> create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
             return new SystemInfoCall(
                     databaseAdapter,
                     SystemInfoHandler.create(databaseAdapter),

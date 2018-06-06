@@ -13,6 +13,8 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.List;
 
+import retrofit2.Response;
+
 public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
@@ -31,12 +33,9 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTest
 
     //@Test
     public void download_tei_enrollments_and_events() throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn(RealServerMother.user, RealServerMother.password).call();
-        Truth.assertThat(response.isSuccessful()).isTrue();
+        d2.logIn(RealServerMother.user, RealServerMother.password).call();
 
-
-        response = d2.syncMetaData().call();
+        Response response = d2.syncMetaData().call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
         Call<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =

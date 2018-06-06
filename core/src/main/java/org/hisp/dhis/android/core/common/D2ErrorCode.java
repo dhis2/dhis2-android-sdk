@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 public enum D2ErrorCode {
     ALREADY_AUTHENTICATED,
+    ALREADY_EXECUTED,
     API_UNSUCCESSFUL_RESPONSE,
     API_RESPONSE_PROCESS_ERROR,
     LOGIN_USERNAME_NULL,

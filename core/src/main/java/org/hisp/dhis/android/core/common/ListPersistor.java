@@ -31,5 +31,5 @@ package org.hisp.dhis.android.core.common;
 import java.util.List;
 
 public interface ListPersistor<P> {
-    void persist(List<P> objectList);
+    void persist(List<P> objectList) throws D2CallException;
 }

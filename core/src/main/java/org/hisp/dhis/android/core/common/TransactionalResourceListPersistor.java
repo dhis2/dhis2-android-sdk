@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class TransactionalResourceListPersistor<P, M extends Model> implements ListPersistor<P> {
     private final GenericCallData data;
@@ -49,18 +49,17 @@ public class TransactionalResourceListPersistor<P, M extends Model> implements L
         this.modelBuilder = modelBuilder;
     }
 
-    public void persist(List<P> objectList) {
+    public void persist(final List<P> objectList) throws D2CallException {
         if (objectList != null && !objectList.isEmpty()) {
-            Transaction transaction = data.databaseAdapter().beginNewTransaction();
+            new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(), new Callable<Void>() {
 
-            try {
-                handler.handleMany(objectList, modelBuilder);
-                data.handleResource(resourceType);
-
-                transaction.setSuccessful();
-            } finally {
-                transaction.end();
-            }
+                @Override
+                public Void call() {
+                    handler.handleMany(objectList, modelBuilder);
+                    data.handleResource(resourceType);
+                    return null;
+                }
+            });
         }
     }
 }

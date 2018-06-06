@@ -177,7 +177,7 @@ public class SystemInfoCallShould {
     }
 
     @Test
-    public void return_true_when_ask_if_is_executed_before_throw_illegal_state_exception_on_consecutive_calls() throws Exception {
+    public void return_true_when_ask_if_is_executed_before_throw_d2_call_exception_on_consecutive_calls() throws Exception {
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
 
         systemInfoSyncCall.call();
@@ -187,7 +187,7 @@ public class SystemInfoCallShould {
         try {
             systemInfoSyncCall.call();
             fail("Multiple executions of a call should throw exception");
-        } catch (IllegalStateException ex) {
+        } catch (D2CallException ex) {
             // do nothing
         }
     }

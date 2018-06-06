@@ -9,8 +9,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static com.google.common.truth.Truth.assertThat;
-
 public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to
@@ -52,13 +50,10 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
         d2.logIn("android", "Android123").call();
 
         //first metaData sync:
-        retrofit2.Response response = null;
-        response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
 
         //first dataValues sync:
-        response = d2.syncAggregatedData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncAggregatedData().call();
     }
 
     //@Test
@@ -68,20 +63,16 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
 
         //first metaData sync:
         retrofit2.Response response = null;
-        response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
 
         //first dataValues sync:
-        response = d2.syncAggregatedData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncAggregatedData().call();
 
         //second sync:
-        response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
 
         //second dataValues sync:
-        response = d2.syncAggregatedData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncAggregatedData().call();
     }
 
     @Test

@@ -78,15 +78,12 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void successful_response_after_sync_events() throws Exception {
-        d2.logIn(user, password).call();
-
-        Response response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        dowloadMetadata();
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid, dataElementUid, attributeCategoryOption, attributeOptionCombo, null);
 
         Call<Response<WebResponse>> call = d2.syncSingleEvents();
-        response = call.call();
+        Response<WebResponse> response = call.call();
         assertThat(response.isSuccessful()).isTrue();
 
 
@@ -165,9 +162,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
     private void dowloadMetadata() throws Exception {
         d2.logIn(user, password).call();
-
-        Response response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
     }
 
     private boolean verifyPushedEventIsInPullList(Event event, List<Event> eventList) {

@@ -33,9 +33,8 @@ import android.support.test.runner.AndroidJUnit4;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -51,10 +50,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
@@ -81,7 +80,7 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
 
     private MockWebServer server;
 
-    private Call<Response<Payload<TrackedEntityType>>> trackedEntityCall;
+    private Call<List<TrackedEntityType>> trackedEntityCall;
 
     @Before
     @Override

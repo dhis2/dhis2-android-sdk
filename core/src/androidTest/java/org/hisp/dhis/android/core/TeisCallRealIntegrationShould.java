@@ -9,8 +9,6 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.List;
 
-import retrofit2.Response;
-
 import static com.google.common.truth.Truth.assertThat;
 
 public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
@@ -30,8 +28,7 @@ public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
         d2.logout().call();
         d2.logIn("android", "Android123").call();
 
-        Response metadataResponse = d2.syncMetaData().call();
-        assertThat(metadataResponse.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
 
         List<TrackedEntityInstance> trackedEntityInstances =
                 d2.downloadTrackedEntityInstances(5,  false).call();

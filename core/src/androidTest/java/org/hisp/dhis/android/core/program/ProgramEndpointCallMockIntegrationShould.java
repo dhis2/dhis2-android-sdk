@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -56,8 +55,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Date;
-
-import retrofit2.Response;
+import java.util.List;
 
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -98,7 +96,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     };
 
     private Dhis2MockServer dhis2MockServer;
-    private Call<Response<Payload<Program>>> programEndpointCall;
+    private Call<List<Program>> programEndpointCall;
 
     @Override
     @Before

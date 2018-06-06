@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import retrofit2.Response;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -181,17 +179,12 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
     private void givenAMetadataInDatabase() throws Exception {
         dhis2MockServer.enqueueMetadataResponses();
-        Response response = d2.syncMetaData().call();
-
-        assertThat(response.isSuccessful(), is(true));
+        d2.syncMetaData().call();
     }
 
     private void givenAMetadataWithDescendantsInDatabase() throws Exception {
         dhis2MockServer.enqueueMetadataWithDescendentsResponses();
-
-        Response response = d2.syncMetaData().call();
-
-        assertThat(response.isSuccessful(), is(true));
+        d2.syncMetaData().call();
     }
 
     private void givenAEventInDatabase() throws Exception {

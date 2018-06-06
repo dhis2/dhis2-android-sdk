@@ -49,15 +49,13 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     // @Test
     public void download_reserved_values() throws Exception {
         login();
-        retrofit2.Response reservedValueResponse = reservedValueEndpointCall.call();
-        assertThat(reservedValueResponse.isSuccessful()).isTrue();
+        reservedValueEndpointCall.call();
     }
 
     // @Test
     public void download_and_persist_reserved_values() throws Exception {
         login();
-        retrofit2.Response reservedValueResponse = reservedValueEndpointCall.call();
-        assertThat(reservedValueResponse.isSuccessful()).isTrue();
+        reservedValueEndpointCall.call();
 
         Set<TrackedEntityAttributeReservedValueModel> reservedValues = TrackedEntityAttributeReservedValueStore.create(
                 databaseAdapter()).selectAll(TrackedEntityAttributeReservedValueModel.factory);

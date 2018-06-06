@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -97,13 +98,13 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
     }
 
     //@Test
-    public void get_one_reserved_value() {
+    public void get_one_reserved_value() throws D2CallException {
         String value1 = d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
         assertThat(value1, is("value1"));
     }
 
     //@Test
-    public void get_two_reserved_value() {
+    public void get_two_reserved_value() throws D2CallException {
         String value1 = d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
         String value2 = d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
         String value3 = d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
@@ -125,7 +126,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
     }
 
     //@Test
-    public void sync_pop_sync_again_and_have_100_reserved_values() {
+    public void sync_pop_sync_again_and_have_100_reserved_values() throws D2CallException {
         d2.syncTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
         assertThat(selectAll().size(), is(100));
         d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
@@ -135,13 +136,13 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
     }
 
     //@Test
-    public void reserve_100_new_values_and_take_one() {
+    public void reserve_100_new_values_and_take_one() throws D2CallException {
         d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
         assertThat(selectAll().size(), is(99));
     }
 
     //@Test
-    public void have_98_values_after_sync_and_take_two() {
+    public void have_98_values_after_sync_and_take_two() throws D2CallException {
         d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
         d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
         assertThat(selectAll().size(), is(98));

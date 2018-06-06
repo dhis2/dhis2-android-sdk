@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -59,8 +58,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import retrofit2.Response;
 
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -97,7 +94,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
     private GenericCallData genericCallData;
 
     //The return of the organisationUnitCall to be tested:
-    private Call<Response<Payload<OrganisationUnit>>> organisationUnitCall;
+    private Call<List<OrganisationUnit>> organisationUnitCall;
 
     @Before
     @Override

@@ -51,8 +51,7 @@ public final class ProgramEndpointCall extends GenericEndpointCallImpl<Program, 
     @Override
     protected Call<Payload<Program>> getCall(EmptyQuery query, String lastUpdated) {
         String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
-        return programService.getPrograms(Program.allFields, Program.lastUpdated.gt(lastUpdated),
-                accessDataReadFilter, Boolean.FALSE);
+        return programService.getPrograms(Program.allFields, accessDataReadFilter, Boolean.FALSE);
     }
 
     static final SimpleCallFactory<Payload<Program>> FACTORY = new SimpleCallFactory<Payload<Program>>() {

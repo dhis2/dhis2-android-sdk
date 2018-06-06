@@ -30,8 +30,12 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.BlockCallFactory;
+import org.hisp.dhis.android.core.common.BasicCallFactory;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -40,6 +44,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModelBuilder;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +52,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -55,8 +59,7 @@ import org.mockito.stubbing.Answer;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -69,7 +72,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.inOrder;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -84,10 +87,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private UserService userService;
 
     @Mock
-    private UserHandler userHandler;
-
-    @Mock
-    private UserCredentialsHandler userCredentialsHandler;
+    private GenericHandler<User, UserModel> userHandler;
 
     @Mock
     private ResourceHandler resourceHandler;
@@ -99,7 +99,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private AuthenticatedUserStore authenticatedUserStore;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<User> userCall;
+    private retrofit2.Call<User> authenticateAPICall;
 
     @Captor
     private ArgumentCaptor<String> credentialsCaptor;
@@ -108,187 +108,128 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private ArgumentCaptor<Fields<User>> filterCaptor;
 
     @Mock
-    private OrganisationUnit organisationUnit;
-
-    @Mock
-    private UserCredentials userCredentials;
-
-    @Mock
     private User user;
+
+    @Mock
+    private UserModel userModel;
 
     @Mock
     private SystemInfo systemInfo;
 
     @Mock
-    private Date created;
-
-    List<OrganisationUnit> organisationUnits;
-
-    @Mock
-    private Date lastUpdated;
+    private SystemInfoModel systemInfoModel;
 
     @Mock
     private AuthenticatedUserModel authenticatedUser;
 
     @Mock
-    private BlockCallFactory<SystemInfo> systemInfoCallFactory;
+    private IdentifiableObjectStore<UserModel> userStore;
 
     @Mock
-    private Call<Response<SystemInfo>> systemInfoEndpointCall;
+    private ObjectWithoutUidStore<SystemInfoModel> systemInfoStore;
+
+    @Mock
+    private BasicCallFactory<SystemInfo> systemInfoCallFactory;
+
+    @Mock
+    private Call<SystemInfo> systemInfoEndpointCall;
+
+    @Mock
+    private Callable<Void> dbWipeCall;
+
+    private UserAuthenticateCall.OrganisationUnitHandlerFactory organisationUnitHandlerFactory;
+
+    private String baseEndpoint;
 
     // call we are testing
-    private Call<Response<User>> userAuthenticateCall;
+    private Call<User> userAuthenticateCall;
+
+    private static final String USERNAME = "test_username";
+    private static final String UID = "test_uid";
+    private static final String PASSWORD = "test_password";
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
 
-        UserAuthenticateCall.OrganisationUnitHandlerFactory organisationUnitHandlerFactory =
-                new UserAuthenticateCall.OrganisationUnitHandlerFactory() {
-                    @Override
-                    public GenericHandler<OrganisationUnit, OrganisationUnitModel>
-                    organisationUnitHandler(DatabaseAdapter databaseAdapter, User user) {
-                        return organisationUnitHandler;
-                    }
-                };
+        organisationUnitHandlerFactory = new UserAuthenticateCall.OrganisationUnitHandlerFactory() {
+            @Override
+            public GenericHandler<OrganisationUnit, OrganisationUnitModel>
+            organisationUnitHandler(DatabaseAdapter databaseAdapter, User user) {
+                return organisationUnitHandler;
+            }
+        };
 
-        userAuthenticateCall = new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory,
-                userService, userHandler, userCredentialsHandler, resourceHandler, authenticatedUserStore,
-                organisationUnitHandlerFactory, "test_user_name", "test_user_password");
+        userAuthenticateCall = instantiateCall(USERNAME, PASSWORD);
 
-        when(userCredentials.uid()).thenReturn("test_user_credentials_uid");
-        when(userCredentials.code()).thenReturn("test_user_credentials_code");
-        when(userCredentials.name()).thenReturn("test_user_credentials_name");
-        when(userCredentials.displayName()).thenReturn("test_user_credentials_display_name");
-        when(userCredentials.created()).thenReturn(created);
-        when(userCredentials.lastUpdated()).thenReturn(lastUpdated);
-        when(userCredentials.username()).thenReturn("test_user_credentials_username");
-
-        when(organisationUnit.uid()).thenReturn("test_organisation_unit_uid");
-        when(organisationUnit.code()).thenReturn("test_organisation_unit_code");
-        when(organisationUnit.name()).thenReturn("test_organisation_unit_name");
-        when(organisationUnit.displayName()).thenReturn("test_organisation_unit_display_name");
-        when(organisationUnit.created()).thenReturn(created);
-        when(organisationUnit.lastUpdated()).thenReturn(lastUpdated);
-        when(organisationUnit.shortName()).thenReturn("test_organisation_unit_short_name");
-        when(organisationUnit.displayShortName()).thenReturn(
-                "test_organisation_unit_display_short_name");
-        when(organisationUnit.description()).thenReturn("test_organisation_unit_description");
-        when(organisationUnit.displayDescription()).thenReturn(
-                "test_organisation_unit_display_description");
-        when(organisationUnit.path()).thenReturn("test_organisation_unit_path");
-        when(organisationUnit.openingDate()).thenReturn(created);
-        when(organisationUnit.closedDate()).thenReturn(lastUpdated);
-        when(organisationUnit.level()).thenReturn(4);
-        when(organisationUnit.parent()).thenReturn(null);
-
-        organisationUnits = Arrays.asList(organisationUnit);
-
-        when(user.uid()).thenReturn("test_user_uid");
-        when(user.code()).thenReturn("test_user_code");
-        when(user.name()).thenReturn("test_user_name");
-        when(user.displayName()).thenReturn("test_user_display_name");
-        when(user.created()).thenReturn(created);
-        when(user.lastUpdated()).thenReturn(lastUpdated);
-        when(user.birthday()).thenReturn("test_user_birthday");
-        when(user.education()).thenReturn("test_user_education");
-        when(user.gender()).thenReturn("test_user_gender");
-        when(user.jobTitle()).thenReturn("test_user_job_title");
-        when(user.surname()).thenReturn("test_user_surname");
-        when(user.firstName()).thenReturn("test_user_first_name");
-        when(user.introduction()).thenReturn("test_user_introduction");
-        when(user.employer()).thenReturn("test_user_employer");
-        when(user.interests()).thenReturn("test_user_interests");
-        when(user.languages()).thenReturn("test_user_languages");
-        when(user.email()).thenReturn("test_user_email");
-        when(user.phoneNumber()).thenReturn("test_user_phone_number");
-        when(user.nationality()).thenReturn("test_user_nationality");
-        when(user.userCredentials()).thenReturn(userCredentials);
-        when(user.organisationUnits()).thenReturn(organisationUnits);
-
+        when(user.uid()).thenReturn(UID);
+        when(userModel.uid()).thenReturn(UID);
         when(systemInfo.serverDate()).thenReturn(serverDate);
 
-        when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(userCall);
+        baseEndpoint = "https://dhis-instance.org";
+        when(systemInfo.contextPath()).thenReturn(baseEndpoint);
+
+        when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(authenticateAPICall);
 
         when(systemInfoCallFactory.create(databaseAdapter, retrofit)).thenReturn(systemInfoEndpointCall);
-        when(systemInfoEndpointCall.call()).thenReturn(Response.success(systemInfo));
+        when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
+        when(authenticateAPICall.execute()).thenReturn(Response.success(user));
 
         when(databaseAdapter.beginNewTransaction()).then(new Answer<Transaction>() {
             @Override
-            public Transaction answer(InvocationOnMock invocation) throws Throwable {
+            public Transaction answer(InvocationOnMock invocation) {
                 transaction.begin();
                 return transaction;
             }
         });
     }
 
+    private UserAuthenticateCall instantiateCall(String username, String password) {
+        return new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory,
+                userService, userHandler, resourceHandler, authenticatedUserStore,
+                systemInfoStore, userStore, organisationUnitHandlerFactory, dbWipeCall,
+                username, password, baseEndpoint + "/api/");
+    }
+
+    @Test(expected = D2CallException.class)
+    public void throw_d2_call_exception_for_null_username() throws Exception {
+        instantiateCall(null, PASSWORD).call();
+    }
+
+    @Test(expected = D2CallException.class)
+    public void throw_d2_call_exception_for_null_password() throws Exception {
+        instantiateCall(USERNAME, null).call();
+    }
+
     @Test
-    @SuppressWarnings("unchecked")
     public void invoke_server_with_correct_parameters_after_call() throws Exception {
-        when(userCall.execute()).thenReturn(Response.success(user));
+        when(authenticateAPICall.execute()).thenReturn(Response.success(user));
         when(userService.authenticate(
                 credentialsCaptor.capture(), filterCaptor.capture())
-        ).thenReturn(userCall);
+        ).thenReturn(authenticateAPICall);
 
         userAuthenticateCall.call();
 
-        assertThat(basic("test_user_name", "test_user_password"))
+        assertThat(basic(USERNAME, PASSWORD))
                 .isEqualTo(credentialsCaptor.getValue());
-
-        assertThat(filterCaptor.getValue().fields())
-                .contains(User.uid, User.code, User.name, User.displayName, User.created,
-                        User.lastUpdated, User.birthday, User.education, User.gender, User.jobTitle,
-                        User.surname, User.firstName, User.introduction, User.employer,
-                        User.interests,
-                        User.languages, User.email, User.phoneNumber, User.nationality,
-                        User.userCredentials.with(
-                                UserCredentials.uid,
-                                UserCredentials.code,
-                                UserCredentials.name,
-                                UserCredentials.displayName,
-                                UserCredentials.created,
-                                UserCredentials.lastUpdated,
-                                UserCredentials.username),
-                        User.organisationUnits.with(
-                                OrganisationUnit.uid,
-                                OrganisationUnit.code,
-                                OrganisationUnit.name,
-                                OrganisationUnit.displayName,
-                                OrganisationUnit.created,
-                                OrganisationUnit.lastUpdated,
-                                OrganisationUnit.shortName,
-                                OrganisationUnit.displayShortName,
-                                OrganisationUnit.description,
-                                OrganisationUnit.displayDescription,
-                                OrganisationUnit.path,
-                                OrganisationUnit.openingDate,
-                                OrganisationUnit.closedDate,
-                                OrganisationUnit.level,
-                                OrganisationUnit.parent.with(OrganisationUnit.uid),
-                                OrganisationUnit.ancestors.with(OrganisationUnit.uid, OrganisationUnit.displayName)));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void not_invoke_stores_on_exception_on_call() throws IOException {
-        when(userCall.execute()).thenThrow(IOException.class);
+        when(authenticateAPICall.execute()).thenThrow(IOException.class);
 
         try {
             userAuthenticateCall.call();
 
             fail("Expected exception was not thrown");
         } catch (Exception exception) {
-            // ensure that transaction is not created
-            verify(databaseAdapter, never()).beginNewTransaction();
-            verify(transaction, never()).begin();
-            verify(transaction, never()).setSuccessful();
-            verify(transaction, never()).end();
+            verifyNoTransactionStarted();
 
             // stores must not be invoked
             verify(authenticatedUserStore, never()).insert(anyString(), anyString());
             verifyNoMoreInteractions(userHandler);
-            verifyNoMoreInteractions(userCredentialsHandler);
             verifyNoMoreInteractions(organisationUnitHandler);
         }
     }
@@ -296,79 +237,98 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void not_invoke_stores_on_exception_on_request_fail() throws Exception {
-        when(userCall.execute()).thenReturn(
+        when(authenticateAPICall.execute()).thenReturn(
                 Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
                         ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
-        Response<User> userResponse = userAuthenticateCall.call();
+        try {
+            userAuthenticateCall.call();
+        } catch (D2CallException d2e) {
 
-        assertThat(userResponse.code()).isEqualTo(HttpURLConnection.HTTP_UNAUTHORIZED);
+        }
 
-        // ensure that transaction is not created
-        verify(databaseAdapter, never()).beginNewTransaction();
-        verify(transaction, never()).begin();
-        verify(transaction, never()).setSuccessful();
-        verify(transaction, never()).end();
+        verifyNoTransactionStarted();
 
         // stores must not be invoked
         verify(authenticatedUserStore).query();
         verifyNoMoreInteractions(authenticatedUserStore);
         verifyNoMoreInteractions(userHandler);
-        verifyNoMoreInteractions(userCredentialsHandler);
         verifyNoMoreInteractions(organisationUnitHandler);
     }
 
     @Test
-    public void persist_objects_after_successful_call() throws Exception {
-        when(userCall.execute()).thenReturn(Response.success(user));
+    public void succeed_when_no_previous_user_or_system_info() throws Exception {
+        userAuthenticateCall.call();
+        verifySuccess();
+    }
+
+    @Test
+    public void not_wipe_db_when_no_previous_user_or_system_info() throws Exception {
+        userAuthenticateCall.call();
+        verify(dbWipeCall, never()).call();
+        verifySuccess();
+    }
+
+    @Test
+    public void wipe_db_when_previously_another_user() throws Exception {
+        userAuthenticateCall.call();
+        verify(dbWipeCall, never()).call();
+        verifySuccess();
+    }
+
+    @Test
+    public void wipe_db_when_previously_equal_user_but_different_server() throws Exception {
+        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(userModel);
+        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
+        when(systemInfoModel.contextPath()).thenReturn("https://another-instance.org/");
 
         userAuthenticateCall.call();
 
-        InOrder transactionMethodsOrder = inOrder(databaseAdapter);
-        transactionMethodsOrder.verify(databaseAdapter).beginNewTransaction();
-        verify(transaction).begin();
-        verify(transaction).setSuccessful();
-        verify(transaction).end();
-
-        verify(authenticatedUserStore, times(1)).insert(
-                "test_user_uid", base64("test_user_name", "test_user_password"));
-
-        verify(userHandler, times(1)).handleUser(user);
-
-        verify(userCredentialsHandler, times(1)).handleUserCredentials(
-                userCredentials, user);
-
-        verify(organisationUnitHandler).handleMany(
-                anyListOf(OrganisationUnit.class), any(OrganisationUnitModelBuilder.class));
+        verify(dbWipeCall).call();
+        verifySuccess();
     }
 
+    @Test
+    public void not_wipe_db_when_previously_same_user() throws Exception {
+        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(userModel);
+        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
+
+        userAuthenticateCall.call();
+
+        verify(dbWipeCall, never()).call();
+        verifySuccess();
+    }
+
+    @Test
+    public void wipe_db_when_previously_different_user() throws Exception {
+        when(userModel.uid()).thenReturn("previous_user");
+        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(userModel);
+        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
+
+        userAuthenticateCall.call();
+
+        verify(dbWipeCall).call();
+        verifySuccess();
+    }
 
     @Test
     public void not_fail_after_call_a_user_without_organisation_unit() throws Exception {
         when(user.organisationUnits()).thenReturn(null);
-        when(userCall.execute()).thenReturn(Response.success(user));
 
         userAuthenticateCall.call();
 
-        // ensure that transaction is created
-        verify(databaseAdapter).beginNewTransaction();
-        verify(transaction).begin();
-        verify(transaction).setSuccessful();
-        verify(transaction).end();
+        verifyTransactionComplete();
 
         // stores must not be invoked
         verify(authenticatedUserStore, times(1)).insert(anyString(), anyString());
-        verify(userHandler, times(1)).handleUser(user);
-
-        verify(userCredentialsHandler, times(1)).handleUserCredentials(
-                userCredentials, user);
+        verify(userHandler, times(1)).handle(eq(user), any(UserModelBuilder.class));
 
         verifyNoMoreInteractions(organisationUnitHandler);
     }
 
     @Test
     public void mark_as_executed_when_call_is_success() throws Exception {
-        when(userCall.execute()).thenReturn(Response.success(user));
+        when(authenticateAPICall.execute()).thenReturn(Response.success(user));
 
         userAuthenticateCall.call();
 
@@ -386,11 +346,11 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void mark_as_executed_when_call_is_failure() throws Exception {
-        when(userCall.execute()).thenThrow(IOException.class);
+        when(authenticateAPICall.execute()).thenThrow(IOException.class);
 
         try {
             userAuthenticateCall.call();
-        } catch (IOException ioException) {
+        } catch (D2CallException ioException) {
             // swallow exception
         }
 
@@ -405,16 +365,17 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         }
     }
 
-    @Test
-    public void throw_illegal_state_exception_if_user_already_signed_in() throws Exception {
+    @Test(expected = D2CallException.class)
+    public void throw_d2_call_exception_state_exception_if_user_already_signed_in() throws Exception {
         when(authenticatedUserStore.query()).thenReturn(Arrays.asList(authenticatedUser));
+        userAuthenticateCall.call();
+    }
 
-        try {
-            userAuthenticateCall.call();
-
-            fail("IllegalStateException was expected");
-        } catch (IllegalStateException illegalStateException) {
-            // swallow exception
-        }
+    private void verifySuccess() {
+        verifyTransactionComplete();
+        verify(authenticatedUserStore).insert(UID, base64(USERNAME, PASSWORD));
+        verify(userHandler).handle(eq(user), any(UserModelBuilder.class));
+        verify(organisationUnitHandler).handleMany(
+                anyListOf(OrganisationUnit.class), any(OrganisationUnitModelBuilder.class));
     }
 }

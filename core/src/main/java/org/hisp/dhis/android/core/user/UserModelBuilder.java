@@ -25,53 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+public class UserModelBuilder extends ModelBuilder<User, UserModel> {
 
-@RunWith(JUnit4.class)
-public class UserHandlerShould {
+    @Override
+    public UserModel buildModel(User user) {
+        return UserModel.builder()
+                .uid(user.uid())
+                .code(user.code())
+                .name(user.name())
+                .displayName(user.displayName())
+                .created(user.created())
+                .lastUpdated(user.lastUpdated())
 
-    @Mock
-    private IdentifiableObjectStore<UserModel> userStore;
+                .birthday(user.birthday())
+                .education(user.education())
+                .gender(user.gender())
+                .jobTitle(user.jobTitle())
+                .surname(user.surname())
+                .firstName(user.firstName())
+                .introduction(user.introduction())
+                .employer(user.employer())
+                .interests(user.interests())
+                .languages(user.languages())
+                .email(user.email())
+                .phoneNumber(user.phoneNumber())
+                .nationality(user.nationality())
 
-    @Mock
-    private UserCredentialsHandler userCredentialsHandler;
-
-    @Mock
-    private User user;
-
-    @Mock
-    private UserCredentials userCredentials;
-
-    // object to test
-    private UserHandler userHandler;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        userHandler = new UserHandler(userStore, userCredentialsHandler);
-        when(user.userCredentials()).thenReturn(userCredentials);
-    }
-
-    @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<User, UserModel> genericHandler = new UserHandler(null, null);
-    }
-
-    @Test
-    public void call_user_credentials_handler() throws Exception {
-        userHandler.handle(user, new UserModelBuilder());
-        verify(userCredentialsHandler).handleUserCredentials(userCredentials, user);
+                .build();
     }
 }

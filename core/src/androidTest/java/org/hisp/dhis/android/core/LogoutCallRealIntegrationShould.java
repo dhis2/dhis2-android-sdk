@@ -1,16 +1,11 @@
 package org.hisp.dhis.android.core;
 
-import static com.google.common.truth.Truth.assertThat;
-
-import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
-import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isTableEmpty;
-
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.event.EventEndPointCall;
+import org.hisp.dhis.android.core.event.EventEndpointCall;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
@@ -20,6 +15,12 @@ import org.hisp.dhis.android.core.user.UserModel;
 import org.junit.Before;
 
 import java.io.IOException;
+
+import retrofit2.Response;
+
+import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
+import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isTableEmpty;
 
 public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     private D2 d2;
@@ -34,12 +35,9 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
 
     //@Test
     public void have_empty_database_when_wipe_db_after_sync_metadata() throws Exception {
-        retrofit2.Response response = null;
+        d2.logIn("android", "Android123").call();
 
-        response = d2.logIn("android", "Android123").call();
-        assertThat(response.isSuccessful()).isTrue();
-
-        response = d2.syncMetaData().call();
+        Response response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
@@ -51,14 +49,12 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
 
     //@Test
     public void have_empty_database_when_wipe_db_after_sync_data() throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn("android", "Android123").call();
+        d2.logIn("android", "Android123").call();
+
+        Response response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 
-        response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
-
-        EventEndPointCall eventCall = EventCallFactory.create(
+        EventEndpointCall eventCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         eventCall.call();
@@ -72,14 +68,12 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
 
     //@Test
     public void delete_autenticate_user_table_only_when_log_out_after_sync_data() throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn("android", "Android123").call();
+        d2.logIn("android", "Android123").call();
+
+        Response response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 
-        response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
-
-        EventEndPointCall eventCall = EventCallFactory.create(
+        EventEndpointCall eventCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         eventCall.call();
@@ -97,11 +91,9 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     //@Test
     public void delete_autenticate_user_table_only_when_log_out_after_sync_metadata()
             throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn("android", "Android123").call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.logIn("android", "Android123").call();
 
-        response = d2.syncMetaData().call();
+        retrofit2.Response response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
@@ -125,13 +117,8 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
 
     //@Test
     public void response_successful_on_login_logout_and_login() throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn("android", "Android123").call();
-        assertThat(response.isSuccessful()).isTrue();
-
+        d2.logIn("android", "Android123").call();
         d2.logout().call();
-
-        response = d2.logIn("android", "Android123").call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.logIn("android", "Android123").call();
     }
 }

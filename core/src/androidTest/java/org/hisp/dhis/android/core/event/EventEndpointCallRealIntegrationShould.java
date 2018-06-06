@@ -1,10 +1,5 @@
 package org.hisp.dhis.android.core.event;
 
-import static junit.framework.Assert.assertTrue;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
@@ -18,7 +13,13 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.List;
 
-public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
+import retrofit2.Response;
+
+import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
+public class EventEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
 
@@ -35,19 +36,16 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     //@Test
     public void download_number_of_events_according_to_default_limit() throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.logIn(RealServerMother.user, RealServerMother.password).call();
+
+        Response response = d2.syncMetaData().call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
-
-        response = d2.syncMetaData().call();
-        Truth.assertThat(response.isSuccessful()).isTrue();
-
-        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
-        response = eventEndPointCall.call();
-        Truth.assertThat(response.isSuccessful()).isTrue();
+        List<Event> events = eventEndpointCall.call();
+        Truth.assertThat(events.isEmpty()).isFalse();
 
         //TODO: we should create dependant server data verifications in other test suite
        /* verifyNumberOfDownloadedEvents(49);
@@ -57,18 +55,15 @@ public class EventEndPointCallRealIntegrationShould extends AbsStoreTestCase {
 
     //@Test
     public void download_event_with_category_combo_option() throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.logIn(RealServerMother.user, RealServerMother.password).call();
+
+        Response response = d2.syncMetaData().call();
         Truth.assertThat(response.isSuccessful()).isTrue();
 
-
-        response = d2.syncMetaData().call();
-        Truth.assertThat(response.isSuccessful()).isTrue();
-
-        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
-        eventEndPointCall.call();
+        eventEndpointCall.call();
 
         assertTrue(verifyAtLeastOneEventWithCategoryOption());
     }

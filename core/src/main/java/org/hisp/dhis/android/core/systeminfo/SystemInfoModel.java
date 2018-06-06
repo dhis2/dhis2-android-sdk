@@ -38,6 +38,7 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -104,6 +105,14 @@ public abstract class SystemInfoModel extends BaseModel {
     public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
         sqLiteBind(sqLiteStatement, 5, contextPath());
     }
+
+    public static final CursorModelFactory<SystemInfoModel> factory
+            = new CursorModelFactory<SystemInfoModel>() {
+        @Override
+        public SystemInfoModel fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {

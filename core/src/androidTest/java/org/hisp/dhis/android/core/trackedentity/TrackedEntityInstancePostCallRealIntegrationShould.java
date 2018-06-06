@@ -365,12 +365,10 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     }
 
     private void downloadMetadata() throws Exception {
-        Response response;
         d2.logout().call();
-        response = d2.logIn("android", "Android123").call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.logIn("android", "Android123").call();
 
-        response = d2.syncMetaData().call();
+        Response response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
     }
 

@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.common;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.event.EventEndPointCall;
+import org.hisp.dhis.android.core.event.EventEndpointCall;
 import org.hisp.dhis.android.core.event.EventQuery;
 
 import java.util.Date;
@@ -11,8 +11,8 @@ import java.util.Date;
 import retrofit2.Retrofit;
 
 public class EventCallFactory {
-    public static EventEndPointCall create(Retrofit retrofit,
-            DatabaseAdapter databaseAdapter, String orgUnit, int pageLimit) {
+    public static EventEndpointCall create(Retrofit retrofit,
+                                           DatabaseAdapter databaseAdapter, String orgUnit, int pageLimit) {
 
         EventQuery eventQuery = EventQuery.Builder
                 .create()
@@ -21,12 +21,12 @@ public class EventCallFactory {
                 .build();
 
         GenericCallData data = GenericCallData.create(databaseAdapter, retrofit, new Date());
-        return EventEndPointCall.create(data, eventQuery);
+        return EventEndpointCall.create(data.retrofit(), eventQuery);
     }
 
-    public static EventEndPointCall create(Retrofit retrofit,
-            DatabaseAdapter databaseAdapter, String orgUnit, int pageLimit, String categoryComboUID,
-            String categoryOptionUID) {
+    public static EventEndpointCall create(Retrofit retrofit,
+                                           DatabaseAdapter databaseAdapter, String orgUnit, int pageLimit, String categoryComboUID,
+                                           String categoryOptionUID) {
 
         CategoryCombo categoryCombo = CategoryCombo
                 .builder()
@@ -46,6 +46,6 @@ public class EventCallFactory {
                 .build();
 
         GenericCallData data = GenericCallData.create(databaseAdapter, retrofit, new Date());
-        return EventEndPointCall.create(data, eventQuery);
+        return EventEndpointCall.create(data.retrofit(), eventQuery);
     }
 }

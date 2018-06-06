@@ -1,9 +1,5 @@
 package org.hisp.dhis.android.core.event;
 
-import static com.google.common.truth.Truth.assertThat;
-
-import static junit.framework.Assert.assertTrue;
-
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
@@ -27,6 +23,9 @@ import java.util.Date;
 import java.util.List;
 
 import retrofit2.Response;
+
+import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
@@ -79,11 +78,9 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void successful_response_after_sync_events() throws Exception {
-        retrofit2.Response response = null;
-        response = d2.logIn(user, password).call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.logIn(user, password).call();
 
-        response = d2.syncMetaData().call();
+        Response response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid, dataElementUid, attributeCategoryOption, attributeOptionCombo, null);
@@ -140,14 +137,12 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private void downloadEventsBy(String categoryComboUID,String categoryOptionUID) throws Exception {
-        Response response;
-
-        EventEndPointCall eventEndPointCall = EventCallFactory.create(
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), orgUnitUid, 0,categoryComboUID, categoryOptionUID);
 
-        response = eventEndPointCall.call();
+        List<Event> events = eventEndpointCall.call();
 
-        assertThat(response.isSuccessful()).isTrue();
+        assertThat(events.isEmpty()).isFalse();
     }
 
     private Event getEventFromDB() {
@@ -169,11 +164,9 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private void dowloadMetadata() throws Exception {
-        Response response;
-        response = d2.logIn(user, password).call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.logIn(user, password).call();
 
-        response = d2.syncMetaData().call();
+        Response response = d2.syncMetaData().call();
         assertThat(response.isSuccessful()).isTrue();
     }
 

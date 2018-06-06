@@ -33,8 +33,10 @@ import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
-import org.hisp.dhis.android.core.common.BlockCallFactory;
+import org.hisp.dhis.android.core.common.BasicCallFactory;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericCallFactory;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -59,15 +61,15 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ModifiedCyclomaticComplexity",
-        "PMD.StdCyclomaticComplexity", "PMD.ExcessiveImports"})
+        "PMD.StdCyclomaticComplexity", "PMD.ExcessiveImports", "PMD.PrematureDeclaration"})
 public class MetadataCall extends SyncCall<Response> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
-    private final BlockCallFactory<SystemInfo> systemInfoCallFactory;
+    private final BasicCallFactory<SystemInfo> systemInfoCallFactory;
     private final SimpleCallFactory<SystemSetting> systemSettingCallFactory;
-    private final SimpleCallFactory<User> userCallFactory;
+    private final GenericCallFactory<User> userCallFactory;
     private final SimpleCallFactory<Payload<Category>> categoryCallFactory;
     private final SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
     private final SimpleCallFactory<Payload<Program>> programParentCallFactory;
@@ -76,9 +78,9 @@ public class MetadataCall extends SyncCall<Response> {
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
                         @NonNull Retrofit retrofit,
-                        @NonNull BlockCallFactory<SystemInfo> systemInfoCallFactory,
+                        @NonNull BasicCallFactory<SystemInfo> systemInfoCallFactory,
                         @NonNull SimpleCallFactory<SystemSetting> systemSettingCallFactory,
-                        @NonNull SimpleCallFactory<User> userCallFactory,
+                        @NonNull GenericCallFactory<User> userCallFactory,
                         @NonNull SimpleCallFactory<Payload<Category>> categoryCallFactory,
                         @NonNull SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory,
                         @NonNull SimpleCallFactory<Payload<Program>> programParentCallFactory,
@@ -104,23 +106,19 @@ public class MetadataCall extends SyncCall<Response> {
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(databaseAdapter, retrofit).call();
-            if (!systemCallResponse.isSuccessful()) {
-                return systemCallResponse;
-            }
+
+            SystemInfo systemInfo = new D2CallExecutor().executeD2Call(
+                    systemInfoCallFactory.create(databaseAdapter, retrofit));
 
             GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
-                    systemCallResponse.body().serverDate());
+                    systemInfo.serverDate());
 
             Response<SystemSetting> systemSettingResponse = systemSettingCallFactory.create(genericCallData).call();
             if (!systemSettingResponse.isSuccessful()) {
                 return systemSettingResponse;
             }
 
-            Response<User> userResponse = userCallFactory.create(genericCallData).call();
-            if (!userResponse.isSuccessful()) {
-                return userResponse;
-            }
+            User user = userCallFactory.create(genericCallData).call();
 
             Response<Payload<Category>> categoryResponse = categoryCallFactory.create(genericCallData).call();
             if (!categoryResponse.isSuccessful()) {
@@ -138,7 +136,6 @@ public class MetadataCall extends SyncCall<Response> {
                 return programResponse;
             }
 
-            User user = userResponse.body();
             Response<Payload<OrganisationUnit>> organisationUnitResponse =
                     organisationUnitCallFactory.create(genericCallData, user,
                             UidsHelper.getUids(programResponse.body().items())).call();

@@ -37,7 +37,7 @@ import com.google.auto.value.AutoValue;
 public abstract class D2CallException extends Exception {
 
     @Nullable
-    public abstract String errorCode();
+    public abstract D2ErrorCode errorCode();
 
     @Nullable
     public abstract String errorDescription();
@@ -57,7 +57,7 @@ public abstract class D2CallException extends Exception {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder errorCode(String errorCode);
+        public abstract Builder errorCode(D2ErrorCode errorCode);
 
         public abstract Builder errorDescription(String errorDescription);
 

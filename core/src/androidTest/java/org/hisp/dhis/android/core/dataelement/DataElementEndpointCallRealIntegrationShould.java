@@ -52,8 +52,7 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
 
     // @Test
     public void download_data_elements() throws Exception {
-        retrofit2.Response loginResponse = d2.logIn("android", "Android123").call();
-        assertThat(loginResponse.isSuccessful()).isTrue();
+        d2.logIn("android", "Android123").call();
 
         /*  This test won't pass independently of DataElementEndpointCall and
             CategoryComboEndpointCall, as the foreign keys constraints won't be satisfied.

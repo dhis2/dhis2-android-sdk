@@ -37,20 +37,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.calls.SingleDataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
-import org.hisp.dhis.android.core.calls.TrackedEntityInstanceWithLimitEndpointCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventPostCall;
+import org.hisp.dhis.android.core.event.EventWithLimitCall;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloadAndPersistCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceWithLimitCall;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
@@ -92,14 +93,7 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response<User>> logIn(@NonNull String username, @NonNull String password) {
-        if (username == null) {
-            throw new NullPointerException("username == null");
-        }
-        if (password == null) {
-            throw new NullPointerException("password == null");
-        }
-
+    public Call<User> logIn(@NonNull String username, @NonNull String password) {
         return UserAuthenticateCall.create(databaseAdapter, retrofit, username, password);
     }
 
@@ -130,8 +124,8 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response> syncSingleData(int eventLimitByOrgUnit) {
-        return SingleDataCall.create(databaseAdapter, retrofit, eventLimitByOrgUnit);
+    public Call<List<Event>> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {
+        return EventWithLimitCall.create(databaseAdapter, retrofit, eventLimit, limitByOrgUnit);
     }
 
     @NonNull
@@ -146,7 +140,7 @@ public final class D2 {
 
     @NonNull
     public Call<List<TrackedEntityInstance>> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
-        return TrackedEntityInstanceWithLimitEndpointCall.create(databaseAdapter, retrofit, teiLimit, limitByOrgUnit);
+        return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, teiLimit, limitByOrgUnit);
     }
 
     @NonNull

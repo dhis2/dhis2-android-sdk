@@ -1,9 +1,9 @@
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.event;
 
+import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import retrofit2.Response;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
+public class EventWithLimitCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
 
@@ -28,13 +28,12 @@ public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
     //@Test
     public void download_tracked_entity_instances() throws Exception {
         d2.logout().call();
-        d2.logIn("android", "Android123").call();
+        d2.logIn(RealServerMother.user, RealServerMother.password).call();
 
         Response metadataResponse = d2.syncMetaData().call();
         assertThat(metadataResponse.isSuccessful()).isTrue();
 
-        List<TrackedEntityInstance> trackedEntityInstances =
-                d2.downloadTrackedEntityInstances(5,  false).call();
-        assertThat(trackedEntityInstances.size() == 5).isTrue();
+        List<Event> events = d2.downloadSingleEvents(20,  false).call();
+        assertThat(events.size()).isEqualTo(20);
     }
 }

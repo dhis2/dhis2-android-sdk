@@ -81,7 +81,7 @@ public class CategoryEndpointCall extends SyncCall<Response<Payload<Category>>> 
                     genericCallData.retrofit().create(CategoryService.class),
                     new ResponseValidator<Category>(),
                     CategoryHandler.create(genericCallData.databaseAdapter()),
-                    ResourceHandler.create(genericCallData.databaseAdapter()),
+                    genericCallData.resourceHandler(),
                     genericCallData.databaseAdapter(),
                     genericCallData.serverDate()
             );

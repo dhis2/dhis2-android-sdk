@@ -32,129 +32,57 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.GenericCallFactory;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
-import retrofit2.Response;
-
-public final class UserCall extends SyncCall<Response<User>> {
-    // retrofit service
+public final class UserCall extends SyncCall<User> {
+    private final GenericCallData genericCallData;
     private final UserService userService;
-    // databaseAdapter and handlers
-    private final DatabaseAdapter databaseAdapter;
-    private final UserCredentialsStore userCredentialsStore;
-    private final UserRoleStore userRoleStore;
-    private final UserStore userStore;
-    private final ResourceStore resourceStore;
-    // server date time
-    private final Date serverDate;
+    private final GenericHandler<User, UserModel> userHandler;
 
-    UserCall(UserService userService,
-                    DatabaseAdapter databaseAdapter,
-                    UserStore userStore,
-                    UserCredentialsStore userCredentialsStore,
-                    UserRoleStore userRoleStore,
-                    ResourceStore resourceStore,
-                    Date serverDate) {
+    UserCall(GenericCallData genericCallData,
+             UserService userService,
+             GenericHandler<User, UserModel> userHandler) {
+        this.genericCallData = genericCallData;
         this.userService = userService;
-        this.databaseAdapter = databaseAdapter;
-        this.userCredentialsStore = userCredentialsStore;
-        this.userRoleStore = userRoleStore;
-        this.userStore = userStore;
-        this.resourceStore = resourceStore;
-        this.serverDate = new Date(serverDate.getTime());
+        this.userHandler = userHandler;
     }
 
     @Override
-    public Response<User> call() throws Exception {
+    public User call() throws D2CallException {
         super.setExecuted();
 
-        Response<User> response = getUser();
-        if (response.isSuccessful()) {
-            UserHandler userHandler = new UserHandler(userStore);
-            UserCredentialsHandler userCredentialsHandler = new UserCredentialsHandler(userCredentialsStore);
-            UserRoleHandler userRoleHandler = new UserRoleHandler(userRoleStore);
-            ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
+        User user = new APICallExecutor().executeObjectCall(userService.getUser(User.allFields));
+        Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
+        try {
+            userHandler.handle(user, new UserModelBuilder());
+            genericCallData.resourceHandler().handleResource(ResourceModel.Type.USER, genericCallData.serverDate());
 
-            Transaction transaction = databaseAdapter.beginNewTransaction();
-            try {
-                User user = response.body();
-                // TODO: check that this is user is authenticated and is persisted in db
-                userHandler.handleUser(user);
-                UserCredentials userCredentials = user.userCredentials();
-                userCredentialsHandler.handleUserCredentials(userCredentials, user);
-
-                List<UserRole> userRoles = userCredentials.userRoles();
-                userRoleHandler.handleUserRoles(userRoles);
-
-                resourceHandler.handleResource(ResourceModel.Type.USER, serverDate);
-
-                transaction.setSuccessful();
-            } catch (SQLiteConstraintException constraintException) {
-                //constraintException.printStackTrace();
-                Log.d("CAll", "call: constraintException");
-            } finally {
-                transaction.end();
-            }
+            transaction.setSuccessful();
+        } catch (SQLiteConstraintException constraintException) {
+            // TODO review
+            //constraintException.printStackTrace();
+            Log.d("CAll", "call: constraintException");
+        } finally {
+            transaction.end();
         }
-        return response;
+        return user;
     }
 
-    private Response<User> getUser() throws IOException {
-        Fields<User> fields = Fields.<User>builder().fields(
-                User.uid, User.code, User.name, User.displayName,
-                User.created, User.lastUpdated, User.birthday, User.education,
-                User.gender, User.jobTitle, User.surname, User.firstName,
-                User.introduction, User.employer, User.interests, User.languages,
-                User.email, User.phoneNumber, User.nationality,
-                User.userCredentials.with(
-                        UserCredentials.uid,
-                        UserCredentials.code,
-                        UserCredentials.name,
-                        UserCredentials.displayName,
-                        UserCredentials.created,
-                        UserCredentials.lastUpdated,
-                        UserCredentials.username,
-                        UserCredentials.userRoles.with(UserRole.uid)
-                ),
-                User.organisationUnits.with(
-                        OrganisationUnit.uid,
-                        OrganisationUnit.path,
-                        OrganisationUnit.programs.with(ObjectWithUid.uid),
-                        OrganisationUnit.dataSets.with(DataSet.uid)
-                ),
-                User.teiSearchOrganisationUnits.with(OrganisationUnit.uid)
-        ).build();
-        return userService.getUser(fields).execute();
-    }
-
-    public static final SimpleCallFactory<User> FACTORY = new SimpleCallFactory<User>() {
+    public static final GenericCallFactory<User> FACTORY = new GenericCallFactory<User>() {
 
         @Override
-        public Call<Response<User>> create(GenericCallData genericCallData) {
+        public Call<User> create(GenericCallData genericCallData) {
             return new UserCall(
+                    genericCallData,
                     genericCallData.retrofit().create(UserService.class),
-                    genericCallData.databaseAdapter(),
-                    new UserStoreImpl(genericCallData.databaseAdapter()),
-                    new UserCredentialsStoreImpl(genericCallData.databaseAdapter()),
-                    new UserRoleStoreImpl(genericCallData.databaseAdapter()),
-                    new ResourceStoreImpl(genericCallData.databaseAdapter()),
-                    genericCallData.serverDate()
+                    UserHandler.create(genericCallData.databaseAdapter())
             );
         }
     };

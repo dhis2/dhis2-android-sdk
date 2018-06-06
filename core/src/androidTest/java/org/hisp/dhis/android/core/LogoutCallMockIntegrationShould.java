@@ -1,8 +1,5 @@
 package org.hisp.dhis.android.core;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkModel;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CategoryModel;
@@ -15,13 +12,14 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.event.EventEndPointCall;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventEndpointCall;
 import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.event.EventPersistenceCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
-import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.junit.After;
@@ -30,8 +28,12 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Response;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
@@ -167,17 +169,14 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
 
     private void givenALoginInDatabase() throws Exception {
         dhis2MockServer.enqueueLoginResponses();
-        Response<User> response = d2.logIn("user", "password").call();
-        assertThat(response.isSuccessful(), is(true));
+        d2.logIn("user", "password").call();
     }
 
     private void givenALoginWithSierraLeonaOUInDatabase() throws Exception {
         dhis2MockServer.enqueueMockResponse("admin/login.json", new Date());
         dhis2MockServer.enqueueMockResponse("system_info.json", new Date());
 
-        Response<User> response = d2.logIn("user", "password").call();
-
-        assertThat(response.isSuccessful(), is(true));
+        d2.logIn("user", "password").call();
     }
 
     private void givenAMetadataInDatabase() throws Exception {
@@ -196,14 +195,16 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenAEventInDatabase() throws Exception {
-        EventEndPointCall eventCall = EventCallFactory.create(
+        EventEndpointCall eventCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("events.json");
 
-        Response response = eventCall.call();
+        List<Event> events = eventCall.call();
 
-        assertThat(response.isSuccessful(), is(true));
+        EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
+
+        assertThat(events.isEmpty(), is(false));
     }
 
     private void verifyExistsAsignedOrgUnitAndDescendants() {

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import android.util.Log;
 
-import org.hisp.dhis.android.core.calls.Call;
+import java.util.concurrent.Callable;
 
 @SuppressWarnings({"PMD.PreserveStackTrace"})
 public final class D2CallExecutor {
@@ -39,7 +39,7 @@ public final class D2CallExecutor {
             .builder()
             .isHttpError(false);
 
-    public <P> P executeD2Call(Call<P> call) throws D2CallException {
+    public <P> P executeD2Call(Callable<P> call) throws D2CallException {
         try {
             return call.call();
         } catch (D2CallException d2e) {

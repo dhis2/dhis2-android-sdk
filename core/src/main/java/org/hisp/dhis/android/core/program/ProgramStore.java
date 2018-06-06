@@ -28,15 +28,31 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.common.SQLStatementWrapper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class ProgramStore {
+import java.util.Set;
 
-    private ProgramStore() {}
+public final class ProgramStore extends IdentifiableObjectStoreImpl<ProgramModel> implements ProgramStoreInterface {
 
-    public static IdentifiableObjectStore<ProgramModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, ProgramModel.TABLE, new ProgramModel.Columns().all());
+    private ProgramStore(DatabaseAdapter databaseAdapter,
+                         SQLStatementWrapper statementWrapper,
+                         SQLStatementBuilder statementBuilder) {
+        super(databaseAdapter, statementWrapper, statementBuilder);
+    }
+
+    public static ProgramStoreInterface create(DatabaseAdapter databaseAdapter) {
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(ProgramModel.TABLE, new ProgramModel.Columns());
+        SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
+
+        return new ProgramStore(databaseAdapter, statementWrapper, statementBuilder);
+    }
+
+    @Override
+    public Set<String> queryWithoutRegistrationProgramUids() throws RuntimeException {
+        return selectStringColumnsWhereClause(ProgramModel.Columns.UID,
+                ProgramModel.Columns.PROGRAM_TYPE + " = '" + ProgramType.WITHOUT_REGISTRATION + "'");
     }
 }

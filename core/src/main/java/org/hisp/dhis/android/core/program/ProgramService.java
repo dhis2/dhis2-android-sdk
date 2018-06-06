@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
 
@@ -40,7 +39,6 @@ import retrofit2.http.Query;
 public interface ProgramService {
     @GET("programs")
     Call<Payload<Program>> getPrograms(@Query("fields") @Which Fields<Program> fields,
-                                       @Query("filter") @Where Filter<Program, String> lastUpdated,
                                        @Query("filter") @Where String accessDataReadFilter,
                                        @Query("paging") Boolean paging);
 }

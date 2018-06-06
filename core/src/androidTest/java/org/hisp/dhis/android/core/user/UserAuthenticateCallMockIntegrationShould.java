@@ -47,8 +47,6 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import retrofit2.Response;
-
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -133,7 +131,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
     };
 
     private Dhis2MockServer dhis2MockServer;
-    private Call<Response<User>> authenticateUserCall;
+    private Call<User> authenticateUserCall;
 
     @Before
     @Override
@@ -291,9 +289,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
     @Test
     public void return_correct_user_when_call() throws Exception {
-        Response<User> userResponse = authenticateUserCall.call();
-
-        User user = userResponse.body();
+        User user = authenticateUserCall.call();
 
         // verify payload which has been returned from call
         assertThat(user.uid()).isEqualTo("DXyJmlo9rge");

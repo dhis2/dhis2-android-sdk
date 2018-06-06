@@ -29,7 +29,8 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.BlockCallFactory;
+import org.hisp.dhis.android.core.common.BasicCallFactory;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -54,7 +55,7 @@ public final class AggregatedDataCall extends TransactionalCall {
 
     private final Retrofit retrofit;
 
-    private final BlockCallFactory<SystemInfo> systemInfoCallFactory;
+    private final BasicCallFactory<SystemInfo> systemInfoCallFactory;
     private final DataValueEndpointCall.Factory dataValueCallFactory;
     private final IdentifiableObjectStore<DataSetModel> dataSetStore;
     private final ObjectWithoutUidStore<PeriodModel> periodStore;
@@ -62,7 +63,7 @@ public final class AggregatedDataCall extends TransactionalCall {
 
     private AggregatedDataCall(@NonNull DatabaseAdapter databaseAdapter,
                                @NonNull Retrofit retrofit,
-                               @NonNull BlockCallFactory<SystemInfo> systemInfoCallFactory,
+                               @NonNull BasicCallFactory<SystemInfo> systemInfoCallFactory,
                                @NonNull DataValueEndpointCall.Factory dataValueCallFactory,
                                @NonNull IdentifiableObjectStore<DataSetModel> dataSetStore,
                                @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
@@ -78,12 +79,8 @@ public final class AggregatedDataCall extends TransactionalCall {
 
     @Override
     public Response callBody() throws Exception {
-        Response<SystemInfo> systemCallResponse = systemInfoCallFactory.create(databaseAdapter, retrofit).call();
-        if (!systemCallResponse.isSuccessful()) {
-            return systemCallResponse;
-        }
-
-        SystemInfo systemInfo = systemCallResponse.body();
+        SystemInfo systemInfo = new D2CallExecutor().executeD2Call(
+                systemInfoCallFactory.create(databaseAdapter, retrofit));
         GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate());
 
         DataValueEndpointCall dataValueEndpointCall = dataValueCallFactory.create(genericCallData,

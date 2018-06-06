@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.data.api.OuMode;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +19,7 @@ public class EventQuery {
     private final String program;
     private final String trackedEntityInstance;
     private final int pageLimit;
+    private final OuMode ouMode;
 
     @Nullable
     private final CategoryOption categoryOption;
@@ -27,7 +29,7 @@ public class EventQuery {
 
     public EventQuery(boolean paging, int page, int pageSize,
             String orgUnit, String program, String trackedEntityInstance, Set<String> uIds,
-            int pageLimit) {
+            int pageLimit, OuMode ouMode) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
@@ -36,13 +38,14 @@ public class EventQuery {
         this.trackedEntityInstance = trackedEntityInstance;
         this.uIds = uIds;
         this.pageLimit = pageLimit;
+        this.ouMode = ouMode;
         this.categoryCombo = null;
         this.categoryOption = null;
     }
 
     public EventQuery(boolean paging, int page, int pageSize,
             String orgUnit, String program, String trackedEntityInstance, Set<String> uIds,
-            int pageLimit,
+            int pageLimit, OuMode ouMode,
             @Nullable CategoryCombo categoryCombo,
             @Nullable CategoryOption categoryOption) {
         this.paging = paging;
@@ -53,6 +56,7 @@ public class EventQuery {
         this.trackedEntityInstance = trackedEntityInstance;
         this.uIds = uIds;
         this.pageLimit = pageLimit;
+        this.ouMode = ouMode;
         this.categoryCombo = categoryCombo;
         this.categoryOption = categoryOption;
     }
@@ -71,6 +75,10 @@ public class EventQuery {
 
     public boolean isPaging() {
         return paging;
+    }
+
+    public OuMode getOuMode() {
+        return ouMode;
     }
 
     public String getOrgUnit() {
@@ -106,7 +114,8 @@ public class EventQuery {
         private String orgUnit;
         private String program;
         private String trackedEntityInstance;
-        int pageLimit;
+        int pageLimit = 50;
+        OuMode ouMode = OuMode.SELECTED;
 
         private Set<String> uIds = new HashSet<>();
 
@@ -140,6 +149,11 @@ public class EventQuery {
 
         public Builder withOrgUnit(String orgUnit) {
             this.orgUnit = orgUnit;
+            return this;
+        }
+
+        public Builder withOuMode(OuMode ouMode) {
+            this.ouMode = ouMode;
             return this;
         }
 
@@ -177,7 +191,7 @@ public class EventQuery {
             }
 
             return new EventQuery(paging, page, pageSize,
-                    orgUnit, program, trackedEntityInstance, uIds, pageLimit,
+                    orgUnit, program, trackedEntityInstance, uIds, pageLimit, ouMode,
                     categoryCombo, categoryOption);
         }
     }

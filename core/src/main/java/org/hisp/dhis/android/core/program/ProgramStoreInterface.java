@@ -25,53 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+package org.hisp.dhis.android.core.program;
+
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import java.util.Set;
 
-@RunWith(JUnit4.class)
-public class UserHandlerShould {
+public interface ProgramStoreInterface extends IdentifiableObjectStore<ProgramModel> {
 
-    @Mock
-    private IdentifiableObjectStore<UserModel> userStore;
-
-    @Mock
-    private UserCredentialsHandler userCredentialsHandler;
-
-    @Mock
-    private User user;
-
-    @Mock
-    private UserCredentials userCredentials;
-
-    // object to test
-    private UserHandler userHandler;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        userHandler = new UserHandler(userStore, userCredentialsHandler);
-        when(user.userCredentials()).thenReturn(userCredentials);
-    }
-
-    @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<User, UserModel> genericHandler = new UserHandler(null, null);
-    }
-
-    @Test
-    public void call_user_credentials_handler() throws Exception {
-        userHandler.handle(user, new UserModelBuilder());
-        verify(userCredentialsHandler).handleUserCredentials(userCredentials, user);
-    }
+    Set<String> queryWithoutRegistrationProgramUids() throws RuntimeException;
 }

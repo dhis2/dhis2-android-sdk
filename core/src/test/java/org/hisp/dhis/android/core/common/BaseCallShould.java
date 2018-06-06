@@ -117,7 +117,7 @@ public abstract class BaseCallShould {
     }
 
     protected void whenEndpointCallFails(Call<?> endpointCall) throws Exception {
-        when(endpointCall.call()).thenThrow(CallException.create(errorResponse));
+        when(endpointCall.call()).thenThrow(new Exception());
     }
 
     protected <T> void verifyFail(Response<T> response) throws Exception {

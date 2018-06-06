@@ -63,13 +63,8 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     @SuppressFBWarnings("DE_MIGHT_IGNORE")
-    @SuppressWarnings("PMD.EmptyCatchBlock")
     public String getValue(String attribute, String organisationUnitUid) throws RuntimeException {
-        try {
-            syncReservedValues(attribute, organisationUnitUid);
-        } catch (Exception e) {
-            // Synchronization was not successful.
-        }
+        syncReservedValues(attribute, organisationUnitUid, false);
 
         TrackedEntityAttributeReservedValueModel reservedValue = store.popOne(attribute, organisationUnitUid);
 
@@ -80,14 +75,23 @@ public final class TrackedEntityAttributeReservedValueManager {
         }
     }
 
-    private void syncReservedValues(String attribute, String organisationUnitUid) throws Exception {
-        // TODO use server date
-        store.deleteExpired(new Date());
+    @SuppressWarnings("PMD.EmptyCatchBlock")
+    private void syncReservedValues(String attribute, String organisationUnitUid, boolean forceFill) {
+        try {
+            // TODO use server date
+            store.deleteExpired(new Date());
 
-        int remainingValues = store.count(attribute, organisationUnitUid);
-        if (remainingValues <= MIN_TO_TRY_FILL) {
-            fillReservedValues(attribute, organisationUnitUid, remainingValues);
+            int remainingValues = store.count(attribute, organisationUnitUid);
+            if (forceFill || remainingValues <= MIN_TO_TRY_FILL) {
+                fillReservedValues(attribute, organisationUnitUid, remainingValues);
+            }
+        } catch (Exception ignored) {
+            // Synchronization was not successful.
         }
+    }
+
+    public void forceSyncReservedValues(String attribute, String organisationUnitUid) {
+        syncReservedValues(attribute, organisationUnitUid, true);
     }
 
     private void fillReservedValues(String attribute, String organisationUnitUid, Integer remainingValues)

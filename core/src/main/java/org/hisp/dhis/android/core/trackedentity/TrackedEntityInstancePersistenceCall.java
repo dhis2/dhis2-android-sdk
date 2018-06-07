@@ -46,7 +46,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
 
     @Override
     public Void call() throws D2CallException {
-        super.setExecuted();
+        setExecuted();
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
 

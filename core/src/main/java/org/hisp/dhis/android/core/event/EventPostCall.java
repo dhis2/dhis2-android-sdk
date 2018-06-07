@@ -34,7 +34,7 @@ public final class EventPostCall extends SyncCall<Response<WebResponse>> {
 
     @Override
     public Response<WebResponse> call() throws Exception {
-        super.setExecuted();
+        setExecuted();
 
         List<Event> eventsToPost = queryEventsToPost();
 

@@ -19,7 +19,6 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
-import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.RelationshipModel;
 import org.hisp.dhis.android.core.relationship.RelationshipStore;
@@ -82,7 +81,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     public void setUp() throws IOException {
         super.setUp();
 
-        d2= D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
+        d2= D2Factory.create("https://play.dhis2.org/2.29/api/", databaseAdapter());
 
         trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
         enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
@@ -138,10 +137,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
                 orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, featureType,
                 event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid, dataElementUid);
 
-        Call<Response<WebResponse>> call = d2.syncTrackedEntityInstances();
-        response = call.call();
-
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncTrackedEntityInstances().call();
     }
 
 
@@ -185,7 +181,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
                 downloadedEvent);
     }
 
-    //@Test
+    @Test
     public void post_a_tei() throws Exception {
         downloadMetadata();
         d2.downloadTrackedEntityInstances(4, true).call();
@@ -256,8 +252,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
                 .build();
         relationShipStore.updateOrInsertWhere(relationshipModel);
 
-        Response teiSyncResponse = d2.syncTrackedEntityInstances().call();
-        assertThat(teiSyncResponse.isSuccessful()).isTrue();
+        d2.syncTrackedEntityInstances().call();
 
         d2.wipeDB().call();
         downloadMetadata();
@@ -358,10 +353,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     }
 
     private void postTrackedEntityInstances() throws Exception {
-        Response response;Call<Response<WebResponse>> call = d2.syncTrackedEntityInstances();
-        response = call.call();
-
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncTrackedEntityInstances().call();
     }
 
     private void downloadMetadata() throws Exception {

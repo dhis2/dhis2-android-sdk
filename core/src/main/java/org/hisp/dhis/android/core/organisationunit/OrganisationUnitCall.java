@@ -68,7 +68,7 @@ public class OrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
 
     @Override
     public List<OrganisationUnit> call() throws Exception {
-        super.setExecuted();
+        setExecuted();
 
         final List<OrganisationUnit> organisationUnits = new ArrayList<>();
         final APICallExecutor apiExecutor = new APICallExecutor();

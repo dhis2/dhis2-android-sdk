@@ -32,7 +32,7 @@ public final class TrackerDataCall extends SyncCall<List<TrackedEntityInstance>>
 
     @Override
     public List<TrackedEntityInstance> call() throws D2CallException {
-        super.setExecuted();
+        setExecuted();
         Map<String, TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.querySynced();
         Call<List<TrackedEntityInstance>> call = TrackedEntityInstanceListDownloadAndPersistCall
                 .create(databaseAdapter, retrofit, trackedEntityInstances.keySet());

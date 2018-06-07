@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -41,7 +43,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
-public class TrackedEntityInstancePostCall extends SyncCall<Response<WebResponse>> {
+public class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     // service
     private final TrackedEntityInstanceService trackedEntityInstanceService;
 
@@ -53,7 +55,7 @@ public class TrackedEntityInstancePostCall extends SyncCall<Response<WebResponse
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private final ObjectWithoutUidStore<RelationshipModel> relationshipStore;
 
-    TrackedEntityInstancePostCall(@NonNull TrackedEntityInstanceService trackedEntityInstanceService,
+    private TrackedEntityInstancePostCall(@NonNull TrackedEntityInstanceService trackedEntityInstanceService,
                                   @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                                   @NonNull EnrollmentStore enrollmentStore,
                                   @NonNull EventStore eventStore,
@@ -70,8 +72,8 @@ public class TrackedEntityInstancePostCall extends SyncCall<Response<WebResponse
     }
 
     @Override
-    public Response<WebResponse> call() throws Exception {
-        super.setExecuted();
+    public WebResponse call() throws D2CallException {
+        setExecuted();
 
         List<TrackedEntityInstance> trackedEntityInstancesToPost = queryDataToSync();
 
@@ -83,15 +85,8 @@ public class TrackedEntityInstancePostCall extends SyncCall<Response<WebResponse
         TrackedEntityInstancePayload trackedEntityInstancePayload = new TrackedEntityInstancePayload();
         trackedEntityInstancePayload.trackedEntityInstances = trackedEntityInstancesToPost;
 
-        Response<WebResponse> response = trackedEntityInstanceService.postTrackedEntityInstances(
-                trackedEntityInstancePayload)
-                .execute();
-
-        if (response.isSuccessful()) {
-            handleWebResponse(response);
-        }
-
-        return response;
+        return new APICallExecutor().executeObjectCall(
+                trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload));
     }
 
     @NonNull

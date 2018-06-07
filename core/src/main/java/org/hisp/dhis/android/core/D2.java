@@ -157,7 +157,7 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response<WebResponse>> syncTrackedEntityInstances() {
+    public Callable<WebResponse> syncTrackedEntityInstances() {
         return TrackedEntityInstancePostCall.create(databaseAdapter, retrofit);
     }
 

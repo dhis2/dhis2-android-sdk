@@ -81,7 +81,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     public void setUp() throws IOException {
         super.setUp();
 
-        d2= D2Factory.create("https://play.dhis2.org/2.29/api/", databaseAdapter());
+        d2= D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
 
         trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
         enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
@@ -181,7 +181,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
                 downloadedEvent);
     }
 
-    @Test
+    //@Test
     public void post_a_tei() throws Exception {
         downloadMetadata();
         d2.downloadTrackedEntityInstances(4, true).call();

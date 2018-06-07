@@ -94,7 +94,7 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<User> logIn(@NonNull String username, @NonNull String password) {
+    public Callable<User> logIn(@NonNull String username, @NonNull String password) {
         return UserAuthenticateCall.create(databaseAdapter, retrofit, username, password);
     }
 
@@ -115,12 +115,12 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Void> syncMetaData() {
+    public Callable<Void> syncMetaData() {
         return MetadataCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
-    public Call<Void> syncAggregatedData() {
+    public Callable<Void> syncAggregatedData() {
         return AggregatedDataCall.create(databaseAdapter, retrofit);
     }
 

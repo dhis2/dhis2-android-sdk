@@ -66,7 +66,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
@@ -162,11 +161,11 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
+    public Callable<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
         return TrackedEntityInstanceQueryCall.create(retrofit, query);
     }
 
-    public Call<Response<WebResponse>> syncSingleEvents() {
+    public Callable<WebResponse> syncSingleEvents() {
         return EventPostCall.create(databaseAdapter, retrofit);
     }
 

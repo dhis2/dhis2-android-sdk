@@ -94,7 +94,8 @@ public final class AggregatedDataCall extends SyncCall<Void> {
             public Void call() throws D2CallException {
                 SystemInfo systemInfo = executor.executeD2Call(
                         systemInfoCallFactory.create(databaseAdapter, retrofit));
-                GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate());
+                GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
+                        systemInfo.serverDate());
 
                 Call<List<DataValue>> dataValueEndpointCall = dataValueCallFactory.create(genericCallData,
                         dataSetStore.selectUids(),

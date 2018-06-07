@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
@@ -85,8 +84,10 @@ public class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         TrackedEntityInstancePayload trackedEntityInstancePayload = new TrackedEntityInstancePayload();
         trackedEntityInstancePayload.trackedEntityInstances = trackedEntityInstancesToPost;
 
-        return new APICallExecutor().executeObjectCall(
+        WebResponse webResponse = new APICallExecutor().executeObjectCall(
                 trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload));
+        handleWebResponse(webResponse);
+        return webResponse;
     }
 
     @NonNull
@@ -189,8 +190,7 @@ public class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         return relationshipRecreated;
     }
 
-    private void handleWebResponse(Response<WebResponse> response) {
-        WebResponse webResponse = response.body();
+    private void handleWebResponse(WebResponse webResponse) {
         EventImportHandler eventImportHandler = new EventImportHandler(eventStore);
 
         EnrollmentImportHandler enrollmentImportHandler = new EnrollmentImportHandler(

@@ -46,7 +46,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
             teis.add(executor.executeD2Call(teiCall));
         }
 
-        TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, teis).call();
+        executor.executeD2Call(TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, teis));
 
         return teis;
     }

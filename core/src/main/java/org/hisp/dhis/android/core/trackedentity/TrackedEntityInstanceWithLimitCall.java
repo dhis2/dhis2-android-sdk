@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -90,14 +91,15 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
             TeiQuery.Builder teiQueryBuilder, int pageSize, int numPages)
             throws D2CallException {
         List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
+        D2CallExecutor executor = new D2CallExecutor();
 
         for (int page = 1; page <= numPages; page++) {
             if (page == numPages) {
                 teiQueryBuilder.withPage(page).withPageLimit(teiLimit - ((page - 1) * pageSize));
             }
             teiQueryBuilder.withPage(page);
-            List<TrackedEntityInstance> pageTrackedEntityInstances = TrackedEntityInstancesEndpointCall.create(
-                    retrofit, teiQueryBuilder.build()).call();
+            List<TrackedEntityInstance> pageTrackedEntityInstances = executor.executeD2Call(
+                    TrackedEntityInstancesEndpointCall.create(retrofit, teiQueryBuilder.build()));
 
             trackedEntityInstances.addAll(pageTrackedEntityInstances);
 
@@ -106,7 +108,8 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
             }
         }
 
-        TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, trackedEntityInstances).call();
+        executor.executeD2Call(
+                TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, trackedEntityInstances));
 
         return trackedEntityInstances;
     }

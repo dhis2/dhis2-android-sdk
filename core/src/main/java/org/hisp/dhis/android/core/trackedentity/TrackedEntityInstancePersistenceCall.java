@@ -3,9 +3,9 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
@@ -13,6 +13,7 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserStoreImpl;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import retrofit2.Retrofit;
 
@@ -48,26 +49,24 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
     public Void call() throws D2CallException {
         setExecuted();
 
-        Transaction transaction = databaseAdapter.beginNewTransaction();
+        final D2CallExecutor executor = new D2CallExecutor();
 
-        try {
-            trackedEntityInstanceHandler.handleMany(trackedEntityInstances);
+        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
+            @Override
+            public Void call() throws D2CallException {
+                trackedEntityInstanceHandler.handleMany(trackedEntityInstances);
+                Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
 
-            Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
+                if (!searchOrgUnitUids.isEmpty()) {
+                    AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.query().get(0);
+                    SearchOrganisationUnitCall organisationUnitCall = organisationUnitCallFactory.create(
+                            databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
+                    executor.executeD2Call(organisationUnitCall);
+                }
 
-            if (!searchOrgUnitUids.isEmpty()) {
-                AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.query().get(0);
-                SearchOrganisationUnitCall organisationUnitCall = organisationUnitCallFactory.create(
-                        databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
-                organisationUnitCall.call();
+                return null;
             }
-
-            transaction.setSuccessful();
-        } finally {
-            transaction.end();
-        }
-
-        return null;
+        });
     }
 
     public static TrackedEntityInstancePersistenceCall create(DatabaseAdapter databaseAdapter,

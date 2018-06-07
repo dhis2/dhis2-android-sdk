@@ -36,8 +36,9 @@ public class CategoryHandler {
 
             if (!updated) {
                 categoryStore.insert(category);
-                handleCategoryOption(category);
             }
+
+            handleCategoryOption(category);
         }
     }
 

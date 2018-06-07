@@ -7,7 +7,6 @@ import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import retrofit2.Retrofit;
 
@@ -27,7 +27,6 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
     private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
-    private final D2CallException.Builder httpExceptionBuilder;
 
     private TrackedEntityInstanceWithLimitCall(
             @NonNull DatabaseAdapter databaseAdapter,
@@ -40,26 +39,19 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.teiLimit = teiLimit;
         this.limitByOrgUnit = limitByOrgUnit;
-        this.httpExceptionBuilder = D2CallException.builder().isHttpError(true).errorDescription("TEIs call failed");
     }
 
     @Override
     public List<TrackedEntityInstance> call() throws D2CallException {
         this.setExecuted();
-        Transaction transaction = databaseAdapter.beginNewTransaction();
 
-        try {
-            List<TrackedEntityInstance> trackedEntityInstances = getTrackedEntityInstances();
-
-            transaction.setSuccessful();
-
-            return trackedEntityInstances;
-
-        } catch (Exception e) {
-            throw httpExceptionBuilder.originalException(e).build();
-        } finally {
-            transaction.end();
-        }
+        return new D2CallExecutor().executeD2CallTransactionally(databaseAdapter,
+                new Callable<List<TrackedEntityInstance>>() {
+                    @Override
+                    public List<TrackedEntityInstance> call() throws D2CallException {
+                        return getTrackedEntityInstances();
+                    }
+                });
     }
     
     private List<TrackedEntityInstance> getTrackedEntityInstances() throws D2CallException {

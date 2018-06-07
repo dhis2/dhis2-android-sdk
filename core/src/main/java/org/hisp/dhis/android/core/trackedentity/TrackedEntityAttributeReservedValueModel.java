@@ -59,11 +59,13 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
         public final static String CREATED = "created";
         public final static String EXPIRY_DATE = "expiryDate";
         public final static String ORGANISATION_UNIT = "organisationUnit";
+        public final static String TEMPORAL_VALIDITY_DATE = "temporalValidityDate";
 
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    OWNER_OBJECT, OWNER_UID, KEY, VALUE, CREATED, EXPIRY_DATE, ORGANISATION_UNIT);
+                    OWNER_OBJECT, OWNER_UID, KEY, VALUE, CREATED, EXPIRY_DATE, ORGANISATION_UNIT,
+                    TEMPORAL_VALIDITY_DATE);
         }
 
         @Override
@@ -119,6 +121,11 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
     @ColumnName(Columns.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
+    @Nullable
+    @ColumnName(Columns.TEMPORAL_VALIDITY_DATE)
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date temporalValidityDate();
+
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         sqLiteBind(sqLiteStatement, 1, ownerObject());
@@ -128,13 +135,14 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
         sqLiteBind(sqLiteStatement, 5, created());
         sqLiteBind(sqLiteStatement, 6, expiryDate());
         sqLiteBind(sqLiteStatement, 7, organisationUnit());
+        sqLiteBind(sqLiteStatement, 8, temporalValidityDate());
     }
 
     @Override
     public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 8, ownerUid());
-        sqLiteBind(sqLiteStatement, 9, value());
-        sqLiteBind(sqLiteStatement, 10, organisationUnit());
+        sqLiteBind(sqLiteStatement, 9, ownerUid());
+        sqLiteBind(sqLiteStatement, 10, value());
+        sqLiteBind(sqLiteStatement, 11, organisationUnit());
     }
 
     @AutoValue.Builder
@@ -152,6 +160,8 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
         public abstract Builder expiryDate(Date expiryDate);
 
         public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract Builder temporalValidityDate(Date temporalValidityDate);
 
         public abstract TrackedEntityAttributeReservedValueModel build();
     }

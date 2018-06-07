@@ -25,64 +25,66 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.ModelBuilderAbstractShould;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class TrackedEntityAttributeReservedValueModelBuilderShould extends ModelBuilderAbstractShould<
-    TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
+public class TrackedEntityAttributeReservedValueValidatorHelperShould {
 
-    @Mock
-    private OrganisationUnit organisationUnit;
+    private TrackedEntityAttributeReservedValueValidatorHelper helper;
 
     @Before
     public void setUp() throws IOException {
-        super.setUp();
-        when(organisationUnit.uid()).thenReturn("orgUnitUid");
-        MockitoAnnotations.initMocks(this);
-    }
-
-    protected TrackedEntityAttributeReservedValue buildPojo() {
-        return TrackedEntityAttributeReservedValue.create(
-                "ownerObject",
-                "ownerUid",
-                "key",
-                "value",
-                CREATED,
-                CREATED
-        );
-    }
-
-    @Override
-    protected ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> modelBuilder() {
-        return new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit,  "pattern");
+        helper = new TrackedEntityAttributeReservedValueValidatorHelper();
     }
 
     @Test
-    public void copy_pojo_reserved_value_properties() {
-        assertThat(model.ownerObject()).isEqualTo(pojo.ownerObject());
-        assertThat(model.ownerUid()).isEqualTo(pojo.ownerUid());
-        assertThat(model.key()).isEqualTo(pojo.key());
-        assertThat(model.value()).isEqualTo(pojo.value());
-        assertThat(model.created()).isEqualTo(pojo.created());
-        assertThat(model.expiryDate()).isEqualTo(pojo.expiryDate());
-        assertThat(model.organisationUnit()).isEqualTo(organisationUnit.uid());
-        assertThat(model.temporalValidityDate()).isEqualTo(null);
+    public void get_next_expiry_date() throws Exception {
+        Date date = helper.nextExpiryDate(true, false, false);
+        Calendar cal = setCalendarToDayInit();
+        cal.add(Calendar.YEAR, 1);
+        cal.set(Calendar.DAY_OF_YEAR, 1);
+
+        assertThat(date).isEqualTo(cal.getTime());
+    }
+
+    @Test
+    public void get_current_date_list_from_pattern() {
+        List<String> result = helper.getCurrentDatePatternStrList("CURRENT_DATE(YYYYMM) + RANDOM(###) + CURRENT_DATE(MMww)");
+
+        assertThat(result).isEqualTo(new ArrayList<>(Arrays.asList("YYYYMM", "MMww")));
+    }
+
+    @Test
+    public void get_expiry_date_from_pattern() {
+        Date date = helper.getExpiryDateCode("CURRENT_DATE(YYYYMM) + RANDOM(###) + CURRENT_DATE(MMww)");
+        Calendar cal = setCalendarToDayInit();
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
+        cal.add(Calendar.WEEK_OF_YEAR, 1);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        assertThat(date).isEqualTo(cal.getTime());
+    }
+
+    private Calendar setCalendarToDayInit() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.clear(Calendar.MINUTE);
+        cal.clear(Calendar.SECOND);
+        cal.clear(Calendar.MILLISECOND);
+        return cal;
     }
 }

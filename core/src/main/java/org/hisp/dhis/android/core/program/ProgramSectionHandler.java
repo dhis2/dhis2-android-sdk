@@ -30,51 +30,43 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.List;
-
 public class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSection, ProgramSectionModel> {
-    private final ObjectWithoutUidStore<ProgramSectionAttributeLinkModel> programSectionAttributeLinkStore;
+    private final LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel>
+            programSectionAttributeLinkHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     ProgramSectionHandler(IdentifiableObjectStore<ProgramSectionModel> programSectionStore,
-                          ObjectWithoutUidStore<ProgramSectionAttributeLinkModel> programSectionAttributeLinkStore,
+                          LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel>
+                                  programSectionAttributeLinkHandler,
                           GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
         super(programSectionStore);
-        this.programSectionAttributeLinkStore = programSectionAttributeLinkStore;
+        this.programSectionAttributeLinkHandler = programSectionAttributeLinkHandler;
         this.styleHandler = styleHandler;
+    }
+
+    @Override
+    protected void afterObjectPersisted(ProgramSection programSection) {
+        programSectionAttributeLinkHandler.handleMany(programSection.uid(),
+                programSection.attributes(), new ProgramSectionAttributeLinkModelBuilder(programSection));
+        styleHandler.handle(programSection.style(), new ObjectStyleModelBuilder(programSection.uid(),
+                ProgramSectionModel.TABLE));
     }
 
     public static ProgramSectionHandler create(DatabaseAdapter databaseAdapter) {
         return new ProgramSectionHandler(
                 ProgramSectionStore.create(databaseAdapter),
-                ProgramSectionAttributeLinkStore.create(databaseAdapter),
+                new LinkModelHandlerImpl<ObjectWithUid, ProgramSectionAttributeLinkModel>(
+                        ProgramSectionAttributeLinkStore.create(databaseAdapter)),
                 ObjectStyleHandler.create(databaseAdapter)
         );
-    }
-
-    @Override
-    protected void afterObjectPersisted(ProgramSection programSection) {
-        saveProgramSectionAttributeLink(programSection);
-        styleHandler.handle(programSection.style(), new ObjectStyleModelBuilder(programSection.uid(),
-                ProgramSectionModel.TABLE));
-    }
-
-    private void saveProgramSectionAttributeLink(ProgramSection programSection) {
-        List<ObjectWithUid> attributes = programSection.attributes();
-        if (attributes != null) {
-            ProgramSectionAttributeLinkModelBuilder builder =
-                    new ProgramSectionAttributeLinkModelBuilder(programSection);
-            for (ObjectWithUid attribute : attributes) {
-                programSectionAttributeLinkStore.updateOrInsertWhere(builder.buildModel(attribute));
-            }
-        }
     }
 }

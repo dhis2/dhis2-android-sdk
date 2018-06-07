@@ -25,20 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common;
 
-package org.hisp.dhis.android.core.program;
+import java.util.Collection;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+public final class LinkModelHandlerImpl<S, M extends BaseModel> implements LinkModelHandler<S, M> {
 
-public final class ProgramSectionAttributeLinkStore {
+    private final LinkModelStore<M> store;
 
-    private ProgramSectionAttributeLinkStore() {}
+    public LinkModelHandlerImpl(LinkModelStore<M> store) {
+        this.store = store;
+    }
 
-    public static LinkModelStore<ProgramSectionAttributeLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, ProgramSectionAttributeLinkModel.TABLE,
-                new ProgramSectionAttributeLinkModel.Columns(),
-                ProgramSectionAttributeLinkModel.Columns.PROGRAM_SECTION);
+    @Override
+    public void handleMany(String masterUid, Collection<S> slaves, ModelBuilder<S, M> modelBuilder) {
+        store.deleteLinksForMasterUid(masterUid);
+        if (slaves != null) {
+            for (S slave : slaves) {
+                store.insert(modelBuilder.buildModel(slave));
+            }
+        }
     }
 }

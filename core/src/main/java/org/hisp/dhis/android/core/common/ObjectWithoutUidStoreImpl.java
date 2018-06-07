@@ -40,9 +40,9 @@ public class ObjectWithoutUidStoreImpl<M extends BaseModel>
     private final SQLiteStatement updateWhereStatement;
 
     public ObjectWithoutUidStoreImpl(DatabaseAdapter databaseAdapter,
-                              SQLiteStatement insertStatement,
-                              SQLiteStatement updateWhereStatement,
-                              SQLStatementBuilder builder) {
+                                     SQLiteStatement insertStatement,
+                                     SQLiteStatement updateWhereStatement,
+                                     SQLStatementBuilder builder) {
         super(databaseAdapter, insertStatement, builder);
         this.updateWhereStatement = updateWhereStatement;
     }

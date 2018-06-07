@@ -25,20 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common;
 
-package org.hisp.dhis.android.core.program;
+import java.util.Collection;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-public final class ProgramSectionAttributeLinkStore {
-
-    private ProgramSectionAttributeLinkStore() {}
-
-    public static LinkModelStore<ProgramSectionAttributeLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, ProgramSectionAttributeLinkModel.TABLE,
-                new ProgramSectionAttributeLinkModel.Columns(),
-                ProgramSectionAttributeLinkModel.Columns.PROGRAM_SECTION);
-    }
+public interface LinkModelHandler<S, M extends Model> {
+    void handleMany(String masterUid, Collection<S> slaveCollection, ModelBuilder<S, M> modelBuilder);
 }

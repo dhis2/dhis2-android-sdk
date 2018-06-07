@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+@SuppressWarnings("PMD.UseVarargs")
 public final class StoreFactory {
 
     private StoreFactory() {}
 
-    @SuppressWarnings("PMD.UseVarargs")
     public static <I extends BaseIdentifiableObjectModel> IdentifiableObjectStore<I>
     identifiableStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
@@ -42,7 +42,6 @@ public final class StoreFactory {
         return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder);
     }
 
-    @SuppressWarnings("PMD.UseVarargs")
     static <I extends BaseModel> ObjectStore<I>
     objectStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
@@ -50,7 +49,6 @@ public final class StoreFactory {
                 statementBuilder.insert()), statementBuilder);
     }
 
-    @SuppressWarnings("PMD.UseVarargs")
     public static <I extends BaseModel> ObjectWithoutUidStore<I> objectWithoutUidStore(
             DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns.all(), columns.whereUpdate());
@@ -58,5 +56,16 @@ public final class StoreFactory {
                 databaseAdapter.compileStatement(statementBuilder.insert()),
                 databaseAdapter.compileStatement(statementBuilder.updateWhere()),
                 statementBuilder);
+    }
+
+    public static <I extends BaseModel> LinkModelStore<I> linkModelStore(
+            DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns,
+            String masterColumn) {
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns.all(), columns.whereUpdate());
+        return new LinkModelStoreImpl<>(databaseAdapter,
+                databaseAdapter.compileStatement(statementBuilder.insert()),
+                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
+                statementBuilder,
+                masterColumn);
     }
 }

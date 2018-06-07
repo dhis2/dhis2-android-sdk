@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -12,6 +11,7 @@ import org.junit.Before;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTestCase {
 
@@ -35,7 +35,7 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTest
 
         d2.syncMetaData().call();
 
-        Call<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
+        Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
                 d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList("IaxoagO9899"));
 
         List<TrackedEntityInstance> teiResponse = trackedEntityInstanceByUidEndPointCall.call();

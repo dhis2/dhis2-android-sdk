@@ -89,7 +89,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             if (forceFill || remainingValues <= MIN_TO_TRY_FILL) {
                 fillReservedValues(attribute, organisationUnitUid, remainingValues);
             }
-        } catch (Exception ignored) {
+        } catch (D2CallException ignored) {
             // Synchronization was not successful.
         }
     }

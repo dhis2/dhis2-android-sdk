@@ -42,7 +42,7 @@ import java.util.Set;
 import retrofit2.Retrofit;
 
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
-public class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
+public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     // service
     private final TrackedEntityInstanceService trackedEntityInstanceService;
 

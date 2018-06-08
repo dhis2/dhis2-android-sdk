@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.common.BasicCallFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericCallFactory;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -52,6 +53,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
+import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -123,6 +125,8 @@ public class MetadataCall extends SyncCall<Void> {
                                 UidsHelper.getUids(programs)));
 
                 executor.executeD2Call(dataSetParentCallFactory.create(user, genericCallData, organisationUnits));
+
+                new ForeignKeyCleaner(databaseAdapter).cleanForeignKeyErrors();
 
                 return null;
             }

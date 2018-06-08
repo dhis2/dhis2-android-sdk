@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ForeignKeyCleaner {
+public class ForeignKeyCleaner {
 
     private DatabaseAdapter databaseAdapter;
 

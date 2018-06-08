@@ -145,12 +145,6 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     }
 
     @Test(expected = D2CallException.class)
-    public void throw_D2CallException_when_service_throws_exception() throws Exception {
-        whenServiceQuery().thenThrow(IOException.class);
-        call.call();
-    }
-
-    @Test(expected = D2CallException.class)
     public void throw_D2CallException_when_service_call_returns_failed_response() throws Exception {
         when(searchGridCall.execute()).thenReturn(errorResponse);
         call.call();

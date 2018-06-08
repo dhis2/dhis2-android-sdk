@@ -327,7 +327,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     @Test
-    public void mark_as_executed_when_call_is_success() throws Exception {
+    public void thrown_d2_call_exception_on_consecutive_calls() throws Exception {
         when(authenticateAPICall.execute()).thenReturn(Response.success(user));
 
         userAuthenticateCall.call();
@@ -338,7 +338,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
             userAuthenticateCall.call();
 
             fail("Invoking call second time should throw exception");
-        } catch (IllegalStateException illegalStateException) {
+        } catch (D2CallException illegalStateException) {
             // swallow exception
         }
     }
@@ -355,14 +355,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         }
 
         assertThat(userAuthenticateCall.isExecuted()).isEqualTo(true);
-
-        try {
-            userAuthenticateCall.call();
-
-            fail("Invoking call second time should throw exception");
-        } catch (IllegalStateException illegalStateException) {
-            // swallow exception
-        }
     }
 
     @Test(expected = D2CallException.class)

@@ -25,37 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.calls;
 
-import org.hisp.dhis.android.core.common.CallException;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
+package org.hisp.dhis.android.core.common;
 
-import retrofit2.Response;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
-public abstract class TransactionalCall<C> extends SyncCall<Response<C>> {
-    protected final DatabaseAdapter databaseAdapter;
+import java.util.List;
 
-    protected TransactionalCall(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
+public abstract class AbstractEndpointListCall<P, Q extends BaseQuery, C> extends SyncCall<List<P>> {
+    private final GenericCallData data;
+
+    private final ResourceModel.Type resourceType;
+    public final Q query;
+
+    private final ListPersistor<P> persistor;
+
+    AbstractEndpointListCall(GenericCallData data,
+                             ResourceModel.Type resourceType,
+                             Q query,
+                             ListPersistor<P> persistor) {
+        this.data = data;
+        this.resourceType = resourceType;
+        this.query = query;
+        this.persistor = persistor;
     }
 
-    public abstract Response<C> callBody() throws Exception;
+    protected abstract retrofit2.Call<C> getCall(Q query, String lastUpdated);
+    abstract List<P> executeCall(retrofit2.Call<C> call) throws D2CallException;
 
     @Override
-    public final Response<C> call() throws Exception {
+    public final List<P> call() throws Exception {
         super.setExecuted();
 
-        Transaction transaction = databaseAdapter.beginNewTransaction();
-        try {
-            Response response = callBody();
-            transaction.setSuccessful();
-            return response;
-        } catch (CallException e) {
-            return e.response();
-        } finally {
-            transaction.end();
+        if (!query.isValid()) {
+            throw new IllegalArgumentException("Invalid query");
         }
+
+        String lastUpdated = resourceType == null ? null : data.resourceHandler().getLastUpdated(resourceType);
+        List<P> responseList = executeCall(getCall(query, lastUpdated));
+        persistor.persist(responseList);
+        return responseList;
     }
 }

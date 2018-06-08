@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.GenericCallFactory;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
@@ -45,6 +45,7 @@ import org.mockito.Mock;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -62,27 +63,6 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class ProgramParentCallShould extends BaseCallShould {
     @Mock
-    private Payload<Program> programPayload;
-
-    @Mock
-    private Payload<ProgramStage> programStagePayload;
-
-    @Mock
-    private Payload<TrackedEntityType> trackedEntityPayload;
-
-    @Mock
-    private Payload<RelationshipType> relationshipTypePayload;
-
-    @Mock
-    private Payload<OptionSet> optionSetPayload;
-
-    @Mock
-    private OptionSet optionSet;
-
-    @Mock
-    private Program programWithAccess;
-
-    @Mock
     private Program program;
 
     @Mock
@@ -92,22 +72,22 @@ public class ProgramParentCallShould extends BaseCallShould {
     private TrackedEntityType trackedEntityType;
 
     @Mock
-    private Call<Response<Payload<Program>>> programEndpointCall;
+    private Call<List<Program>> programEndpointCall;
 
     @Mock
-    private Call<Response<Payload<ProgramStage>>> programStageEndpointCall;
+    private Call<List<ProgramStage>> programStageEndpointCall;
 
     @Mock
-    private Call<Response<Payload<TrackedEntityType>>> trackedEntityTypeCall;
+    private Call<List<TrackedEntityType>> trackedEntityTypeCall;
 
     @Mock
-    private Call<Response<Payload<RelationshipType>>> relationshipTypeCall;
+    private Call<List<RelationshipType>> relationshipTypeCall;
 
     @Mock
-    private Call<Response<Payload<OptionSet>>> optionSetCall;
+    private Call<List<OptionSet>> optionSetCall;
 
     @Mock
-    private SimpleCallFactory<Payload<Program>> programCallFactory;
+    private GenericCallFactory<List<Program>> programCallFactory;
 
     @Mock
     private UidsCallFactory<ProgramStage> programStageCallFactory;
@@ -116,7 +96,7 @@ public class ProgramParentCallShould extends BaseCallShould {
     private UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
 
     @Mock
-    private SimpleCallFactory<Payload<RelationshipType>> relationshiptTypeCallFactory;
+    private GenericCallFactory<List<RelationshipType>> relationshiptTypeCallFactory;
 
     @Mock
     private UidsCallFactory<OptionSet> optionSetCallFactory;
@@ -139,11 +119,6 @@ public class ProgramParentCallShould extends BaseCallShould {
         when(programStageWithUid.uid()).thenReturn("program_stage_uid");
         when(trackedEntityType.uid()).thenReturn("test_tracked_entity_uid");
 
-        // Payloads
-        when(programPayload.items()).thenReturn(Collections.singletonList(program));
-        when(trackedEntityPayload.items()).thenReturn(Collections.singletonList(trackedEntityType));
-        when(optionSetPayload.items()).thenReturn(Collections.singletonList(optionSet));
-
         // Call factories
         when(programCallFactory.create(same(genericCallData)))
                 .thenReturn(programEndpointCall);
@@ -157,11 +132,11 @@ public class ProgramParentCallShould extends BaseCallShould {
                 .thenReturn(optionSetCall);
 
         // Calls
-        when(programEndpointCall.call()).thenReturn(Response.success(programPayload));
-        when(trackedEntityTypeCall.call()).thenReturn(Response.success(trackedEntityPayload));
-        when(relationshipTypeCall.call()).thenReturn(Response.success(relationshipTypePayload));
-        when(optionSetCall.call()).thenReturn(Response.success(optionSetPayload));
-        when(programStageEndpointCall.call()).thenReturn(Response.success(programStagePayload));
+        when(programEndpointCall.call()).thenReturn(Collections.singletonList(program));
+        when(trackedEntityTypeCall.call()).thenReturn(Collections.singletonList(trackedEntityType));
+        when(relationshipTypeCall.call()).thenReturn(Collections.<RelationshipType>emptyList());
+        when(optionSetCall.call()).thenReturn(Collections.<OptionSet>emptyList());
+        when(programStageEndpointCall.call()).thenReturn(Collections.<ProgramStage>emptyList());
 
         // Metadata call
         programParentCall = new ProgramParentCall(
@@ -180,46 +155,43 @@ public class ProgramParentCallShould extends BaseCallShould {
 
     @Test
     public void succeed_when_endpoint_calls_succeed() throws Exception {
-        Response response = programParentCall.call();
-        assertTrue(response.isSuccessful());
+        programParentCall.call();
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void return_programs() throws Exception {
-        Response response = programParentCall.call();
-        Payload<OptionSet> payload = (Payload<OptionSet>) response.body();
-        assertTrue(!payload.items().isEmpty());
-        assertThat(payload.items().get(0)).isEqualTo(program);
+        List<Program> programs = programParentCall.call();
+        assertTrue(!programs.isEmpty());
+        assertThat(programs.get(0)).isEqualTo(program);
     }
 
-    @Test
+    @Test(expected = D2CallException.class)
     public void fail_when_program_call_fail() throws Exception {
         whenEndpointCallFails(programEndpointCall);
-        verifyFail(programParentCall.call());
+        programParentCall.call();
     }
 
-    @Test
+    @Test(expected = D2CallException.class)
     public void fail_when_program_stage_call_fail() throws Exception {
         whenEndpointCallFails(programStageEndpointCall);
-        verifyFail(programParentCall.call());
+        programParentCall.call();
     }
 
-    @Test
+    @Test(expected = D2CallException.class)
     public void fail_when_tracked_entity_types_call_fail() throws Exception {
         whenEndpointCallFails(trackedEntityTypeCall);
-        verifyFail(programParentCall.call());
+        programParentCall.call();
     }
 
-    @Test
+    @Test(expected = D2CallException.class)
     public void fail_when_relationship_type_call_fail() throws Exception {
         whenEndpointCallFails(relationshipTypeCall);
-        verifyFail(programParentCall.call());
+        programParentCall.call();
     }
 
-    @Test
+    @Test(expected = D2CallException.class)
     public void fail_when_option_set_call_fail() throws Exception {
         whenEndpointCallFails(optionSetCall);
-        verifyFail(programParentCall.call());
+        programParentCall.call();
     }
 }

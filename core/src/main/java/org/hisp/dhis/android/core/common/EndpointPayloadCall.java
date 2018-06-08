@@ -32,23 +32,20 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
 
-import retrofit2.Response;
+import retrofit2.Call;
 
-public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
-        extends AbstractEndpointCall<P, M, Q, Payload<P>> {
+public abstract class EndpointPayloadCall<P, Q extends BaseQuery> extends AbstractEndpointListCall<P, Q, Payload<P>> {
 
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler, ResourceModel.Type resourceType,
-                            ModelBuilder<P, M> modelBuilder, Q query) {
-        super(data, handler, resourceType, modelBuilder, query);
+    public EndpointPayloadCall(GenericCallData data,
+                               ResourceModel.Type resourceType,
+                               Q query,
+                               ListPersistor<P> persistor) {
+
+        super(data, resourceType, query, persistor);
     }
 
     @Override
-    protected List<P> getPojoList(Response<Payload<P>> response) {
-        return response.body().items();
-    }
-
-    @Override
-    protected boolean isValidResponse(Response<Payload<P>> response) {
-        return response.isSuccessful() && response.body().items() != null;
+    protected List<P> executeCall(Call<Payload<P>> call) throws D2CallException {
+        return new APICallExecutor().executePayloadCall(call);
     }
 }

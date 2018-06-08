@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.datavalue;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -12,8 +13,8 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
-import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSetUids;
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getOrgUnitUids;
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getPeriodIds;
@@ -25,7 +26,7 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private DataValueEndpointCall dataValueCall;
+    private Call<List<DataValue>> dataValueCall;
 
     @Before
     @Override
@@ -35,7 +36,7 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
         dataValueCall = createCall();
     }
 
-    private DataValueEndpointCall createCall() {
+    private Call<List<DataValue>> createCall() {
         GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
         return DataValueEndpointCall.FACTORY.create(data, getDataSetUids(), getPeriodIds(), getOrgUnitUids());
     }
@@ -52,8 +53,7 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */
 
-        retrofit2.Response dataValueResponse = dataValueCall.call();
-        assertThat(dataValueResponse.isSuccessful()).isTrue();
+        dataValueCall.call();
     }
 
     @Test

@@ -31,99 +31,90 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
-
-import retrofit2.Response;
+import java.util.concurrent.Callable;
 
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
 
-public class OrganisationUnitCall extends SyncCall<Response<Payload<OrganisationUnit>>> {
+public class OrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
 
     private final User user;
     private final OrganisationUnitService organisationUnitService;
     private final GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler;
-    private final GenericCallData genericCallData;
+    private final GenericCallData data;
 
     OrganisationUnitCall(@NonNull User user,
                          @NonNull OrganisationUnitService organisationUnitService,
-                         @NonNull GenericCallData genericCallData,
+                         @NonNull GenericCallData data,
                          @NonNull GenericHandler<OrganisationUnit, OrganisationUnitModel>
                                  organisationUnitHandler) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
-        this.genericCallData = genericCallData;
+        this.data = data;
         this.organisationUnitHandler = organisationUnitHandler;
     }
 
     @Override
-    public Response<Payload<OrganisationUnit>> call() throws Exception {
+    public List<OrganisationUnit> call() throws Exception {
         super.setExecuted();
-        Response<Payload<OrganisationUnit>> response = null;
-        Response<Payload<OrganisationUnit>> totalResponse = null;
 
-        Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
-        OrganisationUnitModelBuilder modelBuilder = new OrganisationUnitModelBuilder();
+        final List<OrganisationUnit> organisationUnits = new ArrayList<>();
+        final APICallExecutor apiExecutor = new APICallExecutor();
 
-        try {
-            Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
-            Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
-                    genericCallData.resourceHandler().getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
-            );
-            // Call OrganisationUnitService for each tree root & try to handleTrackedEntity sub-tree:
-            for (String uid : rootOrgUnitUids) {
-                response = getOrganisationUnit(uid, lastUpdatedFilter);
-                if (response.isSuccessful()) {
-                    if (totalResponse == null) {
-                        totalResponse = response;
-                    } else {
-                        totalResponse.body().items().addAll(response.body().items());
-                    }
-                    organisationUnitHandler.handleMany(
-                            response.body().items(),
-                            modelBuilder);
-                } else {
-                    totalResponse = response;
-                    break; //stop early unsuccessful:
+        return new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(),
+                new Callable<List<OrganisationUnit>>() {
+            @Override
+            public List<OrganisationUnit> call() throws Exception {
+                OrganisationUnitModelBuilder modelBuilder = new OrganisationUnitModelBuilder();
+                Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
+                Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
+                        data.resourceHandler().getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
+                );
+
+                for (String uid : rootOrgUnitUids) {
+                    List<OrganisationUnit> orgUnitWithDescendants = apiExecutor.executePayloadCall(
+                            getOrganisationUnitAndDescendants(uid, lastUpdatedFilter));
+                    organisationUnits.addAll(orgUnitWithDescendants);
+                    organisationUnitHandler.handleMany(orgUnitWithDescendants, modelBuilder);
                 }
+
+                data.resourceHandler().handleResource(ResourceModel.Type.ORGANISATION_UNIT,
+                        data.serverDate());
+
+                return organisationUnits;
             }
-            if (response != null && response.isSuccessful()) {
-                genericCallData.resourceHandler().handleResource(ResourceModel.Type.ORGANISATION_UNIT,
-                        genericCallData.serverDate());
-                transaction.setSuccessful();
-            }
-        } finally {
-            transaction.end();
-        }
-        return totalResponse;
+        });
     }
 
-    private Response<Payload<OrganisationUnit>> getOrganisationUnit(
+    private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(
             @NonNull String uid,
-            @Nullable Filter<OrganisationUnit, String> lastUpdatedFilter) throws IOException {
+            @Nullable Filter<OrganisationUnit, String> lastUpdatedFilter) {
 
         return organisationUnitService.getOrganisationUnitWithDescendants(uid, OrganisationUnit.allFields,
-                lastUpdatedFilter, true, false).execute();
+                lastUpdatedFilter, true, false);
     }
 
     public interface Factory {
-        Call<Response<Payload<OrganisationUnit>>> create(GenericCallData data,
+        Call<List<OrganisationUnit>> create(GenericCallData data,
                                                          User user,
                                                          Set<String> programUids);
     }
 
     public static final OrganisationUnitCall.Factory FACTORY = new OrganisationUnitCall.Factory() {
         @Override
-        public Call<Response<Payload<OrganisationUnit>>> create(GenericCallData data,
+        public Call<List<OrganisationUnit>> create(GenericCallData data,
                                                                 User user,
                                                                 Set<String> programUids) {
             GenericHandler<OrganisationUnit, OrganisationUnitModel> handler =

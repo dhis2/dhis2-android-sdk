@@ -6,7 +6,6 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,10 +13,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Date;
-
-import retrofit2.Response;
-
-import static com.google.common.truth.Truth.assertThat;
+import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
@@ -26,7 +22,7 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private Call<Response<Payload<DataSet>>> dataSetCall;
+    private Call<List<DataSet>> dataSetCall;
 
     @Before
     @Override
@@ -36,7 +32,7 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
         dataSetCall = createCall();
     }
 
-    private Call<Response<Payload<DataSet>>> createCall() {
+    private Call<List<DataSet>> createCall() {
         GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
         return DataSetEndpointCall.FACTORY.create(data);
     }
@@ -53,8 +49,7 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */
 
-        retrofit2.Response dataSetResponse = dataSetCall.call();
-        assertThat(dataSetResponse.isSuccessful()).isTrue();
+        dataSetCall.call();
     }
 
     @Test

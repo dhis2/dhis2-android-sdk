@@ -368,8 +368,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.logout().call();
         d2.logIn("android", "Android123").call();
 
-        Response response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
     }
 
     private boolean verifyEventCategoryAttributes(Event event, Event downloadedEvent) {

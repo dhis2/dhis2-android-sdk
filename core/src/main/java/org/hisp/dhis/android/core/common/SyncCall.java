@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.common;
 import org.hisp.dhis.android.core.calls.Call;
 
 public abstract class SyncCall<C> implements Call<C> {
-    protected boolean isExecuted;
+    private boolean isExecuted;
 
     @Override
     public final boolean isExecuted() {
@@ -40,10 +40,13 @@ public abstract class SyncCall<C> implements Call<C> {
         }
     }
 
-    protected final void setExecuted()  {
+    protected final void setExecuted() throws D2CallException {
         synchronized (this) {
             if (isExecuted) {
-                throw new IllegalStateException("Already executed");
+                throw D2CallException.builder()
+                        .errorCode(D2ErrorCode.ALREADY_EXECUTED)
+                        .errorDescription("Already executed call")
+                        .isHttpError(false).build();
             }
             isExecuted = true;
         }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.database.Cursor;
 
 import org.assertj.core.util.Sets;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
@@ -250,13 +251,13 @@ public class TrackedEntityTypeCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void throw_illegal_state_exception_on_consecutive_calls() {
+    public void throw_d2_call_exception_on_consecutive_calls() {
         try {
             call.call();
             call.call();
             fail("Expecting an Exception on Consecutive calls");
         } catch (Exception e) {
-            assertThat(IllegalStateException.class.isInstance(e)).isTrue();
+            assertThat(D2CallException.class.isInstance(e)).isTrue();
         }
     }
 

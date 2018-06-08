@@ -34,15 +34,13 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.common.BasicCallFactory;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericCallFactory;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SimpleCallFactory;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
@@ -56,34 +54,32 @@ import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
-@SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.ModifiedCyclomaticComplexity",
-        "PMD.StdCyclomaticComplexity", "PMD.ExcessiveImports", "PMD.PrematureDeclaration"})
-public class MetadataCall extends SyncCall<Response> {
+public class MetadataCall extends SyncCall<Void> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
     private final BasicCallFactory<SystemInfo> systemInfoCallFactory;
-    private final SimpleCallFactory<SystemSetting> systemSettingCallFactory;
+    private final GenericCallFactory<SystemSetting> systemSettingCallFactory;
     private final GenericCallFactory<User> userCallFactory;
-    private final SimpleCallFactory<Payload<Category>> categoryCallFactory;
-    private final SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
-    private final SimpleCallFactory<Payload<Program>> programParentCallFactory;
+    private final GenericCallFactory<List<Category>> categoryCallFactory;
+    private final GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory;
+    private final GenericCallFactory<List<Program>> programParentCallFactory;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
     private final DataSetParentCall.Factory dataSetParentCallFactory;
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
                         @NonNull Retrofit retrofit,
                         @NonNull BasicCallFactory<SystemInfo> systemInfoCallFactory,
-                        @NonNull SimpleCallFactory<SystemSetting> systemSettingCallFactory,
+                        @NonNull GenericCallFactory<SystemSetting> systemSettingCallFactory,
                         @NonNull GenericCallFactory<User> userCallFactory,
-                        @NonNull SimpleCallFactory<Payload<Category>> categoryCallFactory,
-                        @NonNull SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory,
-                        @NonNull SimpleCallFactory<Payload<Program>> programParentCallFactory,
+                        @NonNull GenericCallFactory<List<Category>> categoryCallFactory,
+                        @NonNull GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory,
+                        @NonNull GenericCallFactory<List<Program>> programParentCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
                         @NonNull DataSetParentCall.Factory dataSetParentCallFactory) {
         this.databaseAdapter = databaseAdapter;
@@ -99,63 +95,38 @@ public class MetadataCall extends SyncCall<Response> {
         this.dataSetParentCallFactory = dataSetParentCallFactory;
     }
 
-    @SuppressWarnings("PMD.NPathComplexity")
     @Override
-    public Response call() throws Exception {
-        super.setExecuted();
+    public Void call() throws Exception {
+        setExecuted();
 
-        Transaction transaction = databaseAdapter.beginNewTransaction();
-        try {
+        final D2CallExecutor executor = new D2CallExecutor();
 
-            SystemInfo systemInfo = new D2CallExecutor().executeD2Call(
-                    systemInfoCallFactory.create(databaseAdapter, retrofit));
+        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
+            @Override
+            public Void call() throws D2CallException {
+                SystemInfo systemInfo = executor.executeD2Call(
+                        systemInfoCallFactory.create(databaseAdapter, retrofit));
 
-            GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
-                    systemInfo.serverDate());
+                GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
+                        systemInfo.serverDate());
 
-            Response<SystemSetting> systemSettingResponse = systemSettingCallFactory.create(genericCallData).call();
-            if (!systemSettingResponse.isSuccessful()) {
-                return systemSettingResponse;
+                executor.executeD2Call(systemSettingCallFactory.create(genericCallData));
+                User user = executor.executeD2Call(userCallFactory.create(genericCallData));
+                executor.executeD2Call(categoryCallFactory.create(genericCallData));
+                executor.executeD2Call(categoryComboCallFactory.create(genericCallData));
+
+                List<Program> programs = executor.executeD2Call(
+                        programParentCallFactory.create(genericCallData));
+
+                List<OrganisationUnit> organisationUnits =
+                        executor.executeD2Call(organisationUnitCallFactory.create(genericCallData, user,
+                                UidsHelper.getUids(programs)));
+
+                executor.executeD2Call(dataSetParentCallFactory.create(user, genericCallData, organisationUnits));
+
+                return null;
             }
-
-            User user = userCallFactory.create(genericCallData).call();
-
-            Response<Payload<Category>> categoryResponse = categoryCallFactory.create(genericCallData).call();
-            if (!categoryResponse.isSuccessful()) {
-                return categoryResponse;
-            }
-
-            Response<Payload<CategoryCombo>> categoryComboResponse
-                    = categoryComboCallFactory.create(genericCallData).call();
-            if (!categoryComboResponse.isSuccessful()) {
-                return categoryComboResponse;
-            }
-
-            Response<Payload<Program>> programResponse = programParentCallFactory.create(genericCallData).call();
-            if (!programResponse.isSuccessful()) {
-                return programResponse;
-            }
-
-            Response<Payload<OrganisationUnit>> organisationUnitResponse =
-                    organisationUnitCallFactory.create(genericCallData, user,
-                            UidsHelper.getUids(programResponse.body().items())).call();
-
-            if (!organisationUnitResponse.isSuccessful()) {
-                return organisationUnitResponse;
-            }
-
-            List<OrganisationUnit> organisationUnits = organisationUnitResponse.body().items();
-            Response dataSetParentCallResponse =
-                    dataSetParentCallFactory.create(user, genericCallData, organisationUnits).call();
-
-            if (dataSetParentCallResponse.isSuccessful()) {
-                transaction.setSuccessful();
-            }
-
-            return dataSetParentCallResponse;
-        } finally {
-            transaction.end();
-        }
+        });
     }
 
     public static MetadataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {

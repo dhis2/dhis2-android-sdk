@@ -28,18 +28,8 @@
 
 package org.hisp.dhis.android.core.common;
 
-import com.google.auto.value.AutoValue;
+import java.util.List;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import retrofit2.Response;
-
-@AutoValue
-public abstract class CallException extends Exception {
-
-    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Class can't be changed")
-    public abstract Response response();
-
-    public static CallException create(Response response) {
-        return new AutoValue_CallException(response);
-    }
+public interface ListPersistor<P> {
+    void persist(List<P> objectList) throws D2CallException;
 }

@@ -9,8 +9,6 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.List;
 
-import retrofit2.Response;
-
 import static com.google.common.truth.Truth.assertThat;
 
 public class EventWithLimitCallRealIntegrationShould extends AbsStoreTestCase {
@@ -30,8 +28,7 @@ public class EventWithLimitCallRealIntegrationShould extends AbsStoreTestCase {
         d2.logout().call();
         d2.logIn(RealServerMother.user, RealServerMother.password).call();
 
-        Response metadataResponse = d2.syncMetaData().call();
-        assertThat(metadataResponse.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
 
         List<Event> events = d2.downloadSingleEvents(20,  false).call();
         assertThat(events.size()).isEqualTo(20);

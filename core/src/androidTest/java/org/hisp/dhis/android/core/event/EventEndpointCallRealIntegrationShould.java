@@ -13,8 +13,6 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.List;
 
-import retrofit2.Response;
-
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -38,8 +36,7 @@ public class EventEndpointCallRealIntegrationShould extends AbsStoreTestCase {
     public void download_number_of_events_according_to_default_limit() throws Exception {
         d2.logIn(RealServerMother.user, RealServerMother.password).call();
 
-        Response response = d2.syncMetaData().call();
-        Truth.assertThat(response.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
 
         EventEndpointCall eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
@@ -57,8 +54,7 @@ public class EventEndpointCallRealIntegrationShould extends AbsStoreTestCase {
     public void download_event_with_category_combo_option() throws Exception {
         d2.logIn(RealServerMother.user, RealServerMother.password).call();
 
-        Response response = d2.syncMetaData().call();
-        Truth.assertThat(response.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
 
         EventEndpointCall eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);

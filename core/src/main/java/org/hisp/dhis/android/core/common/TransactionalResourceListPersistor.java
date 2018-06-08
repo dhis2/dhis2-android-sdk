@@ -28,71 +28,38 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-import retrofit2.Response;
-
-public abstract class AbstractEndpointCall<P, M extends Model, Q extends BaseQuery, C> extends SyncCall<Response<C>> {
+public class TransactionalResourceListPersistor<P, M extends Model> implements ListPersistor<P> {
     private final GenericCallData data;
     private final GenericHandler<P, M> handler;
-
     private final ResourceModel.Type resourceType;
     private final ModelBuilder<P, M> modelBuilder;
-    public final Q query;
 
-    AbstractEndpointCall(GenericCallData data, GenericHandler<P, M> handler,
-                         ResourceModel.Type resourceType,
-                         ModelBuilder<P, M> modelBuilder, Q query) {
+    public TransactionalResourceListPersistor(GenericCallData data,
+                                              GenericHandler<P, M> handler,
+                                              ResourceModel.Type resourceType,
+                                              ModelBuilder<P, M> modelBuilder) {
         this.data = data;
         this.handler = handler;
         this.resourceType = resourceType;
         this.modelBuilder = modelBuilder;
-        this.query = query;
     }
 
-    protected abstract retrofit2.Call<C> getCall(Q query, String lastUpdated) throws IOException;
-    protected abstract List<P> getPojoList(Response<C> response);
-    protected abstract boolean isValidResponse(Response<C> response);
+    public void persist(final List<P> objectList) throws D2CallException {
+        if (objectList != null && !objectList.isEmpty()) {
+            new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(), new Callable<Void>() {
 
-    @Override
-    public final Response<C> call() throws Exception {
-        super.setExecuted();
-
-        if (!query.isValid()) {
-            throw new IllegalArgumentException("Invalid query");
-        }
-
-        String lastUpdated = data.resourceHandler().getLastUpdated(resourceType);
-        Response<C> response = getCall(query, lastUpdated).execute();
-
-        if (isValidResponse(response)) {
-            persist(response);
-            return response;
-        } else {
-            throw CallException.create(response);
-        }
-    }
-
-    private void persist(Response<C> response) {
-        if (response == null) {
-            throw new RuntimeException("Trying to process call without download data");
-        }
-        List<P> pojoList = getPojoList(response);
-        if (pojoList != null && !pojoList.isEmpty()) {
-            Transaction transaction = data.databaseAdapter().beginNewTransaction();
-
-            try {
-                handler.handleMany(pojoList, modelBuilder);
-                data.resourceHandler().handleResource(resourceType, data.serverDate());
-
-                transaction.setSuccessful();
-            } finally {
-                transaction.end();
-            }
+                @Override
+                public Void call() {
+                    handler.handleMany(objectList, modelBuilder);
+                    data.handleResource(resourceType);
+                    return null;
+                }
+            });
         }
     }
 }

@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -50,7 +52,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -238,12 +239,13 @@ public class OrganisationUnitCallUnitShould {
         try {
             organisationUnitCall.call();
             fail("Expecting an Exception");
-        } catch (Exception e) {
-            assertThat(IOException.class.isInstance(e)).isTrue();
-
+        } catch (D2CallException d2E) {
+            assertThat(d2E.errorCode()).isEqualTo(D2ErrorCode.API_RESPONSE_PROCESS_ERROR);
             verify(databaseAdapter, times(1)).beginNewTransaction();
             verify(transaction, times(1)).end();
             verifyNoMoreInteractions(transaction);
+        } catch (Exception e) {
+            fail("Exception has wrong type");
         }
     }
 
@@ -254,12 +256,15 @@ public class OrganisationUnitCallUnitShould {
                 HttpsURLConnection.HTTP_CLIENT_TIMEOUT,
                 ResponseBody.create(MediaType.parse("application/json"), "{}")));
 
-        Response<Payload<OrganisationUnit>> response = organisationUnitCall.call();
-
-        assertThat(response.code()).isEqualTo(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
-        verify(databaseAdapter, times(1)).beginNewTransaction();
-        verify(transaction, times(1)).end();
-        verifyNoMoreInteractions(transaction);
+        try {
+            organisationUnitCall.call();
+            fail("Call must fail");
+        } catch (D2CallException d2E) {
+            assertThat(d2E.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE);
+            verify(databaseAdapter, times(1)).beginNewTransaction();
+            verify(transaction, times(1)).end();
+            verifyNoMoreInteractions(transaction);
+        }
     }
 
     @Test
@@ -297,13 +302,13 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void thrown_illegal_state_exception_on_consecutive_calls() {
+    public void thrown_d2_call_exception_on_consecutive_calls() {
         try {
             organisationUnitCall.call();
             organisationUnitCall.call();
             fail("Expecting an Exception on Consecutive calls");
         } catch (Exception e) {
-            assertThat(IllegalStateException.class.isInstance(e)).isTrue();
+            assertThat(D2CallException.class.isInstance(e)).isTrue();
         }
     }
 

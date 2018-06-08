@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
@@ -93,7 +94,7 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<User> logIn(@NonNull String username, @NonNull String password) {
+    public Callable<User> logIn(@NonNull String username, @NonNull String password) {
         return UserAuthenticateCall.create(databaseAdapter, retrofit, username, password);
     }
 
@@ -114,12 +115,12 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response> syncMetaData() {
+    public Callable<Void> syncMetaData() {
         return MetadataCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
-    public Call<Response> syncAggregatedData() {
+    public Callable<Void> syncAggregatedData() {
         return AggregatedDataCall.create(databaseAdapter, retrofit);
     }
 
@@ -144,7 +145,8 @@ public final class D2 {
     }
 
     @NonNull
-    public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid) {
+    public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid)
+            throws D2CallException {
         return TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit)
                 .getValue(attributeUid, organisationUnitUid);
     }

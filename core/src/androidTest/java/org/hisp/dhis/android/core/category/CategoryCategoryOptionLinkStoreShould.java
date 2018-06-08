@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.category;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
-    private CategoryCategoryOptionLinkStore store;
+    private LinkModelStore<CategoryCategoryOptionLinkModel> store;
     private Category newCategory;
     private CategoryOption newCategoryOption;
     private CategoryCategoryOptionLinkModel newCategoryCategoryOptionLinkModel;
@@ -27,7 +28,7 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        store = new CategoryCategoryOptionLinkStoreImpl(databaseAdapter());
+        store = CategoryCategoryOptionLinkStore.create(databaseAdapter());
 
     }
 
@@ -79,7 +80,7 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void whenInsertNewCategoryOptionLink() {
-        lastInsertedID = store.insert(newCategoryCategoryOptionLinkModel);
+        store.insert(newCategoryCategoryOptionLinkModel);
     }
 
     private void whenInsertNewCategory() {

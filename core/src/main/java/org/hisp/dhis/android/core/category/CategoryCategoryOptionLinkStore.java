@@ -1,11 +1,17 @@
 package org.hisp.dhis.android.core.category;
 
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class CategoryCategoryOptionLinkStore {
 
-public interface CategoryCategoryOptionLinkStore extends DeletableStore {
+    private CategoryCategoryOptionLinkStore() {}
 
-    long insert(@NonNull CategoryCategoryOptionLinkModel element);
+    public static LinkModelStore<CategoryCategoryOptionLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter, CategoryCategoryOptionLinkModel.TABLE,
+                new CategoryCategoryOptionLinkModel.Columns(),
+                CategoryCategoryOptionLinkModel.Columns.CATEGORY);
+    }
 }

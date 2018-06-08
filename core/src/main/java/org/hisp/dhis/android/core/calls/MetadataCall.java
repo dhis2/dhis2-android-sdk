@@ -53,7 +53,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
-import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 
 import java.util.List;
 import java.util.concurrent.Callable;

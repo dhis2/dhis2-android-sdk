@@ -38,7 +38,7 @@ import java.util.List;
 
 public class ForeignKeyCleaner {
 
-    private DatabaseAdapter databaseAdapter;
+    private final DatabaseAdapter databaseAdapter;
 
     public ForeignKeyCleaner(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;

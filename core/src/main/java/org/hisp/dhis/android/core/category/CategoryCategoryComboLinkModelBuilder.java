@@ -26,21 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.category;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-import java.util.Set;
+public class CategoryCategoryComboLinkModelBuilder extends ModelBuilder<Category, CategoryCategoryComboLinkModel> {
 
-public interface ObjectStore<M extends BaseModel> extends DeletableStore {
+    private final CategoryCategoryComboLinkModel.Builder builder;
 
-    long insert(@NonNull M m) throws RuntimeException;
+    CategoryCategoryComboLinkModelBuilder(CategoryCombo combo) {
+        this.builder = CategoryCategoryComboLinkModel.builder()
+                .combo(combo.uid());
+    }
 
-    Set<M> selectAll(CursorModelFactory<M> modelFactory);
-
-    M selectFirst(CursorModelFactory<M> modelFactory);
-
-    Set<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    boolean deleteById(@NonNull M m);
+    @Override
+    public CategoryCategoryComboLinkModel buildModel(Category category) {
+        return builder
+                .category(category.uid())
+                .build();
+    }
 }

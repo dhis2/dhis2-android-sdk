@@ -1,14 +1,18 @@
 package org.hisp.dhis.android.core.category;
 
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class CategoryCategoryComboLinkStore {
 
-import java.util.List;
+    private CategoryCategoryComboLinkStore() {}
 
-public interface CategoryCategoryComboLinkStore extends DeletableStore {
-    long insert(@NonNull CategoryCategoryComboLinkModel element);
-
-    List<CategoryCategoryComboLink> queryAll();
+    public static LinkModelStore<CategoryCategoryComboLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter, CategoryCategoryComboLinkModel.TABLE,
+                new CategoryCategoryComboLinkModel.Columns(),
+                CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO);
+    }
 }
+

@@ -80,7 +80,7 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void whenInsertNewCategoryOptionLink() {
-        store.insert(newCategoryCategoryOptionLinkModel);
+        lastInsertedID = store.insert(newCategoryCategoryOptionLinkModel);
     }
 
     private void whenInsertNewCategory() {

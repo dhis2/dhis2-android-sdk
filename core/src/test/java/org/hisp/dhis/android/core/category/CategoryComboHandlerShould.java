@@ -18,7 +18,8 @@ import java.util.List;
 public class CategoryComboHandlerShould {
 
     @Mock
-    private CategoryOptionComboCategoryLinkStore mockComboOptionLinkStore;
+    private LinkModelHandler<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>
+            categoryOptionComboCategoryOptionLinkHandler;
 
     @Mock
     private LinkModelHandler<Category, CategoryCategoryComboLinkModel> mockComboLinkStore;
@@ -38,7 +39,7 @@ public class CategoryComboHandlerShould {
         MockitoAnnotations.initMocks(this);
 
 
-        categoryComboHandler = new CategoryComboHandler(mockComboStore, mockComboOptionLinkStore,
+        categoryComboHandler = new CategoryComboHandler(mockComboStore, categoryOptionComboCategoryOptionLinkHandler,
                 mockComboLinkStore, mockOptionComboHandler);
     }
 

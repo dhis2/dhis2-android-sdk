@@ -33,7 +33,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.DeletableStore;
@@ -146,7 +146,7 @@ public class LogOutUserCallable implements Callable<Void> {
                 new CategoryStoreImpl(databaseAdapter),
                 CategoryOptionStore.create(databaseAdapter),
                 CategoryCategoryOptionLinkStore.create(databaseAdapter),
-                new CategoryOptionComboCategoryLinkStoreImpl(databaseAdapter),
+                CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter),
                 new CategoryComboStoreImpl(databaseAdapter),
                 CategoryCategoryComboLinkStore.create(databaseAdapter),
                 DataSetStore.create(databaseAdapter),

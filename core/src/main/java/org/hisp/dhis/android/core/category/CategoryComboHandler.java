@@ -14,7 +14,8 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 public class CategoryComboHandler {
 
     @NonNull
-    private final CategoryOptionComboCategoryLinkStore categoryComboOptionLinkCategoryStore;
+    private final LinkModelHandler<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>
+            categoryOptionComboCategoryOptionLinkHandler;
 
     @NonNull
     private final LinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler;
@@ -27,12 +28,12 @@ public class CategoryComboHandler {
 
     CategoryComboHandler(
             @NonNull CategoryComboStore store,
-            @NonNull CategoryOptionComboCategoryLinkStore
-                    categoryComboOptionCategoryLinkStore,
+            @NonNull LinkModelHandler<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>
+                    categoryOptionComboCategoryOptionLinkHandler,
             @NonNull LinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler,
             @NonNull CategoryOptionComboHandler optionComboHandler) {
         this.store = store;
-        this.categoryComboOptionLinkCategoryStore = categoryComboOptionCategoryLinkStore;
+        this.categoryOptionComboCategoryOptionLinkHandler = categoryOptionComboCategoryOptionLinkHandler;
         this.categoryCategoryComboLinkHandler = categoryCategoryComboLinkHandler;
         this.optionComboHandler = optionComboHandler;
     }
@@ -66,43 +67,19 @@ public class CategoryComboHandler {
         if (optionsCombo != null) {
             for (CategoryOptionCombo optionCombo : optionsCombo) {
                 optionComboHandler.handle(optionCombo);
-
-                handleOptionComboLinkCategory(optionCombo);
+                categoryOptionComboCategoryOptionLinkHandler.handleMany(optionCombo.uid(),
+                        optionCombo.categoryOptions(),
+                        new CategoryOptionComboCategoryOptionLinkModelBuilder(optionCombo));
             }
         }
-    }
-
-    private void handleOptionComboLinkCategory(@NonNull CategoryOptionCombo optionCombo) {
-
-        List<CategoryOption> categoryOptions = optionCombo.categoryOptions();
-
-        if (categoryOptions != null) {
-            for (CategoryOption categoryOption : categoryOptions) {
-
-                CategoryOptionComboCategoryLinkModel link = newCategoryOptionLinkCategory(
-                        optionCombo,
-                        categoryOption);
-
-                categoryComboOptionLinkCategoryStore.insert(link);
-            }
-        }
-    }
-
-    @NonNull
-    private CategoryOptionComboCategoryLinkModel newCategoryOptionLinkCategory(
-            @NonNull CategoryOptionCombo optionCombo,
-            @NonNull CategoryOption categoryOption) {
-        return CategoryOptionComboCategoryLinkModel.
-                builder()
-                .category(categoryOption.uid())
-                .optionCombo(optionCombo.uid())
-                .build();
     }
 
     public static CategoryComboHandler create(DatabaseAdapter databaseAdapter) {
         return new CategoryComboHandler(
                 new CategoryComboStoreImpl(databaseAdapter),
-                new CategoryOptionComboCategoryLinkStoreImpl(databaseAdapter),
+                new LinkModelHandlerImpl<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>(
+                        CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter)
+                ),
                 new LinkModelHandlerImpl<Category, CategoryCategoryComboLinkModel>(
                         CategoryCategoryComboLinkStore.create(databaseAdapter)
                 ),

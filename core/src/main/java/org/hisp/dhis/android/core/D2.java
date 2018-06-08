@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
@@ -40,6 +41,7 @@ import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
@@ -74,11 +76,15 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
+    private final Context context;
 
     @VisibleForTesting
-    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter) {
+    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
+       @NonNull Context context) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
+        this.context = context;
+        SSLContextInitializer.initializeSSLContext(context);
     }
 
     @NonNull
@@ -89,6 +95,11 @@ public final class D2 {
     @NonNull
     public DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
+    }
+
+    @NonNull
+    public Context context() {
+        return context;
     }
 
     @NonNull
@@ -177,6 +188,7 @@ public final class D2 {
         private ConfigurationModel configuration;
         private DatabaseAdapter databaseAdapter;
         private OkHttpClient okHttpClient;
+        private Context context;
 
         public Builder() {
             // empty constructor
@@ -200,6 +212,12 @@ public final class D2 {
             return this;
         }
 
+        @NonNull
+        public Builder context(@NonNull Context context) {
+            this.context = context;
+            return this;
+        }
+
         public D2 build() {
             if (databaseAdapter == null) {
                 throw new IllegalArgumentException("databaseAdapter == null");
@@ -211,6 +229,10 @@ public final class D2 {
 
             if (okHttpClient == null) {
                 throw new IllegalArgumentException("okHttpClient == null");
+            }
+
+            if (context == null) {
+                throw new IllegalArgumentException("context == null");
             }
 
             ObjectMapper objectMapper = new ObjectMapper()
@@ -226,7 +248,7 @@ public final class D2 {
                     .validateEagerly(true)
                     .build();
 
-            return new D2(retrofit, databaseAdapter);
+            return new D2(retrofit, databaseAdapter, context);
         }
     }
 }

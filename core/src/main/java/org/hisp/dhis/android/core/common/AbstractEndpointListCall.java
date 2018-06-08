@@ -55,7 +55,7 @@ public abstract class AbstractEndpointListCall<P, Q extends BaseQuery, C> extend
 
     @Override
     public final List<P> call() throws Exception {
-        super.setExecuted();
+        setExecuted();
 
         if (!query.isValid()) {
             throw new IllegalArgumentException("Invalid query");

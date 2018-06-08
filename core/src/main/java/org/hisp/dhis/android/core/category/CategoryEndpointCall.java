@@ -32,7 +32,7 @@ public class CategoryEndpointCall extends SyncCall<List<Category>> {
 
     @Override
     public List<Category> call() throws Exception {
-        super.setExecuted();
+        setExecuted();
 
         retrofit2.Call<Payload<Category>> call = service.getCategory(Category.allFields, query.paging(),
                 query.page(), query.pageSize());

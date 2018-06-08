@@ -32,7 +32,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
 
     @Override
     public List<TrackedEntityInstance> call() throws D2CallException {
-        super.setExecuted();
+        setExecuted();
 
         if (trackedEntityInstanceUids == null) {
             throw D2CallException.builder().isHttpError(false).errorDescription("UID list null").build();
@@ -46,7 +46,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
             teis.add(executor.executeD2Call(teiCall));
         }
 
-        TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, teis).call();
+        executor.executeD2Call(TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, teis));
 
         return teis;
     }

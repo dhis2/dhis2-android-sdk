@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.common;
 
+import android.support.test.InstrumentationRegistry;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
@@ -26,7 +28,8 @@ public class D2Factory {
                                 .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter))
                                 .addInterceptor(loggingInterceptor)
                                 .build()
-                ).build();
-
+                )
+                .context(InstrumentationRegistry.getTargetContext().getApplicationContext())
+                .build();
     }
 }

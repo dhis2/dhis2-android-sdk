@@ -30,6 +30,7 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url "https://maven.google.com" }
         jcenter()
         maven { url "https://jitpack.io" }
     }
@@ -87,5 +88,8 @@ ext {
 
             //database
             sqlbritemigrations  : "v1.0.1",
+
+            // google
+            safetynet  : "15.0.1",
     ]
 }

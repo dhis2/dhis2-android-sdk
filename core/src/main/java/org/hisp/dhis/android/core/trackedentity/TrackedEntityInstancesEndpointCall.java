@@ -27,7 +27,7 @@ public final class TrackedEntityInstancesEndpointCall extends SyncCall<List<Trac
 
     @Override
     public List<TrackedEntityInstance> call() throws D2CallException {
-        super.setExecuted();
+        setExecuted();
 
         Integer teisToRequest = Math.min(trackerQuery.getPageLimit(), trackerQuery.getPageSize());
         Call<Payload<TrackedEntityInstance>> call = trackedEntityInstanceService.getTrackedEntityInstances(

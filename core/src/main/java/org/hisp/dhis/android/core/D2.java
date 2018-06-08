@@ -35,7 +35,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.AggregatedDataCall;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
@@ -66,7 +65,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
@@ -125,22 +123,22 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<List<Event>> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {
+    public Callable<List<Event>> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {
         return EventWithLimitCall.create(databaseAdapter, retrofit, eventLimit, limitByOrgUnit);
     }
 
     @NonNull
-    public Call<List<TrackedEntityInstance>> syncTrackerData() {
+    public Callable<List<TrackedEntityInstance>> syncTrackerData() {
         return TrackerDataCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
-    public Call<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
+    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
         return TrackedEntityInstanceListDownloadAndPersistCall.create(databaseAdapter, retrofit, uids);
     }
 
     @NonNull
-    public Call<List<TrackedEntityInstance>> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
+    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
         return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, teiLimit, limitByOrgUnit);
     }
 
@@ -157,16 +155,16 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response<WebResponse>> syncTrackedEntityInstances() {
+    public Callable<WebResponse> syncTrackedEntityInstances() {
         return TrackedEntityInstancePostCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
-    public Call<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
+    public Callable<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
         return TrackedEntityInstanceQueryCall.create(retrofit, query);
     }
 
-    public Call<Response<WebResponse>> syncSingleEvents() {
+    public Callable<WebResponse> syncSingleEvents() {
         return EventPostCall.create(databaseAdapter, retrofit);
     }
 

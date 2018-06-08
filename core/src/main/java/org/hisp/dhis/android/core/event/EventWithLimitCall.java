@@ -3,10 +3,10 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramStoreInterface;
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import retrofit2.Retrofit;
 
@@ -28,7 +29,6 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
     private final Retrofit retrofit;
     private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
     private final ProgramStoreInterface programStore;
-    private final D2CallException.Builder httpExceptionBuilder;
 
     private EventWithLimitCall(
             @NonNull DatabaseAdapter databaseAdapter,
@@ -43,26 +43,19 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
         this.programStore = programStore;
         this.eventLimit = eventLimit;
         this.limitByOrgUnit = limitByOrgUnit;
-        this.httpExceptionBuilder = D2CallException.builder().isHttpError(true).errorDescription("Events call failed");
     }
 
     @Override
     public List<Event> call() throws D2CallException {
-        this.setExecuted();
-        Transaction transaction = databaseAdapter.beginNewTransaction();
+        setExecuted();
 
-        try {
-            List<Event> events = getEvents();
+        return new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<List<Event>>() {
 
-            transaction.setSuccessful();
-
-            return events;
-
-        } catch (Exception e) {
-            throw httpExceptionBuilder.originalException(e).build();
-        } finally {
-            transaction.end();
-        }
+            @Override
+            public List<Event> call() throws Exception {
+                return getEvents();
+            }
+        });
     }
 
     private List<Event> getEvents() throws D2CallException {
@@ -94,6 +87,8 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
                                             int globalEventsSize) throws D2CallException {
         List<Event> events = new ArrayList<>();
 
+        D2CallExecutor executor = new D2CallExecutor();
+
         for (String programUid : programUids) {
             eventQueryBuilder.withProgram(programUid);
 
@@ -116,7 +111,8 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
 
                 eventQueryBuilder.withPage(page);
 
-                List<Event> pageEvents = EventEndpointCall.create(retrofit, eventQueryBuilder.build()).call();
+                List<Event> pageEvents = executor.executeD2Call(
+                        EventEndpointCall.create(retrofit, eventQueryBuilder.build()));
                 events.addAll(pageEvents);
 
                 if (pageEvents.size() < pageSize) {
@@ -129,7 +125,7 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
             }
         }
 
-        EventPersistenceCall.create(databaseAdapter, retrofit, events).call();
+        executor.executeD2Call(EventPersistenceCall.create(databaseAdapter, retrofit, events));
 
         return events;
     }

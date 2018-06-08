@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.imports.WebResponse;
@@ -13,10 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public final class EventPostCall extends SyncCall<Response<WebResponse>> {
+public final class EventPostCall extends SyncCall<WebResponse> {
     // retrofit service
     private final EventService eventService;
 
@@ -33,8 +33,8 @@ public final class EventPostCall extends SyncCall<Response<WebResponse>> {
     }
 
     @Override
-    public Response<WebResponse> call() throws Exception {
-        super.setExecuted();
+    public WebResponse call() throws Exception {
+        setExecuted();
 
         List<Event> eventsToPost = queryEventsToPost();
 
@@ -46,12 +46,9 @@ public final class EventPostCall extends SyncCall<Response<WebResponse>> {
         EventPayload eventPayload = new EventPayload();
         eventPayload.events = eventsToPost;
 
-        Response<WebResponse> response = eventService.postEvents(eventPayload).execute();
-
-        if (response.isSuccessful()) {
-            handleWebResponse(response);
-        }
-        return response;
+        WebResponse webResponse = new APICallExecutor().executeObjectCall(eventService.postEvents(eventPayload));
+        handleWebResponse(webResponse);
+        return webResponse;
     }
 
     @NonNull
@@ -77,13 +74,11 @@ public final class EventPostCall extends SyncCall<Response<WebResponse>> {
         return eventRecreated;
     }
 
-    private void handleWebResponse(Response<WebResponse> response) {
-        WebResponse webResponse = response.body();
+    private void handleWebResponse(WebResponse webResponse) {
         EventImportHandler eventImportHandler = new EventImportHandler(eventStore);
         eventImportHandler.handleEventImportSummaries(
                 webResponse.importSummaries().importSummaries()
         );
-
     }
 
     public static EventPostCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {

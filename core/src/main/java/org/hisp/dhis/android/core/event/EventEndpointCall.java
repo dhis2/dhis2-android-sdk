@@ -27,7 +27,7 @@ public final class EventEndpointCall extends SyncCall<List<Event>> {
 
     @Override
     public List<Event> call() throws D2CallException {
-        super.setExecuted();
+        setExecuted();
 
         Call<Payload<Event>> call;
         Integer eventsToRequest = Math.min(eventQuery.getPageLimit(), eventQuery.getPageSize());

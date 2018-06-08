@@ -35,7 +35,7 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
 
     @Override
     public List<TrackedEntityInstance> call() throws D2CallException {
-        super.setExecuted();
+        setExecuted();
 
         OuMode mode = query.orgUnitMode();
         String orgUnitModeStr = mode == null ? null : mode.toString();

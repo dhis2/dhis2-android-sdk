@@ -72,6 +72,7 @@ public class MetadataCall extends SyncCall<Void> {
     private final GenericCallFactory<List<Program>> programParentCallFactory;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
     private final DataSetParentCall.Factory dataSetParentCallFactory;
+    private final ForeignKeyCleaner foreignKeyCleaner;
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
                         @NonNull Retrofit retrofit,
@@ -82,7 +83,8 @@ public class MetadataCall extends SyncCall<Void> {
                         @NonNull GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory,
                         @NonNull GenericCallFactory<List<Program>> programParentCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
-                        @NonNull DataSetParentCall.Factory dataSetParentCallFactory) {
+                        @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
+                        @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
 
@@ -94,6 +96,7 @@ public class MetadataCall extends SyncCall<Void> {
         this.programParentCallFactory = programParentCallFactory;
         this.organisationUnitCallFactory = organisationUnitCallFactory;
         this.dataSetParentCallFactory = dataSetParentCallFactory;
+        this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
     @Override
@@ -125,7 +128,7 @@ public class MetadataCall extends SyncCall<Void> {
 
                 executor.executeD2Call(dataSetParentCallFactory.create(user, genericCallData, organisationUnits));
 
-                new ForeignKeyCleaner(databaseAdapter).cleanForeignKeyErrors();
+                foreignKeyCleaner.cleanForeignKeyErrors();
 
                 return null;
             }
@@ -143,7 +146,8 @@ public class MetadataCall extends SyncCall<Void> {
                 CategoryComboEndpointCall.FACTORY,
                 ProgramParentCall.FACTORY,
                 OrganisationUnitCall.FACTORY,
-                DataSetParentCall.FACTORY
+                DataSetParentCall.FACTORY,
+                new ForeignKeyCleaner(databaseAdapter)
         );
     }
 }

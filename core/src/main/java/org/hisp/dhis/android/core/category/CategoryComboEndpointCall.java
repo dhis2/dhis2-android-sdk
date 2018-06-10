@@ -53,7 +53,7 @@ public final class CategoryComboEndpointCall extends SyncCall<List<CategoryCombo
             }
             data.handleResource(ResourceModel.Type.CATEGORY_COMBO);
             transaction.setSuccessful();
-        } catch (Exception e ) {
+        } catch (Exception e) {
             System.out.print(e);
         } finally {
             transaction.end();

@@ -61,6 +61,7 @@ public class CategoryComboHandler {
         handleOptionCombo(combo);
     }
 
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     private void handleOptionCombo(@NonNull CategoryCombo combo) {
         List<CategoryOptionCombo> optionsCombo = combo.categoryOptionCombos();
 

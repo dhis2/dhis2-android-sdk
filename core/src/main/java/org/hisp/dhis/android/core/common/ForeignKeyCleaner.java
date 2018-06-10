@@ -44,14 +44,18 @@ public class ForeignKeyCleaner {
         this.databaseAdapter = databaseAdapter;
     }
 
-    public void cleanForeignKeyErrors() {
+    public Integer cleanForeignKeyErrors() {
+        Integer rowsAfected = 0;
         Cursor errorsCursor = getForeignKeyErrorsCursor();
 
         if (errorsCursor != null) {
             do {
                 deleteForeignKeyReferencedObject(errorsCursor);
+                rowsAfected++;
             } while (errorsCursor.moveToNext());
         }
+
+        return rowsAfected;
     }
 
     private void deleteForeignKeyReferencedObject(Cursor errorsCursor) {

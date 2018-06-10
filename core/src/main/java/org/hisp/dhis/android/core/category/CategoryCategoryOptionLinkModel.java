@@ -29,24 +29,37 @@
 package org.hisp.dhis.android.core.category;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 
 @AutoValue
 public abstract class CategoryCategoryOptionLinkModel extends BaseModel {
     public static final String TABLE = "CategoryCategoryOptionLink";
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseModel.Columns {
         public static final String CATEGORY = "category";
         public static final String CATEGORY_OPTION = "categoryOption";
 
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    CATEGORY, CATEGORY_OPTION);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 
     @Nullable
@@ -65,7 +78,18 @@ public abstract class CategoryCategoryOptionLinkModel extends BaseModel {
     @NonNull
     public static CategoryCategoryOptionLinkModel create(Cursor cursor) {
         return AutoValue_CategoryCategoryOptionLinkModel.createFromCursor(cursor);
+    }
 
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, category());
+        sqLiteBind(sqLiteStatement, 2, option());
+    }
+
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 3, category());
+        sqLiteBind(sqLiteStatement, 4, option());
     }
 
     @AutoValue.Builder

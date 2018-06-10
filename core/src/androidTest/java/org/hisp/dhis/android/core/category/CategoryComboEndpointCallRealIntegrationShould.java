@@ -6,6 +6,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
@@ -37,7 +38,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         downloadCategories();
 
         assertNotCombosInDB();
-        assertThereAreNotCategoryCombosLinkInDB();
+        assertTrue(getCategoryCategoryComboLinkModels().isEmpty());
 
         Call<List<CategoryCombo>> categoryComboEndpointCall =
                 CategoryComboEndpointCall.FACTORY.create(
@@ -51,7 +52,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
 
     private void assertDataIsProperlyParsedAndInsertedInTheDB() {
         assertThereAreCombosInDB();
-        assertThereAreCategoryCombosLinkInDB();
+        assertFalse(getCategoryCategoryComboLinkModels().isEmpty());
         assertThereAreCategoryOptionCombosInDB();
         assertThereAreCategoriesInDB();
     }
@@ -67,24 +68,18 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertTrue(categoryCombos.isEmpty());
     }
 
-    private void assertThereAreNotCategoryCombosLinkInDB() {
-        CategoryCategoryComboLinkStore
-                categoryCategoryComboLinkStore = new CategoryCategoryComboLinkStoreImpl(databaseAdapter());
-        List<CategoryCategoryComboLink> categoryCategoryComboLinks = categoryCategoryComboLinkStore.queryAll();
-        assertTrue(categoryCategoryComboLinks.isEmpty());
-    }
-
     private void assertThereAreCombosInDB() {
         CategoryComboStore categoryComboStore = new CategoryComboStoreImpl(databaseAdapter());
         List<CategoryCombo> categoryCombos = categoryComboStore.queryAll();
         assertTrue(categoryCombos.size() > 0);
     }
 
-    private void assertThereAreCategoryCombosLinkInDB() {
-        CategoryCategoryComboLinkStore
-                categoryCategoryComboLinkStore = new CategoryCategoryComboLinkStoreImpl(databaseAdapter());
-        List<CategoryCategoryComboLink> categoryCategoryComboLinks = categoryCategoryComboLinkStore.queryAll();
-        assertTrue(categoryCategoryComboLinks.size() > 0);
+    private Set<CategoryCategoryComboLinkModel> getCategoryCategoryComboLinkModels() {
+        LinkModelStore<CategoryCategoryComboLinkModel>
+                categoryCategoryComboLinkStore = CategoryCategoryComboLinkStore.create(databaseAdapter());
+        return categoryCategoryComboLinkStore.selectAll(
+                CategoryCategoryComboLinkModel.factory
+        );
     }
 
     private void assertThereAreCategoryOptionCombosInDB() {

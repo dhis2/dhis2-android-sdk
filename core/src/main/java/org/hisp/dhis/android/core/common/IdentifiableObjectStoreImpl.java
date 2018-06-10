@@ -50,10 +50,10 @@ public class IdentifiableObjectStoreImpl<M extends BaseIdentifiableObjectModel>
     }
 
     @Override
-    public final void insert(@NonNull M m) throws RuntimeException {
+    public final long insert(@NonNull M m) throws RuntimeException {
         isNull(m);
         isNull(m.uid());
-        super.insert(m);
+        return super.insert(m);
     }
 
     @Override

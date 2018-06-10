@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkModel;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CategoryModel;
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryLinkModel;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkModel;
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
 import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -112,7 +112,7 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
                 .isNotEmptyTable(CategoryComboModel.TABLE)
                 .isNotEmptyTable(CategoryCategoryComboLinkModel.TABLE)
                 .isNotEmptyTable(CategoryOptionComboModel.TABLE)
-                .isNotEmptyTable(CategoryOptionComboCategoryLinkModel.TABLE)
+                .isNotEmptyTable(CategoryOptionComboCategoryOptionLinkModel.TABLE)
                 .isNotEmptyTable(ResourceModel.TABLE);
     }
 

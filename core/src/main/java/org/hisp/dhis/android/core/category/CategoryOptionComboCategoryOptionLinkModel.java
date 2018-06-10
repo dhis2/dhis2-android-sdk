@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.category;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -36,44 +37,70 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 
 @AutoValue
-public abstract class CategoryOptionComboCategoryLinkModel extends BaseModel {
-    public static final String TABLE = "CategoryOptionComboCategoryLink";
+public abstract class CategoryOptionComboCategoryOptionLinkModel extends BaseModel {
+    public static final String TABLE = "CategoryOptionComboCategoryOptionLink";
 
     public static class Columns extends BaseModel.Columns {
         public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
-        public static final String CATEGORY = "category";
+        public static final String CATEGORY_OPTION = "categoryOption";
 
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    CATEGORY_OPTION_COMBO, CATEGORY_OPTION);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 
     @NonNull
     @ColumnName(Columns.CATEGORY_OPTION_COMBO)
-    public abstract String optionCombo();
+    public abstract String categoryOptionCombo();
 
     @NonNull
-    @ColumnName(Columns.CATEGORY)
-    public abstract String category();
+    @ColumnName(Columns.CATEGORY_OPTION)
+    public abstract String categoryOption();
 
     @NonNull
     public static Builder builder() {
-        return new $$AutoValue_CategoryOptionComboCategoryLinkModel.Builder();
+        return new $$AutoValue_CategoryOptionComboCategoryOptionLinkModel.Builder();
     }
 
     @NonNull
-    public static CategoryOptionComboCategoryLinkModel create(Cursor cursor) {
-        return AutoValue_CategoryOptionComboCategoryLinkModel.createFromCursor(cursor);
+    public static CategoryOptionComboCategoryOptionLinkModel create(Cursor cursor) {
+        return AutoValue_CategoryOptionComboCategoryOptionLinkModel.createFromCursor(cursor);
+    }
 
+
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, categoryOptionCombo());
+        sqLiteBind(sqLiteStatement, 2, categoryOption());
+    }
+
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 3, categoryOptionCombo());
+        sqLiteBind(sqLiteStatement, 4, categoryOption());
     }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
 
-        public abstract Builder optionCombo(@Nullable String optionCombo);
+        public abstract Builder categoryOptionCombo(@Nullable String categoryOptionCombo);
 
-        public abstract Builder category(@Nullable String category);
+        public abstract Builder categoryOption(@Nullable String categoryOption);
 
-        public abstract CategoryOptionComboCategoryLinkModel build();
+        public abstract CategoryOptionComboCategoryOptionLinkModel build();
     }
 }

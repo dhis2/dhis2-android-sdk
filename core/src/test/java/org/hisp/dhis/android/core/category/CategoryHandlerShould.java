@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -22,7 +22,8 @@ public class CategoryHandlerShould {
     private CategoryStore mockCategoryStore;
 
     @Mock
-    private CategoryCategoryOptionLinkStore mockCategoryCategoryOptionLinkStore;
+    private LinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>
+            categoryCategoryOptionLinkHandler;
 
     @Mock
     private GenericHandler<CategoryOption, CategoryOptionModel> categoryOptionHandler;
@@ -36,7 +37,7 @@ public class CategoryHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         mCategoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler,
-                mockCategoryCategoryOptionLinkStore);
+                categoryCategoryOptionLinkHandler);
     }
 
     @Test

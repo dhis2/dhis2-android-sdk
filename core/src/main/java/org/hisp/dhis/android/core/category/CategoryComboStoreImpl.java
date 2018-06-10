@@ -45,6 +45,7 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
             CategoryComboModel.Columns.NAME + " " + EQUAL_QUESTION_MARK + " " +
             CategoryComboModel.Columns.DISPLAY_NAME + " " + EQUAL_QUESTION_MARK + " " +
             CategoryComboModel.Columns.CREATED + " " + EQUAL_QUESTION_MARK + " " +
+            CategoryComboModel.Columns.LAST_UPDATED + " " + EQUAL_QUESTION_MARK + " " +
             CategoryComboModel.Columns.IS_DEFAULT + " =? WHERE " +
             CategoryComboModel.Columns.UID + " =?;";
 
@@ -128,7 +129,7 @@ public class CategoryComboStoreImpl implements CategoryComboStore {
     }
 
     private void bindUpdate(@NonNull CategoryCombo oldCombo, @NonNull CategoryCombo newCombo) {
-        final int whereUidIndex = 7;
+        final int whereUidIndex = 8;
         bind(updateStatement, newCombo);
 
         sqLiteBind(updateStatement, whereUidIndex, oldCombo.uid());

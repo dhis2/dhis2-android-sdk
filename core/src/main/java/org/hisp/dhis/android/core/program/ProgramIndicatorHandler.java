@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.LegendSetHandler;
@@ -45,27 +46,27 @@ import java.util.Collection;
 
 public class ProgramIndicatorHandler extends IdentifiableHandlerImpl<ProgramIndicator, ProgramIndicatorModel> {
     private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
-    private final ObjectWithoutUidStore<ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkStore;
     private final GenericHandler<LegendSet, LegendSetModel> legendSetHandler;
+    private final LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkHandler;
 
     ProgramIndicatorHandler(IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore,
-                                   ProgramStageSectionProgramIndicatorLinkStore
-                                           programStageSectionProgramIndicatorLinkStore,
-                                   ObjectWithoutUidStore<ProgramIndicatorLegendSetLinkModel>
-                                           programIndicatorLegendSetLinkStore,
-                                   GenericHandler<LegendSet, LegendSetModel> legendSetHandler) {
+                            ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore,
+                            GenericHandler<LegendSet, LegendSetModel> legendSetHandler,
+                            LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel>
+                                    programIndicatorLegendSetLinkHandler) {
         super(programIndicatorStore);
         this.programStageSectionProgramIndicatorLinkStore = programStageSectionProgramIndicatorLinkStore;
-        this.programIndicatorLegendSetLinkStore = programIndicatorLegendSetLinkStore;
         this.legendSetHandler = legendSetHandler;
+        this.programIndicatorLegendSetLinkHandler = programIndicatorLegendSetLinkHandler;
     }
 
     public static ProgramIndicatorHandler create(DatabaseAdapter databaseAdapter) {
         return new ProgramIndicatorHandler(
                 ProgramIndicatorStore.create(databaseAdapter),
                 new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter),
-                ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
-                LegendSetHandler.create(databaseAdapter)
+                LegendSetHandler.create(databaseAdapter),
+                new LinkModelHandlerImpl<LegendSet, ProgramIndicatorLegendSetLinkModel>(
+                        ProgramIndicatorLegendSetLinkStore.create(databaseAdapter))
         );
     }
 
@@ -95,19 +96,8 @@ public class ProgramIndicatorHandler extends IdentifiableHandlerImpl<ProgramIndi
 
     @Override
     protected void afterObjectPersisted(ProgramIndicator programIndicator) {
-        if (programIndicator.legendSets() != null && programIndicator.legendSets().size() > 0) {
-            handleLegendSet(programIndicator);
-        }
-    }
-
-    private void handleLegendSet(ProgramIndicator programIndicator) {
         legendSetHandler.handleMany(programIndicator.legendSets(), new LegendSetModelBuilder());
-
-        ProgramIndicatorLegendSetLinkModelBuilder builder =
-                new ProgramIndicatorLegendSetLinkModelBuilder(programIndicator);
-
-        for (LegendSet legendSet : programIndicator.legendSets()) {
-            programIndicatorLegendSetLinkStore.updateOrInsertWhere(builder.buildModel(legendSet));
-        }
+        programIndicatorLegendSetLinkHandler.handleMany(programIndicator.uid(), programIndicator.legendSets(),
+                new ProgramIndicatorLegendSetLinkModelBuilder(programIndicator));
     }
 }

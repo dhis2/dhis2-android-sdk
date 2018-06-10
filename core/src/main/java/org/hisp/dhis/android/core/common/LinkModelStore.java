@@ -26,19 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.support.annotation.NonNull;
 
-public final class ProgramSectionAttributeLinkStore {
-
-    private ProgramSectionAttributeLinkStore() {}
-
-    public static LinkModelStore<ProgramSectionAttributeLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, ProgramSectionAttributeLinkModel.TABLE,
-                new ProgramSectionAttributeLinkModel.Columns(),
-                ProgramSectionAttributeLinkModel.Columns.PROGRAM_SECTION);
-    }
+public interface LinkModelStore<M extends BaseModel> extends ObjectWithoutUidStore<M> {
+    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
 }

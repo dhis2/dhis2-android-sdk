@@ -75,7 +75,7 @@ public class TrackedEntityTypeCall extends SyncCall<List<TrackedEntityType>> {
 
     @Override
     public List<TrackedEntityType> call() throws D2CallException {
-        super.setExecuted();
+        setExecuted();
 
         if (uidSet.size() > MAX_UIDS) {
             throw new IllegalArgumentException("Can't handle the amount of tracked entities: " + uidSet.size() + ". " +

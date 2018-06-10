@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.After;
 import org.junit.Before;
@@ -91,26 +90,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
             UserCredentialsModel.Columns.USER,
     };
 
-    // using table as a prefix in order to avoid ambiguity in queries against joined tables
-    private static final String[] ORGANISATION_UNIT_PROJECTION = {
-            OrganisationUnitModel.Columns.ID,
-            OrganisationUnitModel.Columns.UID,
-            OrganisationUnitModel.Columns.CODE,
-            OrganisationUnitModel.Columns.NAME,
-            OrganisationUnitModel.Columns.DISPLAY_NAME,
-            OrganisationUnitModel.Columns.CREATED,
-            OrganisationUnitModel.Columns.LAST_UPDATED,
-            OrganisationUnitModel.Columns.SHORT_NAME,
-            OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME,
-            OrganisationUnitModel.Columns.DESCRIPTION,
-            OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION,
-            OrganisationUnitModel.Columns.PATH,
-            OrganisationUnitModel.Columns.OPENING_DATE,
-            OrganisationUnitModel.Columns.CLOSED_DATE,
-            OrganisationUnitModel.Columns.PARENT,
-            OrganisationUnitModel.Columns.LEVEL
-    };
-
     private static final String[] AUTHENTICATED_USERS_PROJECTION = {
             AuthenticatedUserModel.Columns.ID,
             AuthenticatedUserModel.Columns.USER,
@@ -158,8 +137,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 USER_PROJECTION, null, null, null, null, null);
         Cursor userCredentialsCursor = database().query(UserCredentialsModel.TABLE,
                 USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
-        Cursor organisationUnits = database().query(OrganisationUnitModel.TABLE,
-                ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
         Cursor authenticatedUsers = database().query(AuthenticatedUserModel.TABLE,
                 AUTHENTICATED_USERS_PROJECTION, null, null, null, null, null);
         Cursor userOrganisationUnitLinks = database().query(UserOrganisationUnitLinkModel.TABLE,
@@ -215,36 +192,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 )
                 .isExhausted();
 
-        assertThatCursor(organisationUnits)
-                .hasRow(
-                        1L, // id
-                        "DiszpKrYNg8", // uid
-                        null, // code
-                        null, // name
-                        null, // display name
-                        null, // created
-                        null, // last updated
-                        null, // short name
-                        null, // display short name,
-                        null, // description
-                        null, // display description
-                        "/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8", // path
-                        null, // opening date
-                        null, // closed date
-                        null, // parent
-                        null // level
-                )
-                .isExhausted();
-
-        assertThatCursor(userOrganisationUnitLinks)
-                .hasRow(
-                        1L, // id
-                        "DXyJmlo9rge", // user
-                        "DiszpKrYNg8", // organisation unit
-                        OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE // scope
-                )
-                .isExhausted();
-
         String dateString = "2017-11-29T11:27:46.935";
 
         assertThatCursor(resource)
@@ -274,17 +221,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                         ResourceModel.Type.AUTHENTICATED_USER,
                         dateString
                 );
-
-        // TODO: UserAuthenticateCall is no longer registering OU download in resource table
-        // because of a bug when downloading descendants. Restore this check when that code is
-        // refactored to implement resource table writting from UserAuthenticateCall
-        /*assertThatCursor(resource)
-                .hasRow(
-                        4L,
-                        ResourceModel.Type.ORGANISATION_UNIT,
-                        dateString
-                ).isExhausted();*/
-
     }
 
     @Test

@@ -58,6 +58,8 @@ import retrofit2.Response;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -140,6 +142,9 @@ public class MetadataCallShould extends BaseCallShould {
     @Mock
     private DataSetParentCall.Factory dataSetParentCallFactory;
 
+    @Mock
+    private ForeignKeyCleaner foreignKeyCleaner;
+
     // object to test
     private MetadataCall metadataCall;
 
@@ -189,7 +194,8 @@ public class MetadataCallShould extends BaseCallShould {
                 categoryComboCallFactory,
                 programParentCallFactory,
                 organisationUnitCallFactory,
-                dataSetParentCallFactory);
+                dataSetParentCallFactory,
+                foreignKeyCleaner);
     }
 
     @After
@@ -248,5 +254,11 @@ public class MetadataCallShould extends BaseCallShould {
     public void fail_when_dataset_parent_call_fail() throws Exception {
         when(dataSetParentCall.call()).thenThrow(d2CallException);
         metadataCall.call();
+    }
+
+    @Test
+    public void call_foreign_key_cleaner() throws Exception {
+        metadataCall.call();
+        verify(foreignKeyCleaner).cleanForeignKeyErrors();
     }
 }

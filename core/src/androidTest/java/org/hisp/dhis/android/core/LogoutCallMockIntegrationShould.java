@@ -27,7 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -118,24 +117,6 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void have_organisation_units_descendants_after_login_wipe_and_login()
-            throws Exception {
-        givenALoginWithSierraLeonaOUInDatabase();
-
-        givenAMetadataWithDescendantsInDatabase();
-
-        verifyExistsAsignedOrgUnitAndDescendants();
-
-        d2.wipeDB().call();
-
-        givenALoginWithSierraLeonaOUInDatabase();
-
-        givenAMetadataWithDescendantsInDatabase();
-
-        verifyExistsAsignedOrgUnitAndDescendants();
-    }
-
-    @Test
     public void complete_login_and_sync_metadata_successfully_after_logout()
             throws Exception {
         givenALoginInDatabase();
@@ -170,20 +151,8 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         d2.logIn("user", "password").call();
     }
 
-    private void givenALoginWithSierraLeonaOUInDatabase() throws Exception {
-        dhis2MockServer.enqueueMockResponse("admin/login.json", new Date());
-        dhis2MockServer.enqueueMockResponse("system_info.json", new Date());
-
-        d2.logIn("user", "password").call();
-    }
-
     private void givenAMetadataInDatabase() throws Exception {
         dhis2MockServer.enqueueMetadataResponses();
-        d2.syncMetaData().call();
-    }
-
-    private void givenAMetadataWithDescendantsInDatabase() throws Exception {
-        dhis2MockServer.enqueueMetadataWithDescendentsResponses();
         d2.syncMetaData().call();
     }
 
@@ -198,19 +167,5 @@ public class LogoutCallMockIntegrationShould extends AbsStoreTestCase {
         EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
 
         assertThat(events.isEmpty(), is(false));
-    }
-
-    private void verifyExistsAsignedOrgUnitAndDescendants() {
-        //Sierra leona
-        DatabaseAssert.assertThatDatabase(databaseAdapter())
-                .ifValueExist(OrganisationUnitModel.TABLE,
-                        OrganisationUnitModel.Columns.UID,
-                        "ImspTQPwCqd");
-
-        //Sierra leona descendant
-        DatabaseAssert.assertThatDatabase(databaseAdapter())
-                .ifValueExist(OrganisationUnitModel.TABLE,
-                        OrganisationUnitModel.Columns.CODE,
-                        "OU_278371");
     }
 }

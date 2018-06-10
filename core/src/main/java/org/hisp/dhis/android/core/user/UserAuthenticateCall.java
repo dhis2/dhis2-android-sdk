@@ -42,10 +42,6 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitHandler;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModelBuilder;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
@@ -53,7 +49,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -63,7 +58,6 @@ import retrofit2.Retrofit;
 import static okhttp3.Credentials.basic;
 import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 
-@SuppressWarnings("PMD.ExcessiveImports")
 public final class UserAuthenticateCall extends SyncCall<User> {
 
     private final DatabaseAdapter databaseAdapter;
@@ -79,7 +73,6 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     private final AuthenticatedUserStore authenticatedUserStore;
     private final ObjectWithoutUidStore<SystemInfoModel> systemInfoStore;
     private final IdentifiableObjectStore<UserModel> userStore;
-    private final OrganisationUnitHandlerFactory organisationUnitHandlerFactory;
     private final Callable<Void> dbWipe;
 
     // username and password of candidate
@@ -97,7 +90,6 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             @NonNull AuthenticatedUserStore authenticatedUserStore,
             @NonNull ObjectWithoutUidStore<SystemInfoModel> systemInfoStore,
             @NonNull IdentifiableObjectStore<UserModel> userStore,
-            @NonNull OrganisationUnitHandlerFactory organisationUnitHandlerFactory,
             @NonNull Callable<Void> dbWipe,
             @NonNull String username,
             @NonNull String password,
@@ -113,7 +105,6 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         this.authenticatedUserStore = authenticatedUserStore;
         this.systemInfoStore = systemInfoStore;
         this.userStore = userStore;
-        this.organisationUnitHandlerFactory = organisationUnitHandlerFactory;
         this.dbWipe = dbWipe;
 
         this.username = username;
@@ -129,7 +120,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         throwExceptionIfPasswordNull();
         throwExceptionIfAlreadyAuthenticated();
 
-        Call<User> authenticateCall = userService.authenticate(basic(username, password), User.allFields);
+        Call<User> authenticateCall = userService.authenticate(basic(username, password), User.allFieldsWithoutOrgUnit);
         User authenticatedUser = new APICallExecutor().executeObjectCall(authenticateCall);
 
         if (wasLoggedAndUserIsNew(authenticatedUser)) {
@@ -193,11 +184,6 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         resourceHandler.handleResource(ResourceModel.Type.USER, genericCallData.serverDate());
         resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, genericCallData.serverDate());
         resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, genericCallData.serverDate());
-
-        if (user.organisationUnits() != null) {
-            organisationUnitHandlerFactory.organisationUnitHandler(databaseAdapter, user)
-                    .handleMany(user.organisationUnits(), new OrganisationUnitModelBuilder());
-        }
     }
 
     public static UserAuthenticateCall create(
@@ -215,27 +201,10 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                 new AuthenticatedUserStoreImpl(databaseAdapter),
                 SystemInfoStore.create(databaseAdapter),
                 UserStore.create(databaseAdapter),
-                FACTORY,
                 LogOutUserCallable.createToWipe(databaseAdapter),
                 username,
                 password,
                 retrofit.baseUrl().toString()
         );
     }
-
-    public interface OrganisationUnitHandlerFactory {
-        GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler(
-                DatabaseAdapter databaseAdapter,
-                User user);
-    }
-
-    private static final UserAuthenticateCall.OrganisationUnitHandlerFactory FACTORY =
-            new UserAuthenticateCall.OrganisationUnitHandlerFactory() {
-                @Override
-                public GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler(
-                        DatabaseAdapter databaseAdapter, User user) {
-                    return OrganisationUnitHandler.create(databaseAdapter, new HashSet<String>(),
-                            OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
-                }
-            };
 }

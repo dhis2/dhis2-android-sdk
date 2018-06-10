@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.legendset.LegendSet;
@@ -62,7 +63,7 @@ public class ProgramIndicatorHandlerShould {
     private ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
 
     @Mock
-    private ObjectWithoutUidStore<ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkStore;
+    private LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkHandler;
 
     @Mock
     private GenericHandler<LegendSet, LegendSetModel> legendSetHandler;
@@ -93,7 +94,7 @@ public class ProgramIndicatorHandlerShould {
 
         programIndicatorHandler = new ProgramIndicatorHandler(
                 programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
-                programIndicatorLegendSetLinkStore, legendSetHandler);
+                legendSetHandler, programIndicatorLegendSetLinkHandler);
 
         programIndicators = new ArrayList<>();
         programIndicators.add(programIndicator);

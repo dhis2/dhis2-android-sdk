@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -29,6 +30,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
     private final AuthenticatedUserStore authenticatedUserStore;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
     private final SearchOrganisationUnitCall.Factory organisationUnitCallFactory;
+    private final ForeignKeyCleaner foreignKeyCleaner;
 
     private final Collection<Event> events;
 
@@ -39,7 +41,8 @@ public final class EventPersistenceCall extends SyncCall<Void> {
             @NonNull AuthenticatedUserStore authenticatedUserStore,
             @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
             @NonNull SearchOrganisationUnitCall.Factory organisationUnitCallFactory,
-            @NonNull Collection<Event> events) {
+            @NonNull Collection<Event> events,
+            @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.eventHandler = eventHandler;
@@ -47,6 +50,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
         this.organisationUnitStore = organisationUnitStore;
         this.organisationUnitCallFactory = organisationUnitCallFactory;
         this.events = events;
+        this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
     @Override
@@ -69,6 +73,8 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                             databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
                     executor.executeD2Call(organisationUnitCall);
                 }
+
+                foreignKeyCleaner.cleanForeignKeyErrors();
 
                 return null;
             }
@@ -96,7 +102,8 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                 new AuthenticatedUserStoreImpl(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
                 SearchOrganisationUnitCall.FACTORY,
-                events
+                events,
+                new ForeignKeyCleaner(databaseAdapter)
         );
     }
 }

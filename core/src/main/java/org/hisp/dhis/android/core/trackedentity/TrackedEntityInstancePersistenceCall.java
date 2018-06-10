@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
@@ -25,6 +26,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
     private final TrackedEntityInstanceUidHelper uidsHelper;
     private final AuthenticatedUserStore authenticatedUserStore;
     private final SearchOrganisationUnitCall.Factory organisationUnitCallFactory;
+    private final ForeignKeyCleaner foreignKeyCleaner;
 
     private final Collection<TrackedEntityInstance> trackedEntityInstances;
 
@@ -35,7 +37,8 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
             @NonNull TrackedEntityInstanceUidHelper uidsHelper,
             @NonNull AuthenticatedUserStore authenticatedUserStore,
             @NonNull SearchOrganisationUnitCall.Factory organisationUnitCallFactory,
-            @NonNull Collection<TrackedEntityInstance> trackedEntityInstances) {
+            @NonNull Collection<TrackedEntityInstance> trackedEntityInstances,
+            @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
@@ -43,6 +46,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
         this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitCallFactory = organisationUnitCallFactory;
         this.trackedEntityInstances = trackedEntityInstances;
+        this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
     @Override
@@ -64,6 +68,8 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
                     executor.executeD2Call(organisationUnitCall);
                 }
 
+                foreignKeyCleaner.cleanForeignKeyErrors();
+
                 return null;
             }
         });
@@ -80,7 +86,8 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
                 TrackedEntityInstanceUidHelperImpl.create(databaseAdapter),
                 new AuthenticatedUserStoreImpl(databaseAdapter),
                 SearchOrganisationUnitCall.FACTORY,
-                trackedEntityInstances
+                trackedEntityInstances,
+                new ForeignKeyCleaner(databaseAdapter)
         );
     }
 }

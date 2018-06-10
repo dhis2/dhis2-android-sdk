@@ -45,17 +45,29 @@ public class ForeignKeyCleaner {
     }
 
     public Integer cleanForeignKeyErrors() {
-        Integer rowsAfected = 0;
+        Integer totalRows = 0;
+        Integer lastIterationRows;
+
+        do {
+            lastIterationRows = cleanForeignKeyErrorsIteration();
+            totalRows = totalRows + lastIterationRows;
+        } while (lastIterationRows > 0);
+
+        return totalRows;
+    }
+
+    private Integer cleanForeignKeyErrorsIteration() {
+        Integer rowsCount = 0;
         Cursor errorsCursor = getForeignKeyErrorsCursor();
 
         if (errorsCursor != null) {
             do {
                 deleteForeignKeyReferencedObject(errorsCursor);
-                rowsAfected++;
+                rowsCount++;
             } while (errorsCursor.moveToNext());
         }
 
-        return rowsAfected;
+        return rowsCount;
     }
 
     private void deleteForeignKeyReferencedObject(Cursor errorsCursor) {

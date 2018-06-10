@@ -58,7 +58,7 @@ public final class UserCall extends SyncCall<User> {
     public User call() throws D2CallException {
         setExecuted();
 
-        User user = new APICallExecutor().executeObjectCall(userService.getUser(User.allFields));
+        User user = new APICallExecutor().executeObjectCall(userService.getUser(User.allFieldsWithOrgUnit));
         Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
         try {
             userHandler.handle(user, new UserModelBuilder());

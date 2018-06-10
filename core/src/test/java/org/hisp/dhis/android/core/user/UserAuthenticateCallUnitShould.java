@@ -37,11 +37,7 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModelBuilder;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
@@ -70,11 +66,9 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -91,9 +85,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Mock
     private ResourceHandler resourceHandler;
-
-    @Mock
-    private GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler;
 
     @Mock
     private AuthenticatedUserStore authenticatedUserStore;
@@ -137,8 +128,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Mock
     private Callable<Void> dbWipeCall;
 
-    private UserAuthenticateCall.OrganisationUnitHandlerFactory organisationUnitHandlerFactory;
-
     private String baseEndpoint;
 
     // call we are testing
@@ -152,14 +141,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
-
-        organisationUnitHandlerFactory = new UserAuthenticateCall.OrganisationUnitHandlerFactory() {
-            @Override
-            public GenericHandler<OrganisationUnit, OrganisationUnitModel>
-            organisationUnitHandler(DatabaseAdapter databaseAdapter, User user) {
-                return organisationUnitHandler;
-            }
-        };
 
         userAuthenticateCall = instantiateCall(USERNAME, PASSWORD);
 
@@ -188,7 +169,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private UserAuthenticateCall instantiateCall(String username, String password) {
         return new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoStore, userStore, organisationUnitHandlerFactory, dbWipeCall,
+                systemInfoStore, userStore, dbWipeCall,
                 username, password, baseEndpoint + "/api/");
     }
 
@@ -230,7 +211,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
             // stores must not be invoked
             verify(authenticatedUserStore, never()).insert(anyString(), anyString());
             verifyNoMoreInteractions(userHandler);
-            verifyNoMoreInteractions(organisationUnitHandler);
         }
     }
 
@@ -253,7 +233,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         verify(authenticatedUserStore).query();
         verifyNoMoreInteractions(authenticatedUserStore);
         verifyNoMoreInteractions(userHandler);
-        verifyNoMoreInteractions(organisationUnitHandler);
     }
 
     @Test
@@ -312,21 +291,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     @Test
-    public void not_fail_after_call_a_user_without_organisation_unit() throws Exception {
-        when(user.organisationUnits()).thenReturn(null);
-
-        userAuthenticateCall.call();
-
-        verifyTransactionComplete();
-
-        // stores must not be invoked
-        verify(authenticatedUserStore, times(1)).insert(anyString(), anyString());
-        verify(userHandler, times(1)).handle(eq(user), any(UserModelBuilder.class));
-
-        verifyNoMoreInteractions(organisationUnitHandler);
-    }
-
-    @Test
     public void thrown_d2_call_exception_on_consecutive_calls() throws Exception {
         when(authenticateAPICall.execute()).thenReturn(Response.success(user));
 
@@ -367,7 +331,5 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         verifyTransactionComplete();
         verify(authenticatedUserStore).insert(UID, base64(USERNAME, PASSWORD));
         verify(userHandler).handle(eq(user), any(UserModelBuilder.class));
-        verify(organisationUnitHandler).handleMany(
-                anyListOf(OrganisationUnit.class), any(OrganisationUnitModelBuilder.class));
     }
 }

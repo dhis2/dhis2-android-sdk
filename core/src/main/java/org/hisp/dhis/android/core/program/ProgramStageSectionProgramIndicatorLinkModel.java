@@ -42,7 +42,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class ProgramStageSectionProgramIndicatorLinkModel extends BaseModel {
-    public static final String TABLE = "ProgramStageSectionProgramIndicatorLinkTable";
+    public static final String TABLE = "ProgramStageSectionProgramIndicatorLink";
 
     public static class Columns extends BaseModel.Columns {
         public static final String PROGRAM_STAGE_SECTION = "programStageSection";
@@ -98,5 +98,4 @@ public abstract class ProgramStageSectionProgramIndicatorLinkModel extends BaseM
 
         public abstract ProgramStageSectionProgramIndicatorLinkModel build();
     }
-
 }

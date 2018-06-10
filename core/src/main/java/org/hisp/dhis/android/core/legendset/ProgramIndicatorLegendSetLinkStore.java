@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -36,8 +36,9 @@ public final class ProgramIndicatorLegendSetLinkStore {
 
     private ProgramIndicatorLegendSetLinkStore() {}
 
-    public static ObjectWithoutUidStore<ProgramIndicatorLegendSetLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, ProgramIndicatorLegendSetLinkModel.TABLE,
-                new ProgramIndicatorLegendSetLinkModel.Columns());
+    public static LinkModelStore<ProgramIndicatorLegendSetLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter, ProgramIndicatorLegendSetLinkModel.TABLE,
+                new ProgramIndicatorLegendSetLinkModel.Columns(),
+                ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR);
     }
 }

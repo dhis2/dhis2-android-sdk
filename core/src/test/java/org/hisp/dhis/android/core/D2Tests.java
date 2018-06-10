@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core;
 
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
+
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
@@ -55,6 +58,9 @@ public class D2Tests {
     @Mock
     private ConfigurationModel configuration;
 
+    @Mock
+    private Context context;
+
     private D2.Builder builder;
 
     @Before
@@ -64,7 +70,8 @@ public class D2Tests {
         this.builder = new D2.Builder()
                 .configuration(configuration)
                 .okHttpClient(okHttpClient)
-                .databaseAdapter(new SqLiteDatabaseAdapter(dbOpenHelper));
+                .databaseAdapter(new SqLiteDatabaseAdapter(dbOpenHelper))
+                .context(context);
     }
 
     @Test
@@ -107,6 +114,17 @@ public class D2Tests {
 
             fail("IllegalStateException was expected, but was not thrown");
         } catch (IllegalStateException illegalStateException) {
+            // swallow exception
+        }
+    }
+
+    @Test
+    public void throw_illegal_argument_exception_when_pass_null_in_context_builder() {
+        try {
+            builder.context(null).build();
+
+            fail("IllegalStateException was expected, but was not thrown");
+        } catch (IllegalArgumentException illegalArgumentException) {
             // swallow exception
         }
     }

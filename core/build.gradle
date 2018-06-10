@@ -107,6 +107,9 @@ dependencies {
     // Jackson
     compile "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
 
+    // Google's play services
+    compile "com.google.android.gms:play-services-safetynet:${libraries.safetynet}"
+
     // Square libraries
     compile "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
     compile "com.squareup.retrofit2:retrofit:${libraries.retrofit}"

@@ -175,6 +175,16 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
+    public void parse_static_value() throws Exception {
+        when(programIndicator.expression()).thenReturn("5 * 10");
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
+                programIndicatorUid);
+
+        assertThat(result).isEqualTo("5 * 10");
+    }
+
+    @Test
     public void parse_one_dataelement() throws Exception {
         when(programIndicator.expression()).thenReturn(de(programStageUid1, dataElementUid1));
 
@@ -352,8 +362,6 @@ public class ProgramIndicatorEngineShould {
 
         assertThat(result).isEqualTo("0 * 10");
     }
-
-
 
     // -------------------------------------------------------------------------
     // Supportive methods

@@ -49,6 +49,7 @@ public class ExpressionUtilsShould {
         assertThat(evaluateToDouble("2.3 + 4")).isEqualTo(6.3);
         assertThat(evaluateToDouble("4.3 - 2")).isEqualTo(2.3);
         assertThat(evaluateToDouble("4.3 * 2")).isEqualTo(8.6);
+        assertThat(evaluateToDouble("0.0 * 5")).isEqualTo(0.0);
         assertThat(evaluateToDouble("7.5 / 2")).isEqualTo(3.75);
     }
 

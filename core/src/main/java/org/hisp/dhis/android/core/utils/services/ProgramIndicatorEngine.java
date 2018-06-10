@@ -145,6 +145,19 @@ public class ProgramIndicatorEngine {
     // Supportive methods
     // -------------------------------------------------------------------------
 
+    private Double getValue(String enrollment, String event, String indicatorUid) {
+        String expression = parseIndicatorExpression(enrollment, event, indicatorUid);
+        Double value;
+        try {
+            value = ExpressionUtils.evaluateToDouble(expression, null);
+        } catch (JexlException e) {
+            value = null;
+        } catch (IllegalStateException e){
+            value = null;
+        }
+        return value;
+    }
+
     String parseIndicatorExpression(String enrollment, String event, String indicatorUid) {
         StringBuffer buffer = new StringBuffer();
 
@@ -267,10 +280,6 @@ public class ProgramIndicatorEngine {
             }
         }
 
-        if(valueCount <= 0) {
-            return null;
-        }
-
         expression = TextUtils.appendTail(matcher, buffer);
 
         buffer = new StringBuffer();
@@ -328,19 +337,6 @@ public class ProgramIndicatorEngine {
         } else {
             return dataValue.value() + ".0";
         }
-    }
-
-    private Double getValue(String enrollment, String event, String indicatorUid) {
-        String expression = parseIndicatorExpression(enrollment, event, indicatorUid);
-        Double value;
-        try {
-            value = ExpressionUtils.evaluateToDouble(expression, null);
-        } catch (JexlException e) {
-            value = null;
-        } catch (IllegalStateException e){
-            value = null;
-        }
-        return value;
     }
 
     private static boolean isZeroOrPositive(String value) {

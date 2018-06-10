@@ -175,6 +175,16 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
+    public void parse_static_value() throws Exception {
+        when(programIndicator.expression()).thenReturn("5 * 10");
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
+                programIndicatorUid);
+
+        assertThat(result).isEqualTo("5 * 10");
+    }
+
+    @Test
     public void parse_one_dataelement() throws Exception {
         when(programIndicator.expression()).thenReturn(de(programStageUid1, dataElementUid1));
 
@@ -338,6 +348,20 @@ public class ProgramIndicatorEngineShould {
         assertThat(resultWithEvent1).isEqualTo("3.5 + 0");
     }
 
+    @Test
+    public void parse_operation_with_zero_values() throws Exception {
+        when(programIndicator.expression()).thenReturn(
+                de(programStageUid2, dataElementUid2) + " * 10");
+
+        // Event2 does not exist
+        when(eventStore.queryByUid(eventUid2)).thenReturn(null);
+        when(eventStore.queryByEnrollmentAndProgramStage(enrollmentUid, programStageUid2)).thenReturn(null);
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
+                programIndicatorUid);
+
+        assertThat(result).isEqualTo("0 * 10");
+    }
 
     // -------------------------------------------------------------------------
     // Supportive methods

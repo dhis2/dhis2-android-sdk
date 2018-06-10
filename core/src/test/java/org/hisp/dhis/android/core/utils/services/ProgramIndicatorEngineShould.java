@@ -338,6 +338,22 @@ public class ProgramIndicatorEngineShould {
         assertThat(resultWithEvent1).isEqualTo("3.5 + 0");
     }
 
+    @Test
+    public void parse_operation_with_zero_values() throws Exception {
+        when(programIndicator.expression()).thenReturn(
+                de(programStageUid2, dataElementUid2) + " * 10");
+
+        // Event2 does not exist
+        when(eventStore.queryByUid(eventUid2)).thenReturn(null);
+        when(eventStore.queryByEnrollmentAndProgramStage(enrollmentUid, programStageUid2)).thenReturn(null);
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
+                programIndicatorUid);
+
+        assertThat(result).isEqualTo("0 * 10");
+    }
+
+
 
     // -------------------------------------------------------------------------
     // Supportive methods

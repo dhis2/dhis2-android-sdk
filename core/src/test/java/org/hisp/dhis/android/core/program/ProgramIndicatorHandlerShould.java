@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.LegendSetModel;
 import org.hisp.dhis.android.core.legendset.LegendSetModelBuilder;
@@ -58,9 +57,6 @@ import static org.mockito.Mockito.when;
 public class ProgramIndicatorHandlerShould {
     @Mock
     private IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore;
-
-    @Mock
-    private ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
 
     @Mock
     private LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkHandler;
@@ -93,8 +89,7 @@ public class ProgramIndicatorHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         programIndicatorHandler = new ProgramIndicatorHandler(
-                programIndicatorStore, programStageSectionProgramIndicatorLinkStore,
-                legendSetHandler, programIndicatorLegendSetLinkHandler);
+                programIndicatorStore, legendSetHandler, programIndicatorLegendSetLinkHandler);
 
         programIndicators = new ArrayList<>();
         programIndicators.add(programIndicator);
@@ -120,13 +115,6 @@ public class ProgramIndicatorHandlerShould {
         verify(programIndicatorStore, never()).update(any(ProgramIndicatorModel.class));
 
         verify(programIndicatorStore, never()).insert(any(ProgramIndicatorModel.class));
-
-        // verify that link store is never called
-        verify(programStageSectionProgramIndicatorLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString()
-        );
-
-        verify(programStageSectionProgramIndicatorLinkStore, never()).insert(anyString(), anyString());
     }
 
 
@@ -138,13 +126,6 @@ public class ProgramIndicatorHandlerShould {
 
         // verify that delete is called once
         verify(programIndicatorStore, times(1)).delete(programIndicator.uid());
-
-        // verify that link store is never called because it is self-maintained through sqLite
-        verify(programStageSectionProgramIndicatorLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString()
-        );
-
-        verify(programStageSectionProgramIndicatorLinkStore, never()).insert(anyString(), anyString());
     }
 
     @Test
@@ -155,30 +136,6 @@ public class ProgramIndicatorHandlerShould {
         verify(programIndicatorStore, times(1)).updateOrInsert(any(ProgramIndicatorModel.class));
 
         verify(programIndicatorStore, never()).delete(anyString());
-
-        // verify that link store is never called since we're passing in null program stage section uid
-        verify(programStageSectionProgramIndicatorLinkStore, never()).update(
-                anyString(), anyString(), anyString(), anyString()
-        );
-
-        verify(programStageSectionProgramIndicatorLinkStore, never()).insert(anyString(), anyString());
-
-    }
-
-    @Test
-    public void update_shouldUpdateProgramIndicatorWithProgramStageSection() throws Exception {
-        programIndicatorHandler.handleManyWithProgramStageSection(programIndicators, programIndicatorModelBuilder,
-                "test_program_stage_section");
-
-        // verify that update is called once
-        verify(programIndicatorStore, times(1)).updateOrInsert(any(ProgramIndicatorModel.class));
-
-        verify(programIndicatorStore, never()).delete(anyString());
-
-        // verify that link store is updated
-        verify(programStageSectionProgramIndicatorLinkStore, times(1)).update(
-                anyString(), anyString(), anyString(), anyString()
-        );
     }
 
     @Test

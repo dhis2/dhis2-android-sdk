@@ -105,28 +105,26 @@ public class ProgramStageSectionHandler {
                 }
             }
 
-
-            //Loop over the list and add all entries
-            String programStageSectionUid = programStageSection.uid();
-            List<DataElement> dataElements = programStageSection.dataElements();
-            int dataElementSize = dataElements.size();
-
-            for (int j = 0; j < dataElementSize; j++) {
-                String dataElementUid = dataElements.get(j).uid();
-
-                programStageDataElementHandler.updateProgramStageDataElementWithProgramStageSectionLink(
-                        programStageSectionUid, dataElementUid
-                );
-
-            }
-
-            ProgramStageSectionProgramIndicatorLinkModelBuilder programStageSectionProgramIndicatorLinkModelBuilder =
-                    new ProgramStageSectionProgramIndicatorLinkModelBuilder(programStageSection);
-
-            programIndicatorHandler.handleMany(programStageSection.programIndicators(), programIndicatorModelBuilder);
-            programStageSectionProgramIndicatorLinkHandler.handleMany(programStageSectionUid,
-                    programStageSection.programIndicators(), programStageSectionProgramIndicatorLinkModelBuilder);
+            afterObjectPersisted(programStageSection, programIndicatorModelBuilder);
         }
+    }
+
+    private void afterObjectPersisted(ProgramStageSection programStageSection,
+                                      ProgramIndicatorModelBuilder programIndicatorModelBuilder) {
+        List<DataElement> dataElements = programStageSection.dataElements();
+        if (dataElements != null) {
+            for (DataElement dataElement : dataElements) {
+                programStageDataElementHandler.updateProgramStageDataElementWithProgramStageSectionLink(
+                        programStageSection.uid(), dataElement.uid());
+            }
+        }
+
+        ProgramStageSectionProgramIndicatorLinkModelBuilder programStageSectionProgramIndicatorLinkModelBuilder =
+                new ProgramStageSectionProgramIndicatorLinkModelBuilder(programStageSection);
+
+        programIndicatorHandler.handleMany(programStageSection.programIndicators(), programIndicatorModelBuilder);
+        programStageSectionProgramIndicatorLinkHandler.handleMany(programStageSection.uid(),
+                programStageSection.programIndicators(), programStageSectionProgramIndicatorLinkModelBuilder);
     }
 
     public static ProgramStageSectionHandler create(DatabaseAdapter databaseAdapter) {

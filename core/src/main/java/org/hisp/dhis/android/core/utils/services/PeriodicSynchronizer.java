@@ -35,6 +35,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import org.hisp.dhis.android.core.D2;
+
 public class PeriodicSynchronizer extends BroadcastReceiver {
 
     public static final int FREQUENCY_ONE_MINUTE = 0;
@@ -58,71 +60,66 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(!DhisController.isUserLoggedIn()) {
-            cancelPeriodicSynchronizer(context);
-            return;
+        if (D2.d2 != null) {
+            try {
+                if (!D2.d2.isUserLoggedIn().call()) {
+                    cancelPeriodicSynchronizer(context);
+                }
+            } catch (Exception e) {
+                cancelPeriodicSynchronizer(context);
+            }
         }
-        DhisService.synchronize(context, SyncStrategy.DOWNLOAD_ONLY_NEW);
+        Log.d(CLASS_TAG, "PeriodicSynchronizer onReceive method");
     }
 
-    /**
-     * Activates the PeriodicSynchronizer to run on a schedule time interval
-     * @param context
-     * @param minutes the time in minutes between each time the synchronizer runs.
-     */
     public static void activatePeriodicSynchronizer(Context context, int minutes) {
         if (minutes <= 0) {
             return;
         }
-        Log.d(CLASS_TAG, "activate periodic synchronizer " + minutes);
-        AlarmManager am = (AlarmManager) context
-                .getSystemService(Context.ALARM_SERVICE);
+
+        Log.d(CLASS_TAG, "Activate periodic synchronizer " + minutes);
         Intent i = new Intent(context, PeriodicSynchronizer.class);
         PendingIntent existingPi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_NO_CREATE);
-        if(existingPi == null) {
+
+        if (existingPi == null) {
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
-            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
-                    1000 * 60 * minutes, pi); // Millisec * Second * Minute
+            long intervalMillis = 1000 * 60 * minutes; // Millisec * Second * Minute
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), intervalMillis, pi);
         }
     }
 
-    /**
-     * Cancels the PeriodicSynchronizer
-     * @param context
-     */
     public static void cancelPeriodicSynchronizer(Context context) {
-        Log.d(CLASS_TAG, "cancel periodic synchronizer");
+        Log.d(CLASS_TAG, "Cancel periodic synchronizer");
         Intent intent = new Intent(context, PeriodicSynchronizer.class);
-        PendingIntent sender = PendingIntent
-                .getBroadcast(context, 0, intent, PendingIntent.FLAG_NO_CREATE);
-        if(sender!=null) {
-            AlarmManager alarmManager = (AlarmManager) context
-                    .getSystemService(Context.ALARM_SERVICE);
+        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_NO_CREATE);
+
+        if (sender != null) {
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             alarmManager.cancel(sender);
             sender.cancel();
         }
     }
 
-    /**
-     * Returns the set update interval in minutes
-     * @param context
-     * @return
-     */
     public static int getInterval(Context context) {
-        int frequencyIndex = PeriodicSynchronizerController.getUpdateFrequency(context);
+        // TODO Get frequency from context
+        return getIntervalFromIndex(FREQUENCY_ONE_MINUTE);
+    }
+
+    public static int getIntervalFromIndex(int frequencyIndex) {
         int minutes;
         switch (frequencyIndex) {
-            case FREQUENCY_ONE_MINUTE: //1 minutes
+            case FREQUENCY_ONE_MINUTE: // 1 minutes
                 minutes = 1;
                 break;
-            case FREQUENCY_15_MINTUES: //15 minutes
+            case FREQUENCY_15_MINTUES: // 15 minutes
                 minutes = 15;
                 break;
-            case FREQUENCY_ONE_HOUR: //1 hour
-                minutes = 1 * 60;
+            case FREQUENCY_ONE_HOUR: // 1 hour
+                minutes = 60;
                 break;
             case FREQUENCY_ONE_DAY:// 1 day
-                minutes = 1 * 60 * 24;
+                minutes = 60 * 24;
                 break;
             case FREQUENCY_DISABLED: //disabled
                 minutes = 0;
@@ -133,45 +130,11 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
         return minutes;
     }
 
-    /**
-     * Returns the given update interval in minutes
-     * @param context
-     * @return
-     */
-    public static int getInterval(Context context, int index) {
-        int frequencyIndex = index;
-        int minutes;
-        switch (frequencyIndex) {
-            case FREQUENCY_ONE_MINUTE: //1 minutes
-                minutes = 1;
-                break;
-            case FREQUENCY_15_MINTUES: //15 minutes
-                minutes = 15;
-                break;
-            case FREQUENCY_ONE_HOUR: //1 hour
-                minutes = 1 * 60;
-                break;
-            case FREQUENCY_ONE_DAY:// 1 day
-                minutes = 1 * 60 * 24;
-                break;
-            case FREQUENCY_DISABLED: //disabled
-                minutes = 0;
-                break;
-            default:
-                minutes = DEFAULT_UPDATE_FREQUENCY;
-        }
-        return minutes;
-    }
-
-    /**
-     * ReActivates the PeriodicSyncronizer if the time interval has changed.
-     * @return
-     */
     public static void reActivate(Context context) {
         int interval = getInterval(context);
         if (interval != getInstance().currentInterval) {
-            getInstance().cancelPeriodicSynchronizer(context);
-            getInstance().activatePeriodicSynchronizer(context, interval);
+            cancelPeriodicSynchronizer(context);
+            activatePeriodicSynchronizer(context, interval);
             getInstance().currentInterval = interval;
         }
     }

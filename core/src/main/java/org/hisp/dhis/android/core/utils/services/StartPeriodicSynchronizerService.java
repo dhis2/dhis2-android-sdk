@@ -46,8 +46,8 @@ public class StartPeriodicSynchronizerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e(CLASS_TAG, "startperiodicsyncservice onstartcommand");
-        PeriodicSynchronizer.activatePeriodicSynchronizer(StartPeriodicSynchronizerService.this,
-                PeriodicSynchronizer.getInterval(this));
+        PeriodicSynchronizer.activatePeriodicSynchronizer(
+                StartPeriodicSynchronizerService.this, PeriodicSynchronizer.getInterval(this));
         return START_STICKY;
     }
 

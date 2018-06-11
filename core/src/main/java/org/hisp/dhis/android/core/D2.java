@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
@@ -62,6 +63,7 @@ import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
 import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
+import org.hisp.dhis.android.core.utils.services.StartPeriodicSynchronizerService;
 
 import java.util.Collection;
 import java.util.List;
@@ -77,15 +79,15 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
-    private final Context context;
+    public static D2 d2 = null;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
        @NonNull Context context) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
-        this.context = context;
         SSLContextInitializer.initializeSSLContext(context);
+        context.startService(new Intent(context, StartPeriodicSynchronizerService.class));
     }
 
     @NonNull
@@ -96,11 +98,6 @@ public final class D2 {
     @NonNull
     public DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
-    }
-
-    @NonNull
-    public Context context() {
-        return context;
     }
 
     @NonNull
@@ -249,7 +246,9 @@ public final class D2 {
                     .validateEagerly(true)
                     .build();
 
-            return new D2(retrofit, databaseAdapter, context);
+            D2.d2 = new D2(retrofit, databaseAdapter, context);
+
+            return D2.d2;
         }
     }
 }

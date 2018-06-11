@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
@@ -35,11 +36,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.AggregatedDataCall;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
@@ -65,7 +67,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
@@ -75,11 +76,15 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
+    private final Context context;
 
     @VisibleForTesting
-    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter) {
+    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
+       @NonNull Context context) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
+        this.context = context;
+        SSLContextInitializer.initializeSSLContext(context);
     }
 
     @NonNull
@@ -93,7 +98,12 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<User> logIn(@NonNull String username, @NonNull String password) {
+    public Context context() {
+        return context;
+    }
+
+    @NonNull
+    public Callable<User> logIn(@NonNull String username, @NonNull String password) {
         return UserAuthenticateCall.create(databaseAdapter, retrofit, username, password);
     }
 
@@ -114,52 +124,58 @@ public final class D2 {
     }
 
     @NonNull
-    public Call<Response> syncMetaData() {
+    public Callable<Void> syncMetaData() {
         return MetadataCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
-    public Call<Response> syncAggregatedData() {
+    public Callable<Void> syncAggregatedData() {
         return AggregatedDataCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
-    public Call<List<Event>> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {
+    public Callable<List<Event>> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {
         return EventWithLimitCall.create(databaseAdapter, retrofit, eventLimit, limitByOrgUnit);
     }
 
     @NonNull
-    public Call<List<TrackedEntityInstance>> syncTrackerData() {
+    public Callable<List<TrackedEntityInstance>> syncTrackerData() {
         return TrackerDataCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
-    public Call<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
+    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
         return TrackedEntityInstanceListDownloadAndPersistCall.create(databaseAdapter, retrofit, uids);
     }
 
     @NonNull
-    public Call<List<TrackedEntityInstance>> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
+    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
         return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, teiLimit, limitByOrgUnit);
     }
 
     @NonNull
-    public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid) {
+    public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid)
+            throws D2CallException {
         return TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit)
                 .getValue(attributeUid, organisationUnitUid);
     }
 
+    public void syncTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid) {
+        TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit)
+                .forceSyncReservedValues(attributeUid, organisationUnitUid);
+    }
+
     @NonNull
-    public Call<Response<WebResponse>> syncTrackedEntityInstances() {
+    public Callable<WebResponse> syncTrackedEntityInstances() {
         return TrackedEntityInstancePostCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
-    public Call<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
+    public Callable<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
         return TrackedEntityInstanceQueryCall.create(retrofit, query);
     }
 
-    public Call<Response<WebResponse>> syncSingleEvents() {
+    public Callable<WebResponse> syncSingleEvents() {
         return EventPostCall.create(databaseAdapter, retrofit);
     }
 
@@ -172,6 +188,7 @@ public final class D2 {
         private ConfigurationModel configuration;
         private DatabaseAdapter databaseAdapter;
         private OkHttpClient okHttpClient;
+        private Context context;
 
         public Builder() {
             // empty constructor
@@ -195,6 +212,12 @@ public final class D2 {
             return this;
         }
 
+        @NonNull
+        public Builder context(@NonNull Context context) {
+            this.context = context;
+            return this;
+        }
+
         public D2 build() {
             if (databaseAdapter == null) {
                 throw new IllegalArgumentException("databaseAdapter == null");
@@ -206,6 +229,10 @@ public final class D2 {
 
             if (okHttpClient == null) {
                 throw new IllegalArgumentException("okHttpClient == null");
+            }
+
+            if (context == null) {
+                throw new IllegalArgumentException("context == null");
             }
 
             ObjectMapper objectMapper = new ObjectMapper()
@@ -221,7 +248,7 @@ public final class D2 {
                     .validateEagerly(true)
                     .build();
 
-            return new D2(retrofit, databaseAdapter);
+            return new D2(retrofit, databaseAdapter, context);
         }
     }
 }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -51,11 +52,8 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
     private TrackedEntityAttributeReservedValueStoreInterface store;
     private String organisationUnitUid = "org_unit_uid";
-    private String ownerUid1 = "xs8A6tQJY0s";
+    private String ownerUid = "xs8A6tQJY0s";
     private D2 d2;
-
-    // object to test
-    private TrackedEntityAttributeReservedValueManager manager;
 
     @Before
     public void setUp() throws IOException {
@@ -67,20 +65,19 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         store = TrackedEntityAttributeReservedValueStore.create(databaseAdapter());
         IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore =
                 OrganisationUnitStore.create(databaseAdapter());
-
-        manager = new TrackedEntityAttributeReservedValueManager(databaseAdapter(), d2.retrofit(),
-                store, organisationUnitStore);
+        TrackedEntityAttributeStore trackedEntityAttributeStore =
+                new TrackedEntityAttributeStoreImpl(databaseAdapter());
 
         GenericHandler<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> handler =
                 TrackedEntityAttributeReservedValueHandler.create(databaseAdapter());
 
         List<TrackedEntityAttributeReservedValue> trackedEntityAttributeReservedValues = new ArrayList<>();
         TrackedEntityAttributeReservedValue reservedValue1 = TrackedEntityAttributeReservedValue.create(
-                "owner_obj", ownerUid1, "key", "value1", CREATED, FUTURE_DATE);
+                "owner_obj", ownerUid, "key", "value1", CREATED, FUTURE_DATE);
         TrackedEntityAttributeReservedValue reservedValue2 = TrackedEntityAttributeReservedValue.create(
-                "owner_obj", ownerUid1, "key", "value2", CREATED, FUTURE_DATE);
+                "owner_obj", ownerUid, "key", "value2", CREATED, FUTURE_DATE);
         TrackedEntityAttributeReservedValue reservedValue3 = TrackedEntityAttributeReservedValue.create(
-                "owner_obj", ownerUid1, "key", "value3", CREATED, FUTURE_DATE);
+                "owner_obj", ownerUid, "key", "value3", CREATED, FUTURE_DATE);
         trackedEntityAttributeReservedValues.add(reservedValue1);
         trackedEntityAttributeReservedValues.add(reservedValue2);
         trackedEntityAttributeReservedValues.add(reservedValue3);
@@ -90,21 +87,27 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
         organisationUnitStore.insert(organisationUnit);
 
+        String pattern = "CURRENT_DATE(YYYYMM) + \"-\" + CURRENT_DATE(ww)";
+        trackedEntityAttributeStore.insert(ownerUid, null, null, null, null, null,
+                null, null, null, null, pattern, null,
+                null, null, null, null, null, null,
+                null, null, null, null, null);
+
         handler.handleMany(trackedEntityAttributeReservedValues,
-                new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit));
+                new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit, ""));
     }
 
     //@Test
-    public void get_one_reserved_value() {
-        String value1 = manager.getValue(ownerUid1, organisationUnitUid);
+    public void get_one_reserved_value() throws D2CallException {
+        String value1 = d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
         assertThat(value1, is("value1"));
     }
 
     //@Test
-    public void get_two_reserved_value() {
-        String value1 = manager.getValue(ownerUid1, organisationUnitUid);
-        String value2 = manager.getValue(ownerUid1, organisationUnitUid);
-        String value3 = manager.getValue(ownerUid1, organisationUnitUid);
+    public void get_two_reserved_value() throws D2CallException {
+        String value1 = d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
+        String value2 = d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
+        String value3 = d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
 
         assertThat(value1, is("value1"));
         assertThat(value2, is("value2"));
@@ -117,15 +120,31 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
     }
 
     //@Test
-    public void reserve_100_new_values_and_take_one() {
-        manager.getValue(ownerUid1, organisationUnitUid);
+    public void sync_reserved_values() {
+        d2.syncTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
+        assertThat(selectAll().size(), is(100));
+    }
+
+    //@Test
+    public void sync_pop_sync_again_and_have_100_reserved_values() throws D2CallException {
+        d2.syncTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
+        assertThat(selectAll().size(), is(100));
+        d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
+        assertThat(selectAll().size(), is(99));
+        d2.syncTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
+        assertThat(selectAll().size(), is(100));
+    }
+
+    //@Test
+    public void reserve_100_new_values_and_take_one() throws D2CallException {
+        d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
         assertThat(selectAll().size(), is(99));
     }
 
     //@Test
-    public void have_98_values_after_sync_and_take_two() {
-        manager.getValue(ownerUid1, organisationUnitUid);
-        manager.getValue(ownerUid1, organisationUnitUid);
+    public void have_98_values_after_sync_and_take_two() throws D2CallException {
+        d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
+        d2.popTrackedEntityAttributeReservedValue(ownerUid, organisationUnitUid);
         assertThat(selectAll().size(), is(98));
     }
 
@@ -138,7 +157,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
             if (!d2.isUserLoggedIn().call()) {
                 d2.logIn(RealServerMother.user, RealServerMother.password).call();
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 }

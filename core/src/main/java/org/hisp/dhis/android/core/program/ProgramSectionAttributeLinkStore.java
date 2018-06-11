@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -36,8 +36,9 @@ public final class ProgramSectionAttributeLinkStore {
 
     private ProgramSectionAttributeLinkStore() {}
 
-    public static ObjectWithoutUidStore<ProgramSectionAttributeLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, ProgramSectionAttributeLinkModel.TABLE,
-                new ProgramSectionAttributeLinkModel.Columns());
+    public static LinkModelStore<ProgramSectionAttributeLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter, ProgramSectionAttributeLinkModel.TABLE,
+                new ProgramSectionAttributeLinkModel.Columns(),
+                ProgramSectionAttributeLinkModel.Columns.PROGRAM_SECTION);
     }
 }

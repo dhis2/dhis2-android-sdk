@@ -1,9 +1,8 @@
 package org.hisp.dhis.android.core.category;
 
-import static org.junit.Assert.assertEquals;
-
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,10 +13,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 @RunWith(AndroidJUnit4.class)
 public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
 
-    private CategoryCategoryComboLinkStore store;
+    private LinkModelStore<CategoryCategoryComboLinkModel> store;
     private Category newCategory;
     private CategoryCombo newCategoryCombo;
     private CategoryCategoryComboLinkModel newCategoryCategoryComboLinkModel;
@@ -27,7 +28,7 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        store = new CategoryCategoryComboLinkStoreImpl(databaseAdapter());
+        store = CategoryCategoryComboLinkStore.create(databaseAdapter());
 
     }
 

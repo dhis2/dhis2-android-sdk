@@ -16,8 +16,6 @@ import org.junit.Before;
 
 import java.io.IOException;
 
-import retrofit2.Response;
-
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isTableEmpty;
@@ -37,8 +35,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     public void have_empty_database_when_wipe_db_after_sync_metadata() throws Exception {
         d2.logIn("android", "Android123").call();
 
-        Response response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
@@ -51,8 +48,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     public void have_empty_database_when_wipe_db_after_sync_data() throws Exception {
         d2.logIn("android", "Android123").call();
 
-        Response response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
 
         EventEndpointCall eventCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
@@ -70,8 +66,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     public void delete_autenticate_user_table_only_when_log_out_after_sync_data() throws Exception {
         d2.logIn("android", "Android123").call();
 
-        Response response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
 
         EventEndpointCall eventCall = EventCallFactory.create(
                 d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
@@ -93,8 +88,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
             throws Exception {
         d2.logIn("android", "Android123").call();
 
-        retrofit2.Response response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 

@@ -85,7 +85,7 @@ public abstract class RelationshipTypeModel extends BaseIdentifiableObjectModel 
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         super.bindToStatement(sqLiteStatement);
         sqLiteBind(sqLiteStatement, 7, bIsToA());
-        sqLiteBind(sqLiteStatement, 8, bIsToA());
+        sqLiteBind(sqLiteStatement, 8, aIsToB());
     }
 
     @AutoValue.Builder

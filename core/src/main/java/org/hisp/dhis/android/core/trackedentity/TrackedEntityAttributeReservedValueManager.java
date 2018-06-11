@@ -27,7 +27,9 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -39,7 +41,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import java.util.Date;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public final class TrackedEntityAttributeReservedValueManager {
@@ -63,37 +64,46 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     @SuppressFBWarnings("DE_MIGHT_IGNORE")
-    @SuppressWarnings("PMD.EmptyCatchBlock")
-    public String getValue(String attribute, String organisationUnitUid) throws RuntimeException {
-        try {
-            syncReservedValues(attribute, organisationUnitUid);
-        } catch (Exception e) {
-            // Synchronization was not successful.
-        }
+    public String getValue(String attribute, String organisationUnitUid) throws D2CallException {
+        syncReservedValues(attribute, organisationUnitUid, false);
 
         TrackedEntityAttributeReservedValueModel reservedValue = store.popOne(attribute, organisationUnitUid);
 
         if (reservedValue == null) {
-            throw new RuntimeException("There are no reserved values.");
+            throw D2CallException.builder()
+                    .errorCode(D2ErrorCode.NO_RESERVED_VALUES)
+                    .errorDescription("There are no reserved values")
+                    .isHttpError(false).build();
         } else {
             return reservedValue.value();
         }
     }
 
-    private void syncReservedValues(String attribute, String organisationUnitUid) throws Exception {
-        // TODO use server date
-        store.deleteExpired(new Date());
+    @SuppressWarnings("PMD.EmptyCatchBlock")
+    private void syncReservedValues(String attribute, String organisationUnitUid, boolean forceFill) {
+        try {
+            // TODO use server date
+            store.deleteExpired(new Date());
 
-        int remainingValues = store.count(attribute, organisationUnitUid);
-        if (remainingValues <= MIN_TO_TRY_FILL) {
-            fillReservedValues(attribute, organisationUnitUid, remainingValues);
+            int remainingValues = store.count(attribute, organisationUnitUid);
+            if (forceFill || remainingValues <= MIN_TO_TRY_FILL) {
+                fillReservedValues(attribute, organisationUnitUid, remainingValues);
+            }
+        } catch (D2CallException ignored) {
+            // Synchronization was not successful.
         }
     }
 
-    private void fillReservedValues(String attribute, String organisationUnitUid, Integer remainingValues)
-            throws Exception {
+    public void forceSyncReservedValues(String attribute, String organisationUnitUid) {
+        syncReservedValues(attribute, organisationUnitUid, true);
+    }
 
-        SystemInfo systemInfo = new D2CallExecutor().executeD2Call(
+    private void fillReservedValues(String attribute, String organisationUnitUid, Integer remainingValues)
+            throws D2CallException {
+
+        D2CallExecutor executor = new D2CallExecutor();
+
+        SystemInfo systemInfo = executor.executeD2Call(
                 SystemInfoCall.FACTORY.create(databaseAdapter, retrofit));
 
         GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
@@ -103,11 +113,9 @@ public final class TrackedEntityAttributeReservedValueManager {
         OrganisationUnitModel organisationUnitModel =
                 this.organisationUnitStore.selectByUid(organisationUnitUid, OrganisationUnitModel.factory);
 
-        Response reservedValueResponse = TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(
-                genericCallData, attribute, numberToReserve, organisationUnitModel).call();
-        if (!reservedValueResponse.isSuccessful()) {
-            throw new RuntimeException("New reserved values call failed.");
-        }
+
+        executor.executeD2Call(TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(
+                genericCallData, attribute, numberToReserve, organisationUnitModel));
     }
 
     public static TrackedEntityAttributeReservedValueManager create(DatabaseAdapter databaseAdapter,

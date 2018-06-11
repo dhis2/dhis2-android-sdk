@@ -27,14 +27,15 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +43,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
@@ -57,13 +57,17 @@ public class ProgramSectionHandlerShould {
     private IdentifiableObjectStore<ProgramSectionModel> programSectionStore;
 
     @Mock
-    private ObjectWithoutUidStore<ProgramSectionAttributeLinkModel> programSectionAttributeLinkStore;
+    private LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel> programSectionAttributeLinkHandler;
 
     @Mock
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
     private ProgramSection programSection;
+
+    private List<ObjectWithUid> attributes;
+
+    private String SECTION_UID = "section_uid";
 
     // object to test
     private ProgramSectionHandler programSectionHandler;
@@ -72,12 +76,12 @@ public class ProgramSectionHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        programSectionHandler = new ProgramSectionHandler(programSectionStore, programSectionAttributeLinkStore,
+        programSectionHandler = new ProgramSectionHandler(programSectionStore, programSectionAttributeLinkHandler,
                 styleHandler);
 
-        List<ObjectWithUid> attributes = new ArrayList<>();
-        attributes.add(ObjectWithUid.create("attribute_uid"));
+        attributes = Lists.newArrayList(ObjectWithUid.create("attribute_uid"));
         when(programSection.attributes()).thenReturn(attributes);
+        when(programSection.uid()).thenReturn(SECTION_UID);
     }
 
     @Test
@@ -89,7 +93,8 @@ public class ProgramSectionHandlerShould {
     @Test
     public void save_program_section_attribute_links() throws Exception {
         programSectionHandler.handle(programSection, new ProgramSectionModelBuilder());
-        verify(programSectionAttributeLinkStore).updateOrInsertWhere(any(ProgramSectionAttributeLinkModel.class));
+        verify(programSectionAttributeLinkHandler).handleMany(same(SECTION_UID), same(attributes),
+                any(ProgramSectionAttributeLinkModelBuilder.class));
     }
 
     @Test

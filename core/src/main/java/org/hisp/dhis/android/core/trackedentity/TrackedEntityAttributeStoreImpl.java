@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
-
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,6 +37,9 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
@@ -99,6 +100,9 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
 
     private static final String DELETE_STATEMENT = "DELETE FROM " + TrackedEntityAttributeModel.TABLE +
             " WHERE " + TrackedEntityAttributeModel.Columns.UID + " =?;";
+
+    private static final String SELECT_PATTERN_STATEMENT = "SELECT " + TrackedEntityAttributeModel.Columns.PATTERN +
+            " FROM " + TrackedEntityAttributeModel.TABLE + " WHERE " + TrackedEntityAttributeModel.Columns.UID + " =?;";
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -170,6 +174,14 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
         int delete = databaseAdapter.executeUpdateDelete(TrackedEntityAttributeModel.TABLE, deleteStatement);
         deleteStatement.clearBindings();
         return delete;
+    }
+
+    @Override
+    public String getPattern(@NonNull String uid) {
+        isNull(uid);
+        Cursor cursor = databaseAdapter.query(SELECT_PATTERN_STATEMENT, uid);
+        cursor.moveToFirst();
+        return cursor.getString(0);
     }
 
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,

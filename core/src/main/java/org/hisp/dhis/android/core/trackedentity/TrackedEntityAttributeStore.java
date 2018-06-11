@@ -62,4 +62,6 @@ public interface TrackedEntityAttributeStore extends DeletableStore {
     );
 
     int delete(String uid);
+
+    String getPattern(String uid);
 }

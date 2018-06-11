@@ -28,18 +28,24 @@
 
 package org.hisp.dhis.android.core.common;
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import retrofit2.Response;
+import java.util.List;
 
-@AutoValue
-public abstract class CallException extends Exception {
+import retrofit2.Call;
 
-    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Class can't be changed")
-    public abstract Response response();
+public abstract class EndpointListCall<P, Q extends BaseQuery> extends AbstractEndpointListCall<P, Q, List<P>> {
 
-    public static CallException create(Response response) {
-        return new AutoValue_CallException(response);
+    public EndpointListCall(GenericCallData data,
+                            ResourceModel.Type resourceType,
+                            Q query,
+                            ListPersistor<P> persistor) {
+
+        super(data, resourceType, query, persistor);
+    }
+
+    @Override
+    protected List<P> executeCall(Call<List<P>> call) throws D2CallException {
+        return new APICallExecutor().executeObjectCall(call);
     }
 }

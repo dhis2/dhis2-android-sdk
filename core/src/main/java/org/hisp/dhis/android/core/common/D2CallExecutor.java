@@ -30,6 +30,9 @@ package org.hisp.dhis.android.core.common;
 
 import android.util.Log;
 
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
+
 import java.util.concurrent.Callable;
 
 @SuppressWarnings({"PMD.PreserveStackTrace"})
@@ -39,7 +42,7 @@ public final class D2CallExecutor {
             .builder()
             .isHttpError(false);
 
-    public <P> P executeD2Call(Callable<P> call) throws D2CallException {
+    public <C> C executeD2Call(Callable<C> call) throws D2CallException {
         try {
             return call.call();
         } catch (D2CallException d2e) {
@@ -48,6 +51,25 @@ public final class D2CallExecutor {
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), e.toString());
             throw exceptionBuilder.errorDescription("Unexpected error calling " + call).build();
+        }
+    }
+
+    public <C> C executeD2CallTransactionally(DatabaseAdapter databaseAdapter, Callable<C> call)
+            throws D2CallException {
+        Transaction transaction = databaseAdapter.beginNewTransaction();
+        try {
+            C response = call.call();
+            transaction.setSuccessful();
+            return response;
+        } catch (D2CallException d2E) {
+            throw d2E;
+        } catch (Exception e) {
+            Log.e(this.getClass().getSimpleName(), e.toString());
+            throw exceptionBuilder
+                    .errorCode(D2ErrorCode.UNEXPECTED)
+                    .errorDescription("Unexpected error calling " + call).build();
+        } finally {
+            transaction.end();
         }
     }
 }

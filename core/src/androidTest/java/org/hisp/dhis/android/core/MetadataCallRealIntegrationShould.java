@@ -7,10 +7,6 @@ import org.junit.Before;
 
 import java.io.IOException;
 
-import retrofit2.Response;
-
-import static com.google.common.truth.Truth.assertThat;
-
 public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to
@@ -52,8 +48,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         d2.logout().call();
         d2.logIn("android", "Android123").call();
 
-        Response response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
 
         //TODO: add aditional sync + break point.
         //when debugger stops at the new break point manually change metadata online & resume.
@@ -68,12 +63,10 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         d2.logIn("android", "Android123").call();
 
         //first sync:
-        Response response1 = d2.syncMetaData().call();
-        assertThat(response1.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
 
         //second sync:
-        Response response2 = d2.syncMetaData().call();
-        assertThat(response2.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
     }
 
     //@Test

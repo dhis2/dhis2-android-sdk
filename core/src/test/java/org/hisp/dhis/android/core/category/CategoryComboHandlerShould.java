@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
+import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,10 +18,11 @@ import java.util.List;
 public class CategoryComboHandlerShould {
 
     @Mock
-    private CategoryOptionComboCategoryLinkStore mockComboOptionLinkStore;
+    private LinkModelHandler<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>
+            categoryOptionComboCategoryOptionLinkHandler;
 
     @Mock
-    private CategoryCategoryComboLinkStoreImpl mockComboLinkStore;
+    private LinkModelHandler<Category, CategoryCategoryComboLinkModel> mockComboLinkStore;
 
     @Mock
     private CategoryOptionComboHandler mockOptionComboHandler;
@@ -37,7 +39,7 @@ public class CategoryComboHandlerShould {
         MockitoAnnotations.initMocks(this);
 
 
-        categoryComboHandler = new CategoryComboHandler(mockComboStore, mockComboOptionLinkStore,
+        categoryComboHandler = new CategoryComboHandler(mockComboStore, categoryOptionComboCategoryOptionLinkHandler,
                 mockComboLinkStore, mockOptionComboHandler);
     }
 

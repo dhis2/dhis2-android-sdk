@@ -26,29 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-import java.util.List;
+public class CategoryCategoryOptionLinkModelBuilder
+        extends ModelBuilder<CategoryOption, CategoryCategoryOptionLinkModel> {
 
-import retrofit2.Response;
+    private final CategoryCategoryOptionLinkModel.Builder builder;
 
-public abstract class GenericEndpointCallImpl<P, M extends Model, Q extends BaseQuery>
-        extends AbstractEndpointCall<P, M, Q, Payload<P>> {
-
-    public GenericEndpointCallImpl(GenericCallData data, GenericHandler<P, M> handler, ResourceModel.Type resourceType,
-                            ModelBuilder<P, M> modelBuilder, Q query) {
-        super(data, handler, resourceType, modelBuilder, query);
+    CategoryCategoryOptionLinkModelBuilder(Category category) {
+        this.builder = CategoryCategoryOptionLinkModel.builder()
+                .category(category.uid());
     }
 
     @Override
-    protected List<P> getPojoList(Response<Payload<P>> response) {
-        return response.body().items();
-    }
-
-    @Override
-    protected boolean isValidResponse(Response<Payload<P>> response) {
-        return response.isSuccessful() && response.body().items() != null;
+    public CategoryCategoryOptionLinkModel buildModel(CategoryOption categoryOption) {
+        return builder
+                .option(categoryOption.uid())
+                .build();
     }
 }

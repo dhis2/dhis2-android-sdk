@@ -24,7 +24,7 @@ final class TrackedEntityInstanceDownloadByUidEndPointCall extends SyncCall<Trac
 
     @Override
     public TrackedEntityInstance call() throws D2CallException {
-        super.setExecuted();
+        setExecuted();
 
         if (uid == null) {
             throw D2CallException.builder().isHttpError(false).errorDescription("UID null").build();

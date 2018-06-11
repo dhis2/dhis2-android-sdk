@@ -26,54 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import java.util.List;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseModel;
-
-
-@AutoValue
-public abstract class CategoryOptionComboCategoryLinkModel extends BaseModel {
-    public static final String TABLE = "CategoryOptionComboCategoryLink";
-
-    public static class Columns extends BaseModel.Columns {
-        public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
-        public static final String CATEGORY = "category";
-
-    }
-
-    @NonNull
-    @ColumnName(Columns.CATEGORY_OPTION_COMBO)
-    public abstract String optionCombo();
-
-    @NonNull
-    @ColumnName(Columns.CATEGORY)
-    public abstract String category();
-
-    @NonNull
-    public static Builder builder() {
-        return new $$AutoValue_CategoryOptionComboCategoryLinkModel.Builder();
-    }
-
-    @NonNull
-    public static CategoryOptionComboCategoryLinkModel create(Cursor cursor) {
-        return AutoValue_CategoryOptionComboCategoryLinkModel.createFromCursor(cursor);
-
-    }
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
-
-        public abstract Builder optionCombo(@Nullable String optionCombo);
-
-        public abstract Builder category(@Nullable String category);
-
-        public abstract CategoryOptionComboCategoryLinkModel build();
-    }
+public interface ListPersistor<P> {
+    void persist(List<P> objectList) throws D2CallException;
 }

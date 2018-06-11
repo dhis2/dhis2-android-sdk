@@ -52,7 +52,7 @@ public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
     }
 
     @Override
-    public void insert(@NonNull M m) throws RuntimeException {
+    public long insert(@NonNull M m) throws RuntimeException {
         isNull(m);
         m.bindToStatement(insertStatement);
         Long insertedRowId = databaseAdapter.executeInsert(builder.tableName, insertStatement);
@@ -60,6 +60,7 @@ public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
         if (insertedRowId == -1) {
             throw new RuntimeException("Nothing was inserted.");
         }
+        return insertedRowId;
     }
 
     @Override

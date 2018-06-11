@@ -71,7 +71,7 @@ public class TrackedEntityAttributeReservedValueModelBuilderShould extends Model
 
     @Override
     protected ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> modelBuilder() {
-        return new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit);
+        return new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit,  "pattern");
     }
 
     @Test
@@ -83,5 +83,6 @@ public class TrackedEntityAttributeReservedValueModelBuilderShould extends Model
         assertThat(model.created()).isEqualTo(pojo.created());
         assertThat(model.expiryDate()).isEqualTo(pojo.expiryDate());
         assertThat(model.organisationUnit()).isEqualTo(organisationUnit.uid());
+        assertThat(model.temporalValidityDate()).isEqualTo(null);
     }
 }

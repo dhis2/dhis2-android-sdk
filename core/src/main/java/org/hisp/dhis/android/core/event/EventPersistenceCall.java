@@ -3,10 +3,11 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
@@ -17,6 +18,7 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserStoreImpl;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import retrofit2.Retrofit;
 
@@ -28,6 +30,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
     private final AuthenticatedUserStore authenticatedUserStore;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
     private final SearchOrganisationUnitCall.Factory organisationUnitCallFactory;
+    private final ForeignKeyCleaner foreignKeyCleaner;
 
     private final Collection<Event> events;
 
@@ -38,7 +41,8 @@ public final class EventPersistenceCall extends SyncCall<Void> {
             @NonNull AuthenticatedUserStore authenticatedUserStore,
             @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
             @NonNull SearchOrganisationUnitCall.Factory organisationUnitCallFactory,
-            @NonNull Collection<Event> events) {
+            @NonNull Collection<Event> events,
+            @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.eventHandler = eventHandler;
@@ -46,32 +50,35 @@ public final class EventPersistenceCall extends SyncCall<Void> {
         this.organisationUnitStore = organisationUnitStore;
         this.organisationUnitCallFactory = organisationUnitCallFactory;
         this.events = events;
+        this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
     @Override
     public Void call() throws D2CallException {
-        super.setExecuted();
+        setExecuted();
 
-        Transaction transaction = databaseAdapter.beginNewTransaction();
+        final D2CallExecutor executor = new D2CallExecutor();
 
-        try {
-            eventHandler.handleMany(events);
+        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
 
-            Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
+            @Override
+            public Void call() throws Exception {
+                eventHandler.handleMany(events);
 
-            if (!searchOrgUnitUids.isEmpty()) {
-                AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.query().get(0);
-                SearchOrganisationUnitCall organisationUnitCall = organisationUnitCallFactory.create(
-                        databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
-                organisationUnitCall.call();
+                Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
+
+                if (!searchOrgUnitUids.isEmpty()) {
+                    AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.query().get(0);
+                    SearchOrganisationUnitCall organisationUnitCall = organisationUnitCallFactory.create(
+                            databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
+                    executor.executeD2Call(organisationUnitCall);
+                }
+
+                foreignKeyCleaner.cleanForeignKeyErrors();
+
+                return null;
             }
-
-            transaction.setSuccessful();
-        } finally {
-            transaction.end();
-        }
-
-        return null;
+        });
     }
 
     private Set<String> getMissingOrganisationUnitUids(Collection<Event> events) {
@@ -95,7 +102,8 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                 new AuthenticatedUserStoreImpl(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
                 SearchOrganisationUnitCall.FACTORY,
-                events
+                events,
+                new ForeignKeyCleaner(databaseAdapter)
         );
     }
 }

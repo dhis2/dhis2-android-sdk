@@ -5,7 +5,6 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
@@ -13,10 +12,9 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
-import retrofit2.Response;
-
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertFalse;
 
 public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
@@ -33,17 +31,11 @@ public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase 
     public void call_categories_endpoint() throws Exception {
         d2.logIn(RealServerMother.user, RealServerMother.password).call();
 
-        Call<Response<Payload<Category>>> categoryEndpointCall = CategoryEndpointCall.FACTORY.create(
+        Call<List<Category>> categoryEndpointCall = CategoryEndpointCall.FACTORY.create(
                 GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date())
         );
-        Response<Payload<Category>> responseCategory = categoryEndpointCall.call();
+        List<Category> categories = categoryEndpointCall.call();
 
-        assertTrue(responseCategory.isSuccessful());
-        assertTrue(hasCategories(responseCategory));
+        assertFalse(categories.isEmpty());
     }
-
-    private boolean hasCategories(Response<Payload<Category>> response) {
-        return !response.body().items().isEmpty();
-    }
-
 }

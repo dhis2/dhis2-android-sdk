@@ -34,7 +34,7 @@ import java.util.Set;
 
 public interface ObjectStore<M extends BaseModel> extends DeletableStore {
 
-    void insert(@NonNull M m) throws RuntimeException;
+    long insert(@NonNull M m) throws RuntimeException;
 
     Set<M> selectAll(CursorModelFactory<M> modelFactory);
 

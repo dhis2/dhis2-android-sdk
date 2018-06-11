@@ -34,10 +34,9 @@ import android.support.test.runner.AndroidJUnit4;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -54,7 +53,6 @@ import java.util.Set;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
@@ -87,7 +85,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
     };
 
     private MockWebServer mockWebServer;
-    private OptionSetCall optionSetCall;
+    private Call<List<OptionSet>> optionSetCall;
 
     @Override
     @Before
@@ -203,17 +201,12 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-        OptionSetService optionSetService = retrofit.create(OptionSetService.class);
-
         Set<String> uids = new HashSet<>();
         uids.add("POc7DkGU3QU");
 
-        // TODO fix
         GenericCallData data = GenericCallData.create(databaseAdapter(), retrofit, new Date());
 
-        GenericHandler<OptionSet, OptionSetModel> optionSetHandler = OptionSetHandler.create(databaseAdapter());
-
-        optionSetCall = new OptionSetCall(data, optionSetService, optionSetHandler, uids);
+        optionSetCall = OptionSetCall.FACTORY.create(data, uids);
 
     }
 
@@ -293,9 +286,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
 
     @Test
     public void return_option_set_model_after_call() throws Exception {
-        Response<Payload<OptionSet>> response = optionSetCall.call();
-
-        List<OptionSet> optionSetList = response.body().items();
+        List<OptionSet> optionSetList = optionSetCall.call();
 
         assertThat(optionSetList.size()).isEqualTo(1);
 

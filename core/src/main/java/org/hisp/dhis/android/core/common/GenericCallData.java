@@ -32,6 +32,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.Date;
 
@@ -48,5 +49,10 @@ public abstract class GenericCallData {
                                          Date serverDate) {
         return new AutoValue_GenericCallData(databaseAdapter,
                 ResourceHandler.create(databaseAdapter), retrofit, serverDate);
+    }
+
+    public void handleResource(ResourceModel.Type type) {
+        resourceHandler().handleResource(type, serverDate());
+
     }
 }

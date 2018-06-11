@@ -59,7 +59,7 @@ public class SystemInfoCall extends SyncCall<SystemInfo> {
 
     @Override
     public SystemInfo call() throws D2CallException {
-        super.setExecuted();
+        setExecuted();
 
         SystemInfo systemInfo = new APICallExecutor().executeObjectCall(
                 systemInfoService.getSystemInfo(SystemInfo.allFields));

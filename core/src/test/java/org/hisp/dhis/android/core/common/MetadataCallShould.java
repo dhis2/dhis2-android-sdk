@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
@@ -55,11 +55,11 @@ import java.util.List;
 
 import retrofit2.Response;
 
-import static junit.framework.Assert.assertTrue;
-import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -77,9 +77,6 @@ public class MetadataCallShould extends BaseCallShould {
     private User user;
 
     @Mock
-    private DataElement dataElement;
-
-    @Mock
     private UserCredentials userCredentials;
 
     @Mock
@@ -89,73 +86,64 @@ public class MetadataCallShould extends BaseCallShould {
     private OrganisationUnit organisationUnit;
 
     @Mock
-    private Payload<Category> categoryPayload;
-
-    @Mock
-    private Payload<CategoryCombo> categoryComboPayload;
-
-    @Mock
-    private Payload<OrganisationUnit> organisationUnitPayload;
-
-    @Mock
-    private Payload<Program> programPayload;
-
-    @Mock
-    private Payload<DataElement> dataElementPayload;
-
-    @Mock
     private Category category;
 
     @Mock
     private CategoryCombo categoryCombo;
 
     @Mock
+    private Program program;
+
+    @Mock
     private Call<SystemInfo> systemInfoEndpointCall;
 
     @Mock
-    private Call<Response<SystemSetting>> systemSettingEndpointCall;
+    private Call<SystemSetting> systemSettingEndpointCall;
 
     @Mock
     private Call<User> userCall;
 
     @Mock
-    private Call<Response<Payload<Category>>> categoryEndpointCall;
+    private Call<List<Category>> categoryEndpointCall;
 
     @Mock
-    private Call<Response<Payload<CategoryCombo>>> categoryComboEndpointCall;
+    private Call<List<CategoryCombo>> categoryComboEndpointCall;
 
     @Mock
-    private Call<Response<Payload<Program>>> programParentCall;
+    private Call<List<Program>> programParentCall;
 
     @Mock
     private Call<Response> dataSetParentCall;
 
     @Mock
-    private Call<Response<Payload<OrganisationUnit>>> organisationUnitEndpointCall;
+    private Call<List<OrganisationUnit>> organisationUnitEndpointCall;
 
     @Mock
     private BasicCallFactory<SystemInfo> systemInfoCallFactory;
 
     @Mock
-    private SimpleCallFactory<SystemSetting> systemSettingCallFactory;
+    private GenericCallFactory<SystemSetting> systemSettingCallFactory;
 
     @Mock
     private GenericCallFactory<User> userCallFactory;
 
     @Mock
-    private SimpleCallFactory<Payload<Category>> categoryCallFactory;
+    private GenericCallFactory<List<Category>> categoryCallFactory;
 
     @Mock
-    private SimpleCallFactory<Payload<CategoryCombo>> categoryComboCallFactory;
+    private GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory;
 
     @Mock
-    private SimpleCallFactory<Payload<Program>> programParentCallFactory;
+    private GenericCallFactory<List<Program>> programParentCallFactory;
 
     @Mock
     private OrganisationUnitCall.Factory organisationUnitCallFactory;
 
     @Mock
     private DataSetParentCall.Factory dataSetParentCallFactory;
+
+    @Mock
+    private ForeignKeyCleaner foreignKeyCleaner;
 
     // object to test
     private MetadataCall metadataCall;
@@ -173,12 +161,6 @@ public class MetadataCallShould extends BaseCallShould {
         when(user.userCredentials()).thenReturn(userCredentials);
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
 
-        // Payloads
-        when(categoryPayload.items()).thenReturn(Collections.singletonList(category));
-        when(categoryComboPayload.items()).thenReturn(Collections.singletonList(categoryCombo));
-        when(organisationUnitPayload.items()).thenReturn(Collections.singletonList(organisationUnit));
-        when(dataElementPayload.items()).thenReturn(Collections.singletonList(dataElement));
-
         // Call factories
         when(systemInfoCallFactory.create(databaseAdapter, retrofit)).thenReturn(systemInfoEndpointCall);
         when(systemSettingCallFactory.create(any(GenericCallData.class))).thenReturn(systemSettingEndpointCall);
@@ -193,13 +175,13 @@ public class MetadataCallShould extends BaseCallShould {
 
         // Calls
         when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
-        when(systemSettingEndpointCall.call()).thenReturn(Response.success(systemSetting));
+        when(systemSettingEndpointCall.call()).thenReturn(systemSetting);
         when(userCall.call()).thenReturn(user);
-        when(categoryEndpointCall.call()).thenReturn(Response.success(categoryPayload));
-        when(categoryComboEndpointCall.call()).thenReturn(Response.success(categoryComboPayload));
-        when(programParentCall.call()).thenReturn(Response.success(programPayload));
-        when(organisationUnitEndpointCall.call()).thenReturn(Response.success(organisationUnitPayload));
-        when(dataSetParentCall.call()).thenReturn(Response.success(dataElementPayload));
+        when(categoryEndpointCall.call()).thenReturn(Lists.newArrayList(category));
+        when(categoryComboEndpointCall.call()).thenReturn(Lists.newArrayList(categoryCombo));
+        when(programParentCall.call()).thenReturn(Lists.newArrayList(program));
+        when(organisationUnitEndpointCall.call()).thenReturn(Lists.newArrayList(organisationUnit));
+        when(dataSetParentCall.call()).thenReturn(Response.success(Lists.emptyList()));
 
         // Metadata call
         metadataCall = new MetadataCall(
@@ -212,7 +194,8 @@ public class MetadataCallShould extends BaseCallShould {
                 categoryComboCallFactory,
                 programParentCallFactory,
                 organisationUnitCallFactory,
-                dataSetParentCallFactory);
+                dataSetParentCallFactory,
+                foreignKeyCleaner);
     }
 
     @After
@@ -222,73 +205,60 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test
     public void succeed_when_endpoint_calls_succeed() throws Exception {
-        Response response = metadataCall.call();
-        assertTrue(response.isSuccessful());
+        metadataCall.call();
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void return_last_response_items() throws Exception {
-        Response response = metadataCall.call();
-        Payload<DataElement> payload = (Payload<DataElement>) response.body();
-        assertTrue(!payload.items().isEmpty());
-        assertThat(payload.items().get(0)).isEqualTo(dataElement);
-    }
-
-    /* TODO will be fixed in ANDROSDK-186
-    @Test
-    @SuppressWarnings("unchecked")
+    @Test(expected = D2CallException.class)
     public void fail_when_system_info_call_fail() throws Exception {
         when(systemInfoEndpointCall.call()).thenThrow(d2CallException);
-        verifyFail(metadataCall.call());
-    }*/
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void fail_when_system_setting_call_fail() throws Exception {
-        when(systemSettingEndpointCall.call()).thenReturn(errorResponse);
-        verifyFail(metadataCall.call());
+        metadataCall.call();
     }
 
-    /* TODO will be fixed in ANDROSDK-186
-    @Test
-    @SuppressWarnings("unchecked")
+    @Test(expected = D2CallException.class)
+    public void fail_when_system_setting_call_fail() throws Exception {
+        when(systemSettingEndpointCall.call()).thenThrow(d2CallException);
+        metadataCall.call();
+    }
+
+    @Test(expected = D2CallException.class)
     public void fail_when_user_call_fail() throws Exception {
         when(userCall.call()).thenThrow(d2CallException);
-        verifyFail(metadataCall.call());
-    }*/
+        metadataCall.call();
+    }
 
-    @Test
-    @SuppressWarnings("unchecked")
+    @Test(expected = D2CallException.class)
     public void fail_when_category_call_fail() throws Exception {
-        when(categoryEndpointCall.call()).thenReturn(errorResponse);
-        verifyFail(metadataCall.call());
+        when(categoryEndpointCall.call()).thenThrow(d2CallException);
+        metadataCall.call();
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
+    @Test(expected = D2CallException.class)
     public void fail_when_category_combo_call_fail() throws Exception {
-        when(categoryComboEndpointCall.call()).thenReturn(errorResponse);
-        verifyFail(metadataCall.call());
+        when(categoryComboEndpointCall.call()).thenThrow(d2CallException);
+        metadataCall.call();
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
+    @Test(expected = D2CallException.class)
     public void fail_when_program_call_fail() throws Exception {
-        when(programParentCall.call()).thenReturn(errorResponse);
-        verifyFail(metadataCall.call());
+        when(programParentCall.call()).thenThrow(d2CallException);
+        metadataCall.call();
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
+    @Test(expected = D2CallException.class)
     public void fail_when_organisation_unit_call_fail() throws Exception {
-        when(organisationUnitEndpointCall.call()).thenReturn(errorResponse);
-        verifyFail(metadataCall.call());
+        when(organisationUnitEndpointCall.call()).thenThrow(d2CallException);
+        metadataCall.call();
+    }
+
+    @Test(expected = D2CallException.class)
+    public void fail_when_dataset_parent_call_fail() throws Exception {
+        when(dataSetParentCall.call()).thenThrow(d2CallException);
+        metadataCall.call();
     }
 
     @Test
-    public void fail_when_dataset_parent_call_call_fail() throws Exception {
-        when(dataSetParentCall.call()).thenReturn(errorResponse);
-        verifyFail(metadataCall.call());
+    public void call_foreign_key_cleaner() throws Exception {
+        metadataCall.call();
+        verify(foreignKeyCleaner).cleanForeignKeyErrors();
     }
 }

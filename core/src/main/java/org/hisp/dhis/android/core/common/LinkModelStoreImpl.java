@@ -25,37 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.calls;
 
-import org.hisp.dhis.android.core.common.CallException;
-import org.hisp.dhis.android.core.common.SyncCall;
+package org.hisp.dhis.android.core.common;
+
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
 
-import retrofit2.Response;
+public final class LinkModelStoreImpl<M extends BaseModel>
+        extends ObjectWithoutUidStoreImpl<M> implements LinkModelStore<M> {
 
-public abstract class TransactionalCall<C> extends SyncCall<Response<C>> {
-    protected final DatabaseAdapter databaseAdapter;
+    private final String masterColumn;
 
-    protected TransactionalCall(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
+    LinkModelStoreImpl(DatabaseAdapter databaseAdapter,
+                              SQLiteStatement insertStatement,
+                              SQLiteStatement updateWhereStatement,
+                              SQLStatementBuilder builder,
+                              String masterColumn) {
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder);
+        this.masterColumn = masterColumn;
     }
 
-    public abstract Response<C> callBody() throws Exception;
-
     @Override
-    public final Response<C> call() throws Exception {
-        super.setExecuted();
-
-        Transaction transaction = databaseAdapter.beginNewTransaction();
-        try {
-            Response response = callBody();
-            transaction.setSuccessful();
-            return response;
-        } catch (CallException e) {
-            return e.response();
-        } finally {
-            transaction.end();
-        }
+    public void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException {
+        deleteWhereClause(masterColumn + "='" + masterUid + "';");
     }
 }

@@ -29,15 +29,14 @@
 package org.hisp.dhis.android.core.settings;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.CallException;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.SimpleCallFactory;
+import org.hisp.dhis.android.core.common.GenericCallFactory;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.Transaction;
 
-import retrofit2.Response;
-
-public final class SystemSettingCall extends SyncCall<Response<SystemSetting>> {
+public final class SystemSettingCall extends SyncCall<SystemSetting> {
     private final GenericCallData data;
     private final SystemSettingHandler handler;
     private final SystemSettingService service;
@@ -54,42 +53,29 @@ public final class SystemSettingCall extends SyncCall<Response<SystemSetting>> {
     }
 
     @Override
-    public Response<SystemSetting> call() throws Exception {
-        super.setExecuted();
+    public SystemSetting call() throws D2CallException {
+        setExecuted();
 
-        Response<SystemSetting> response = service.getSystemSettings(SystemSetting.allFields).execute();
+        SystemSetting setting = new APICallExecutor().executeObjectCall(
+                service.getSystemSettings(SystemSetting.allFields));
 
-        if (isValidResponse(response)) {
-            persist(response);
-            return response;
-        } else {
-            throw CallException.create(response);
+        Transaction transaction = data.databaseAdapter().beginNewTransaction();
+
+        try {
+            handler.handle(setting, modelBuilder);
+            transaction.setSuccessful();
+        } finally {
+            transaction.end();
         }
+
+        return setting;
     }
 
-    private void persist(Response<SystemSetting> response) {
-        SystemSetting pojo = response.body();
-        if (pojo != null) {
-            Transaction transaction = data.databaseAdapter().beginNewTransaction();
-
-            try {
-                handler.handle(pojo, modelBuilder);
-                transaction.setSuccessful();
-            } finally {
-                transaction.end();
-            }
-        }
-    }
-
-    private boolean isValidResponse(Response<SystemSetting> response) {
-        return response.isSuccessful() && response.body() != null;
-    }
-
-    public static final SimpleCallFactory<SystemSetting> FACTORY =
-            new SimpleCallFactory<SystemSetting>() {
+    public static final GenericCallFactory<SystemSetting> FACTORY =
+            new GenericCallFactory<SystemSetting>() {
 
                 @Override
-                public Call<Response<SystemSetting>> create(GenericCallData genericCallData) {
+                public Call<SystemSetting> create(GenericCallData genericCallData) {
                     return new SystemSettingCall(
                             genericCallData,
                             SystemSettingHandlerImpl.create(genericCallData.databaseAdapter()),

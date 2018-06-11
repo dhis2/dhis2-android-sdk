@@ -32,19 +32,23 @@ import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 
+import java.util.Date;
+
 public class TrackedEntityAttributeReservedValueModelBuilder extends
         ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
 
     private final TrackedEntityAttributeReservedValueModel.Builder builder;
 
-    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit organisationUnit) {
+    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit organisationUnit, String pattern) {
         this.builder = TrackedEntityAttributeReservedValueModel.builder()
                 .organisationUnit(organisationUnit.uid());
+        fillTemporalValidityDate(pattern);
     }
 
-    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnitModel organisationUnit) {
+    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnitModel organisationUnit, String pattern) {
         this.builder = TrackedEntityAttributeReservedValueModel.builder()
                 .organisationUnit(organisationUnit.uid());
+        fillTemporalValidityDate(pattern);
     }
 
     @Override
@@ -57,5 +61,17 @@ public class TrackedEntityAttributeReservedValueModelBuilder extends
                 .created(reservedValue.created())
                 .expiryDate(reservedValue.expiryDate())
                 .build();
+    }
+
+    private void fillTemporalValidityDate(String pattern) {
+        Date temporalValidityDate;
+        try {
+            temporalValidityDate = new TrackedEntityAttributeReservedValueValidatorHelper()
+                    .getExpiryDateCode(pattern);
+        } catch (IllegalStateException e) {
+            temporalValidityDate = null;
+        }
+
+        this.builder.temporalValidityDate(temporalValidityDate);
     }
 }

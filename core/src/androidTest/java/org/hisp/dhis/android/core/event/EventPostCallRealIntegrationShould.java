@@ -3,13 +3,11 @@ package org.hisp.dhis.android.core.event;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
@@ -21,8 +19,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-
-import retrofit2.Response;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.assertTrue;
@@ -78,18 +74,11 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void successful_response_after_sync_events() throws Exception {
-        d2.logIn(user, password).call();
-
-        Response response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        dowloadMetadata();
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid, dataElementUid, attributeCategoryOption, attributeOptionCombo, null);
 
-        Call<Response<WebResponse>> call = d2.syncSingleEvents();
-        response = call.call();
-        assertThat(response.isSuccessful()).isTrue();
-
-
+        d2.syncSingleEvents().call();
     }
 
     // commented out since it is a flaky test that works against a real server.
@@ -158,16 +147,12 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private void pushDummyEvent() throws Exception {
-        Response response;Call<Response<WebResponse>> call = d2.syncSingleEvents();
-        response = call.call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncSingleEvents().call();
     }
 
     private void dowloadMetadata() throws Exception {
         d2.logIn(user, password).call();
-
-        Response response = d2.syncMetaData().call();
-        assertThat(response.isSuccessful()).isTrue();
+        d2.syncMetaData().call();
     }
 
     private boolean verifyPushedEventIsInPullList(Event event, List<Event> eventList) {

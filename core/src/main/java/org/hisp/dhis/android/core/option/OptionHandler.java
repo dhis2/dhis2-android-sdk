@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-class OptionHandler extends IdentifiableHandlerImpl<Option, OptionModel> {
+final class OptionHandler extends IdentifiableHandlerImpl<Option, OptionModel> {
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     private OptionHandler(IdentifiableObjectStore<OptionModel> optionStore,

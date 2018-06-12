@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.utils.services;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
@@ -38,27 +37,17 @@ public class StartPeriodicSynchronizerService extends Service {
 
     public static final String CLASS_TAG = StartPeriodicSynchronizerService.class.getSimpleName();
 
-    public void onCreate() {
-        Log.d(CLASS_TAG, "startperiodicsyncservice oncreate");
-        super.onCreate();
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(CLASS_TAG, "startperiodicsyncservice onstartcommand");
+        Log.e(CLASS_TAG, "onStartCommand.");
         PeriodicSynchronizer.activatePeriodicSynchronizer(
-                StartPeriodicSynchronizerService.this, PeriodicSynchronizer.getInterval(this));
+                StartPeriodicSynchronizerService.this, PeriodicSynchronizer.getInterval());
         return START_STICKY;
-    }
-
-    public void onStart(Context context, Intent intent, int startId) {
-        Log.e(CLASS_TAG, "startperiodicsyncservice onstart");
-        PeriodicSynchronizer.activatePeriodicSynchronizer(context, PeriodicSynchronizer.getInterval(context));
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.e(CLASS_TAG, "startperiodicsyncservice onbind");
+        Log.e(CLASS_TAG, "onBind.");
         return null;
     }
 }

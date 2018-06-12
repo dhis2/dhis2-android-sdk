@@ -60,6 +60,7 @@ import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
 import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
 
 import java.util.Collection;
@@ -124,7 +125,7 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<Void> syncMetaData() {
+    public Callable<Unit> syncMetaData() {
         return MetadataCall.create(databaseAdapter, retrofit);
     }
 

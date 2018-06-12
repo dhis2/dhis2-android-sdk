@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.calls.TrackerDataCall;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
@@ -113,18 +114,18 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<Void> logout() {
+    public Callable<Unit> logout() {
         return LogOutUserCallable.createToLogOut(databaseAdapter);
 
     }
 
     @NonNull
-    public Callable<Void> wipeDB() {
+    public Callable<Unit> wipeDB() {
         return LogOutUserCallable.createToWipe(databaseAdapter);
     }
 
     @NonNull
-    public Callable<Void> syncMetaData() {
+    public Callable<Unit> syncMetaData() {
         return MetadataCall.create(databaseAdapter, retrofit);
     }
 

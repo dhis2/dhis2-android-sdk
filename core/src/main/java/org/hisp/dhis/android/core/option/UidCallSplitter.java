@@ -26,19 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.UidsCallFactory;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public final class ProgramIndicatorLegendSetLinkStore {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
 
-    private ProgramIndicatorLegendSetLinkStore() {}
+public final class UidCallSplitter {
 
-    public static LinkModelStore<ProgramIndicatorLegendSetLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, ProgramIndicatorLegendSetLinkModel.TABLE,
-                new ProgramIndicatorLegendSetLinkModel.Columns(),
-                ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR);
+    public <P> List<Callable<List<P>>> splitCalls(UidsCallFactory<P> callFactory, GenericCallData data,
+                                                  Set<String> uids, int limit) {
+        List<Set<String>> partitions = Utils.setPartition(uids, limit);
+        List<Callable<List<P>>> calls = new ArrayList<>(partitions.size());
+        for (Set<String> partitionUids: partitions) {
+            calls.add(callFactory.create(data, partitionUids));
+        }
+        return calls;
     }
 }

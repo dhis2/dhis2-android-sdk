@@ -26,19 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+public final class Unit {
 
-public final class ProgramIndicatorLegendSetLinkStore {
-
-    private ProgramIndicatorLegendSetLinkStore() {}
-
-    public static LinkModelStore<ProgramIndicatorLegendSetLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, ProgramIndicatorLegendSetLinkModel.TABLE,
-                new ProgramIndicatorLegendSetLinkModel.Columns(),
-                ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR);
+    public Unit() {
+        // This constructor is intentionally empty. Nothing special is needed here.
     }
 }

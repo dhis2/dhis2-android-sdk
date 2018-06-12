@@ -33,6 +33,9 @@ import android.util.Log;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 @SuppressWarnings({"PMD.PreserveStackTrace"})
@@ -52,6 +55,14 @@ public final class D2CallExecutor {
             Log.e(this.getClass().getSimpleName(), e.toString());
             throw exceptionBuilder.errorDescription("Unexpected error calling " + call).build();
         }
+    }
+
+    public <C> List<C> executeD2Calls(Collection<Callable<C>> calls) throws D2CallException {
+        List<C> results = new ArrayList<>(calls.size());
+        for (Callable<C> call: calls) {
+            results.add(executeD2Call(call));
+        }
+        return results;
     }
 
     public <C> C executeD2CallTransactionally(DatabaseAdapter databaseAdapter, Callable<C> call)

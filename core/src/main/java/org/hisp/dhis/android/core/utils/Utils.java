@@ -121,6 +121,7 @@ public final class Utils {
         return commaSeparatedCollectionValues(values).replace(",", separator);
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     public static <T> List<Set<T>> setPartition(Set<T> originalSet, int size) {
         int setCount = (int) Math.ceil((double) originalSet.size() / size);
         List<Set<T>> sets = new ArrayList<>(setCount);

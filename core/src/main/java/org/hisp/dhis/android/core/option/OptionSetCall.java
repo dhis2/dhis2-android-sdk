@@ -40,10 +40,8 @@ import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 public class OptionSetCall extends EndpointPayloadCall<OptionSet, UidsQuery> {
     private final OptionSetService optionSetService;
@@ -79,11 +77,11 @@ public class OptionSetCall extends EndpointPayloadCall<OptionSet, UidsQuery> {
 
     public static final UidsCallFactory<OptionSet> FACTORY = new UidsCallFactory<OptionSet>() {
 
-        private final int uidLimit = 64;
+        private static final int UID_LIMIT = 64;
 
         @Override
         protected int getUidLimit() {
-            return uidLimit;
+            return UID_LIMIT;
         }
 
         @Override

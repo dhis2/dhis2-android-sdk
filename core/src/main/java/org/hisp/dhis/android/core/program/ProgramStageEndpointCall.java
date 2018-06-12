@@ -58,11 +58,11 @@ public final class ProgramStageEndpointCall extends EndpointPayloadCall<ProgramS
 
     public static final UidsCallFactory<ProgramStage> FACTORY = new UidsCallFactory<ProgramStage>() {
 
-        private final int uidLimit = 64;
+        private static final int UID_LIMIT = 64;
 
         @Override
         protected int getUidLimit() {
-            return uidLimit;
+            return UID_LIMIT;
         }
 
         @Override

@@ -128,11 +128,11 @@ public class TrackedEntityTypeCall extends SyncCall<List<TrackedEntityType>> {
 
     public static final UidsCallFactory<TrackedEntityType> FACTORY = new UidsCallFactory<TrackedEntityType>() {
 
-        private final int uidLimit = 64;
+        private static final int UID_LIMIT = 64;
 
         @Override
         protected int getUidLimit() {
-            return uidLimit;
+            return UID_LIMIT;
         }
 
         @Override

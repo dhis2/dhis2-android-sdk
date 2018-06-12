@@ -44,6 +44,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -123,13 +124,13 @@ public class ProgramParentCallShould extends BaseCallShould {
         when(programCallFactory.create(same(genericCallData)))
                 .thenReturn(programEndpointCall);
         when(programStageCallFactory.create(same(genericCallData), any(Set.class)))
-                .thenReturn(programStageEndpointCall);
+                .thenReturn(Collections.singletonList(programStageEndpointCall));
         when(trackedEntityCallFactory.create(same(genericCallData), any(Set.class)))
-                .thenReturn(trackedEntityTypeCall);
+                .thenReturn(Collections.singletonList(trackedEntityTypeCall));
         when(relationshiptTypeCallFactory.create(same(genericCallData)))
                 .thenReturn(relationshipTypeCall);
         when(optionSetCallFactory.create(same(genericCallData), any(Set.class)))
-                .thenReturn(optionSetCall);
+                .thenReturn(Collections.singletonList(optionSetCall));
 
         // Calls
         when(programEndpointCall.call()).thenReturn(Collections.singletonList(program));

@@ -61,11 +61,11 @@ public final class IndicatorEndpointCall extends EndpointPayloadCall<Indicator, 
 
     public static final UidsCallFactory<Indicator> FACTORY = new UidsCallFactory<Indicator>() {
 
-        private final int uidLimit = 64;
+        private static final int UID_LIMIT = 64;
 
         @Override
         protected int getUidLimit() {
-            return uidLimit;
+            return UID_LIMIT;
         }
 
         @Override

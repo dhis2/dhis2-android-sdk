@@ -65,7 +65,7 @@ public final class DataElementEndpointCall extends EndpointPayloadCall<DataEleme
         public Call<List<DataElement>> create(GenericCallData data, Set<String> uids) {
             return new DataElementEndpointCall(data,
                     data.retrofit().create(DataElementService.class),
-                    UidsQuery.create(uids, null),
+                    UidsQuery.create(uids),
                     new TransactionalResourceListPersistor<>(
                             data,
                             DataElementHandler.create(data.databaseAdapter()),

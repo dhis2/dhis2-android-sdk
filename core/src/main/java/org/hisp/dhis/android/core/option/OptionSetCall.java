@@ -82,7 +82,7 @@ public class OptionSetCall extends EndpointPayloadCall<OptionSet, UidsQuery> {
             return new OptionSetCall(
                     data,
                     data.retrofit().create(OptionSetService.class),
-                    UidsQuery.create(uids, 64),
+                    UidsQuery.create(uids),
                     new TransactionalResourceListPersistor<>(
                             data,
                             OptionSetHandler.create(data.databaseAdapter()),

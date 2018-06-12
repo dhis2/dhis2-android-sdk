@@ -32,6 +32,7 @@ import android.util.Log;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.option.UidCallSplitter;
 
 import java.util.ArrayList;
 import java.util.Collection;

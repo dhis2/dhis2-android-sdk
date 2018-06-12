@@ -64,7 +64,7 @@ public final class IndicatorEndpointCall extends EndpointPayloadCall<Indicator, 
         public Call<List<Indicator>> create(GenericCallData data, Set<String> uids) {
             return new IndicatorEndpointCall(data,
                     data.retrofit().create(IndicatorService.class),
-                    UidsQuery.create(uids, null),
+                    UidsQuery.create(uids),
                     new TransactionalResourceListPersistor<>(
                             data,
                             IndicatorHandler.create(data.databaseAdapter()),

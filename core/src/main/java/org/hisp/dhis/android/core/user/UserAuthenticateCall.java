@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -73,7 +74,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     private final AuthenticatedUserStore authenticatedUserStore;
     private final ObjectWithoutUidStore<SystemInfoModel> systemInfoStore;
     private final IdentifiableObjectStore<UserModel> userStore;
-    private final Callable<Void> dbWipe;
+    private final Callable<Unit> dbWipe;
 
     // username and password of candidate
     private final String username;
@@ -90,7 +91,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             @NonNull AuthenticatedUserStore authenticatedUserStore,
             @NonNull ObjectWithoutUidStore<SystemInfoModel> systemInfoStore,
             @NonNull IdentifiableObjectStore<UserModel> userStore,
-            @NonNull Callable<Void> dbWipe,
+            @NonNull Callable<Unit> dbWipe,
             @NonNull String username,
             @NonNull String password,
             @NonNull String apiURL) {

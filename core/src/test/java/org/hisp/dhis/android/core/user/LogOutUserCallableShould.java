@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +64,7 @@ public class LogOutUserCallableShould {
     @Mock
     private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
 
-    private Callable<Void> logOutUserCallable;
+    private Callable<Unit> logOutUserCallable;
 
     @Before
     public void setUp() throws Exception {

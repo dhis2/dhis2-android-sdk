@@ -53,13 +53,14 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
+import org.hisp.dhis.android.core.common.Unit;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import retrofit2.Retrofit;
 
-public class MetadataCall extends SyncCall<Void> {
+public class MetadataCall extends SyncCall<Unit> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
@@ -100,14 +101,14 @@ public class MetadataCall extends SyncCall<Void> {
     }
 
     @Override
-    public Void call() throws Exception {
+    public Unit call() throws Exception {
         setExecuted();
 
         final D2CallExecutor executor = new D2CallExecutor();
 
-        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
+        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
             @Override
-            public Void call() throws D2CallException {
+            public Unit call() throws D2CallException {
                 SystemInfo systemInfo = executor.executeD2Call(
                         systemInfoCallFactory.create(databaseAdapter, retrofit));
 
@@ -130,7 +131,7 @@ public class MetadataCall extends SyncCall<Void> {
 
                 foreignKeyCleaner.cleanForeignKeyErrors();
 
-                return null;
+                return new Unit();
             }
         });
     }

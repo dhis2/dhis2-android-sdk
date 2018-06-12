@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -126,7 +127,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private Call<SystemInfo> systemInfoEndpointCall;
 
     @Mock
-    private Callable<Void> dbWipeCall;
+    private Callable<Unit> dbWipeCall;
 
     private String baseEndpoint;
 

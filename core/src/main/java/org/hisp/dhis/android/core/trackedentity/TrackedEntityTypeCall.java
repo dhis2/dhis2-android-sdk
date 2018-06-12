@@ -128,8 +128,15 @@ public class TrackedEntityTypeCall extends SyncCall<List<TrackedEntityType>> {
 
     public static final UidsCallFactory<TrackedEntityType> FACTORY = new UidsCallFactory<TrackedEntityType>() {
 
+        private final int uidLimit = 64;
+
         @Override
-        public Call<List<TrackedEntityType>> create(GenericCallData genericCallData, Set<String> uids) {
+        protected int getUidLimit() {
+            return uidLimit;
+        }
+
+        @Override
+        protected Call<List<TrackedEntityType>> createCall(GenericCallData genericCallData, Set<String> uids) {
             return new TrackedEntityTypeCall(
                     uids,
                     genericCallData.databaseAdapter(),

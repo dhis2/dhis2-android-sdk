@@ -61,8 +61,16 @@ public final class DataElementEndpointCall extends EndpointPayloadCall<DataEleme
     }
 
     public static final UidsCallFactory<DataElement> FACTORY = new UidsCallFactory<DataElement>() {
+
+        private final int uidLimit = 64;
+
         @Override
-        public Call<List<DataElement>> create(GenericCallData data, Set<String> uids) {
+        protected int getUidLimit() {
+            return uidLimit;
+        }
+
+        @Override
+        protected Call<List<DataElement>> createCall(GenericCallData data, Set<String> uids) {
             return new DataElementEndpointCall(data,
                     data.retrofit().create(DataElementService.class),
                     UidsQuery.create(uids),

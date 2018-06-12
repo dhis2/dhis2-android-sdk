@@ -36,11 +36,11 @@ import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
-import org.hisp.dhis.android.core.option.UidCallSplitter;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeEndpointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCall;
+import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.List;
 import java.util.Set;
@@ -81,7 +81,7 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
                 List<Program> programs = executor.executeD2Call(programCallFactory.create(genericCallData));
 
                 Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);
-                List<ProgramStage> programStages = executor.executeD2Call(
+                List<List<ProgramStage>> programStages = executor.executeD2Call(
                         programStageCallFactory.create(genericCallData, assignedProgramStageUids));
 
                 Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
@@ -89,10 +89,9 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
                 executor.executeD2Call(trackedEntityTypeCallFactory.create(genericCallData, trackedEntityUids));
                 executor.executeD2Call(relationshipTypeCallFactory.create(genericCallData));
 
-                Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
-                List<Callable<List<OptionSet>>> optionSetCalls = new UidCallSplitter().splitCalls(optionSetCallFactory,
-                        genericCallData, optionSetUids, 64);
-                executor.executeD2Calls(optionSetCalls);
+                Set<String> optionSetUids = ProgramParentUidsHelper
+                        .getAssignedOptionSetUids(programs, Utils.flatten(programStages));
+                executor.executeD2Call(optionSetCallFactory.create(genericCallData, optionSetUids));
 
                 return programs;
             }

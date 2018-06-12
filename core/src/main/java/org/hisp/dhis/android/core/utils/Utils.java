@@ -137,4 +137,12 @@ public final class Utils {
 
         return sets;
     }
+
+    public static <T> List<T> flatten(List<List<T>> listOfLists) {
+        List<T> result = new ArrayList<>();
+        for (List<T> list : listOfLists) {
+            result.addAll(list);
+        }
+        return result;
+    }
 }

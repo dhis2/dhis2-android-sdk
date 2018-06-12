@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.indicator.IndicatorTypeEndpointCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.PeriodHandler;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.List;
 import java.util.Set;
@@ -90,11 +91,11 @@ public class DataSetParentCall extends SyncCall<Void> {
                 Set<String> dataSetUids = UidsHelper.getUids(dataSets);
 
                 executor.executeD2Call(dataElementCallFactory.create(data, dataSetUids));
-                List<Indicator> indicators = executor.executeD2Call(indicatorCallFactory.create(data,
+                List<List<Indicator>> indicators = executor.executeD2Call(indicatorCallFactory.create(data,
                         DataSetParentUidsHelper.getIndicatorUids(dataSets)));
 
                 executor.executeD2Call(indicatorTypeCallFactory.create(data,
-                        DataSetParentUidsHelper.getIndicatorTypeUids(indicators)));
+                        DataSetParentUidsHelper.getIndicatorTypeUids(Utils.flatten(indicators))));
 
                 periodHandler.generateAndPersist();
 

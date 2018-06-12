@@ -60,8 +60,16 @@ public final class IndicatorTypeEndpointCall extends EndpointPayloadCall<Indicat
     }
 
     public static final UidsCallFactory<IndicatorType> FACTORY = new UidsCallFactory<IndicatorType>() {
+
+        private final int uidLimit = 64;
+
         @Override
-        public Call<List<IndicatorType>> create(GenericCallData data, Set<String> uids) {
+        protected int getUidLimit() {
+            return uidLimit;
+        }
+
+        @Override
+        protected Call<List<IndicatorType>> createCall(GenericCallData data, Set<String> uids) {
             return new IndicatorTypeEndpointCall(data,
                     data.retrofit().create(IndicatorTypeService.class),
                     UidsQuery.create(uids),

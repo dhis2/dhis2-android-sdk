@@ -57,8 +57,16 @@ public final class ProgramStageEndpointCall extends EndpointPayloadCall<ProgramS
     }
 
     public static final UidsCallFactory<ProgramStage> FACTORY = new UidsCallFactory<ProgramStage>() {
+
+        private final int uidLimit = 64;
+
         @Override
-        public Call<List<ProgramStage>> create(GenericCallData data, Set<String> uids) {
+        protected int getUidLimit() {
+            return uidLimit;
+        }
+
+        @Override
+        protected Call<List<ProgramStage>> createCall(GenericCallData data, Set<String> uids) {
             return new ProgramStageEndpointCall(data,
                     data.retrofit().create(ProgramStageService.class),
                     UidsQuery.create(uids),

@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
+import org.hisp.dhis.android.core.option.UidCallSplitter;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeEndpointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -89,7 +90,9 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
                 executor.executeD2Call(relationshipTypeCallFactory.create(genericCallData));
 
                 Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
-                executor.executeD2Call(optionSetCallFactory.create(genericCallData, optionSetUids));
+                List<Callable<List<OptionSet>>> optionSetCalls = new UidCallSplitter().splitCalls(optionSetCallFactory,
+                        genericCallData, optionSetUids, 64);
+                executor.executeD2Calls(optionSetCalls);
 
                 return programs;
             }

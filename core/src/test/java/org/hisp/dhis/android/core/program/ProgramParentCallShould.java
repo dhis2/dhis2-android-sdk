@@ -188,10 +188,4 @@ public class ProgramParentCallShould extends BaseCallShould {
         whenEndpointCallFails(relationshipTypeCall);
         programParentCall.call();
     }
-
-    @Test(expected = D2CallException.class)
-    public void fail_when_option_set_call_fail() throws Exception {
-        whenEndpointCallFails(optionSetCall);
-        programParentCall.call();
-    }
 }

@@ -36,10 +36,13 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A collection of utility abstractions
@@ -116,5 +119,22 @@ public final class Utils {
 
     public static String joinCollectionWithSeparator(Collection<String> values, String separator) {
         return commaSeparatedCollectionValues(values).replace(",", separator);
+    }
+
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
+    public static <T> List<Set<T>> setPartition(Set<T> originalSet, int size) {
+        int setCount = (int) Math.ceil((double) originalSet.size() / size);
+        List<Set<T>> sets = new ArrayList<>(setCount);
+        for (int i = 0; i < setCount; i++) {
+            Set<T> setI = new HashSet<>(size);
+            sets.add(setI);
+        }
+
+        int index = 0;
+        for (T object : originalSet) {
+            sets.get(index++ % setCount).add(object);
+        }
+
+        return sets;
     }
 }

@@ -56,7 +56,7 @@ import org.hisp.dhis.android.core.legendset.LegendSetStore;
 import org.hisp.dhis.android.core.legendset.LegendStore;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
 import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionStoreImpl;
+import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.period.PeriodStore;
@@ -128,7 +128,7 @@ public class LogOutUserCallable implements Callable<Unit> {
                 new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter),
                 new ProgramRuleActionStoreImpl(databaseAdapter),
                 new ProgramRuleStoreImpl(databaseAdapter),
-                new OptionStoreImpl(databaseAdapter),
+                OptionStore.create(databaseAdapter),
                 OptionSetStore.create(databaseAdapter),
                 DataElementStore.create(databaseAdapter),
                 new ProgramStageDataElementStoreImpl(databaseAdapter),

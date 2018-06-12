@@ -28,55 +28,21 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.UidsHelper;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
-@AutoValue
-public abstract class OptionModel extends BaseIdentifiableObjectModel {
-    public static final String TABLE = "Option";
-
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
-        public static final String OPTION_SET = "optionSet";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(), OPTION_SET);
-        }
-    }
-
-    public static OptionModel create(Cursor cursor) {
-        return AutoValue_OptionModel.createFromCursor(cursor);
-    }
-
-    public static Builder builder() {
-        return new $$AutoValue_OptionModel.Builder();
-    }
+public class OptionModelBuilder extends ModelBuilder<Option, OptionModel> {
 
     @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 7, optionSet());
-    }
-
-    @Nullable
-    @ColumnName(Columns.OPTION_SET)
-    public abstract String optionSet();
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
-
-        public abstract Builder optionSet(@Nullable String optionSet);
-
-        public abstract OptionModel build();
+    public OptionModel buildModel(Option option) {
+        return OptionModel.builder()
+                .uid(option.uid())
+                .code(option.code())
+                .name(option.name())
+                .displayName(option.displayName())
+                .created(option.created())
+                .lastUpdated(option.lastUpdated())
+                .optionSet(UidsHelper.getUidOrNull(option.optionSet()))
+                .build();
     }
 }

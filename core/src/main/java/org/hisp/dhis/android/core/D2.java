@@ -114,13 +114,13 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<Void> logout() {
+    public Callable<Unit> logout() {
         return LogOutUserCallable.createToLogOut(databaseAdapter);
 
     }
 
     @NonNull
-    public Callable<Void> wipeDB() {
+    public Callable<Unit> wipeDB() {
         return LogOutUserCallable.createToWipe(databaseAdapter);
     }
 

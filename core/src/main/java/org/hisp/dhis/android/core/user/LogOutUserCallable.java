@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.ObjectStyleStore;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
@@ -87,7 +88,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 @SuppressWarnings("PMD.ExcessiveImports")
-public class LogOutUserCallable implements Callable<Void> {
+public class LogOutUserCallable implements Callable<Unit> {
 
     @NonNull
     private final List<DeletableStore> deletableStores;
@@ -97,12 +98,12 @@ public class LogOutUserCallable implements Callable<Void> {
     }
 
     @Override
-    public Void call() throws Exception {
+    public Unit call() throws Exception {
         // clear out all tables
         for (DeletableStore deletableStore : deletableStores) {
             deletableStore.delete();
         }
-        return null;
+        return new Unit();
     }
 
 

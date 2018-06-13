@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
+import android.util.Log;
+
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
@@ -34,9 +37,12 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
+import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
 
 import java.util.Date;
 
@@ -47,6 +53,7 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private static final int MIN_TO_TRY_FILL = 50;
     private static final int FILL_UP_TO = 100;
+    private static final String CLASS_TAG = TrackedEntityAttributeReservedValueManager.class.getSimpleName();
 
     private final TrackedEntityAttributeReservedValueStoreInterface store;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
@@ -116,6 +123,55 @@ public final class TrackedEntityAttributeReservedValueManager {
 
         executor.executeD2Call(TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(
                 genericCallData, attribute, numberToReserve, organisationUnitModel));
+    }
+
+    public void syncReservedValuesIfIsUserLoggedIn() {
+        try {
+            if (IsUserLoggedInCallable.create(databaseAdapter).call()) {
+                syncAllTrackedEntityAttributeReservedValues();
+            }
+        } catch (Exception e) {
+            Log.d(CLASS_TAG, "Not sync." + e.getMessage());
+        }
+    }
+
+    public void syncAllTrackedEntityAttributeReservedValues() {
+        String selectStatement = generateSelectStatement();
+        Cursor cursor = databaseAdapter.query(selectStatement);
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                String ownerUid = cursor.getString(0);
+                String orgUnitUid = cursor.getString(1);
+                forceSyncReservedValues(ownerUid, orgUnitUid);
+            } while (cursor.moveToNext());
+        }
+
+        Log.e(CLASS_TAG, "Reserved values synced.");
+    }
+
+    private static String generateSelectStatement() {
+        String TEAUidColumn = "t." + TrackedEntityAttributeModel.Columns.UID;
+        String TEAGeneratedColumn = "t." + TrackedEntityAttributeModel.Columns.GENERATED;
+        String OUPLOrgUnitColumn = "o." + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT ;
+        String OUPLProgramColumn = "o." + OrganisationUnitProgramLinkModel.Columns.PROGRAM;
+        String PTEATEAColumn = "p." + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE;
+        String PTEAProgramColumn = "p." + ProgramTrackedEntityAttributeModel.Columns.PROGRAM;
+
+        return "SELECT DISTINCT " +
+                TEAUidColumn + ", " +
+                OUPLOrgUnitColumn  + " " +
+
+                "FROM " +
+                TrackedEntityAttributeModel.TABLE + " t, " +
+                OrganisationUnitProgramLinkModel.TABLE + " o, " +
+                ProgramTrackedEntityAttributeModel.TABLE + " p " +
+
+                "WHERE " +
+                TEAGeneratedColumn + " = 1 AND " +
+                PTEATEAColumn + " = " + TEAUidColumn + " AND " +
+                PTEAProgramColumn + " = " + OUPLProgramColumn + ";";
     }
 
     public static TrackedEntityAttributeReservedValueManager create(DatabaseAdapter databaseAdapter,

@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.util.List;
 import java.util.Set;
 
-public class OptionSetCall extends UidPayloadCall<OptionSet> {
+public final class OptionSetCall extends UidPayloadCall<OptionSet> {
     private final OptionSetService optionSetService;
 
     private OptionSetCall(GenericCallData data,

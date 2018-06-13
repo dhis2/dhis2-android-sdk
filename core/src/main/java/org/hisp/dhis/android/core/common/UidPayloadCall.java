@@ -39,7 +39,7 @@ import retrofit2.Call;
 
 public abstract class UidPayloadCall<P> extends AbstractEndpointListCall<P, UidsQuery, Payload<P>> {
 
-    private int uidLimit;
+    private final int uidLimit;
 
     public UidPayloadCall(GenericCallData data,
                           ResourceModel.Type resourceType,
@@ -56,9 +56,10 @@ public abstract class UidPayloadCall<P> extends AbstractEndpointListCall<P, Uids
         List<Set<String>> partitions = Utils.setPartition(query.uids(), uidLimit);
 
         List<P> result = new ArrayList<>();
+        APICallExecutor apiCallExecutor = new APICallExecutor();
         for (Set<String> partitionUids : partitions) {
-            UidsQuery callQuery = UidsQuery.create(partitionUids);
-            List<P> callResult = new APICallExecutor().executePayloadCall(getCall(callQuery, lastUpdated));
+            UidsQuery uidQuery = UidsQuery.create(partitionUids);
+            List<P> callResult = apiCallExecutor.executePayloadCall(getCall(uidQuery, lastUpdated));
             result.addAll(callResult);
         }
 

@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeEndpointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCall;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.List;
 import java.util.Set;

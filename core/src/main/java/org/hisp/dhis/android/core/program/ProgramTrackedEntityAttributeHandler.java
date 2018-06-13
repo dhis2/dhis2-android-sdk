@@ -51,7 +51,8 @@ public class ProgramTrackedEntityAttributeHandler extends
     }
 
     @Override
-    protected void afterObjectHandled(ProgramTrackedEntityAttribute programTrackedEntityAttribute, HandleAction action) {
+    protected void afterObjectHandled(ProgramTrackedEntityAttribute programTrackedEntityAttribute,
+                                      HandleAction action) {
         trackedEntityAttributeHandler.handleTrackedEntityAttribute(
                 programTrackedEntityAttribute.trackedEntityAttribute());
     }

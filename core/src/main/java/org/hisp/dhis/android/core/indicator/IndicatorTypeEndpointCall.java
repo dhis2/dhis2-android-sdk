@@ -64,7 +64,7 @@ public final class IndicatorTypeEndpointCall extends UidPayloadCall<IndicatorTyp
 
     public static final UidsCallFactory<IndicatorType> FACTORY = new UidsCallFactory<IndicatorType>() {
 
-        private static final int MAX_UID_LIST_SIZE = 64;
+        private static final int MAX_UID_LIST_SIZE = 140;
 
         @Override
         public Call<List<IndicatorType>> create(GenericCallData data, Set<String> uids) {

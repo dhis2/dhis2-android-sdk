@@ -64,7 +64,7 @@ public final class DataElementEndpointCall extends UidPayloadCall<DataElement> {
 
     public static final UidsCallFactory<DataElement> FACTORY = new UidsCallFactory<DataElement>() {
 
-        private static final int MAX_UID_LIST_SIZE = 64;
+        private static final int MAX_UID_LIST_SIZE = 100;
 
         @Override
         public Call<List<DataElement>> create(GenericCallData data, Set<String> uids) {

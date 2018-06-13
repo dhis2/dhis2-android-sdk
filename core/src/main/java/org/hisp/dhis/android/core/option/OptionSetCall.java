@@ -80,7 +80,7 @@ public class OptionSetCall extends UidPayloadCall<OptionSet> {
 
     public static final UidsCallFactory<OptionSet> FACTORY = new UidsCallFactory<OptionSet>() {
 
-        private static final int MAX_UID_LIST_SIZE = 64;
+        private static final int MAX_UID_LIST_SIZE = 130;
 
         @Override
         public Call<List<OptionSet>> create(GenericCallData data, Set<String> uids) {

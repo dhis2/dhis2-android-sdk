@@ -27,92 +27,34 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.UidPayloadCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
+import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-public class TrackedEntityTypeCall extends SyncCall<List<TrackedEntityType>> {
-
+public class TrackedEntityTypeCall extends UidPayloadCall<TrackedEntityType> {
     private final TrackedEntityTypeService service;
-    private final DatabaseAdapter databaseAdapter;
-    private final IdentifiableObjectStore<TrackedEntityTypeModel> trackedEntityTypeStore;
-    private final ResourceStore resourceStore;
-    private final Set<String> uidSet;
-    private final Date serverDate;
-    private final ResourceModel.Type resourceType = ResourceModel.Type.TRACKED_ENTITY;
 
-    TrackedEntityTypeCall(@Nullable Set<String> uidSet,
-                          @NonNull DatabaseAdapter databaseAdapter,
-                          @NonNull IdentifiableObjectStore<TrackedEntityTypeModel> trackedEntityTypeStore,
-                          @NonNull ResourceStore resourceStore,
-                          @NonNull TrackedEntityTypeService service,
-                          @NonNull Date serverDate) {
-        this.uidSet = uidSet;
-        this.databaseAdapter = databaseAdapter;
-        this.trackedEntityTypeStore = trackedEntityTypeStore;
-        this.resourceStore = resourceStore;
+    private TrackedEntityTypeCall(GenericCallData data,
+                          TrackedEntityTypeService service,
+                          UidsQuery query,
+                          int uidLimit,
+                          ListPersistor<TrackedEntityType> persistor) {
+        super(data, ResourceModel.Type.TRACKED_ENTITY, query, uidLimit, persistor);
         this.service = service;
-        this.serverDate = new Date(serverDate.getTime());
     }
 
     @Override
-    public List<TrackedEntityType> call() throws D2CallException {
-        setExecuted();
-
-        if (uidSet.size() > MAX_UIDS) {
-            throw new IllegalArgumentException("Can't handle the amount of tracked entities: " + uidSet.size() + ". " +
-                    "Max size is: " + MAX_UIDS);
-        }
-        ResourceHandler resourceHandler = new ResourceHandler(resourceStore);
-
-        String lastUpdated = resourceHandler.getLastUpdated(resourceType);
-
-        List<TrackedEntityType> trackedEntities
-                = new APICallExecutor().executePayloadCall(getTrackedEntities(lastUpdated));
-
-        TrackedEntityTypeHandler trackedEntityTypeHandler = TrackedEntityTypeHandler.create(databaseAdapter);
-        Transaction transaction = databaseAdapter.beginNewTransaction();
-        try {
-
-            int size = trackedEntities.size();
-
-            for (int i = 0; i < size; i++) {
-                TrackedEntityType trackedEntityType = trackedEntities.get(i);
-
-                trackedEntityTypeHandler.handleTrackedEntity(trackedEntityType);
-            }
-            resourceHandler.handleResource(
-                    resourceType,
-                    serverDate
-            );
-            transaction.setSuccessful();
-        } finally {
-            transaction.end();
-        }
-
-        return trackedEntities;
-    }
-
-    private retrofit2.Call<Payload<TrackedEntityType>> getTrackedEntities(String lastUpdated) {
+    protected retrofit2.Call<Payload<TrackedEntityType>> getCall(UidsQuery query, String lastUpdated) {
         return service.trackedEntities(
                 Fields.<TrackedEntityType>builder().fields(
                         TrackedEntityType.uid, TrackedEntityType.code, TrackedEntityType.name,
@@ -121,7 +63,7 @@ public class TrackedEntityTypeCall extends SyncCall<List<TrackedEntityType>> {
                         TrackedEntityType.description, TrackedEntityType.displayDescription,
                         TrackedEntityType.deleted
                 ).build(),
-                TrackedEntityType.uid.in(uidSet),
+                TrackedEntityType.uid.in(query.uids()),
                 TrackedEntityType.lastUpdated.gt(lastUpdated),
                 false
         );
@@ -132,14 +74,17 @@ public class TrackedEntityTypeCall extends SyncCall<List<TrackedEntityType>> {
         private static final int MAX_UID_LIST_SIZE = 140;
 
         @Override
-        public Call<List<TrackedEntityType>> create(GenericCallData genericCallData, Set<String> uids) {
-            return new TrackedEntityTypeCall(
-                    uids,
-                    genericCallData.databaseAdapter(),
-                    TrackedEntityTypeStore.create(genericCallData.databaseAdapter()),
-                    new ResourceStoreImpl(genericCallData.databaseAdapter()),
-                    genericCallData.retrofit().create(TrackedEntityTypeService.class),
-                    genericCallData.serverDate()
+        public Call<List<TrackedEntityType>> create(GenericCallData data, Set<String> uids) {
+            return new TrackedEntityTypeCall(data,
+                    data.retrofit().create(TrackedEntityTypeService.class),
+                    UidsQuery.create(uids),
+                    MAX_UID_LIST_SIZE,
+                    new TransactionalResourceListPersistor<>(
+                            data,
+                            TrackedEntityTypeHandler.create(data.databaseAdapter()),
+                            ResourceModel.Type.INDICATOR_TYPE,
+                            new TrackedEntityTypeModelBuilder()
+                    )
             );
         }
     };

@@ -164,9 +164,6 @@ public abstract class Program extends BaseNameableObject {
             relationshipType.with(ObjectWithUid.uid), access.with(Access.data.with(DataAccess.write)),
             style.with(ObjectStyle.allFields), programSections.with(ProgramSection.allFields)).build();
 
-    static final Fields<Program> uidAndAccessRead = Fields.<Program>builder().fields(
-            uid, access.with(Access.data.with(DataAccess.read))).build();
-
     @Nullable
     @JsonProperty(VERSION)
     public abstract Integer version();

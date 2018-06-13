@@ -69,7 +69,7 @@ public final class IndicatorEndpointCall extends EndpointPayloadCall<Indicator, 
         }
 
         @Override
-        protected Call<List<Indicator>> createCall(GenericCallData data, Set<String> uids) {
+        public Call<List<Indicator>> create(GenericCallData data, Set<String> uids) {
             return new IndicatorEndpointCall(data,
                     data.retrofit().create(IndicatorService.class),
                     UidsQuery.create(uids),

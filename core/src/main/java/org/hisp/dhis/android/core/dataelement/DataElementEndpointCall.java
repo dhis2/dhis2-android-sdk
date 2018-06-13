@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.UidPayloadCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -41,7 +42,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.util.List;
 import java.util.Set;
 
-public final class DataElementEndpointCall extends EndpointPayloadCall<DataElement, UidsQuery> {
+public final class DataElementEndpointCall extends UidPayloadCall<DataElement> {
     private final DataElementService dataElementService;
 
     private DataElementEndpointCall(GenericCallData data,
@@ -71,7 +72,7 @@ public final class DataElementEndpointCall extends EndpointPayloadCall<DataEleme
         }
 
         @Override
-        protected Call<List<DataElement>> createCall(GenericCallData data, Set<String> uids) {
+        public Call<List<DataElement>> create(GenericCallData data, Set<String> uids) {
             return new DataElementEndpointCall(data,
                     data.retrofit().create(DataElementService.class),
                     UidsQuery.create(uids),

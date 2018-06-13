@@ -136,7 +136,7 @@ public class TrackedEntityTypeCall extends SyncCall<List<TrackedEntityType>> {
         }
 
         @Override
-        protected Call<List<TrackedEntityType>> createCall(GenericCallData genericCallData, Set<String> uids) {
+        public Call<List<TrackedEntityType>> create(GenericCallData genericCallData, Set<String> uids) {
             return new TrackedEntityTypeCall(
                     uids,
                     genericCallData.databaseAdapter(),

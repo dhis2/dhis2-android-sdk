@@ -81,7 +81,7 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
                 List<Program> programs = executor.executeD2Call(programCallFactory.create(genericCallData));
 
                 Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);
-                List<List<ProgramStage>> programStages = executor.executeD2Call(
+                List<ProgramStage> programStages = executor.executeD2Call(
                         programStageCallFactory.create(genericCallData, assignedProgramStageUids));
 
                 Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
@@ -89,8 +89,7 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
                 executor.executeD2Call(trackedEntityTypeCallFactory.create(genericCallData, trackedEntityUids));
                 executor.executeD2Call(relationshipTypeCallFactory.create(genericCallData));
 
-                Set<String> optionSetUids = ProgramParentUidsHelper
-                        .getAssignedOptionSetUids(programs, Utils.flatten(programStages));
+                Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
                 executor.executeD2Call(optionSetCallFactory.create(genericCallData, optionSetUids));
 
                 return programs;

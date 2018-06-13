@@ -66,7 +66,7 @@ public final class ProgramStageEndpointCall extends EndpointPayloadCall<ProgramS
         }
 
         @Override
-        protected Call<List<ProgramStage>> createCall(GenericCallData data, Set<String> uids) {
+        public Call<List<ProgramStage>> create(GenericCallData data, Set<String> uids) {
             return new ProgramStageEndpointCall(data,
                     data.retrofit().create(ProgramStageService.class),
                     UidsQuery.create(uids),

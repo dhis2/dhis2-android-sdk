@@ -93,11 +93,11 @@ public class DataSetParentCall extends SyncCall<Void> {
                 executor.executeD2Call(dataElementCallFactory.create(data,
                         DataSetParentUidsHelper.getDataElementUids(dataSets)));
 
-                List<List<Indicator>> indicators = executor.executeD2Call(indicatorCallFactory.create(data,
+                List<Indicator> indicators = executor.executeD2Call(indicatorCallFactory.create(data,
                         DataSetParentUidsHelper.getIndicatorUids(dataSets)));
 
                 executor.executeD2Call(indicatorTypeCallFactory.create(data,
-                        DataSetParentUidsHelper.getIndicatorTypeUids(Utils.flatten(indicators))));
+                        DataSetParentUidsHelper.getIndicatorTypeUids(indicators)));
 
                 periodHandler.generateAndPersist();
 

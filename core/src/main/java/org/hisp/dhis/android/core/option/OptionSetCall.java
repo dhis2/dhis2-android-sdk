@@ -85,7 +85,7 @@ public class OptionSetCall extends EndpointPayloadCall<OptionSet, UidsQuery> {
         }
 
         @Override
-        protected Call<List<OptionSet>> createCall(GenericCallData data, Set<String> uids) {
+        public Call<List<OptionSet>> create(GenericCallData data, Set<String> uids) {
             return new OptionSetCall(
                     data,
                     data.retrofit().create(OptionSetService.class),

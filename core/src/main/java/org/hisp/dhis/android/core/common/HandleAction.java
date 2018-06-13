@@ -28,41 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
-
-public class ObjectWithoutUidStoreImpl<M extends BaseModel>
-        extends ObjectStoreImpl<M> implements ObjectWithoutUidStore<M> {
-    private final SQLiteStatement updateWhereStatement;
-
-    public ObjectWithoutUidStoreImpl(DatabaseAdapter databaseAdapter,
-                                     SQLiteStatement insertStatement,
-                                     SQLiteStatement updateWhereStatement,
-                                     SQLStatementBuilder builder) {
-        super(databaseAdapter, insertStatement, builder);
-        this.updateWhereStatement = updateWhereStatement;
-    }
-
-    @Override
-    public void updateWhere(@NonNull M m) throws RuntimeException {
-        isNull(m);
-        m.bindToStatement(updateWhereStatement);
-        m.bindToUpdateWhereStatement(updateWhereStatement);
-        executeUpdateDelete(updateWhereStatement);
-    }
-
-    @Override
-    public HandleAction updateOrInsertWhere(@NonNull M m) throws RuntimeException {
-        try {
-            updateWhere(m);
-            return HandleAction.Update;
-        } catch (Exception e){
-            insert(m);
-            return HandleAction.Insert;
-        }
-    }
+public enum HandleAction {
+    Insert, Update, Delete
 }

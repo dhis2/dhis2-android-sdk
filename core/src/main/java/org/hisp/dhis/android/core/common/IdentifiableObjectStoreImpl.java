@@ -72,11 +72,13 @@ public class IdentifiableObjectStoreImpl<M extends BaseIdentifiableObjectModel>
     }
 
     @Override
-    public final void updateOrInsert(@NonNull M m) throws RuntimeException {
+    public final HandleAction updateOrInsert(@NonNull M m) throws RuntimeException {
         try {
             update(m);
+            return HandleAction.Update;
         } catch (Exception e){
             insert(m);
+            return HandleAction.Insert;
         }
     }
 

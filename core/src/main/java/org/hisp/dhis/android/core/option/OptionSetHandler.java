@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -42,7 +43,7 @@ public final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, O
     }
 
     @Override
-    protected void afterObjectPersisted(OptionSet optionSet) {
+    protected void afterObjectHandled(OptionSet optionSet, HandleAction action) {
         optionHandler.handleMany(optionSet.options(), new OptionModelBuilder());
     }
 

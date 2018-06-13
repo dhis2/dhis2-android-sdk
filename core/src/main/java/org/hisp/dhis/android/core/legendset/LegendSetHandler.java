@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.legendset;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -50,7 +51,7 @@ public final class LegendSetHandler extends IdentifiableHandlerImpl<LegendSet, L
     }
 
     @Override
-    protected void afterObjectPersisted(LegendSet legendSet) {
+    protected void afterObjectHandled(LegendSet legendSet, HandleAction action) {
         legendHandler.handleMany(legendSet.legends(), new LegendModelBuilder(legendSet));
     }
 }

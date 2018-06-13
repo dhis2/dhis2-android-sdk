@@ -39,15 +39,14 @@ public class IdentifiableHandlerImpl<P extends BaseIdentifiableObject, M extends
     }
 
     @Override
-    protected void deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder) {
+    protected HandleAction deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder) {
         M m = modelBuilder.buildModel(p);
         String modelUid = m.uid();
         if (isDeleted(p) && modelUid != null) {
             store.delete(modelUid);
+            return HandleAction.Delete;
         } else {
-            store.updateOrInsert(m);
+            return store.updateOrInsert(m);
         }
-
-        this.afterObjectPersisted(p);
     }
 }

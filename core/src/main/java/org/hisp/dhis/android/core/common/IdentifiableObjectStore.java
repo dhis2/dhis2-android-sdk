@@ -38,7 +38,7 @@ public interface IdentifiableObjectStore<M extends BaseIdentifiableObjectModel> 
 
     void update(@NonNull M m) throws RuntimeException;
 
-    void updateOrInsert(@NonNull M m) throws RuntimeException;
+    HandleAction updateOrInsert(@NonNull M m) throws RuntimeException;
 
     Set<String> selectUids() throws RuntimeException;
 

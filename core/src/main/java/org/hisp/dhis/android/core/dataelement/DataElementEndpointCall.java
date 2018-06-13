@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
@@ -48,8 +47,9 @@ public final class DataElementEndpointCall extends UidPayloadCall<DataElement> {
     private DataElementEndpointCall(GenericCallData data,
                                     DataElementService dataElementService,
                                     UidsQuery query,
+                                    int uidLimit,
                                     ListPersistor<DataElement> persistor) {
-        super(data, ResourceModel.Type.DATA_ELEMENT, query, persistor);
+        super(data, ResourceModel.Type.DATA_ELEMENT, query, uidLimit, persistor);
         this.dataElementService = dataElementService;
     }
 
@@ -64,18 +64,14 @@ public final class DataElementEndpointCall extends UidPayloadCall<DataElement> {
 
     public static final UidsCallFactory<DataElement> FACTORY = new UidsCallFactory<DataElement>() {
 
-        private static final int UID_LIMIT = 64;
-
-        @Override
-        protected int getUidLimit() {
-            return UID_LIMIT;
-        }
+        private static final int MAX_UID_LIST_SIZE = 64;
 
         @Override
         public Call<List<DataElement>> create(GenericCallData data, Set<String> uids) {
             return new DataElementEndpointCall(data,
                     data.retrofit().create(DataElementService.class),
                     UidsQuery.create(uids),
+                    MAX_UID_LIST_SIZE,
                     new TransactionalResourceListPersistor<>(
                             data,
                             DataElementHandler.create(data.databaseAdapter()),

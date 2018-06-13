@@ -6,8 +6,5 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class UidsCallFactory<T> {
-
-    protected abstract int getUidLimit();
-
     public abstract Call<List<T>> create(GenericCallData genericCallData, Set<String> uids);
 }

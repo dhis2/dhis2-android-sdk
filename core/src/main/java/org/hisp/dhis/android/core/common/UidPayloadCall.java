@@ -39,15 +39,17 @@ import retrofit2.Call;
 
 public abstract class UidPayloadCall<P> extends AbstractEndpointListCall<P, UidsQuery, Payload<P>> {
 
+    private int uidLimit;
+
     public UidPayloadCall(GenericCallData data,
                           ResourceModel.Type resourceType,
                           UidsQuery query,
+                          int uidLimit,
                           ListPersistor<P> persistor) {
 
         super(data, resourceType, query, persistor);
+        this.uidLimit = uidLimit;
     }
-
-    private int uidLimit = 64;
 
     @Override
     protected List<P> getObjects(UidsQuery query, String lastUpdated) throws D2CallException {

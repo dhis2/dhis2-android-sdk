@@ -131,11 +131,6 @@ public class TrackedEntityTypeCall extends SyncCall<List<TrackedEntityType>> {
         private static final int UID_LIMIT = 64;
 
         @Override
-        protected int getUidLimit() {
-            return UID_LIMIT;
-        }
-
-        @Override
         public Call<List<TrackedEntityType>> create(GenericCallData genericCallData, Set<String> uids) {
             return new TrackedEntityTypeCall(
                     uids,

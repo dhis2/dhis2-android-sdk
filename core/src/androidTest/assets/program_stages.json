@@ -61,7 +61,10 @@
             "displayFormName": "WHOMCH Smoking",
             "zeroIsSignificant": false,
             "displayShortName": "Smoking",
-            "valueType": "BOOLEAN"
+            "valueType": "BOOLEAN",
+            "optionSet": {
+              "id": "VQ2lai3OfVG"
+            }
           }
         },
         {

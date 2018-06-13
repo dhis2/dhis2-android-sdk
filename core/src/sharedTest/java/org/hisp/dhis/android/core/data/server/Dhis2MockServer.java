@@ -107,9 +107,9 @@ public class Dhis2MockServer {
         enqueueMockResponse("category_combos.json");
         enqueueMockResponse("programs.json");
         enqueueMockResponse("program_stages.json");
-        enqueueMockResponse("tracked_entities.json");
+        enqueueMockResponse("tracked_entity_types.json");
         enqueueMockResponse("relationship_types.json");
-        // enqueueMockResponse("option_sets.json");
+        enqueueMockResponse("option_sets.json");
         enqueueMockResponse(orgUnitPath);
         enqueueMockResponse("data_sets.json");
         enqueueMockResponse("data_elements.json");

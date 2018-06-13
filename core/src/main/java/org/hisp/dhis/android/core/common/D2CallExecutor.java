@@ -57,7 +57,7 @@ public final class D2CallExecutor {
         }
     }
 
-    public <C> List<C> executeD2Calls(Collection<Callable<C>> calls) throws D2CallException {
+    public <C> List<C> executeD2Call(Collection<Callable<C>> calls) throws D2CallException {
         List<C> results = new ArrayList<>(calls.size());
         for (Callable<C> call: calls) {
             results.add(executeD2Call(call));

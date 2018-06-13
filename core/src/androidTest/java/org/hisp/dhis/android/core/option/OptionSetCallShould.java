@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
@@ -86,6 +87,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
 
     private MockWebServer mockWebServer;
     private Call<List<OptionSet>> optionSetCall;
+    private D2CallExecutor d2CallExecutor;
 
     @Override
     @Before
@@ -208,11 +210,13 @@ public class OptionSetCallShould extends AbsStoreTestCase {
 
         optionSetCall = OptionSetCall.FACTORY.create(data, uids);
 
+        d2CallExecutor = new D2CallExecutor();
+
     }
 
     @Test
     public void persist_option_set_with_options_in_data_base_when_call() throws Exception {
-        optionSetCall.call();
+        d2CallExecutor.executeD2Call(optionSetCall);
 
         Cursor optionSetCursor = database().query(OptionSetModel.TABLE,
                 OPTION_SET_PROJECTION, null, null, null, null, null);
@@ -286,7 +290,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
 
     @Test
     public void return_option_set_model_after_call() throws Exception {
-        List<OptionSet> optionSetList = optionSetCall.call();
+        List<OptionSet> optionSetList = d2CallExecutor.executeD2Call(optionSetCall);
 
         assertThat(optionSetList.size()).isEqualTo(1);
 

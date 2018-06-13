@@ -83,7 +83,7 @@ public final class SearchOrganisationUnitCall extends SyncCall<List<Organisation
             return new SearchOrganisationUnitCall(
                     retrofit.create(OrganisationUnitService.class),
                     SearchOrganisationUnitHandler.create(databaseAdapter, userId),
-                    UidsQuery.create(uids, null)
+                    UidsQuery.create(uids)
             );
         }
     };

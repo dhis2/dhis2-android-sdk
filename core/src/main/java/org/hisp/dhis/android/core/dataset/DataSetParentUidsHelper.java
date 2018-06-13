@@ -36,7 +36,20 @@ import java.util.Set;
 
 final class DataSetParentUidsHelper {
 
-    private DataSetParentUidsHelper() {}
+    private DataSetParentUidsHelper() {
+    }
+
+    static Set<String> getDataElementUids(List<DataSet> dataSets) {
+        Set<String> uids = new HashSet<>();
+        for (DataSet dataSet : dataSets) {
+            List<DataElementUids> dataSetElements = dataSet.dataSetElements();
+            assert dataSetElements != null;
+            for (DataElementUids dataSetElement : dataSetElements) {
+                uids.add(dataSetElement.dataElement().uid());
+            }
+        }
+        return uids;
+    }
 
     static Set<String> getIndicatorUids(List<DataSet> dataSets) {
         Set<String> uids = new HashSet<>();

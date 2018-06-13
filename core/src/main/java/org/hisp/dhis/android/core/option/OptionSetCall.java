@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.UidPayloadCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -43,12 +43,15 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.util.List;
 import java.util.Set;
 
-public class OptionSetCall extends EndpointPayloadCall<OptionSet, UidsQuery> {
+public final class OptionSetCall extends UidPayloadCall<OptionSet> {
     private final OptionSetService optionSetService;
 
-    OptionSetCall(GenericCallData data, OptionSetService optionSetService, UidsQuery query,
+    private OptionSetCall(GenericCallData data,
+                  OptionSetService optionSetService,
+                  UidsQuery query,
+                  int uidLimit,
                   ListPersistor<OptionSet> persistor) {
-        super(data, ResourceModel.Type.OPTION_SET, query, persistor);
+        super(data, ResourceModel.Type.OPTION_SET, query, uidLimit, persistor);
         this.optionSetService = optionSetService;
     }
 
@@ -77,12 +80,15 @@ public class OptionSetCall extends EndpointPayloadCall<OptionSet, UidsQuery> {
 
     public static final UidsCallFactory<OptionSet> FACTORY = new UidsCallFactory<OptionSet>() {
 
+        private static final int MAX_UID_LIST_SIZE = 130;
+
         @Override
         public Call<List<OptionSet>> create(GenericCallData data, Set<String> uids) {
             return new OptionSetCall(
                     data,
                     data.retrofit().create(OptionSetService.class),
-                    UidsQuery.create(uids, 64),
+                    UidsQuery.create(uids),
+                    MAX_UID_LIST_SIZE,
                     new TransactionalResourceListPersistor<>(
                             data,
                             OptionSetHandler.create(data.databaseAdapter()),

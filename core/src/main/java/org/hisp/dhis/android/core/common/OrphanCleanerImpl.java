@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
 
-public class OrphanCleanerImpl<P extends IdentifiableObject, C extends IdentifiableObject>
+public class OrphanCleanerImpl<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface>
         implements OrphanCleaner<P, C> {
 
     private final String tableName;

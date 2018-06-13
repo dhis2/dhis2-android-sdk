@@ -52,7 +52,7 @@ public final class UidsHelper {
         return uids;
     }
 
-    private static <O extends IdentifiableObject> String[] uidsArray(Collection<O> objects) {
+    private static <O extends ObjectWithUidInterface> String[] uidsArray(Collection<O> objects) {
         String[] uids = new String[objects.size()];
         int i = 0;
         for (O o: objects) {
@@ -61,7 +61,7 @@ public final class UidsHelper {
         return uids;
     }
 
-    public static <O extends IdentifiableObject> String commaSeparatedUidsWithSingleQuotationMarks(
+    public static <O extends ObjectWithUidInterface> String commaSeparatedUidsWithSingleQuotationMarks(
             Collection<O> objects) {
         return Utils.commaAndSpaceSeparatedArrayValues(uidsArray(objects));
     }

@@ -28,8 +28,10 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +43,7 @@ import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -56,6 +59,9 @@ public class OptionSetHandlerShould {
     private GenericHandler<Option, OptionModel> optionHandler;
 
     @Mock
+    private OrphanCleaner<OptionSet, Option> optionCleaner;
+
+    @Mock
     private List<Option> options;
 
     // object to test
@@ -64,20 +70,34 @@ public class OptionSetHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler);
+        optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler, optionCleaner);
         when(optionSet.uid()).thenReturn("test_option_set_uid");
         when(optionSet.options()).thenReturn(options);
     }
 
     @Test
-    public void handle_option_sets() {
+    public void handle_options() {
         optionSetHandler.handle(optionSet, new OptionSetModelBuilder());
         verify(optionHandler).handleMany(same(options), any(OptionModelBuilder.class));
     }
 
     @Test
+    public void clean_orphan_options_after_update() {
+        when(optionSetStore.updateOrInsert(any(OptionSetModel.class))).thenReturn(HandleAction.Update);
+        optionSetHandler.handle(optionSet, new OptionSetModelBuilder());
+        verify(optionCleaner).deleteOrphan(optionSet, options);
+    }
+
+    @Test
+    public void not_clean_orphan_options_after_insert() {
+        when(optionSetStore.updateOrInsert(any(OptionSetModel.class))).thenReturn(HandleAction.Insert);
+        optionSetHandler.handle(optionSet, new OptionSetModelBuilder());
+        verify(optionCleaner, never()).deleteOrphan(optionSet, options);
+    }
+
+    @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<OptionSet, OptionSetModel> genericHandler =
-                new OptionSetHandler(null,null);
+                new OptionSetHandler(null,null, null);
     }
 }

@@ -37,7 +37,7 @@ import java.util.Set;
 
 import retrofit2.Call;
 
-public abstract class UidPayloadCall<P> extends AbstractEndpointListCall<P, UidsQuery, Payload<P>> {
+public abstract class UidPayloadCall<P> extends AbstractEndpointListCall<P, UidsQuery> {
 
     private final int uidLimit;
 

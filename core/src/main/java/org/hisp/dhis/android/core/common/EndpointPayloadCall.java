@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
 
-public abstract class EndpointPayloadCall<P, Q extends BaseQuery> extends AbstractEndpointListCall<P, Q, Payload<P>> {
+public abstract class EndpointPayloadCall<P, Q extends BaseQuery> extends AbstractEndpointListCall<P, Q> {
 
     public EndpointPayloadCall(GenericCallData data,
                                ResourceModel.Type resourceType,

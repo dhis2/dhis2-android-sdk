@@ -114,9 +114,6 @@ public abstract class DataSet extends BaseNameableObject {
             access.with(Access.data.with(DataAccess.write)),
             style.with(ObjectStyle.allFields)).build();
 
-    static final Fields<DataSet> uidAndAccessRead = Fields.<DataSet>builder().fields(
-            uid, access.with(Access.data.with(DataAccess.read))).build();
-
     @Nullable
     @JsonProperty(PERIOD_TYPE)
     public abstract PeriodType periodType();

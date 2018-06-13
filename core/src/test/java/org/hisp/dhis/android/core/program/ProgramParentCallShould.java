@@ -44,7 +44,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;

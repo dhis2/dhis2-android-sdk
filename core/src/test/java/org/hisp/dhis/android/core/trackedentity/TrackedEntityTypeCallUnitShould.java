@@ -172,7 +172,7 @@ public class TrackedEntityTypeCallUnitShould {
     @SuppressWarnings("unchecked")
     public void invoke_server_with_correct_parameters_after_call_with_last_updated() throws Exception {
         String date = "2014-11-25T09:37:53.358";
-        when(resourceStore.getLastUpdated(eq(ResourceModel.Type.TRACKED_ENTITY))).thenReturn(date);
+        when(resourceStore.getLastUpdated(eq(ResourceModel.Type.TRACKED_ENTITY_TYPE))).thenReturn(date);
         when(payload.items()).thenReturn(Collections.singletonList(trackedEntityType));
 
         call.call();

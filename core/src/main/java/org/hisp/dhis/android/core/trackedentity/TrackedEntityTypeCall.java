@@ -48,7 +48,7 @@ public class TrackedEntityTypeCall extends UidPayloadCall<TrackedEntityType> {
                           UidsQuery query,
                           int uidLimit,
                           ListPersistor<TrackedEntityType> persistor) {
-        super(data, ResourceModel.Type.TRACKED_ENTITY, query, uidLimit, persistor);
+        super(data, ResourceModel.Type.TRACKED_ENTITY_TYPE, query, uidLimit, persistor);
         this.trackedEntityTypeService = service;
     }
 
@@ -75,7 +75,7 @@ public class TrackedEntityTypeCall extends UidPayloadCall<TrackedEntityType> {
                     new TransactionalResourceListPersistor<>(
                             data,
                             TrackedEntityTypeHandler.create(data.databaseAdapter()),
-                            ResourceModel.Type.INDICATOR_TYPE,
+                            ResourceModel.Type.TRACKED_ENTITY_TYPE,
                             new TrackedEntityTypeModelBuilder()
                     )
             );

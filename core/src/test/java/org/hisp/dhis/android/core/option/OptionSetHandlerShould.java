@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.option;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.junit.Before;
@@ -38,6 +39,8 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -50,7 +53,7 @@ public class OptionSetHandlerShould {
     private OptionSet optionSet;
 
     @Mock
-    private OptionHandler optionHandler;
+    private GenericHandler<Option, OptionModel> optionHandler;
 
     @Mock
     private List<Option> options;
@@ -67,9 +70,9 @@ public class OptionSetHandlerShould {
     }
 
     @Test
-    public void handle_option_sets() throws Exception {
+    public void handle_option_sets() {
         optionSetHandler.handle(optionSet, new OptionSetModelBuilder());
-        verify(optionHandler).handleOptions(options);
+        verify(optionHandler).handleMany(same(options), any(OptionModelBuilder.class));
     }
 
     @Test

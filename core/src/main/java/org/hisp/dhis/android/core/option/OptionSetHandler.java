@@ -27,27 +27,27 @@
  */
 package org.hisp.dhis.android.core.option;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionSetModel> {
-    private final OptionHandler optionHandler;
+public final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionSetModel> {
+    private final GenericHandler<Option, OptionModel> optionHandler;
 
-    OptionSetHandler(IdentifiableObjectStore<OptionSetModel> optionSetStore, OptionHandler optionHandler) {
+    OptionSetHandler(IdentifiableObjectStore<OptionSetModel> optionSetStore,
+                     GenericHandler<Option, OptionModel> optionHandler) {
         super(optionSetStore);
         this.optionHandler = optionHandler;
     }
 
-    public static OptionSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new OptionSetHandler(OptionSetStore.create(databaseAdapter),
-                new OptionHandler(new OptionStoreImpl(databaseAdapter),
-                        ObjectStyleHandler.create(databaseAdapter)));
-    }
-
     @Override
     protected void afterObjectPersisted(OptionSet optionSet) {
-        optionHandler.handleOptions(optionSet.options());
+        optionHandler.handleMany(optionSet.options(), new OptionModelBuilder());
+    }
+
+    public static OptionSetHandler create(DatabaseAdapter databaseAdapter) {
+        return new OptionSetHandler(OptionSetStore.create(databaseAdapter),
+                OptionHandler.create(databaseAdapter));
     }
 }

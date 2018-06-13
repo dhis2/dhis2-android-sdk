@@ -28,24 +28,16 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class OptionStore {
 
-import java.util.Date;
+    private OptionStore() {}
 
-public interface OptionStore extends DeletableStore {
-    long insert(
-            @NonNull String uid, @NonNull String code, @NonNull String name,
-            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @NonNull String optionSet
-    );
-
-    int update(
-            @NonNull String uid, @NonNull String code, @NonNull String name,
-            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @NonNull String optionSet, @NonNull String whereOptionUid
-    );
-
-    int delete(@NonNull String uid);
+    public static IdentifiableObjectStore<OptionModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.identifiableStore(databaseAdapter,
+                OptionModel.TABLE, new OptionModel.Columns().all());
+    }
 }

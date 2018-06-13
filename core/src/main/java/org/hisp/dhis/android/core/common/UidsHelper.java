@@ -39,6 +39,10 @@ public final class UidsHelper {
         return addUids(new HashSet<String>(), objects);
     }
 
+    public static String getUidOrNull(IdentifiableObject object) {
+        return object == null ? null : object.uid();
+    }
+
     public static <O extends IdentifiableObject> Set<String> addUids(Set<String> uids, Collection<O> objects) {
         for (IdentifiableObject object: objects) {
             uids.add(object.uid());

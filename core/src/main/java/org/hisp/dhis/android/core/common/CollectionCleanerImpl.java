@@ -25,44 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.common;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
 
-public abstract class GenericHandlerBaseImpl<P, M extends BaseModel> implements GenericHandler<P, M> {
+public class CollectionCleanerImpl<P extends ObjectWithUidInterface> implements CollectionCleaner<P> {
 
-    @Override
-    public final void handle(P p, ModelBuilder<P, M> modelBuilder) {
-        if (p == null) {
-            return;
-        }
-        HandleAction action = deleteOrPersist(p, modelBuilder);
-        afterObjectHandled(p, action);
+    private final String tableName;
+    private final DatabaseAdapter databaseAdapter;
+
+    public CollectionCleanerImpl(String tableName, DatabaseAdapter databaseAdapter) {
+        this.tableName = tableName;
+        this.databaseAdapter = databaseAdapter;
     }
 
     @Override
-    public final void handleMany(Collection<P> pCollection, ModelBuilder<P, M> modelBuilder) {
-        if (pCollection != null) {
-            for(P p : pCollection) {
-                handle(p, modelBuilder);
-            }
-            afterCollectionHandled(pCollection);
+    public boolean deleteNotPresent(Collection<P> objects) {
+        if (objects == null) {
+            return false;
         }
-    }
 
-    protected abstract HandleAction deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder);
-
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void afterObjectHandled(P p, HandleAction action) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
-    }
-
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void afterCollectionHandled(Collection<P> pCollection) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
+        String objectUids = UidsHelper.commaSeparatedUidsWithSingleQuotationMarks(objects);
+        String clause = BaseIdentifiableObjectModel.Columns.UID + " NOT IN (" + objectUids + ");";
+        return databaseAdapter.database().delete(tableName, clause, null) > 0;
     }
 }

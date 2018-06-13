@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
@@ -45,6 +46,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
@@ -81,6 +83,9 @@ public class ProgramHandlerShould {
 
     @Mock
     private ParentOrphanCleaner<Program> orphanCleaner;
+
+    @Mock
+    private CollectionCleaner<Program> collectionCleaner;
 
     @Mock
     private Program program;
@@ -124,7 +129,8 @@ public class ProgramHandlerShould {
 
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler, programIndicatorHandler, programRuleHandler,
-                programTrackedEntityAttributeHandler, programSectionHandler, styleHandler, orphanCleaner);
+                programTrackedEntityAttributeHandler, programSectionHandler, styleHandler, orphanCleaner,
+                collectionCleaner);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.code()).thenReturn("test_program_code");
@@ -218,5 +224,12 @@ public class ProgramHandlerShould {
         when(programStore.updateOrInsert(any(ProgramModel.class))).thenReturn(HandleAction.Insert);
         programHandler.handle(program, new ProgramModelBuilder());
         verify(orphanCleaner, never()).deleteOrphan(program);
+    }
+
+    @Test
+    public void call_collection_cleaner_when_calling_handle_many() {
+        List<Program> programs = Collections.singletonList(program);
+        programHandler.handleMany(programs, new ProgramModelBuilder());
+        verify(collectionCleaner).deleteNotPresent(programs);
     }
 }

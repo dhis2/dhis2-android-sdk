@@ -77,14 +77,12 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
-    private final Context context;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
        @NonNull Context context) {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
-        this.context = context;
         SSLContextInitializer.initializeSSLContext(context);
     }
 
@@ -96,11 +94,6 @@ public final class D2 {
     @NonNull
     public DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
-    }
-
-    @NonNull
-    public Context context() {
-        return context;
     }
 
     @NonNull
@@ -116,7 +109,6 @@ public final class D2 {
     @NonNull
     public Callable<Unit> logout() {
         return LogOutUserCallable.createToLogOut(databaseAdapter);
-
     }
 
     @NonNull
@@ -164,6 +156,11 @@ public final class D2 {
     public void syncTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid) {
         TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit)
                 .forceSyncReservedValues(attributeUid, organisationUnitUid);
+    }
+
+    public void syncAllTrackedEntityAttributeReservedValues() {
+        TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit)
+                .syncAllTrackedEntityAttributeReservedValues();
     }
 
     @NonNull

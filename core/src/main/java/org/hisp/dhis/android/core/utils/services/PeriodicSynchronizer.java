@@ -35,11 +35,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import org.hisp.dhis.android.core.D2;
-
 public class PeriodicSynchronizer extends BroadcastReceiver {
     public static final int FREQUENCY_ONE_MINUTE = 0;
-    public static final int FREQUENCY_15_MINTUES = 1;
+    public static final int FREQUENCY_15_MINUTES = 1;
     public static final int FREQUENCY_ONE_HOUR = 2;
     public static final int FREQUENCY_ONE_DAY = 3;
     public static final int FREQUENCY_DISABLED = 4;
@@ -60,20 +58,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(CLASS_TAG, "onReceive.");
-        syncIfIsUserLoggedIn();
-    }
-
-    private static void syncIfIsUserLoggedIn() {
-        try {
-            if (D2.d2.isUserLoggedIn().call()) {
-                Log.d(CLASS_TAG, "Sync.");
-                D2Synchronizer.syncReservedValues();
-            } else {
-                Log.d(CLASS_TAG, "Not sync.");
-            }
-        } catch (Exception e) {
-            Log.d(CLASS_TAG, e.getMessage());
-        }
+        D2Synchronizer.sync();
     }
 
     public static void activatePeriodicSynchronizer(Context context, int minutes) {
@@ -95,8 +80,6 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), intervalMillis,
                     pendingIntent);
         }
-
-        syncIfIsUserLoggedIn();
     }
 
     public static void cancelPeriodicSynchronizer(Context context) {
@@ -124,7 +107,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
             case FREQUENCY_ONE_MINUTE:
                 minutes = 1;
                 break;
-            case FREQUENCY_15_MINTUES:
+            case FREQUENCY_15_MINUTES:
                 minutes = 15;
                 break;
             case FREQUENCY_ONE_HOUR:

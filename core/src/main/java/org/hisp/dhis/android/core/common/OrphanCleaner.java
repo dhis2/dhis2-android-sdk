@@ -30,6 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import java.util.Collection;
 
-public interface OrphanCleaner<P extends IdentifiableObject, C extends IdentifiableObject> {
+public interface OrphanCleaner<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface> {
     boolean deleteOrphan(P parent, Collection<C> children);
 }

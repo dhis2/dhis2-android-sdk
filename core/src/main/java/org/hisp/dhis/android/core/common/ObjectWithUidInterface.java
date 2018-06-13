@@ -28,19 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import java.util.Date;
-
-public interface IdentifiableObject extends ObjectWithUidInterface {
+public interface ObjectWithUidInterface {
     String uid();
-
-    String code();
-
-    String name();
-
-    String displayName();
-
-    Date created();
-
-    Date lastUpdated();
-
 }

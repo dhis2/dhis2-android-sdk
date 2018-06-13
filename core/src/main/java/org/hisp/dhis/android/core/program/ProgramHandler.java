@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramModel> {
@@ -46,6 +47,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
             programTrackedEntityAttributeHandler;
     private final GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private final ParentOrphanCleaner<Program> orphanCleaner;
 
     ProgramHandler(IdentifiableObjectStore<ProgramModel> programStore,
                    ProgramRuleVariableHandler programRuleVariableHandler,
@@ -54,7 +56,8 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
                    GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
                            programTrackedEntityAttributeHandler,
                    GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler,
-                   GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
+                   GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
+                   ParentOrphanCleaner<Program> orphanCleaner) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
@@ -62,6 +65,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
         this.programTrackedEntityAttributeHandler = programTrackedEntityAttributeHandler;
         this.programSectionHandler = programSectionHandler;
         this.styleHandler = styleHandler;
+        this.orphanCleaner = orphanCleaner;
     }
 
     public static ProgramHandler create(DatabaseAdapter databaseAdapter) {
@@ -72,7 +76,8 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
                 ProgramRuleHandler.create(databaseAdapter),
                 ProgramTrackedEntityAttributeHandler.create(databaseAdapter),
                 ProgramSectionHandler.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter)
+                ObjectStyleHandler.create(databaseAdapter),
+                ProgramOrphanCleaner.create(databaseAdapter)
         );
     }
 
@@ -85,5 +90,9 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
         programSectionHandler.handleMany(program.programSections(), new ProgramSectionModelBuilder());
         styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(), ProgramModel.TABLE));
+
+        if (action == HandleAction.Update) {
+            orphanCleaner.deleteOrphan(program);
+        }
     }
 }

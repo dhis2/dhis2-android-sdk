@@ -29,14 +29,18 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-public class TrackedEntityTypeHandler {
+public final class TrackedEntityTypeHandler {
 
-    private final TrackedEntityTypeStore store;
+    private TrackedEntityTypeHandler() {}
 
-    public TrackedEntityTypeHandler(@NonNull TrackedEntityTypeStore store) {
-        this.store = store;
+    public static GenericHandler<TrackedEntityType, TrackedEntityTypeModel> create(DatabaseAdapter databaseAdapter) {
+        return new IdentifiableHandlerImpl<>()
     }
 
     public void handleTrackedEntity(@NonNull TrackedEntityType trackedEntityType) {

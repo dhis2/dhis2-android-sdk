@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -130,7 +131,8 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
         TrackedEntityTypeService service = retrofit.create(TrackedEntityTypeService.class);
 
         HashSet<String> uids = new HashSet<>(Arrays.asList("kIeke8tAQnd", "nEenWmSyUEp"));
-        TrackedEntityTypeStore trackedEntityTypeStore = new TrackedEntityTypeStoreImpl(databaseAdapter());
+        IdentifiableObjectStore<TrackedEntityTypeModel> trackedEntityTypeStore =
+                TrackedEntityTypeStore.create(databaseAdapter());
         ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
         trackedEntityCall = new TrackedEntityTypeCall(

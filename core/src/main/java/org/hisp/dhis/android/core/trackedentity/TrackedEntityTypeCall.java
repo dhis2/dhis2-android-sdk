@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
@@ -53,7 +54,7 @@ public class TrackedEntityTypeCall extends SyncCall<List<TrackedEntityType>> {
 
     private final TrackedEntityTypeService service;
     private final DatabaseAdapter databaseAdapter;
-    private final TrackedEntityTypeStore trackedEntityTypeStore;
+    private final IdentifiableObjectStore<TrackedEntityTypeModel> trackedEntityTypeStore;
     private final ResourceStore resourceStore;
     private final Set<String> uidSet;
     private final Date serverDate;
@@ -61,7 +62,7 @@ public class TrackedEntityTypeCall extends SyncCall<List<TrackedEntityType>> {
 
     TrackedEntityTypeCall(@Nullable Set<String> uidSet,
                           @NonNull DatabaseAdapter databaseAdapter,
-                          @NonNull TrackedEntityTypeStore trackedEntityTypeStore,
+                          @NonNull IdentifiableObjectStore<TrackedEntityTypeModel> trackedEntityTypeStore,
                           @NonNull ResourceStore resourceStore,
                           @NonNull TrackedEntityTypeService service,
                           @NonNull Date serverDate) {
@@ -88,7 +89,7 @@ public class TrackedEntityTypeCall extends SyncCall<List<TrackedEntityType>> {
         List<TrackedEntityType> trackedEntities
                 = new APICallExecutor().executePayloadCall(getTrackedEntities(lastUpdated));
 
-        TrackedEntityTypeHandler trackedEntityTypeHandler = new TrackedEntityTypeHandler(trackedEntityTypeStore);
+        TrackedEntityTypeHandler trackedEntityTypeHandler = TrackedEntityTypeHandler.create(databaseAdapter);
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
 
@@ -135,7 +136,7 @@ public class TrackedEntityTypeCall extends SyncCall<List<TrackedEntityType>> {
             return new TrackedEntityTypeCall(
                     uids,
                     genericCallData.databaseAdapter(),
-                    new TrackedEntityTypeStoreImpl(genericCallData.databaseAdapter()),
+                    TrackedEntityTypeStore.create(genericCallData.databaseAdapter()),
                     new ResourceStoreImpl(genericCallData.databaseAdapter()),
                     genericCallData.retrofit().create(TrackedEntityTypeService.class),
                     genericCallData.serverDate()

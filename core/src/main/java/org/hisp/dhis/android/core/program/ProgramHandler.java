@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -76,7 +77,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
     }
 
     @Override
-    protected void afterObjectPersisted(Program program) {
+    protected void afterObjectHandled(Program program, HandleAction action) {
         programTrackedEntityAttributeHandler.handleMany(program.programTrackedEntityAttributes(),
                 new ProgramTrackedEntityAttributeModelBuilder());
         programIndicatorHandler.handleMany(program.programIndicators(), new ProgramIndicatorModelBuilder());

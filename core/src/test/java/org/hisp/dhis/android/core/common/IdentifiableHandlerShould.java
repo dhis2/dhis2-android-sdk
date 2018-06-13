@@ -87,7 +87,7 @@ public class IdentifiableHandlerShould {
 
         genericHandler = new IdentifiableHandlerImpl<BaseIdentifiableObject, NameableMockModelInterface>(store) {
             @Override
-            protected void afterObjectPersisted(BaseIdentifiableObject BaseIdentifiableObject) {
+            protected void afterObjectHandled(BaseIdentifiableObject BaseIdentifiableObject, HandleAction action) {
                 testCall.call(BaseIdentifiableObject);
             }
         };

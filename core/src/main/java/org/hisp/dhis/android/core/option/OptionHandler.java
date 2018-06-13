@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -46,7 +47,7 @@ final class OptionHandler extends IdentifiableHandlerImpl<Option, OptionModel> {
     }
 
     @Override
-    protected void afterObjectPersisted(Option option) {
+    protected void afterObjectHandled(Option option, HandleAction action) {
         styleHandler.handle(option.style(),
                 new ObjectStyleModelBuilder(option.uid(), OptionModel.TABLE));
     }

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -46,7 +47,7 @@ public class UserHandler extends IdentifiableHandlerImpl<User, UserModel> {
     }
 
     @Override
-    protected void afterObjectPersisted(User user) {
+    protected void afterObjectHandled(User user, HandleAction action) {
         userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
     }
 }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
@@ -95,7 +96,7 @@ public class ProgramIndicatorHandler extends IdentifiableHandlerImpl<ProgramIndi
     }
 
     @Override
-    protected void afterObjectPersisted(ProgramIndicator programIndicator) {
+    protected void afterObjectHandled(ProgramIndicator programIndicator, HandleAction action) {
         legendSetHandler.handleMany(programIndicator.legendSets(), new LegendSetModelBuilder());
         programIndicatorLegendSetLinkHandler.handleMany(programIndicator.uid(), programIndicator.legendSets(),
                 new ProgramIndicatorLegendSetLinkModelBuilder(programIndicator));

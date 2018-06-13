@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -67,7 +68,7 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
     }
 
     @Override
-    protected void afterObjectPersisted(OrganisationUnit organisationUnit) {
+    protected void afterObjectHandled(OrganisationUnit organisationUnit, HandleAction action) {
         UserOrganisationUnitLinkModelBuilder modelBuilder = new UserOrganisationUnitLinkModelBuilder(scope, user);
         userOrganisationUnitLinkStore.updateOrInsertWhere(modelBuilder.buildModel(organisationUnit));
 

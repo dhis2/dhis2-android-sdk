@@ -56,11 +56,13 @@ public class ObjectWithoutUidStoreImpl<M extends BaseModel>
     }
 
     @Override
-    public void updateOrInsertWhere(@NonNull M m) throws RuntimeException {
+    public HandleAction updateOrInsertWhere(@NonNull M m) throws RuntimeException {
         try {
             updateWhere(m);
+            return HandleAction.Update;
         } catch (Exception e){
             insert(m);
+            return HandleAction.Insert;
         }
     }
 }

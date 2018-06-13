@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
@@ -54,7 +55,7 @@ public class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSectio
     }
 
     @Override
-    protected void afterObjectPersisted(ProgramSection programSection) {
+    protected void afterObjectHandled(ProgramSection programSection, HandleAction action) {
         programSectionAttributeLinkHandler.handleMany(programSection.uid(),
                 programSection.attributes(), new ProgramSectionAttributeLinkModelBuilder(programSection));
         styleHandler.handle(programSection.style(), new ObjectStyleModelBuilder(programSection.uid(),

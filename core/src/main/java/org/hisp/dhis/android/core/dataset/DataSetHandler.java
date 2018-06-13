@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -53,7 +54,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
     }
 
     @Override
-    protected void afterObjectPersisted(DataSet dataSet) {
+    protected void afterObjectHandled(DataSet dataSet, HandleAction action) {
         styleHandler.handle(dataSet.style(),
                 new ObjectStyleModelBuilder(dataSet.uid(), DataSetModel.TABLE));
     }

@@ -25,34 +25,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
+package org.hisp.dhis.android.core.common;
 
-public class ProgramTrackedEntityAttributeHandler extends
-        IdentifiableHandlerImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> {
-
-    private final TrackedEntityAttributeHandler trackedEntityAttributeHandler;
-
-    ProgramTrackedEntityAttributeHandler(IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> store,
-                                         TrackedEntityAttributeHandler trackedEntityAttributeHandler) {
-        super(store);
-        this.trackedEntityAttributeHandler = trackedEntityAttributeHandler;
-    }
-
-    public static ProgramTrackedEntityAttributeHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramTrackedEntityAttributeHandler(
-                ProgramTrackedEntityAttributeStore.create(databaseAdapter),
-                TrackedEntityAttributeHandler.create(databaseAdapter));
-    }
-
-    @Override
-    protected void afterObjectHandled(ProgramTrackedEntityAttribute programTrackedEntityAttribute, HandleAction action) {
-        trackedEntityAttributeHandler.handleTrackedEntityAttribute(
-                programTrackedEntityAttribute.trackedEntityAttribute());
-    }
+public enum HandleAction {
+    Insert, Update, Delete
 }

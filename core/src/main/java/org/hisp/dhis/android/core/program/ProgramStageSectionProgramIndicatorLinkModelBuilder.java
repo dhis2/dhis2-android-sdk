@@ -28,17 +28,22 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-public final class ProgramStageSectionProgramIndicatorLinkStore {
+public class ProgramStageSectionProgramIndicatorLinkModelBuilder extends ModelBuilder<ProgramIndicator,
+        ProgramStageSectionProgramIndicatorLinkModel> {
 
-    private ProgramStageSectionProgramIndicatorLinkStore() {}
+    private final ProgramStageSectionProgramIndicatorLinkModel.Builder builder;
 
-    public static LinkModelStore<ProgramStageSectionProgramIndicatorLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, ProgramStageSectionProgramIndicatorLinkModel.TABLE,
-                new ProgramStageSectionProgramIndicatorLinkModel.Columns(),
-                ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION);
+    ProgramStageSectionProgramIndicatorLinkModelBuilder(ProgramStageSection programStageSection) {
+        this.builder = ProgramStageSectionProgramIndicatorLinkModel.builder()
+                .programStageSection(programStageSection.uid());
+    }
+
+    @Override
+    public ProgramStageSectionProgramIndicatorLinkModel buildModel(ProgramIndicator programIndicator) {
+        return builder
+                .programIndicator(programIndicator.uid())
+                .build();
     }
 }

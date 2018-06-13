@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.LegendSetHandler;
@@ -42,56 +41,26 @@ import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModelBuilder;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
 
-import java.util.Collection;
-
 public class ProgramIndicatorHandler extends IdentifiableHandlerImpl<ProgramIndicator, ProgramIndicatorModel> {
-    private final ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore;
     private final GenericHandler<LegendSet, LegendSetModel> legendSetHandler;
     private final LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkHandler;
 
     ProgramIndicatorHandler(IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore,
-                            ProgramStageSectionProgramIndicatorLinkStore programStageSectionProgramIndicatorLinkStore,
                             GenericHandler<LegendSet, LegendSetModel> legendSetHandler,
                             LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel>
                                     programIndicatorLegendSetLinkHandler) {
         super(programIndicatorStore);
-        this.programStageSectionProgramIndicatorLinkStore = programStageSectionProgramIndicatorLinkStore;
         this.legendSetHandler = legendSetHandler;
         this.programIndicatorLegendSetLinkHandler = programIndicatorLegendSetLinkHandler;
     }
 
-    public static ProgramIndicatorHandler create(DatabaseAdapter databaseAdapter) {
+    public static GenericHandler<ProgramIndicator, ProgramIndicatorModel> create(DatabaseAdapter databaseAdapter) {
         return new ProgramIndicatorHandler(
                 ProgramIndicatorStore.create(databaseAdapter),
-                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter),
                 LegendSetHandler.create(databaseAdapter),
                 new LinkModelHandlerImpl<LegendSet, ProgramIndicatorLegendSetLinkModel>(
                         ProgramIndicatorLegendSetLinkStore.create(databaseAdapter))
         );
-    }
-
-    void handleManyWithProgramStageSection(Collection<ProgramIndicator> pCollection, ModelBuilder<ProgramIndicator,
-            ProgramIndicatorModel> modelBuilder, String programStageSection) {
-        super.handleMany(pCollection, modelBuilder);
-
-        updateProgramStageSectionProgramIndicatorLink(pCollection, programStageSection);
-    }
-
-
-    private void updateProgramStageSectionProgramIndicatorLink(Collection<ProgramIndicator> pCollection,
-                                                       String programStageSection) {
-        for(ProgramIndicator programIndicator : pCollection) {
-            int updatedLink = programStageSectionProgramIndicatorLinkStore.update(
-                    programStageSection, programIndicator.uid(),
-                    programStageSection, programIndicator.uid()
-            );
-
-            if (updatedLink <= 0) {
-                programStageSectionProgramIndicatorLinkStore.insert(
-                        programStageSection, programIndicator.uid()
-                );
-            }
-        }
     }
 
     @Override

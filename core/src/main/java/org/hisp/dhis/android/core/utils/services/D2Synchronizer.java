@@ -28,49 +28,17 @@
 
 package org.hisp.dhis.android.core.utils.services;
 
-import android.database.Cursor;
+import android.util.Log;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 
 public final class D2Synchronizer {
+    private static final String CLASS_TAG = D2Synchronizer.class.getSimpleName();
 
-    public static void syncReservedValues() {
-        String selectStatement = generateSelectStatement();
-        Cursor cursor = D2.d2.databaseAdapter().query(selectStatement);
-
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            do {
-                String ownerUid = cursor.getString(0);
-                String orgUnitUid = cursor.getString(1);
-                D2.d2.syncTrackedEntityAttributeReservedValue(ownerUid, orgUnitUid);
-            } while (cursor.moveToNext());
-        }
-    }
-
-    private static String generateSelectStatement() {
-        String TEAUidColumn = "t." + TrackedEntityAttributeModel.Columns.UID;
-        String TEAGeneratedColumn = "t." + TrackedEntityAttributeModel.Columns.GENERATED;
-        String OUPLOrgUnitColumn = "o." + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT ;
-        String OUPLProgramColumn = "o." + OrganisationUnitProgramLinkModel.Columns.PROGRAM;
-        String PTEATEAColumn = "p." + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE;
-        String PTEAProgramColumn = "p." + ProgramTrackedEntityAttributeModel.Columns.PROGRAM;
-
-        return "SELECT DISTINCT " +
-                TEAUidColumn + ", " +
-                OUPLOrgUnitColumn  + " " +
-
-                "FROM " +
-                TrackedEntityAttributeModel.TABLE + " t, " +
-                OrganisationUnitProgramLinkModel.TABLE + " o, " +
-                ProgramTrackedEntityAttributeModel.TABLE + " p " +
-
-                "WHERE " +
-                TEAGeneratedColumn + " = 1 AND " +
-                PTEATEAColumn + " = " + TEAUidColumn + " AND " +
-                PTEAProgramColumn + " = " + OUPLProgramColumn + ";";
+    public static void sync() {
+        Log.d(CLASS_TAG, "Sync.");
+        TrackedEntityAttributeReservedValueManager.create(
+                D2.d2.databaseAdapter(), D2.d2.retrofit()).syncReservedValuesIfIsUserLoggedIn();
     }
 }

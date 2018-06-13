@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -150,16 +149,16 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
     }
 
 
-    @Test
+    //@Test
     public void sync_all_tracked_entity_instances() throws Exception {
         assertThat(selectAll().size(), is(3));
         d2.syncMetaData().call();
         d2.syncAllTrackedEntityAttributeReservedValues();
 
-        /* Manually inserted:                                                             3
-         * 100 Reserved values * 2 TEA with generated property true on server:        + 200
-         *                                                                            -----
-         * Total:                                                                       203
+        /*                                                  Manually inserted:      3
+         * 100 Reserved values * 2 TEA with generated property true on server:  + 200
+         *                                                                      -----
+         *                                                              Total:    203
         */
         assertThat(selectAll().size(), is(203));
     }

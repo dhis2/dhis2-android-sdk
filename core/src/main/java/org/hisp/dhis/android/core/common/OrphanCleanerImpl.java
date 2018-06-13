@@ -25,40 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
+package org.hisp.dhis.android.core.common;
+
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionSetModel> {
-    private final GenericHandler<Option, OptionModel> optionHandler;
-    private final OrphanCleaner<OptionSet, Option> optionCleaner;
+import java.util.Collection;
 
-    OptionSetHandler(IdentifiableObjectStore<OptionSetModel> optionSetStore,
-                     GenericHandler<Option, OptionModel> optionHandler,
-                     OrphanCleaner<OptionSet, Option> optionCleaner) {
-        super(optionSetStore);
-        this.optionHandler = optionHandler;
-        this.optionCleaner = optionCleaner;
+public class OrphanCleanerImpl<P extends IdentifiableObject, C extends IdentifiableObject>
+        implements OrphanCleaner<P, C> {
+
+    private final String tableName;
+    private final String parentColumn;
+    private final DatabaseAdapter databaseAdapter;
+
+    public OrphanCleanerImpl(String tableName, String parentColumn, DatabaseAdapter databaseAdapter) {
+        this.tableName = tableName;
+        this.parentColumn = parentColumn;
+        this.databaseAdapter = databaseAdapter;
     }
 
-    @Override
-    protected void afterObjectHandled(OptionSet optionSet, HandleAction action) {
-        optionHandler.handleMany(optionSet.options(), new OptionModelBuilder());
-        if (action == HandleAction.Update) {
-            optionCleaner.deleteOrphan(optionSet, optionSet.options());
+    public boolean deleteOrphan(P parent, Collection<C> children) {
+        if (parent == null || children == null) {
+            return false;
         }
-    }
 
-    public static OptionSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new OptionSetHandler(
-                OptionSetStore.create(databaseAdapter),
-                OptionHandler.create(databaseAdapter),
-                new OrphanCleanerImpl(OptionModel.TABLE, OptionModel.Columns.OPTION_SET, databaseAdapter));
+        String childrenUids = UidsHelper.commaSeparatedUidsWithSingleQuotationMarks(children);
+        String clause =
+                parentColumn + "='" + parent.uid() + "'"
+                + " AND "
+                + BaseIdentifiableObjectModel.Columns.UID + " NOT IN (" + childrenUids + ");";
+        return databaseAdapter.database().delete(tableName, clause, null) > 0;
     }
 }

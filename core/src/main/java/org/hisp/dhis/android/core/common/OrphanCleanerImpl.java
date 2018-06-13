@@ -50,7 +50,7 @@ public class OrphanCleanerImpl<P extends IdentifiableObject, C extends Identifia
             return false;
         }
 
-        String childrenUids = UidsHelper.commaSeparatedUids(children);
+        String childrenUids = UidsHelper.commaSeparatedUidsWithSingleQuotationMarks(children);
         String clause =
                 parentColumn + "='" + parent.uid() + "'"
                 + " AND "

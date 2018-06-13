@@ -56,12 +56,13 @@ public final class UidsHelper {
         String[] uids = new String[objects.size()];
         int i = 0;
         for (O o: objects) {
-            uids[i++] = o.uid();
+            uids[i++] = "'" + o.uid() + "'";
         }
         return uids;
     }
 
-    public static <O extends IdentifiableObject> String commaSeparatedUids(Collection<O> objects) {
+    public static <O extends IdentifiableObject> String commaSeparatedUidsWithSingleQuotationMarks(
+            Collection<O> objects) {
         return Utils.commaAndSpaceSeparatedArrayValues(uidsArray(objects));
     }
 }

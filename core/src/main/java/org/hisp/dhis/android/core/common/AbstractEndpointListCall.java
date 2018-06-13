@@ -50,8 +50,7 @@ public abstract class AbstractEndpointListCall<P, Q extends BaseQuery, C> extend
         this.persistor = persistor;
     }
 
-    protected abstract retrofit2.Call<C> getCall(Q query, String lastUpdated);
-    abstract List<P> executeCall(retrofit2.Call<C> call) throws D2CallException;
+    protected abstract List<P> getObjects(Q query, String lastUpdated) throws D2CallException;
 
     @Override
     public final List<P> call() throws Exception {
@@ -62,7 +61,7 @@ public abstract class AbstractEndpointListCall<P, Q extends BaseQuery, C> extend
         }
 
         String lastUpdated = resourceType == null ? null : data.resourceHandler().getLastUpdated(resourceType);
-        List<P> responseList = executeCall(getCall(query, lastUpdated));
+        List<P> responseList = getObjects(query, lastUpdated);
         persistor.persist(responseList);
         return responseList;
     }

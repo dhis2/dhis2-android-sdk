@@ -32,8 +32,6 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
 
-import retrofit2.Call;
-
 public abstract class EndpointPayloadCall<P, Q extends BaseQuery> extends AbstractEndpointListCall<P, Q, Payload<P>> {
 
     public EndpointPayloadCall(GenericCallData data,
@@ -45,7 +43,9 @@ public abstract class EndpointPayloadCall<P, Q extends BaseQuery> extends Abstra
     }
 
     @Override
-    protected List<P> executeCall(Call<Payload<P>> call) throws D2CallException {
-        return new APICallExecutor().executePayloadCall(call);
+    protected List<P> getObjects(Q query, String lastUpdated) throws D2CallException {
+        return new APICallExecutor().executePayloadCall(getCall(query, lastUpdated));
     }
+
+    protected abstract retrofit2.Call<Payload<P>> getCall(Q query, String lastUpdated);
 }

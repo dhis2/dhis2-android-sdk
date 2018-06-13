@@ -51,14 +51,13 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private static final int MIN_TO_TRY_FILL = 50;
     private static final int FILL_UP_TO = 100;
-    private static final String CLASS_TAG = TrackedEntityAttributeReservedValueManager.class.getSimpleName();
 
     private final TrackedEntityAttributeReservedValueStoreInterface store;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
-    TrackedEntityAttributeReservedValueManager(DatabaseAdapter databaseAdapter,
+    private TrackedEntityAttributeReservedValueManager(DatabaseAdapter databaseAdapter,
                                                Retrofit retrofit,
                                                TrackedEntityAttributeReservedValueStoreInterface store,
                                                IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
@@ -123,7 +122,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     public void syncAllTrackedEntityAttributeReservedValues() {
-        String selectStatement = generateSelectStatement();
+        String selectStatement = generateAllTrackedEntityAttributeReservedValuesSelectStatement();
         Cursor cursor = databaseAdapter.query(selectStatement);
 
         if (cursor.getCount() > 0) {
@@ -136,7 +135,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         }
     }
 
-    private static String generateSelectStatement() {
+    private static String generateAllTrackedEntityAttributeReservedValuesSelectStatement() {
         String tEAUidColumn = "t." + TrackedEntityAttributeModel.Columns.UID;
         String tEAGeneratedColumn = "t." + TrackedEntityAttributeModel.Columns.GENERATED;
         String oUPLOrgUnitColumn = "o." + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT;

@@ -59,6 +59,7 @@ public final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, O
         return new OptionSetHandler(
                 OptionSetStore.create(databaseAdapter),
                 OptionHandler.create(databaseAdapter),
-                new OrphanCleanerImpl(OptionModel.TABLE, OptionModel.Columns.OPTION_SET, databaseAdapter));
+                new OrphanCleanerImpl<OptionSet, Option>(OptionModel.TABLE, OptionModel.Columns.OPTION_SET,
+                        databaseAdapter));
     }
 }

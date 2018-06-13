@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +25,7 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private Collection<Callable<List<DataElement>>> dataElementCall;
+    private Call<List<DataElement>> dataElementCall;
 
     @Before
     @Override
@@ -36,7 +35,7 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
         dataElementCall = createCall();
     }
 
-    private Collection<Callable<List<DataElement>>> createCall() {
+    private Call<List<DataElement>> createCall() {
         GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
 
         Set<String> uids = new HashSet<>();
@@ -58,9 +57,7 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */
 
-        for(Callable<List<DataElement>> call : dataElementCall) {
-           call.call();
-        };
+        dataElementCall.call();
     }
 
     @Test

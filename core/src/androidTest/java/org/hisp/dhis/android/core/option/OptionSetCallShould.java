@@ -34,6 +34,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
@@ -88,7 +89,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
     };
 
     private MockWebServer mockWebServer;
-    private Collection<Callable<List<OptionSet>>> optionSetCall;
+    private Call<List<OptionSet>> optionSetCall;
     private D2CallExecutor d2CallExecutor;
 
     @Override
@@ -292,7 +293,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
 
     @Test
     public void return_option_set_model_after_call() throws Exception {
-        List<OptionSet> optionSetList = Utils.flatten(d2CallExecutor.executeD2Call(optionSetCall));
+        List<OptionSet> optionSetList = d2CallExecutor.executeD2Call(optionSetCall);
 
         assertThat(optionSetList.size()).isEqualTo(1);
 

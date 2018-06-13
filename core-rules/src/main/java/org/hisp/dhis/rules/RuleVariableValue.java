@@ -24,13 +24,13 @@ public abstract class RuleVariableValue {
     public abstract List<String> candidates();
 
     @Nonnull
-    static RuleVariableValue create(@Nonnull RuleValueType ruleValueType) {
+    public static RuleVariableValue create(@Nonnull RuleValueType ruleValueType) {
         return new AutoValue_RuleVariableValue(null, ruleValueType,
                 Collections.unmodifiableList(new ArrayList<String>()));
     }
 
     @Nonnull
-    static RuleVariableValue create(@Nonnull String value,
+    public static RuleVariableValue create(@Nonnull String value,
             @Nonnull RuleValueType ruleValueType) {
 
         // clean-up the value before processing it
@@ -46,7 +46,7 @@ public abstract class RuleVariableValue {
     }
 
     @Nonnull
-    static RuleVariableValue create(@Nonnull String value,
+    public static RuleVariableValue create(@Nonnull String value,
             @Nonnull RuleValueType ruleValueType, @Nonnull List<String> candidates) {
         // clean-up the value before processing it
         String processedValue = value.replace("'", "");

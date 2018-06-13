@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.util.List;
 import java.util.Set;
 
-public class TrackedEntityTypeCall extends UidPayloadCall<TrackedEntityType> {
+public final class TrackedEntityTypeCall extends UidPayloadCall<TrackedEntityType> {
     private final TrackedEntityTypeService trackedEntityTypeService;
 
     private TrackedEntityTypeCall(GenericCallData data,

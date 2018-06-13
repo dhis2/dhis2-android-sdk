@@ -139,7 +139,7 @@ public class TrackedEntityTypeCallUnitShould {
                 trackedEntityTypeStore, resourceStore, service, serverDate);
 
         when(database.beginNewTransaction()).thenReturn(transaction);
-        when(service.trackedEntities(
+        when(service.getTrackedEntityTypes(
                 fieldsCaptor.capture(),
                 idFilterCaptor.capture(),
                 lastUpdatedFilterCaptor.capture(),
@@ -231,7 +231,7 @@ public class TrackedEntityTypeCallUnitShould {
     public void not_fail_on_empty_input() throws IOException {
         TrackedEntityTypeCall call = new TrackedEntityTypeCall(new HashSet<String>(), database,
                 trackedEntityTypeStore, resourceStore, service, serverDate);
-        when(service.trackedEntities(
+        when(service.getTrackedEntityTypes(
                 fieldsCaptor.capture(),
                 idFilterCaptor.capture(),
                 lastUpdatedFilterCaptor.capture(),

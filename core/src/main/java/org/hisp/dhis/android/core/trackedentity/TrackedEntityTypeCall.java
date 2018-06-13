@@ -35,14 +35,13 @@ import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
 import org.hisp.dhis.android.core.common.UidPayloadCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
-import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
 import java.util.Set;
 
 public class TrackedEntityTypeCall extends UidPayloadCall<TrackedEntityType> {
-    private final TrackedEntityTypeService service;
+    private final TrackedEntityTypeService trackedEntityTypeService;
 
     private TrackedEntityTypeCall(GenericCallData data,
                           TrackedEntityTypeService service,
@@ -50,22 +49,16 @@ public class TrackedEntityTypeCall extends UidPayloadCall<TrackedEntityType> {
                           int uidLimit,
                           ListPersistor<TrackedEntityType> persistor) {
         super(data, ResourceModel.Type.TRACKED_ENTITY, query, uidLimit, persistor);
-        this.service = service;
+        this.trackedEntityTypeService = service;
     }
 
     @Override
     protected retrofit2.Call<Payload<TrackedEntityType>> getCall(UidsQuery query, String lastUpdated) {
-        return service.trackedEntities(
-                Fields.<TrackedEntityType>builder().fields(
-                        TrackedEntityType.uid, TrackedEntityType.code, TrackedEntityType.name,
-                        TrackedEntityType.displayName, TrackedEntityType.created, TrackedEntityType.lastUpdated,
-                        TrackedEntityType.shortName, TrackedEntityType.displayShortName,
-                        TrackedEntityType.description, TrackedEntityType.displayDescription,
-                        TrackedEntityType.deleted
-                ).build(),
+        return trackedEntityTypeService.getTrackedEntityTypes(
+                TrackedEntityType.allFields,
                 TrackedEntityType.uid.in(query.uids()),
                 TrackedEntityType.lastUpdated.gt(lastUpdated),
-                false
+                Boolean.FALSE
         );
     }
 

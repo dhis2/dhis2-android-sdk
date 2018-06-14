@@ -57,7 +57,7 @@ public final class IndicatorTypeEndpointCall extends UidPayloadCall<IndicatorTyp
     protected retrofit2.Call<Payload<IndicatorType>> getCall(UidsQuery query, String lastUpdated) {
         return indicatorTypeService.getIndicatorTypes(
                 IndicatorType.allFields,
-                IndicatorType.lastUpdated.gt(lastUpdated),
+                IndicatorType.lastUpdated.gt(null),
                 IndicatorType.uid.in(query.uids()),
                 Boolean.FALSE);
     }

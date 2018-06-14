@@ -55,8 +55,11 @@ public final class ProgramStageEndpointCall extends UidPayloadCall<ProgramStage>
 
     @Override
     protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query, String lastUpdated) {
-        return programStageService.getProgramStages(ProgramStage.allFields,
-                ProgramStage.uid.in(query.uids()), Boolean.FALSE);
+        return programStageService.getProgramStages(
+                ProgramStage.allFields,
+                ProgramStage.uid.in(query.uids()),
+                Boolean.FALSE
+        );
     }
 
     public static final UidsCallFactory<ProgramStage> FACTORY = new UidsCallFactory<ProgramStage>() {

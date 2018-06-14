@@ -57,8 +57,11 @@ public final class OptionSetCall extends UidPayloadCall<OptionSet> {
 
     @Override
     protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query, String lastUpdated) {
-        return optionSetService.optionSets(false,
-                getFields(), OptionSet.uid.in(query.uids()));
+        return optionSetService.optionSets(
+                false,
+                getFields(),
+                OptionSet.uid.in(query.uids())
+        );
     }
 
     private Fields<OptionSet> getFields() {

@@ -57,7 +57,7 @@ public final class IndicatorEndpointCall extends UidPayloadCall<Indicator> {
     protected retrofit2.Call<Payload<Indicator>> getCall(UidsQuery query, String lastUpdated) {
         return indicatorService.getIndicators(
                 Indicator.allFields,
-                Indicator.lastUpdated.gt(lastUpdated),
+                Indicator.lastUpdated.gt(null),
                 Indicator.uid.in(query.uids()),
                 Boolean.FALSE);
     }

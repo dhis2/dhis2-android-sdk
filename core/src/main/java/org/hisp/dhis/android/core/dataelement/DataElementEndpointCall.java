@@ -57,7 +57,7 @@ public final class DataElementEndpointCall extends UidPayloadCall<DataElement> {
     protected retrofit2.Call<Payload<DataElement>> getCall(UidsQuery query, String lastUpdated) {
         return dataElementService.getDataElements(
                 DataElement.allFields,
-                DataElement.lastUpdated.gt(lastUpdated),
+                DataElement.lastUpdated.gt(null),
                 DataElement.uid.in(query.uids()),
                 Boolean.FALSE);
     }

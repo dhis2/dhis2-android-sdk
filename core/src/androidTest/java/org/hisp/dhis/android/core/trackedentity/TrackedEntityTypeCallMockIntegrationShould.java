@@ -35,11 +35,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.resource.ResourceStore;
-import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -93,7 +92,7 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
         response.setHeader(HeaderUtils.DATE, "Tue, 21 Feb 2017 15:44:46 GMT");
         response.setResponseCode(200);
         response.setBody("{\n" +
-                "  \"trackedEntities\": [\n" +
+                "  \"getTrackedEntityTypes\": [\n" +
                 "  {\n" +
                 "    \"lastUpdated\": \"2014-04-14T13:54:54.497\",\n" +
                 "    \"created\": \"2014-04-14T13:54:54.497\",\n" +
@@ -127,15 +126,11 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
                 .addConverterFactory(FilterConverterFactory.create())
                 .build();
 
-        TrackedEntityTypeService service = retrofit.create(TrackedEntityTypeService.class);
-
         HashSet<String> uids = new HashSet<>(Arrays.asList("kIeke8tAQnd", "nEenWmSyUEp"));
-        TrackedEntityTypeStore trackedEntityTypeStore = new TrackedEntityTypeStoreImpl(databaseAdapter());
-        ResourceStore resourceStore = new ResourceStoreImpl(databaseAdapter());
 
-        trackedEntityCall = new TrackedEntityTypeCall(
-                uids, databaseAdapter(), trackedEntityTypeStore, resourceStore, service, new Date()
-        );
+        GenericCallData data = GenericCallData.create(databaseAdapter(), retrofit, new Date());
+
+        trackedEntityCall = TrackedEntityTypeCall.FACTORY.create(data, uids);
     }
 
     @Test

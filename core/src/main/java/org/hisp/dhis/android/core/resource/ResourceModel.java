@@ -58,7 +58,7 @@ public abstract class ResourceModel extends BaseModel {
         AUTHENTICATED_USER,
         PROGRAM,
         OPTION_SET,
-        TRACKED_ENTITY,
+        TRACKED_ENTITY_TYPE,
         TRACKED_ENTITY_INSTANCE,
         DATA_SET,
         DATA_ELEMENT,

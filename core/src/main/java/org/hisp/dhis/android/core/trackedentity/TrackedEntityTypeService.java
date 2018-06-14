@@ -44,7 +44,7 @@ import retrofit2.http.Query;
 public interface TrackedEntityTypeService {
 
     @GET("trackedEntityTypes")
-    Call<Payload<TrackedEntityType>> trackedEntities(
+    Call<Payload<TrackedEntityType>> getTrackedEntityTypes(
             @NonNull @Query("fields") @Which Fields<TrackedEntityType> fields,
             @NonNull @Query("filter") @Where Filter<TrackedEntityType, String> idFilter,
             @Nullable @Query("filter") @Where Filter<TrackedEntityType, String> lastUpdated,

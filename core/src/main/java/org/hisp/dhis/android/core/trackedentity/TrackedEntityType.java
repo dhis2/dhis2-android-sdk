@@ -34,6 +34,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
 import java.util.Date;
 
@@ -50,6 +51,10 @@ public abstract class TrackedEntityType extends BaseNameableObject {
     public static final Field<TrackedEntityType, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
     public static final Field<TrackedEntityType, String> description = Field.create(DESCRIPTION);
     public static final Field<TrackedEntityType, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
+
+    static final Fields<TrackedEntityType> allFields = Fields.<TrackedEntityType>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, deleted, shortName, displayShortName, description,
+            displayDescription).build();
 
     @JsonCreator
     public static TrackedEntityType create(

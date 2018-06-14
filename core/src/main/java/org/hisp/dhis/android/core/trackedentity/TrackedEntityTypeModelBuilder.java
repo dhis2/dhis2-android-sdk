@@ -25,17 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-public final class TrackedEntityTypeHandler {
+public class TrackedEntityTypeModelBuilder extends ModelBuilder<TrackedEntityType, TrackedEntityTypeModel> {
 
-    private TrackedEntityTypeHandler() {}
-
-    public static GenericHandler<TrackedEntityType, TrackedEntityTypeModel> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableHandlerImpl<>(TrackedEntityTypeStore.create(databaseAdapter));
+    @Override
+    public TrackedEntityTypeModel buildModel(TrackedEntityType type) {
+        return TrackedEntityTypeModel.builder()
+                .uid(type.uid())
+                .code(type.code())
+                .name(type.name())
+                .displayName(type.displayName())
+                .created(type.created())
+                .lastUpdated(type.lastUpdated())
+                .shortName(type.shortName())
+                .displayShortName(type.displayShortName())
+                .description(type.description())
+                .displayDescription(type.displayDescription())
+                .build();
     }
 }

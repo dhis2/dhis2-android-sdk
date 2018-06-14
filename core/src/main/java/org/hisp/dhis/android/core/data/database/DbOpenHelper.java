@@ -58,6 +58,7 @@ public class DbOpenHelper extends SQLBriteOpenHelper {
 
         // enable foreign key support in database
         db.execSQL("PRAGMA foreign_keys = ON;");
+        db.enableWriteAheadLogging();
     }
 
     // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional

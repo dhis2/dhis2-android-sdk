@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
@@ -36,11 +39,14 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 public class ProgramRuleHandler {
     private final ProgramRuleStore programRuleStore;
     private final ProgramRuleActionHandler programRuleActionHandler;
+    private final OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
 
     ProgramRuleHandler(ProgramRuleStore programRuleStore,
-                              ProgramRuleActionHandler programRuleActionHandler) {
+                              ProgramRuleActionHandler programRuleActionHandler,
+                       OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner) {
         this.programRuleStore = programRuleStore;
         this.programRuleActionHandler = programRuleActionHandler;
+        this.programRuleActionCleaner = programRuleActionCleaner;
     }
 
     public void handleProgramRules(List<ProgramRule> programRules) {
@@ -62,9 +68,11 @@ public class ProgramRuleHandler {
 
         for (int i = 0; i < size; i++) {
             ProgramRule programRule = programRules.get(i);
+            HandleAction handleAction;
 
             if (isDeleted(programRule)) {
                 programRuleStore.delete(programRule.uid());
+                handleAction = HandleAction.Delete;
             } else {
                 String programStageUid = null;
                 if (programRule.programStage() != null) {
@@ -74,6 +82,7 @@ public class ProgramRuleHandler {
                         programRule.displayName(), programRule.created(), programRule.lastUpdated(),
                         programRule.priority(), programRule.condition(), programRule.program().uid(),
                         programStageUid, programRule.uid());
+                handleAction = HandleAction.Update;
 
                 if (updatedRow <= 0) {
                     programRuleStore.insert(
@@ -81,17 +90,23 @@ public class ProgramRuleHandler {
                             programRule.displayName(), programRule.created(), programRule.lastUpdated(),
                             programRule.priority(), programRule.condition(), programRule.program().uid(),
                             programStageUid);
+                    handleAction = HandleAction.Insert;
                 }
             }
 
             programRuleActionHandler.handleProgramRuleActions(programRule.programRuleActions());
+            if (handleAction == HandleAction.Update) {
+                programRuleActionCleaner.deleteOrphan(programRule, programRule.programRuleActions());
+            }
         }
     }
 
     public static ProgramRuleHandler create(DatabaseAdapter databaseAdapter) {
         return new ProgramRuleHandler(
                 new ProgramRuleStoreImpl(databaseAdapter),
-                ProgramRuleActionHandler.create(databaseAdapter)
+                ProgramRuleActionHandler.create(databaseAdapter),
+                new OrphanCleanerImpl<ProgramRule, ProgramRuleAction>(ProgramRuleActionModel.TABLE,
+                        ProgramRuleActionModel.Columns.PROGRAM_RULE, databaseAdapter)
         );
     }
 }

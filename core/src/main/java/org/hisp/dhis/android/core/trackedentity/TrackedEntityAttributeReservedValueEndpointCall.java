@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.common.EndpointListCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
-import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.TransactionalListPersistor;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
@@ -82,7 +82,7 @@ public final class TrackedEntityAttributeReservedValueEndpointCall extends
                     data.retrofit().create(TrackedEntityAttributeReservedValueService.class),
                     TrackedEntityAttributeReservedValueQuery.create(trackedEntityAttributeUid, numberToReserve,
                             organisationUnit),
-                    new TransactionalResourceListPersistor<>(
+                    new TransactionalListPersistor<>(
                             data,
                             TrackedEntityAttributeReservedValueHandler.create(data.databaseAdapter()),
                             ResourceModel.Type.TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE,

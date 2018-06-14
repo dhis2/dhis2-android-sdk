@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.TransactionalListPersistor;
 import org.hisp.dhis.android.core.common.UidPayloadCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
@@ -72,7 +72,7 @@ public final class TrackedEntityTypeCall extends UidPayloadCall<TrackedEntityTyp
                     data.retrofit().create(TrackedEntityTypeService.class),
                     UidsQuery.create(uids),
                     MAX_UID_LIST_SIZE,
-                    new TransactionalResourceListPersistor<>(
+                    new TransactionalListPersistor<>(
                             data,
                             TrackedEntityTypeHandler.create(data.databaseAdapter()),
                             ResourceModel.Type.TRACKED_ENTITY_TYPE,

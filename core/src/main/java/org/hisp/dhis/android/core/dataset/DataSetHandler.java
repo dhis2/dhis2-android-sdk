@@ -40,22 +40,27 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
 
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private final GenericHandler<Section, SectionModel> sectionHandler;
 
     DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
-                   GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
+                   GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
+                   GenericHandler<Section, SectionModel> sectionHandler) {
         super(dataSetStore);
         this.styleHandler = styleHandler;
+        this.sectionHandler = sectionHandler;
     }
 
     public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
         return new DataSetHandler(
                 DataSetStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter));
+                ObjectStyleHandler.create(databaseAdapter), SectionHandler.create(databaseAdapter));
     }
 
     @Override
     protected void afterObjectHandled(DataSet dataSet, HandleAction action) {
         styleHandler.handle(dataSet.style(),
                 new ObjectStyleModelBuilder(dataSet.uid(), DataSetModel.TABLE));
+
+        sectionHandler.handleMany(dataSet.sections(), new SectionModelBuilder());
     }
 }

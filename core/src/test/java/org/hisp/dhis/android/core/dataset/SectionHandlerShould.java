@@ -27,14 +27,16 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.program.ProgramSection;
+import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkModel;
+import org.hisp.dhis.android.core.program.ProgramSectionHandler;
+import org.hisp.dhis.android.core.program.ProgramSectionModel;
+import org.hisp.dhis.android.core.program.ProgramSectionModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,52 +44,49 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class DataSetHandlerShould {
+public class SectionHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<DataSetModel> dataSetStore;
+    private IdentifiableObjectStore<SectionModel> sectionStore;
 
     @Mock
-    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private ObjectWithoutUidStore<SectionDataElementLinkModel> sectionDataElementLinkStore;
 
     @Mock
-    private GenericHandler<Section, SectionModel> sectionHandler;
-
-    @Mock
-    private DataSet dataSet;
-
-    @Mock
-    private Access access;
-
-    @Mock
-    private DataAccess dataAccess;
+    private Section section;
 
     // object to test
-    private DataSetHandler dataSetHandler;
+    private SectionHandler sectionHandler;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        dataSetHandler = new DataSetHandler(dataSetStore, styleHandler, sectionHandler);
-        when(dataSet.access()).thenReturn(access);
-        when(access.data()).thenReturn(dataAccess);
-        when(dataAccess.write()).thenReturn(true);
+
+        sectionHandler = new SectionHandler(sectionStore, sectionDataElementLinkStore);
+
+        List<ObjectWithUid> dataElements = new ArrayList<>();
+        dataElements.add(ObjectWithUid.create("dataElement_uid"));
+        when(section.dataElements()).thenReturn(dataElements);
+    }
+
+    @Test
+    public void save_section_data_element_links() throws Exception {
+        sectionHandler.handle(section, new SectionModelBuilder());
+        verify(sectionDataElementLinkStore).updateOrInsertWhere(any(SectionDataElementLinkModel.class));
     }
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<DataSet, DataSetModel> genericHandler = new DataSetHandler(null, null, null);
-    }
-
-    @Test
-    public void call_style_handler() throws Exception {
-        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
-        verify(styleHandler).handle(eq(dataSet.style()), any(ObjectStyleModelBuilder.class));
+        IdentifiableHandlerImpl<Section, SectionModel> genericHandler = new SectionHandler(
+                null,null);
     }
 }

@@ -25,16 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.program.ProgramSection;
+import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkModel;
+import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,52 +39,40 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
+import java.io.IOException;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class DataSetHandlerShould {
+public class SectionDataElementLinkModelBuilderShould {
 
     @Mock
-    private IdentifiableObjectStore<DataSetModel> dataSetStore;
+    private Section section;
 
     @Mock
-    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private ObjectWithUid dataElement;
 
-    @Mock
-    private GenericHandler<Section, SectionModel> sectionHandler;
-
-    @Mock
-    private DataSet dataSet;
-
-    @Mock
-    private Access access;
-
-    @Mock
-    private DataAccess dataAccess;
-
-    // object to test
-    private DataSetHandler dataSetHandler;
+    private SectionDataElementLinkModel model;
 
     @Before
-    public void setUp() throws Exception {
+    @SuppressWarnings("unchecked")
+    public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
-        dataSetHandler = new DataSetHandler(dataSetStore, styleHandler, sectionHandler);
-        when(dataSet.access()).thenReturn(access);
-        when(access.data()).thenReturn(dataAccess);
-        when(dataAccess.write()).thenReturn(true);
+
+        when(section.uid()).thenReturn("section_uid");
+        when(dataElement.uid()).thenReturn("dataElement_uid");
+
+        model = buildModel();
+    }
+
+    private SectionDataElementLinkModel buildModel() {
+        return new SectionDataElementLinkModelBuilder(section).buildModel(dataElement);
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<DataSet, DataSetModel> genericHandler = new DataSetHandler(null, null, null);
-    }
-
-    @Test
-    public void call_style_handler() throws Exception {
-        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
-        verify(styleHandler).handle(eq(dataSet.style()), any(ObjectStyleModelBuilder.class));
+    public void copy_link_properties() {
+        assertThat(model.section()).isEqualTo(section.uid());
+        assertThat(model.dataElement()).isEqualTo(dataElement.uid());
     }
 }

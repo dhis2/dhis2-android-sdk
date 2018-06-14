@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.NameableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.period.PeriodType;
+import org.hisp.dhis.android.core.program.ProgramSection;
+import org.hisp.dhis.android.core.program.ProgramSectionModel;
+import org.hisp.dhis.android.core.program.ProgramSectionModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,17 +49,15 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.COLO
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DESCRIPTION;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_DESCRIPTION;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_SHORT_NAME;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.ICON;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.SHORT_NAME;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 
 @RunWith(JUnit4.class)
-public class DataSetModelBuilderShould extends NameableModelBuilderAbstractShould<DataSet, DataSetModel> {
+public class SectionModelBuilderShould extends
+        IdentifiableModelBuilderAbstractShould<Section, SectionModel> {
 
     @Override
     @Before
@@ -68,62 +66,34 @@ public class DataSetModelBuilderShould extends NameableModelBuilderAbstractShoul
     }
 
     @Override
-    protected DataSet buildPojo() {
-        return DataSet.create(
+    protected Section buildPojo() {
+        return Section.create(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
                 CREATED,
                 LAST_UPDATED,
-                SHORT_NAME,
-                DISPLAY_SHORT_NAME,
                 DESCRIPTION,
-                DISPLAY_DESCRIPTION,
-                PeriodType.Monthly,
-                ObjectWithUid.create("cc_uid"),
+                2,
+                ObjectWithUid.create("data_set"),
                 false,
-                1,
-                10,
-                100,
                 false,
-                0,
-                true,
-                true,
-                false,
-                true,
-                false,
-                true,
-                false,
-                new ArrayList<DataElementUids>(),
                 new ArrayList<ObjectWithUid>(),
-                new ArrayList<Section>(),
-                Access.create(true, true, false, true,
-                        true, true, DataAccess.create(true, false)),
-                ObjectStyle.create(COLOR, ICON),
                 DELETED);
     }
 
     @Override
-    protected ModelBuilder<DataSet, DataSetModel> modelBuilder() {
-        return new DataSetModelBuilder();
+    protected ModelBuilder<Section, SectionModel> modelBuilder() {
+        return new SectionModelBuilder();
     }
 
     @Test
-    public void copy_pojo_dataset_properties() {
-        assertThat(model.mobile()).isEqualTo(pojo.mobile());
-        assertThat(model.version()).isEqualTo(pojo.version());
-        assertThat(model.expiryDays()).isEqualTo(pojo.expiryDays());
-        assertThat(model.timelyDays()).isEqualTo(pojo.timelyDays());
-        assertThat(model.notifyCompletingUser()).isEqualTo(pojo.notifyCompletingUser());
-        assertThat(model.openFuturePeriods()).isEqualTo(pojo.openFuturePeriods());
-        assertThat(model.fieldCombinationRequired()).isEqualTo(pojo.fieldCombinationRequired());
-        assertThat(model.validCompleteOnly()).isEqualTo(pojo.validCompleteOnly());
-        assertThat(model.noValueRequiresComment()).isEqualTo(pojo.noValueRequiresComment());
-        assertThat(model.skipOffline()).isEqualTo(pojo.skipOffline());
-        assertThat(model.dataElementDecoration()).isEqualTo(pojo.dataElementDecoration());
-        assertThat(model.renderAsTabs()).isEqualTo(pojo.renderAsTabs());
-        assertThat(model.renderHorizontally()).isEqualTo(pojo.renderHorizontally());
-        assertThat(model.accessDataWrite()).isEqualTo(pojo.access().data().write());
+    public void copy_pojo_section_properties() {
+        assertThat(model.description()).isEqualTo(pojo.description());
+        assertThat(model.sortOrder()).isEqualTo(pojo.sortOrder());
+        assertThat(model.dataSet()).isEqualTo(pojo.dataSet().uid());
+        assertThat(model.showRowTotals()).isEqualTo(pojo.showRowTotals());
+        assertThat(model.showColumnTotals()).isEqualTo(pojo.showColumnTotals());
     }
 }

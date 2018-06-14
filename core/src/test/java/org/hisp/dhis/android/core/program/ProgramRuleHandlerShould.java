@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,6 +65,12 @@ public class ProgramRuleHandlerShould {
     @Mock
     private ProgramStage programStage;
 
+    @Mock
+    private OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
+
+    @Mock
+    private List<ProgramRuleAction> programRuleActions;
+
     // object to test
     private ProgramRuleHandler programRuleHandler;
 
@@ -73,15 +80,16 @@ public class ProgramRuleHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        programRuleHandler = new ProgramRuleHandler(programRuleStore, programRuleActionHandler);
+        programRuleHandler = new ProgramRuleHandler(programRuleStore, programRuleActionHandler,
+                programRuleActionCleaner);
 
         when(programRule.uid()).thenReturn("test_program_rule_uid");
         when(programRule.program()).thenReturn(program);
         when(programRule.programStage()).thenReturn(programStage);
+        when(programRule.programRuleActions()).thenReturn(programRuleActions);
 
         programRules = new ArrayList<>();
         programRules.add(programRule);
-
     }
 
     @Test
@@ -122,6 +130,8 @@ public class ProgramRuleHandlerShould {
 
         // verify that program rule action handler is called
         verify(programRuleActionHandler, times(1)).handleProgramRuleActions(anyListOf(ProgramRuleAction.class));
+
+        verify(programRuleActionCleaner, never()).deleteOrphan(programRule, programRuleActions);
     }
 
     @Test
@@ -145,6 +155,8 @@ public class ProgramRuleHandlerShould {
 
         // verify that program rule action handler is called
         verify(programRuleActionHandler, times(1)).handleProgramRuleActions(anyListOf(ProgramRuleAction.class));
+
+        verify(programRuleActionCleaner).deleteOrphan(programRule, programRuleActions);
     }
 
     @Test
@@ -168,5 +180,7 @@ public class ProgramRuleHandlerShould {
 
         // verify that program rule action handler is called
         verify(programRuleActionHandler, times(1)).handleProgramRuleActions(anyListOf(ProgramRuleAction.class));
+
+        verify(programRuleActionCleaner, never()).deleteOrphan(programRule, programRuleActions);
     }
 }

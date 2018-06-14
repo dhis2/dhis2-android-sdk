@@ -148,6 +148,21 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         assertThat(selectAll().size(), is(98));
     }
 
+
+    //@Test
+    public void sync_all_tracked_entity_instances() throws Exception {
+        assertThat(selectAll().size(), is(3));
+        d2.syncMetaData().call();
+        d2.syncAllTrackedEntityAttributeReservedValues();
+
+        /*                                                  Manually inserted:      3
+         * 100 Reserved values * 2 TEA with generated property true on server:  + 200
+         *                                                                      -----
+         *                                                              Total:    203
+        */
+        assertThat(selectAll().size(), is(203));
+    }
+
     private Set<TrackedEntityAttributeReservedValueModel> selectAll() {
         return store.selectAll(TrackedEntityAttributeReservedValueModel.factory);
     }

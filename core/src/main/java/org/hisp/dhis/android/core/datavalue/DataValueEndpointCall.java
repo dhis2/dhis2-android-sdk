@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.TransactionalListPersistor;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
@@ -71,7 +71,7 @@ public final class DataValueEndpointCall extends EndpointPayloadCall<DataValue, 
             return new DataValueEndpointCall(data,
                     data.retrofit().create(DataValueService.class),
                     DataValueQuery.create(dataSetUids, periodIds, orgUnitUids),
-                    new TransactionalResourceListPersistor<>(
+                    new TransactionalListPersistor<>(
                             data,
                             DataValueHandler.create(data.databaseAdapter()),
                             ResourceModel.Type.DATA_VALUE,

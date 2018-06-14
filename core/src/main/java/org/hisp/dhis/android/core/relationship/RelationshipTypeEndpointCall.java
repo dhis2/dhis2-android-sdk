@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericCallFactory;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.TransactionalListPersistor;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
@@ -67,7 +67,7 @@ public final class RelationshipTypeEndpointCall extends EndpointPayloadCall<Rela
                             data,
                             data.retrofit().create(RelationshipTypeService.class),
                             EmptyQuery.create(),
-                            new TransactionalResourceListPersistor<>(
+                            new TransactionalListPersistor<>(
                                     data,
                                     RelationshipTypeHandler.create(data.databaseAdapter()),
                                     ResourceModel.Type.RELATIONSHIP_TYPE,

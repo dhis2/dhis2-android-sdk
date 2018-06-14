@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericCallFactory;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.TransactionalListPersistor;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
@@ -63,7 +63,7 @@ public final class DataSetEndpointCall extends EndpointPayloadCall<DataSet, Empt
             return new DataSetEndpointCall(data,
                     data.retrofit().create(DataSetService.class),
                     EmptyQuery.create(),
-                    new TransactionalResourceListPersistor<>(
+                    new TransactionalListPersistor<>(
                             data,
                             DataSetHandler.create(data.databaseAdapter()),
                             ResourceModel.Type.DATA_SET,

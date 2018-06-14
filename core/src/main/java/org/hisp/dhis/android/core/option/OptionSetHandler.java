@@ -27,27 +27,39 @@
  */
 package org.hisp.dhis.android.core.option;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionSetModel> {
-    private final OptionHandler optionHandler;
+public final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionSetModel> {
+    private final GenericHandler<Option, OptionModel> optionHandler;
+    private final OrphanCleaner<OptionSet, Option> optionCleaner;
 
-    OptionSetHandler(IdentifiableObjectStore<OptionSetModel> optionSetStore, OptionHandler optionHandler) {
+    OptionSetHandler(IdentifiableObjectStore<OptionSetModel> optionSetStore,
+                     GenericHandler<Option, OptionModel> optionHandler,
+                     OrphanCleaner<OptionSet, Option> optionCleaner) {
         super(optionSetStore);
         this.optionHandler = optionHandler;
-    }
-
-    public static OptionSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new OptionSetHandler(OptionSetStore.create(databaseAdapter),
-                new OptionHandler(new OptionStoreImpl(databaseAdapter),
-                        ObjectStyleHandler.create(databaseAdapter)));
+        this.optionCleaner = optionCleaner;
     }
 
     @Override
-    protected void afterObjectPersisted(OptionSet optionSet) {
-        optionHandler.handleOptions(optionSet.options());
+    protected void afterObjectHandled(OptionSet optionSet, HandleAction action) {
+        optionHandler.handleMany(optionSet.options(), new OptionModelBuilder());
+        if (action == HandleAction.Update) {
+            optionCleaner.deleteOrphan(optionSet, optionSet.options());
+        }
+    }
+
+    public static OptionSetHandler create(DatabaseAdapter databaseAdapter) {
+        return new OptionSetHandler(
+                OptionSetStore.create(databaseAdapter),
+                OptionHandler.create(databaseAdapter),
+                new OrphanCleanerImpl<OptionSet, Option>(OptionModel.TABLE, OptionModel.Columns.OPTION_SET,
+                        databaseAdapter));
     }
 }

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -50,7 +51,8 @@ public class ProgramTrackedEntityAttributeHandler extends
     }
 
     @Override
-    protected void afterObjectPersisted(ProgramTrackedEntityAttribute programTrackedEntityAttribute) {
+    protected void afterObjectHandled(ProgramTrackedEntityAttribute programTrackedEntityAttribute,
+                                      HandleAction action) {
         trackedEntityAttributeHandler.handleTrackedEntityAttribute(
                 programTrackedEntityAttribute.trackedEntityAttribute());
     }

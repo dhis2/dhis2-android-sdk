@@ -42,7 +42,7 @@ import java.util.Map;
 
 public class DbOpenHelper extends SQLBriteOpenHelper {
 
-    public static final int VERSION = 5;
+    public static final int VERSION = 6;
 
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
         super(context, databaseName, null, VERSION);
@@ -58,6 +58,7 @@ public class DbOpenHelper extends SQLBriteOpenHelper {
 
         // enable foreign key support in database
         db.execSQL("PRAGMA foreign_keys = ON;");
+        db.enableWriteAheadLogging();
     }
 
     // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional

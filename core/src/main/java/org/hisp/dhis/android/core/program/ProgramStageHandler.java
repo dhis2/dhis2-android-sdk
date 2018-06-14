@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -52,7 +53,7 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
     }
 
     @Override
-    protected void afterObjectPersisted(ProgramStage programStage) {
+    protected void afterObjectHandled(ProgramStage programStage, HandleAction action) {
         programStageDataElementHandler.handleProgramStageDataElements(
                 programStage.programStageDataElements());
         programStageSectionHandler.handleProgramStageSection(programStage.uid(),

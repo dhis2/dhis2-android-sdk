@@ -27,14 +27,20 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collection;
 
 public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramModel> {
 
@@ -45,6 +51,8 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
             programTrackedEntityAttributeHandler;
     private final GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private final ParentOrphanCleaner<Program> orphanCleaner;
+    private final CollectionCleaner<Program> collectionCleaner;
 
     ProgramHandler(IdentifiableObjectStore<ProgramModel> programStore,
                    ProgramRuleVariableHandler programRuleVariableHandler,
@@ -53,7 +61,9 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
                    GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
                            programTrackedEntityAttributeHandler,
                    GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler,
-                   GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
+                   GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
+                   ParentOrphanCleaner<Program> orphanCleaner,
+                   CollectionCleaner<Program> collectionCleaner) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
@@ -61,6 +71,8 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
         this.programTrackedEntityAttributeHandler = programTrackedEntityAttributeHandler;
         this.programSectionHandler = programSectionHandler;
         this.styleHandler = styleHandler;
+        this.orphanCleaner = orphanCleaner;
+        this.collectionCleaner = collectionCleaner;
     }
 
     public static ProgramHandler create(DatabaseAdapter databaseAdapter) {
@@ -71,12 +83,14 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
                 ProgramRuleHandler.create(databaseAdapter),
                 ProgramTrackedEntityAttributeHandler.create(databaseAdapter),
                 ProgramSectionHandler.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter)
+                ObjectStyleHandler.create(databaseAdapter),
+                ProgramOrphanCleaner.create(databaseAdapter),
+                new CollectionCleanerImpl<Program>(ProgramModel.TABLE, databaseAdapter)
         );
     }
 
     @Override
-    protected void afterObjectPersisted(Program program) {
+    protected void afterObjectHandled(Program program, HandleAction action) {
         programTrackedEntityAttributeHandler.handleMany(program.programTrackedEntityAttributes(),
                 new ProgramTrackedEntityAttributeModelBuilder());
         programIndicatorHandler.handleMany(program.programIndicators(), new ProgramIndicatorModelBuilder());
@@ -84,5 +98,14 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
         programSectionHandler.handleMany(program.programSections(), new ProgramSectionModelBuilder());
         styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(), ProgramModel.TABLE));
+
+        if (action == HandleAction.Update) {
+            orphanCleaner.deleteOrphan(program);
+        }
+    }
+
+    @Override
+    protected void afterCollectionHandled(Collection<Program> programs) {
+        collectionCleaner.deleteNotPresent(programs);
     }
 }

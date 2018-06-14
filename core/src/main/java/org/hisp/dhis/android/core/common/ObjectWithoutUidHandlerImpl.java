@@ -36,10 +36,8 @@ public class ObjectWithoutUidHandlerImpl<P, M extends BaseModel> extends Generic
     }
 
     @Override
-    protected void deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder) {
+    protected HandleAction deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder) {
         M m = modelBuilder.buildModel(p);
-        store.updateOrInsertWhere(m);
-        this.afterObjectPersisted(p);
+        return store.updateOrInsertWhere(m);
     }
-
 }

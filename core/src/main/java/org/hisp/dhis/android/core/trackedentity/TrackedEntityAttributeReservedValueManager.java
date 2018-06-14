@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
+
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
@@ -34,7 +36,9 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 
@@ -53,7 +57,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
-    TrackedEntityAttributeReservedValueManager(DatabaseAdapter databaseAdapter,
+    private TrackedEntityAttributeReservedValueManager(DatabaseAdapter databaseAdapter,
                                                Retrofit retrofit,
                                                TrackedEntityAttributeReservedValueStoreInterface store,
                                                IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
@@ -113,9 +117,45 @@ public final class TrackedEntityAttributeReservedValueManager {
         OrganisationUnitModel organisationUnitModel =
                 this.organisationUnitStore.selectByUid(organisationUnitUid, OrganisationUnitModel.factory);
 
-
         executor.executeD2Call(TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(
                 genericCallData, attribute, numberToReserve, organisationUnitModel));
+    }
+
+    public void syncAllTrackedEntityAttributeReservedValues() {
+        String selectStatement = generateAllTrackedEntityAttributeReservedValuesSelectStatement();
+        Cursor cursor = databaseAdapter.query(selectStatement);
+
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                String ownerUid = cursor.getString(0);
+                String orgUnitUid = cursor.getString(1);
+                forceSyncReservedValues(ownerUid, orgUnitUid);
+            } while (cursor.moveToNext());
+        }
+    }
+
+    private static String generateAllTrackedEntityAttributeReservedValuesSelectStatement() {
+        String tEAUidColumn = "t." + TrackedEntityAttributeModel.Columns.UID;
+        String tEAGeneratedColumn = "t." + TrackedEntityAttributeModel.Columns.GENERATED;
+        String oUPLOrgUnitColumn = "o." + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT;
+        String oUPLProgramColumn = "o." + OrganisationUnitProgramLinkModel.Columns.PROGRAM;
+        String pTEATEAColumn = "p." + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE;
+        String pTEAProgramColumn = "p." + ProgramTrackedEntityAttributeModel.Columns.PROGRAM;
+
+        return "SELECT DISTINCT " +
+                tEAUidColumn + ", " +
+                oUPLOrgUnitColumn  + " " +
+
+                "FROM " +
+                TrackedEntityAttributeModel.TABLE + " t, " +
+                OrganisationUnitProgramLinkModel.TABLE + " o, " +
+                ProgramTrackedEntityAttributeModel.TABLE + " p " +
+
+                "WHERE " +
+                tEAGeneratedColumn + " = 1 AND " +
+                pTEATEAColumn + " = " + tEAUidColumn + " AND " +
+                pTEAProgramColumn + " = " + oUPLProgramColumn + ";";
     }
 
     public static TrackedEntityAttributeReservedValueManager create(DatabaseAdapter databaseAdapter,

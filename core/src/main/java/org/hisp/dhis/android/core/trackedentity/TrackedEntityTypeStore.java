@@ -28,27 +28,16 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class TrackedEntityTypeStore{
 
-import java.util.Date;
+    private TrackedEntityTypeStore() {}
 
-public interface TrackedEntityTypeStore extends DeletableStore {
-
-    long insert(@NonNull String uid, @Nullable String code, @Nullable String name,
-                @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
-                @Nullable String shortName, @Nullable String displayShortName,
-                @Nullable String description, @Nullable String displayDescription
-    );
-
-    int update(@NonNull String uid, @Nullable String code, @Nullable String name,
-               @Nullable String displayName, @Nullable Date created, @Nullable Date lastUpdated,
-               @Nullable String shortName, @Nullable String displayShortName,
-               @Nullable String description, @Nullable String displayDescription, @NonNull String whereUid
-    );
-
-    int delete(@NonNull String uid);
-
+    public static IdentifiableObjectStore<TrackedEntityTypeModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.identifiableStore(databaseAdapter, TrackedEntityTypeModel.TABLE,
+                new TrackedEntityTypeModel.Columns().all());
+    }
 }

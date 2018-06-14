@@ -36,7 +36,8 @@ public abstract class GenericHandlerBaseImpl<P, M extends BaseModel> implements 
         if (p == null) {
             return;
         }
-        deleteOrPersist(p, modelBuilder);
+        HandleAction action = deleteOrPersist(p, modelBuilder);
+        afterObjectHandled(p, action);
     }
 
     @Override
@@ -45,13 +46,21 @@ public abstract class GenericHandlerBaseImpl<P, M extends BaseModel> implements 
             for(P p : pCollection) {
                 handle(p, modelBuilder);
             }
+            afterCollectionHandled(pCollection);
         }
     }
 
-    protected abstract void deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder);
+    protected abstract HandleAction deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder);
 
     @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void afterObjectPersisted(P p) {
+    protected void afterObjectHandled(P p, HandleAction action) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
+    }
+
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    protected void afterCollectionHandled(Collection<P> pCollection) {
         /* Method is not abstract since empty action is the default action and we don't want it to
          * be unnecessarily written in every child.
          */

@@ -29,12 +29,17 @@
 package org.hisp.dhis.android.core.option;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class OptionModel extends BaseIdentifiableObjectModel {
@@ -42,6 +47,11 @@ public abstract class OptionModel extends BaseIdentifiableObjectModel {
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String OPTION_SET = "optionSet";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), OPTION_SET);
+        }
     }
 
     public static OptionModel create(Cursor cursor) {
@@ -50,6 +60,12 @@ public abstract class OptionModel extends BaseIdentifiableObjectModel {
 
     public static Builder builder() {
         return new $$AutoValue_OptionModel.Builder();
+    }
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 7, optionSet());
     }
 
     @Nullable

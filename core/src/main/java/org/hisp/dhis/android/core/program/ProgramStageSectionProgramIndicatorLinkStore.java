@@ -25,15 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class ProgramStageSectionProgramIndicatorLinkStore {
 
-public interface ProgramStageSectionProgramIndicatorLinkStore extends DeletableStore {
-    Long insert(@NonNull String programStageSection, @NonNull String programIndicator);
+    private ProgramStageSectionProgramIndicatorLinkStore() {}
 
-    int update(@NonNull String programStageSection, @NonNull String programIndicator,
-               @NonNull String whereProgramStageSection, @NonNull String whereProgramIndicator);
+    public static LinkModelStore<ProgramStageSectionProgramIndicatorLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter, ProgramStageSectionProgramIndicatorLinkModel.TABLE,
+                new ProgramStageSectionProgramIndicatorLinkModel.Columns(),
+                ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION);
+    }
 }

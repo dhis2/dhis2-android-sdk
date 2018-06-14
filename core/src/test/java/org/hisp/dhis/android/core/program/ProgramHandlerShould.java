@@ -28,13 +28,16 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,11 +46,13 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -75,6 +80,12 @@ public class ProgramHandlerShould {
 
     @Mock
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+
+    @Mock
+    private ParentOrphanCleaner<Program> orphanCleaner;
+
+    @Mock
+    private CollectionCleaner<Program> collectionCleaner;
 
     @Mock
     private Program program;
@@ -118,7 +129,8 @@ public class ProgramHandlerShould {
 
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler, programIndicatorHandler, programRuleHandler,
-                programTrackedEntityAttributeHandler, programSectionHandler, styleHandler);
+                programTrackedEntityAttributeHandler, programSectionHandler, styleHandler, orphanCleaner,
+                collectionCleaner);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.code()).thenReturn("test_program_code");
@@ -198,5 +210,26 @@ public class ProgramHandlerShould {
         programHandler.handle(program, new ProgramModelBuilder());
         verify(programSectionHandler).handleMany(anyListOf(ProgramSection.class),
                 any(ProgramSectionModelBuilder.class));
+    }
+
+    @Test
+    public void clean_orphan_options_after_update() {
+        when(programStore.updateOrInsert(any(ProgramModel.class))).thenReturn(HandleAction.Update);
+        programHandler.handle(program, new ProgramModelBuilder());
+        verify(orphanCleaner).deleteOrphan(program);
+    }
+
+    @Test
+    public void not_clean_orphan_options_after_insert() {
+        when(programStore.updateOrInsert(any(ProgramModel.class))).thenReturn(HandleAction.Insert);
+        programHandler.handle(program, new ProgramModelBuilder());
+        verify(orphanCleaner, never()).deleteOrphan(program);
+    }
+
+    @Test
+    public void call_collection_cleaner_when_calling_handle_many() {
+        List<Program> programs = Collections.singletonList(program);
+        programHandler.handleMany(programs, new ProgramModelBuilder());
+        verify(collectionCleaner).deleteNotPresent(programs);
     }
 }

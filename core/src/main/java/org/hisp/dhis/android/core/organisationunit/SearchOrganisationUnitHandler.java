@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -53,7 +54,7 @@ public class SearchOrganisationUnitHandler extends IdentifiableHandlerImpl<Organ
     }
 
     @Override
-    protected void afterObjectPersisted(OrganisationUnit organisationUnit) {
+    protected void afterObjectHandled(OrganisationUnit organisationUnit, HandleAction action) {
         UserOrganisationUnitLinkModelBuilder modelBuilder = new UserOrganisationUnitLinkModelBuilder(
                 OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, User.builder().uid(userId).build());
 

@@ -56,7 +56,7 @@ import org.hisp.dhis.android.core.legendset.LegendSetStore;
 import org.hisp.dhis.android.core.legendset.LegendStore;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
 import org.hisp.dhis.android.core.option.OptionSetStore;
-import org.hisp.dhis.android.core.option.OptionStoreImpl;
+import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.period.PeriodStore;
@@ -65,7 +65,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramRuleStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
-import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
 import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
@@ -80,7 +80,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeStore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -125,10 +125,10 @@ public class LogOutUserCallable implements Callable<Unit> {
                 ProgramTrackedEntityAttributeStore.create(databaseAdapter),
                 new ProgramRuleVariableStoreImpl(databaseAdapter),
                 ProgramIndicatorStore.create(databaseAdapter),
-                new ProgramStageSectionProgramIndicatorLinkStoreImpl(databaseAdapter),
+                ProgramStageSectionProgramIndicatorLinkStore.create(databaseAdapter),
                 new ProgramRuleActionStoreImpl(databaseAdapter),
                 new ProgramRuleStoreImpl(databaseAdapter),
-                new OptionStoreImpl(databaseAdapter),
+                OptionStore.create(databaseAdapter),
                 OptionSetStore.create(databaseAdapter),
                 DataElementStore.create(databaseAdapter),
                 new ProgramStageDataElementStoreImpl(databaseAdapter),
@@ -136,7 +136,7 @@ public class LogOutUserCallable implements Callable<Unit> {
                 new ProgramStageSectionStoreImpl(databaseAdapter),
                 ProgramStageStore.create(databaseAdapter),
                 RelationshipStore.create(databaseAdapter),
-                new TrackedEntityTypeStoreImpl(databaseAdapter),
+                TrackedEntityTypeStore.create(databaseAdapter),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
                 new TrackedEntityDataValueStoreImpl(databaseAdapter),

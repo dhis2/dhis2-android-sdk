@@ -29,43 +29,49 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.UidPayloadCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
-import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
 import java.util.Set;
 
-public final class DataElementEndpointCall extends EndpointPayloadCall<DataElement, UidsQuery> {
+public final class DataElementEndpointCall extends UidPayloadCall<DataElement> {
     private final DataElementService dataElementService;
 
     private DataElementEndpointCall(GenericCallData data,
                                     DataElementService dataElementService,
                                     UidsQuery query,
+                                    int uidLimit,
                                     ListPersistor<DataElement> persistor) {
-        super(data, ResourceModel.Type.DATA_ELEMENT, query, persistor);
+        super(data, ResourceModel.Type.DATA_ELEMENT, query, uidLimit, persistor);
         this.dataElementService = dataElementService;
     }
 
     @Override
     protected retrofit2.Call<Payload<DataElement>> getCall(UidsQuery query, String lastUpdated) {
-        String prefix = "dataSetElements.dataSet.";
-        return dataElementService.getDataElements(DataElement.allFields, DataElement.lastUpdated.gt(lastUpdated),
-                prefix + DataSet.uid.in(query.uids()).generateString(), Boolean.FALSE);
+        return dataElementService.getDataElements(
+                DataElement.allFields,
+                DataElement.lastUpdated.gt(lastUpdated),
+                DataElement.uid.in(query.uids()),
+                Boolean.FALSE);
     }
 
     public static final UidsCallFactory<DataElement> FACTORY = new UidsCallFactory<DataElement>() {
+
+        private static final int MAX_UID_LIST_SIZE = 100;
+
         @Override
         public Call<List<DataElement>> create(GenericCallData data, Set<String> uids) {
             return new DataElementEndpointCall(data,
                     data.retrofit().create(DataElementService.class),
-                    UidsQuery.create(uids, null),
+                    UidsQuery.create(uids),
+                    MAX_UID_LIST_SIZE,
                     new TransactionalResourceListPersistor<>(
                             data,
                             DataElementHandler.create(data.databaseAdapter()),

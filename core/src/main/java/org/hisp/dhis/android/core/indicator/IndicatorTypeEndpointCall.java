@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.indicator;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.UidPayloadCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -41,12 +41,15 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.util.List;
 import java.util.Set;
 
-public final class IndicatorTypeEndpointCall extends EndpointPayloadCall<IndicatorType, UidsQuery> {
+public final class IndicatorTypeEndpointCall extends UidPayloadCall<IndicatorType> {
     private final IndicatorTypeService indicatorTypeService;
 
-    private IndicatorTypeEndpointCall(GenericCallData data, IndicatorTypeService indicatorTypeService,
-                                      UidsQuery query, ListPersistor<IndicatorType> persistor) {
-        super(data, ResourceModel.Type.INDICATOR_TYPE, query, persistor);
+    private IndicatorTypeEndpointCall(GenericCallData data,
+                                      IndicatorTypeService indicatorTypeService,
+                                      UidsQuery query,
+                                      int uidLimit,
+                                      ListPersistor<IndicatorType> persistor) {
+        super(data, ResourceModel.Type.INDICATOR_TYPE, query, uidLimit, persistor);
         this.indicatorTypeService = indicatorTypeService;
     }
 
@@ -60,11 +63,15 @@ public final class IndicatorTypeEndpointCall extends EndpointPayloadCall<Indicat
     }
 
     public static final UidsCallFactory<IndicatorType> FACTORY = new UidsCallFactory<IndicatorType>() {
+
+        private static final int MAX_UID_LIST_SIZE = 140;
+
         @Override
         public Call<List<IndicatorType>> create(GenericCallData data, Set<String> uids) {
             return new IndicatorTypeEndpointCall(data,
                     data.retrofit().create(IndicatorTypeService.class),
-                    UidsQuery.create(uids, null),
+                    UidsQuery.create(uids),
+                    MAX_UID_LIST_SIZE,
                     new TransactionalResourceListPersistor<>(
                             data,
                             IndicatorTypeHandler.create(data.databaseAdapter()),

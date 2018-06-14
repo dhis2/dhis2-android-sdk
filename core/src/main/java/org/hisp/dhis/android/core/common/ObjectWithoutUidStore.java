@@ -34,5 +34,5 @@ public interface ObjectWithoutUidStore<M extends BaseModel> extends ObjectStore<
 
     void updateWhere(@NonNull M m) throws RuntimeException;
 
-    void updateOrInsertWhere(@NonNull M m) throws RuntimeException;
+    HandleAction updateOrInsertWhere(@NonNull M m) throws RuntimeException;
 }

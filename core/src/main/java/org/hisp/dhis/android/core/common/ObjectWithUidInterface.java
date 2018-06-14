@@ -26,26 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.UidsCallFactory;
-import org.hisp.dhis.android.core.utils.Utils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
-public final class UidCallSplitter {
-
-    public <P> List<Callable<List<P>>> splitCalls(UidsCallFactory<P> callFactory, GenericCallData data,
-                                                  Set<String> uids, int limit) {
-        List<Set<String>> partitions = Utils.setPartition(uids, limit);
-        List<Callable<List<P>>> calls = new ArrayList<>(partitions.size());
-        for (Set<String> partitionUids: partitions) {
-            calls.add(callFactory.create(data, partitionUids));
-        }
-        return calls;
-    }
+public interface ObjectWithUidInterface {
+    String uid();
 }

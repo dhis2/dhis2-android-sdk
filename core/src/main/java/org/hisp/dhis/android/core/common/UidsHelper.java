@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.utils.Utils;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -39,10 +41,28 @@ public final class UidsHelper {
         return addUids(new HashSet<String>(), objects);
     }
 
+    public static String getUidOrNull(IdentifiableObject object) {
+        return object == null ? null : object.uid();
+    }
+
     public static <O extends IdentifiableObject> Set<String> addUids(Set<String> uids, Collection<O> objects) {
         for (IdentifiableObject object: objects) {
             uids.add(object.uid());
         }
         return uids;
+    }
+
+    private static <O extends ObjectWithUidInterface> String[] uidsArray(Collection<O> objects) {
+        String[] uids = new String[objects.size()];
+        int i = 0;
+        for (O o: objects) {
+            uids[i++] = "'" + o.uid() + "'";
+        }
+        return uids;
+    }
+
+    public static <O extends ObjectWithUidInterface> String commaSeparatedUidsWithSingleQuotationMarks(
+            Collection<O> objects) {
+        return Utils.commaAndSpaceSeparatedArrayValues(uidsArray(objects));
     }
 }

@@ -27,49 +27,15 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+public final class TrackedEntityTypeHandler {
 
-public class TrackedEntityTypeHandler {
+    private TrackedEntityTypeHandler() {}
 
-    private final TrackedEntityTypeStore store;
-
-    public TrackedEntityTypeHandler(@NonNull TrackedEntityTypeStore store) {
-        this.store = store;
-    }
-
-    public void handleTrackedEntity(@NonNull TrackedEntityType trackedEntityType) {
-        if (isDeleted(trackedEntityType)) {
-            store.delete(trackedEntityType.uid());
-        } else {
-            int updatedRow = store.update(
-                    trackedEntityType.uid(),
-                    trackedEntityType.code(),
-                    trackedEntityType.name(),
-                    trackedEntityType.displayName(),
-                    trackedEntityType.created(),
-                    trackedEntityType.lastUpdated(),
-                    trackedEntityType.shortName(),
-                    trackedEntityType.displayShortName(),
-                    trackedEntityType.description(),
-                    trackedEntityType.displayDescription(),
-                    trackedEntityType.uid()
-            );
-            if (updatedRow <= 0) {
-                store.insert(
-                        trackedEntityType.uid(),
-                        trackedEntityType.code(),
-                        trackedEntityType.name(),
-                        trackedEntityType.displayName(),
-                        trackedEntityType.created(),
-                        trackedEntityType.lastUpdated(),
-                        trackedEntityType.shortName(),
-                        trackedEntityType.displayShortName(),
-                        trackedEntityType.description(),
-                        trackedEntityType.displayDescription()
-                );
-            }
-        }
+    public static GenericHandler<TrackedEntityType, TrackedEntityTypeModel> create(DatabaseAdapter databaseAdapter) {
+        return new IdentifiableHandlerImpl<>(TrackedEntityTypeStore.create(databaseAdapter));
     }
 }

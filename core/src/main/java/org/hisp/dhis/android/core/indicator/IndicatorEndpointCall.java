@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.indicator;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.UidPayloadCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -41,12 +41,15 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.util.List;
 import java.util.Set;
 
-public final class IndicatorEndpointCall extends EndpointPayloadCall<Indicator, UidsQuery> {
+public final class IndicatorEndpointCall extends UidPayloadCall<Indicator> {
     private final IndicatorService indicatorService;
 
-    private IndicatorEndpointCall(GenericCallData data, IndicatorService indicatorService, UidsQuery uidsQuery,
+    private IndicatorEndpointCall(GenericCallData data,
+                                  IndicatorService indicatorService,
+                                  UidsQuery uidsQuery,
+                                  int uidLimit,
                                   ListPersistor<Indicator> persistor) {
-        super(data, ResourceModel.Type.INDICATOR, uidsQuery, persistor);
+        super(data, ResourceModel.Type.INDICATOR, uidsQuery, uidLimit, persistor);
         this.indicatorService = indicatorService;
     }
 
@@ -60,11 +63,15 @@ public final class IndicatorEndpointCall extends EndpointPayloadCall<Indicator, 
     }
 
     public static final UidsCallFactory<Indicator> FACTORY = new UidsCallFactory<Indicator>() {
+
+        private static final int MAX_UID_LIST_SIZE = 100;
+
         @Override
         public Call<List<Indicator>> create(GenericCallData data, Set<String> uids) {
             return new IndicatorEndpointCall(data,
                     data.retrofit().create(IndicatorService.class),
-                    UidsQuery.create(uids, null),
+                    UidsQuery.create(uids),
+                    MAX_UID_LIST_SIZE,
                     new TransactionalResourceListPersistor<>(
                             data,
                             IndicatorHandler.create(data.databaseAdapter()),

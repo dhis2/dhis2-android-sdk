@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +63,11 @@ public class ProgramStageSectionHandlerShould {
     private ProgramStageDataElementHandler programStageDataElementHandler;
 
     @Mock
-    private ProgramIndicatorHandler programIndicatorHandler;
+    private GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler;
+
+    @Mock
+    private LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
+            programStageSectionProgramIndicatorLinkHandler;
 
     @Mock
     private ProgramStageSection programStageSection;
@@ -79,8 +85,8 @@ public class ProgramStageSectionHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         programStageSectionHandler = new ProgramStageSectionHandler(
-                programStageSectionStore, programStageDataElementHandler, programIndicatorHandler
-        );
+                programStageSectionStore, programStageDataElementHandler, programIndicatorHandler,
+                programStageSectionProgramIndicatorLinkHandler);
 
         when(programStageSection.uid()).thenReturn(PROGRAM_STAGE_SECTION_UID);
         programStageSections = new ArrayList<>();
@@ -114,9 +120,8 @@ public class ProgramStageSectionHandlerShould {
                 anyString(), anyString()
         );
 
-        verify(programIndicatorHandler, times(1)).handleManyWithProgramStageSection(
-                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class), anyString()
-        );
+        verify(programIndicatorHandler, times(1)).handleMany(
+                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class));
 
     }
 
@@ -152,9 +157,8 @@ public class ProgramStageSectionHandlerShould {
                 anyString(), anyString()
         );
 
-        verify(programIndicatorHandler, times(1)).handleManyWithProgramStageSection(
-                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class), anyString()
-        );
+        verify(programIndicatorHandler, times(1)).handleMany(
+                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class));
     }
 
     @Test
@@ -190,9 +194,8 @@ public class ProgramStageSectionHandlerShould {
                 anyString(), anyString()
         );
 
-        verify(programIndicatorHandler, times(1)).handleManyWithProgramStageSection(
-                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class), anyString()
-        );
+        verify(programIndicatorHandler, times(1)).handleMany(
+                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class));
 
     }
 
@@ -216,9 +219,8 @@ public class ProgramStageSectionHandlerShould {
                 anyString(), anyString()
         );
 
-        verify(programIndicatorHandler, never()).handleManyWithProgramStageSection(
-                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class), anyString()
-        );
+        verify(programIndicatorHandler, never()).handleMany(
+                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class));
     }
 
     @Test
@@ -242,9 +244,8 @@ public class ProgramStageSectionHandlerShould {
                 anyString(), anyString()
         );
 
-        verify(programIndicatorHandler, never()).handleManyWithProgramStageSection(
-                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class), anyString()
-        );
+        verify(programIndicatorHandler, never()).handleMany(
+                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class));
     }
 
     @Test
@@ -267,8 +268,7 @@ public class ProgramStageSectionHandlerShould {
                 anyString(), anyString()
         );
 
-        verify(programIndicatorHandler, never()).handleManyWithProgramStageSection(
-                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class), anyString()
-        );
+        verify(programIndicatorHandler, never()).handleMany(
+                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class));
     }
 }

@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.UidPayloadCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -41,12 +41,15 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.util.List;
 import java.util.Set;
 
-public final class ProgramStageEndpointCall extends EndpointPayloadCall<ProgramStage, UidsQuery> {
+public final class ProgramStageEndpointCall extends UidPayloadCall<ProgramStage> {
     private final ProgramStageService programStageService;
 
-    private ProgramStageEndpointCall(GenericCallData data, ProgramStageService programStageService, UidsQuery query,
+    private ProgramStageEndpointCall(GenericCallData data,
+                                     ProgramStageService programStageService,
+                                     UidsQuery query,
+                                     int uidLimit,
                                      ListPersistor<ProgramStage> persistor) {
-        super(data, ResourceModel.Type.PROGRAM_STAGE, query, persistor);
+        super(data, ResourceModel.Type.PROGRAM_STAGE, query, uidLimit, persistor);
         this.programStageService = programStageService;
     }
 
@@ -57,11 +60,15 @@ public final class ProgramStageEndpointCall extends EndpointPayloadCall<ProgramS
     }
 
     public static final UidsCallFactory<ProgramStage> FACTORY = new UidsCallFactory<ProgramStage>() {
+
+        private static final int MAX_UID_LIST_SIZE = 64;
+
         @Override
         public Call<List<ProgramStage>> create(GenericCallData data, Set<String> uids) {
             return new ProgramStageEndpointCall(data,
                     data.retrofit().create(ProgramStageService.class),
-                    UidsQuery.create(uids, 64),
+                    UidsQuery.create(uids),
+                    MAX_UID_LIST_SIZE,
                     new TransactionalResourceListPersistor<>(
                             data,
                             ProgramStageHandler.create(data.databaseAdapter()),

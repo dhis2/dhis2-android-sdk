@@ -29,6 +29,9 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
@@ -39,14 +42,20 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 public class ProgramStageSectionHandler {
     private final ProgramStageSectionStore programStageSectionStore;
     private final ProgramStageDataElementHandler programStageDataElementHandler;
-    private final ProgramIndicatorHandler programIndicatorHandler;
+    private final GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler;
+    private final LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
+            programStageSectionProgramIndicatorLinkHandler;
 
     public ProgramStageSectionHandler(@NonNull ProgramStageSectionStore programStageSectionStore,
                                       @NonNull ProgramStageDataElementHandler programStageDataElementHandler,
-                                      @NonNull ProgramIndicatorHandler programIndicatorHandler) {
+                                      @NonNull GenericHandler<ProgramIndicator, ProgramIndicatorModel>
+                                              programIndicatorHandler,
+                                      LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
+                                              programStageSectionProgramIndicatorLinkHandler) {
         this.programStageSectionStore = programStageSectionStore;
         this.programStageDataElementHandler = programStageDataElementHandler;
         this.programIndicatorHandler = programIndicatorHandler;
+        this.programStageSectionProgramIndicatorLinkHandler = programStageSectionProgramIndicatorLinkHandler;
     }
 
     private ProgramStageSectionRenderingType desktopRenderType(ProgramStageSectionRendering renderType) {
@@ -96,30 +105,35 @@ public class ProgramStageSectionHandler {
                 }
             }
 
-
-            //Loop over the list and add all entries
-            String programStageSectionUid = programStageSection.uid();
-            List<DataElement> dataElements = programStageSection.dataElements();
-            int dataElementSize = dataElements.size();
-
-            for (int j = 0; j < dataElementSize; j++) {
-                String dataElementUid = dataElements.get(j).uid();
-
-                programStageDataElementHandler.updateProgramStageDataElementWithProgramStageSectionLink(
-                        programStageSectionUid, dataElementUid
-                );
-
-            }
-            programIndicatorHandler.handleManyWithProgramStageSection(programStageSection.programIndicators(),
-                    programIndicatorModelBuilder, programStageSection.uid());
+            afterObjectPersisted(programStageSection, programIndicatorModelBuilder);
         }
+    }
+
+    private void afterObjectPersisted(ProgramStageSection programStageSection,
+                                      ProgramIndicatorModelBuilder programIndicatorModelBuilder) {
+        List<DataElement> dataElements = programStageSection.dataElements();
+        if (dataElements != null) {
+            for (DataElement dataElement : dataElements) {
+                programStageDataElementHandler.updateProgramStageDataElementWithProgramStageSectionLink(
+                        programStageSection.uid(), dataElement.uid());
+            }
+        }
+
+        ProgramStageSectionProgramIndicatorLinkModelBuilder programStageSectionProgramIndicatorLinkModelBuilder =
+                new ProgramStageSectionProgramIndicatorLinkModelBuilder(programStageSection);
+
+        programIndicatorHandler.handleMany(programStageSection.programIndicators(), programIndicatorModelBuilder);
+        programStageSectionProgramIndicatorLinkHandler.handleMany(programStageSection.uid(),
+                programStageSection.programIndicators(), programStageSectionProgramIndicatorLinkModelBuilder);
     }
 
     public static ProgramStageSectionHandler create(DatabaseAdapter databaseAdapter) {
         return new ProgramStageSectionHandler(
                 new ProgramStageSectionStoreImpl(databaseAdapter),
                 ProgramStageDataElementHandler.create(databaseAdapter),
-                ProgramIndicatorHandler.create(databaseAdapter)
+                ProgramIndicatorHandler.create(databaseAdapter),
+                new LinkModelHandlerImpl<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>(
+                        ProgramStageSectionProgramIndicatorLinkStore.create(databaseAdapter))
         );
     }
 }

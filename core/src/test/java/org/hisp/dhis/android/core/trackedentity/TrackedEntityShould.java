@@ -49,7 +49,7 @@ public class TrackedEntityShould {
                 "    \"created\": \"2014-08-20T12:28:56.409\",\n" +
                 "    \"lastUpdated\": \"2015-10-14T13:36:53.063\",\n" +
                 "    \"name\": \"Person\",\n" +
-                "    \"href\": \"https://play.dhis2.org/dev/api/trackedEntities/nEenWmSyUEp\",\n" +
+                "    \"href\": \"https://play.dhis2.org/dev/api/getTrackedEntityTypes/nEenWmSyUEp\",\n" +
                 "    \"id\": \"nEenWmSyUEp\",\n" +
                 "    \"displayDescription\": \"Person\",\n" +
                 "    \"displayName\": \"Person\",\n" +

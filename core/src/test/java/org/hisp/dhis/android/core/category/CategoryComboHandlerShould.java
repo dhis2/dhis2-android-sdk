@@ -1,11 +1,7 @@
 package org.hisp.dhis.android.core.category;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-
 import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -14,6 +10,13 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 public class CategoryComboHandlerShould {
 
@@ -30,17 +33,17 @@ public class CategoryComboHandlerShould {
     @Mock
     private CategoryComboStore mockComboStore;
 
+    @Mock
+    private OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner;
+
     private CategoryComboHandler categoryComboHandler;
 
     @Before
     public void setUp() throws Exception {
-
-
         MockitoAnnotations.initMocks(this);
 
-
         categoryComboHandler = new CategoryComboHandler(mockComboStore, categoryOptionComboCategoryOptionLinkHandler,
-                mockComboLinkStore, mockOptionComboHandler);
+                mockComboLinkStore, mockOptionComboHandler, categoryOptionCleaner);
     }
 
     @Test
@@ -54,7 +57,8 @@ public class CategoryComboHandlerShould {
 
         verify(mockComboStore).update(combo, combo);
         verify(mockComboStore).insert(combo);
-
+        verify(categoryOptionCleaner, never()).deleteOrphan(
+                any(CategoryCombo.class), anyListOf(CategoryOptionCombo.class));
     }
 
     @Test
@@ -63,6 +67,8 @@ public class CategoryComboHandlerShould {
 
         categoryComboHandler.handle(deletedCombo);
         verify(mockComboStore).delete(deletedCombo);
+        verify(categoryOptionCleaner, never()).deleteOrphan(
+                any(CategoryCombo.class), anyListOf(CategoryOptionCombo.class));
     }
 
     @Test
@@ -76,7 +82,8 @@ public class CategoryComboHandlerShould {
 
         verify(mockComboStore).update(updatedCombo, updatedCombo);
         verifyZeroInteractions(mockComboStore);
-
+        verify(categoryOptionCleaner).deleteOrphan(
+                any(CategoryCombo.class), anyListOf(CategoryOptionCombo.class));
     }
 
     private CategoryCombo givenADeletedCategoryCombo() {

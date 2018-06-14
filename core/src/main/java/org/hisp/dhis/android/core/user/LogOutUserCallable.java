@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
+import org.hisp.dhis.android.core.dataset.SectionStore;
 import org.hisp.dhis.android.core.datavalue.DataValueStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.enrollment.note.NoteStore;
@@ -168,7 +169,8 @@ public class LogOutUserCallable implements Callable<Unit> {
 
                 ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
                 SystemSettingStore.create(databaseAdapter),
-                TrackedEntityAttributeReservedValueStore.create(databaseAdapter)
+                TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
+                SectionStore.create(databaseAdapter)
         );
 
         return new LogOutUserCallable(

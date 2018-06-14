@@ -33,16 +33,16 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class TransactionalResourceListPersistor<P, M extends Model> implements ListPersistor<P> {
+public class TransactionalListPersistor<P, M extends Model> implements ListPersistor<P> {
     private final GenericCallData data;
     private final GenericHandler<P, M> handler;
     private final ResourceModel.Type resourceType;
     private final ModelBuilder<P, M> modelBuilder;
 
-    public TransactionalResourceListPersistor(GenericCallData data,
-                                              GenericHandler<P, M> handler,
-                                              ResourceModel.Type resourceType,
-                                              ModelBuilder<P, M> modelBuilder) {
+    public TransactionalListPersistor(GenericCallData data,
+                                      GenericHandler<P, M> handler,
+                                      ResourceModel.Type resourceType,
+                                      ModelBuilder<P, M> modelBuilder) {
         this.data = data;
         this.handler = handler;
         this.resourceType = resourceType;

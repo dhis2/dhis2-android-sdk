@@ -21,7 +21,10 @@
       "zeroIsSignificant": false,
       "url": "",
       "optionSetValue": true,
-      "dimensionItemType": "DATA_ELEMENT"
+      "dimensionItemType": "DATA_ELEMENT",
+      "access": {
+        "read": true
+      }
     }
   ]
 }

@@ -64,6 +64,9 @@
             "valueType": "BOOLEAN",
             "optionSet": {
               "id": "VQ2lai3OfVG"
+            },
+            "access": {
+              "read": true
             }
           }
         },
@@ -94,7 +97,10 @@
             "displayFormName": "WHOMCH Smoking cessation counselling provided ",
             "zeroIsSignificant": false,
             "displayShortName": "Smoking cessation counselling provided ",
-            "valueType": "BOOLEAN"
+            "valueType": "BOOLEAN",
+            "access": {
+              "read": true
+            }
           }
         },
         {
@@ -124,7 +130,10 @@
             "displayFormName": "WHOMCH Hemoglobin value",
             "zeroIsSignificant": true,
             "displayShortName": "Hemoglobin value",
-            "valueType": "NUMBER"
+            "valueType": "NUMBER",
+            "access": {
+              "read": true
+            }
           }
         }
       ],

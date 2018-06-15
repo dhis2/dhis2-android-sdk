@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -51,7 +52,7 @@ public class SectionHandler extends IdentifiableHandlerImpl<Section, SectionMode
     }
 
     @Override
-    protected void afterObjectPersisted(Section section) {
+    protected void afterObjectHandled(Section section, HandleAction action) {
         saveSectionDataElementLink(section);
     }
 

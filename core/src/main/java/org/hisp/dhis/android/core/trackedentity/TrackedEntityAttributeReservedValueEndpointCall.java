@@ -38,6 +38,9 @@ import java.util.List;
 
 public final class TrackedEntityAttributeReservedValueEndpointCall {
 
+    private TrackedEntityAttributeReservedValueEndpointCall() {
+    }
+
     public static final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> FACTORY =
             new QueryCallFactoryImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueQuery>() {

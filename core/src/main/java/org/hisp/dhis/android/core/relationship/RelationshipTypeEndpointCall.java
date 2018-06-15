@@ -40,6 +40,9 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 
 public final class RelationshipTypeEndpointCall {
 
+    private RelationshipTypeEndpointCall() {
+    }
+
     public static final ListCallFactory<RelationshipType> FACTORY = new ListCallFactoryImpl<RelationshipType>() {
 
         private final ResourceModel.Type resourceType = ResourceModel.Type.RELATIONSHIP_TYPE;

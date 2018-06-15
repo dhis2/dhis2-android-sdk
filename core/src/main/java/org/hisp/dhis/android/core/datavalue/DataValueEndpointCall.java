@@ -40,6 +40,9 @@ import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionVal
 
 public final class DataValueEndpointCall {
 
+    private DataValueEndpointCall() {
+    }
+
     public static final QueryCallFactory<DataValue, DataValueQuery> FACTORY
             = new QueryCallFactoryImpl<DataValue, DataValueQuery>() {
 

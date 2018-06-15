@@ -106,8 +106,8 @@ public final class TrackedEntityAttributeReservedValueManager {
         syncReservedValues(attribute, organisationUnitUid, true);
     }
 
-    private void fillReservedValues(String trackedEntityAttributeUid, String organisationUnitUid, Integer remainingValues)
-            throws D2CallException {
+    private void fillReservedValues(String trackedEntityAttributeUid, String organisationUnitUid,
+                                    Integer remainingValues) throws D2CallException {
 
         D2CallExecutor executor = new D2CallExecutor();
 

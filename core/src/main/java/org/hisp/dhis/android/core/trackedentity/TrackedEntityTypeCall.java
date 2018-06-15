@@ -41,6 +41,9 @@ import java.util.Set;
 
 public final class TrackedEntityTypeCall {
 
+    private TrackedEntityTypeCall() {
+    }
+    
     public static final UidsCallFactory<TrackedEntityType> FACTORY = new UidsCallFactoryImpl<TrackedEntityType>() {
 
         private static final int MAX_UID_LIST_SIZE = 140;

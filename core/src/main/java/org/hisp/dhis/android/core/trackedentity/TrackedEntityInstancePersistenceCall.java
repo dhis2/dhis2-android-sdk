@@ -2,17 +2,21 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.ForeignKeyCleaner;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStoreImpl;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -63,8 +67,11 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
 
                 if (!searchOrgUnitUids.isEmpty()) {
                     AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.query().get(0);
-                    SearchOrganisationUnitCall organisationUnitCall = organisationUnitCallFactory.create(
-                            databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
+
+                    GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
+                            null);
+                    Call<List<OrganisationUnit>> organisationUnitCall = organisationUnitCallFactory.create(
+                            genericCallData, searchOrgUnitUids, authenticatedUserModel.user());
                     executor.executeD2Call(organisationUnitCall);
                 }
 

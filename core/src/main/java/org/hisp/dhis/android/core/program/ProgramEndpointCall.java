@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericCallFactory;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.TransactionalListPersistor;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
@@ -62,7 +62,7 @@ public final class ProgramEndpointCall extends EndpointPayloadCall<Program, Empt
             return new ProgramEndpointCall(data,
                     data.retrofit().create(ProgramService.class),
                     EmptyQuery.create(),
-                    new TransactionalResourceListPersistor<>(
+                    new TransactionalListPersistor<>(
                             data,
                             ProgramHandler.create(data.databaseAdapter()),
                             ResourceModel.Type.PROGRAM,

@@ -28,12 +28,15 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,10 +44,12 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -80,6 +85,15 @@ public class ProgramStageHandlerShould {
     @Mock
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
+    @Mock
+    private OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
+
+    @Mock
+    private OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
+
+    @Mock
+    private CollectionCleaner<ProgramStage> collectionCleaner;
+
     // object to test
     private ProgramStageHandler programStageHandler;
 
@@ -94,7 +108,10 @@ public class ProgramStageHandlerShould {
         programStageHandler = new ProgramStageHandler(
                 programStageStore, programStageSectionHandler,
                 programStageDataElementHandler,
-                styleHandler);
+                styleHandler,
+                programStageDataElementCleaner,
+                programStageSectionCleaner,
+                collectionCleaner);
 
         when(programStage.uid()).thenReturn("test_program_stage_uid");
         when(programStage.style()).thenReturn(objectStyle);
@@ -123,5 +140,40 @@ public class ProgramStageHandlerShould {
     public void call_style_handler() throws Exception {
         programStageHandler.handle(programStage, programStageModelBuilder);
         verify(styleHandler).handle(eq(objectStyle), any(ObjectStyleModelBuilder.class));
+    }
+
+    @Test
+    public void clean_orphan_data_elements_after_update() {
+        when(programStageStore.updateOrInsert(any(ProgramStageModel.class))).thenReturn(HandleAction.Update);
+        programStageHandler.handle(programStage, new ProgramStageModelBuilder());
+        verify(programStageDataElementCleaner).deleteOrphan(programStage, programStageDataElements);
+    }
+
+    @Test
+    public void not_clean_orphan_data_elements_after_insert() {
+        when(programStageStore.updateOrInsert(any(ProgramStageModel.class))).thenReturn(HandleAction.Insert);
+        programStageHandler.handle(programStage, new ProgramStageModelBuilder());
+        verify(programStageDataElementCleaner, never()).deleteOrphan(programStage, programStageDataElements);
+    }
+
+    @Test
+    public void clean_orphan_sections_after_update() {
+        when(programStageStore.updateOrInsert(any(ProgramStageModel.class))).thenReturn(HandleAction.Update);
+        programStageHandler.handle(programStage, new ProgramStageModelBuilder());
+        verify(programStageSectionCleaner).deleteOrphan(programStage, programStageSections);
+    }
+
+    @Test
+    public void not_clean_orphan_sections_after_insert() {
+        when(programStageStore.updateOrInsert(any(ProgramStageModel.class))).thenReturn(HandleAction.Insert);
+        programStageHandler.handle(programStage, new ProgramStageModelBuilder());
+        verify(programStageSectionCleaner, never()).deleteOrphan(programStage, programStageSections);
+    }
+
+    @Test
+    public void call_collection_cleaner_when_calling_handle_many() {
+        List<ProgramStage> programStages = Collections.singletonList(programStage);
+        programStageHandler.handleMany(programStages, new ProgramStageModelBuilder());
+        verify(collectionCleaner).deleteNotPresent(programStages);
     }
 }

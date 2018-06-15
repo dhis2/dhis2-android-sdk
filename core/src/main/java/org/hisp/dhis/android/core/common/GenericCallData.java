@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.Date;
 
+import javax.annotation.Nullable;
+
 import retrofit2.Retrofit;
 
 @AutoValue
@@ -43,7 +45,7 @@ public abstract class GenericCallData {
     public abstract DatabaseAdapter databaseAdapter();
     public abstract ResourceHandler resourceHandler();
     public abstract Retrofit retrofit();
-    public abstract Date serverDate();
+    @Nullable public abstract Date serverDate();
 
     public static GenericCallData create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
                                          Date serverDate) {
@@ -53,6 +55,5 @@ public abstract class GenericCallData {
 
     public void handleResource(ResourceModel.Type type) {
         resourceHandler().handleResource(type, serverDate());
-
     }
 }

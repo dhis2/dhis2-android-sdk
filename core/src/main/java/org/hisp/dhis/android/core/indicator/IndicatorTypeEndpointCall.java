@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.TransactionalListPersistor;
 import org.hisp.dhis.android.core.common.UidPayloadCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
@@ -57,7 +57,7 @@ public final class IndicatorTypeEndpointCall extends UidPayloadCall<IndicatorTyp
     protected retrofit2.Call<Payload<IndicatorType>> getCall(UidsQuery query, String lastUpdated) {
         return indicatorTypeService.getIndicatorTypes(
                 IndicatorType.allFields,
-                IndicatorType.lastUpdated.gt(lastUpdated),
+                IndicatorType.lastUpdated.gt(null),
                 IndicatorType.uid.in(query.uids()),
                 Boolean.FALSE);
     }
@@ -72,7 +72,7 @@ public final class IndicatorTypeEndpointCall extends UidPayloadCall<IndicatorTyp
                     data.retrofit().create(IndicatorTypeService.class),
                     UidsQuery.create(uids),
                     MAX_UID_LIST_SIZE,
-                    new TransactionalResourceListPersistor<>(
+                    new TransactionalListPersistor<>(
                             data,
                             IndicatorTypeHandler.create(data.databaseAdapter()),
                             ResourceModel.Type.INDICATOR_TYPE,

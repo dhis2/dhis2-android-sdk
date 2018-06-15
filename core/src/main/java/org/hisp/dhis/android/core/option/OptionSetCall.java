@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalResourceListPersistor;
+import org.hisp.dhis.android.core.common.TransactionalListPersistor;
 import org.hisp.dhis.android.core.common.UidPayloadCall;
 import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
@@ -57,8 +57,11 @@ public final class OptionSetCall extends UidPayloadCall<OptionSet> {
 
     @Override
     protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query, String lastUpdated) {
-        return optionSetService.optionSets(false,
-                getFields(), OptionSet.uid.in(query.uids()));
+        return optionSetService.optionSets(
+                false,
+                getFields(),
+                OptionSet.uid.in(query.uids())
+        );
     }
 
     private Fields<OptionSet> getFields() {
@@ -89,7 +92,7 @@ public final class OptionSetCall extends UidPayloadCall<OptionSet> {
                     data.retrofit().create(OptionSetService.class),
                     UidsQuery.create(uids),
                     MAX_UID_LIST_SIZE,
-                    new TransactionalResourceListPersistor<>(
+                    new TransactionalListPersistor<>(
                             data,
                             OptionSetHandler.create(data.databaseAdapter()),
                             ResourceModel.Type.OPTION_SET,

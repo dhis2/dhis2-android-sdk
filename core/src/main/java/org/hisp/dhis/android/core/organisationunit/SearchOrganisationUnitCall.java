@@ -28,62 +28,55 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.common.TransactionalListPersistor;
+import org.hisp.dhis.android.core.common.UidPayloadCall;
 import org.hisp.dhis.android.core.common.UidsQuery;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
 import java.util.Set;
 
-import retrofit2.Call;
-import retrofit2.Retrofit;
-
-public final class SearchOrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
+public final class SearchOrganisationUnitCall extends UidPayloadCall<OrganisationUnit> {
     private final OrganisationUnitService service;
-    private final GenericHandler<OrganisationUnit, OrganisationUnitModel> handler;
-    private final UidsQuery query;
 
-    private SearchOrganisationUnitCall(OrganisationUnitService service,
-                                       GenericHandler<OrganisationUnit, OrganisationUnitModel> handler,
-                                       UidsQuery query) {
+    private SearchOrganisationUnitCall(GenericCallData data,
+                                       OrganisationUnitService service,
+                                       UidsQuery query,
+                                       int uidLimit,
+                                       ListPersistor<OrganisationUnit> persistor) {
+        super(data, null, query, uidLimit, persistor);
         this.service = service;
-        this.handler = handler;
-        this.query = query;
     }
 
     @Override
-    public List<OrganisationUnit> call() throws D2CallException {
-        Call<Payload<OrganisationUnit>> call = service.getSearchOrganisationUnits(OrganisationUnit.allFields,
+    protected retrofit2.Call<Payload<OrganisationUnit>> getCall(UidsQuery query, String lastUpdated) {
+        return service.getSearchOrganisationUnits(OrganisationUnit.allFields,
                 OrganisationUnit.uid.in(query.uids()), Boolean.FALSE);
-        List<OrganisationUnit> organisationUnits = new APICallExecutor().executePayloadCall(call);
-        handler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
-        return organisationUnits;
     }
 
     public interface Factory {
-        SearchOrganisationUnitCall create(DatabaseAdapter databaseAdapter,
-                                          Retrofit retrofit,
-                                          Set<String> uids,
-                                          String userId);
+        Call<List<OrganisationUnit>> create(GenericCallData data, Set<String> uids, String userId);
     }
 
     public static final Factory FACTORY = new Factory() {
+        private static final int MAX_UID_LIST_SIZE = 120;
 
         @Override
-        public SearchOrganisationUnitCall create(
-                DatabaseAdapter databaseAdapter,
-                Retrofit retrofit,
-                Set<String> uids,
-                String userId) {
-
+        public Call<List<OrganisationUnit>> create(GenericCallData data, Set<String> uids, String userId) {
             return new SearchOrganisationUnitCall(
-                    retrofit.create(OrganisationUnitService.class),
-                    SearchOrganisationUnitHandler.create(databaseAdapter, userId),
-                    UidsQuery.create(uids)
+                    data,
+                    data.retrofit().create(OrganisationUnitService.class),
+                    UidsQuery.create(uids),
+                    MAX_UID_LIST_SIZE,
+                    new TransactionalListPersistor<>(
+                            data,
+                            SearchOrganisationUnitHandler.create(data.databaseAdapter(), userId),
+                            null,
+                            new OrganisationUnitModelBuilder()
+                    )
             );
         }
     };

@@ -31,27 +31,36 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class LegendSetHandler extends IdentifiableHandlerImpl<LegendSet, LegendSetModel> {
 
     private final GenericHandler<Legend, LegendModel> legendHandler;
+    private final OrphanCleaner<LegendSet, Legend> legendCleaner;
 
     LegendSetHandler(IdentifiableObjectStore<LegendSetModel> legendSetStore,
-                     GenericHandler<Legend, LegendModel> legendHandler) {
+                     GenericHandler<Legend, LegendModel> legendHandler,
+                     OrphanCleaner<LegendSet, Legend> legendCleaner) {
         super(legendSetStore);
         this.legendHandler = legendHandler;
+        this.legendCleaner = legendCleaner;
     }
 
     public static GenericHandler<LegendSet, LegendSetModel> create(DatabaseAdapter databaseAdapter) {
         return new LegendSetHandler(
                 LegendSetStore.create(databaseAdapter),
-                LegendHandler.create(databaseAdapter)
-        );
+                LegendHandler.create(databaseAdapter),
+                new OrphanCleanerImpl<LegendSet, Legend>(LegendModel.TABLE, LegendModel.Columns.LEGEND_SET,
+                        databaseAdapter));
     }
 
     @Override
     protected void afterObjectHandled(LegendSet legendSet, HandleAction action) {
         legendHandler.handleMany(legendSet.legends(), new LegendModelBuilder(legendSet));
+        if (action == HandleAction.Update) {
+            legendCleaner.deleteOrphan(legendSet, legendSet.legends());
+        }
     }
 }

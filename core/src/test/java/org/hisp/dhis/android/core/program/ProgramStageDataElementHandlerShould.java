@@ -75,6 +75,9 @@ public class ProgramStageDataElementHandlerShould {
     private Access access;
 
     @Mock
+    private Access accessWithoutAccess;
+
+    @Mock
     private ObjectWithUid programStage;
 
     @Mock
@@ -98,8 +101,10 @@ public class ProgramStageDataElementHandlerShould {
         when(programStageDataElement.dataElement()).thenReturn(dataElement);
         when(dataElement.uid()).thenReturn("test_data_element_uid");
         when(dataElementWithoutAccess.uid()).thenReturn("test_data_element_uid_without_access");
-        when(dataElementWithoutAccess.access()).thenReturn(access);
-        when(access.read()).thenReturn(false);
+        when(dataElement.access()).thenReturn(access);
+        when(dataElementWithoutAccess.access()).thenReturn(accessWithoutAccess);
+        when(access.read()).thenReturn(true);
+        when(accessWithoutAccess.read()).thenReturn(false);
         when(programStageDataElement.programStage()).thenReturn(programStage);
         when(programStage.uid()).thenReturn("test_program_stage_uid");
 
@@ -146,7 +151,7 @@ public class ProgramStageDataElementHandlerShould {
         );
 
         // verify that data element handler is invoked once
-        verify(dataElementHandler, times(1)).handle(any(DataElement.class),
+        verify(dataElementHandler, never()).handle(any(DataElement.class),
                 any(DataElementModelBuilder.class));
     }
 

@@ -57,7 +57,7 @@ public final class TrackedEntityTypeCall extends UidPayloadCall<TrackedEntityTyp
         return trackedEntityTypeService.getTrackedEntityTypes(
                 TrackedEntityType.allFields,
                 TrackedEntityType.uid.in(query.uids()),
-                TrackedEntityType.lastUpdated.gt(lastUpdated),
+                TrackedEntityType.lastUpdated.gt(null),
                 Boolean.FALSE
         );
     }

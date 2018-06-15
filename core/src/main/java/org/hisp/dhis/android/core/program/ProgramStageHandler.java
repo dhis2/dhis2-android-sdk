@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
@@ -39,25 +41,30 @@ import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Collection;
+
 public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, ProgramStageModel> {
     private final ProgramStageSectionHandler programStageSectionHandler;
     private final ProgramStageDataElementHandler programStageDataElementHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
     private final OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
     private final OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
+    private final CollectionCleaner<ProgramStage> collectionCleaner;
 
     ProgramStageHandler(IdentifiableObjectStore<ProgramStageModel> programStageStore,
                         ProgramStageSectionHandler programStageSectionHandler,
                         ProgramStageDataElementHandler programStageDataElementHandler,
                         GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                         OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner,
-                        OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner) {
+                        OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner,
+                        CollectionCleaner<ProgramStage> collectionCleaner) {
         super(programStageStore);
         this.programStageSectionHandler = programStageSectionHandler;
         this.programStageDataElementHandler = programStageDataElementHandler;
         this.styleHandler = styleHandler;
         this.programStageDataElementCleaner = programStageDataElementCleaner;
         this.programStageSectionCleaner = programStageSectionCleaner;
+        this.collectionCleaner = collectionCleaner;
     }
 
     @Override
@@ -74,6 +81,11 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
         }
     }
 
+    @Override
+    protected void afterCollectionHandled(Collection<ProgramStage> programStages) {
+        collectionCleaner.deleteNotPresent(programStages);
+    }
+
     public static ProgramStageHandler create(DatabaseAdapter databaseAdapter) {
         return new ProgramStageHandler(
                 ProgramStageStore.create(databaseAdapter),
@@ -83,6 +95,7 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
                 new OrphanCleanerImpl<ProgramStage, ProgramStageDataElement>(ProgramStageDataElementModel.TABLE,
                         ProgramStageDataElementModel.Columns.PROGRAM_STAGE, databaseAdapter),
                 new OrphanCleanerImpl<ProgramStage, ProgramStageSection>(ProgramStageSectionModel.TABLE,
-                        ProgramStageSectionModel.Columns.PROGRAM_STAGE, databaseAdapter));
+                        ProgramStageSectionModel.Columns.PROGRAM_STAGE, databaseAdapter),
+                new CollectionCleanerImpl<ProgramStage>(ProgramStageModel.TABLE, databaseAdapter));
     }
 }

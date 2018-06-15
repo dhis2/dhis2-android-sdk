@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
@@ -55,11 +56,12 @@ public final class ProgramStageEndpointCall extends UidPayloadCall<ProgramStage>
 
     @Override
     protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query, String lastUpdated) {
+        String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
         return programStageService.getProgramStages(
                 ProgramStage.allFields,
                 ProgramStage.uid.in(query.uids()),
-                Boolean.FALSE
-        );
+                accessDataReadFilter,
+                Boolean.FALSE);
     }
 
     public static final UidsCallFactory<ProgramStage> FACTORY = new UidsCallFactory<ProgramStage>() {

@@ -65,7 +65,7 @@ public abstract class SectionDataElementLinkModel extends BaseModel {
     }
 
     public static Builder builder() {
-        return new AutoValue_SectionDataElementLinkModel.Builder();
+        return new $$AutoValue_SectionDataElementLinkModel.Builder();
     }
 
     @Nullable

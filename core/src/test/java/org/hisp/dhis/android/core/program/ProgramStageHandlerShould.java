@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
@@ -43,6 +44,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
@@ -89,6 +91,9 @@ public class ProgramStageHandlerShould {
     @Mock
     private OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
 
+    @Mock
+    private CollectionCleaner<ProgramStage> collectionCleaner;
+
     // object to test
     private ProgramStageHandler programStageHandler;
 
@@ -105,7 +110,8 @@ public class ProgramStageHandlerShould {
                 programStageDataElementHandler,
                 styleHandler,
                 programStageDataElementCleaner,
-                programStageSectionCleaner);
+                programStageSectionCleaner,
+                collectionCleaner);
 
         when(programStage.uid()).thenReturn("test_program_stage_uid");
         when(programStage.style()).thenReturn(objectStyle);
@@ -162,5 +168,12 @@ public class ProgramStageHandlerShould {
         when(programStageStore.updateOrInsert(any(ProgramStageModel.class))).thenReturn(HandleAction.Insert);
         programStageHandler.handle(programStage, new ProgramStageModelBuilder());
         verify(programStageSectionCleaner, never()).deleteOrphan(programStage, programStageSections);
+    }
+
+    @Test
+    public void call_collection_cleaner_when_calling_handle_many() {
+        List<ProgramStage> programStages = Collections.singletonList(programStage);
+        programStageHandler.handleMany(programStages, new ProgramStageModelBuilder());
+        verify(collectionCleaner).deleteNotPresent(programStages);
     }
 }

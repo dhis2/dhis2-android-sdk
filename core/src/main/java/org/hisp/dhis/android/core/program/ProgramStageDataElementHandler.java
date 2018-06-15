@@ -30,11 +30,13 @@ package org.hisp.dhis.android.core.program;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.dataelement.DataElementModelBuilder;
+import org.hisp.dhis.android.core.dataelement.DataElementStore;
 
 import java.util.List;
 
@@ -43,11 +45,14 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 public class ProgramStageDataElementHandler {
     private final ProgramStageDataElementStore programStageDataElementStore;
     private final GenericHandler<DataElement, DataElementModel> dataElementHandler;
+    private final IdentifiableObjectStore<DataElementModel> dataElementStore;
 
     ProgramStageDataElementHandler(ProgramStageDataElementStore programStageDataElementStore,
-                                   GenericHandler<DataElement, DataElementModel> dataElementHandler) {
+                                   GenericHandler<DataElement, DataElementModel> dataElementHandler,
+                                   IdentifiableObjectStore<DataElementModel> dataElementStore) {
         this.programStageDataElementStore = programStageDataElementStore;
         this.dataElementHandler = dataElementHandler;
+        this.dataElementStore = dataElementStore;
     }
 
     void handleProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
@@ -69,9 +74,13 @@ public class ProgramStageDataElementHandler {
         DataElementModelBuilder dataElementModelBuilder = new DataElementModelBuilder();
         for (int i = 0; i < size; i++) {
             ProgramStageDataElement programStageDataElement = programStageDataElements.get(i);
+            boolean readableDataElement = programStageDataElement.dataElement().access().read();
 
-            if (isDeleted(programStageDataElement)) {
+            if (isDeleted(programStageDataElement) || !readableDataElement) {
                 programStageDataElementStore.delete(programStageDataElement.uid());
+                if (!readableDataElement) {
+                    dataElementStore.delete(programStageDataElement.dataElement().uid());
+                }
             } else {
                 int updatedRow;
 
@@ -97,8 +106,8 @@ public class ProgramStageDataElementHandler {
                             programStageDataElement.programStage().uid(), null
                     );
                 }
+                dataElementHandler.handle(programStageDataElement.dataElement(), dataElementModelBuilder);
             }
-            dataElementHandler.handle(programStageDataElement.dataElement(), dataElementModelBuilder);
         }
     }
 
@@ -110,7 +119,8 @@ public class ProgramStageDataElementHandler {
     public static ProgramStageDataElementHandler create(DatabaseAdapter databaseAdapter) {
         return new ProgramStageDataElementHandler(
                 new ProgramStageDataElementStoreImpl(databaseAdapter),
-                DataElementHandler.create(databaseAdapter)
+                DataElementHandler.create(databaseAdapter),
+                DataElementStore.create(databaseAdapter)
         );
     }
 }

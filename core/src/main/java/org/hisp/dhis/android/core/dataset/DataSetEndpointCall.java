@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
@@ -44,7 +45,7 @@ public final class DataSetEndpointCall {
 
     private DataSetEndpointCall() {}
 
-    static final ListCallFactory<DataSet> FACTORY = new ListCallFactory<DataSet>() {
+    static final ListCallFactory<DataSet> FACTORY = new ListCallFactoryImpl<DataSet>() {
 
         private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_SET;
 

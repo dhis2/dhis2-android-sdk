@@ -27,6 +27,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.ListNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
@@ -39,7 +40,7 @@ public final class TrackedEntityAttributeReservedValueEndpointCall {
 
     public static final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> FACTORY =
-            new QueryCallFactory<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueQuery>() {
+            new QueryCallFactoryImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueQuery>() {
 
                 @Override
                 protected CallFetcher<TrackedEntityAttributeReservedValue> fetcher(

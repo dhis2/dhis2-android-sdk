@@ -27,6 +27,7 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
@@ -39,7 +40,8 @@ import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionVal
 
 public final class DataValueEndpointCall {
 
-    public static final QueryCallFactory<DataValue, DataValueQuery> FACTORY = new QueryCallFactory<DataValue, DataValueQuery>() {
+    public static final QueryCallFactory<DataValue, DataValueQuery> FACTORY
+            = new QueryCallFactoryImpl<DataValue, DataValueQuery>() {
 
         private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
 

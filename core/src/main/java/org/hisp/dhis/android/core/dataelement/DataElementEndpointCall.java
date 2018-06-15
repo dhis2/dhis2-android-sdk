@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
@@ -44,7 +45,7 @@ public final class DataElementEndpointCall {
 
     private DataElementEndpointCall() {}
 
-    public static final UidsCallFactory<DataElement> FACTORY = new UidsCallFactory<DataElement>() {
+    public static final UidsCallFactory<DataElement> FACTORY = new UidsCallFactoryImpl<DataElement>() {
 
         private final ResourceModel.Type resourceType = ResourceModel.Type.OPTION_SET;
         private static final int MAX_UID_LIST_SIZE = 100;

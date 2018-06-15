@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
@@ -39,7 +40,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 
 public final class RelationshipTypeEndpointCall {
 
-    public static final ListCallFactory<RelationshipType> FACTORY = new ListCallFactory<RelationshipType>() {
+    public static final ListCallFactory<RelationshipType> FACTORY = new ListCallFactoryImpl<RelationshipType>() {
 
         private final ResourceModel.Type resourceType = ResourceModel.Type.RELATIONSHIP_TYPE;
 

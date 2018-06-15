@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
@@ -63,7 +64,7 @@ public final class OptionSetCall {
         ).build();
     }
 
-    public static final UidsCallFactory<OptionSet> FACTORY = new UidsCallFactory<OptionSet>() {
+    public static final UidsCallFactory<OptionSet> FACTORY = new UidsCallFactoryImpl<OptionSet>() {
 
         private final ResourceModel.Type resourceType = ResourceModel.Type.OPTION_SET;
         private static final int MAX_UID_LIST_SIZE = 130;

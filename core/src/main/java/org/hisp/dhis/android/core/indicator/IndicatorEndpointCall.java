@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.indicator;
 
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
@@ -44,7 +45,7 @@ public final class IndicatorEndpointCall {
     private IndicatorEndpointCall() {
     }
 
-    public static final UidsCallFactory<Indicator> FACTORY = new UidsCallFactory<Indicator>() {
+    public static final UidsCallFactory<Indicator> FACTORY = new UidsCallFactoryImpl<Indicator>() {
         private static final int MAX_UID_LIST_SIZE = 100;
 
         @Override

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
@@ -40,7 +41,7 @@ import java.util.Set;
 
 public final class TrackedEntityTypeCall {
 
-    public static final UidsCallFactory<TrackedEntityType> FACTORY = new UidsCallFactory<TrackedEntityType>() {
+    public static final UidsCallFactory<TrackedEntityType> FACTORY = new UidsCallFactoryImpl<TrackedEntityType>() {
 
         private static final int MAX_UID_LIST_SIZE = 140;
 

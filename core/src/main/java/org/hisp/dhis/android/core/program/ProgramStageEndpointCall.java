@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
@@ -46,7 +47,7 @@ public final class ProgramStageEndpointCall {
     private ProgramStageEndpointCall() {
     }
 
-    public static final UidsCallFactory<ProgramStage> FACTORY = new UidsCallFactory<ProgramStage>() {
+    public static final UidsCallFactory<ProgramStage> FACTORY = new UidsCallFactoryImpl<ProgramStage>() {
 
         private final ResourceModel.Type resourceType = ResourceModel.Type.PROGRAM_STAGE;
         private static final int MAX_UID_LIST_SIZE = 64;

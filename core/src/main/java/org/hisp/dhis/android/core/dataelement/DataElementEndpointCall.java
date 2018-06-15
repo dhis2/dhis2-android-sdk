@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
@@ -55,10 +56,12 @@ public final class DataElementEndpointCall extends UidPayloadCall<DataElement> {
 
     @Override
     protected retrofit2.Call<Payload<DataElement>> getCall(UidsQuery query, String lastUpdated) {
+        String accessReadFilter = "access." + Access.read.eq(true).generateString();
         return dataElementService.getDataElements(
                 DataElement.allFields,
                 DataElement.lastUpdated.gt(null),
                 DataElement.uid.in(query.uids()),
+                accessReadFilter,
                 Boolean.FALSE);
     }
 

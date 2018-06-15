@@ -27,7 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
@@ -67,7 +69,16 @@ public class ProgramStageDataElementHandlerShould {
     private DataElement dataElement;
 
     @Mock
+    private DataElement dataElementWithoutAccess;
+
+    @Mock
+    private Access access;
+
+    @Mock
     private ObjectWithUid programStage;
+
+    @Mock
+    private IdentifiableObjectStore<DataElementModel> dataElementStore;
 
     private List<ProgramStageDataElement> programStageDataElements;
 
@@ -79,14 +90,16 @@ public class ProgramStageDataElementHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         programStageDataElementHandler = new ProgramStageDataElementHandler(
-                programStageDataElementStore, dataElementHandler
-        );
+                programStageDataElementStore, dataElementHandler, dataElementStore);
 
         when(programStageDataElement.uid()).thenReturn("test_psde_uid");
 
         // mandatory one-to-one relationship fields
         when(programStageDataElement.dataElement()).thenReturn(dataElement);
         when(dataElement.uid()).thenReturn("test_data_element_uid");
+        when(dataElementWithoutAccess.uid()).thenReturn("test_data_element_uid_without_access");
+        when(dataElementWithoutAccess.access()).thenReturn(access);
+        when(access.read()).thenReturn(false);
         when(programStageDataElement.programStage()).thenReturn(programStage);
         when(programStage.uid()).thenReturn("test_program_stage_uid");
 
@@ -189,5 +202,14 @@ public class ProgramStageDataElementHandlerShould {
         // verify that data element handler is never called
         verify(dataElementHandler, times(1)).handle(any(DataElement.class),
                 any(DataElementModelBuilder.class));
+    }
+
+    @Test
+    public void delete_program_stage_and_data_element_when_have_no_access() throws Exception {
+        when(programStageDataElement.dataElement()).thenReturn(dataElementWithoutAccess);
+        programStageDataElementHandler.handleProgramStageDataElements(programStageDataElements);
+
+        verify(programStageDataElementStore).delete(programStageDataElement.uid());
+        verify(dataElementStore).delete(dataElementWithoutAccess.uid());
     }
 }

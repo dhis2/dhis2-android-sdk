@@ -26,18 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.calls.processors;
 
-public enum D2ErrorCode {
-    ALREADY_AUTHENTICATED,
-    ALREADY_EXECUTED,
-    API_UNSUCCESSFUL_RESPONSE,
-    API_INVALID_QUERY,
-    API_RESPONSE_PROCESS_ERROR,
-    LOGIN_USERNAME_NULL,
-    LOGIN_PASSWORD_NULL,
-    INVALID_DHIS_VERSION,
-    NO_RESERVED_VALUES,
-    SEARCH_GRID_PARSE,
-    UNEXPECTED
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.List;
+import java.util.concurrent.Callable;
+
+public class TransactionalNoResourceCallProcessor<P, M extends Model> implements CallProcessor<P> {
+    private final DatabaseAdapter databaseAdapter;
+    private final GenericHandler<P, M> handler;
+    private final ModelBuilder<P, M> modelBuilder;
+
+    public TransactionalNoResourceCallProcessor(DatabaseAdapter databaseAdapter,
+                                                GenericHandler<P, M> handler,
+                                                ModelBuilder<P, M> modelBuilder) {
+        this.databaseAdapter = databaseAdapter;
+        this.handler = handler;
+        this.modelBuilder = modelBuilder;
+    }
+
+    public void process(final List<P> objectList) throws D2CallException {
+        if (objectList != null && !objectList.isEmpty()) {
+            new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
+
+                @Override
+                public Void call() {
+                    handler.handleMany(objectList, modelBuilder);
+                    return null;
+                }
+            });
+        }
+    }
 }

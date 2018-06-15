@@ -28,58 +28,54 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalResourceCallProcessor;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalListPersistor;
-import org.hisp.dhis.android.core.common.UidPayloadCall;
-import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.util.List;
 import java.util.Set;
 
-public final class ProgramStageEndpointCall extends UidPayloadCall<ProgramStage> {
-    private final ProgramStageService programStageService;
+public final class ProgramStageEndpointCall {
 
-    private ProgramStageEndpointCall(GenericCallData data,
-                                     ProgramStageService programStageService,
-                                     UidsQuery query,
-                                     int uidLimit,
-                                     ListPersistor<ProgramStage> persistor) {
-        super(data, ResourceModel.Type.PROGRAM_STAGE, query, uidLimit, persistor);
-        this.programStageService = programStageService;
-    }
-
-    @Override
-    protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query, String lastUpdated) {
-        String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
-        return programStageService.getProgramStages(
-                ProgramStage.allFields,
-                ProgramStage.uid.in(query.uids()),
-                accessDataReadFilter,
-                Boolean.FALSE);
+    private ProgramStageEndpointCall() {
     }
 
     public static final UidsCallFactory<ProgramStage> FACTORY = new UidsCallFactory<ProgramStage>() {
 
+        private final ResourceModel.Type resourceType = ResourceModel.Type.PROGRAM_STAGE;
         private static final int MAX_UID_LIST_SIZE = 64;
 
         @Override
-        public Call<List<ProgramStage>> create(GenericCallData data, Set<String> uids) {
-            return new ProgramStageEndpointCall(data,
-                    data.retrofit().create(ProgramStageService.class),
-                    UidsQuery.create(uids),
-                    MAX_UID_LIST_SIZE,
-                    new TransactionalListPersistor<>(
-                            data,
-                            ProgramStageHandler.create(data.databaseAdapter()),
-                            ResourceModel.Type.PROGRAM_STAGE,
-                            new ProgramStageModelBuilder()
-                    )
+        protected CallFetcher<ProgramStage> fetcher(GenericCallData data, Set<String> uids) {
+            final ProgramStageService service = data.retrofit().create(ProgramStageService.class);
+
+            return new UidsNoResourceCallFetcher<ProgramStage>(uids, MAX_UID_LIST_SIZE) {
+
+                @Override
+                protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query) {
+                    String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
+                    return service.getProgramStages(
+                            ProgramStage.allFields,
+                            ProgramStage.uid.in(query.uids()),
+                            accessDataReadFilter,
+                            Boolean.FALSE);
+                }
+            };
+        }
+
+        @Override
+        protected CallProcessor<ProgramStage> processor(GenericCallData data) {
+            return new TransactionalResourceCallProcessor<>(
+                    data,
+                    ProgramStageHandler.create(data.databaseAdapter()),
+                    resourceType,
+                    new ProgramStageModelBuilder()
             );
         }
     };

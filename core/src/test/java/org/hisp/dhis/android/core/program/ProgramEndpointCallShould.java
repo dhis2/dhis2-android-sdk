@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.EmptyQuery;
 import org.hisp.dhis.android.core.common.EndpointPayloadCallAbstractShould;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.junit.After;
@@ -64,8 +63,7 @@ public class ProgramEndpointCallShould extends EndpointPayloadCallAbstractShould
     public void setUp() throws Exception {
         super.setUp();
 
-        endpointCall = new ProgramEndpointCall(genericCallData, programService,
-                EmptyQuery.create(), persistor);
+        endpointCall = ProgramEndpointCall.factory(programService).create(genericCallData);
 
         when(programService.getPrograms(any(Fields.class), anyString(), anyBoolean())
         ).thenReturn(retrofitCall);

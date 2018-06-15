@@ -26,26 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.calls.fetchers;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.UidsQuery;
+import org.hisp.dhis.android.core.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
-public abstract class EndpointPayloadCall<P, Q extends BaseQuery> extends AbstractEndpointListCall<P, Q> {
+public abstract class UidsNoResourceCallFetcher<P> implements CallFetcher<P> {
 
-    public EndpointPayloadCall(GenericCallData data,
-                               ResourceModel.Type resourceType,
-                               Q query,
-                               ListPersistor<P> persistor) {
+    private final Set<String> uids;
+    private final int limit;
 
-        super(data, resourceType, query, persistor);
+    protected UidsNoResourceCallFetcher(Set<String> uids, int limit) {
+        this.uids = uids;
+        this.limit = limit;
     }
+
+    protected abstract retrofit2.Call<Payload<P>> getCall(UidsQuery query);
 
     @Override
-    protected List<P> getObjects(Q query, String lastUpdated) throws D2CallException {
-        return new APICallExecutor().executePayloadCall(getCall(query, lastUpdated));
+    public List<P> fetch() throws D2CallException {
+        if (uids.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return executeCall(uids);
     }
 
-    protected abstract retrofit2.Call<Payload<P>> getCall(Q query, String lastUpdated);
+    private List<P> executeCall(Set<String> uids) throws D2CallException {
+        List<P> objects = new ArrayList<>();
+        if (!uids.isEmpty()) {
+            APICallExecutor executor = new APICallExecutor();
+            List<Set<String>> partitions = Utils.setPartition(uids, limit);
+
+            for (Set<String> partitionUids : partitions) {
+                UidsQuery uidQuery = UidsQuery.create(partitionUids);
+                List<P> callObjects = executor.executePayloadCall(getCall(uidQuery));
+                objects.addAll(callObjects);
+            }
+        }
+        return objects;
+    }
 }

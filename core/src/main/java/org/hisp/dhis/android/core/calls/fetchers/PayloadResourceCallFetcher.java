@@ -26,18 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.calls.fetchers;
 
-public enum D2ErrorCode {
-    ALREADY_AUTHENTICATED,
-    ALREADY_EXECUTED,
-    API_UNSUCCESSFUL_RESPONSE,
-    API_INVALID_QUERY,
-    API_RESPONSE_PROCESS_ERROR,
-    LOGIN_USERNAME_NULL,
-    LOGIN_PASSWORD_NULL,
-    INVALID_DHIS_VERSION,
-    NO_RESERVED_VALUES,
-    SEARCH_GRID_PARSE,
-    UNEXPECTED
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceModel;
+
+import java.util.List;
+
+public abstract class PayloadResourceCallFetcher<P> implements CallFetcher<P> {
+
+    private final ResourceHandler resourceHandler;
+    private final ResourceModel.Type resourceType;
+
+    public PayloadResourceCallFetcher(ResourceHandler resourceHandler,
+                                      ResourceModel.Type resourceType) {
+        this.resourceHandler = resourceHandler;
+        this.resourceType = resourceType;
+    }
+
+    protected abstract retrofit2.Call<Payload<P>> getCall(String lastUpdated);
+
+    @Override
+    public List<P> fetch() throws D2CallException {
+        String lastUpdated = resourceType == null ? null : resourceHandler.getLastUpdated(resourceType);
+        return new APICallExecutor().executePayloadCall(getCall(lastUpdated));
+    }
 }

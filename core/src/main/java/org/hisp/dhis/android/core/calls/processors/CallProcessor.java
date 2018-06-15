@@ -26,45 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.calls.processors;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.common.D2CallException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import retrofit2.Call;
-
-public abstract class UidPayloadCall<P> extends AbstractEndpointListCall<P, UidsQuery> {
-
-    private final int uidLimit;
-
-    public UidPayloadCall(GenericCallData data,
-                          ResourceModel.Type resourceType,
-                          UidsQuery query,
-                          int uidLimit,
-                          ListPersistor<P> persistor) {
-
-        super(data, resourceType, query, persistor);
-        this.uidLimit = uidLimit;
-    }
-
-    @Override
-    protected List<P> getObjects(UidsQuery query, String lastUpdated) throws D2CallException {
-        List<Set<String>> partitions = Utils.setPartition(query.uids(), uidLimit);
-
-        List<P> result = new ArrayList<>();
-        APICallExecutor apiCallExecutor = new APICallExecutor();
-        for (Set<String> partitionUids : partitions) {
-            UidsQuery uidQuery = UidsQuery.create(partitionUids);
-            List<P> callResult = apiCallExecutor.executePayloadCall(getCall(uidQuery, lastUpdated));
-            result.addAll(callResult);
-        }
-
-        return result;
-    }
-
-    protected abstract Call<Payload<P>> getCall(UidsQuery query, String lastUpdated);
+public interface CallProcessor<P> {
+    void process(List<P> objectList) throws D2CallException;
 }

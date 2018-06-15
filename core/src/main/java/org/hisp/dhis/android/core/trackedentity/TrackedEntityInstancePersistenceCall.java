@@ -68,10 +68,8 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
                 if (!searchOrgUnitUids.isEmpty()) {
                     AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.query().get(0);
 
-                    GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
-                            null);
                     Call<List<OrganisationUnit>> organisationUnitCall = organisationUnitCallFactory.create(
-                            genericCallData, searchOrgUnitUids, authenticatedUserModel.user());
+                            databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
                     executor.executeD2Call(organisationUnitCall);
                 }
 

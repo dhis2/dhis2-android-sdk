@@ -38,7 +38,8 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
 
     private Call<List<DataValue>> createCall() {
         GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
-        return DataValueEndpointCall.FACTORY.create(data, getDataSetUids(), getPeriodIds(), getOrgUnitUids());
+        return DataValueEndpointCall.FACTORY.create(data,
+                DataValueQuery.create(getDataSetUids(), getPeriodIds(), getOrgUnitUids()));
     }
 
     // @Test

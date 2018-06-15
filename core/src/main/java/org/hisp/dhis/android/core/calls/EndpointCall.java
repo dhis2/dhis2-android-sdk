@@ -26,44 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.calls;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
-import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.SyncCall;
 
-final class ProgramEndpointCall {
+import java.util.List;
 
-    private ProgramEndpointCall() {
+public final class EndpointCall<P> extends SyncCall<List<P>> {
+
+    private final CallFetcher<P> fetcher;
+    private final CallProcessor<P> processor;
+
+    public EndpointCall(CallFetcher<P> fetcher,
+                        CallProcessor<P> processor) {
+        this.fetcher = fetcher;
+        this.processor = processor;
     }
 
-    static ListCallFactory<Program> factory(final ProgramService programService) {
-        return new ListCallFactory<Program>() {
+    @Override
+    public List<P> call() throws Exception {
+        setExecuted();
 
-            @Override
-            protected CallFetcher<Program> fetcher(GenericCallData data) {
-
-                return new PayloadNoResourceCallFetcher<Program>() {
-                    @Override
-                    protected retrofit2.Call<Payload<Program>> getCall() {
-                        String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
-                        return programService.getPrograms(Program.allFields, accessDataReadFilter, Boolean.FALSE);
-                    }
-                };
-            }
-
-            @Override
-            protected CallProcessor<Program> processor(GenericCallData data) {
-                return new TransactionalNoResourceCallProcessor<>(
-                        data.databaseAdapter(),
-                        ProgramHandler.create(data.databaseAdapter()),
-                        new ProgramModelBuilder());
-            }
-        };
+        List<P> objects = fetcher.fetch();
+        processor.process(objects);
+        return objects;
     }
 }

@@ -28,12 +28,13 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericCallFactory;
+import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.common.UidsCallFactory;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
@@ -48,17 +49,17 @@ import java.util.concurrent.Callable;
 public class ProgramParentCall extends SyncCall<List<Program>> {
 
     private final GenericCallData genericCallData;
-    private final GenericCallFactory<List<Program>> programCallFactory;
+    private final ListCallFactory<Program> programCallFactory;
     private final UidsCallFactory<ProgramStage> programStageCallFactory;
     private final UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory;
-    private final GenericCallFactory<List<RelationshipType>> relationshipTypeCallFactory;
+    private final ListCallFactory<RelationshipType> relationshipTypeCallFactory;
     private final UidsCallFactory<OptionSet> optionSetCallFactory;
 
     ProgramParentCall(GenericCallData genericCallData,
-                      GenericCallFactory<List<Program>> programCallFactory,
+                      ListCallFactory<Program> programCallFactory,
                       UidsCallFactory<ProgramStage> programStageCallFactory,
                       UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
-                      GenericCallFactory<List<RelationshipType>> relationshipTypeCallFactory,
+                      ListCallFactory<RelationshipType> relationshipTypeCallFactory,
                       UidsCallFactory<OptionSet> optionSetCallFactory) {
         this.genericCallData = genericCallData;
         this.programCallFactory = programCallFactory;
@@ -101,7 +102,7 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
         public Call<List<Program>> create(GenericCallData genericCallData) {
             return new ProgramParentCall(
                     genericCallData,
-                    ProgramEndpointCall.FACTORY,
+                    ProgramEndpointCall.factory(genericCallData.retrofit().create(ProgramService.class)),
                     ProgramStageEndpointCall.FACTORY,
                     TrackedEntityTypeCall.FACTORY,
                     RelationshipTypeEndpointCall.FACTORY,

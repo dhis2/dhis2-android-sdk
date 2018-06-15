@@ -28,16 +28,12 @@
 
 package org.hisp.dhis.android.core.common;
 
-public enum D2ErrorCode {
-    ALREADY_AUTHENTICATED,
-    ALREADY_EXECUTED,
-    API_UNSUCCESSFUL_RESPONSE,
-    API_INVALID_QUERY,
-    API_RESPONSE_PROCESS_ERROR,
-    LOGIN_USERNAME_NULL,
-    LOGIN_PASSWORD_NULL,
-    INVALID_DHIS_VERSION,
-    NO_RESERVED_VALUES,
-    SEARCH_GRID_PARSE,
-    UNEXPECTED
+public class Tuple<X, Y> {
+    public final X _1;
+    public final Y _2;
+
+    public< XX extends X, YY extends Y> Tuple(XX _1, YY _2) {
+        this._1 = _1;
+        this._2 = _2;
+    }
 }

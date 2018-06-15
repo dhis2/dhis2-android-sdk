@@ -28,56 +28,48 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalListPersistor;
-import org.hisp.dhis.android.core.common.UidPayloadCall;
-import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.util.List;
 import java.util.Set;
 
-public final class IndicatorTypeEndpointCall extends UidPayloadCall<IndicatorType> {
-    private final IndicatorTypeService indicatorTypeService;
+public final class IndicatorTypeEndpointCall {
 
-    private IndicatorTypeEndpointCall(GenericCallData data,
-                                      IndicatorTypeService indicatorTypeService,
-                                      UidsQuery query,
-                                      int uidLimit,
-                                      ListPersistor<IndicatorType> persistor) {
-        super(data, ResourceModel.Type.INDICATOR_TYPE, query, uidLimit, persistor);
-        this.indicatorTypeService = indicatorTypeService;
-    }
-
-    @Override
-    protected retrofit2.Call<Payload<IndicatorType>> getCall(UidsQuery query, String lastUpdated) {
-        return indicatorTypeService.getIndicatorTypes(
-                IndicatorType.allFields,
-                IndicatorType.lastUpdated.gt(null),
-                IndicatorType.uid.in(query.uids()),
-                Boolean.FALSE);
+    private IndicatorTypeEndpointCall() {
     }
 
     public static final UidsCallFactory<IndicatorType> FACTORY = new UidsCallFactory<IndicatorType>() {
-
         private static final int MAX_UID_LIST_SIZE = 140;
 
         @Override
-        public Call<List<IndicatorType>> create(GenericCallData data, Set<String> uids) {
-            return new IndicatorTypeEndpointCall(data,
-                    data.retrofit().create(IndicatorTypeService.class),
-                    UidsQuery.create(uids),
-                    MAX_UID_LIST_SIZE,
-                    new TransactionalListPersistor<>(
-                            data,
-                            IndicatorTypeHandler.create(data.databaseAdapter()),
-                            ResourceModel.Type.INDICATOR_TYPE,
-                            new IndicatorTypeModelBuilder()
-                    )
+        protected CallFetcher<IndicatorType> fetcher(GenericCallData data, Set<String> uids) {
+            final IndicatorTypeService service = data.retrofit().create(IndicatorTypeService.class);
+
+            return new UidsNoResourceCallFetcher<IndicatorType>(uids, MAX_UID_LIST_SIZE) {
+
+                @Override
+                protected retrofit2.Call<Payload<IndicatorType>> getCall(UidsQuery query) {
+                    return service.getIndicatorTypes(
+                            IndicatorType.allFields,
+                            IndicatorType.lastUpdated.gt(null),
+                            IndicatorType.uid.in(query.uids()),
+                            Boolean.FALSE);
+                }
+            };
+        }
+
+        @Override
+        protected CallProcessor<IndicatorType> processor(GenericCallData data) {
+            return new TransactionalNoResourceCallProcessor<>(
+                    data.databaseAdapter(),
+                    IndicatorTypeHandler.create(data.databaseAdapter()),
+                    new IndicatorTypeModelBuilder()
             );
         }
     };

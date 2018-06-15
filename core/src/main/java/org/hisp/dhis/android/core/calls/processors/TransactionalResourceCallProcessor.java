@@ -26,43 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.calls.processors;
 
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
-public abstract class AbstractEndpointListCall<P, Q extends BaseQuery> extends SyncCall<List<P>> {
+public class TransactionalResourceCallProcessor<P, M extends Model> implements CallProcessor<P> {
     private final GenericCallData data;
-
+    private final GenericHandler<P, M> handler;
     private final ResourceModel.Type resourceType;
-    public final Q query;
+    private final ModelBuilder<P, M> modelBuilder;
 
-    private final ListPersistor<P> persistor;
-
-    AbstractEndpointListCall(GenericCallData data,
-                             ResourceModel.Type resourceType,
-                             Q query,
-                             ListPersistor<P> persistor) {
+    public TransactionalResourceCallProcessor(GenericCallData data,
+                                              GenericHandler<P, M> handler,
+                                              ResourceModel.Type resourceType,
+                                              ModelBuilder<P, M> modelBuilder) {
         this.data = data;
+        this.handler = handler;
         this.resourceType = resourceType;
-        this.query = query;
-        this.persistor = persistor;
+        this.modelBuilder = modelBuilder;
     }
 
-    protected abstract List<P> getObjects(Q query, String lastUpdated) throws D2CallException;
+    public void process(final List<P> objectList) throws D2CallException {
+        if (objectList != null && !objectList.isEmpty()) {
+            new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(), new Callable<Void>() {
 
-    @Override
-    public final List<P> call() throws Exception {
-        setExecuted();
-
-        if (!query.isValid()) {
-            throw new IllegalArgumentException("Invalid query");
+                @Override
+                public Void call() {
+                    handler.handleMany(objectList, modelBuilder);
+                    data.handleResource(resourceType);
+                    return null;
+                }
+            });
         }
-
-        String lastUpdated = resourceType == null ? null : data.resourceHandler().getLastUpdated(resourceType);
-        List<P> responseList = getObjects(query, lastUpdated);
-        persistor.persist(responseList);
-        return responseList;
     }
 }

@@ -54,17 +54,21 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private final TrackedEntityAttributeReservedValueStoreInterface store;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
-    private TrackedEntityAttributeReservedValueManager(DatabaseAdapter databaseAdapter,
-                                               Retrofit retrofit,
-                                               TrackedEntityAttributeReservedValueStoreInterface store,
-                                               IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
+    private TrackedEntityAttributeReservedValueManager(
+            DatabaseAdapter databaseAdapter,
+            Retrofit retrofit,
+            TrackedEntityAttributeReservedValueStoreInterface store,
+            IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
+            TrackedEntityAttributeStore trackedEntityAttributeStore) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.store = store;
         this.organisationUnitStore = organisationUnitStore;
+        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
     }
 
     @SuppressFBWarnings("DE_MIGHT_IGNORE")
@@ -102,7 +106,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         syncReservedValues(attribute, organisationUnitUid, true);
     }
 
-    private void fillReservedValues(String attribute, String organisationUnitUid, Integer remainingValues)
+    private void fillReservedValues(String trackedEntityAttributeUid, String organisationUnitUid, Integer remainingValues)
             throws D2CallException {
 
         D2CallExecutor executor = new D2CallExecutor();
@@ -117,8 +121,16 @@ public final class TrackedEntityAttributeReservedValueManager {
         OrganisationUnitModel organisationUnitModel =
                 this.organisationUnitStore.selectByUid(organisationUnitUid, OrganisationUnitModel.factory);
 
+        String trackedEntityAttributePattern;
+        try {
+            trackedEntityAttributePattern = trackedEntityAttributeStore.getPattern(trackedEntityAttributeUid);
+        } catch (Exception e) {
+            trackedEntityAttributePattern = "";
+        }
+
         executor.executeD2Call(TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(
-                genericCallData, attribute, numberToReserve, organisationUnitModel));
+                genericCallData, TrackedEntityAttributeReservedValueQuery.create(trackedEntityAttributeUid,
+                        numberToReserve, organisationUnitModel, trackedEntityAttributePattern)));
     }
 
     public void syncAllTrackedEntityAttributeReservedValues() {
@@ -164,6 +176,7 @@ public final class TrackedEntityAttributeReservedValueManager {
                 databaseAdapter,
                 retrofit,
                 TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
-                OrganisationUnitStore.create(databaseAdapter));
+                OrganisationUnitStore.create(databaseAdapter),
+        new TrackedEntityAttributeStoreImpl(databaseAdapter));
     }
 }

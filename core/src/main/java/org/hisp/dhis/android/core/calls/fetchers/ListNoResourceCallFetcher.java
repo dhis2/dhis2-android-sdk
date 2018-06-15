@@ -26,26 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.calls.fetchers;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.D2CallException;
 
 import java.util.List;
 
-public abstract class EndpointListCall<P, Q extends BaseQuery> extends AbstractEndpointListCall<P, Q> {
+public abstract class ListNoResourceCallFetcher<P> implements CallFetcher<P> {
 
-    public EndpointListCall(GenericCallData data,
-                            ResourceModel.Type resourceType,
-                            Q query,
-                            ListPersistor<P> persistor) {
-
-        super(data, resourceType, query, persistor);
-    }
+    protected abstract retrofit2.Call<List<P>> getCall();
 
     @Override
-    protected List<P> getObjects(Q query, String lastUpdated) throws D2CallException {
-        return new APICallExecutor().executeObjectCall(getCall(query, lastUpdated));
+    public List<P> fetch() throws D2CallException {
+        return new APICallExecutor().executeObjectCall(getCall());
     }
-
-    protected abstract retrofit2.Call<List<P>> getCall(Q query, String lastUpdated);
 }

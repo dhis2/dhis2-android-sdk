@@ -27,57 +27,46 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalListPersistor;
-import org.hisp.dhis.android.core.common.UidPayloadCall;
-import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.util.List;
 import java.util.Set;
 
-public final class TrackedEntityTypeCall extends UidPayloadCall<TrackedEntityType> {
-    private final TrackedEntityTypeService trackedEntityTypeService;
-
-    private TrackedEntityTypeCall(GenericCallData data,
-                          TrackedEntityTypeService service,
-                          UidsQuery query,
-                          int uidLimit,
-                          ListPersistor<TrackedEntityType> persistor) {
-        super(data, ResourceModel.Type.TRACKED_ENTITY_TYPE, query, uidLimit, persistor);
-        this.trackedEntityTypeService = service;
-    }
-
-    @Override
-    protected retrofit2.Call<Payload<TrackedEntityType>> getCall(UidsQuery query, String lastUpdated) {
-        return trackedEntityTypeService.getTrackedEntityTypes(
-                TrackedEntityType.allFields,
-                TrackedEntityType.uid.in(query.uids()),
-                TrackedEntityType.lastUpdated.gt(null),
-                Boolean.FALSE
-        );
-    }
+public final class TrackedEntityTypeCall {
 
     public static final UidsCallFactory<TrackedEntityType> FACTORY = new UidsCallFactory<TrackedEntityType>() {
 
         private static final int MAX_UID_LIST_SIZE = 140;
 
         @Override
-        public Call<List<TrackedEntityType>> create(GenericCallData data, Set<String> uids) {
-            return new TrackedEntityTypeCall(data,
-                    data.retrofit().create(TrackedEntityTypeService.class),
-                    UidsQuery.create(uids),
-                    MAX_UID_LIST_SIZE,
-                    new TransactionalListPersistor<>(
-                            data,
-                            TrackedEntityTypeHandler.create(data.databaseAdapter()),
-                            ResourceModel.Type.TRACKED_ENTITY_TYPE,
-                            new TrackedEntityTypeModelBuilder()
-                    )
+        protected CallFetcher<TrackedEntityType> fetcher(GenericCallData data, Set<String> uids) {
+            final TrackedEntityTypeService service = data.retrofit().create(TrackedEntityTypeService.class);
+
+            return new UidsNoResourceCallFetcher<TrackedEntityType>(uids, MAX_UID_LIST_SIZE) {
+                @Override
+                protected retrofit2.Call<Payload<TrackedEntityType>> getCall(UidsQuery query) {
+                    return service.getTrackedEntityTypes(
+                            TrackedEntityType.allFields,
+                            TrackedEntityType.uid.in(query.uids()),
+                            TrackedEntityType.lastUpdated.gt(null),
+                            Boolean.FALSE
+                    );
+                }
+            };
+        }
+
+        @Override
+        protected CallProcessor<TrackedEntityType> processor(GenericCallData data) {
+            return new TransactionalNoResourceCallProcessor<>(
+                    data.databaseAdapter(),
+                    TrackedEntityTypeHandler.create(data.databaseAdapter()),
+                    new TrackedEntityTypeModelBuilder()
             );
         }
     };

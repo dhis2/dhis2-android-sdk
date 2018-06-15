@@ -28,43 +28,25 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalResourceCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalListPersistor;
-import org.hisp.dhis.android.core.common.UidPayloadCall;
-import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.util.List;
 import java.util.Set;
 
-public final class OptionSetCall extends UidPayloadCall<OptionSet> {
-    private final OptionSetService optionSetService;
+public final class OptionSetCall {
 
-    private OptionSetCall(GenericCallData data,
-                  OptionSetService optionSetService,
-                  UidsQuery query,
-                  int uidLimit,
-                  ListPersistor<OptionSet> persistor) {
-        super(data, ResourceModel.Type.OPTION_SET, query, uidLimit, persistor);
-        this.optionSetService = optionSetService;
-    }
+    private OptionSetCall() {}
 
-    @Override
-    protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query, String lastUpdated) {
-        return optionSetService.optionSets(
-                false,
-                getFields(),
-                OptionSet.uid.in(query.uids())
-        );
-    }
-
-    private Fields<OptionSet> getFields() {
+    private static Fields<OptionSet> getFields() {
         return Fields.<OptionSet>builder().fields(
                 OptionSet.uid, OptionSet.code, OptionSet.name,
                 OptionSet.displayName, OptionSet.created,
@@ -83,21 +65,30 @@ public final class OptionSetCall extends UidPayloadCall<OptionSet> {
 
     public static final UidsCallFactory<OptionSet> FACTORY = new UidsCallFactory<OptionSet>() {
 
+        private final ResourceModel.Type resourceType = ResourceModel.Type.OPTION_SET;
         private static final int MAX_UID_LIST_SIZE = 130;
 
         @Override
-        public Call<List<OptionSet>> create(GenericCallData data, Set<String> uids) {
-            return new OptionSetCall(
+        protected CallFetcher<OptionSet> fetcher(GenericCallData data, Set<String> uids) {
+            final OptionSetService service = data.retrofit().create(OptionSetService.class);
+
+            return new UidsNoResourceCallFetcher<OptionSet>(uids, MAX_UID_LIST_SIZE) {
+
+                @Override
+                protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query) {
+                    return service.optionSets(getFields(), OptionSet.uid.in(query.uids()),
+                            null, query.paging());
+                }
+            };
+        }
+
+        @Override
+        protected CallProcessor<OptionSet> processor(GenericCallData data) {
+            return new TransactionalResourceCallProcessor<>(
                     data,
-                    data.retrofit().create(OptionSetService.class),
-                    UidsQuery.create(uids),
-                    MAX_UID_LIST_SIZE,
-                    new TransactionalListPersistor<>(
-                            data,
-                            OptionSetHandler.create(data.databaseAdapter()),
-                            ResourceModel.Type.OPTION_SET,
-                            new OptionSetModelBuilder()
-                    )
+                    OptionSetHandler.create(data.databaseAdapter()),
+                    resourceType,
+                    new OptionSetModelBuilder()
             );
         }
     };

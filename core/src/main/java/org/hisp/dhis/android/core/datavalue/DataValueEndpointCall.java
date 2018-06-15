@@ -26,57 +26,49 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.EndpointPayloadCall;
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalResourceCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalListPersistor;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-
-import java.util.List;
-import java.util.Set;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
-public final class DataValueEndpointCall extends EndpointPayloadCall<DataValue, DataValueQuery> {
-    private final DataValueService dataValueService;
+public final class DataValueEndpointCall {
 
-    private DataValueEndpointCall(GenericCallData data, DataValueService dataValueService, DataValueQuery query,
-                                  ListPersistor<DataValue> persistor) {
-        super(data, ResourceModel.Type.DATA_VALUE, query, persistor);
-        this.dataValueService = dataValueService;
-    }
+    public static final QueryCallFactory<DataValue, DataValueQuery> FACTORY = new QueryCallFactory<DataValue, DataValueQuery>() {
 
-    @Override
-    protected retrofit2.Call<Payload<DataValue>> getCall(DataValueQuery query, String lastUpdated) {
-        return dataValueService.getDataValues(
-                DataValue.allFields,
-                DataValue.lastUpdated.gt(lastUpdated),
-                commaSeparatedCollectionValues(query.dataSetUids()),
-                commaSeparatedCollectionValues(query.periodIds()),
-                commaSeparatedCollectionValues(query.orgUnitUids()),
-                Boolean.FALSE);
-    }
+        private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
 
-    public interface Factory {
-        Call<List<DataValue>> create(GenericCallData data, Set<String> dataSetUids, Set<String> periodIds,
-                                     Set<String> orgUnitUids);
-    }
-
-    public static final DataValueEndpointCall.Factory FACTORY = new DataValueEndpointCall.Factory() {
         @Override
-        public Call<List<DataValue>> create(GenericCallData data, Set<String> dataSetUids, Set<String> periodIds,
-                                            Set<String> orgUnitUids) {
-            return new DataValueEndpointCall(data,
-                    data.retrofit().create(DataValueService.class),
-                    DataValueQuery.create(dataSetUids, periodIds, orgUnitUids),
-                    new TransactionalListPersistor<>(
-                            data,
-                            DataValueHandler.create(data.databaseAdapter()),
-                            ResourceModel.Type.DATA_VALUE,
-                            new DataValueModelBuilder()
-                    )
+        protected CallFetcher<DataValue> fetcher(GenericCallData data, final DataValueQuery query) {
+
+            final DataValueService dataValueService = data.retrofit().create(DataValueService.class);
+
+            return new PayloadResourceCallFetcher<DataValue>(data.resourceHandler(), resourceType) {
+                @Override
+                protected retrofit2.Call<Payload<DataValue>> getCall(String lastUpdated) {
+                    return dataValueService.getDataValues(
+                            DataValue.allFields,
+                            DataValue.lastUpdated.gt(lastUpdated),
+                            commaSeparatedCollectionValues(query.dataSetUids()),
+                            commaSeparatedCollectionValues(query.periodIds()),
+                            commaSeparatedCollectionValues(query.orgUnitUids()),
+                            Boolean.FALSE);
+                }
+            };
+        }
+
+        @Override
+        protected CallProcessor<DataValue> processor(GenericCallData data, DataValueQuery query) {
+            return new TransactionalResourceCallProcessor<>(
+                    data,
+                    DataValueHandler.create(data.databaseAdapter()),
+                    ResourceModel.Type.DATA_VALUE,
+                    new DataValueModelBuilder()
             );
         }
     };

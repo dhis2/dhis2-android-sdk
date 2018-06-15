@@ -29,54 +29,56 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.ListPersistor;
+import org.hisp.dhis.android.core.calls.EndpointCall;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalListPersistor;
-import org.hisp.dhis.android.core.common.UidPayloadCall;
 import org.hisp.dhis.android.core.common.UidsQuery;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
 import java.util.Set;
 
-public final class SearchOrganisationUnitCall extends UidPayloadCall<OrganisationUnit> {
-    private final OrganisationUnitService service;
+import retrofit2.Retrofit;
 
-    private SearchOrganisationUnitCall(GenericCallData data,
-                                       OrganisationUnitService service,
-                                       UidsQuery query,
-                                       int uidLimit,
-                                       ListPersistor<OrganisationUnit> persistor) {
-        super(data, null, query, uidLimit, persistor);
-        this.service = service;
-    }
+public final class SearchOrganisationUnitCall {
 
-    @Override
-    protected retrofit2.Call<Payload<OrganisationUnit>> getCall(UidsQuery query, String lastUpdated) {
-        return service.getSearchOrganisationUnits(OrganisationUnit.allFields,
-                OrganisationUnit.uid.in(query.uids()), Boolean.FALSE);
-    }
+    private SearchOrganisationUnitCall() {}
 
     public interface Factory {
-        Call<List<OrganisationUnit>> create(GenericCallData data, Set<String> uids, String userId);
+        Call<List<OrganisationUnit>> create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+                                            Set<String> uids, String userId);
     }
 
     public static final Factory FACTORY = new Factory() {
+        @Override
+        public Call<List<OrganisationUnit>> create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+                                                   Set<String> uids, String userId) {
+            return new EndpointCall<>(fetcher(retrofit, uids), processor(databaseAdapter, userId));
+        }
+
         private static final int MAX_UID_LIST_SIZE = 120;
 
-        @Override
-        public Call<List<OrganisationUnit>> create(GenericCallData data, Set<String> uids, String userId) {
-            return new SearchOrganisationUnitCall(
-                    data,
-                    data.retrofit().create(OrganisationUnitService.class),
-                    UidsQuery.create(uids),
-                    MAX_UID_LIST_SIZE,
-                    new TransactionalListPersistor<>(
-                            data,
-                            SearchOrganisationUnitHandler.create(data.databaseAdapter(), userId),
-                            null,
-                            new OrganisationUnitModelBuilder()
-                    )
+        CallFetcher<OrganisationUnit> fetcher(Retrofit retrofit, Set<String> uids) {
+            final OrganisationUnitService service = retrofit.create(OrganisationUnitService.class);
+
+            return new UidsNoResourceCallFetcher<OrganisationUnit>(uids, MAX_UID_LIST_SIZE) {
+
+                @Override
+                protected retrofit2.Call<Payload<OrganisationUnit>> getCall(UidsQuery query) {
+                    return service.getSearchOrganisationUnits(OrganisationUnit.allFields,
+                            OrganisationUnit.uid.in(query.uids()), Boolean.FALSE);
+                }
+            };
+        }
+
+        CallProcessor<OrganisationUnit> processor(DatabaseAdapter databaseAdapter, String userId) {
+            return new TransactionalNoResourceCallProcessor<>(
+                    databaseAdapter,
+                    SearchOrganisationUnitHandler.create(databaseAdapter, userId),
+                    new OrganisationUnitModelBuilder()
             );
         }
     };

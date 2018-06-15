@@ -29,7 +29,8 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.BasicCallFactory;
+import org.hisp.dhis.android.core.calls.factories.BasicCallFactory;
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
@@ -41,6 +42,7 @@ import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueEndpointCall;
+import org.hisp.dhis.android.core.datavalue.DataValueQuery;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.period.PeriodModel;
@@ -61,7 +63,7 @@ public final class AggregatedDataCall extends SyncCall<Void> {
     private final DatabaseAdapter databaseAdapter;
 
     private final BasicCallFactory<SystemInfo> systemInfoCallFactory;
-    private final DataValueEndpointCall.Factory dataValueCallFactory;
+    private final QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory;
     private final IdentifiableObjectStore<DataSetModel> dataSetStore;
     private final ObjectWithoutUidStore<PeriodModel> periodStore;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
@@ -69,7 +71,7 @@ public final class AggregatedDataCall extends SyncCall<Void> {
     private AggregatedDataCall(@NonNull DatabaseAdapter databaseAdapter,
                                @NonNull Retrofit retrofit,
                                @NonNull BasicCallFactory<SystemInfo> systemInfoCallFactory,
-                               @NonNull DataValueEndpointCall.Factory dataValueCallFactory,
+                               @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
                                @NonNull IdentifiableObjectStore<DataSetModel> dataSetStore,
                                @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
                                @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
@@ -97,10 +99,12 @@ public final class AggregatedDataCall extends SyncCall<Void> {
                 GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                         systemInfo.serverDate());
 
-                Call<List<DataValue>> dataValueEndpointCall = dataValueCallFactory.create(genericCallData,
-                        dataSetStore.selectUids(),
+                DataValueQuery dataValueQuery = DataValueQuery.create(dataSetStore.selectUids(),
                         selectPeriodIds(periodStore.selectAll(PeriodModel.factory)),
-                        organisationUnitStore.selectUids());
+                                organisationUnitStore.selectUids());
+
+                Call<List<DataValue>> dataValueEndpointCall = dataValueCallFactory
+                        .create(genericCallData, dataValueQuery);
                 executor.executeD2Call(dataValueEndpointCall);
                 return null;
             }

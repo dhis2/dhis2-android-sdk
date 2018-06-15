@@ -28,56 +28,48 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.ListPersistor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalListPersistor;
-import org.hisp.dhis.android.core.common.UidPayloadCall;
-import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsQuery;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.util.List;
 import java.util.Set;
 
-public final class IndicatorEndpointCall extends UidPayloadCall<Indicator> {
-    private final IndicatorService indicatorService;
+public final class IndicatorEndpointCall {
 
-    private IndicatorEndpointCall(GenericCallData data,
-                                  IndicatorService indicatorService,
-                                  UidsQuery uidsQuery,
-                                  int uidLimit,
-                                  ListPersistor<Indicator> persistor) {
-        super(data, ResourceModel.Type.INDICATOR, uidsQuery, uidLimit, persistor);
-        this.indicatorService = indicatorService;
-    }
-
-    @Override
-    protected retrofit2.Call<Payload<Indicator>> getCall(UidsQuery query, String lastUpdated) {
-        return indicatorService.getIndicators(
-                Indicator.allFields,
-                Indicator.lastUpdated.gt(null),
-                Indicator.uid.in(query.uids()),
-                Boolean.FALSE);
+    private IndicatorEndpointCall() {
     }
 
     public static final UidsCallFactory<Indicator> FACTORY = new UidsCallFactory<Indicator>() {
-
         private static final int MAX_UID_LIST_SIZE = 100;
 
         @Override
-        public Call<List<Indicator>> create(GenericCallData data, Set<String> uids) {
-            return new IndicatorEndpointCall(data,
-                    data.retrofit().create(IndicatorService.class),
-                    UidsQuery.create(uids),
-                    MAX_UID_LIST_SIZE,
-                    new TransactionalListPersistor<>(
-                            data,
-                            IndicatorHandler.create(data.databaseAdapter()),
-                            ResourceModel.Type.INDICATOR,
-                            new IndicatorModelBuilder()
-                    )
+        protected CallFetcher<Indicator> fetcher(GenericCallData data, Set<String> uids) {
+            final IndicatorService indicatorService = data.retrofit().create(IndicatorService.class);
+
+            return new UidsNoResourceCallFetcher<Indicator>(uids, MAX_UID_LIST_SIZE) {
+
+                @Override
+                protected retrofit2.Call<Payload<Indicator>> getCall(UidsQuery query) {
+                    return indicatorService.getIndicators(
+                            Indicator.allFields,
+                            Indicator.lastUpdated.gt(null),
+                            Indicator.uid.in(query.uids()),
+                            Boolean.FALSE);
+                }
+            };
+        }
+
+        @Override
+        protected CallProcessor<Indicator> processor(GenericCallData data) {
+            return new TransactionalNoResourceCallProcessor<>(
+                    data.databaseAdapter(),
+                    IndicatorHandler.create(data.databaseAdapter()),
+                    new IndicatorModelBuilder()
             );
         }
     };

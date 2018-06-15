@@ -3,8 +3,11 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
@@ -25,32 +28,39 @@ public class CategoryComboHandler {
 
     @NonNull
     private final CategoryComboStore store;
+    private final OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner;
 
     CategoryComboHandler(
             @NonNull CategoryComboStore store,
             @NonNull LinkModelHandler<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>
                     categoryOptionComboCategoryOptionLinkHandler,
             @NonNull LinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler,
-            @NonNull CategoryOptionComboHandler optionComboHandler) {
+            @NonNull CategoryOptionComboHandler optionComboHandler,
+            OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner) {
         this.store = store;
         this.categoryOptionComboCategoryOptionLinkHandler = categoryOptionComboCategoryOptionLinkHandler;
         this.categoryCategoryComboLinkHandler = categoryCategoryComboLinkHandler;
         this.optionComboHandler = optionComboHandler;
+        this.categoryOptionCleaner = categoryOptionCleaner;
     }
 
     public void handle(CategoryCombo combo) {
-
         if (isDeleted(combo)) {
             store.delete(combo);
         } else {
-
             boolean updated = store.update(combo, combo);
+            HandleAction action = HandleAction.Update;
 
             if (!updated) {
                 store.insert(combo);
+                action = HandleAction.Insert;
             }
 
             handleRelations(combo);
+
+            if (action == HandleAction.Update) {
+                categoryOptionCleaner.deleteOrphan(combo, combo.categoryOptionCombos());
+            }
         }
     }
 
@@ -84,7 +94,9 @@ public class CategoryComboHandler {
                 new LinkModelHandlerImpl<Category, CategoryCategoryComboLinkModel>(
                         CategoryCategoryComboLinkStore.create(databaseAdapter)
                 ),
-                CategoryOptionComboHandler.create(databaseAdapter)
+                CategoryOptionComboHandler.create(databaseAdapter),
+                new OrphanCleanerImpl<CategoryCombo, CategoryOptionCombo>(CategoryOptionComboModel.TABLE,
+                        CategoryOptionComboModel.Columns.CATEGORY_COMBO, databaseAdapter)
         );
     }
 }

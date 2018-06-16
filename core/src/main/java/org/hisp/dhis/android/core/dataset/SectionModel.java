@@ -50,8 +50,8 @@ public abstract class SectionModel extends BaseIdentifiableObjectModel {
         public static final String DESCRIPTION = "description";
         public static final String SORT_ORDER = "sortOrder";
         public static final String DATA_SET = "dataSet";
-        private static final String SHOW_ROW_TOTALS = "showRowTotals";
-        private static final String SHOW_COLUMN_TOTALS = "showColumnTotals";
+        public static final String SHOW_ROW_TOTALS = "showRowTotals";
+        public static final String SHOW_COLUMN_TOTALS = "showColumnTotals";
 
         @Override
         public String[] all() {

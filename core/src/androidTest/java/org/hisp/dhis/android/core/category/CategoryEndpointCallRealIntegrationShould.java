@@ -27,7 +27,7 @@ public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase 
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-    @Test
+    //@Test
     public void call_categories_endpoint() throws Exception {
         d2.logIn(RealServerMother.user, RealServerMother.password).call();
 

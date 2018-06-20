@@ -146,7 +146,7 @@ dependencies {
     }
     androidTestCompile 'com.facebook.stetho:stetho:1.5.0'
     androidTestCompile('com.facebook.stetho:stetho-okhttp3:1.5.0') {
-        exclude group: 'okhttp3'
+        exclude group: 'com.squareup.okhttp3'
     }
     compile 'com.google.code.findbugs:annotations:3.0.0'
 }

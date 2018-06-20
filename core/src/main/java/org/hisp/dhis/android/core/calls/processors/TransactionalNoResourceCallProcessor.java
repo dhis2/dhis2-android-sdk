@@ -51,7 +51,8 @@ public class TransactionalNoResourceCallProcessor<P, M extends Model> implements
         this.modelBuilder = modelBuilder;
     }
 
-    public void process(final List<P> objectList) throws D2CallException {
+    @Override
+    public final void process(final List<P> objectList) throws D2CallException {
         if (objectList != null && !objectList.isEmpty()) {
             new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
 

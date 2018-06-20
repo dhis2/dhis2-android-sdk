@@ -50,7 +50,7 @@ public abstract class PayloadResourceCallFetcher<P> implements CallFetcher<P> {
     protected abstract retrofit2.Call<Payload<P>> getCall(String lastUpdated);
 
     @Override
-    public List<P> fetch() throws D2CallException {
+    public final List<P> fetch() throws D2CallException {
         String lastUpdated = resourceType == null ? null : resourceHandler.getLastUpdated(resourceType);
         return new APICallExecutor().executePayloadCall(getCall(lastUpdated));
     }

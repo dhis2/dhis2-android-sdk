@@ -38,7 +38,7 @@ public abstract class ListNoResourceCallFetcher<P> implements CallFetcher<P> {
     protected abstract retrofit2.Call<List<P>> getCall();
 
     @Override
-    public List<P> fetch() throws D2CallException {
+    public final List<P> fetch() throws D2CallException {
         return new APICallExecutor().executeObjectCall(getCall());
     }
 }

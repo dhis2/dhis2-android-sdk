@@ -34,9 +34,11 @@ import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalResourceCallProcessor;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
 final class ProgramEndpointCall {
 
@@ -60,9 +62,10 @@ final class ProgramEndpointCall {
 
             @Override
             protected CallProcessor<Program> processor(GenericCallData data) {
-                return new TransactionalNoResourceCallProcessor<>(
-                        data.databaseAdapter(),
+                return new TransactionalResourceCallProcessor<>(
+                        data,
                         ProgramHandler.create(data.databaseAdapter()),
+                        ResourceModel.Type.PROGRAM,
                         new ProgramModelBuilder());
             }
         };

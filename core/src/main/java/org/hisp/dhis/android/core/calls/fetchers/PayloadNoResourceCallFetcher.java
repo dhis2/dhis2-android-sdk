@@ -39,7 +39,7 @@ public abstract class PayloadNoResourceCallFetcher<P> implements CallFetcher<P> 
     protected abstract retrofit2.Call<Payload<P>> getCall();
 
     @Override
-    public List<P> fetch() throws D2CallException {
+    public final List<P> fetch() throws D2CallException {
         return new APICallExecutor().executePayloadCall(getCall());
     }
 }

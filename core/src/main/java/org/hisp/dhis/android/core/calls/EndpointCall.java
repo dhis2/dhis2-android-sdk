@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.calls;
 
+import android.support.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -52,5 +54,15 @@ public final class EndpointCall<P> extends SyncCall<List<P>> {
         List<P> objects = fetcher.fetch();
         processor.process(objects);
         return objects;
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public CallFetcher<P> getFetcher() {
+        return fetcher;
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public CallProcessor<P> getProcessor() {
+        return processor;
     }
 }

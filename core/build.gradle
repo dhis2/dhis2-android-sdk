@@ -144,6 +144,8 @@ dependencies {
     androidTestCompile("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.
     }
+    androidTestCompile 'com.facebook.stetho:stetho:1.5.0'
+    androidTestCompile 'com.facebook.stetho:stetho-okhttp3:1.5.0'
     compile 'com.google.code.findbugs:annotations:3.0.0'
 }
 

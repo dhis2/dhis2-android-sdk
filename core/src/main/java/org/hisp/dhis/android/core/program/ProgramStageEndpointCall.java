@@ -33,12 +33,11 @@ import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.Set;
 
@@ -49,7 +48,6 @@ public final class ProgramStageEndpointCall {
 
     public static final UidsCallFactory<ProgramStage> FACTORY = new UidsCallFactoryImpl<ProgramStage>() {
 
-        private final ResourceModel.Type resourceType = ResourceModel.Type.PROGRAM_STAGE;
         private static final int MAX_UID_LIST_SIZE = 64;
 
         @Override
@@ -72,10 +70,9 @@ public final class ProgramStageEndpointCall {
 
         @Override
         protected CallProcessor<ProgramStage> processor(GenericCallData data) {
-            return new TransactionalResourceCallProcessor<>(
-                    data,
+            return new TransactionalNoResourceCallProcessor<>(
+                    data.databaseAdapter(),
                     ProgramStageHandler.create(data.databaseAdapter()),
-                    resourceType,
                     new ProgramStageModelBuilder()
             );
         }

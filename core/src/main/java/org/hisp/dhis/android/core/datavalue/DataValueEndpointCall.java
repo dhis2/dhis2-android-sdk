@@ -72,7 +72,7 @@ public final class DataValueEndpointCall {
             return new TransactionalResourceCallProcessor<>(
                     data,
                     DataValueHandler.create(data.databaseAdapter()),
-                    ResourceModel.Type.DATA_VALUE,
+                    resourceType,
                     new DataValueModelBuilder()
             );
         }

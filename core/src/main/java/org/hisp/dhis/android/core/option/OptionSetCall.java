@@ -33,13 +33,12 @@ import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.Set;
 
@@ -66,7 +65,6 @@ public final class OptionSetCall {
 
     public static final UidsCallFactory<OptionSet> FACTORY = new UidsCallFactoryImpl<OptionSet>() {
 
-        private final ResourceModel.Type resourceType = ResourceModel.Type.OPTION_SET;
         private static final int MAX_UID_LIST_SIZE = 130;
 
         @Override
@@ -85,10 +83,9 @@ public final class OptionSetCall {
 
         @Override
         protected CallProcessor<OptionSet> processor(GenericCallData data) {
-            return new TransactionalResourceCallProcessor<>(
-                    data,
+            return new TransactionalNoResourceCallProcessor<>(
+                    data.databaseAdapter(),
                     OptionSetHandler.create(data.databaseAdapter()),
-                    resourceType,
                     new OptionSetModelBuilder()
             );
         }

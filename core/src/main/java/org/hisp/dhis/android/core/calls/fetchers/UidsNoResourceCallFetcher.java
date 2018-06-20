@@ -57,10 +57,6 @@ public abstract class UidsNoResourceCallFetcher<P> implements CallFetcher<P> {
             return Collections.emptyList();
         }
 
-        return executeCall(uids);
-    }
-
-    private List<P> executeCall(Set<String> uids) throws D2CallException {
         List<P> objects = new ArrayList<>();
         if (!uids.isEmpty()) {
             APICallExecutor executor = new APICallExecutor();

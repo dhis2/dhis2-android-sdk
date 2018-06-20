@@ -33,11 +33,10 @@ import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.Set;
 
@@ -47,7 +46,6 @@ public final class DataElementEndpointCall {
 
     public static final UidsCallFactory<DataElement> FACTORY = new UidsCallFactoryImpl<DataElement>() {
 
-        private final ResourceModel.Type resourceType = ResourceModel.Type.OPTION_SET;
         private static final int MAX_UID_LIST_SIZE = 100;
 
         @Override
@@ -66,10 +64,9 @@ public final class DataElementEndpointCall {
 
         @Override
         protected CallProcessor<DataElement> processor(GenericCallData data) {
-            return new TransactionalResourceCallProcessor<>(
-                    data,
+            return new TransactionalNoResourceCallProcessor<>(
+                    data.databaseAdapter(),
                     DataElementHandler.create(data.databaseAdapter()),
-                    resourceType,
                     new DataElementModelBuilder()
             );
         }

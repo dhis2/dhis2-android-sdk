@@ -30,9 +30,8 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
-import org.hisp.dhis.android.core.calls.processors.TransactionalResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.junit.After;
@@ -120,9 +119,9 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     }
 
     @Test
-    public void have_transactional_resource_call_processor() {
+    public void have_transactional_no_resource_call_processor() {
         EndpointCall<Program> castedEndpointCall = (EndpointCall<Program>) endpointCall;
         assertThat(castedEndpointCall.getProcessor()
-                instanceof TransactionalResourceCallProcessor).isTrue();
+                instanceof TransactionalNoResourceCallProcessor).isTrue();
     }
 }

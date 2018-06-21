@@ -79,7 +79,7 @@ public class ProgramStageDataElementHandler {
             if (isDeleted(programStageDataElement) || !readableDataElement) {
                 programStageDataElementStore.delete(programStageDataElement.uid());
                 if (!readableDataElement) {
-                    dataElementStore.delete(programStageDataElement.dataElement().uid());
+                    dataElementStore.deleteIfExists(programStageDataElement.dataElement().uid());
                 }
             } else {
                 int updatedRow;

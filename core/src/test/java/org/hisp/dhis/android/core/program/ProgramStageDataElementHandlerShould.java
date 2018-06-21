@@ -215,6 +215,6 @@ public class ProgramStageDataElementHandlerShould {
         programStageDataElementHandler.handleProgramStageDataElements(programStageDataElements);
 
         verify(programStageDataElementStore).delete(programStageDataElement.uid());
-        verify(dataElementStore).delete(dataElementWithoutAccess.uid());
+        verify(dataElementStore).deleteIfExists(dataElementWithoutAccess.uid());
     }
 }

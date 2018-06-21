@@ -82,7 +82,7 @@ public abstract class DataSetModel extends BaseNameableObjectModel {
     }
 
     public static Builder builder() {
-        return new $AutoValue_DataSetModel.Builder();
+        return new $$AutoValue_DataSetModel.Builder();
     }
 
     @Nullable

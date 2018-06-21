@@ -27,40 +27,43 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
+import java.util.List;
 
-    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
-    private final GenericHandler<Section, SectionModel> sectionHandler;
+public class SectionHandler extends IdentifiableHandlerImpl<Section, SectionModel> {
+    private final ObjectWithoutUidStore<SectionDataElementLinkModel> sectionDataElementLinkStore;
 
-    DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
-                   GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
-                   GenericHandler<Section, SectionModel> sectionHandler) {
-        super(dataSetStore);
-        this.styleHandler = styleHandler;
-        this.sectionHandler = sectionHandler;
+    SectionHandler(IdentifiableObjectStore<SectionModel> sectionStore,
+                   ObjectWithoutUidStore<SectionDataElementLinkModel> sectionDataElementLinkStore) {
+        super(sectionStore);
+        this.sectionDataElementLinkStore = sectionDataElementLinkStore;
     }
 
-    public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataSetHandler(
-                DataSetStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter), SectionHandler.create(databaseAdapter));
+    public static SectionHandler create(DatabaseAdapter databaseAdapter) {
+        return new SectionHandler(
+                SectionStore.create(databaseAdapter),
+                SectionDataElementLinkStore.create(databaseAdapter));
     }
 
     @Override
-    protected void afterObjectHandled(DataSet dataSet, HandleAction action) {
-        styleHandler.handle(dataSet.style(),
-                new ObjectStyleModelBuilder(dataSet.uid(), DataSetModel.TABLE));
+    protected void afterObjectHandled(Section section, HandleAction action) {
+        saveSectionDataElementLink(section);
+    }
 
-        sectionHandler.handleMany(dataSet.sections(), new SectionModelBuilder());
+    private void saveSectionDataElementLink(Section section) {
+        List<ObjectWithUid> dataElements = section.dataElements();
+        if (dataElements != null) {
+            SectionDataElementLinkModelBuilder builder =
+                    new SectionDataElementLinkModelBuilder(section);
+            for (ObjectWithUid dataElement : dataElements) {
+                sectionDataElementLinkStore.updateOrInsertWhere(builder.buildModel(dataElement));
+            }
+        }
     }
 }

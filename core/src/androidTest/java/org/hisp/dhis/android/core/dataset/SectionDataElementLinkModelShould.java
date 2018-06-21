@@ -26,49 +26,57 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.dataset;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.database.Cursor;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import org.hisp.dhis.android.core.common.LinkModelAbstractShould;
+import org.hisp.dhis.android.core.dataset.SectionDataElementLinkModel.Columns;
+import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
+import org.hisp.dhis.android.core.utils.Utils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+import static com.google.common.truth.Truth.assertThat;
 
-    public static final int VERSION = 7;
+@RunWith(AndroidJUnit4.class)
+public class SectionDataElementLinkModelShould extends LinkModelAbstractShould<SectionDataElementLinkModel> {
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
-    }
+    public SectionDataElementLinkModelShould() {
 
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+        super(new Columns().all(), 2);
     }
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        // enable foreign key support in database
-        db.execSQL("PRAGMA foreign_keys = ON;");
-        db.enableWriteAheadLogging();
+    protected SectionDataElementLinkModel buildModel() {
+        return SectionDataElementLinkModel.builder()
+                .section("section_uid")
+                .dataElement("data_element_uid")
+                .build();
     }
 
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
     @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
-        }
-        return versionMigrations;
+    protected SectionDataElementLinkModel cursorToModel(Cursor cursor) {
+        return SectionDataElementLinkModel.create(cursor);
+    }
+
+    @Override
+    protected Object[] getModelAsObjectArray() {
+
+        return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
+                model.section(), model.dataElement());
+    }
+
+    @Test
+    public void have_data_set_data_element_model_columns() {
+
+        List<String> columnsList = Arrays.asList(new Columns().all());
+
+        assertThat(columnsList.contains(Columns.SECTION)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.DATA_ELEMENT)).isEqualTo(true);
     }
 }

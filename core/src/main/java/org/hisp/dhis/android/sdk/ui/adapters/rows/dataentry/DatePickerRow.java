@@ -175,7 +175,7 @@ public class DatePickerRow extends Row {
             dateSetListener.setBaseValue(baseValue);
             clearButtonListener.setBaseValue(baseValue);
 
-            if(baseValue !=null && baseValue.getValue()!=null && !baseValue.equals("")) {
+            if(baseValue !=null && baseValue.getValue()!=null && !baseValue.equals("") && !baseValue.getValue().isEmpty()) {
                 try {
                     Date date = new SimpleDateFormat("yyyy-MM-dd").parse(baseValue.getValue());
                     LocalDate currentDate = LocalDate.fromDateFields(date);

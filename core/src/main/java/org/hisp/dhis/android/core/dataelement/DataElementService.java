@@ -42,5 +42,6 @@ public interface DataElementService {
     Call<Payload<DataElement>> getDataElements(@Query("fields") @Which Fields<DataElement> fields,
                                                @Query("filter") @Where Filter<DataElement, String> uids,
                                                @Query("filter") @Where Filter<DataElement, String> lastUpdated,
+                                               @Query("filter") @Where String accessReadFilter,
                                                @Query("paging") Boolean paging);
 }

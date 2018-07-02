@@ -64,6 +64,17 @@ public class IdentifiableObjectStoreImpl<M extends BaseIdentifiableObjectModel>
     }
 
     @Override
+    public final void deleteIfExists(@NonNull String uid) throws RuntimeException {
+        try {
+            delete(uid);
+        } catch(RuntimeException e) {
+            if(!e.getMessage().equals("No rows affected")) {
+                throw e;
+            }
+        }
+    }
+
+    @Override
     public final void update(@NonNull M m) throws RuntimeException {
         isNull(m);
         m.bindToStatement(statements.update);

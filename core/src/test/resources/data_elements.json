@@ -26,6 +26,9 @@
       },
       "categoryCombo": {
         "id": "p0KPaWEg3cf"
+      },
+      "access": {
+        "read": true
       }
     }
   ]

@@ -107,6 +107,12 @@ public class IdentifiableObjectStoreIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    public void do_not_throw_exception_safe_deleting_non_existing_model() {
+        store.deleteIfExists("new-id");
+        assertThatCursor(getCursor()).isExhausted();
+    }
+
+    @Test
     public void update_model() {
         store.insert(model);
         store.update(updatedModel);

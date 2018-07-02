@@ -81,5 +81,6 @@ public class DataElementShould extends BaseObjectShould implements ObjectShould 
         assertThat(dataElement.domainType()).isEqualTo("TRACKER");
         assertThat(dataElement.renderType().desktop()).isEqualTo(desktopRendering);
         assertThat(dataElement.renderType().mobile()).isEqualTo(mobileRendering);
+        assertThat(dataElement.access().read()).isEqualTo(true);
     }
 }

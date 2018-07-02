@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
@@ -53,11 +54,12 @@ public final class DataElementEndpointCall {
             final DataElementService service = data.retrofit().create(DataElementService.class);
 
             return new UidsNoResourceCallFetcher<DataElement>(uids, MAX_UID_LIST_SIZE) {
+                String accessReadFilter = "access." + Access.read.eq(true).generateString();
 
                 @Override
                 protected retrofit2.Call<Payload<DataElement>> getCall(UidsQuery query) {
                     return service.getDataElements(DataElement.allFields, DataElement.uid.in(query.uids()),
-                            DataElement.lastUpdated.gt(null), query.paging());
+                            DataElement.lastUpdated.gt(null), accessReadFilter, query.paging());
                 }
             };
         }

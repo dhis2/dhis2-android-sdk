@@ -32,28 +32,44 @@ import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 
 public class ProgramTrackedEntityAttributeHandler extends
         IdentifiableHandlerImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> {
 
     private final TrackedEntityAttributeHandler trackedEntityAttributeHandler;
+    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+
 
     ProgramTrackedEntityAttributeHandler(IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> store,
-                                         TrackedEntityAttributeHandler trackedEntityAttributeHandler) {
+                                         TrackedEntityAttributeHandler trackedEntityAttributeHandler,
+                                         TrackedEntityAttributeStore trackedEntityAttributeStore) {
         super(store);
         this.trackedEntityAttributeHandler = trackedEntityAttributeHandler;
+        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
     }
 
     public static ProgramTrackedEntityAttributeHandler create(DatabaseAdapter databaseAdapter) {
         return new ProgramTrackedEntityAttributeHandler(
                 ProgramTrackedEntityAttributeStore.create(databaseAdapter),
-                TrackedEntityAttributeHandler.create(databaseAdapter));
+                TrackedEntityAttributeHandler.create(databaseAdapter),
+                new TrackedEntityAttributeStoreImpl(databaseAdapter));
     }
 
     @Override
     protected void afterObjectHandled(ProgramTrackedEntityAttribute programTrackedEntityAttribute,
                                       HandleAction action) {
-        trackedEntityAttributeHandler.handleTrackedEntityAttribute(
-                programTrackedEntityAttribute.trackedEntityAttribute());
+        if (action == HandleAction.Delete) {
+            this.trackedEntityAttributeStore.delete(programTrackedEntityAttribute.trackedEntityAttribute().uid());
+        } else {
+            trackedEntityAttributeHandler.handleTrackedEntityAttribute(
+                    programTrackedEntityAttribute.trackedEntityAttribute());
+        }
+    }
+
+    @Override
+    protected boolean deleteIfCondition(ProgramTrackedEntityAttribute programTrackedEntityAttribute) {
+        return !programTrackedEntityAttribute.trackedEntityAttribute().access().read();
     }
 }

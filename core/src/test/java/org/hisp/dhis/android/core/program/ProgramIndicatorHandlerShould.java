@@ -125,7 +125,7 @@ public class ProgramIndicatorHandlerShould {
         programIndicatorHandler.handleMany(programIndicators, programIndicatorModelBuilder);
 
         // verify that delete is called once
-        verify(programIndicatorStore, times(1)).delete(programIndicator.uid());
+        verify(programIndicatorStore, times(1)).deleteIfExists(programIndicator.uid());
     }
 
     @Test

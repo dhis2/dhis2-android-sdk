@@ -105,7 +105,7 @@ public class IdentifiableHandlerShould {
 
         genericHandler.handle(pojo, modelBuilder);
 
-        verify(store).delete(pojo.uid());
+        verify(store).deleteIfExists(pojo.uid());
         verifyNoMoreInteractions(store);
     }
 

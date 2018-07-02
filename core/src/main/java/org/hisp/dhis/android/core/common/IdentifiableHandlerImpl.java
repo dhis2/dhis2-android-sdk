@@ -42,11 +42,15 @@ public class IdentifiableHandlerImpl<P extends BaseIdentifiableObject, M extends
     protected HandleAction deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder) {
         M m = modelBuilder.buildModel(p);
         String modelUid = m.uid();
-        if (isDeleted(p) && modelUid != null) {
+        if ((isDeleted(p) || deleteIfCondition(p)) && modelUid != null) {
             store.delete(modelUid);
             return HandleAction.Delete;
         } else {
             return store.updateOrInsert(m);
         }
+    }
+
+    protected boolean deleteIfCondition(P p) {
+        return true;
     }
 }

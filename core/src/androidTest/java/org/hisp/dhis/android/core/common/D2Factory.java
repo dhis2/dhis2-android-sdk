@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.test.InstrumentationRegistry;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
@@ -27,6 +29,7 @@ public class D2Factory {
                         new OkHttpClient.Builder()
                                 .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter))
                                 .addInterceptor(loggingInterceptor)
+                                .addNetworkInterceptor(new StethoInterceptor())
                                 .build()
                 )
                 .context(InstrumentationRegistry.getTargetContext().getApplicationContext())

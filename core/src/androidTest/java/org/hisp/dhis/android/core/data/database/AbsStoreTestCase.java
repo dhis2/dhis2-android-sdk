@@ -32,6 +32,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 
+import com.facebook.stetho.Stetho;
+
 import org.junit.After;
 import org.junit.Before;
 
@@ -50,6 +52,7 @@ public abstract class AbsStoreTestCase {
                 , dbName);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+        Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
     }
 
     @After

@@ -43,7 +43,7 @@ public class IdentifiableHandlerImpl<P extends BaseIdentifiableObject, M extends
         M m = modelBuilder.buildModel(p);
         String modelUid = m.uid();
         if ((isDeleted(p) || deleteIfCondition(p)) && modelUid != null) {
-            store.delete(modelUid);
+            store.deleteIfExists(modelUid);
             return HandleAction.Delete;
         } else {
             return store.updateOrInsert(m);

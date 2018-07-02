@@ -72,7 +72,9 @@ public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
         int numberOfAffectedRows = databaseAdapter.executeUpdateDelete(builder.tableName, statement);
         statement.clearBindings();
 
-        if (numberOfAffectedRows != 1) {
+        if (numberOfAffectedRows == 0) {
+            throw new RuntimeException("No rows affected");
+        } else if (numberOfAffectedRows > 1) {
             throw new RuntimeException("Unexpected number of affected rows: " + numberOfAffectedRows);
         }
     }

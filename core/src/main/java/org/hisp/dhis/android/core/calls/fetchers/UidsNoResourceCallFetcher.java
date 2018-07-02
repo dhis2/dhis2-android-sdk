@@ -26,45 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.calls.fetchers;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import retrofit2.Call;
+public abstract class UidsNoResourceCallFetcher<P> implements CallFetcher<P> {
 
-public abstract class UidPayloadCall<P> extends AbstractEndpointListCall<P, UidsQuery> {
+    private final Set<String> uids;
+    private final int limit;
 
-    private final int uidLimit;
-
-    public UidPayloadCall(GenericCallData data,
-                          ResourceModel.Type resourceType,
-                          UidsQuery query,
-                          int uidLimit,
-                          ListPersistor<P> persistor) {
-
-        super(data, resourceType, query, persistor);
-        this.uidLimit = uidLimit;
+    protected UidsNoResourceCallFetcher(Set<String> uids, int limit) {
+        this.uids = uids;
+        this.limit = limit;
     }
+
+    protected abstract retrofit2.Call<Payload<P>> getCall(UidsQuery query);
 
     @Override
-    protected List<P> getObjects(UidsQuery query, String lastUpdated) throws D2CallException {
-        List<Set<String>> partitions = Utils.setPartition(query.uids(), uidLimit);
-
-        List<P> result = new ArrayList<>();
-        APICallExecutor apiCallExecutor = new APICallExecutor();
-        for (Set<String> partitionUids : partitions) {
-            UidsQuery uidQuery = UidsQuery.create(partitionUids);
-            List<P> callResult = apiCallExecutor.executePayloadCall(getCall(uidQuery, lastUpdated));
-            result.addAll(callResult);
+    public final List<P> fetch() throws D2CallException {
+        if (uids.isEmpty()) {
+            return Collections.emptyList();
         }
 
-        return result;
-    }
+        List<P> objects = new ArrayList<>();
+        if (!uids.isEmpty()) {
+            APICallExecutor executor = new APICallExecutor();
+            List<Set<String>> partitions = Utils.setPartition(uids, limit);
 
-    protected abstract Call<Payload<P>> getCall(UidsQuery query, String lastUpdated);
+            for (Set<String> partitionUids : partitions) {
+                UidsQuery uidQuery = UidsQuery.create(partitionUids);
+                List<P> callObjects = executor.executePayloadCall(getCall(uidQuery));
+                objects.addAll(callObjects);
+            }
+        }
+        return objects;
+    }
 }

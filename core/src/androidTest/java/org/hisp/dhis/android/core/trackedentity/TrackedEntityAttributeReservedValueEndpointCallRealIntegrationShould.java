@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -14,6 +15,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -25,7 +27,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private TrackedEntityAttributeReservedValueEndpointCall reservedValueEndpointCall;
+    private Call<List<TrackedEntityAttributeReservedValue>> reservedValueEndpointCall;
     private Integer numberToReserve = 5;
 
     @Before
@@ -36,14 +38,15 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
         reservedValueEndpointCall = createCall();
     }
 
-    private TrackedEntityAttributeReservedValueEndpointCall createCall() {
+    private Call<List<TrackedEntityAttributeReservedValue>> createCall() {
         GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
 
         OrganisationUnitModel organisationUnit =  OrganisationUnitModel.builder()
                 .uid("orgUnitUid").code("ORG_UNIT").build();
 
-        return TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(data, "xs8A6tQJY0s",
-                numberToReserve, organisationUnit);
+        return TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(data,
+                TrackedEntityAttributeReservedValueQuery.create("xs8A6tQJY0s",
+                numberToReserve, organisationUnit, "pattern"));
     }
 
     // @Test

@@ -28,47 +28,43 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.ListPersistor;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.EmptyQuery;
-import org.hisp.dhis.android.core.common.EndpointPayloadCall;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericCallFactory;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.TransactionalListPersistor;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.util.List;
+final class ProgramEndpointCall {
 
-public final class ProgramEndpointCall extends EndpointPayloadCall<Program, EmptyQuery> {
-    private final ProgramService programService;
-
-    ProgramEndpointCall(GenericCallData data, ProgramService programService, EmptyQuery query,
-                        ListPersistor<Program> persistor) {
-        super(data, ResourceModel.Type.PROGRAM, query, persistor);
-        this.programService = programService;
+    private ProgramEndpointCall() {
     }
 
-    @Override
-    protected retrofit2.Call<Payload<Program>> getCall(EmptyQuery query, String lastUpdated) {
-        String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
-        return programService.getPrograms(Program.allFields, accessDataReadFilter, Boolean.FALSE);
-    }
+    static ListCallFactory<Program> factory(final ProgramService programService) {
+        return new ListCallFactoryImpl<Program>() {
 
-    static final GenericCallFactory<List<Program>> FACTORY = new GenericCallFactory<List<Program>>() {
-        @Override
-        public Call<List<Program>> create(GenericCallData data) {
-            return new ProgramEndpointCall(data,
-                    data.retrofit().create(ProgramService.class),
-                    EmptyQuery.create(),
-                    new TransactionalListPersistor<>(
-                            data,
-                            ProgramHandler.create(data.databaseAdapter()),
-                            ResourceModel.Type.PROGRAM,
-                            new ProgramModelBuilder()
-                    )
-            );
-        }
-    };
+            @Override
+            protected CallFetcher<Program> fetcher(GenericCallData data) {
+
+                return new PayloadNoResourceCallFetcher<Program>() {
+                    @Override
+                    protected retrofit2.Call<Payload<Program>> getCall() {
+                        String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
+                        return programService.getPrograms(Program.allFields, accessDataReadFilter, Boolean.FALSE);
+                    }
+                };
+            }
+
+            @Override
+            protected CallProcessor<Program> processor(GenericCallData data) {
+                return new TransactionalNoResourceCallProcessor<>(
+                        data.databaseAdapter(),
+                        ProgramHandler.create(data.databaseAdapter()),
+                        new ProgramModelBuilder());
+            }
+        };
+    }
 }

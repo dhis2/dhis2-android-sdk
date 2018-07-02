@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.common;
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
+import org.hisp.dhis.android.core.calls.factories.BasicCallFactory;
+import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
@@ -58,7 +60,6 @@ import retrofit2.Response;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

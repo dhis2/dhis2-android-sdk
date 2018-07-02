@@ -26,43 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.calls;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import android.support.annotation.VisibleForTesting;
+
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.common.SyncCall;
 
 import java.util.List;
 
-public abstract class AbstractEndpointListCall<P, Q extends BaseQuery> extends SyncCall<List<P>> {
-    private final GenericCallData data;
+public final class EndpointCall<P> extends SyncCall<List<P>> {
 
-    private final ResourceModel.Type resourceType;
-    public final Q query;
+    private final CallFetcher<P> fetcher;
+    private final CallProcessor<P> processor;
 
-    private final ListPersistor<P> persistor;
-
-    AbstractEndpointListCall(GenericCallData data,
-                             ResourceModel.Type resourceType,
-                             Q query,
-                             ListPersistor<P> persistor) {
-        this.data = data;
-        this.resourceType = resourceType;
-        this.query = query;
-        this.persistor = persistor;
+    public EndpointCall(CallFetcher<P> fetcher,
+                        CallProcessor<P> processor) {
+        this.fetcher = fetcher;
+        this.processor = processor;
     }
 
-    protected abstract List<P> getObjects(Q query, String lastUpdated) throws D2CallException;
-
     @Override
-    public final List<P> call() throws Exception {
+    public List<P> call() throws Exception {
         setExecuted();
 
-        if (!query.isValid()) {
-            throw new IllegalArgumentException("Invalid query");
-        }
+        List<P> objects = fetcher.fetch();
+        processor.process(objects);
+        return objects;
+    }
 
-        String lastUpdated = resourceType == null ? null : data.resourceHandler().getLastUpdated(resourceType);
-        List<P> responseList = getObjects(query, lastUpdated);
-        persistor.persist(responseList);
-        return responseList;
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public CallFetcher<P> getFetcher() {
+        return fetcher;
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public CallProcessor<P> getProcessor() {
+        return processor;
     }
 }

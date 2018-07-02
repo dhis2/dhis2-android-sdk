@@ -26,26 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.calls.processors;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.common.D2CallException;
 
 import java.util.List;
 
-public abstract class EndpointPayloadCall<P, Q extends BaseQuery> extends AbstractEndpointListCall<P, Q> {
-
-    public EndpointPayloadCall(GenericCallData data,
-                               ResourceModel.Type resourceType,
-                               Q query,
-                               ListPersistor<P> persistor) {
-
-        super(data, resourceType, query, persistor);
-    }
-
-    @Override
-    protected List<P> getObjects(Q query, String lastUpdated) throws D2CallException {
-        return new APICallExecutor().executePayloadCall(getCall(query, lastUpdated));
-    }
-
-    protected abstract retrofit2.Call<Payload<P>> getCall(Q query, String lastUpdated);
+public interface CallProcessor<P> {
+    void process(List<P> objectList) throws D2CallException;
 }

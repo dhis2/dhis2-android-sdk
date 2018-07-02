@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericCallFactory;
 import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementEndpointCall;
@@ -52,7 +52,7 @@ import java.util.concurrent.Callable;
 public class DataSetParentCall extends SyncCall<Void> {
     private final DataSetParentLinkManager linkManager;
     private final GenericCallData data;
-    private final GenericCallFactory<List<DataSet>> dataSetCallFactory;
+    private final ListCallFactory<DataSet> dataSetCallFactory;
     private final UidsCallFactory<DataElement> dataElementCallFactory;
     private final UidsCallFactory<Indicator> indicatorCallFactory;
     private final UidsCallFactory<IndicatorType> indicatorTypeCallFactory;
@@ -61,7 +61,7 @@ public class DataSetParentCall extends SyncCall<Void> {
 
     private DataSetParentCall(GenericCallData data,
                               DataSetParentLinkManager linkManager,
-                              GenericCallFactory<List<DataSet>> dataSetCallFactory,
+                              ListCallFactory<DataSet> dataSetCallFactory,
                               UidsCallFactory<DataElement> dataElementCallFactory,
                               UidsCallFactory<Indicator> indicatorCallFactory,
                               UidsCallFactory<IndicatorType> indicatorTypeCallFactory,

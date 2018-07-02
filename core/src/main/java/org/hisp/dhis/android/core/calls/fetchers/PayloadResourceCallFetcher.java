@@ -26,26 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.calls.fetchers;
 
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
 
-public abstract class EndpointListCall<P, Q extends BaseQuery> extends AbstractEndpointListCall<P, Q> {
+public abstract class PayloadResourceCallFetcher<P> implements CallFetcher<P> {
 
-    public EndpointListCall(GenericCallData data,
-                            ResourceModel.Type resourceType,
-                            Q query,
-                            ListPersistor<P> persistor) {
+    private final ResourceHandler resourceHandler;
+    private final ResourceModel.Type resourceType;
 
-        super(data, resourceType, query, persistor);
+    public PayloadResourceCallFetcher(ResourceHandler resourceHandler,
+                                      ResourceModel.Type resourceType) {
+        this.resourceHandler = resourceHandler;
+        this.resourceType = resourceType;
     }
+
+    protected abstract retrofit2.Call<Payload<P>> getCall(String lastUpdated);
 
     @Override
-    protected List<P> getObjects(Q query, String lastUpdated) throws D2CallException {
-        return new APICallExecutor().executeObjectCall(getCall(query, lastUpdated));
+    public final List<P> fetch() throws D2CallException {
+        String lastUpdated = resourceType == null ? null : resourceHandler.getLastUpdated(resourceType);
+        return new APICallExecutor().executePayloadCall(getCall(lastUpdated));
     }
-
-    protected abstract retrofit2.Call<List<P>> getCall(Q query, String lastUpdated);
 }

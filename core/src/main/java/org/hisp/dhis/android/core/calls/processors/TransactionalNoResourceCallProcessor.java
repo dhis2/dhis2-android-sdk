@@ -26,37 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.calls.processors;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class TransactionalListPersistor<P, M extends Model> implements ListPersistor<P> {
-    private final GenericCallData data;
+public class TransactionalNoResourceCallProcessor<P, M extends Model> implements CallProcessor<P> {
+    private final DatabaseAdapter databaseAdapter;
     private final GenericHandler<P, M> handler;
-    private final ResourceModel.Type resourceType;
     private final ModelBuilder<P, M> modelBuilder;
 
-    public TransactionalListPersistor(GenericCallData data,
-                                      GenericHandler<P, M> handler,
-                                      ResourceModel.Type resourceType,
-                                      ModelBuilder<P, M> modelBuilder) {
-        this.data = data;
+    public TransactionalNoResourceCallProcessor(DatabaseAdapter databaseAdapter,
+                                                GenericHandler<P, M> handler,
+                                                ModelBuilder<P, M> modelBuilder) {
+        this.databaseAdapter = databaseAdapter;
         this.handler = handler;
-        this.resourceType = resourceType;
         this.modelBuilder = modelBuilder;
     }
 
-    public void persist(final List<P> objectList) throws D2CallException {
+    @Override
+    public final void process(final List<P> objectList) throws D2CallException {
         if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(), new Callable<Void>() {
+            new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
 
                 @Override
                 public Void call() {
                     handler.handleMany(objectList, modelBuilder);
-                    data.handleResource(resourceType);
                     return null;
                 }
             });

@@ -25,23 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.data.api.Where;
-import org.hisp.dhis.android.core.data.api.Which;
+package org.hisp.dhis.android.core.calls.fetchers;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import org.hisp.dhis.android.core.common.D2CallException;
 
-public interface DataElementService {
-    @GET("dataElements")
-    Call<Payload<DataElement>> getDataElements(@Query("fields") @Which Fields<DataElement> fields,
-                                               @Query("filter") @Where Filter<DataElement, String> uids,
-                                               @Query("filter") @Where Filter<DataElement, String> lastUpdated,
-                                               @Query("filter") @Where String accessReadFilter,
-                                               @Query("paging") Boolean paging);
+import java.util.List;
+
+public interface CallFetcher<P> {
+    List<P> fetch() throws D2CallException;
 }

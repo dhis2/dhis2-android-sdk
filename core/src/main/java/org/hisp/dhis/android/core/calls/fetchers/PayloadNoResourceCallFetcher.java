@@ -25,23 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement;
 
+package org.hisp.dhis.android.core.calls.fetchers;
+
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
-import org.hisp.dhis.android.core.data.api.Where;
-import org.hisp.dhis.android.core.data.api.Which;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import java.util.List;
 
-public interface DataElementService {
-    @GET("dataElements")
-    Call<Payload<DataElement>> getDataElements(@Query("fields") @Which Fields<DataElement> fields,
-                                               @Query("filter") @Where Filter<DataElement, String> uids,
-                                               @Query("filter") @Where Filter<DataElement, String> lastUpdated,
-                                               @Query("filter") @Where String accessReadFilter,
-                                               @Query("paging") Boolean paging);
+public abstract class PayloadNoResourceCallFetcher<P> implements CallFetcher<P> {
+
+    protected abstract retrofit2.Call<Payload<P>> getCall();
+
+    @Override
+    public final List<P> fetch() throws D2CallException {
+        return new APICallExecutor().executePayloadCall(getCall());
+    }
 }

@@ -27,8 +27,12 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.EmptyQuery;
-import org.hisp.dhis.android.core.common.EndpointPayloadCallAbstractShould;
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.EndpointCall;
+import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.junit.After;
 import org.junit.Before;
@@ -40,6 +44,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 
 import java.io.IOException;
+import java.util.List;
+
+import retrofit2.Response;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -48,7 +55,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class ProgramEndpointCallShould extends EndpointPayloadCallAbstractShould<Program> {
+public class ProgramEndpointCallShould extends BaseCallShould {
 
     @Mock
     private ProgramService programService;
@@ -59,13 +66,22 @@ public class ProgramEndpointCallShould extends EndpointPayloadCallAbstractShould
     @Captor
     private ArgumentCaptor<String> accessDataReadFilter;
 
+    @Mock
+    private retrofit2.Call<Payload<Program>> retrofitCall;
+
+    @Mock
+    private Payload<Program> payload;
+
+    private Call<List<Program>> endpointCall;
+
+
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
 
-        endpointCall = new ProgramEndpointCall(genericCallData, programService,
-                EmptyQuery.create(), persistor);
+        endpointCall = ProgramEndpointCall.factory(programService).create(genericCallData);
+        when(retrofitCall.execute()).thenReturn(Response.success(payload));
 
         when(programService.getPrograms(any(Fields.class), anyString(), anyBoolean())
         ).thenReturn(retrofitCall);
@@ -74,6 +90,10 @@ public class ProgramEndpointCallShould extends EndpointPayloadCallAbstractShould
     @After
     public void tearDown() throws IOException {
         super.tearDown();
+    }
+
+    private EndpointCall<Program> castedEndpointCall() {
+        return (EndpointCall<Program>) endpointCall;
     }
 
     @Test
@@ -85,5 +105,23 @@ public class ProgramEndpointCallShould extends EndpointPayloadCallAbstractShould
         endpointCall.call();
 
         assertThat(fieldsCaptor.getValue()).isEqualTo(Program.allFields);
+        assertThat(accessDataReadFilter.getValue()).isEqualTo("access.data.read:eq:true");
+    }
+
+    @Test
+    public void extend_endpoint_call() {
+        assertThat(endpointCall instanceof EndpointCall).isTrue();
+    }
+
+    @Test
+    public void have_payload_no_resource_fetcher() {
+        assertThat(castedEndpointCall().getFetcher() instanceof PayloadNoResourceCallFetcher).isTrue();
+    }
+
+    @Test
+    public void have_transactional_no_resource_call_processor() {
+        EndpointCall<Program> castedEndpointCall = (EndpointCall<Program>) endpointCall;
+        assertThat(castedEndpointCall.getProcessor()
+                instanceof TransactionalNoResourceCallProcessor).isTrue();
     }
 }

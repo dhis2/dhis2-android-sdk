@@ -86,6 +86,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
         programTrackedEntityAttributes.add(programTrackedEntityAttribute);
 
         when(programTrackedEntityAttribute.trackedEntityAttribute()).thenReturn(trackedEntityAttribute);
+        when(programTrackedEntityAttribute.uid()).thenReturn("program_tracked_entity_attribute_uid");
         when(trackedEntityAttribute.uid()).thenReturn("tracked_entity_attribute_uid");
         when(trackedEntityAttribute.access()).thenReturn(access);
         when(access.read()).thenReturn(true);
@@ -103,5 +104,13 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     public void call_tracked_entity_attribute_handler() throws Exception {
         handler.handleMany(programTrackedEntityAttributes, new ProgramTrackedEntityAttributeModelBuilder());
         verify(trackedEntityAttributeHandler).handleTrackedEntityAttribute(trackedEntityAttribute);
+    }
+
+    @Test
+    public void delete_program_tea_and_tea_when_have_no_access() {
+        when(access.read()).thenReturn(false);
+        handler.handleMany(programTrackedEntityAttributes, new ProgramTrackedEntityAttributeModelBuilder());
+        verify(store).deleteIfExists(programTrackedEntityAttribute.uid());
+        verify(trackedEntityAttributeStore).delete(trackedEntityAttribute.uid());
     }
 }

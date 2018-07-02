@@ -51,6 +51,6 @@ public class IdentifiableHandlerImpl<P extends BaseIdentifiableObject, M extends
     }
 
     protected boolean deleteIfCondition(P p) {
-        return true;
+        return false;
     }
 }

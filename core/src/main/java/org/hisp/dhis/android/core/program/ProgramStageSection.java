@@ -72,8 +72,8 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
 
     static final Fields<ProgramStageSection> allFields = Fields.<ProgramStageSection>builder().fields(
             uid, code, name, displayName, created, lastUpdated, sortOrder, deleted, dataElements.with(DataElement.uid),
-            programIndicators.with(ProgramIndicator.uid, ProgramIndicator.program.with(ObjectWithUid.uid)), renderType
-    ).build();
+            programIndicators.with(ProgramIndicator.uid, ProgramIndicator.program.with(ObjectWithUid.uid)),
+            renderType.with(ProgramStageSectionRendering.allFields)).build();
 
     @Nullable
     @JsonProperty(SORT_ORDER)

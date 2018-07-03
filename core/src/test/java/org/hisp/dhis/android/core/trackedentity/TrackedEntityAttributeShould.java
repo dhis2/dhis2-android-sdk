@@ -114,5 +114,6 @@ public class TrackedEntityAttributeShould {
         assertThat(trackedEntityAttribute.programScope()).isFalse();
         assertThat(trackedEntityAttribute.unique()).isFalse();
         assertThat(trackedEntityAttribute.valueType()).isEqualTo(ValueType.TEXT);
+        assertThat(trackedEntityAttribute.access().read()).isTrue();
     }
 }

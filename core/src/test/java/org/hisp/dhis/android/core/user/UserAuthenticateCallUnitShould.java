@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.BasicCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Unit;
@@ -82,7 +82,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private UserService userService;
 
     @Mock
-    private GenericHandler<User, UserModel> userHandler;
+    private SyncHandler<User> userHandler;
 
     @Mock
     private ResourceHandler resourceHandler;
@@ -103,7 +103,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private User user;
 
     @Mock
-    private UserModel userModel;
+    private User loggedUser;
 
     @Mock
     private SystemInfo systemInfo;
@@ -115,7 +115,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private AuthenticatedUserModel authenticatedUser;
 
     @Mock
-    private IdentifiableObjectStore<UserModel> userStore;
+    private IdentifiableObjectStore<User> userStore;
 
     @Mock
     private ObjectWithoutUidStore<SystemInfoModel> systemInfoStore;
@@ -146,7 +146,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         userAuthenticateCall = instantiateCall(USERNAME, PASSWORD);
 
         when(user.uid()).thenReturn(UID);
-        when(userModel.uid()).thenReturn(UID);
+        when(loggedUser.uid()).thenReturn(UID);
         when(systemInfo.serverDate()).thenReturn(serverDate);
 
         baseEndpoint = "https://dhis-instance.org";
@@ -157,6 +157,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(systemInfoCallFactory.create(databaseAdapter, retrofit)).thenReturn(systemInfoEndpointCall);
         when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
         when(authenticateAPICall.execute()).thenReturn(Response.success(user));
+
+        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(loggedUser);
+        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
 
         when(databaseAdapter.beginNewTransaction()).then(new Answer<Transaction>() {
             @Override
@@ -258,8 +261,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void wipe_db_when_previously_equal_user_but_different_server() throws Exception {
-        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(userModel);
-        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
         when(systemInfoModel.contextPath()).thenReturn("https://another-instance.org/");
 
         userAuthenticateCall.call();
@@ -270,8 +271,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void not_wipe_db_when_previously_same_user() throws Exception {
-        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(userModel);
-        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
 
         userAuthenticateCall.call();
 
@@ -281,9 +280,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void wipe_db_when_previously_different_user() throws Exception {
-        when(userModel.uid()).thenReturn("previous_user");
-        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(userModel);
-        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
+        when(loggedUser.uid()).thenReturn("previous_user");
 
         userAuthenticateCall.call();
 
@@ -331,6 +328,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private void verifySuccess() {
         verifyTransactionComplete();
         verify(authenticatedUserStore).insert(UID, base64(USERNAME, PASSWORD));
-        verify(userHandler).handle(eq(user), any(UserModelBuilder.class));
+        verify(userHandler).handle(eq(user));
     }
 }

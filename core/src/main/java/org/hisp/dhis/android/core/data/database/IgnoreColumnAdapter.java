@@ -26,21 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.data.database;
 
-import android.support.annotation.NonNull;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-import java.util.Set;
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-public interface ObjectStore<M> extends DeletableStore {
+public abstract class IgnoreColumnAdapter<T> implements ColumnTypeAdapter<T> {
 
-    long insert(@NonNull M m) throws RuntimeException;
+    @Override
+    public T fromCursor(Cursor cursor, String columnName) {
+        return null;
+    }
 
-    Set<M> selectAll(CursorModelFactory<M> modelFactory);
-
-    M selectFirst(CursorModelFactory<M> modelFactory);
-
-    Set<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    boolean deleteById(@NonNull M m);
+    @Override
+    public void toContentValues(ContentValues values, String columnName, T value) {
+    }
 }

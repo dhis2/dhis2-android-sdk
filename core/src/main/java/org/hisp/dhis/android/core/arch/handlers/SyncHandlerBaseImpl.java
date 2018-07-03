@@ -25,22 +25,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers;
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.common.HandleAction;
 
-import android.support.annotation.NonNull;
+import java.util.Collection;
 
-import java.util.Set;
+abstract class SyncHandlerBaseImpl<O> implements SyncHandler<O> {
 
-public interface ObjectStore<M> extends DeletableStore {
+    @Override
+    public final void handle(O o) {
+        if (o == null) {
+            return;
+        }
+        HandleAction action = deleteOrPersist(o);
+        afterObjectHandled(o, action);
+    }
 
-    long insert(@NonNull M m) throws RuntimeException;
+    @Override
+    public final void handleMany(Collection<O> oCollection) {
+        if (oCollection != null) {
+            for(O o : oCollection) {
+                handle(o);
+            }
+            afterCollectionHandled(oCollection);
+        }
+    }
 
-    Set<M> selectAll(CursorModelFactory<M> modelFactory);
+    protected abstract HandleAction deleteOrPersist(O o);
 
-    M selectFirst(CursorModelFactory<M> modelFactory);
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    protected void afterObjectHandled(O o, HandleAction action) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
+    }
 
-    Set<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    boolean deleteById(@NonNull M m);
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    protected void afterCollectionHandled(Collection<O> oCollection) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
+    }
 }

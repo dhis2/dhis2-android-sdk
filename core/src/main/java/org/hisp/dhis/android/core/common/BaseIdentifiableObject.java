@@ -28,26 +28,35 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.text.ParseException;
 import java.util.Date;
 
-public abstract class BaseIdentifiableObject implements IdentifiableObject, ObjectWithDeleteInterface {
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
+public abstract class BaseIdentifiableObject implements IdentifiableObject,
+        ObjectWithDeleteInterface, StatementBinder {
     /* date format which should be used for all Date instances
     within models which extend BaseIdentifiableObject */
     public static final SafeDateFormat DATE_FORMAT = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     public static final SafeDateFormat SPACE_DATE_FORMAT = new SafeDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     public static final String UID = "id";
-    protected static final String CODE = "code";
-    protected static final String NAME = "name";
-    protected static final String DISPLAY_NAME = "displayName";
-    protected static final String CREATED = "created";
-    protected static final String LAST_UPDATED = "lastUpdated";
-    protected static final String DELETED = "deleted";
+    public static final String CODE = "code";
+    public static final String NAME = "name";
+    public static final String DISPLAY_NAME = "displayName";
+    public static final String CREATED = "created";
+    public static final String LAST_UPDATED = "lastUpdated";
+    public static final String DELETED = "deleted";
 
     @Override
     @JsonProperty(UID)
@@ -55,31 +64,28 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
 
     @Override
     @Nullable
-    @JsonProperty(CODE)
     public abstract String code();
 
     @Override
     @Nullable
-    @JsonProperty(NAME)
     public abstract String name();
 
     @Override
     @Nullable
-    @JsonProperty(DISPLAY_NAME)
     public abstract String displayName();
 
     @Override
     @Nullable
-    @JsonProperty(CREATED)
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Override
     @Nullable
-    @JsonProperty(LAST_UPDATED)
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
+    @Override
     @Nullable
-    @JsonProperty(DELETED)
     public abstract Boolean deleted();
 
     public static Date parseDate(String dateStr) throws ParseException {
@@ -94,27 +100,32 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
         return BaseIdentifiableObject.SPACE_DATE_FORMAT.format(date);
     }
 
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, uid());
+        sqLiteBind(sqLiteStatement, 2, code());
+        sqLiteBind(sqLiteStatement, 3, name());
+        sqLiteBind(sqLiteStatement, 4, displayName());
+        sqLiteBind(sqLiteStatement, 5, created());
+        sqLiteBind(sqLiteStatement, 6, lastUpdated());
+    }
+
+    @JsonPOJOBuilder(withPrefix = "")
     protected static abstract class Builder<T extends Builder> {
 
         @JsonProperty(UID)
         public abstract T uid(String uid);
 
-        @JsonProperty(CODE)
         public abstract T code(@Nullable String code);
 
-        @JsonProperty(NAME)
         public abstract T name(@Nullable String name);
 
-        @JsonProperty(DISPLAY_NAME)
         public abstract T displayName(@Nullable String displayName);
 
-        @JsonProperty(CREATED)
         public abstract T created(@Nullable Date created);
 
-        @JsonProperty(LAST_UPDATED)
         public abstract T lastUpdated(@Nullable Date lastUpdated);
 
-        @JsonProperty(DELETED)
         public abstract T deleted(@Nullable Boolean deleted);
     }
 }

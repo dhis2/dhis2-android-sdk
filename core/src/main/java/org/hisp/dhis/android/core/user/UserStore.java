@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 public final class UserStore {
     private UserStore() {}
 
-    public static IdentifiableObjectStore<UserModel> create(DatabaseAdapter databaseAdapter) {
+    public static IdentifiableObjectStore<User> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, UserModel.TABLE,
                 new UserModel.Columns().all());
     }

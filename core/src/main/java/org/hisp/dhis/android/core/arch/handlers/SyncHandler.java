@@ -25,22 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers;
 
-package org.hisp.dhis.android.core.common;
+import java.util.Collection;
 
-import android.support.annotation.NonNull;
+public interface SyncHandler<O> {
 
-import java.util.Set;
+    void handle(O o);
 
-public interface ObjectStore<M> extends DeletableStore {
-
-    long insert(@NonNull M m) throws RuntimeException;
-
-    Set<M> selectAll(CursorModelFactory<M> modelFactory);
-
-    M selectFirst(CursorModelFactory<M> modelFactory);
-
-    Set<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    boolean deleteById(@NonNull M m);
+    void handleMany(Collection<O> oCollection);
 }

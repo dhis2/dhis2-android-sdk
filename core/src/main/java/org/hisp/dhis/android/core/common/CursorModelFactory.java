@@ -30,6 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
 
-public interface CursorModelFactory<M extends Model> {
+public interface CursorModelFactory<M> {
     M fromCursor(Cursor cursor);
 }

@@ -65,22 +65,18 @@ public abstract class BaseIdentifiableObjectModel extends BaseModel implements I
 
     @Override
     @Nullable
-    @ColumnName(Columns.CODE)
     public abstract String code();
 
     @Override
     @Nullable
-    @ColumnName(Columns.NAME)
     public abstract String name();
 
     @Override
     @Nullable
-    @ColumnName(Columns.DISPLAY_NAME)
     public abstract String displayName();
 
     @Override
     @Nullable
-    @ColumnName(Columns.CREATED)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
@@ -90,7 +86,6 @@ public abstract class BaseIdentifiableObjectModel extends BaseModel implements I
 
     @Override
     @Nullable
-    @ColumnName(Columns.LAST_UPDATED)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 

@@ -73,55 +73,42 @@ public abstract class UserModel extends BaseIdentifiableObjectModel {
     }
 
     @Nullable
-    @ColumnName(Columns.BIRTHDAY)
     public abstract String birthday();
 
     @Nullable
-    @ColumnName(Columns.EDUCATION)
     public abstract String education();
 
     @Nullable
-    @ColumnName(Columns.GENDER)
     public abstract String gender();
 
     @Nullable
-    @ColumnName(Columns.JOB_TITLE)
     public abstract String jobTitle();
 
     @Nullable
-    @ColumnName(Columns.SURNAME)
     public abstract String surname();
 
     @Nullable
-    @ColumnName(Columns.FIRST_NAME)
     public abstract String firstName();
 
     @Nullable
-    @ColumnName(Columns.INTRODUCTION)
     public abstract String introduction();
 
     @Nullable
-    @ColumnName(Columns.EMPLOYER)
     public abstract String employer();
 
     @Nullable
-    @ColumnName(Columns.INTERESTS)
     public abstract String interests();
 
     @Nullable
-    @ColumnName(Columns.LANGUAGES)
     public abstract String languages();
 
     @Nullable
-    @ColumnName(Columns.EMAIL)
     public abstract String email();
 
     @Nullable
-    @ColumnName(Columns.PHONE_NUMBER)
     public abstract String phoneNumber();
 
     @Nullable
-    @ColumnName(Columns.NATIONALITY)
     public abstract String nationality();
 
     @NonNull

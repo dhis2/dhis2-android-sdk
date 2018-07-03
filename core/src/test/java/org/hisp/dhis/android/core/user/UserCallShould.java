@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.Before;
@@ -61,7 +61,7 @@ public class UserCallShould extends BaseCallShould {
     private UserService userService;
 
     @Mock
-    private GenericHandler<User, UserModel> userHandler;
+    private SyncHandler<User> userHandler;
 
     @Mock
     private retrofit2.Call<User> userCall;
@@ -95,7 +95,7 @@ public class UserCallShould extends BaseCallShould {
             verify(transaction, never()).setSuccessful();
             verify(transaction, never()).end();
 
-            verify(userHandler, never()).handle(eq(user), any(UserModelBuilder.class));
+            verify(userHandler, never()).handle(eq(user));
         }
     }
 
@@ -115,7 +115,7 @@ public class UserCallShould extends BaseCallShould {
         verify(databaseAdapter, never()).beginNewTransaction();
         verify(transaction, never()).setSuccessful();
         verify(transaction, never()).end();
-        verify(userHandler, never()).handle(eq(user), any(UserModelBuilder.class));
+        verify(userHandler, never()).handle(eq(user));
     }
 
     @Test
@@ -161,7 +161,7 @@ public class UserCallShould extends BaseCallShould {
     public void invoke_handlers_on_success() throws Exception {
         when(userCall.execute()).thenReturn(Response.success(user));
         userSyncCall.call();
-        verify(userHandler).handle(eq(user), any(UserModelBuilder.class));
+        verify(userHandler).handle(eq(user));
         verify(resourceHandler).handleResource(ResourceModel.Type.USER, serverDate);
     }
 }

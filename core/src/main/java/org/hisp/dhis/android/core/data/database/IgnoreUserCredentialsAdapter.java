@@ -26,21 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.data.database;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.user.UserCredentials;
 
-import java.util.Set;
-
-public interface ObjectStore<M> extends DeletableStore {
-
-    long insert(@NonNull M m) throws RuntimeException;
-
-    Set<M> selectAll(CursorModelFactory<M> modelFactory);
-
-    M selectFirst(CursorModelFactory<M> modelFactory);
-
-    Set<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    boolean deleteById(@NonNull M m);
+public final class IgnoreUserCredentialsAdapter extends IgnoreColumnAdapter<UserCredentials> {
 }

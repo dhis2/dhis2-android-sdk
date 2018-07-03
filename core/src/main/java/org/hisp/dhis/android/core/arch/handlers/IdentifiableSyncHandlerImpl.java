@@ -25,22 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers;
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.IdentifiableObject;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 
-import android.support.annotation.NonNull;
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-import java.util.Set;
+public class IdentifiableSyncHandlerImpl<O extends IdentifiableObject & ObjectWithDeleteInterface> extends SyncHandlerBaseImpl<O> {
 
-public interface ObjectStore<M> extends DeletableStore {
+    private final IdentifiableObjectStore<O> store;
 
-    long insert(@NonNull M m) throws RuntimeException;
+    public IdentifiableSyncHandlerImpl(IdentifiableObjectStore<O> store) {
+        this.store = store;
+    }
 
-    Set<M> selectAll(CursorModelFactory<M> modelFactory);
-
-    M selectFirst(CursorModelFactory<M> modelFactory);
-
-    Set<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    boolean deleteById(@NonNull M m);
+    @Override
+    protected HandleAction deleteOrPersist(O o) {
+        String modelUid = o.uid();
+        if (isDeleted(o) && modelUid != null) {
+            store.delete(modelUid);
+            return HandleAction.Delete;
+        } else {
+            return store.updateOrInsert(o);
+        }
+    }
 }

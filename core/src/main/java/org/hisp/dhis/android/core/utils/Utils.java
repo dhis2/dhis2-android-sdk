@@ -31,11 +31,7 @@ package org.hisp.dhis.android.core.utils;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 import java.util.ArrayList;
 import java.util.Arrays;

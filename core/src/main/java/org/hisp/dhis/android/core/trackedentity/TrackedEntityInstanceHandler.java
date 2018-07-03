@@ -43,30 +43,17 @@ public class TrackedEntityInstanceHandler {
             trackedEntityInstanceStore.delete(trackedEntityInstance.uid());
         } else {
 
-            State newState = State.SYNCED;
-            State currentState = null;
             if (asRelationship) {
-                currentState = trackedEntityInstanceStore.getState(trackedEntityInstance.uid());
-                newState = State.RELATIONSHIP;
-            }
+                State currentState = trackedEntityInstanceStore.getState(trackedEntityInstance.uid());
 
-            int updatedRow = 0;
-            if (!asRelationship || currentState == State.RELATIONSHIP) {
-                updatedRow = trackedEntityInstanceStore.update(
-                        trackedEntityInstance.uid(), trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),
-                        trackedEntityInstance.createdAtClient(), trackedEntityInstance.lastUpdatedAtClient(),
-                        trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntityType(),
-                        trackedEntityInstance.coordinates(), trackedEntityInstance.featureType(),
-                        newState, trackedEntityInstance.uid());
-            }
+                if (currentState == State.RELATIONSHIP) {
+                    updateOrInsert(trackedEntityInstance, State.RELATIONSHIP);
+                } else if (currentState == null) {
+                    insert(trackedEntityInstance, State.RELATIONSHIP);
+                }
 
-            if (updatedRow <= 0) {
-                trackedEntityInstanceStore.insert(
-                        trackedEntityInstance.uid(), trackedEntityInstance.created(),
-                        trackedEntityInstance.lastUpdated(), trackedEntityInstance.createdAtClient(),
-                        trackedEntityInstance.lastUpdatedAtClient(), trackedEntityInstance.organisationUnit(),
-                        trackedEntityInstance.trackedEntityType(), trackedEntityInstance.coordinates(),
-                        trackedEntityInstance.featureType(), newState);
+            } else {
+                updateOrInsert(trackedEntityInstance, State.SYNCED);
             }
 
             trackedEntityAttributeValueHandler.handle(
@@ -83,6 +70,27 @@ public class TrackedEntityInstanceHandler {
                 this.relationshipStore.updateOrInsertWhere(relationshipModelBuilder.buildModel(relationship));
             }
         }
+    }
+
+    private void updateOrInsert(@NonNull TrackedEntityInstance trackedEntityInstance, State state) {
+        int affectedRows = trackedEntityInstanceStore.update(
+                trackedEntityInstance.uid(), trackedEntityInstance.created(),
+                trackedEntityInstance.lastUpdated(), trackedEntityInstance.createdAtClient(),
+                trackedEntityInstance.lastUpdatedAtClient(), trackedEntityInstance.organisationUnit(),
+                trackedEntityInstance.trackedEntityType(), trackedEntityInstance.coordinates(),
+                trackedEntityInstance.featureType(), state, trackedEntityInstance.uid());
+        if (affectedRows <= 0) {
+            insert(trackedEntityInstance, state);
+        }
+    }
+
+    private void insert(@NonNull TrackedEntityInstance trackedEntityInstance, State state) {
+        trackedEntityInstanceStore.insert(
+                trackedEntityInstance.uid(), trackedEntityInstance.created(),
+                trackedEntityInstance.lastUpdated(), trackedEntityInstance.createdAtClient(),
+                trackedEntityInstance.lastUpdatedAtClient(), trackedEntityInstance.organisationUnit(),
+                trackedEntityInstance.trackedEntityType(), trackedEntityInstance.coordinates(),
+                trackedEntityInstance.featureType(), state);
     }
 
     public void handleMany(@NonNull Collection<TrackedEntityInstance> trackedEntityInstances) {

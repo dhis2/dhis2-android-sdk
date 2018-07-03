@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
-import org.hisp.dhis.android.core.user.User;
 
 import java.util.Date;
 import java.util.HashMap;

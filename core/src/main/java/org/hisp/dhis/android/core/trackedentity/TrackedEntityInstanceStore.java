@@ -56,6 +56,8 @@ public interface TrackedEntityInstanceStore extends DeletableStore {
 
     int setState(@NonNull String uid, @NonNull State state);
 
+    State getState(@NonNull String uid);
+
     Map<String, TrackedEntityInstance> queryToPost();
 
     Map<String, TrackedEntityInstance> querySynced();

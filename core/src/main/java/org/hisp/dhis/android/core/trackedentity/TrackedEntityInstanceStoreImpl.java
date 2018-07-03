@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
+import org.hisp.dhis.android.core.user.User;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -107,6 +108,9 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
     private static final String QUERY_STATEMENT_SYNCED =
             QUERY_STATEMENT +
                     " WHERE state = 'SYNCED'";
+
+    private static final String SELECT_STATE = "SELECT state FROM TrackedEntityInstance WHERE " +
+            Columns.UID + " =?;";
 
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
@@ -199,6 +203,18 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         setStateStatement.clearBindings();
 
         return updatedRow;
+    }
+
+    @Override
+    public State getState(@NonNull String uid) {
+        Cursor cursor = databaseAdapter.query(SELECT_STATE, uid);
+        State state = null;
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            state = cursor.getString(0) == null ? null :
+                    State.valueOf(State.class, cursor.getString(0));
+        }
+        return state;
     }
 
     @Override

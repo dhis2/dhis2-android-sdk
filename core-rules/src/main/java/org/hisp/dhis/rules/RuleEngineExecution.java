@@ -8,6 +8,7 @@ import org.hisp.dhis.rules.models.RuleActionCreateEvent;
 import org.hisp.dhis.rules.models.RuleActionDisplayKeyValuePair;
 import org.hisp.dhis.rules.models.RuleActionDisplayText;
 import org.hisp.dhis.rules.models.RuleActionErrorOnCompletion;
+import org.hisp.dhis.rules.models.RuleActionSendMessage;
 import org.hisp.dhis.rules.models.RuleActionShowError;
 import org.hisp.dhis.rules.models.RuleActionShowWarning;
 import org.hisp.dhis.rules.models.RuleActionWarningOnCompletion;
@@ -87,6 +88,9 @@ class RuleEngineExecution implements Callable<List<RuleEffect>> {
         } else if (ruleAction instanceof RuleActionWarningOnCompletion) {
             return RuleEffect.create(ruleAction,
                     process(((RuleActionWarningOnCompletion) ruleAction).data()));
+        } else if (ruleAction instanceof RuleActionSendMessage) {
+            return RuleEffect.create(ruleAction,
+                    process(((RuleActionSendMessage) ruleAction).data()));
         }
 
         return RuleEffect.create(ruleAction);

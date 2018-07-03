@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.common;
 import android.util.Log;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -54,9 +55,10 @@ public final class APICallExecutor {
             } else {
                 throw responseException(response);
             }
+        } catch (SocketTimeoutException e) {
+            throw socketTimeoutException(e);
         } catch (IOException e) {
             throw ioException(e);
-
         }
     }
 
@@ -72,6 +74,8 @@ public final class APICallExecutor {
             } else {
                 throw responseException(response);
             }
+        } catch (SocketTimeoutException e) {
+            throw socketTimeoutException(e);
         } catch (IOException e) {
             throw ioException(e);
         }
@@ -82,6 +86,15 @@ public final class APICallExecutor {
                 .errorCode(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
                 .httpErrorCode(response.code())
                 .errorDescription("API call failed, response: " + response.toString())
+                .build();
+    }
+
+    private D2CallException socketTimeoutException(SocketTimeoutException e) {
+        Log.e(this.getClass().getSimpleName(), e.toString());
+        return exceptionBuilder
+                .errorCode(D2ErrorCode.SOCKET_TIMEOUT)
+                .errorDescription("API call failed due to a SocketTimeoutException.")
+                .originalException(e)
                 .build();
     }
 

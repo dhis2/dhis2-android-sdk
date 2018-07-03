@@ -22,6 +22,11 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 
+@SuppressWarnings({
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity"
+})
 class RuleEngineExecution implements Callable<List<RuleEffect>> {
     private static final String D2_FUNCTION_PREFIX = "d2:";
 

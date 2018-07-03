@@ -108,6 +108,9 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             QUERY_STATEMENT +
                     " WHERE state = 'SYNCED'";
 
+    private static final String SELECT_STATE = "SELECT state FROM TrackedEntityInstance WHERE " +
+            Columns.UID + " =?;";
+
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
     private final SQLiteStatement setStateStatement;
@@ -199,6 +202,18 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         setStateStatement.clearBindings();
 
         return updatedRow;
+    }
+
+    @Override
+    public State getState(@NonNull String uid) {
+        Cursor cursor = databaseAdapter.query(SELECT_STATE, uid);
+        State state = null;
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            state = cursor.getString(0) == null ? null :
+                    State.valueOf(State.class, cursor.getString(0));
+        }
+        return state;
     }
 
     @Override

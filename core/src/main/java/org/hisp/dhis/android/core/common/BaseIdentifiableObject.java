@@ -35,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.text.ParseException;
 import java.util.Date;
 
-public abstract class BaseIdentifiableObject implements IdentifiableObject {
+public abstract class BaseIdentifiableObject implements IdentifiableObject, ObjectWithDeleteInterface {
     /* date format which should be used for all Date instances
     within models which extend BaseIdentifiableObject */
     public static final SafeDateFormat DATE_FORMAT = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");

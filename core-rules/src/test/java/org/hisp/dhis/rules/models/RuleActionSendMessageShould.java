@@ -12,7 +12,7 @@ public class RuleActionSendMessageShould {
     @Test
     public void substitute_empty_strings_when_create_with_null_arguments() {
         RuleActionSendMessage ruleActionSendMessage = RuleActionSendMessage.create("notification", "data");
-        RuleActionSendMessage ruleActionSendMessageNoData = RuleActionSendMessage.create(null, null);
+        RuleActionSendMessage ruleActionSendMessageNoData = RuleActionSendMessage.create("notification", null);
         RuleActionSendMessage ruleActionSendMessageNoNotification = RuleActionSendMessage.create(null, "data");
 
         assertThat(ruleActionSendMessage.notification()).isEqualTo("notification");

@@ -34,6 +34,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueType;
@@ -63,6 +64,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
     private static final String INHERIT = "inherit";
     private final static String STYLE = "style";
     private final static String RENDER_TYPE = "renderType";
+    private final static String ACCESS = "access";
 
     private static final Field<TrackedEntityAttribute, String> uid
             = Field.create(UID);
@@ -114,12 +116,14 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
             = NestedField.create(STYLE);
     private static final NestedField<TrackedEntityAttribute, ValueTypeRendering> renderType
             = NestedField.create(RENDER_TYPE);
+    private static final NestedField<TrackedEntityAttribute, Access> access = NestedField.create(ACCESS);
 
     public static final Fields<TrackedEntityAttribute> allFields = Fields.<TrackedEntityAttribute>builder().fields(
             uid, code, created, lastUpdated, name, displayName, shortName, displayShortName, description,
             displayDescription, displayInListNoProgram, displayOnVisitSchedule, expression, generated, inherit,
             orgUnitScope, programScope, pattern, sortOrderInListNoProgram, unique, valueType, searchScope,
-            optionSet.with(OptionSet.uid, OptionSet.version), style.with(ObjectStyle.allFields), renderType).build();
+            optionSet.with(OptionSet.uid, OptionSet.version), style.with(ObjectStyle.allFields),
+            renderType.with(ValueTypeRendering.allFields), access.with(Access.read)).build();
 
     @Nullable
     @JsonProperty(PATTERN)
@@ -181,6 +185,10 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
     @JsonProperty(RENDER_TYPE)
     public abstract ValueTypeRendering renderType();
 
+    @Nullable
+    @JsonProperty(ACCESS)
+    public abstract Access access();
+
     @JsonCreator
     public static TrackedEntityAttribute create(
             @JsonProperty(UID) String uid,
@@ -208,6 +216,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
             @JsonProperty(INHERIT) boolean inherit,
             @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(RENDER_TYPE) ValueTypeRendering renderType,
+            @JsonProperty(ACCESS) Access access,
             @JsonProperty(DELETED) Boolean deleted
     ) {
         return new AutoValue_TrackedEntityAttribute(
@@ -215,7 +224,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
                 shortName, displayShortName, description, displayDescription,
                 pattern, sortOrderInListNoProgram, optionSet, valueType, expression, searchScope,
                 programScope, displayInListNoProgram, generated, displayOnVisitSchedule,
-                orgUnitScope, unique, inherit, style, renderType);
+                orgUnitScope, unique, inherit, style, renderType, access);
     }
 
 }

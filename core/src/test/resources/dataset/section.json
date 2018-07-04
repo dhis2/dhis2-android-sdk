@@ -1,0 +1,62 @@
+{
+  "lastUpdated": "2016-10-12T13:22:42.731",
+  "id": "Y2rk0vzgvAx",
+  "code": "Code123",
+  "created": "2012-04-26T19:26:02.933",
+  "name": "Immunization",
+  "displayName": "Immunization",
+  "description": "Immunization dose administration",
+  "showColumnTotals": false,
+  "sortOrder": 2,
+  "showRowTotals": false,
+  "dataSet": {
+    "id": "BfMAe6Itzgt"
+  },
+  "dataElements": [
+    {
+      "id": "s46m5MS0hxu"
+    },
+    {
+      "id": "UOlfIjgN8X6"
+    },
+    {
+      "id": "z7duEFcpApd"
+    },
+    {
+      "id": "x3Do5e7g4Qo"
+    },
+    {
+      "id": "pikOziyCXbM"
+    },
+    {
+      "id": "O05mAByOgAv"
+    },
+    {
+      "id": "vI2csg55S9C"
+    },
+    {
+      "id": "xc8gmAKfO95"
+    },
+    {
+      "id": "mGN1az8Xub6"
+    },
+    {
+      "id": "L2kxa2IA2cs"
+    },
+    {
+      "id": "fClA2Erf6IO"
+    },
+    {
+      "id": "I78gJm4KBo7"
+    },
+    {
+      "id": "n6aMJNLdvep"
+    },
+    {
+      "id": "l6byfWFUGaP"
+    },
+    {
+      "id": "YtbsuPPo010"
+    }
+  ]
+}

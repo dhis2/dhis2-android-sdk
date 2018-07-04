@@ -13,10 +13,13 @@ public abstract class TrackedEntityAttributeReservedValueQuery extends BaseQuery
 
     public abstract OrganisationUnitModel organisationUnit();
 
+    public abstract String trackedEntityAttributePattern();
+
     public static TrackedEntityAttributeReservedValueQuery create(String trackedEntityAttributeUid,
                                                                   Integer numberToReserve,
-                                                                  OrganisationUnitModel organisationUnit) {
+                                                                  OrganisationUnitModel organisationUnit,
+                                                                  String trackedEntityAttributePattern) {
         return new AutoValue_TrackedEntityAttributeReservedValueQuery(1, BaseQuery.DEFAULT_PAGE_SIZE, false,
-                trackedEntityAttributeUid, numberToReserve, organisationUnit);
+                trackedEntityAttributeUid, numberToReserve, organisationUnit, trackedEntityAttributePattern);
     }
 }

@@ -26,26 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.List;
+public final class SectionStore {
 
-public abstract class EndpointPayloadCall<P, Q extends BaseQuery> extends AbstractEndpointListCall<P, Q> {
+    private SectionStore() {}
 
-    public EndpointPayloadCall(GenericCallData data,
-                               ResourceModel.Type resourceType,
-                               Q query,
-                               ListPersistor<P> persistor) {
-
-        super(data, resourceType, query, persistor);
+    public static IdentifiableObjectStore<SectionModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.identifiableStore(databaseAdapter, SectionModel.TABLE,
+                new SectionModel.Columns().all());
     }
-
-    @Override
-    protected List<P> getObjects(Q query, String lastUpdated) throws D2CallException {
-        return new APICallExecutor().executePayloadCall(getCall(query, lastUpdated));
-    }
-
-    protected abstract retrofit2.Call<Payload<P>> getCall(Q query, String lastUpdated);
 }

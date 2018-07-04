@@ -8,6 +8,8 @@ import org.hisp.dhis.rules.models.RuleActionCreateEvent;
 import org.hisp.dhis.rules.models.RuleActionDisplayKeyValuePair;
 import org.hisp.dhis.rules.models.RuleActionDisplayText;
 import org.hisp.dhis.rules.models.RuleActionErrorOnCompletion;
+import org.hisp.dhis.rules.models.RuleActionScheduleMessage;
+import org.hisp.dhis.rules.models.RuleActionSendMessage;
 import org.hisp.dhis.rules.models.RuleActionShowError;
 import org.hisp.dhis.rules.models.RuleActionShowWarning;
 import org.hisp.dhis.rules.models.RuleActionWarningOnCompletion;
@@ -20,6 +22,11 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 
+@SuppressWarnings({
+        "PMD.CyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity"
+})
 class RuleEngineExecution implements Callable<List<RuleEffect>> {
     private static final String D2_FUNCTION_PREFIX = "d2:";
 
@@ -87,6 +94,12 @@ class RuleEngineExecution implements Callable<List<RuleEffect>> {
         } else if (ruleAction instanceof RuleActionWarningOnCompletion) {
             return RuleEffect.create(ruleAction,
                     process(((RuleActionWarningOnCompletion) ruleAction).data()));
+        } else if (ruleAction instanceof RuleActionSendMessage) {
+            return RuleEffect.create(ruleAction,
+                    process(((RuleActionSendMessage) ruleAction).data()));
+        } else if (ruleAction instanceof RuleActionScheduleMessage) {
+            return RuleEffect.create(ruleAction,
+                    process(((RuleActionScheduleMessage) ruleAction).data()));
         }
 
         return RuleEffect.create(ruleAction);

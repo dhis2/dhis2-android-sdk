@@ -26,43 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.calls.processors;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.common.D2CallException;
 
 import java.util.List;
 
-public abstract class AbstractEndpointListCall<P, Q extends BaseQuery> extends SyncCall<List<P>> {
-    private final GenericCallData data;
-
-    private final ResourceModel.Type resourceType;
-    public final Q query;
-
-    private final ListPersistor<P> persistor;
-
-    AbstractEndpointListCall(GenericCallData data,
-                             ResourceModel.Type resourceType,
-                             Q query,
-                             ListPersistor<P> persistor) {
-        this.data = data;
-        this.resourceType = resourceType;
-        this.query = query;
-        this.persistor = persistor;
-    }
-
-    protected abstract List<P> getObjects(Q query, String lastUpdated) throws D2CallException;
-
-    @Override
-    public final List<P> call() throws Exception {
-        setExecuted();
-
-        if (!query.isValid()) {
-            throw new IllegalArgumentException("Invalid query");
-        }
-
-        String lastUpdated = resourceType == null ? null : data.resourceHandler().getLastUpdated(resourceType);
-        List<P> responseList = getObjects(query, lastUpdated);
-        persistor.persist(responseList);
-        return responseList;
-    }
+public interface CallProcessor<P> {
+    void process(List<P> objectList) throws D2CallException;
 }

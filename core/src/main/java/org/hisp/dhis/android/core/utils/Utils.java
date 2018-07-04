@@ -31,10 +31,7 @@ package org.hisp.dhis.android.core.utils;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,23 +65,7 @@ public final class Utils {
         return null;
     }
 
-    public static <T extends BaseIdentifiableObject> boolean isDeleted(@NonNull T object) {
-        return object.deleted() != null && object.deleted();
-    }
-
-    //----------------------------------------------------------------------------------------------------
-    // DUPLICATION OF ISDELETED METHODS BECAUSE TRACKER MODELS DOESN'T INHERIT FROM BASEIDENTIFIABLEOBJECT
-    //----------------------------------------------------------------------------------------------------
-
-    public static boolean isDeleted(@NonNull Event object) {
-        return object.deleted() != null && object.deleted();
-    }
-
-    public static boolean isDeleted(@NonNull Enrollment object) {
-        return object.deleted() != null && object.deleted();
-    }
-
-    public static boolean isDeleted(@NonNull TrackedEntityInstance object) {
+    public static boolean isDeleted(@NonNull ObjectWithDeleteInterface object) {
         return object.deleted() != null && object.deleted();
     }
 

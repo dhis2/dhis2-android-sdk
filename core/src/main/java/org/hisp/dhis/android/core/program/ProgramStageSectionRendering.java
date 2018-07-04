@@ -34,10 +34,19 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
+
 @AutoValue
 public abstract class ProgramStageSectionRendering {
     private static final String DESKTOP = "DESKTOP";
     private static final String MOBILE = "MOBILE";
+
+    private static final Field<ProgramStageSectionRendering, String> desktop = Field.create(DESKTOP);
+    private static final Field<ProgramStageSectionRendering, String> mobile = Field.create(MOBILE);
+
+    public static final Fields<ProgramStageSectionRendering> allFields =
+            Fields.<ProgramStageSectionRendering>builder().fields(desktop, mobile).build();
 
     @Nullable
     @JsonProperty(DESKTOP)

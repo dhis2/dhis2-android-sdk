@@ -27,11 +27,13 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +63,12 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     private ProgramTrackedEntityAttribute programTrackedEntityAttribute;
 
     @Mock
+    private TrackedEntityAttributeStore trackedEntityAttributeStore;
+
+    @Mock
+    private Access access;
+
+    @Mock
     private Program program;
 
     @Mock
@@ -72,12 +80,16 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        handler = new ProgramTrackedEntityAttributeHandler(store, trackedEntityAttributeHandler);
+        handler = new ProgramTrackedEntityAttributeHandler(store, trackedEntityAttributeHandler,
+                trackedEntityAttributeStore);
         programTrackedEntityAttributes = new ArrayList<>();
         programTrackedEntityAttributes.add(programTrackedEntityAttribute);
 
         when(programTrackedEntityAttribute.trackedEntityAttribute()).thenReturn(trackedEntityAttribute);
+        when(programTrackedEntityAttribute.uid()).thenReturn("program_tracked_entity_attribute_uid");
         when(trackedEntityAttribute.uid()).thenReturn("tracked_entity_attribute_uid");
+        when(trackedEntityAttribute.access()).thenReturn(access);
+        when(access.read()).thenReturn(true);
         when(programTrackedEntityAttribute.program()).thenReturn(program);
         when(program.uid()).thenReturn("program_uid");
     }
@@ -85,12 +97,20 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableHandlerImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> genericHandler =
-                new ProgramTrackedEntityAttributeHandler(null, null);
+                new ProgramTrackedEntityAttributeHandler(null, null, null);
     }
 
     @Test
     public void call_tracked_entity_attribute_handler() throws Exception {
         handler.handleMany(programTrackedEntityAttributes, new ProgramTrackedEntityAttributeModelBuilder());
         verify(trackedEntityAttributeHandler).handleTrackedEntityAttribute(trackedEntityAttribute);
+    }
+
+    @Test
+    public void delete_program_tea_and_tea_when_have_no_access() {
+        when(access.read()).thenReturn(false);
+        handler.handleMany(programTrackedEntityAttributes, new ProgramTrackedEntityAttributeModelBuilder());
+        verify(store).deleteIfExists(programTrackedEntityAttribute.uid());
+        verify(trackedEntityAttributeStore).delete(trackedEntityAttribute.uid());
     }
 }

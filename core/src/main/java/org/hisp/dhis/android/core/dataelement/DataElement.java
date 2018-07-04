@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -61,6 +62,7 @@ public abstract class DataElement extends BaseNameableObject {
     private final static String CATEGORY_COMBO = "categoryCombo";
     private final static String STYLE = "style";
     private final static String RENDER_TYPE = "renderType";
+    private final static String ACCESS = "access";
 
     public static final Field<DataElement, String> uid = Field.create(UID);
     private static final Field<DataElement, String> code = Field.create(CODE);
@@ -89,14 +91,15 @@ public abstract class DataElement extends BaseNameableObject {
             NestedField.create(STYLE);
     private static final NestedField<DataElement, ValueTypeRendering> renderType =
             NestedField.create(RENDER_TYPE);
+    private static final NestedField<DataElement, Access> access = NestedField.create(ACCESS);
 
     public static final Fields<DataElement> allFields = Fields.<DataElement>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, deleted,
             valueType, zeroIsSignificant, aggregationType, formName, numberType, domainType, dimension, displayFormName,
-            optionSet.with(OptionSet.uid, OptionSet.version),
+            optionSet.with(OptionSet.uid, OptionSet.version), access.with(Access.read),
             categoryCombo.with(ObjectWithUid.uid), style.with(ObjectStyle.allFields),
-            renderType).build();
+            renderType.with(ValueTypeRendering.allFields)).build();
 
     @Nullable
     @JsonProperty(VALUE_TYPE)
@@ -156,6 +159,10 @@ public abstract class DataElement extends BaseNameableObject {
     @JsonProperty(RENDER_TYPE)
     public abstract ValueTypeRendering renderType();
 
+    @Nullable
+    @JsonProperty(ACCESS)
+    public abstract Access access();
+
     @JsonCreator
     public static DataElement create(
             @JsonProperty(UID) String uid,
@@ -180,6 +187,7 @@ public abstract class DataElement extends BaseNameableObject {
             @JsonProperty(CATEGORY_COMBO) ObjectWithUid categoryCombo,
             @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(RENDER_TYPE) ValueTypeRendering renderType,
+            @JsonProperty(ACCESS) Access access,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_DataElement(uid, code, name,
@@ -187,7 +195,7 @@ public abstract class DataElement extends BaseNameableObject {
                 shortName, displayShortName, description, displayDescription, valueType,
                 zeroIsSignificant, aggregationType, formName, numberType,
                 domainType, dimension, displayFormName, optionSet, categoryCombo, style,
-                renderType);
+                renderType, access);
 
     }
 }

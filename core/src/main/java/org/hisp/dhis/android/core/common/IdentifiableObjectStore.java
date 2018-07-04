@@ -36,6 +36,8 @@ public interface IdentifiableObjectStore<M extends BaseIdentifiableObjectModel> 
 
     void delete(@NonNull String uid) throws RuntimeException;
 
+    void deleteIfExists(@NonNull String uid) throws RuntimeException;
+
     void update(@NonNull M m) throws RuntimeException;
 
     HandleAction updateOrInsert(@NonNull M m) throws RuntimeException;

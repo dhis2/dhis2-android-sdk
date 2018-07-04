@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.After;
 import org.junit.Before;
@@ -48,7 +49,7 @@ import static org.mockito.Mockito.when;
 public abstract class EndpointPayloadCallAbstractShould<P> extends BaseCallShould {
 
     @Mock
-    protected ListPersistor<P> persistor;
+    protected CallProcessor<P> processor;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     protected retrofit2.Call<Payload<P>> retrofitCall;
@@ -86,7 +87,7 @@ public abstract class EndpointPayloadCallAbstractShould<P> extends BaseCallShoul
     @Test
     public void succeed_for_last_synced_null() throws Exception {
         endpointCall.call();
-        verify(persistor).persist(pojoList);
+        verify(processor).process(pojoList);
     }
 
     @Test
@@ -95,7 +96,7 @@ public abstract class EndpointPayloadCallAbstractShould<P> extends BaseCallShoul
 
         endpointCall.call();
 
-        verify(persistor).persist(pojoList);
+        verify(processor).process(pojoList);
     }
 
     @Test

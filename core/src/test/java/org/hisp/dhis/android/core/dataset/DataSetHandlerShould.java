@@ -57,6 +57,9 @@ public class DataSetHandlerShould {
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
+    private GenericHandler<Section, SectionModel> sectionHandler;
+
+    @Mock
     private DataSet dataSet;
 
     @Mock
@@ -71,7 +74,7 @@ public class DataSetHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        dataSetHandler = new DataSetHandler(dataSetStore, styleHandler);
+        dataSetHandler = new DataSetHandler(dataSetStore, styleHandler, sectionHandler);
         when(dataSet.access()).thenReturn(access);
         when(access.data()).thenReturn(dataAccess);
         when(dataAccess.write()).thenReturn(true);
@@ -79,7 +82,7 @@ public class DataSetHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<DataSet, DataSetModel> genericHandler = new DataSetHandler(null, null);
+        IdentifiableHandlerImpl<DataSet, DataSetModel> genericHandler = new DataSetHandler(null, null, null);
     }
 
     @Test

@@ -28,38 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-
-public class TransactionalListPersistor<P, M extends Model> implements ListPersistor<P> {
-    private final GenericCallData data;
-    private final GenericHandler<P, M> handler;
-    private final ResourceModel.Type resourceType;
-    private final ModelBuilder<P, M> modelBuilder;
-
-    public TransactionalListPersistor(GenericCallData data,
-                                      GenericHandler<P, M> handler,
-                                      ResourceModel.Type resourceType,
-                                      ModelBuilder<P, M> modelBuilder) {
-        this.data = data;
-        this.handler = handler;
-        this.resourceType = resourceType;
-        this.modelBuilder = modelBuilder;
-    }
-
-    public void persist(final List<P> objectList) throws D2CallException {
-        if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(), new Callable<Void>() {
-
-                @Override
-                public Void call() {
-                    handler.handleMany(objectList, modelBuilder);
-                    data.handleResource(resourceType);
-                    return null;
-                }
-            });
-        }
-    }
+public interface ObjectWithDeleteInterface {
+    Boolean deleted();
 }

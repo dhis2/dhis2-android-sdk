@@ -67,7 +67,7 @@ public class TrackedEntityInstanceHandlerShould {
 
     @Test
     public void do_nothing_when_passing_null_argument() throws Exception {
-        trackedEntityInstanceHandler.handle(null);
+        trackedEntityInstanceHandler.handle(null, false);
 
         // verify that tracked entity instance store is never called
         verify(trackedEntityInstanceStore, never()).delete(anyString());
@@ -85,7 +85,7 @@ public class TrackedEntityInstanceHandlerShould {
     public void invoke_delete_when_handle_program_tracked_entity_instance_set_as_deleted() throws Exception {
         when(trackedEntityInstance.deleted()).thenReturn(Boolean.TRUE);
 
-        trackedEntityInstanceHandler.handle(trackedEntityInstance);
+        trackedEntityInstanceHandler.handle(trackedEntityInstance, false);
 
         // verify that tracked entity instance store is only called with delete
         verify(trackedEntityInstanceStore, times(1)).delete(anyString());
@@ -110,7 +110,7 @@ public class TrackedEntityInstanceHandlerShould {
                 anyString(), anyString(), anyString(), anyString(), anyString(), any(FeatureType.class),
                 any(State.class), anyString())).thenReturn(1);
 
-        trackedEntityInstanceHandler.handle(trackedEntityInstance);
+        trackedEntityInstanceHandler.handle(trackedEntityInstance, false);
 
 
         // verify that tracked entity instance store is only called with update
@@ -138,7 +138,7 @@ public class TrackedEntityInstanceHandlerShould {
                 anyString(), anyString(), anyString(), anyString(), anyString(), any(FeatureType.class),
                 any(State.class), anyString())).thenReturn(0);
 
-        trackedEntityInstanceHandler.handle(trackedEntityInstance);
+        trackedEntityInstanceHandler.handle(trackedEntityInstance, false);
 
         // verify that tracked entity instance store is called with insert
         verify(trackedEntityInstanceStore, times(1)).insert(anyString(), any(Date.class), any(Date.class),
@@ -163,7 +163,7 @@ public class TrackedEntityInstanceHandlerShould {
 
     @Test
     public void invoke_relationship_store_insert_when_relationship_exists() throws Exception {
-        trackedEntityInstanceHandler.handle(trackedEntityInstance);
+        trackedEntityInstanceHandler.handle(trackedEntityInstance, false);
 
         // verify relationship store is called once
         verify(relationshipStore, times(1)).updateOrInsertWhere(any(RelationshipModel.class));

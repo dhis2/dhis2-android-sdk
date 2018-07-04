@@ -8,7 +8,6 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Date;
@@ -27,7 +26,7 @@ public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase 
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-    @Test
+    //@Test
     public void call_categories_endpoint() throws Exception {
         d2.logIn(RealServerMother.user, RealServerMother.password).call();
 

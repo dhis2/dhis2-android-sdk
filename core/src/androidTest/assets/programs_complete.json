@@ -107,6 +107,9 @@
                       "unique": false,
                       "valueType": "TEXT",
                       "orgunitScope": false,
+                      "access": {
+                          "read": true
+                      },
                       "renderType": {
                           "DESKTOP": {
                               "type": "SPINNER",
@@ -162,6 +165,9 @@
                       "inherit": false,
                       "unique": false,
                       "valueType": "TEXT",
+                      "access": {
+                          "read": true
+                      },
                       "orgunitScope": false
                   }
               },
@@ -201,6 +207,9 @@
                       "inherit": false,
                       "unique": false,
                       "valueType": "TEXT",
+                      "access": {
+                          "read": true
+                      },
                       "orgunitScope": false
                   }
               }

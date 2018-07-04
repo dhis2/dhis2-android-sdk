@@ -26,45 +26,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.program.ProgramSection;
+import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkModel;
+import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkModelBuilder;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
 
-import retrofit2.Call;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
-public abstract class UidPayloadCall<P> extends AbstractEndpointListCall<P, UidsQuery> {
+@RunWith(JUnit4.class)
+public class SectionDataElementLinkModelBuilderShould {
 
-    private final int uidLimit;
+    @Mock
+    private Section section;
 
-    public UidPayloadCall(GenericCallData data,
-                          ResourceModel.Type resourceType,
-                          UidsQuery query,
-                          int uidLimit,
-                          ListPersistor<P> persistor) {
+    @Mock
+    private ObjectWithUid dataElement;
 
-        super(data, resourceType, query, persistor);
-        this.uidLimit = uidLimit;
+    private SectionDataElementLinkModel model;
+
+    @Before
+    @SuppressWarnings("unchecked")
+    public void setUp() throws IOException {
+        MockitoAnnotations.initMocks(this);
+
+        when(section.uid()).thenReturn("section_uid");
+        when(dataElement.uid()).thenReturn("dataElement_uid");
+
+        model = buildModel();
     }
 
-    @Override
-    protected List<P> getObjects(UidsQuery query, String lastUpdated) throws D2CallException {
-        List<Set<String>> partitions = Utils.setPartition(query.uids(), uidLimit);
-
-        List<P> result = new ArrayList<>();
-        APICallExecutor apiCallExecutor = new APICallExecutor();
-        for (Set<String> partitionUids : partitions) {
-            UidsQuery uidQuery = UidsQuery.create(partitionUids);
-            List<P> callResult = apiCallExecutor.executePayloadCall(getCall(uidQuery, lastUpdated));
-            result.addAll(callResult);
-        }
-
-        return result;
+    private SectionDataElementLinkModel buildModel() {
+        return new SectionDataElementLinkModelBuilder(section).buildModel(dataElement);
     }
 
-    protected abstract Call<Payload<P>> getCall(UidsQuery query, String lastUpdated);
+    @Test
+    public void copy_link_properties() {
+        assertThat(model.section()).isEqualTo(section.uid());
+        assertThat(model.dataElement()).isEqualTo(dataElement.uid());
+    }
 }

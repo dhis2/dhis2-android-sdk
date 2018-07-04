@@ -40,7 +40,8 @@ import retrofit2.http.Query;
 public interface DataElementService {
     @GET("dataElements")
     Call<Payload<DataElement>> getDataElements(@Query("fields") @Which Fields<DataElement> fields,
-                                       @Query("filter") @Where Filter<DataElement, String> lastUpdated,
-                                       @Query("filter") @Where Filter<DataElement, String> uids,
-                                       @Query("paging") Boolean paging);
+                                               @Query("filter") @Where Filter<DataElement, String> uids,
+                                               @Query("filter") @Where Filter<DataElement, String> lastUpdated,
+                                               @Query("filter") @Where String accessReadFilter,
+                                               @Query("paging") Boolean paging);
 }

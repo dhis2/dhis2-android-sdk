@@ -123,7 +123,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
-        programEndpointCall = ProgramEndpointCall.FACTORY.create(
+        programEndpointCall = ProgramEndpointCall.factory(d2.retrofit().create(ProgramService.class)).create(
                 GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date()));
     }
 

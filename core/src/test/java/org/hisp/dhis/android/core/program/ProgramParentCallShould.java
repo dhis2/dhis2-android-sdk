@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.GenericCallFactory;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.UidsCallFactory;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -87,7 +87,7 @@ public class ProgramParentCallShould extends BaseCallShould {
     private Call<List<OptionSet>> optionSetCall;
 
     @Mock
-    private GenericCallFactory<List<Program>> programCallFactory;
+    private ListCallFactory<Program> programCallFactory;
 
     @Mock
     private UidsCallFactory<ProgramStage> programStageCallFactory;
@@ -96,13 +96,13 @@ public class ProgramParentCallShould extends BaseCallShould {
     private UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
 
     @Mock
-    private GenericCallFactory<List<RelationshipType>> relationshiptTypeCallFactory;
+    private ListCallFactory<RelationshipType> relationshipTypeCallFactory;
 
     @Mock
     private UidsCallFactory<OptionSet> optionSetCallFactory;
 
     // object to test
-    private ProgramParentCall programParentCall;
+    private Call<List<Program>> programParentCall;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -126,7 +126,7 @@ public class ProgramParentCallShould extends BaseCallShould {
                 .thenReturn(programStageEndpointCall);
         when(trackedEntityCallFactory.create(same(genericCallData), any(Set.class)))
                 .thenReturn(trackedEntityTypeCall);
-        when(relationshiptTypeCallFactory.create(same(genericCallData)))
+        when(relationshipTypeCallFactory.create(same(genericCallData)))
                 .thenReturn(relationshipTypeCall);
         when(optionSetCallFactory.create(same(genericCallData), any(Set.class)))
                 .thenReturn(optionSetCall);
@@ -144,7 +144,7 @@ public class ProgramParentCallShould extends BaseCallShould {
                 programCallFactory,
                 programStageCallFactory,
                 trackedEntityCallFactory,
-                relationshiptTypeCallFactory,
+                relationshipTypeCallFactory,
                 optionSetCallFactory);
     }
 

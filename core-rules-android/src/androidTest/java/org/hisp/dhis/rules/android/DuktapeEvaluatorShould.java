@@ -33,4 +33,9 @@ public class DuktapeEvaluatorShould {
         assertThat(duktapeEvaluator.evaluate("true")).isEqualTo("true");
         assertThat(duktapeEvaluator.evaluate("\'test_string\'")).isEqualTo("test_string");
     }
+
+    @Test
+    public void catch_duktape_exception_on_unquoted_string() {
+        assertThat(duktapeEvaluator.evaluate("test_string")).isEqualTo("test_string");
+    }
 }

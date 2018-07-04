@@ -132,17 +132,23 @@ public class FieldsConverterShould {
         Field displayName = Field.create("displayName");
         NestedField programs = NestedField.create("programs");
         NestedField programsWithChildren = programs.with(id, displayName);
+        NestedField programsWithChildrenWithChildren = programs.with(id, displayName, programsWithChildren);
 
         String queryStringOne = fieldsConverter.convert(
-                Fields.builder().fields(
-                        id, displayName, programs
-                ).build());
+                Fields.builder().fields(id, displayName, programs).build());
         String queryStringTwo = fieldsConverter.convert(
-                Fields.builder().fields(
-                        id, displayName, programsWithChildren
-                ).build());
+                Fields.builder().fields(id, displayName, programsWithChildren).build());
+        String queryStringThree = fieldsConverter.convert(
+                Fields.builder().fields(id, programsWithChildren, displayName).build());
+        String queryStringFour = fieldsConverter.convert(
+                Fields.builder().fields(id, programsWithChildrenWithChildren).build());
+        String queryStringFive = fieldsConverter.convert(
+                Fields.builder().fields(id, programsWithChildrenWithChildren, displayName).build());
 
         assertThat(queryStringOne).isEqualTo("id,displayName,programs");
         assertThat(queryStringTwo).isEqualTo("id,displayName,programs[id,displayName]");
+        assertThat(queryStringThree).isEqualTo("id,programs[id,displayName],displayName");
+        assertThat(queryStringFour).isEqualTo("id,programs[id,displayName,programs[id,displayName]]");
+        assertThat(queryStringFive).isEqualTo("id,programs[id,displayName,programs[id,displayName]],displayName");
     }
 }

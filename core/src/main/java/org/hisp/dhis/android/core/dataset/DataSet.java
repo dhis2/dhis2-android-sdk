@@ -67,6 +67,7 @@ public abstract class DataSet extends BaseNameableObject {
     private final static String RENDER_HORIZONTALLY = "renderHorizontally";
     private final static String DATA_SET_ELEMENTS = "dataSetElements";
     private final static String INDICATORS = "indicators";
+    private final static String SECTIONS = "sections";
     private final static String ACCESS = "access";
     private final static String STYLE = "style";
 
@@ -99,6 +100,7 @@ public abstract class DataSet extends BaseNameableObject {
     private static final Field<DataSet, Boolean> renderHorizontally = Field.create(RENDER_HORIZONTALLY);
     private static final NestedField<DataSet, DataElementUids> dataSetElements = NestedField.create(DATA_SET_ELEMENTS);
     private static final NestedField<DataSet, ObjectWithUid> indicators = NestedField.create(INDICATORS);
+    private static final NestedField<DataSet, Section> sections = NestedField.create(SECTIONS);
     private static final NestedField<DataSet, Access> access = NestedField.create(ACCESS);
     private static final NestedField<DataSet, ObjectStyle> style = NestedField.create(STYLE);
 
@@ -111,6 +113,7 @@ public abstract class DataSet extends BaseNameableObject {
             skipOffline, dataElementDecoration, renderAsTabs, renderHorizontally,
             dataSetElements.with(DataElementUids.allFields),
             indicators.with(ObjectWithUid.uid),
+            sections.with(Section.allFields),
             access.with(Access.data.with(DataAccess.write)),
             style.with(ObjectStyle.allFields)).build();
 
@@ -188,6 +191,10 @@ public abstract class DataSet extends BaseNameableObject {
     public abstract List<ObjectWithUid> indicators();
 
     @Nullable
+    @JsonProperty(SECTIONS)
+    public abstract List<Section> sections();
+
+    @Nullable
     @JsonProperty(ACCESS)
     public abstract Access access();
 
@@ -224,6 +231,7 @@ public abstract class DataSet extends BaseNameableObject {
             @JsonProperty(RENDER_HORIZONTALLY) Boolean renderHorizontally,
             @JsonProperty(DATA_SET_ELEMENTS) List<DataElementUids> dataSetElements,
             @JsonProperty(INDICATORS) List<ObjectWithUid> indicators,
+            @JsonProperty(SECTIONS) List<Section> sections,
             @JsonProperty(ACCESS) Access access,
             @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(DELETED) Boolean deleted) {
@@ -235,6 +243,6 @@ public abstract class DataSet extends BaseNameableObject {
                 notifyCompletingUser, openFuturePeriods, fieldCombinationRequired,
                 validCompleteOnly, noValueRequiresComment, skipOffline,
                 dataElementDecoration, renderAsTabs, renderHorizontally, dataSetElements,
-                indicators, access, style);
+                indicators, sections, access, style);
     }
 }

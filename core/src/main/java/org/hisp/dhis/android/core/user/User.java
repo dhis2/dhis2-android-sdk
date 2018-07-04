@@ -45,8 +45,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.StatementBinder;
-import org.hisp.dhis.android.core.data.database.IgnoreColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreOrganisationUnitListAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreUserCredentialsAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -57,7 +55,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_User.Builder.class)
-public abstract class User extends BaseIdentifiableObject implements StatementBinder, Model {
+public abstract class User extends BaseIdentifiableObject implements Model {
 
     // TODO move to base class after whole object refactor
     @Override

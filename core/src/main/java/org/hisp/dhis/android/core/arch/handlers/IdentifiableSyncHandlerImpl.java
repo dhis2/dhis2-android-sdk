@@ -46,11 +46,15 @@ public class IdentifiableSyncHandlerImpl<O extends IdentifiableObject & ObjectWi
     @Override
     protected HandleAction deleteOrPersist(O o) {
         String modelUid = o.uid();
-        if (isDeleted(o) && modelUid != null) {
-            store.delete(modelUid);
+        if ((isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
+            store.deleteIfExists(modelUid);
             return HandleAction.Delete;
         } else {
             return store.updateOrInsert(o);
         }
+    }
+
+    protected boolean deleteIfCondition(O o) {
+        return false;
     }
 }

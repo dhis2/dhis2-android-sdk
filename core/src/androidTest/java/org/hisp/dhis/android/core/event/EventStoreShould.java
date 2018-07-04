@@ -412,7 +412,7 @@ public class EventStoreShould extends AbsStoreTestCase {
         eventContentValues.put(Columns.STATUS, STATUS.name());
         eventContentValues.put(Columns.EVENT_DATE, dateString);
         eventContentValues.put(Columns.COMPLETE_DATE, dateString);
-        eventContentValues.put(Columns.LATITUDE, dateString);
+        eventContentValues.put(Columns.LATITUDE, Double.parseDouble(LATITUDE));
         eventContentValues.put(Columns.STATE, STATE.name());
         database().insert(EventModel.TABLE, null, eventContentValues);
 

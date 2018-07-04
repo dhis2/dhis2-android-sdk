@@ -40,5 +40,6 @@ public enum D2ErrorCode {
     NO_RESERVED_VALUES,
     SEARCH_GRID_PARSE,
     SOCKET_TIMEOUT,
+    TOO_MANY_ORG_UNITS,
     UNEXPECTED
 }

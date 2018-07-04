@@ -27,14 +27,14 @@ import static junit.framework.Assert.assertTrue;
 public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
-    Exception e;
-    CodeGenerator codeGenerator;
+    private CodeGenerator codeGenerator;
 
 
     private EventStore eventStore;
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
 
-    private String eventUid;
+    private String eventUid1;
+    private String eventUid2;
     private String orgUnitUid;
     private String programUid;
     private String programStageUid;
@@ -63,7 +63,8 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         categoryComboUID = "nM3u9s5a52V";
         codeGenerator = new CodeGeneratorImpl();
 
-        eventUid = codeGenerator.generate();
+        eventUid1 = codeGenerator.generate();
+        eventUid2 = codeGenerator.generate();
 
     }
 
@@ -74,9 +75,10 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void successful_response_after_sync_events() throws Exception {
-        dowloadMetadata();
+        downloadMetadata();
 
-        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid, dataElementUid, attributeCategoryOption, attributeOptionCombo, null);
+        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1,
+                dataElementUid, attributeCategoryOption, attributeOptionCombo, null);
 
         d2.syncSingleEvents().call();
     }
@@ -84,11 +86,10 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void pull_event_with_correct_category_combo_after_be_pushed() throws Exception {
-        retrofit2.Response response = null;
+        downloadMetadata();
 
-        dowloadMetadata();
-
-        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid, dataElementUid, attributeCategoryOption, attributeOptionCombo, null);
+        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1, dataElementUid,
+                attributeCategoryOption, attributeOptionCombo, null);
 
         pushDummyEvent();
 
@@ -96,9 +97,33 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.wipeDB().call();
 
-        dowloadMetadata();
+        downloadMetadata();
 
-        downloadEventsBy(categoryComboUID,attributeCategoryOption);
+        downloadEventsBy(categoryComboUID, attributeCategoryOption);
+
+        assertThatEventPushedIsDownloaded(pushedEvent);
+    }
+
+    // commented out since it is a flaky test that works against a real server.
+    //@Test
+    public void pull_two_events_with_correct_category_combo_after_be_pushed() throws Exception {
+        downloadMetadata();
+
+        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1, dataElementUid,
+                attributeCategoryOption, attributeOptionCombo, null);
+
+        createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid2, dataElementUid,
+                attributeCategoryOption, attributeOptionCombo, null);
+
+        pushDummyEvent();
+
+        Event pushedEvent = getEventFromDB();
+
+        d2.wipeDB().call();
+
+        downloadMetadata();
+
+        downloadEventsBy(categoryComboUID, attributeCategoryOption);
 
         assertThatEventPushedIsDownloaded(pushedEvent);
     }
@@ -125,11 +150,20 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         assertTrue(verifyPushedEventIsInPullList(pushedEvent, downloadedEvents));
     }
 
-    private void downloadEventsBy(String categoryComboUID,String categoryOptionUID) throws Exception {
+    private void downloadEventsBy(String categoryComboUID, String categoryOptionUID) throws Exception {
         EventEndpointCall eventEndpointCall = EventCallFactory.create(
-                d2.retrofit(), databaseAdapter(), orgUnitUid, 0,categoryComboUID, categoryOptionUID);
+                d2.retrofit(), databaseAdapter(), orgUnitUid, 50, categoryComboUID, categoryOptionUID);
 
         List<Event> events = eventEndpointCall.call();
+        eventStore = new EventStoreImpl(databaseAdapter());
+
+        for (Event event : events) {
+            eventStore.insert(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
+                    event.createdAtClient(), event.lastUpdatedAtClient(), event.status(), event.coordinates().latitude().toString(),
+                    event.coordinates().longitude().toString(), event.program(), event.programStage(), event.organisationUnit(),
+                    event.eventDate(), event.completedDate(), event.dueDate(), State.SYNCED, event.attributeCategoryOptions(),
+                    event.attributeOptionCombo(), event.trackedEntityInstance());
+        }
 
         assertThat(events.isEmpty()).isFalse();
     }
@@ -139,7 +173,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         Event event = null;
         List<Event> storedEvents = eventStore.queryAll();
         for(Event storedEvent : storedEvents) {
-            if(storedEvent.uid().equals(eventUid)) {
+            if(storedEvent.uid().equals(eventUid1)) {
                 event = storedEvent;
             }
         }
@@ -150,14 +184,16 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         d2.syncSingleEvents().call();
     }
 
-    private void dowloadMetadata() throws Exception {
+    private void downloadMetadata() throws Exception {
         d2.logIn(user, password).call();
         d2.syncMetaData().call();
     }
 
     private boolean verifyPushedEventIsInPullList(Event event, List<Event> eventList) {
         for(Event pullEvent : eventList){
-            if(event.uid().equals(pullEvent.uid()) && event.attributeOptionCombo().equals(pullEvent.attributeOptionCombo()) && event.attributeCategoryOptions().equals(pullEvent.attributeCategoryOptions())){
+            if(event.uid().equals(pullEvent.uid()) &&
+                    event.attributeOptionCombo().equals(pullEvent.attributeOptionCombo()) &&
+                    event.attributeCategoryOptions().equals(pullEvent.attributeCategoryOptions())){
                 return true;
             }
         }

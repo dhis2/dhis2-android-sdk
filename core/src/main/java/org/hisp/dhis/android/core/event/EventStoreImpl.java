@@ -59,7 +59,7 @@ public class EventStoreImpl implements EventStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + EventModel.TABLE + " (" +
             Columns.UID + ", " +
-            Columns.ENROLLMENT_UID + ", " +
+            Columns.ENROLLMENT + ", " +
             Columns.CREATED + ", " +
             Columns.LAST_UPDATED + ", " +
             Columns.CREATED_AT_CLIENT + ", " +
@@ -81,7 +81,7 @@ public class EventStoreImpl implements EventStore {
 
     private static final String UPDATE_STATEMENT = "UPDATE " + EventModel.TABLE + " SET " +
             Columns.UID + " =? , " +
-            Columns.ENROLLMENT_UID + " =? , " +
+            Columns.ENROLLMENT + " =? , " +
             Columns.CREATED + " =? , " +
             Columns.LAST_UPDATED + " =? ," +
             Columns.CREATED_AT_CLIENT + " =? , " +

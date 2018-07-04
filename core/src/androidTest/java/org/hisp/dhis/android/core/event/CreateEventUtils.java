@@ -53,10 +53,10 @@ public class CreateEventUtils {
         event.put(EventModel.Columns.UID, uid);
 
         if (enrollmentUid == null) {
-            event.putNull(EventModel.Columns.ENROLLMENT_UID);
+            event.putNull(EventModel.Columns.ENROLLMENT);
         }
 
-        event.put(EventModel.Columns.ENROLLMENT_UID, enrollmentUid);
+        event.put(EventModel.Columns.ENROLLMENT, enrollmentUid);
         event.put(EventModel.Columns.CREATED, DATE);
         event.put(EventModel.Columns.LAST_UPDATED, DATE);
         event.put(EventModel.Columns.STATUS, STATUS.name());

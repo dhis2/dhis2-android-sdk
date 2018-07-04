@@ -49,7 +49,7 @@ public abstract class EventModel extends BaseDataModel {
 
     public static class Columns extends BaseDataModel.Columns {
         public static final String UID = "uid";
-        public static final String ENROLLMENT_UID = "enrollment";
+        public static final String ENROLLMENT = "enrollment";
         public static final String CREATED = "created";
         public static final String LAST_UPDATED = "lastUpdated";
         public static final String CREATED_AT_CLIENT = "createdAtClient";
@@ -82,8 +82,8 @@ public abstract class EventModel extends BaseDataModel {
 
     // Nullable properties
     @Nullable
-    @ColumnName(Columns.ENROLLMENT_UID)
-    public abstract String enrollmentUid();
+    @ColumnName(Columns.ENROLLMENT)
+    public abstract String enrollment();
 
     @Nullable
     @ColumnName(Columns.CREATED)
@@ -159,7 +159,7 @@ public abstract class EventModel extends BaseDataModel {
     public static abstract class Builder extends BaseDataModel.Builder<Builder> {
         public abstract Builder uid(@NonNull String uid);
 
-        public abstract Builder enrollmentUid(@Nullable String enrollmentUid);
+        public abstract Builder enrollment(@Nullable String enrollment);
 
         public abstract Builder created(@Nullable Date created);
 

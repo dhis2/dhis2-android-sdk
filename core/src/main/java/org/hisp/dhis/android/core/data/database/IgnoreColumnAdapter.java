@@ -36,11 +36,19 @@ import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 public abstract class IgnoreColumnAdapter<T> implements ColumnTypeAdapter<T> {
 
     @Override
-    public T fromCursor(Cursor cursor, String columnName) {
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    public final T fromCursor(Cursor cursor, String columnName) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
         return null;
     }
 
     @Override
-    public void toContentValues(ContentValues values, String columnName, T value) {
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    public final void toContentValues(ContentValues values, String columnName, T value) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
     }
 }

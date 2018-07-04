@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -35,18 +36,10 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.CODE;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.CREATED;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.DELETED;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.DISPLAY_NAME;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.NAME;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
-
-public abstract class UserFields {
-    public static final String GENDER_MALE = "gender_male";
-    public static final String GENDER_FEMALE = "gender_female";
-    public static final String GENDER_OTHER = "gender_other";
+public final class UserFields {
+    // public static final String GENDER_MALE = "gender_male";
+    // public static final String GENDER_FEMALE = "gender_female";
+    // public static final String GENDER_OTHER = "gender_other";
 
     private static final String BIRTHDAY = "birthday";
     private static final String EDUCATION = "education";
@@ -64,14 +57,14 @@ public abstract class UserFields {
     private static final String USER_CREDENTIALS = "userCredentials";
     private static final String ORGANISATION_UNITS = "organisationUnits";
     private static final String TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits";
-    private static final String DATA_VIEW_ORGANISATION_UNITS = "dataViewOrganisationUnits";
+    // private static final String DATA_VIEW_ORGANISATION_UNITS = "dataViewOrganisationUnits";
 
-    private static final Field<User, String> uid = Field.create(UID);
-    private static final Field<User, String> code = Field.create(CODE);
-    private static final Field<User, String> name = Field.create(NAME);
-    private static final Field<User, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<User, String> created = Field.create(CREATED);
-    private static final Field<User, String> lastUpdated = Field.create(LAST_UPDATED);
+    private static final Field<User, String> uid = Field.create(BaseIdentifiableObject.UID);
+    private static final Field<User, String> code = Field.create(BaseIdentifiableObject.CODE);
+    private static final Field<User, String> name = Field.create(BaseIdentifiableObject.NAME);
+    private static final Field<User, String> displayName = Field.create(BaseIdentifiableObject.DISPLAY_NAME);
+    private static final Field<User, String> created = Field.create(BaseIdentifiableObject.CREATED);
+    private static final Field<User, String> lastUpdated = Field.create(BaseIdentifiableObject.LAST_UPDATED);
     private static final Field<User, String> birthday = Field.create(BIRTHDAY);
     private static final Field<User, String> education = Field.create(EDUCATION);
     private static final Field<User, String> gender = Field.create(GENDER);
@@ -85,7 +78,7 @@ public abstract class UserFields {
     private static final Field<User, String> email = Field.create(EMAIL);
     private static final Field<User, String> phoneNumber = Field.create(PHONE_NUMBER);
     private static final Field<User, String> nationality = Field.create(NATIONALITY);
-    private static final Field<User, Boolean> deleted = Field.create(DELETED);
+    private static final Field<User, Boolean> deleted = Field.create(BaseIdentifiableObject.DELETED);
     
     private static final NestedField<User, UserCredentials> userCredentials
             = NestedField.create(USER_CREDENTIALS);
@@ -114,4 +107,6 @@ public abstract class UserFields {
             ),
             teiSearchOrganisationUnits.with(OrganisationUnit.uid)
     ).build();
+
+    private UserFields() {}
 }

@@ -41,16 +41,16 @@ public abstract class Coordinates {
 
     @Nullable
     @JsonProperty(LATITUDE)
-    public abstract String latitude();
+    public abstract Double latitude();
 
     @Nullable
     @JsonProperty(LONGITUDE)
-    public abstract String longitude();
+    public abstract Double longitude();
 
     @JsonCreator
     public static Coordinates create(
-            @JsonProperty(LATITUDE) String latitude,
-            @JsonProperty(LONGITUDE) String longitude) {
+            @JsonProperty(LATITUDE) Double latitude,
+            @JsonProperty(LONGITUDE) Double longitude) {
         return new AutoValue_Coordinates(latitude, longitude);
     }
 }

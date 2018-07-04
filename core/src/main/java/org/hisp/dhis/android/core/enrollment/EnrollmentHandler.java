@@ -51,8 +51,8 @@ public class EnrollmentHandler {
             String latitude = null;
             String longitude = null;
             if (enrollment.coordinate() != null) {
-                latitude = enrollment.coordinate().latitude();
-                longitude = enrollment.coordinate().longitude();
+                latitude = enrollment.coordinate().latitude().toString();
+                longitude = enrollment.coordinate().longitude().toString();
             }
 
             int updatedRow = enrollmentStore.update(enrollment.uid(), enrollment.created(),

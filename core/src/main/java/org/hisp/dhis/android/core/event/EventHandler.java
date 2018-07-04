@@ -43,8 +43,8 @@ public class EventHandler {
             String longitude = null;
 
             if (event.coordinates() != null) {
-                latitude = event.coordinates().latitude();
-                longitude = event.coordinates().longitude();
+                latitude = event.coordinates().latitude().toString();
+                longitude = event.coordinates().longitude().toString();
             }
 
 

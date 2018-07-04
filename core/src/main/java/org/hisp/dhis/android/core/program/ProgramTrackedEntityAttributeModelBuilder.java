@@ -48,7 +48,7 @@ public class ProgramTrackedEntityAttributeModelBuilder extends
                 .displayDescription(programTrackedEntityAttribute.displayDescription())
                 .mandatory(programTrackedEntityAttribute.mandatory())
                 .trackedEntityAttribute(programTrackedEntityAttribute.trackedEntityAttribute().uid())
-                .allowFutureDates(programTrackedEntityAttribute.allowFutureDate())
+                .allowFutureDate(programTrackedEntityAttribute.allowFutureDate())
                 .displayInList(programTrackedEntityAttribute.displayInList())
                 .program(programTrackedEntityAttribute.program().uid())
                 .sortOrder(programTrackedEntityAttribute.sortOrder())

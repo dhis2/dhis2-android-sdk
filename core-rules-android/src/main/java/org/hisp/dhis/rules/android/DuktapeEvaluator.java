@@ -3,6 +3,7 @@ package org.hisp.dhis.rules.android;
 import android.support.annotation.NonNull;
 
 import com.squareup.duktape.Duktape;
+import com.squareup.duktape.DuktapeException;
 
 import org.hisp.dhis.rules.RuleExpressionEvaluator;
 
@@ -28,6 +29,10 @@ public final class DuktapeEvaluator implements RuleExpressionEvaluator {
             throw new NullPointerException("expression == null");
         }
 
-        return duktape.evaluate(expression).toString();
+        try {
+            return duktape.evaluate(expression).toString();
+        } catch (DuktapeException e) {
+            return expression;
+        }
     }
 }

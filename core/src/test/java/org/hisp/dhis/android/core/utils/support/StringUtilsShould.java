@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, University of Oslo
+ * Copyright (c) 2017, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -28,31 +28,35 @@
 
 package org.hisp.dhis.android.core.utils.support;
 
-import com.google.android.gms.common.util.Hex;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public final class StringUtils {
+@RunWith(JUnit4.class)
+public class StringUtilsShould {
 
-    private StringUtils() {
-        // no instances
+    @Test
+    public void md5_evaluate_same_string() {
+        String md5s1 = StringUtils.md5("user1:password1");
+        String md5s2 = StringUtils.md5("user1:password1");
+
+        assertThat(md5s1.length()).isEqualTo(32);
+        assertThat(md5s2.length()).isEqualTo(32);
+
+        assertThat(md5s1.equals(md5s2)).isTrue();
     }
 
-    public static boolean isEmpty(CharSequence charSequence) {
-        return charSequence == null || charSequence.length() == 0;
+    @Test
+    public void md5_evaluate_different_string() {
+        String md5s1 = StringUtils.md5("user2:password2");
+        String md5s2 = StringUtils.md5("user3:password3");
+
+        assertThat(md5s1.length()).isEqualTo(32);
+        assertThat(md5s2.length()).isEqualTo(32);
+
+        assertThat(md5s1.equals(md5s2)).isFalse();
     }
 
-    public static String md5(String string) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.reset();
-            md.update(string.getBytes());
-            return Hex.bytesToStringLowercase(md.digest());
-        } catch (NoSuchAlgorithmException e) {
-            // noop. Every implementation of Java is required to support MD5
-            return null;
-        }
-
-    }
 }

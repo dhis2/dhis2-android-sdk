@@ -70,7 +70,7 @@ public final class WipeDBCallable implements Callable<Unit> {
     @NonNull
     private final List<DeletableStore> deletableStores;
 
-    private WipeDBCallable(@NonNull List<DeletableStore> deletableStores) {
+    WipeDBCallable(@NonNull List<DeletableStore> deletableStores) {
         this.deletableStores = deletableStores;
     }
 

@@ -129,7 +129,8 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
             User authenticatedUser = new APICallExecutor().executeObjectCall(authenticateCall);
             return loginOnline(authenticatedUser);
         } catch (D2CallException d2Exception) {
-            if (d2Exception.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR) {
+            if (d2Exception.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
+                    d2Exception.errorCode() == D2ErrorCode.SOCKET_TIMEOUT) {
                 return loginOffline();
             } else {
                 throw d2Exception;

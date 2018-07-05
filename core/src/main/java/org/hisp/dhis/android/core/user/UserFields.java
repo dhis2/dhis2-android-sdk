@@ -37,10 +37,6 @@ import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 public final class UserFields {
-    // public static final String GENDER_MALE = "gender_male";
-    // public static final String GENDER_FEMALE = "gender_female";
-    // public static final String GENDER_OTHER = "gender_other";
-
     private static final String BIRTHDAY = "birthday";
     private static final String EDUCATION = "education";
     private static final String GENDER = "gender";

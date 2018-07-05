@@ -90,7 +90,7 @@ public class SectionHandlerShould {
     }
 
     @Test
-    public void handlingSection_shouldHandleNestedDataElements() throws Exception {
+    public void handlingSection_shouldHandleLinkedDataElements() throws Exception {
         sectionHandler.handle(section, new SectionModelBuilder());
         verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements), any(SectionDataElementLinkModelBuilder.class));
     }

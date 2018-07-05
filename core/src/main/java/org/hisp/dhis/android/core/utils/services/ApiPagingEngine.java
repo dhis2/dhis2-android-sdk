@@ -28,9 +28,12 @@
 
 package org.hisp.dhis.android.core.utils.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ApiPagingEngine {
 
-    public static Paging calculateBestPossiblePagination(int currentPageSize, int itemsCount)
+    public static List<Paging> getPaginationList(int currentPageSize, int itemsCount)
             throws IllegalArgumentException {
 
         if (currentPageSize <= 0 || itemsCount <= 0) {
@@ -38,20 +41,34 @@ public class ApiPagingEngine {
             ", CurrentPageSize: " + currentPageSize + ".");
         }
 
-        return calculatePaging(currentPageSize, itemsCount);
+        List<Paging> pagingList = new ArrayList<>();
+
+        int numberOfCalls = (int) Math.ceil((double) itemsCount / currentPageSize);
+
+        for (int call = 1; call < numberOfCalls; call++) {
+            pagingList.add(Paging.create(call, currentPageSize, 0, 0));
+        }
+
+        pagingList.add(calculateLastPagination(currentPageSize, itemsCount, numberOfCalls));
+
+        return pagingList;
     }
 
-    private static Paging calculatePaging(int currentPageSize, int itemsCount) throws IllegalStateException {
-        int readPages = (int) Math.floor((double) (itemsCount / currentPageSize));
-        int requestedItems = readPages * currentPageSize;
+    static Paging calculateLastPagination(int currentPageSize, int itemsCount, int numberOfCalls)
+            throws IllegalStateException {
+
+        int requestedItems = (numberOfCalls - 1) * currentPageSize;
         int itemsToRequest = itemsCount - requestedItems;
 
-        for (int pageSize = itemsToRequest; pageSize <= 50; pageSize++) {
+        for (int pageSize = itemsToRequest; pageSize <= currentPageSize; pageSize++) {
             for (int page = (int) Math.floor((double) itemsCount / pageSize);
                  page <= (int) Math.floor((double) requestedItems / pageSize) + 1; page++) {
 
-                if (pageSize * (page - 1) <= requestedItems && pageSize * page >= itemsCount) {
-                    return Paging.create(page,pageSize);
+                int previousItemsToSkipCount =  requestedItems - pageSize * (page - 1);
+                int posteriorItemsToSkipCount = pageSize * page - itemsCount;
+
+                if (previousItemsToSkipCount >= 0 && posteriorItemsToSkipCount >= 0) {
+                    return Paging.create(page, pageSize, previousItemsToSkipCount, posteriorItemsToSkipCount);
                 }
             }
         }

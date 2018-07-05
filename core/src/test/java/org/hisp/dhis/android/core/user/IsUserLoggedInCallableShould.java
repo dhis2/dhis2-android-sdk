@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,16 +39,19 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.concurrent.Callable;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class IsUserLoggedInCallableShould {
 
     @Mock
-    private AuthenticatedUserStore authenticatedUserStore;
+    private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
 
     @Mock
     private AuthenticatedUserModel authenticatedUser;
@@ -62,7 +67,8 @@ public class IsUserLoggedInCallableShould {
 
     @Test
     public void return_true_if_any_users_are_persisted_after_call() throws Exception {
-        when(authenticatedUserStore.query()).thenReturn(Arrays.asList(authenticatedUser));
+        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
+                .thenReturn(Collections.singleton(authenticatedUser));
 
         Boolean isUserLoggedIn = isUserLoggedInCallable.call();
 
@@ -71,7 +77,8 @@ public class IsUserLoggedInCallableShould {
 
     @Test
     public void return_false_if_any_users_are_not_persisted_after_call() throws Exception {
-        when(authenticatedUserStore.query()).thenReturn(new ArrayList<AuthenticatedUserModel>());
+        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
+                .thenReturn(new HashSet());
 
         Boolean isUserLoggedIn = isUserLoggedInCallable.call();
 

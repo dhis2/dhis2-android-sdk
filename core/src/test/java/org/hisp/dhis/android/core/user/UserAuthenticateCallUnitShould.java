@@ -56,6 +56,7 @@ import org.mockito.stubbing.Answer;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
@@ -65,6 +66,7 @@ import retrofit2.Response;
 import static okhttp3.Credentials.basic;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.utils.UserUtils.base64;
+import static org.hisp.dhis.android.core.utils.UserUtils.md5;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -88,7 +90,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private ResourceHandler resourceHandler;
 
     @Mock
-    private AuthenticatedUserStore authenticatedUserStore;
+    private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<User> authenticateAPICall;
@@ -210,7 +212,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
             verifyNoTransactionStarted();
 
             // stores must not be invoked
-            verify(authenticatedUserStore, never()).insert(anyString(), anyString());
+            verify(authenticatedUserStore, never()).insert(any(AuthenticatedUserModel.class));
             verifyNoMoreInteractions(userHandler);
         }
     }
@@ -231,7 +233,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         verifyNoTransactionStarted();
 
         // stores must not be invoked
-        verify(authenticatedUserStore).query();
+        verify(authenticatedUserStore).selectAll(any(CursorModelFactory.class));
         verifyNoMoreInteractions(authenticatedUserStore);
         verifyNoMoreInteractions(userHandler);
     }
@@ -324,13 +326,20 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test(expected = D2CallException.class)
     public void throw_d2_call_exception_state_exception_if_user_already_signed_in() throws Exception {
-        when(authenticatedUserStore.query()).thenReturn(Arrays.asList(authenticatedUser));
+        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
+                .thenReturn(Collections.singleton(authenticatedUser));
         userAuthenticateCall.call();
     }
 
     private void verifySuccess() {
+        AuthenticatedUserModel authenticatedUserModel =
+                AuthenticatedUserModel.builder()
+                .user(UID)
+                .credentials(base64(USERNAME, PASSWORD))
+                .hash(md5(USERNAME, PASSWORD))
+                .build();
         verifyTransactionComplete();
-        verify(authenticatedUserStore).insert(UID, base64(USERNAME, PASSWORD));
+        verify(authenticatedUserStore).insert(authenticatedUserModel);
         verify(userHandler).handle(eq(user), any(UserModelBuilder.class));
     }
 }

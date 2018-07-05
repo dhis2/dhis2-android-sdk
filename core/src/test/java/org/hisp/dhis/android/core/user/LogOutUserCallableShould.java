@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.junit.Before;
@@ -59,7 +60,7 @@ public class LogOutUserCallableShould {
     private ObjectStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
 
     @Mock
-    private AuthenticatedUserStore authenticatedUserStore;
+    private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
 
     @Mock
     private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;

@@ -67,6 +67,7 @@ public class SectionHandlerShould {
 
     @Before
     public void setUp() throws Exception {
+        
         MockitoAnnotations.initMocks(this);
 
         sectionHandler = new SectionHandler(sectionStore, sectionDataElementLinkHandler);
@@ -79,7 +80,8 @@ public class SectionHandlerShould {
     }
 
     @Test
-    public void passingNullArguments_shouldNotPerformAnyAction() throws Exception {
+    public void passingNullArguments_shouldNotPerformAnyAction() {
+
        sectionHandler.handle(null, null);
 
         verify(sectionStore, never()).delete(anyString());
@@ -90,7 +92,8 @@ public class SectionHandlerShould {
     }
 
     @Test
-    public void handlingSection_shouldHandleLinkedDataElements() throws Exception {
+    public void handlingSection_shouldHandleLinkedDataElements() {
+
         sectionHandler.handle(section, new SectionModelBuilder());
         verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements), any(SectionDataElementLinkModelBuilder.class));
     }

@@ -68,7 +68,7 @@ public class EnrollmentModelShould {
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID, Columns.UID, Columns.CREATED, Columns.LAST_UPDATED, Columns.ORGANISATION_UNIT,
-                Columns.PROGRAM, Columns.DATE_OF_ENROLLMENT, Columns.DATE_OF_INCIDENT, Columns.FOLLOW_UP,
+                Columns.PROGRAM, Columns.ENROLLMENT_DATE, Columns.INCIDENT_DATE, Columns.FOLLOW_UP,
                 Columns.ENROLLMENT_STATUS, Columns.TRACKED_ENTITY_INSTANCE, Columns.LATITUDE, Columns.LONGITUDE,
                 Columns.STATE
         });
@@ -88,8 +88,8 @@ public class EnrollmentModelShould {
         assertThat(model.lastUpdated()).isEqualTo(date);
         assertThat(model.organisationUnit()).isEqualTo(ORGANISATION_UNIT);
         assertThat(model.program()).isEqualTo(PROGRAM);
-        assertThat(model.dateOfEnrollment()).isEqualTo(date);
-        assertThat(model.dateOfIncident()).isEqualTo(date);
+        assertThat(model.enrollmentDate()).isEqualTo(date);
+        assertThat(model.incidentDate()).isEqualTo(date);
         assertThat(model.followUp()).isEqualTo(FOLLOW_UP);
         assertThat(model.enrollmentStatus()).isEqualTo(ENROLLMENT_STATUS);
         assertThat(model.trackedEntityInstance()).isEqualTo(TRACKED_ENTITY_INSTANCE);
@@ -106,8 +106,8 @@ public class EnrollmentModelShould {
                 .lastUpdated(date)
                 .organisationUnit(ORGANISATION_UNIT)
                 .program(PROGRAM)
-                .dateOfEnrollment(date)
-                .dateOfIncident(date)
+                .enrollmentDate(date)
+                .incidentDate(date)
                 .followUp(FOLLOW_UP)
                 .enrollmentStatus(ENROLLMENT_STATUS)
                 .trackedEntityInstance(TRACKED_ENTITY_INSTANCE)
@@ -123,8 +123,8 @@ public class EnrollmentModelShould {
         assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.ORGANISATION_UNIT)).isEqualTo(ORGANISATION_UNIT);
         assertThat(contentValues.getAsString(Columns.PROGRAM)).isEqualTo(PROGRAM);
-        assertThat(contentValues.getAsString(Columns.DATE_OF_ENROLLMENT)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.DATE_OF_INCIDENT)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.ENROLLMENT_DATE)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(Columns.INCIDENT_DATE)).isEqualTo(dateString);
         assertThat(contentValues.getAsBoolean(Columns.FOLLOW_UP)).isEqualTo(FOLLOW_UP);
         assertThat(contentValues.getAsString(Columns.ENROLLMENT_STATUS)).isEqualTo(ENROLLMENT_STATUS.name());
         assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_INSTANCE)).isEqualTo(TRACKED_ENTITY_INSTANCE);

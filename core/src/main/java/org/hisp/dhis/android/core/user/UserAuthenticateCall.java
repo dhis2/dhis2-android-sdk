@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.calls.WipeDBCallable;
 import org.hisp.dhis.android.core.calls.factories.BasicCallFactory;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
@@ -260,7 +261,7 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
                 AuthenticatedUserStore.create(databaseAdapter),
                 SystemInfoStore.create(databaseAdapter),
                 UserStore.create(databaseAdapter),
-                LogOutUserCallable.createToWipe(databaseAdapter),
+                WipeDBCallable.create(databaseAdapter),
                 username,
                 password,
                 retrofit.baseUrl().toString()

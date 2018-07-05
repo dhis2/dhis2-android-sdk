@@ -110,7 +110,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
     };
 
     private Dhis2MockServer dhis2MockServer;
-    private Call<User> authenticateUserCall;
+    private Call<UserModel> authenticateUserCall;
 
     @Before
     @Override
@@ -225,7 +225,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
     @Test
     public void return_correct_user_when_call() throws Exception {
-        User user = authenticateUserCall.call();
+        UserModel user = authenticateUserCall.call();
 
         // verify payload which has been returned from call
         assertThat(user.uid()).isEqualTo("DXyJmlo9rge");

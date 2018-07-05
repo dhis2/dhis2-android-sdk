@@ -45,6 +45,7 @@ public abstract class AuthenticatedUserModel extends BaseModel {
     public static class Columns extends BaseModel.Columns {
         public static final String USER = "user";
         public static final String CREDENTIALS = "credentials";
+        public static final String HASH = "hash";
     }
 
     @Nullable
@@ -54,6 +55,10 @@ public abstract class AuthenticatedUserModel extends BaseModel {
     @Nullable
     @ColumnName(Columns.CREDENTIALS)
     public abstract String credentials();
+
+    @Nullable
+    @ColumnName(Columns.HASH)
+    public abstract String hash();
 
     @NonNull
     public static Builder builder() {
@@ -70,6 +75,8 @@ public abstract class AuthenticatedUserModel extends BaseModel {
         public abstract Builder user(@Nullable String user);
 
         public abstract Builder credentials(@Nullable String credentials);
+
+        public abstract Builder hash(@Nullable String hash);
 
         public abstract AuthenticatedUserModel build();
     }

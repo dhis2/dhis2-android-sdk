@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -36,6 +37,10 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class AuthenticatedUserModel extends BaseModel {
@@ -46,6 +51,16 @@ public abstract class AuthenticatedUserModel extends BaseModel {
         public static final String USER = "user";
         public static final String CREDENTIALS = "credentials";
         public static final String HASH = "hash";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), USER, CREDENTIALS, HASH);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{USER};
+        }
     }
 
     @Nullable
@@ -68,6 +83,26 @@ public abstract class AuthenticatedUserModel extends BaseModel {
     @NonNull
     public static AuthenticatedUserModel create(Cursor cursor) {
         return AutoValue_AuthenticatedUserModel.createFromCursor(cursor);
+    }
+
+    public static final CursorModelFactory<AuthenticatedUserModel> factory
+            = new CursorModelFactory<AuthenticatedUserModel>() {
+        @Override
+        public AuthenticatedUserModel fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, user());
+        sqLiteBind(sqLiteStatement, 2, credentials());
+        sqLiteBind(sqLiteStatement, 3, hash());
+    }
+
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 4, user());
     }
 
     @AutoValue.Builder

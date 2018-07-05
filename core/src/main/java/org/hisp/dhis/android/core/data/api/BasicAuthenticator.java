@@ -30,12 +30,13 @@ package org.hisp.dhis.android.core.data.api;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
-import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -44,9 +45,9 @@ final class BasicAuthenticator implements Authenticator {
     private static final String AUTHORIZATION = "Authorization";
     private static final String BASIC_CREDENTIALS = "Basic %s";
 
-    private final AuthenticatedUserStore authenticatedUserStore;
+    private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
 
-    BasicAuthenticator(@NonNull AuthenticatedUserStore authenticatedUserStore) {
+    BasicAuthenticator(@NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore) {
         this.authenticatedUserStore = authenticatedUserStore;
     }
 
@@ -58,7 +59,8 @@ final class BasicAuthenticator implements Authenticator {
             return chain.proceed(chain.request());
         }
 
-        List<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.query();
+        Set<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.selectAll(
+                AuthenticatedUserModel.factory);
         if (authenticatedUsers.isEmpty()) {
             // proceed request if we do not
             // have any users authenticated
@@ -68,7 +70,7 @@ final class BasicAuthenticator implements Authenticator {
         // retrieve first user and pass in his / her credentials
         Request request = chain.request().newBuilder()
                 .addHeader(AUTHORIZATION, String.format(Locale.US,
-                        BASIC_CREDENTIALS, authenticatedUsers.get(0).credentials()))
+                        BASIC_CREDENTIALS, authenticatedUsers.iterator().next().credentials()))
                 .build();
         return chain.proceed(request);
     }

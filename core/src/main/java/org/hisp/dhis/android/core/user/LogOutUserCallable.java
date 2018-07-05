@@ -116,7 +116,7 @@ public class LogOutUserCallable implements Callable<Unit> {
                 UserStore.create(databaseAdapter),
                 new UserCredentialsStoreImpl(databaseAdapter),
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
-                new AuthenticatedUserStoreImpl(databaseAdapter),
+                AuthenticatedUserStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
                 new ResourceStoreImpl(databaseAdapter),
                 SystemInfoStore.create(databaseAdapter),
@@ -182,7 +182,7 @@ public class LogOutUserCallable implements Callable<Unit> {
 
     public static LogOutUserCallable createToLogOut(DatabaseAdapter databaseAdapter) {
         List<DeletableStore> deletableStores = new ArrayList<>();
-        deletableStores.add(new AuthenticatedUserStoreImpl(databaseAdapter));
+        deletableStores.add(AuthenticatedUserStore.create(databaseAdapter));
         return new LogOutUserCallable(deletableStores);
     }
 }

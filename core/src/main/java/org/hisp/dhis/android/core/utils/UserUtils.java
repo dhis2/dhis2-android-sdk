@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.utils;
 
 import com.google.android.gms.common.util.Hex;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

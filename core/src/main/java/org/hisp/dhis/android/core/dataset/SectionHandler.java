@@ -30,40 +30,33 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.List;
-
 public class SectionHandler extends IdentifiableHandlerImpl<Section, SectionModel> {
-    private final ObjectWithoutUidStore<SectionDataElementLinkModel> sectionDataElementLinkStore;
+
+    private final LinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler;
 
     SectionHandler(IdentifiableObjectStore<SectionModel> sectionStore,
-                   ObjectWithoutUidStore<SectionDataElementLinkModel> sectionDataElementLinkStore) {
+                   LinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler) {
         super(sectionStore);
-        this.sectionDataElementLinkStore = sectionDataElementLinkStore;
+
+        this.sectionDataElementLinkHandler = sectionDataElementLinkHandler;
     }
 
     public static SectionHandler create(DatabaseAdapter databaseAdapter) {
         return new SectionHandler(
                 SectionStore.create(databaseAdapter),
-                SectionDataElementLinkStore.create(databaseAdapter));
+                new LinkModelHandlerImpl<ObjectWithUid,
+                        SectionDataElementLinkModel>(SectionDataElementLinkStore.create(databaseAdapter)));
     }
 
     @Override
     protected void afterObjectHandled(Section section, HandleAction action) {
-        saveSectionDataElementLink(section);
-    }
-
-    private void saveSectionDataElementLink(Section section) {
-        List<ObjectWithUid> dataElements = section.dataElements();
-        if (dataElements != null) {
-            SectionDataElementLinkModelBuilder builder =
-                    new SectionDataElementLinkModelBuilder(section);
-            for (ObjectWithUid dataElement : dataElements) {
-                sectionDataElementLinkStore.updateOrInsertWhere(builder.buildModel(dataElement));
-            }
-        }
+        sectionDataElementLinkHandler.handleMany(section.uid(),
+                section.dataElements(),
+                new SectionDataElementLinkModelBuilder(section));
     }
 }

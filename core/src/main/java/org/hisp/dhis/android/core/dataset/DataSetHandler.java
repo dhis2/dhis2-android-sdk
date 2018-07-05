@@ -35,32 +35,47 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
 
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
     private final GenericHandler<Section, SectionModel> sectionHandler;
+    private final OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
 
     DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
                    GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
-                   GenericHandler<Section, SectionModel> sectionHandler) {
+                   GenericHandler<Section, SectionModel> sectionHandler,
+                   OrphanCleaner<DataSet, Section> sectionOrphanCleaner) {
+
         super(dataSetStore);
         this.styleHandler = styleHandler;
         this.sectionHandler = sectionHandler;
+        this.sectionOrphanCleaner = sectionOrphanCleaner;
     }
 
     public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
+
         return new DataSetHandler(
                 DataSetStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter), SectionHandler.create(databaseAdapter));
+                ObjectStyleHandler.create(databaseAdapter), SectionHandler.create(databaseAdapter),
+                new OrphanCleanerImpl<DataSet, Section>(SectionModel.TABLE,
+                        SectionModel.Columns.DATA_SET,
+                        databaseAdapter));
     }
 
     @Override
     protected void afterObjectHandled(DataSet dataSet, HandleAction action) {
+
         styleHandler.handle(dataSet.style(),
                 new ObjectStyleModelBuilder(dataSet.uid(), DataSetModel.TABLE));
 
         sectionHandler.handleMany(dataSet.sections(), new SectionModelBuilder());
+
+        if (action == HandleAction.Update) {
+            sectionOrphanCleaner.deleteOrphan(dataSet, dataSet.sections());
+        }
     }
 }

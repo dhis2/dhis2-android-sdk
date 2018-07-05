@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +63,10 @@ public class IsUserLoggedInCallableShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
+        when(authenticatedUser.user()).thenReturn("user");
+        when(authenticatedUser.credentials()).thenReturn("credentials");
+        when(authenticatedUser.hash()).thenReturn("hash");
+
         isUserLoggedInCallable = new IsUserLoggedInCallable(authenticatedUserStore);
     }
 
@@ -79,6 +84,17 @@ public class IsUserLoggedInCallableShould {
     public void return_false_if_any_users_are_not_persisted_after_call() throws Exception {
         when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
                 .thenReturn(new HashSet());
+
+        Boolean isUserLoggedIn = isUserLoggedInCallable.call();
+
+        assertThat(isUserLoggedIn).isFalse();
+    }
+
+    @Test
+    public void return_false_if_users_persisted_but_without_credentials() throws Exception {
+        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
+                .thenReturn(Collections.singleton(authenticatedUser));
+        when(authenticatedUser.credentials()).thenReturn(null);
 
         Boolean isUserLoggedIn = isUserLoggedInCallable.call();
 

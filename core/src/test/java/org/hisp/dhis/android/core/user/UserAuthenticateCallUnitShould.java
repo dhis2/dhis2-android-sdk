@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.calls.factories.BasicCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -56,6 +57,7 @@ import org.mockito.stubbing.Answer;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
@@ -132,7 +134,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private String baseEndpoint;
 
     // call we are testing
-    private Call<User> userAuthenticateCall;
+    private Call<UserModel> userAuthenticateCall;
 
     private static final String USERNAME = "test_username";
     private static final String UID = "test_uid";
@@ -333,6 +335,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         userAuthenticateCall.call();
     }
 
+    // Offline support
+
     @Test
     public void continue_if_user_has_logged_out() throws Exception {
         when(authenticatedUser.credentials()).thenReturn(null);
@@ -340,6 +344,50 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
                 .thenReturn(Collections.singleton(authenticatedUser));
         userAuthenticateCall.call();
         verifySuccess();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void user_login_offline_if_previously_logged() throws Exception {
+        when(authenticateAPICall.execute()).thenThrow(IOException.class);
+
+        when(authenticatedUser.credentials()).thenReturn(null);
+        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
+                .thenReturn(Collections.singleton(authenticatedUser));
+
+        userAuthenticateCall.call();
+        verifySuccessOffline();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void throw_d2_exception_if_no_previous_authenticated_user_offline() throws Exception {
+        when(authenticateAPICall.execute()).thenThrow(IOException.class);
+        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
+                .thenReturn(new HashSet());
+
+        try {
+            userAuthenticateCall.call();
+        } catch (D2CallException d2Exception) {
+            assertThat(d2Exception.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE);
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void throw_d2_exception_if_different_authenticated_user_offline() throws Exception {
+        when(authenticateAPICall.execute()).thenThrow(IOException.class);
+
+        when(authenticatedUser.credentials()).thenReturn(null);
+        when(authenticatedUser.hash()).thenReturn("different_hash");
+        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
+                .thenReturn(Collections.singleton(authenticatedUser));
+
+        try {
+            userAuthenticateCall.call();
+        } catch (D2CallException d2Exception) {
+            assertThat(d2Exception.errorCode()).isEqualTo(D2ErrorCode.DIFFERENT_AUTHENTICATED_USER_OFFLINE);
+        }
     }
 
     private void verifySuccess() {
@@ -350,7 +398,18 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
                 .hash(md5(USERNAME, PASSWORD))
                 .build();
         verifyTransactionComplete();
-        verify(authenticatedUserStore).insert(authenticatedUserModel);
+        verify(authenticatedUserStore).updateOrInsertWhere(authenticatedUserModel);
         verify(userHandler).handle(eq(user), any(UserModelBuilder.class));
+    }
+
+    private void verifySuccessOffline() {
+        AuthenticatedUserModel authenticatedUserModel =
+                AuthenticatedUserModel.builder()
+                        .user(UID)
+                        .credentials(base64(USERNAME, PASSWORD))
+                        .hash(md5(USERNAME, PASSWORD))
+                        .build();
+        verifyTransactionComplete();
+        verify(authenticatedUserStore).updateOrInsertWhere(authenticatedUserModel);
     }
 }

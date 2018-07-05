@@ -60,7 +60,7 @@ import static okhttp3.Credentials.basic;
 import static org.hisp.dhis.android.core.utils.UserUtils.base64;
 import static org.hisp.dhis.android.core.utils.UserUtils.md5;
 
-public final class UserAuthenticateCall extends SyncCall<User> {
+public final class UserAuthenticateCall extends SyncCall<UserModel> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
@@ -116,36 +116,77 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     }
 
     @Override
-    public User call() throws D2CallException {
+    public UserModel call() throws D2CallException {
         setExecuted();
         throwExceptionIfUsernameNull();
         throwExceptionIfPasswordNull();
         throwExceptionIfAlreadyAuthenticated();
 
         Call<User> authenticateCall = userService.authenticate(basic(username, password), User.allFieldsWithoutOrgUnit);
-        User authenticatedUser = new APICallExecutor().executeObjectCall(authenticateCall);
 
+        try {
+            User authenticatedUser = new APICallExecutor().executeObjectCall(authenticateCall);
+            return loginOnline(authenticatedUser);
+        } catch (D2CallException d2Exception) {
+            if (d2Exception.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR) {
+                return loginOffline();
+            } else {
+                throw d2Exception;
+            }
+        }
+    }
+
+    private UserModel loginOnline(User authenticatedUser) throws D2CallException {
         if (wasLoggedAndUserIsNew(authenticatedUser)) {
             new D2CallExecutor().executeD2Call(dbWipe);
         }
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            AuthenticatedUserModel authenticatedUserModel =
-                    AuthenticatedUserModel.builder()
-                            .user(authenticatedUser.uid())
-                            .credentials(base64(username, password))
-                            .hash(md5(username, password))
-                            .build();
-            authenticatedUserStore.insert(authenticatedUserModel);
+            AuthenticatedUserModel authenticatedUserModel = buildAuthenticatedUserModel(authenticatedUser.uid());
+            authenticatedUserStore.updateOrInsertWhere(authenticatedUserModel);
             SystemInfo systemInfo = new D2CallExecutor().executeD2Call(systemInfoCallFactory
                     .create(databaseAdapter, retrofit));
             handleUser(authenticatedUser, GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate()));
             transaction.setSuccessful();
-            return authenticatedUser;
+            return new UserModelBuilder().buildModel(authenticatedUser);
         } finally {
             transaction.end();
         }
+    }
+
+    private UserModel loginOffline() throws D2CallException {
+        Set<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.selectAll(
+                AuthenticatedUserModel.factory);
+
+        if (authenticatedUsers.isEmpty()) {
+            throw D2CallException.builder()
+                    .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE)
+                    .errorDescription("No user has been previously authenticated. Cannot login offline.")
+                    .isHttpError(false)
+                    .build();
+        }
+
+        AuthenticatedUserModel existingUser = authenticatedUsers.iterator().next();
+
+        if (!md5(username, password).equals(existingUser.hash())) {
+            throw D2CallException.builder()
+                    .errorCode(D2ErrorCode.DIFFERENT_AUTHENTICATED_USER_OFFLINE)
+                    .errorDescription("Credentials do not match authenticated user. Cannot switch users offline.")
+                    .isHttpError(false)
+                    .build();
+        }
+
+        Transaction transaction = databaseAdapter.beginNewTransaction();
+        try {
+            AuthenticatedUserModel authenticatedUserModel = buildAuthenticatedUserModel(existingUser.user());
+            authenticatedUserStore.updateOrInsertWhere(authenticatedUserModel);
+            transaction.setSuccessful();
+        } finally {
+            transaction.end();
+        }
+
+        return userStore.selectByUid(existingUser.user(), UserModel.factory);
     }
 
     private void throwExceptionIfUsernameNull() throws D2CallException {
@@ -194,6 +235,14 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         resourceHandler.handleResource(ResourceModel.Type.USER, genericCallData.serverDate());
         resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, genericCallData.serverDate());
         resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, genericCallData.serverDate());
+    }
+
+    private AuthenticatedUserModel buildAuthenticatedUserModel(String uid) {
+        return AuthenticatedUserModel.builder()
+                .user(uid)
+                .credentials(base64(username, password))
+                .hash(md5(username, password))
+                .build();
     }
 
     public static UserAuthenticateCall create(

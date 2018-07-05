@@ -55,7 +55,6 @@ import org.mockito.stubbing.Answer;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 
@@ -69,7 +68,6 @@ import static org.hisp.dhis.android.core.utils.UserUtils.base64;
 import static org.hisp.dhis.android.core.utils.UserUtils.md5;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -150,6 +148,10 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(user.uid()).thenReturn(UID);
         when(userModel.uid()).thenReturn(UID);
         when(systemInfo.serverDate()).thenReturn(serverDate);
+
+        when(authenticatedUser.user()).thenReturn(UID);
+        when(authenticatedUser.credentials()).thenReturn(base64(USERNAME, PASSWORD));
+        when(authenticatedUser.hash()).thenReturn(md5(USERNAME, PASSWORD));
 
         baseEndpoint = "https://dhis-instance.org";
         when(systemInfo.contextPath()).thenReturn(baseEndpoint);
@@ -329,6 +331,15 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
                 .thenReturn(Collections.singleton(authenticatedUser));
         userAuthenticateCall.call();
+    }
+
+    @Test
+    public void continue_if_user_has_logged_out() throws Exception {
+        when(authenticatedUser.credentials()).thenReturn(null);
+        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
+                .thenReturn(Collections.singleton(authenticatedUser));
+        userAuthenticateCall.call();
+        verifySuccess();
     }
 
     private void verifySuccess() {

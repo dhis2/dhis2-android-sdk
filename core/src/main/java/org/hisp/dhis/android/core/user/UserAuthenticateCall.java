@@ -171,7 +171,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     private void throwExceptionIfAlreadyAuthenticated() throws D2CallException {
         Set<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.selectAll(
                 AuthenticatedUserModel.factory);
-        if (!authenticatedUsers.isEmpty()) {
+        if (!authenticatedUsers.isEmpty() && authenticatedUsers.iterator().next().credentials() != null) {
             AuthenticatedUserModel authenticatedUser = authenticatedUsers.iterator().next();
             throw D2CallException.builder()
                     .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)

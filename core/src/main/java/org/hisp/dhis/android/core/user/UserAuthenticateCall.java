@@ -138,7 +138,7 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
     }
 
     private UserModel loginOnline(User authenticatedUser) throws D2CallException {
-        if (wasLoggedAndUserIsNew(authenticatedUser)) {
+        if (wasLoggedAndUserIsNew(authenticatedUser) || wasLoggedAndServerIsNew()) {
             new D2CallExecutor().executeD2Call(dbWipe);
         }
 
@@ -157,6 +157,14 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
     }
 
     private UserModel loginOffline() throws D2CallException {
+        if (wasLoggedAndServerIsNew()) {
+            throw D2CallException.builder()
+                    .errorCode(D2ErrorCode.DIFFERENT_SERVER_OFFLINE)
+                    .errorDescription("Cannot switch servers offline.")
+                    .isHttpError(false)
+                    .build();
+        }
+        
         Set<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.selectAll(
                 AuthenticatedUserModel.factory);
 
@@ -224,11 +232,13 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
     }
 
     private boolean wasLoggedAndUserIsNew(User newUser) {
-        SystemInfoModel lastSystemInfo = systemInfoStore.selectFirst(SystemInfoModel.factory);
         UserModel lastUser = userStore.selectFirst(UserModel.factory);
-        return lastUser != null && lastSystemInfo != null && (
-                !lastUser.uid().equals(newUser.uid()) ||
-                        !(lastSystemInfo.contextPath() + "/api/").equals(apiURL));
+        return lastUser != null && !lastUser.uid().equals(newUser.uid()) ;
+    }
+
+    private boolean wasLoggedAndServerIsNew() {
+        SystemInfoModel lastSystemInfo = systemInfoStore.selectFirst(SystemInfoModel.factory);
+        return lastSystemInfo != null && !(lastSystemInfo.contextPath() + "/api/").equals(apiURL);
     }
 
     private void handleUser(User user, GenericCallData genericCallData) {

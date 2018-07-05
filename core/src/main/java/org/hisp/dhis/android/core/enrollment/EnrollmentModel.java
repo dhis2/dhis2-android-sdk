@@ -62,8 +62,8 @@ public abstract class EnrollmentModel extends BaseDataModel {
         public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
         public static final String ORGANISATION_UNIT = "organisationUnit";
         public static final String PROGRAM = "program";
-        public static final String DATE_OF_ENROLLMENT = "enrollmentDate";
-        public static final String DATE_OF_INCIDENT = "incidentDate";
+        public static final String ENROLLMENT_DATE = "enrollmentDate";
+        public static final String INCIDENT_DATE = "incidentDate";
         public static final String FOLLOW_UP = "followup";
         public static final String ENROLLMENT_STATUS = "status";
         public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
@@ -103,14 +103,14 @@ public abstract class EnrollmentModel extends BaseDataModel {
     public abstract String program();
 
     @Nullable
-    @ColumnName(Columns.DATE_OF_ENROLLMENT)
+    @ColumnName(Columns.ENROLLMENT_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date dateOfEnrollment();
+    public abstract Date enrollmentDate();
 
     @Nullable
-    @ColumnName(Columns.DATE_OF_INCIDENT)
+    @ColumnName(Columns.INCIDENT_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date dateOfIncident();
+    public abstract Date incidentDate();
 
     @Nullable
     @ColumnName(Columns.FOLLOW_UP)
@@ -150,9 +150,9 @@ public abstract class EnrollmentModel extends BaseDataModel {
 
         public abstract Builder program(@Nullable String program);
 
-        public abstract Builder dateOfEnrollment(@Nullable Date dateOfEnrollment);
+        public abstract Builder enrollmentDate(@Nullable Date enrollmentDate);
 
-        public abstract Builder dateOfIncident(@Nullable Date dateOfIncident);
+        public abstract Builder incidentDate(@Nullable Date incidentDate);
 
         public abstract Builder followUp(@Nullable Boolean followUp);
 

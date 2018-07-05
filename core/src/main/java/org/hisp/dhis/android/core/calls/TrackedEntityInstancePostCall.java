@@ -140,8 +140,8 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                     enrollmentsRecreated.add(
                             Enrollment.create(enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
                                     enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
-                                    enrollment.organisationUnit(), enrollment.program(), enrollment.dateOfEnrollment(),
-                                    enrollment.dateOfIncident(), enrollment.followUp(), enrollment.enrollmentStatus(),
+                                    enrollment.organisationUnit(), enrollment.program(), enrollment.enrollmentDate(),
+                                    enrollment.incidentDate(), enrollment.followUp(), enrollment.enrollmentStatus(),
                                     enrollment.trackedEntityInstance(), enrollment.coordinate(), enrollment.deleted(),
                                     eventRecreated, enrollment.notes()));
                 }

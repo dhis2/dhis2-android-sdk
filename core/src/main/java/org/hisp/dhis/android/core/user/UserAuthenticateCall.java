@@ -164,7 +164,7 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
                     .isHttpError(false)
                     .build();
         }
-        
+
         Set<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.selectAll(
                 AuthenticatedUserModel.factory);
 
@@ -233,7 +233,7 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
 
     private boolean wasLoggedAndUserIsNew(User newUser) {
         UserModel lastUser = userStore.selectFirst(UserModel.factory);
-        return lastUser != null && !lastUser.uid().equals(newUser.uid()) ;
+        return lastUser != null && !lastUser.uid().equals(newUser.uid());
     }
 
     private boolean wasLoggedAndServerIsNew() {

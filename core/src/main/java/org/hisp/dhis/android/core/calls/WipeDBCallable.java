@@ -65,6 +65,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 public final class WipeDBCallable implements Callable<Unit> {
 
     @NonNull

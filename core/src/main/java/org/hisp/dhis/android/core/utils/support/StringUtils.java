@@ -28,11 +28,6 @@
 
 package org.hisp.dhis.android.core.utils.support;
 
-import com.google.android.gms.common.util.Hex;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 public final class StringUtils {
 
     private StringUtils() {
@@ -41,18 +36,5 @@ public final class StringUtils {
 
     public static boolean isEmpty(CharSequence charSequence) {
         return charSequence == null || charSequence.length() == 0;
-    }
-
-    public static String md5(String string) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.reset();
-            md.update(string.getBytes());
-            return Hex.bytesToStringLowercase(md.digest());
-        } catch (NoSuchAlgorithmException e) {
-            // noop. Every implementation of Java is required to support MD5
-            return null;
-        }
-
     }
 }

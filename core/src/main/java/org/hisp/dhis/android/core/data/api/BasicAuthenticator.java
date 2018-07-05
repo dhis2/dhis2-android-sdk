@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 

@@ -37,7 +37,11 @@ public abstract class Paging {
 
     public abstract int getPageSize();
 
-    public static Paging create(int page, int pageSize) {
-        return new AutoValue_Paging(page, pageSize);
+    public abstract int previousItemsToSkipCount();
+
+    public abstract int posteriorItemsToSkipCount();
+
+    public static Paging create(int page, int pageSize, int previousItemsToSkipCount, int posteriorItemsToSkipCount) {
+        return new AutoValue_Paging(page, pageSize, previousItemsToSkipCount, posteriorItemsToSkipCount);
     }
 }

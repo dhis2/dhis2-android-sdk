@@ -40,8 +40,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -86,8 +84,7 @@ public class BasicAuthenticatorShould {
                         .credentials(base64("test_user", "test_password"))
                         .build();
 
-        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
-                .thenReturn(Collections.singleton(authenticatedUserModel));
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUserModel);
 
         okHttpClient.newCall(
                 new Request.Builder()
@@ -102,8 +99,7 @@ public class BasicAuthenticatorShould {
 
     @Test
     public void return_null_when_server_take_request_with_authenticate_with_empty_list() throws IOException, InterruptedException {
-        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
-                .thenReturn(new HashSet());
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(null);
 
         okHttpClient.newCall(
                 new Request.Builder()

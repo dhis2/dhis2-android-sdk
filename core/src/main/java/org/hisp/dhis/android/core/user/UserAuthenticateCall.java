@@ -51,7 +51,6 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import retrofit2.Call;
@@ -166,18 +165,15 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
                     .build();
         }
 
-        Set<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.selectAll(
-                AuthenticatedUserModel.factory);
+        AuthenticatedUserModel existingUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
 
-        if (authenticatedUsers.isEmpty()) {
+        if (existingUser == null) {
             throw D2CallException.builder()
                     .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE)
                     .errorDescription("No user has been previously authenticated. Cannot login offline.")
                     .isHttpError(false)
                     .build();
         }
-
-        AuthenticatedUserModel existingUser = authenticatedUsers.iterator().next();
 
         if (!md5(username, password).equals(existingUser.hash())) {
             throw D2CallException.builder()
@@ -220,10 +216,8 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
     }
 
     private void throwExceptionIfAlreadyAuthenticated() throws D2CallException {
-        Set<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.selectAll(
-                AuthenticatedUserModel.factory);
-        if (!authenticatedUsers.isEmpty() && authenticatedUsers.iterator().next().credentials() != null) {
-            AuthenticatedUserModel authenticatedUser = authenticatedUsers.iterator().next();
+        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
+        if (authenticatedUser != null && authenticatedUser.credentials() != null) {
             throw D2CallException.builder()
                     .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
                     .errorDescription("A user is already authenticated: " + authenticatedUser.user())

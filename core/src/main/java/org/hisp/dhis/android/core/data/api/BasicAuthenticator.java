@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Set;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -58,9 +57,8 @@ final class BasicAuthenticator implements Authenticator {
             return chain.proceed(chain.request());
         }
 
-        Set<AuthenticatedUserModel> authenticatedUsers = authenticatedUserStore.selectAll(
-                AuthenticatedUserModel.factory);
-        if (authenticatedUsers.isEmpty()) {
+        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
+        if (authenticatedUser == null || authenticatedUser.credentials() == null) {
             // proceed request if we do not
             // have any users authenticated
             return chain.proceed(chain.request());
@@ -69,7 +67,7 @@ final class BasicAuthenticator implements Authenticator {
         // retrieve first user and pass in his / her credentials
         Request request = chain.request().newBuilder()
                 .addHeader(AUTHORIZATION, String.format(Locale.US,
-                        BASIC_CREDENTIALS, authenticatedUsers.iterator().next().credentials()))
+                        BASIC_CREDENTIALS, authenticatedUser.credentials()))
                 .build();
         return chain.proceed(request);
     }

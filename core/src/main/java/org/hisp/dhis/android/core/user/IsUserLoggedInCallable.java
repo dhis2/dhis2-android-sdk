@@ -33,7 +33,6 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 public final class IsUserLoggedInCallable implements Callable<Boolean> {
@@ -47,9 +46,8 @@ public final class IsUserLoggedInCallable implements Callable<Boolean> {
 
     @Override
     public Boolean call() throws Exception {
-        Set<AuthenticatedUserModel> authenticatedUsers =
-                authenticatedUserStore.selectAll(AuthenticatedUserModel.factory);
-        return !authenticatedUsers.isEmpty() && authenticatedUsers.iterator().next().credentials() != null;
+        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
+        return authenticatedUser != null && authenticatedUser.credentials() != null;
     }
 
     public static IsUserLoggedInCallable create(DatabaseAdapter databaseAdapter) {

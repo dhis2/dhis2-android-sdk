@@ -56,8 +56,6 @@ import org.mockito.stubbing.Answer;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
@@ -330,8 +328,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test(expected = D2CallException.class)
     public void throw_d2_call_exception_state_exception_if_user_already_signed_in() throws Exception {
-        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
-                .thenReturn(Collections.singleton(authenticatedUser));
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
         userAuthenticateCall.call();
     }
 
@@ -340,8 +337,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     public void continue_if_user_has_logged_out() throws Exception {
         when(authenticatedUser.credentials()).thenReturn(null);
-        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
-                .thenReturn(Collections.singleton(authenticatedUser));
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
         userAuthenticateCall.call();
         verifySuccess();
     }
@@ -352,8 +348,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(authenticateAPICall.execute()).thenThrow(IOException.class);
 
         when(authenticatedUser.credentials()).thenReturn(null);
-        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
-                .thenReturn(Collections.singleton(authenticatedUser));
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
 
         userAuthenticateCall.call();
         verifySuccessOffline();
@@ -363,8 +358,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @SuppressWarnings("unchecked")
     public void throw_d2_exception_if_no_previous_authenticated_user_offline() throws Exception {
         when(authenticateAPICall.execute()).thenThrow(IOException.class);
-        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
-                .thenReturn(new HashSet());
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(null);
 
         try {
             userAuthenticateCall.call();
@@ -380,8 +374,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(authenticatedUser.credentials()).thenReturn(null);
         when(authenticatedUser.hash()).thenReturn("different_hash");
-        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
-                .thenReturn(Collections.singleton(authenticatedUser));
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
 
         try {
             userAuthenticateCall.call();

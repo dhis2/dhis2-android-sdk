@@ -37,8 +37,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.concurrent.Callable;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -69,8 +67,7 @@ public class IsUserLoggedInCallableShould {
 
     @Test
     public void return_true_if_any_users_are_persisted_after_call() throws Exception {
-        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
-                .thenReturn(Collections.singleton(authenticatedUser));
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
 
         Boolean isUserLoggedIn = isUserLoggedInCallable.call();
 
@@ -79,8 +76,7 @@ public class IsUserLoggedInCallableShould {
 
     @Test
     public void return_false_if_any_users_are_not_persisted_after_call() throws Exception {
-        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
-                .thenReturn(new HashSet());
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(null);
 
         Boolean isUserLoggedIn = isUserLoggedInCallable.call();
 
@@ -89,8 +85,7 @@ public class IsUserLoggedInCallableShould {
 
     @Test
     public void return_false_if_users_persisted_but_without_credentials() throws Exception {
-        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
-                .thenReturn(Collections.singleton(authenticatedUser));
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
         when(authenticatedUser.credentials()).thenReturn(null);
 
         Boolean isUserLoggedIn = isUserLoggedInCallable.call();

@@ -42,8 +42,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.concurrent.Callable;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -82,8 +80,7 @@ public class LogOutUserCallableShould {
 
     @Test
     public void clear_user_credentials() throws Exception {
-        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
-                .thenReturn(Collections.singleton(authenticatedUser));
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
 
         logOutUserCallable.call();
 
@@ -96,8 +93,7 @@ public class LogOutUserCallableShould {
 
     @Test
     public void throw_d2_exception_if_no_authenticated_user() throws Exception {
-        when(authenticatedUserStore.selectAll(any(CursorModelFactory.class)))
-                .thenReturn(new HashSet());
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(null);
 
         try {
             logOutUserCallable.call();

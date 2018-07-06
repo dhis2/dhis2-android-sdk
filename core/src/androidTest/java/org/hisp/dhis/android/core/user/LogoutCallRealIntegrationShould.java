@@ -11,7 +11,6 @@ import org.hisp.dhis.android.core.event.EventModel;
 import org.junit.Before;
 
 import java.io.IOException;
-import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isDatabaseEmpty;
@@ -50,11 +49,10 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
         assertThat(isTableEmpty(databaseAdapter(), EventModel.TABLE)).isFalse();
 
-        Set<AuthenticatedUserModel> authenticatedUsers =
-                authenticatedUserStore.selectAll(AuthenticatedUserModel.factory);
+        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
 
-        assertThat(authenticatedUsers).isNotEmpty();
-        assertThat(authenticatedUsers.iterator().next().credentials()).isNull();
+        assertThat(authenticatedUser).isNotNull();
+        assertThat(authenticatedUser.credentials()).isNull();
     }
 
     //@Test
@@ -70,19 +68,17 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
-        Set<AuthenticatedUserModel> authenticatedUsers =
-                authenticatedUserStore.selectAll(AuthenticatedUserModel.factory);
+        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
 
-        assertThat(authenticatedUsers).isNotEmpty();
-        assertThat(authenticatedUsers.iterator().next().credentials()).isNull();
+        assertThat(authenticatedUser).isNotNull();
+        assertThat(authenticatedUser.credentials()).isNull();
 
         d2.logIn("android", "Android123").call();
 
-        authenticatedUsers =
-                authenticatedUserStore.selectAll(AuthenticatedUserModel.factory);
+        authenticatedUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
 
-        assertThat(authenticatedUsers).isNotEmpty();
-        assertThat(authenticatedUsers.iterator().next().credentials()).isNotNull();
+        assertThat(authenticatedUser).isNotNull();
+        assertThat(authenticatedUser.credentials()).isNotNull();
     }
 
     //@Test

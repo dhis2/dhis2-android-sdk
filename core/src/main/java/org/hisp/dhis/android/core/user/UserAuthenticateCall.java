@@ -122,7 +122,8 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         throwExceptionIfPasswordNull();
         throwExceptionIfAlreadyAuthenticated();
 
-        Call<User> authenticateCall = userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
+        Call<User> authenticateCall =
+                userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
 
         try {
             User authenticatedUser = new APICallExecutor().executeObjectCall(authenticateCall);

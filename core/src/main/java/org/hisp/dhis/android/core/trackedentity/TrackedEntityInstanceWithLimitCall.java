@@ -94,9 +94,12 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
                     TrackedEntityInstancesEndpointCall.create(retrofit, teiQueryBuilder.build()));
 
             if (paging.isLastPage()) {
-                trackedEntityInstances.addAll(pageTrackedEntityInstances.subList(
-                        paging.previousItemsToSkipCount(),
-                        pageTrackedEntityInstances.size() - paging.posteriorItemsToSkipCount()));
+                int previousItemsToSkip = pageTrackedEntityInstances.size()
+                        + paging.previousItemsToSkipCount() - paging.pageSize();
+                int toIndex = previousItemsToSkip < 0 ? pageTrackedEntityInstances.size() :
+                        pageTrackedEntityInstances.size() - previousItemsToSkip;
+                trackedEntityInstances.addAll(
+                        pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex));
             } else {
                 trackedEntityInstances.addAll(pageTrackedEntityInstances);
             }

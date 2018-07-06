@@ -69,8 +69,8 @@ public class EnrollmentShould {
         assertThat(enrollment.uid()).isEqualTo("BVJQIxoM2o4");
         assertThat(enrollment.organisationUnit()).isEqualTo("Rp268JB6Ne4");
         assertThat(enrollment.program()).isEqualTo("ur1Edk5Oe2n");
-        assertThat(enrollment.dateOfEnrollment()).isEqualTo("2014-08-07T12:27:50.730");
-        assertThat(enrollment.dateOfIncident()).isEqualTo("2014-07-21T12:27:50.730");
+        assertThat(enrollment.enrollmentDate()).isEqualTo("2014-08-07T12:27:50.730");
+        assertThat(enrollment.incidentDate()).isEqualTo("2014-07-21T12:27:50.730");
         assertThat(enrollment.followUp()).isEqualTo(false);
         assertThat(enrollment.enrollmentStatus()).isEqualTo(EnrollmentStatus.ACTIVE);
         assertThat(enrollment.trackedEntityInstance()).isEqualTo("D2dUWKQErfQ");

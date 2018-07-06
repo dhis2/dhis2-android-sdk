@@ -56,8 +56,8 @@ public abstract class Enrollment implements ObjectWithDeleteInterface {
     private static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
     private static final String ORGANISATION_UNIT = "orgUnit";
     private static final String PROGRAM = "program";
-    private static final String DATE_OF_ENROLLMENT = "enrollmentDate";
-    private static final String DATE_OF_INCIDENT = "incidentDate";
+    private static final String ENROLLMENT_DATE = "enrollmentDate";
+    private static final String INCIDENT_DATE = "incidentDate";
     private static final String FOLLOW_UP = "followup";
     private static final String ENROLLMENT_STATUS = "status";
     private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
@@ -71,8 +71,8 @@ public abstract class Enrollment implements ObjectWithDeleteInterface {
     private static final Field<Enrollment, String> lastUpdated = Field.create(LAST_UPDATED);
     private static final Field<Enrollment, String> organisationUnit = Field.create(ORGANISATION_UNIT);
     private static final Field<Enrollment, String> program = Field.create(PROGRAM);
-    private static final Field<Enrollment, String> dateOfEnrollment = Field.create(DATE_OF_ENROLLMENT);
-    private static final Field<Enrollment, String> dateOfIncident = Field.create(DATE_OF_INCIDENT);
+    private static final Field<Enrollment, String> enrollmentDate = Field.create(ENROLLMENT_DATE);
+    private static final Field<Enrollment, String> incidentDate = Field.create(INCIDENT_DATE);
     private static final Field<Enrollment, String> followUp = Field.create(FOLLOW_UP);
     private static final Field<Enrollment, String> enrollmentStatus = Field.create(ENROLLMENT_STATUS);
     private static final Field<Enrollment, Boolean> deleted = Field.create(DELETED);
@@ -83,7 +83,7 @@ public abstract class Enrollment implements ObjectWithDeleteInterface {
     private static final NestedField<Enrollment, Note> notes = NestedField.create(NOTES);
 
     public static final Fields<Enrollment> allFields = Fields.<Enrollment>builder().fields(
-            uid, created, lastUpdated, coordinate, dateOfEnrollment, dateOfIncident, enrollmentStatus,
+            uid, created, lastUpdated, coordinate, enrollmentDate, incidentDate, enrollmentStatus,
             followUp, program, organisationUnit, trackedEntityInstance, deleted, events.with(Event.allFields),
             notes.with(Note.allFields)
     ).build();
@@ -116,12 +116,12 @@ public abstract class Enrollment implements ObjectWithDeleteInterface {
     public abstract String program();
 
     @Nullable
-    @JsonProperty(DATE_OF_ENROLLMENT)
-    public abstract Date dateOfEnrollment();
+    @JsonProperty(ENROLLMENT_DATE)
+    public abstract Date enrollmentDate();
 
     @Nullable
-    @JsonProperty(DATE_OF_INCIDENT)
-    public abstract Date dateOfIncident();
+    @JsonProperty(INCIDENT_DATE)
+    public abstract Date incidentDate();
 
     @Nullable
     @JsonProperty(FOLLOW_UP)
@@ -160,8 +160,8 @@ public abstract class Enrollment implements ObjectWithDeleteInterface {
             @JsonProperty(LAST_UPDATED_AT_CLIENT) String lastUpdatedAtClient,
             @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
             @JsonProperty(PROGRAM) String program,
-            @JsonProperty(DATE_OF_ENROLLMENT) Date dateOfEnrollment,
-            @JsonProperty(DATE_OF_INCIDENT) Date dateOfIncident,
+            @JsonProperty(ENROLLMENT_DATE) Date enrollmentDate,
+            @JsonProperty(INCIDENT_DATE) Date incidentDate,
             @JsonProperty(FOLLOW_UP) Boolean followUp,
             @JsonProperty(ENROLLMENT_STATUS) EnrollmentStatus enrollmentStatus,
             @JsonProperty(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
@@ -170,7 +170,7 @@ public abstract class Enrollment implements ObjectWithDeleteInterface {
             @JsonProperty(EVENTS) List<Event> events,
             @JsonProperty(NOTES) List<Note> notes) {
         return new AutoValue_Enrollment(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                organisationUnit, program, dateOfEnrollment, dateOfIncident, followUp, enrollmentStatus,
+                organisationUnit, program, enrollmentDate, incidentDate, followUp, enrollmentStatus,
                 trackedEntityInstance, coordinate, deleted, safeUnmodifiableList(events), notes);
     }
 

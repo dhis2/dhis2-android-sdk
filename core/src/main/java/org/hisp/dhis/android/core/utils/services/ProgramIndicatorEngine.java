@@ -258,9 +258,9 @@ public class ProgramIndicatorEngine {
                     }
 
                     if (ENROLLMENT_DATE.equals(uid)) {
-                        date = cachedEnrollment.dateOfEnrollment();
+                        date = cachedEnrollment.enrollmentDate();
                     } else if (INCIDENT_DATE.equals(uid)) {
-                        date = cachedEnrollment.dateOfIncident();
+                        date = cachedEnrollment.incidentDate();
                     }
                 }
 

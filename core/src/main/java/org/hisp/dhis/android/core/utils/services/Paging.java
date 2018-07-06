@@ -35,13 +35,16 @@ public abstract class Paging {
 
     public abstract int page();
 
-    public abstract int getPageSize();
+    public abstract int pageSize();
 
     public abstract int previousItemsToSkipCount();
 
     public abstract int posteriorItemsToSkipCount();
 
-    public static Paging create(int page, int pageSize, int previousItemsToSkipCount, int posteriorItemsToSkipCount) {
-        return new AutoValue_Paging(page, pageSize, previousItemsToSkipCount, posteriorItemsToSkipCount);
+    public abstract boolean isLastPage();
+
+    public static Paging create(int page, int pageSize, int previousItemsToSkipCount, int posteriorItemsToSkipCount,
+                                boolean isLastPage) {
+        return new AutoValue_Paging(page, pageSize, previousItemsToSkipCount, posteriorItemsToSkipCount, isLastPage);
     }
 }

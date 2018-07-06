@@ -28,19 +28,16 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class AuthenticatedUserStore {
 
-import java.util.List;
+    private AuthenticatedUserStore() {}
 
-public interface AuthenticatedUserStore extends DeletableStore {
-    long insert(@NonNull String userUid, @NonNull String credentials);
-
-    @NonNull
-    List<AuthenticatedUserModel> query();
-
-    @Override
-    int delete();
-
+    public static ObjectWithoutUidStore<AuthenticatedUserModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, AuthenticatedUserModel.TABLE,
+                new AuthenticatedUserModel.Columns());
+    }
 }

@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackerDataCall;
+import org.hisp.dhis.android.core.calls.WipeDBCallable;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
@@ -59,8 +60,8 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuer
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
 import org.hisp.dhis.android.core.user.LogOutUserCallable;
-import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
+import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
 
 import java.util.Collection;
@@ -97,7 +98,7 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<User> logIn(@NonNull String username, @NonNull String password) {
+    public Callable<UserModel> logIn(@NonNull String username, @NonNull String password) {
         return UserAuthenticateCall.create(databaseAdapter, retrofit, username, password);
     }
 
@@ -108,12 +109,12 @@ public final class D2 {
 
     @NonNull
     public Callable<Unit> logout() {
-        return LogOutUserCallable.createToLogOut(databaseAdapter);
+        return LogOutUserCallable.create(databaseAdapter);
     }
 
     @NonNull
     public Callable<Unit> wipeDB() {
-        return LogOutUserCallable.createToWipe(databaseAdapter);
+        return WipeDBCallable.create(databaseAdapter);
     }
 
     @NonNull

@@ -43,11 +43,13 @@ public class AuthenticatedUserModelShould {
     private static final long ID = 2L;
     private static final String USER = "test_user";
     private static final String CREDENTIALS = "test_credentials";
+    private static final String HASH = "test_hash";
 
     @Test
     public void create_model_when_created_from_database_cursor() {
-        MatrixCursor cursor = new MatrixCursor(new String[]{Columns.ID, Columns.USER, Columns.CREDENTIALS});
-        cursor.addRow(new Object[]{ID, USER, CREDENTIALS});
+        MatrixCursor cursor = new MatrixCursor(new String[]{Columns.ID, Columns.USER, Columns.CREDENTIALS,
+                Columns.HASH});
+        cursor.addRow(new Object[]{ID, USER, CREDENTIALS, HASH});
         cursor.moveToFirst();
 
         AuthenticatedUserModel model = AuthenticatedUserModel.create(cursor);
@@ -56,6 +58,7 @@ public class AuthenticatedUserModelShould {
         assertThat(model.id()).isEqualTo(ID);
         assertThat(model.user()).isEqualTo(USER);
         assertThat(model.credentials()).isEqualTo(CREDENTIALS);
+        assertThat(model.hash()).isEqualTo(HASH);
     }
 
     @Test
@@ -64,11 +67,13 @@ public class AuthenticatedUserModelShould {
                 .id(ID)
                 .user(USER)
                 .credentials(CREDENTIALS)
+                .hash(HASH)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(Columns.USER)).isEqualTo(USER);
         assertThat(contentValues.getAsString(Columns.CREDENTIALS)).isEqualTo(CREDENTIALS);
+        assertThat(contentValues.getAsString(Columns.HASH)).isEqualTo(HASH);
     }
 }

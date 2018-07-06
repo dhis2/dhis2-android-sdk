@@ -14,6 +14,8 @@ import org.hisp.dhis.android.core.utils.Utils;
 import java.text.ParseException;
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import retrofit2.Call;
 import retrofit2.Retrofit;
 
@@ -44,7 +46,24 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
         Call<SearchGrid> searchGridCall = service.query(orgUnits,
                 orgUnitModeStr, query.program(), query.query(), query.attribute(), query.filter(),
                 query.paging(), query.page(), query.pageSize());
-        SearchGrid searchGrid = new APICallExecutor().executeObjectCall(searchGridCall);
+
+        SearchGrid searchGrid;
+
+        try {
+            searchGrid = new APICallExecutor().executeObjectCall(searchGridCall);
+        } catch (D2CallException d2E) {
+            if (d2E.httpErrorCode() == HttpsURLConnection.HTTP_REQ_TOO_LONG) {
+                throw D2CallException.builder()
+                        .errorCode(D2ErrorCode.TOO_MANY_ORG_UNITS)
+                        .errorDescription("Too many org units were selected")
+                        .isHttpError(true)
+                        .httpErrorCode(d2E.httpErrorCode())
+                        .build();
+            } else {
+                throw d2E;
+            }
+        }
+
         try {
             return mapper.transform(searchGrid);
         } catch (ParseException pe) {

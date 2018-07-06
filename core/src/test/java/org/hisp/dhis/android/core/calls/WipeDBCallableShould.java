@@ -26,10 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.calls;
 
-import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
+import org.hisp.dhis.android.core.user.UserCredentialsStore;
+import org.hisp.dhis.android.core.user.UserModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,59 +45,53 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 @RunWith(JUnit4.class)
-public class IsUserLoggedInCallableShould {
+public class WipeDBCallableShould {
+
+    @Mock
+    private IdentifiableObjectStore<UserModel> userStore;
+
+    @Mock
+    private UserCredentialsStore userCredentialsStore;
+
+    @Mock
+    private ObjectStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
 
     @Mock
     private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
 
     @Mock
-    private AuthenticatedUserModel authenticatedUser;
+    private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
 
-    private Callable<Boolean> isUserLoggedInCallable;
+    private Callable<Unit> logOutUserCallable;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        when(authenticatedUser.user()).thenReturn("user");
-        when(authenticatedUser.credentials()).thenReturn("credentials");
-        when(authenticatedUser.hash()).thenReturn("hash");
-
-        isUserLoggedInCallable = new IsUserLoggedInCallable(authenticatedUserStore);
+        List<DeletableStore> deletableStoreList = new ArrayList<>();
+        deletableStoreList.add(userStore);
+        deletableStoreList.add(userCredentialsStore);
+        deletableStoreList.add(userOrganisationUnitLinkStore);
+        deletableStoreList.add(authenticatedUserStore);
+        deletableStoreList.add(organisationUnitStore);
+        logOutUserCallable = new WipeDBCallable(deletableStoreList);
     }
 
     @Test
-    public void return_true_if_any_users_are_persisted_after_call() throws Exception {
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
+    public void clear_tables_on_log_out() throws Exception {
+        logOutUserCallable.call();
 
-        Boolean isUserLoggedIn = isUserLoggedInCallable.call();
-
-        assertThat(isUserLoggedIn).isTrue();
-    }
-
-    @Test
-    public void return_false_if_any_users_are_not_persisted_after_call() throws Exception {
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(null);
-
-        Boolean isUserLoggedIn = isUserLoggedInCallable.call();
-
-        assertThat(isUserLoggedIn).isFalse();
-    }
-
-    @Test
-    public void return_false_if_users_persisted_but_without_credentials() throws Exception {
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
-        when(authenticatedUser.credentials()).thenReturn(null);
-
-        Boolean isUserLoggedIn = isUserLoggedInCallable.call();
-
-        assertThat(isUserLoggedIn).isFalse();
+        verify(userStore).delete();
+        verify(userCredentialsStore).delete();
+        verify(userOrganisationUnitLinkStore).delete();
+        verify(authenticatedUserStore).delete();
+        verify(organisationUnitStore).delete();
     }
 }

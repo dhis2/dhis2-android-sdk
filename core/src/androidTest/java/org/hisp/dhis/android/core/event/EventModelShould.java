@@ -66,7 +66,7 @@ public class EventModelShould {
     @Test
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
-                Columns.ID, Columns.UID, Columns.ENROLLMENT_UID,
+                Columns.ID, Columns.UID, Columns.ENROLLMENT,
                 Columns.CREATED, Columns.LAST_UPDATED,
                 Columns.STATUS, Columns.LATITUDE,
                 Columns.LONGITUDE, Columns.PROGRAM, Columns.PROGRAM_STAGE,
@@ -84,7 +84,7 @@ public class EventModelShould {
 
         assertThat(model.id()).isEqualTo(ID);
         assertThat(model.uid()).isEqualTo(EVENT_UID);
-        assertThat(model.enrollmentUid()).isEqualTo(ENROLLMENT_UID);
+        assertThat(model.enrollment()).isEqualTo(ENROLLMENT_UID);
         assertThat(model.created()).isEqualTo(date);
         assertThat(model.lastUpdated()).isEqualTo(date);
         assertThat(model.status()).isEqualTo(STATUS);
@@ -102,7 +102,7 @@ public class EventModelShould {
         EventModel model = EventModel.builder()
                 .id(ID)
                 .uid(EVENT_UID)
-                .enrollmentUid(ENROLLMENT_UID)
+                .enrollment(ENROLLMENT_UID)
                 .created(date)
                 .lastUpdated(date)
                 .status(STATUS)
@@ -120,7 +120,7 @@ public class EventModelShould {
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(EVENT_UID);
-        assertThat(contentValues.getAsString(Columns.ENROLLMENT_UID)).isEqualTo(ENROLLMENT_UID);
+        assertThat(contentValues.getAsString(Columns.ENROLLMENT)).isEqualTo(ENROLLMENT_UID);
         assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.STATUS)).isEqualTo(STATUS.name());

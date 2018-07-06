@@ -28,66 +28,78 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class LogOutUserCallableShould {
 
     @Mock
-    private IdentifiableObjectStore<UserModel> userStore;
+    private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
 
     @Mock
-    private UserCredentialsStore userCredentialsStore;
+    private AuthenticatedUserModel authenticatedUser;
 
-    @Mock
-    private ObjectStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
-
-    @Mock
-    private AuthenticatedUserStore authenticatedUserStore;
-
-    @Mock
-    private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    @Captor
+    private ArgumentCaptor<AuthenticatedUserModel> loggedOutUser;
 
     private Callable<Unit> logOutUserCallable;
+
+    static final String USER = "user";
+    static final String HASH = "hash";
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        List<DeletableStore> deletableStoreList = new ArrayList<>();
-        deletableStoreList.add(userStore);
-        deletableStoreList.add(userCredentialsStore);
-        deletableStoreList.add(userOrganisationUnitLinkStore);
-        deletableStoreList.add(authenticatedUserStore);
-        deletableStoreList.add(organisationUnitStore);
-        logOutUserCallable = new LogOutUserCallable(deletableStoreList
-        );
+        when(authenticatedUser.user()).thenReturn(USER);
+        when(authenticatedUser.credentials()).thenReturn("credentials");
+        when(authenticatedUser.hash()).thenReturn(HASH);
+
+        logOutUserCallable = new LogOutUserCallable(authenticatedUserStore);
     }
 
     @Test
-    public void clear_tables_on_log_out() throws Exception {
+    public void clear_user_credentials() throws Exception {
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
+
         logOutUserCallable.call();
 
-        verify(userStore).delete();
-        verify(userCredentialsStore).delete();
-        verify(userOrganisationUnitLinkStore).delete();
-        verify(authenticatedUserStore).delete();
-        verify(organisationUnitStore).delete();
+        verify(authenticatedUserStore).updateOrInsertWhere(loggedOutUser.capture());
+
+        assertThat(loggedOutUser.getValue().user()).isEqualTo(USER);
+        assertThat(loggedOutUser.getValue().credentials()).isNull();
+        assertThat(loggedOutUser.getValue().hash()).isEqualTo(HASH);
+    }
+
+    @Test
+    public void throw_d2_exception_if_no_authenticated_user() throws Exception {
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(null);
+
+        try {
+            logOutUserCallable.call();
+            fail("D2Exception must be thrown if no authenticated user");
+        } catch (D2CallException d2Exception) {
+            assertThat(d2Exception.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER);
+        }
     }
 }

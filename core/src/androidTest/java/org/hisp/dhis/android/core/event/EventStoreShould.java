@@ -76,7 +76,7 @@ import java.util.Map;
 public class EventStoreShould extends AbsStoreTestCase {
     private static final String[] EVENT_PROJECTION = {
             Columns.UID,
-            Columns.ENROLLMENT_UID,
+            Columns.ENROLLMENT,
             Columns.CREATED, // created
             Columns.LAST_UPDATED, // lastUpdated
             Columns.CREATED_AT_CLIENT,
@@ -408,11 +408,11 @@ public class EventStoreShould extends AbsStoreTestCase {
         eventContentValues.put(Columns.PROGRAM, PROGRAM);
         eventContentValues.put(Columns.PROGRAM_STAGE, PROGRAM_STAGE);
         eventContentValues.put(Columns.ORGANISATION_UNIT, ORGANISATION_UNIT);
-        eventContentValues.put(Columns.ENROLLMENT_UID, ENROLLMENT_UID);
+        eventContentValues.put(Columns.ENROLLMENT, ENROLLMENT_UID);
         eventContentValues.put(Columns.STATUS, STATUS.name());
         eventContentValues.put(Columns.EVENT_DATE, dateString);
         eventContentValues.put(Columns.COMPLETE_DATE, dateString);
-        eventContentValues.put(Columns.LATITUDE, dateString);
+        eventContentValues.put(Columns.LATITUDE, Double.parseDouble(LATITUDE));
         eventContentValues.put(Columns.STATE, STATE.name());
         database().insert(EventModel.TABLE, null, eventContentValues);
 

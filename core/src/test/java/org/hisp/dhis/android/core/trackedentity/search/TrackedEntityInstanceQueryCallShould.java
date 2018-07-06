@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
@@ -45,9 +46,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
+
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -148,6 +154,21 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     public void throw_D2CallException_when_service_call_returns_failed_response() throws Exception {
         when(searchGridCall.execute()).thenReturn(errorResponse);
         call.call();
+    }
+
+    @Test()
+    public void throw_too_many_org_units_exception_when_request_was_too_long() throws Exception {
+        Response tooLongResponse = Response.error(
+                HttpsURLConnection.HTTP_REQ_TOO_LONG,
+                ResponseBody.create(MediaType.parse("application/json"), "{}"));
+        when(searchGridCall.execute()).thenReturn(tooLongResponse);
+
+        try {
+            call.call();
+            fail("D2CallException was expected but was not thrown");
+        } catch (D2CallException d2e) {
+            assertThat(d2e.errorCode() == D2ErrorCode.TOO_MANY_ORG_UNITS).isTrue();
+        }
     }
 
     @Test(expected = D2CallException.class)

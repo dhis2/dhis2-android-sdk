@@ -59,7 +59,7 @@ public class EventStoreImpl implements EventStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + EventModel.TABLE + " (" +
             Columns.UID + ", " +
-            Columns.ENROLLMENT_UID + ", " +
+            Columns.ENROLLMENT + ", " +
             Columns.CREATED + ", " +
             Columns.LAST_UPDATED + ", " +
             Columns.CREATED_AT_CLIENT + ", " +
@@ -81,7 +81,7 @@ public class EventStoreImpl implements EventStore {
 
     private static final String UPDATE_STATEMENT = "UPDATE " + EventModel.TABLE + " SET " +
             Columns.UID + " =? , " +
-            Columns.ENROLLMENT_UID + " =? , " +
+            Columns.ENROLLMENT + " =? , " +
             Columns.CREATED + " =? , " +
             Columns.LAST_UPDATED + " =? ," +
             Columns.CREATED_AT_CLIENT + " =? , " +
@@ -390,8 +390,10 @@ public class EventStoreImpl implements EventStore {
         String lastUpdatedAtClient = cursor.getString(4) == null ? null : cursor.getString(4);
         EventStatus eventStatus =
                 cursor.getString(5) == null ? null : EventStatus.valueOf(cursor.getString(5));
-        String latitude = cursor.getString(6) == null ? null : cursor.getString(6);
-        String longitude = cursor.getString(7) == null ? null : cursor.getString(7);
+        Double latitude = cursor.getString(6) == null ?
+                null : Double.parseDouble(cursor.getString(6));
+        Double longitude = cursor.getString(7) == null ?
+                null : Double.parseDouble(cursor.getString(7));
         String program = cursor.getString(8) == null ? null : cursor.getString(8);
         String programStage = cursor.getString(9) == null ? null : cursor.getString(9);
         String organisationUnit = cursor.getString(10) == null ? null : cursor.getString(10);

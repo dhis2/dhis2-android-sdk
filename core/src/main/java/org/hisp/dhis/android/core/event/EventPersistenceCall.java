@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -15,7 +16,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
-import org.hisp.dhis.android.core.user.AuthenticatedUserStoreImpl;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,7 +30,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
     private final EventHandler eventHandler;
-    private final AuthenticatedUserStore authenticatedUserStore;
+    private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
     private final SearchOrganisationUnitCall.Factory organisationUnitCallFactory;
     private final ForeignKeyCleaner foreignKeyCleaner;
@@ -41,7 +41,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
             @NonNull EventHandler eventHandler,
-            @NonNull AuthenticatedUserStore authenticatedUserStore,
+            @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
             @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
             @NonNull SearchOrganisationUnitCall.Factory organisationUnitCallFactory,
             @NonNull Collection<Event> events,
@@ -71,7 +71,8 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                 Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
 
                 if (!searchOrgUnitUids.isEmpty()) {
-                    AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.query().get(0);
+                    AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore
+                            .selectFirst(AuthenticatedUserModel.factory);
 
                     Call<List<OrganisationUnit>> organisationUnitCall = organisationUnitCallFactory.create(
                             databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
@@ -103,7 +104,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                 databaseAdapter,
                 retrofit,
                 EventHandler.create(databaseAdapter),
-                new AuthenticatedUserStoreImpl(databaseAdapter),
+                AuthenticatedUserStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
                 SearchOrganisationUnitCall.FACTORY,
                 events,

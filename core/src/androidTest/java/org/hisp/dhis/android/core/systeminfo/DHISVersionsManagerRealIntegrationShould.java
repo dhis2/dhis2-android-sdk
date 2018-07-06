@@ -20,18 +20,12 @@ public class DHISVersionsManagerRealIntegrationShould extends AbsStoreTestCase {
     }
 
     //@Test
-    public void do_not_have_available_version_before_making_first_system_info_call() {
-        d2 = D2Factory.create(RealServerMother.url2_29, databaseAdapter());
-        DHISVersionManager versionManager = d2.systemInfoModule().versionManager;
-        assertThat(versionManager.getVersion()).isNull();
-    }
-
-    //@Test
     public void return_2_29_version_when_connecting_to_2_29_server() throws Exception {
         d2 = D2Factory.create(RealServerMother.url2_29, databaseAdapter());
+        d2.wipeDB().call();
+
         DHISVersionManager versionManager = d2.systemInfoModule().versionManager;
 
-        d2.logout().call();
         d2.logIn("android", "Android123").call();
         assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_29);
         assertThat(versionManager.is2_29()).isTrue();
@@ -41,9 +35,10 @@ public class DHISVersionsManagerRealIntegrationShould extends AbsStoreTestCase {
     //@Test
     public void return_2_30_version_when_connecting_to_2_30_server() throws Exception {
         d2 = D2Factory.create(RealServerMother.url_dev, databaseAdapter());
+        d2.wipeDB().call();
+
         DHISVersionManager versionManager = d2.systemInfoModule().versionManager;
 
-        d2.logout().call();
         d2.logIn("android", "Android123").call();
         assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_30);
         assertThat(versionManager.is2_29()).isFalse();

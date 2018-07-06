@@ -9,6 +9,8 @@ import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -30,6 +32,7 @@ public class D2Factory {
                                 .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter))
                                 .addInterceptor(loggingInterceptor)
                                 .addNetworkInterceptor(new StethoInterceptor())
+                                .readTimeout(30, TimeUnit.SECONDS)
                                 .build()
                 )
                 .context(InstrumentationRegistry.getTargetContext().getApplicationContext())

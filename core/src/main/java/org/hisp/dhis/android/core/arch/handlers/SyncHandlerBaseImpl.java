@@ -25,29 +25,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.arch.handlers;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class UserHandler extends IdentifiableSyncHandlerImpl<User> {
-    private final UserCredentialsHandler userCredentialsHandler;
+import java.util.Collection;
 
-    UserHandler(IdentifiableObjectStore<User> userStore,
-                UserCredentialsHandler userCredentialsHandler) {
-        super(userStore);
-        this.userCredentialsHandler = userCredentialsHandler;
-    }
+abstract class SyncHandlerBaseImpl<O> implements SyncHandler<O> {
 
-    public static UserHandler create(DatabaseAdapter databaseAdapter) {
-        return new UserHandler(UserStore.create(databaseAdapter),
-                UserCredentialsHandler.create(databaseAdapter));
+    @Override
+    public final void handle(O o) {
+        if (o == null) {
+            return;
+        }
+        HandleAction action = deleteOrPersist(o);
+        afterObjectHandled(o, action);
     }
 
     @Override
-    protected void afterObjectHandled(User user, HandleAction action) {
-        userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
+    public final void handleMany(Collection<O> oCollection) {
+        if (oCollection != null) {
+            for(O o : oCollection) {
+                handle(o);
+            }
+            afterCollectionHandled(oCollection);
+        }
+    }
+
+    protected abstract HandleAction deleteOrPersist(O o);
+
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    protected void afterObjectHandled(O o, HandleAction action) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
+    }
+
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    protected void afterCollectionHandled(Collection<O> oCollection) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
     }
 }

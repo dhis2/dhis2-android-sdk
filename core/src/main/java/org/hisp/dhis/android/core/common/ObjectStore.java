@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
 
 import java.util.Set;
 
-public interface ObjectStore<M extends BaseModel> extends DeletableStore {
+public interface ObjectStore<M> extends DeletableStore {
 
     long insert(@NonNull M m) throws RuntimeException;
 

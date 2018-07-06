@@ -25,29 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.arch.handlers;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import java.util.Collection;
 
-public class UserHandler extends IdentifiableSyncHandlerImpl<User> {
-    private final UserCredentialsHandler userCredentialsHandler;
+public interface SyncHandler<O> {
 
-    UserHandler(IdentifiableObjectStore<User> userStore,
-                UserCredentialsHandler userCredentialsHandler) {
-        super(userStore);
-        this.userCredentialsHandler = userCredentialsHandler;
-    }
+    void handle(O o);
 
-    public static UserHandler create(DatabaseAdapter databaseAdapter) {
-        return new UserHandler(UserStore.create(databaseAdapter),
-                UserCredentialsHandler.create(databaseAdapter));
-    }
-
-    @Override
-    protected void afterObjectHandled(User user, HandleAction action) {
-        userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
-    }
+    void handleMany(Collection<O> oCollection);
 }

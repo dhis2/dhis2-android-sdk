@@ -25,29 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.arch.handlers;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 
-public class UserHandler extends IdentifiableSyncHandlerImpl<User> {
-    private final UserCredentialsHandler userCredentialsHandler;
+import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-    UserHandler(IdentifiableObjectStore<User> userStore,
-                UserCredentialsHandler userCredentialsHandler) {
-        super(userStore);
-        this.userCredentialsHandler = userCredentialsHandler;
-    }
+public class IdentifiableSyncHandlerImpl<O extends IdentifiableObject & ObjectWithDeleteInterface>
+        extends SyncHandlerBaseImpl<O> {
 
-    public static UserHandler create(DatabaseAdapter databaseAdapter) {
-        return new UserHandler(UserStore.create(databaseAdapter),
-                UserCredentialsHandler.create(databaseAdapter));
+    private final IdentifiableObjectStore<O> store;
+
+    public IdentifiableSyncHandlerImpl(IdentifiableObjectStore<O> store) {
+        this.store = store;
     }
 
     @Override
-    protected void afterObjectHandled(User user, HandleAction action) {
-        userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
+    protected HandleAction deleteOrPersist(O o) {
+        String modelUid = o.uid();
+        if ((isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
+            store.deleteIfExists(modelUid);
+            return HandleAction.Delete;
+        } else {
+            return store.updateOrInsert(o);
+        }
+    }
+
+    protected boolean deleteIfCondition(O o) {
+        return false;
     }
 }

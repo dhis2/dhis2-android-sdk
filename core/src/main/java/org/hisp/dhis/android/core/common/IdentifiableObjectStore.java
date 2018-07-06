@@ -32,19 +32,19 @@ import android.support.annotation.NonNull;
 
 import java.util.Set;
 
-public interface IdentifiableObjectStore<M extends BaseIdentifiableObjectModel> extends ObjectStore<M> {
+public interface IdentifiableObjectStore<O extends IdentifiableObject> extends ObjectStore<O> {
 
     void delete(@NonNull String uid) throws RuntimeException;
 
     void deleteIfExists(@NonNull String uid) throws RuntimeException;
 
-    void update(@NonNull M m) throws RuntimeException;
+    void update(@NonNull O o) throws RuntimeException;
 
-    HandleAction updateOrInsert(@NonNull M m) throws RuntimeException;
+    HandleAction updateOrInsert(@NonNull O o) throws RuntimeException;
 
     Set<String> selectUids() throws RuntimeException;
 
     Set<String> selectUidsWhere(String whereClause) throws RuntimeException;
 
-    M selectByUid(String uid, CursorModelFactory<M> modelFactory) throws RuntimeException;
+    O selectByUid(String uid, CursorModelFactory<O> modelFactory) throws RuntimeException;
 }

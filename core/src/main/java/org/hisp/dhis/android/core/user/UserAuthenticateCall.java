@@ -31,13 +31,13 @@ package org.hisp.dhis.android.core.user;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.WipeDBCallable;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.BasicCallFactory;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -60,7 +60,7 @@ import static okhttp3.Credentials.basic;
 import static org.hisp.dhis.android.core.utils.UserUtils.base64;
 import static org.hisp.dhis.android.core.utils.UserUtils.md5;
 
-public final class UserAuthenticateCall extends SyncCall<UserModel> {
+public final class UserAuthenticateCall extends SyncCall<User> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
@@ -70,11 +70,11 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
     // retrofit service
     private final UserService userService;
 
-    private final GenericHandler<User, UserModel> userHandler;
+    private final SyncHandler<User> userHandler;
     private final ResourceHandler resourceHandler;
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
     private final ObjectWithoutUidStore<SystemInfoModel> systemInfoStore;
-    private final IdentifiableObjectStore<UserModel> userStore;
+    private final IdentifiableObjectStore<User> userStore;
     private final Callable<Unit> dbWipe;
 
     // username and password of candidate
@@ -87,11 +87,11 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
             @NonNull Retrofit retrofit,
             @NonNull BasicCallFactory<SystemInfo> systemInfoCallFactory,
             @NonNull UserService userService,
-            @NonNull GenericHandler<User, UserModel> userHandler,
+            @NonNull SyncHandler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
             @NonNull ObjectWithoutUidStore<SystemInfoModel> systemInfoStore,
-            @NonNull IdentifiableObjectStore<UserModel> userStore,
+            @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull Callable<Unit> dbWipe,
             @NonNull String username,
             @NonNull String password,
@@ -116,13 +116,14 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
     }
 
     @Override
-    public UserModel call() throws D2CallException {
+    public User call() throws D2CallException {
         setExecuted();
         throwExceptionIfUsernameNull();
         throwExceptionIfPasswordNull();
         throwExceptionIfAlreadyAuthenticated();
 
-        Call<User> authenticateCall = userService.authenticate(basic(username, password), User.allFieldsWithoutOrgUnit);
+        Call<User> authenticateCall =
+                userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
 
         try {
             User authenticatedUser = new APICallExecutor().executeObjectCall(authenticateCall);
@@ -137,7 +138,7 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
         }
     }
 
-    private UserModel loginOnline(User authenticatedUser) throws D2CallException {
+    private User loginOnline(User authenticatedUser) throws D2CallException {
         if (wasLoggedAndUserIsNew(authenticatedUser) || wasLoggedAndServerIsNew()) {
             new D2CallExecutor().executeD2Call(dbWipe);
         }
@@ -150,13 +151,13 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
                     .create(databaseAdapter, retrofit));
             handleUser(authenticatedUser, GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate()));
             transaction.setSuccessful();
-            return new UserModelBuilder().buildModel(authenticatedUser);
+            return authenticatedUser;
         } finally {
             transaction.end();
         }
     }
 
-    private UserModel loginOffline() throws D2CallException {
+    private User loginOffline() throws D2CallException {
         if (wasLoggedAndServerIsNew()) {
             throw D2CallException.builder()
                     .errorCode(D2ErrorCode.DIFFERENT_SERVER_OFFLINE)
@@ -192,7 +193,7 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
             transaction.end();
         }
 
-        return userStore.selectByUid(existingUser.user(), UserModel.factory);
+        return userStore.selectByUid(existingUser.user(), User.factory);
     }
 
     private void throwExceptionIfUsernameNull() throws D2CallException {
@@ -227,7 +228,7 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
     }
 
     private boolean wasLoggedAndUserIsNew(User newUser) {
-        UserModel lastUser = userStore.selectFirst(UserModel.factory);
+        User lastUser = userStore.selectFirst(User.factory);
         return lastUser != null && !lastUser.uid().equals(newUser.uid());
     }
 
@@ -237,7 +238,7 @@ public final class UserAuthenticateCall extends SyncCall<UserModel> {
     }
 
     private void handleUser(User user, GenericCallData genericCallData) {
-        userHandler.handle(user, new UserModelBuilder());
+        userHandler.handle(user);
         resourceHandler.handleResource(ResourceModel.Type.USER, genericCallData.serverDate());
         resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, genericCallData.serverDate());
         resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, genericCallData.serverDate());

@@ -25,29 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.data.database;
 
-public class UserHandler extends IdentifiableSyncHandlerImpl<User> {
-    private final UserCredentialsHandler userCredentialsHandler;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-    UserHandler(IdentifiableObjectStore<User> userStore,
-                UserCredentialsHandler userCredentialsHandler) {
-        super(userStore);
-        this.userCredentialsHandler = userCredentialsHandler;
-    }
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-    public static UserHandler create(DatabaseAdapter databaseAdapter) {
-        return new UserHandler(UserStore.create(databaseAdapter),
-                UserCredentialsHandler.create(databaseAdapter));
+public abstract class IgnoreColumnAdapter<T> implements ColumnTypeAdapter<T> {
+
+    @Override
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    public final T fromCursor(Cursor cursor, String columnName) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
+        return null;
     }
 
     @Override
-    protected void afterObjectHandled(User user, HandleAction action) {
-        userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    public final void toContentValues(ContentValues values, String columnName, T value) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
     }
 }

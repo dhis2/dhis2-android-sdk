@@ -31,12 +31,12 @@ package org.hisp.dhis.android.core.user;
 import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -44,11 +44,11 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 public final class UserCall extends SyncCall<User> {
     private final GenericCallData genericCallData;
     private final UserService userService;
-    private final GenericHandler<User, UserModel> userHandler;
+    private final SyncHandler<User> userHandler;
 
     UserCall(GenericCallData genericCallData,
              UserService userService,
-             GenericHandler<User, UserModel> userHandler) {
+             SyncHandler<User> userHandler) {
         this.genericCallData = genericCallData;
         this.userService = userService;
         this.userHandler = userHandler;
@@ -58,10 +58,10 @@ public final class UserCall extends SyncCall<User> {
     public User call() throws D2CallException {
         setExecuted();
 
-        User user = new APICallExecutor().executeObjectCall(userService.getUser(User.allFieldsWithOrgUnit));
+        User user = new APICallExecutor().executeObjectCall(userService.getUser(UserFields.allFieldsWithOrgUnit));
         Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
         try {
-            userHandler.handle(user, new UserModelBuilder());
+            userHandler.handle(user);
             genericCallData.resourceHandler().handleResource(ResourceModel.Type.USER, genericCallData.serverDate());
 
             transaction.setSuccessful();

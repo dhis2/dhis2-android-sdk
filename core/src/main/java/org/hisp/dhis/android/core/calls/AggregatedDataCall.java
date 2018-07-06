@@ -125,7 +125,7 @@ public final class AggregatedDataCall extends SyncCall<Void> {
         return new AggregatedDataCall(
                 databaseAdapter,
                 retrofit,
-                internalModules.systemInfo.CALL_FACTORY,
+                internalModules.systemInfo.callFactory,
                 DataValueEndpointCall.FACTORY,
                 DataSetStore.create(databaseAdapter),
                 PeriodStore.create(databaseAdapter),

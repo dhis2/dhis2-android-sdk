@@ -40,13 +40,14 @@ public final class SystemInfoInternalModule implements WipeableModule {
     private final Retrofit retrofit;
     public final SystemInfoModule publicModule;
 
-    private SystemInfoInternalModule(DatabaseAdapter databaseAdapter, Retrofit retrofit, SystemInfoModule publicModule) {
+    private SystemInfoInternalModule(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+                                     SystemInfoModule publicModule) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.publicModule = publicModule;
     }
 
-    public final NoArgumentsCallFactory<SystemInfo> CALL_FACTORY = new NoArgumentsCallFactory<SystemInfo>() {
+    public final NoArgumentsCallFactory<SystemInfo> callFactory = new NoArgumentsCallFactory<SystemInfo>() {
         @Override
         public Call<SystemInfo> create() {
             return SystemInfoCall.create(databaseAdapter, retrofit, publicModule.versionManager);

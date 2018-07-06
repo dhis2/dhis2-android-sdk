@@ -140,7 +140,7 @@ public class MetadataCall extends SyncCall<Unit> {
         return new MetadataCall(
                 databaseAdapter,
                 retrofit,
-                internalModules.systemInfo.CALL_FACTORY,
+                internalModules.systemInfo.callFactory,
                 SystemSettingCall.FACTORY,
                 UserCall.FACTORY,
                 CategoryEndpointCall.FACTORY,

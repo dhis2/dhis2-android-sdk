@@ -93,7 +93,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
                 .build();
 
         SystemInfoInternalModule systemInfoInternalModule = SystemInfoInternalModule.create(databaseAdapter(), retrofit);
-        systeminfoCall = systemInfoInternalModule.CALL_FACTORY.create();
+        systeminfoCall = systemInfoInternalModule.callFactory.create();
     }
 
     @Test

@@ -31,7 +31,10 @@ package org.hisp.dhis.android.core.systeminfo;
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.data.api.Fields;
 
-class SystemInfoFields {
+final class SystemInfoFields {
+
+    private SystemInfoFields() {
+    }
 
     interface Properties {
         String SERVER_DATE = "serverDate";

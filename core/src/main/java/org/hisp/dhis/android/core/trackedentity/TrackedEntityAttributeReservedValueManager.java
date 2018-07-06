@@ -179,7 +179,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         return new TrackedEntityAttributeReservedValueManager(
                 databaseAdapter,
                 retrofit,
-                internalModules.systemInfo.CALL_FACTORY,
+                internalModules.systemInfo.callFactory,
                 TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
         new TrackedEntityAttributeStoreImpl(databaseAdapter));

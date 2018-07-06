@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.arch.db;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.ObjectStore;
 
 public interface TableInfo {
 

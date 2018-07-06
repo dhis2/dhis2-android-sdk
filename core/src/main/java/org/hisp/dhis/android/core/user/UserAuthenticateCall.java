@@ -259,7 +259,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         return new UserAuthenticateCall(
                 databaseAdapter,
                 retrofit,
-                internalModules.systemInfo.CALL_FACTORY,
+                internalModules.systemInfo.callFactory,
                 retrofit.create(UserService.class),
                 UserHandler.create(databaseAdapter),
                 ResourceHandler.create(databaseAdapter),

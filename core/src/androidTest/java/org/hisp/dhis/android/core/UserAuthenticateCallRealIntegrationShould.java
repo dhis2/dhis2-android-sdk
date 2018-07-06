@@ -21,7 +21,6 @@ public class UserAuthenticateCallRealIntegrationShould extends AbsStoreTestCase 
 
     //@Test
     public void not_wipe_after_second_login_with_same_user() throws Exception {
-        d2.logout().call();
         d2.logIn("android", "Android123").call();
 
         d2.syncMetaData().call();
@@ -32,7 +31,6 @@ public class UserAuthenticateCallRealIntegrationShould extends AbsStoreTestCase 
 
     //@Test
     public void wipe_after_second_login_with_different_user() throws Exception {
-        d2.logout().call();
         d2.logIn("android", "Android123").call();
 
         d2.syncMetaData().call();
@@ -45,7 +43,6 @@ public class UserAuthenticateCallRealIntegrationShould extends AbsStoreTestCase 
     public void wipe_after_second_login_with_equivalent_user_in_different_server() throws Exception {
         d2 = D2Factory.create("https://play.dhis2.org/2.29/api/", databaseAdapter());
 
-        d2.logout().call();
         d2.logIn("android", "Android123").call();
 
         d2.syncMetaData().call();

@@ -45,7 +45,6 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
     //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
     //@Test
     public void response_successful_on_sync_data_once() throws Exception {
-        d2.logout().call();
         d2.logIn("android", "Android123").call();
 
         d2.syncMetaData().call();
@@ -54,7 +53,6 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
 
     //@Test
     public void response_successful_on_sync_data_value_two_times() throws Exception {
-        d2.logout().call();
         d2.logIn("android", "Android123").call();
 
         d2.syncMetaData().call();

@@ -28,56 +28,81 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
 @AutoValue
-public abstract class SystemInfo {
-    private static final String SERVER_DATE_TIME = "serverDate";
-    private static final String DATE_FORMAT = "dateFormat";
-    private static final String VERSION = "version";
-    private static final String CONTEXT_PATH = "contextPath";
-
-
-    static final Field<SystemInfo, String> serverDateTime = Field.create(SERVER_DATE_TIME);
-    static final Field<SystemInfo, String> dateFormat = Field.create(DATE_FORMAT);
-    static final Field<SystemInfo, String> version = Field.create(VERSION);
-    static final Field<SystemInfo, String> contextPath = Field.create(CONTEXT_PATH);
-
-    public static final Fields<SystemInfo> allFields = Fields.<SystemInfo>builder().fields(
-            serverDateTime, dateFormat, version, contextPath).build();
+@JsonDeserialize(builder = AutoValue_SystemInfo.Builder.class)
+public abstract class SystemInfo extends BaseModel {
 
     @Nullable
-    @JsonProperty(SERVER_DATE_TIME)
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date serverDate();
 
     @Nullable
-    @JsonProperty(DATE_FORMAT)
     public abstract String dateFormat();
 
     @Nullable
-    @JsonProperty(VERSION)
     public abstract String version();
 
     @Nullable
-    @JsonProperty(CONTEXT_PATH)
     public abstract String contextPath();
 
-    @JsonCreator
-    public static SystemInfo create(
-            @JsonProperty(SERVER_DATE_TIME) Date serverDate,
-            @JsonProperty(DATE_FORMAT) String dateFormat,
-            @JsonProperty(VERSION) String version,
-            @JsonProperty(CONTEXT_PATH) String contextPath) {
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, serverDate());
+        sqLiteBind(sqLiteStatement, 2, dateFormat());
+        sqLiteBind(sqLiteStatement, 3, version());
+        sqLiteBind(sqLiteStatement, 4, contextPath());
+    }
 
-        return new AutoValue_SystemInfo(serverDate, dateFormat, version, contextPath);
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 5, contextPath());
+    }
+
+    @NonNull
+    public static SystemInfo create(Cursor cursor) {
+        return AutoValue_SystemInfo.createFromCursor(cursor);
+    }
+
+    public static final CursorModelFactory<SystemInfo> factory = new CursorModelFactory<SystemInfo>() {
+        @Override
+        public SystemInfo fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
+
+    public static Builder builder() {
+        return new AutoValue_SystemInfo.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseModel.Builder<SystemInfo.Builder> {
+        public abstract Builder serverDate(Date serverDate);
+
+        public abstract Builder dateFormat(String dateFormat);
+
+        public abstract Builder version(String version);
+
+        public abstract Builder contextPath(String contextPath);
+
+        public abstract SystemInfo build();
     }
 }

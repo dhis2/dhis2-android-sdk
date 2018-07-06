@@ -32,7 +32,6 @@ import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -45,6 +44,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -110,7 +110,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
     };
 
     private Dhis2MockServer dhis2MockServer;
-    private Call<User> authenticateUserCall;
+    private Callable<User> authenticateUserCall;
 
     @Before
     @Override
@@ -124,8 +124,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         dhis2MockServer.enqueueMockResponse("user.json");
         dhis2MockServer.enqueueMockResponse("system_info.json");
 
-        authenticateUserCall = UserAuthenticateCall.create(databaseAdapter(), d2.retrofit(),
-                "test_user", "test_password");
+        authenticateUserCall = d2.logIn("test_user", "test_password");
     }
 
     @Test

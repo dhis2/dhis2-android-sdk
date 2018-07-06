@@ -25,20 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
+import org.hisp.dhis.android.core.common.WipeableModule;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class SystemInfoModelBuilder extends ModelBuilder<SystemInfo, SystemInfoModel> {
+import retrofit2.Retrofit;
+
+public final class SystemInfoInternalModule implements WipeableModule {
+
+    private final DatabaseAdapter databaseAdapter;
+    private final Retrofit retrofit;
+    public final SystemInfoModule publicModule;
+
+    private SystemInfoInternalModule(DatabaseAdapter databaseAdapter, Retrofit retrofit, SystemInfoModule publicModule) {
+        this.databaseAdapter = databaseAdapter;
+        this.retrofit = retrofit;
+        this.publicModule = publicModule;
+    }
+
+    public final NoArgumentsCallFactory<SystemInfo> CALL_FACTORY = new NoArgumentsCallFactory<SystemInfo>() {
+        @Override
+        public Call<SystemInfo> create() {
+            return SystemInfoCall.create(databaseAdapter, retrofit, publicModule.versionManager);
+        }
+    };
 
     @Override
-    public SystemInfoModel buildModel(SystemInfo systemInfo) {
-        return SystemInfoModel.builder()
-                .serverDate(systemInfo.serverDate())
-                .dateFormat(systemInfo.dateFormat())
-                .version(systemInfo.version())
-                .contextPath(systemInfo.contextPath())
-                .build();
+    public void wipeModuleTables() {
+        SystemInfoStore.create(databaseAdapter).delete();
+    }
+
+    public static SystemInfoInternalModule create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
+        return new SystemInfoInternalModule(
+                databaseAdapter,
+                retrofit,
+                SystemInfoModule.create(databaseAdapter)
+        );
     }
 }

@@ -27,15 +27,38 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-final class SystemInfoHandler {
+public class DHISVersionManager {
 
-    private SystemInfoHandler() {}
+    private DHISVersion version;
 
-    public static SyncHandler<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
+    private DHISVersionManager(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
+        SystemInfo systemInfoModel = systemInfoStore.selectFirst(SystemInfo.factory);
+
+        if (systemInfoModel != null && systemInfoModel.version() != null) {
+            version = DHISVersion.getValue(systemInfoModel.version());
+        }
+    }
+
+    public DHISVersion getVersion() {
+        return version;
+    }
+
+    public boolean is2_29() {
+        return version == DHISVersion.V2_29;
+    }
+
+    public boolean is2_30() {
+        return version == DHISVersion.V2_30;
+    }
+
+    void setVersion(String versionStr) {
+        this.version = DHISVersion.getValue(versionStr);
+    }
+
+    static DHISVersionManager create(DatabaseAdapter databaseAdapter) {
+        return new DHISVersionManager(SystemInfoStore.create(databaseAdapter));
     }
 }

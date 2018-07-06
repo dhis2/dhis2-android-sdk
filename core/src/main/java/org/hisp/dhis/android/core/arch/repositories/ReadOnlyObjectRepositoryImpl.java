@@ -25,17 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.arch.repositories;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
-final class SystemInfoHandler {
+public final class ReadOnlyObjectRepositoryImpl<M extends BaseModel> implements ReadOnlyObjectRepository<M> {
 
-    private SystemInfoHandler() {}
+    private final ObjectStore<M> store;
+    private final CursorModelFactory<M> modelFactory;
 
-    public static SyncHandler<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
+    public ReadOnlyObjectRepositoryImpl(ObjectStore<M> store, CursorModelFactory<M> modelFactory) {
+        this.store = store;
+        this.modelFactory = modelFactory;
+    }
+
+    public M get() {
+        return this.store.selectFirst(this.modelFactory);
     }
 }

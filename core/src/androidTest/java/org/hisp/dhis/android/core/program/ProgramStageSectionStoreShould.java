@@ -97,7 +97,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
         super.setUp();
         this.store = new ProgramStageSectionStoreImpl(databaseAdapter());
 
-        //Create Program & insert a row in the table.
+        //Create Program & insert a row in the name.
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);
@@ -106,7 +106,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
         database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
-        //Create ProgramStage & insert a row in the table:
+        //Create ProgramStage & insert a row in the name:
         ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
         database().insert(ProgramStageModel.TABLE, null, programStage);
     }

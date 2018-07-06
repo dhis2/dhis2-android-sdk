@@ -97,7 +97,7 @@ public class ProgramRuleStoreShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
         this.store = new ProgramRuleStoreImpl(databaseAdapter());
-        //Create Program & insert a row in the table.
+        //Create Program & insert a row in the name.
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);

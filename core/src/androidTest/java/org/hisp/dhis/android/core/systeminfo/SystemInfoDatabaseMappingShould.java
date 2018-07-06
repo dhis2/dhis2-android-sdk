@@ -33,67 +33,47 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoModel.Columns;
+import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo.Columns;
+import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class SystemInfoModelShould {
-    private static final long ID = 1L;
-    private static final String DATE_FORMAT = "testDateFormat";
-    private static final String VERSION = "test.version-SNAPSHOT";
-    private static final String CONTEXT_PATH = "https://test.context.com/path";
+public class SystemInfoDatabaseMappingShould {
 
-    private final Date date;
+    private final SystemInfo systemInfo = SystemInfoSamples.get1();
     private final String dateString;
 
-    public SystemInfoModelShould() {
-        this.date = new Date();
-        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    public SystemInfoDatabaseMappingShould() {
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(systemInfo.serverDate());
     }
 
     @Test
-    public void create_model_when_created_from_database_cursor() {
-        MatrixCursor cursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.SERVER_DATE,
-                Columns.DATE_FORMAT,
-                Columns.VERSION,
-                Columns.CONTEXT_PATH
-        });
-        cursor.addRow(new Object[]{ID, dateString, DATE_FORMAT, VERSION, CONTEXT_PATH});
+    public void map_cursor_to_object() {
+        String[] columnsWithId = Utils.appendInNewArray(SystemInfoTableInfo.TABLE_INFO.columns().all(),
+                SystemInfoTableInfo.Columns.ID);
+        MatrixCursor cursor = new MatrixCursor(columnsWithId);
+
+        cursor.addRow(new Object[]{dateString, systemInfo.dateFormat(),
+                systemInfo.version(), systemInfo.contextPath(), systemInfo.id()});
         cursor.moveToFirst();
 
-        SystemInfoModel systemInfoModel = SystemInfoModel.create(cursor);
+        SystemInfo dbSystemInfo = SystemInfo.create(cursor);
         cursor.close();
 
-        assertThat(systemInfoModel.id()).isEqualTo(ID);
-        assertThat(systemInfoModel.serverDate()).isEqualTo(date);
-        assertThat(systemInfoModel.dateFormat()).isEqualTo(DATE_FORMAT);
-        assertThat(systemInfoModel.version()).isEqualTo(VERSION);
-        assertThat(systemInfoModel.contextPath()).isEqualTo(CONTEXT_PATH);
+        assertThat(dbSystemInfo).isEqualTo(systemInfo);
     }
 
     @Test
-    public void create_content_values_when_created_from_builder() {
-        SystemInfoModel model = SystemInfoModel.builder()
-                .id(ID)
-                .serverDate(date)
-                .dateFormat(DATE_FORMAT)
-                .version(VERSION)
-                .contextPath(CONTEXT_PATH)
-                .build();
-
-        ContentValues contentValues = model.toContentValues();
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
+    public void map_object_to_content_values() {
+        ContentValues contentValues = systemInfo.toContentValues();
+        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(systemInfo.id());
         assertThat(contentValues.getAsString(Columns.SERVER_DATE)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.DATE_FORMAT)).isEqualTo(DATE_FORMAT);
-        assertThat(contentValues.getAsString(Columns.CONTEXT_PATH)).isEqualTo(CONTEXT_PATH);
-        assertThat(contentValues.getAsString(Columns.VERSION)).isEqualTo(VERSION);
+        assertThat(contentValues.getAsString(Columns.DATE_FORMAT)).isEqualTo(systemInfo.dateFormat());
+        assertThat(contentValues.getAsString(Columns.CONTEXT_PATH)).isEqualTo(systemInfo.contextPath());
+        assertThat(contentValues.getAsString(Columns.VERSION)).isEqualTo(systemInfo.version());
     }
 }

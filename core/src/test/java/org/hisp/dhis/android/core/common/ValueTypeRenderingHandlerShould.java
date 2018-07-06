@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 public class ValueTypeRenderingHandlerShould {
 
     private static final String UID = "uid";
-    private static final String TABLE = "table";
+    private static final String TABLE = "name";
     
     @Mock
     private GenericHandler<ValueTypeDeviceRendering, ValueTypeDeviceRenderingModel> deviceRenderingHandler;

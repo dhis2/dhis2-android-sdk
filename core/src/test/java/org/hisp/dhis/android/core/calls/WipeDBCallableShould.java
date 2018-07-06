@@ -69,7 +69,7 @@ public class WipeDBCallableShould {
     @Mock
     private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
 
-    private Callable<Unit> logOutUserCallable;
+    private Callable<Unit> WipeDBCallable;
 
     @Before
     public void setUp() throws Exception {
@@ -81,12 +81,12 @@ public class WipeDBCallableShould {
         deletableStoreList.add(userOrganisationUnitLinkStore);
         deletableStoreList.add(authenticatedUserStore);
         deletableStoreList.add(organisationUnitStore);
-        logOutUserCallable = new WipeDBCallable(deletableStoreList);
+        WipeDBCallable = new WipeDBCallable(deletableStoreList);
     }
 
     @Test
-    public void clear_tables_on_log_out() throws Exception {
-        logOutUserCallable.call();
+    public void clear_tables() throws Exception {
+        WipeDBCallable.call();
 
         verify(userStore).delete();
         verify(userCredentialsStore).delete();

@@ -41,7 +41,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class RelationshipModelShould {
-    //table id:
+    //name id:
     private static final long ID = 11L;
     //from BaseDataModel:
     private static final State STATE = State.SYNCED;

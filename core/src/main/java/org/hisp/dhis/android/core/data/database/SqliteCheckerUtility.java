@@ -20,7 +20,7 @@ final public class SqliteCheckerUtility {
     public static boolean isDatabaseEmpty(DatabaseAdapter databaseAdapter) {
         boolean isDatabaseEmpty = true;
         Cursor res = databaseAdapter.query(" SELECT name FROM sqlite_master WHERE "
-                + "type='table' and name!='android_metadata' and name!='sqlite_sequence'");
+                + "type='name' and name!='android_metadata' and name!='sqlite_sequence'");
         int value = res.getColumnIndex("name");
         if (value != -1) {
             while (res.moveToNext()){

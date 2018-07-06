@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
 import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
@@ -12,6 +13,7 @@ import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.ObjectStyleStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingStore;
+import org.hisp.dhis.android.core.common.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkStore;
@@ -48,7 +50,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipStore;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.settings.SystemSettingStore;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
@@ -70,21 +71,28 @@ public final class WipeDBCallable implements Callable<Unit> {
 
     @NonNull
     private final List<DeletableStore> deletableStores;
+    private final WipeableModule[] wipeableModules;
 
-    WipeDBCallable(@NonNull List<DeletableStore> deletableStores) {
+    WipeDBCallable(@NonNull List<DeletableStore> deletableStores, WipeableModule... wipeableModules) {
         this.deletableStores = deletableStores;
+        this.wipeableModules = wipeableModules;
     }
 
     @Override
-    public Unit call() throws Exception {
+    public Unit call() {
         // clear out all tables
         for (DeletableStore deletableStore : deletableStores) {
             deletableStore.delete();
         }
+
+        for (WipeableModule wipeableModule : wipeableModules) {
+            wipeableModule.wipeModuleTables();
+        }
+
         return new Unit();
     }
 
-    public static WipeDBCallable create(DatabaseAdapter databaseAdapter) {
+    public static WipeDBCallable create(DatabaseAdapter databaseAdapter, D2InternalModules internalModules) {
 
         List<DeletableStore> deletableStores = Arrays.asList(
                 UserStore.create(databaseAdapter),
@@ -93,7 +101,6 @@ public final class WipeDBCallable implements Callable<Unit> {
                 AuthenticatedUserStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
                 new ResourceStoreImpl(databaseAdapter),
-                SystemInfoStore.create(databaseAdapter),
                 new UserRoleStoreImpl(databaseAdapter),
                 ProgramStore.create(databaseAdapter),
                 new TrackedEntityAttributeStoreImpl(databaseAdapter),
@@ -149,6 +156,6 @@ public final class WipeDBCallable implements Callable<Unit> {
                 SectionDataElementLinkStore.create(databaseAdapter)
         );
 
-        return new WipeDBCallable(deletableStores);
+        return new WipeDBCallable(deletableStores, internalModules.systemInfo);
     }
 }

@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.utils.services;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApiPagingEngine {
+public final class ApiPagingEngine {
+
+    private ApiPagingEngine(){}
 
     public static List<Paging> getPaginationList(int currentPageSize, int itemsCount)
             throws IllegalArgumentException {

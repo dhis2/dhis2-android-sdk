@@ -84,7 +84,6 @@ public class EventEndpointCallShould extends BaseCallShould {
                 .create()
                 .withPage(page)
                 .withPageSize(pageCount)
-                .withPageLimit(pageCount)
                 .withPaging(true)
                 .build();
 

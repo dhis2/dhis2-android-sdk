@@ -72,7 +72,7 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
 
         database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
 
-        // trying to configure configuration with server url (which is set to be unique in the name)
+        // trying to configure configuration with server url (which is set to be unique in the table)
         long rowId = store.save("http://testserver.org/");
 
         Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,

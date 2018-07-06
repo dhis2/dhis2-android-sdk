@@ -116,7 +116,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
         this.store = new EnrollmentStoreImpl(databaseAdapter());
-        //Create Program & insert a row in the name.
+        //Create Program & insert a row in the table.
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);

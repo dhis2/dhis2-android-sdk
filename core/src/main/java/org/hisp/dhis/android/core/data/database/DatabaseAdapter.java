@@ -67,7 +67,7 @@ public interface DatabaseAdapter {
      * Execute {@code statement} and return the ID of the row inserted due to this call.
      * The SQL statement should be an INSERT for this to be a useful call.
      *
-     * @param table           The affected name
+     * @param table           The affected table
      * @param sqLiteStatement The SQL statement to execute
      * @return the row ID of the last row inserted, if this insert is successful. -1 otherwise.
      * @throws android.database.SQLException If the SQL string is invalid
@@ -79,7 +79,7 @@ public interface DatabaseAdapter {
      * Execute this SQL statement, if the the number of rows affected by execution of this SQL
      * statement is of any importance to the caller - for example, UPDATE / DELETE SQL statements.
      *
-     * @param table           The affected name
+     * @param table           The affected table
      * @param sqLiteStatement The SQL statement to execute
      * @return the number of rows affected by this SQL statement execution.
      * @throws android.database.SQLException If the SQL string is invalid for
@@ -90,23 +90,23 @@ public interface DatabaseAdapter {
     /**
      * Convenience method for deleting rows in the database.
      *
-     * @param table       The affected name
+     * @param table       The affected table
      * @param whereClause the optional WHERE clause to apply when deleting.
      *                    Passing null will delete all rows.
      * @param whereArgs   You may include ?s in the where clause, which
      *                    will be replaced by the values from whereArgs. The values
      *                    will be bound as Strings.
      * @return the number of rows affected if a whereClause is passed in, 0
-     * otherwise. To remove all rows and systemInfo a count pass "1" as the
+     * otherwise. To remove all rows and get a count pass "1" as the
      * whereClause.
      */
     int delete(String table, String whereClause, String[] whereArgs);
 
 
     /**
-     * Convenience method for deleting all rows in a name.
+     * Convenience method for deleting all rows in a table.
      *
-     * @param table The affected name
+     * @param table The affected table
      */
     int delete(String table);
 

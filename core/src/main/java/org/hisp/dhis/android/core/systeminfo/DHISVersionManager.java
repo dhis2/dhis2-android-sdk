@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.systeminfo;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+@SuppressWarnings({"PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal"})
 public class DHISVersionManager {
 
     private DHISVersion version;

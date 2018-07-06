@@ -66,7 +66,7 @@ public class ConfigurationStoreImpl implements ConfigurationStore {
     public long save(@NonNull String serverUrl) {
         isNull(serverUrl);
 
-        delete(); // Delete all rows from name. We only allow one row.
+        delete(); // Delete all rows from table. We only allow one row.
         sqLiteBind(insertStatement, 1, CONFIGURATION_ID);
         sqLiteBind(insertStatement, 2, serverUrl);
 

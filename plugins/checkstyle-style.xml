@@ -36,6 +36,7 @@
         <module name="EqualsHashCode"/>
         <module name="IllegalInstantiation"/>
         <module name="HideUtilityClassConstructor"/>
+        <module name="InterfaceIsType"/>
         <module name="ArrayTypeStyle"/>
     </module>
 </module>

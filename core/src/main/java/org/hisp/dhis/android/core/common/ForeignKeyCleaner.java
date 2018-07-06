@@ -94,8 +94,8 @@ public class ForeignKeyCleaner {
         int rowsAffected = databaseAdapter.delete(tableName, deleteClause, argumentValuesArray);
         if (rowsAffected != 0) {
             String msg = " was not persisted on " + tableName +
-                    " name to avoid Foreign Key constraint error. Target not found on "
-                    + referencedTableName + " name.";
+                    " table to avoid Foreign Key constraint error. Target not found on "
+                    + referencedTableName + " table.";
             String warningMsg;
             if (uid == null) {
                 warningMsg = "An object" + msg;

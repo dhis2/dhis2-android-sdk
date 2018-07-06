@@ -358,7 +358,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     public void delete_program_stage_data_element_in_data_base_when_delete_program_stage_section() {
         String programStageUid = "test_programStageUid";
 
-        //Create Program & insert a row in the name.
+        //Create Program & insert a row in the table.
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
         ContentValues relationshipType = CreateRelationshipTypeUtils.create(RELATIONSHIP_TYPE_ID,
                 RELATIONSHIP_TYPE_UID);

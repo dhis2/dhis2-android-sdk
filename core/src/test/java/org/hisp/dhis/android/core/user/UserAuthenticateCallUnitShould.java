@@ -235,7 +235,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         verifyNoTransactionStarted();
 
         // stores must not be invoked
-        verify(authenticatedUserStore).selectAll(any(CursorModelFactory.class));
+        verify(authenticatedUserStore).selectFirst(any(CursorModelFactory.class));
         verifyNoMoreInteractions(authenticatedUserStore);
         verifyNoMoreInteractions(userHandler);
     }

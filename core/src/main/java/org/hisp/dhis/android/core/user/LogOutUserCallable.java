@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 public class LogOutUserCallable implements Callable<Unit> {
@@ -50,10 +49,9 @@ public class LogOutUserCallable implements Callable<Unit> {
 
     @Override
     public Unit call() throws Exception {
-        Set<AuthenticatedUserModel> authenticatedUsers = this.authenticatedUserStore
-                .selectAll(AuthenticatedUserModel.factory);
+        AuthenticatedUserModel existingUser = this.authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
 
-        if (authenticatedUsers.isEmpty()) {
+        if (existingUser == null) {
             throw D2CallException.builder()
                     .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
                     .errorDescription("There is not any authenticated user")
@@ -61,7 +59,6 @@ public class LogOutUserCallable implements Callable<Unit> {
                     .build();
         }
 
-        AuthenticatedUserModel existingUser = authenticatedUsers.iterator().next();
         AuthenticatedUserModel loggedOutUser =
                 AuthenticatedUserModel.builder()
                 .user(existingUser.user())

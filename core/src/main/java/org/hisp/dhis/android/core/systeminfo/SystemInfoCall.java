@@ -67,7 +67,9 @@ class SystemInfoCall extends SyncCall<SystemInfo> {
         SystemInfo systemInfo = new APICallExecutor().executeObjectCall(
                 systemInfoService.getSystemInfo(SystemInfoFields.allFields));
 
-        if (!DHISVersion.isAllowedVersion(systemInfo.version())) {
+        if (DHISVersion.isAllowedVersion(systemInfo.version())) {
+            versionManager.setVersion(systemInfo.version());
+        } else {
             throw D2CallException.builder()
                     .isHttpError(false)
                     .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
@@ -75,8 +77,6 @@ class SystemInfoCall extends SyncCall<SystemInfo> {
                             + "Allowed versions: "
                             + Utils.commaAndSpaceSeparatedArrayValues(DHISVersion.allowedVersionsAsStr()))
                     .build();
-        } else {
-            versionManager.setVersion(systemInfo.version());
         }
 
         insertOrUpdateSystemInfo(systemInfo);

@@ -7,5 +7,3 @@ public class RealServerMother {
     public static String user = "android";
     public static String password = "Android123";
 }
-
-

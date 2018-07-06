@@ -33,22 +33,19 @@ import org.hisp.dhis.android.core.data.api.Fields;
 
 final class SystemInfoFields {
 
-    private SystemInfoFields() {
-    }
-
-    interface Properties {
-        String SERVER_DATE = "serverDate";
-        String DATE_FORMAT = "dateFormat";
-        String VERSION = "version";
-        String CONTEXT_PATH = "contextPath";
-    }
+    static String SERVER_DATE = "serverDate";
+    static String DATE_FORMAT = "dateFormat";
+    static String VERSION = "version";
+    static String CONTEXT_PATH = "contextPath";
 
     private static FieldsHelper<SystemInfo> fh = new FieldsHelper<>();
-
     static final Fields<SystemInfo> allFields = Fields.<SystemInfo>builder().fields(
-            fh.<String>field(Properties.SERVER_DATE),
-            fh.<String>field(Properties.DATE_FORMAT),
-            fh.<String>field(Properties.VERSION),
-            fh.<String>field(Properties.CONTEXT_PATH)
+            fh.<String>field(SERVER_DATE),
+            fh.<String>field(DATE_FORMAT),
+            fh.<String>field(VERSION),
+            fh.<String>field(CONTEXT_PATH)
     ).build();
+
+    private SystemInfoFields() {
+    }
 }

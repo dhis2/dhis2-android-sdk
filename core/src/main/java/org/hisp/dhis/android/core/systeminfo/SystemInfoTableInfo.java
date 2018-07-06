@@ -50,15 +50,19 @@ public final class SystemInfoTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns implements SystemInfoFields.Properties {
+    static class Columns extends BaseModel.Columns {
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), SERVER_DATE, DATE_FORMAT, VERSION, CONTEXT_PATH);
+            return Utils.appendInNewArray(super.all(),
+                    SystemInfoFields.SERVER_DATE,
+                    SystemInfoFields.DATE_FORMAT,
+                    SystemInfoFields.VERSION,
+                    SystemInfoFields.CONTEXT_PATH);
         }
 
         @Override
         public String[] whereUpdate() {
-            return new String[]{CONTEXT_PATH};
+            return new String[]{SystemInfoFields.CONTEXT_PATH};
         }
     }
 }

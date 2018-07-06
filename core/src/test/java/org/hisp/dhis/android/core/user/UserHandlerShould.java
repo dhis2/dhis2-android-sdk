@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
 public class UserHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<UserModel> userStore;
+    private IdentifiableObjectStore<User> userStore;
 
     @Mock
     private UserCredentialsHandler userCredentialsHandler;
@@ -65,13 +65,13 @@ public class UserHandlerShould {
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<User, UserModel> genericHandler = new UserHandler(null, null);
+    public void extend_identifiable_sync_handler_impl() {
+        IdentifiableSyncHandlerImpl<User> genericHandler = new UserHandler(null, null);
     }
 
     @Test
-    public void call_user_credentials_handler() throws Exception {
-        userHandler.handle(user, new UserModelBuilder());
+    public void call_user_credentials_handler() {
+        userHandler.handle(user);
         verify(userCredentialsHandler).handleUserCredentials(userCredentials, user);
     }
 }

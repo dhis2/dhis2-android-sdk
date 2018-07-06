@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -36,6 +37,10 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.utils.Utils;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class AuthenticatedUserModel extends BaseModel {
@@ -45,12 +50,18 @@ public abstract class AuthenticatedUserModel extends BaseModel {
     public static class Columns extends BaseModel.Columns {
         public static final String USER = "user";
         public static final String CREDENTIALS = "credentials";
-    }
+        public static final String HASH = "hash";
 
-    @Nullable
-    @ColumnName(Columns.ID)
-    @Override
-    public abstract Long id();
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), USER, CREDENTIALS, HASH);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{USER};
+        }
+    }
 
     @Nullable
     @ColumnName(Columns.USER)
@@ -59,6 +70,10 @@ public abstract class AuthenticatedUserModel extends BaseModel {
     @Nullable
     @ColumnName(Columns.CREDENTIALS)
     public abstract String credentials();
+
+    @Nullable
+    @ColumnName(Columns.HASH)
+    public abstract String hash();
 
     @NonNull
     public static Builder builder() {
@@ -70,14 +85,33 @@ public abstract class AuthenticatedUserModel extends BaseModel {
         return AutoValue_AuthenticatedUserModel.createFromCursor(cursor);
     }
 
+    public static final CursorModelFactory<AuthenticatedUserModel> factory
+            = new CursorModelFactory<AuthenticatedUserModel>() {
+        @Override
+        public AuthenticatedUserModel fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, user());
+        sqLiteBind(sqLiteStatement, 2, credentials());
+        sqLiteBind(sqLiteStatement, 3, hash());
+    }
+
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 4, user());
+    }
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
-        @Override
-        public abstract Builder id(@Nullable Long id);
-
         public abstract Builder user(@Nullable String user);
 
         public abstract Builder credentials(@Nullable String credentials);
+
+        public abstract Builder hash(@Nullable String hash);
 
         public abstract AuthenticatedUserModel build();
     }

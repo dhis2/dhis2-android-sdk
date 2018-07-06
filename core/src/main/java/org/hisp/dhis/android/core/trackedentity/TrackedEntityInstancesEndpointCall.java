@@ -29,11 +29,10 @@ public final class TrackedEntityInstancesEndpointCall extends SyncCall<List<Trac
     public List<TrackedEntityInstance> call() throws D2CallException {
         setExecuted();
 
-        Integer teisToRequest = Math.min(trackerQuery.getPageLimit(), trackerQuery.getPageSize());
         Call<Payload<TrackedEntityInstance>> call = trackedEntityInstanceService.getTrackedEntityInstances(
                 Utils.joinCollectionWithSeparator(trackerQuery.getOrgUnits(), ";"),
                 trackerQuery.getOuMode().name(), TrackedEntityInstance.allFields, Boolean.TRUE,
-                trackerQuery.getPage(), teisToRequest);
+                trackerQuery.getPage(), trackerQuery.getPageSize());
 
         return new APICallExecutor().executePayloadCall(call);
     }

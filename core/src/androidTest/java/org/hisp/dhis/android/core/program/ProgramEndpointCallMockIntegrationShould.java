@@ -222,7 +222,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
                 ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION,
                 ProgramTrackedEntityAttributeModel.Columns.MANDATORY,
                 ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATES,
+                ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATE,
                 ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST,
                 ProgramTrackedEntityAttributeModel.Columns.PROGRAM,
                 ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER

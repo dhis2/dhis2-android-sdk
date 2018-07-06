@@ -28,8 +28,9 @@
 
 package org.hisp.dhis.android.core.data.api;
 
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
-import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,8 +40,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -50,7 +49,8 @@ import okhttp3.mockwebserver.RecordedRequest;
 
 import static okhttp3.Credentials.basic;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
+import static org.hisp.dhis.android.core.utils.UserUtils.base64;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 // ToDo: Solve problem with INFO logs from MockWebServer being interpreted as errors in gradle
@@ -58,7 +58,7 @@ import static org.mockito.Mockito.when;
 public class BasicAuthenticatorShould {
 
     @Mock
-    private AuthenticatedUserStore authenticatedUserStore;
+    private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
 
     private MockWebServer mockWebServer;
     private OkHttpClient okHttpClient;
@@ -84,7 +84,7 @@ public class BasicAuthenticatorShould {
                         .credentials(base64("test_user", "test_password"))
                         .build();
 
-        when(authenticatedUserStore.query()).thenReturn(Arrays.asList(authenticatedUserModel));
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUserModel);
 
         okHttpClient.newCall(
                 new Request.Builder()
@@ -99,7 +99,7 @@ public class BasicAuthenticatorShould {
 
     @Test
     public void return_null_when_server_take_request_with_authenticate_with_empty_list() throws IOException, InterruptedException {
-        when(authenticatedUserStore.query()).thenReturn(new ArrayList<AuthenticatedUserModel>());
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(null);
 
         okHttpClient.newCall(
                 new Request.Builder()

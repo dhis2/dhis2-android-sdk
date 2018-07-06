@@ -241,7 +241,7 @@ public class ProgramIndicatorEngineShould {
         when(programIndicator.expression()).thenReturn(var("enrollment_date"));
 
         Date enrollmentDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-05T00:00:00.000");
-        when(enrollmentModel.dateOfEnrollment()).thenReturn(enrollmentDate);
+        when(enrollmentModel.enrollmentDate()).thenReturn(enrollmentDate);
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
 
@@ -253,7 +253,7 @@ public class ProgramIndicatorEngineShould {
         when(programIndicator.expression()).thenReturn(var("incident_date"));
 
         Date incidentDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-05T00:00:00.000");
-        when(enrollmentModel.dateOfIncident()).thenReturn(incidentDate);
+        when(enrollmentModel.incidentDate()).thenReturn(incidentDate);
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
 

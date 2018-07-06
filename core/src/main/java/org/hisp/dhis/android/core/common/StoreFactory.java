@@ -35,7 +35,7 @@ public final class StoreFactory {
 
     private StoreFactory() {}
 
-    public static <I extends BaseIdentifiableObjectModel> IdentifiableObjectStore<I>
+    public static <I extends Model & IdentifiableObject & StatementBinder> IdentifiableObjectStore<I>
     identifiableStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
         SQLStatementWrapper statements = new SQLStatementWrapper(statementBuilder, databaseAdapter);

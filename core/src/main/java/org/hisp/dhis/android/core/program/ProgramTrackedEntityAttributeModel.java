@@ -49,7 +49,7 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
     public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String MANDATORY = "mandatory";
         public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-        public static final String ALLOW_FUTURE_DATES = "allowFutureDate";
+        public static final String ALLOW_FUTURE_DATE = "allowFutureDate";
         public static final String DISPLAY_IN_LIST = "displayInList";
         public static final String PROGRAM = "program";
         public static final String SORT_ORDER = "sortOrder";
@@ -57,7 +57,7 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), MANDATORY, TRACKED_ENTITY_ATTRIBUTE, ALLOW_FUTURE_DATES,
+            return Utils.appendInNewArray(super.all(), MANDATORY, TRACKED_ENTITY_ATTRIBUTE, ALLOW_FUTURE_DATE,
                     DISPLAY_IN_LIST, PROGRAM, SORT_ORDER, SEARCHABLE);
         }
     }
@@ -81,8 +81,8 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
     public abstract String trackedEntityAttribute();
 
     @Nullable
-    @ColumnName(Columns.ALLOW_FUTURE_DATES)
-    public abstract Boolean allowFutureDates();
+    @ColumnName(Columns.ALLOW_FUTURE_DATE)
+    public abstract Boolean allowFutureDate();
 
     @Nullable
     @ColumnName(Columns.DISPLAY_IN_LIST)
@@ -105,7 +105,7 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
         super.bindToStatement(sqLiteStatement);
         sqLiteBind(sqLiteStatement, 11, mandatory());
         sqLiteBind(sqLiteStatement, 12, trackedEntityAttribute());
-        sqLiteBind(sqLiteStatement, 13, allowFutureDates());
+        sqLiteBind(sqLiteStatement, 13, allowFutureDate());
         sqLiteBind(sqLiteStatement, 14, displayInList());
         sqLiteBind(sqLiteStatement, 15, program());
         sqLiteBind(sqLiteStatement, 16, sortOrder());
@@ -119,7 +119,7 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
 
         public abstract Builder trackedEntityAttribute(@NonNull String trackedEntityAttribute);
 
-        public abstract Builder allowFutureDates(@Nullable Boolean allowFutureFate);
+        public abstract Builder allowFutureDate(@Nullable Boolean allowFutureFate);
 
         public abstract Builder displayInList(@Nullable Boolean displayInList);
 

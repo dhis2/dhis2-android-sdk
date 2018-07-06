@@ -28,9 +28,13 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
     protected static final String SHORT_NAME = "shortName";
@@ -39,37 +43,39 @@ public abstract class BaseNameableObject extends BaseIdentifiableObject implemen
     protected static final String DISPLAY_DESCRIPTION = "displayDescription";
 
     @Nullable
-    @JsonProperty(SHORT_NAME)
     @Override
     public abstract String shortName();
 
     @Nullable
-    @JsonProperty(DISPLAY_SHORT_NAME)
     @Override
     public abstract String displayShortName();
 
     @Nullable
-    @JsonProperty(DESCRIPTION)
     @Override
     public abstract String description();
 
     @Nullable
-    @JsonProperty(DISPLAY_DESCRIPTION)
     @Override
     public abstract String displayDescription();
 
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 7, shortName());
+        sqLiteBind(sqLiteStatement, 8, displayShortName());
+        sqLiteBind(sqLiteStatement, 9, description());
+        sqLiteBind(sqLiteStatement, 10, displayDescription());
+    }
+
+    @JsonPOJOBuilder(withPrefix = "")
     protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
 
-        @JsonProperty(SHORT_NAME)
         public abstract T shortName(@Nullable String shortName);
 
-        @JsonProperty(DISPLAY_SHORT_NAME)
         public abstract T displayShortName(@Nullable String displayShortName);
 
-        @JsonProperty(DESCRIPTION)
         public abstract T description(@Nullable String description);
 
-        @JsonProperty(DISPLAY_DESCRIPTION)
         public abstract T displayDescription(@Nullable String displayDescription);
     }
 }

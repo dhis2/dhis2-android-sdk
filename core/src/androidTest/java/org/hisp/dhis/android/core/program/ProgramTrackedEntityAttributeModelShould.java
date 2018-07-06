@@ -55,7 +55,7 @@ public class ProgramTrackedEntityAttributeModelShould {
     private static final String DISPLAY_DESCRIPTION = "test_display_description";
     private static final Boolean MANDATORY = true;
     private static final String TRACKED_ENTITY_ATTRIBUTE = "test_tracked_entity_attribute";
-    private static final Boolean ALLOW_FUTURE_DATES = false;
+    private static final Boolean ALLOW_FUTURE_DATE = false;
     private static final Boolean DISPLAY_IN_LIST = true;
     private static final Integer SORT_ORDER = 99;
 
@@ -83,7 +83,7 @@ public class ProgramTrackedEntityAttributeModelShould {
                 Columns.DISPLAY_DESCRIPTION,
                 Columns.MANDATORY,
                 Columns.TRACKED_ENTITY_ATTRIBUTE,
-                Columns.ALLOW_FUTURE_DATES,
+                Columns.ALLOW_FUTURE_DATE,
                 Columns.DISPLAY_IN_LIST,
                 Columns.SORT_ORDER
         });
@@ -91,7 +91,7 @@ public class ProgramTrackedEntityAttributeModelShould {
                 ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
                 SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION,
                 toInteger(MANDATORY), TRACKED_ENTITY_ATTRIBUTE,
-                toInteger(ALLOW_FUTURE_DATES), toInteger(DISPLAY_IN_LIST), SORT_ORDER
+                toInteger(ALLOW_FUTURE_DATE), toInteger(DISPLAY_IN_LIST), SORT_ORDER
         });
         cursor.moveToFirst();
 
@@ -111,7 +111,7 @@ public class ProgramTrackedEntityAttributeModelShould {
         assertThat(model.displayDescription()).isEqualTo(DISPLAY_DESCRIPTION);
         assertThat(model.mandatory()).isEqualTo(MANDATORY);
         assertThat(model.trackedEntityAttribute()).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
-        assertThat(model.allowFutureDates()).isEqualTo(ALLOW_FUTURE_DATES);
+        assertThat(model.allowFutureDate()).isEqualTo(ALLOW_FUTURE_DATE);
         assertThat(model.displayInList()).isEqualTo(DISPLAY_IN_LIST);
         assertThat(model.sortOrder()).isEqualTo(SORT_ORDER);
     }
@@ -132,7 +132,7 @@ public class ProgramTrackedEntityAttributeModelShould {
                 .displayDescription(DISPLAY_DESCRIPTION)
                 .mandatory(MANDATORY)
                 .trackedEntityAttribute(TRACKED_ENTITY_ATTRIBUTE)
-                .allowFutureDates(ALLOW_FUTURE_DATES)
+                .allowFutureDate(ALLOW_FUTURE_DATE)
                 .displayInList(DISPLAY_IN_LIST)
                 .sortOrder(SORT_ORDER)
                 .build();
@@ -151,7 +151,7 @@ public class ProgramTrackedEntityAttributeModelShould {
         assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
         assertThat(contentValues.getAsBoolean(Columns.MANDATORY)).isEqualTo(MANDATORY);
         assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_ATTRIBUTE)).isEqualTo(TRACKED_ENTITY_ATTRIBUTE);
-        assertThat(contentValues.getAsBoolean(Columns.ALLOW_FUTURE_DATES)).isEqualTo(ALLOW_FUTURE_DATES);
+        assertThat(contentValues.getAsBoolean(Columns.ALLOW_FUTURE_DATE)).isEqualTo(ALLOW_FUTURE_DATE);
         assertThat(contentValues.getAsBoolean(Columns.DISPLAY_IN_LIST)).isEqualTo(DISPLAY_IN_LIST);
         assertThat(contentValues.getAsInteger(Columns.SORT_ORDER)).isEqualTo(SORT_ORDER);
     }

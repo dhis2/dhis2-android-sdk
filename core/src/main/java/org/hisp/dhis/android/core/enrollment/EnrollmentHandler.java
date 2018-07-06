@@ -51,16 +51,16 @@ public class EnrollmentHandler {
             String latitude = null;
             String longitude = null;
             if (enrollment.coordinate() != null) {
-                latitude = enrollment.coordinate().latitude();
-                longitude = enrollment.coordinate().longitude();
+                latitude = enrollment.coordinate().latitude().toString();
+                longitude = enrollment.coordinate().longitude().toString();
             }
 
             int updatedRow = enrollmentStore.update(enrollment.uid(), enrollment.created(),
                     enrollment.lastUpdated(),
                     enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
                     enrollment.organisationUnit(),
-                    enrollment.program(), enrollment.dateOfEnrollment(),
-                    enrollment.dateOfIncident(),
+                    enrollment.program(), enrollment.enrollmentDate(),
+                    enrollment.incidentDate(),
                     enrollment.followUp(), enrollment.enrollmentStatus(),
                     enrollment.trackedEntityInstance(),
                     latitude, longitude,
@@ -71,8 +71,8 @@ public class EnrollmentHandler {
                         enrollment.lastUpdated(),
                         enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
                         enrollment.organisationUnit(), enrollment.program(),
-                        enrollment.dateOfEnrollment(),
-                        enrollment.dateOfIncident(), enrollment.followUp(),
+                        enrollment.enrollmentDate(),
+                        enrollment.incidentDate(), enrollment.followUp(),
                         enrollment.enrollmentStatus(),
                         enrollment.trackedEntityInstance(), latitude, longitude,
                         State.SYNCED);

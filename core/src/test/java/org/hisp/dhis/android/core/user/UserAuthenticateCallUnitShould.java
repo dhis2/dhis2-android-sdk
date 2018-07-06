@@ -28,12 +28,13 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.BasicCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Unit;
@@ -55,7 +56,6 @@ import org.mockito.stubbing.Answer;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
@@ -64,10 +64,10 @@ import retrofit2.Response;
 
 import static okhttp3.Credentials.basic;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.data.api.ApiUtils.base64;
+import static org.hisp.dhis.android.core.utils.UserUtils.base64;
+import static org.hisp.dhis.android.core.utils.UserUtils.md5;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -82,13 +82,13 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private UserService userService;
 
     @Mock
-    private GenericHandler<User, UserModel> userHandler;
+    private SyncHandler<User> userHandler;
 
     @Mock
     private ResourceHandler resourceHandler;
 
     @Mock
-    private AuthenticatedUserStore authenticatedUserStore;
+    private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<User> authenticateAPICall;
@@ -103,7 +103,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private User user;
 
     @Mock
-    private UserModel userModel;
+    private User loggedUser;
 
     @Mock
     private SystemInfo systemInfo;
@@ -115,7 +115,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private AuthenticatedUserModel authenticatedUser;
 
     @Mock
-    private IdentifiableObjectStore<UserModel> userStore;
+    private IdentifiableObjectStore<User> userStore;
 
     @Mock
     private ObjectWithoutUidStore<SystemInfoModel> systemInfoStore;
@@ -146,8 +146,12 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         userAuthenticateCall = instantiateCall(USERNAME, PASSWORD);
 
         when(user.uid()).thenReturn(UID);
-        when(userModel.uid()).thenReturn(UID);
+        when(loggedUser.uid()).thenReturn(UID);
         when(systemInfo.serverDate()).thenReturn(serverDate);
+
+        when(authenticatedUser.user()).thenReturn(UID);
+        when(authenticatedUser.credentials()).thenReturn(base64(USERNAME, PASSWORD));
+        when(authenticatedUser.hash()).thenReturn(md5(USERNAME, PASSWORD));
 
         baseEndpoint = "https://dhis-instance.org";
         when(systemInfo.contextPath()).thenReturn(baseEndpoint);
@@ -157,6 +161,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(systemInfoCallFactory.create(databaseAdapter, retrofit)).thenReturn(systemInfoEndpointCall);
         when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
         when(authenticateAPICall.execute()).thenReturn(Response.success(user));
+
+        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(loggedUser);
+        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
 
         when(databaseAdapter.beginNewTransaction()).then(new Answer<Transaction>() {
             @Override
@@ -210,7 +217,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
             verifyNoTransactionStarted();
 
             // stores must not be invoked
-            verify(authenticatedUserStore, never()).insert(anyString(), anyString());
+            verify(authenticatedUserStore, never()).updateOrInsertWhere(any(AuthenticatedUserModel.class));
             verifyNoMoreInteractions(userHandler);
         }
     }
@@ -231,7 +238,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         verifyNoTransactionStarted();
 
         // stores must not be invoked
-        verify(authenticatedUserStore).query();
+        verify(authenticatedUserStore).selectFirst(any(CursorModelFactory.class));
         verifyNoMoreInteractions(authenticatedUserStore);
         verifyNoMoreInteractions(userHandler);
     }
@@ -258,8 +265,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void wipe_db_when_previously_equal_user_but_different_server() throws Exception {
-        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(userModel);
-        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
         when(systemInfoModel.contextPath()).thenReturn("https://another-instance.org/");
 
         userAuthenticateCall.call();
@@ -270,8 +275,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void not_wipe_db_when_previously_same_user() throws Exception {
-        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(userModel);
-        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
 
         userAuthenticateCall.call();
 
@@ -281,9 +284,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void wipe_db_when_previously_different_user() throws Exception {
-        when(userModel.uid()).thenReturn("previous_user");
-        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(userModel);
-        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
+        when(loggedUser.uid()).thenReturn("previous_user");
 
         userAuthenticateCall.call();
 
@@ -324,13 +325,81 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test(expected = D2CallException.class)
     public void throw_d2_call_exception_state_exception_if_user_already_signed_in() throws Exception {
-        when(authenticatedUserStore.query()).thenReturn(Arrays.asList(authenticatedUser));
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
         userAuthenticateCall.call();
     }
 
+    // Offline support
+
+    @Test
+    public void continue_if_user_has_logged_out() throws Exception {
+        when(authenticatedUser.credentials()).thenReturn(null);
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
+        userAuthenticateCall.call();
+        verifySuccess();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void user_login_offline_if_previously_logged() throws Exception {
+        when(authenticateAPICall.execute()).thenThrow(IOException.class);
+
+        when(authenticatedUser.credentials()).thenReturn(null);
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
+
+        userAuthenticateCall.call();
+        verifySuccessOffline();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void throw_d2_exception_if_no_previous_authenticated_user_offline() throws Exception {
+        when(authenticateAPICall.execute()).thenThrow(IOException.class);
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(null);
+
+        try {
+            userAuthenticateCall.call();
+        } catch (D2CallException d2Exception) {
+            assertThat(d2Exception.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE);
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void throw_d2_exception_if_different_authenticated_user_offline() throws Exception {
+        when(authenticateAPICall.execute()).thenThrow(IOException.class);
+
+        when(authenticatedUser.credentials()).thenReturn(null);
+        when(authenticatedUser.hash()).thenReturn("different_hash");
+        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
+
+        try {
+            userAuthenticateCall.call();
+        } catch (D2CallException d2Exception) {
+            assertThat(d2Exception.errorCode()).isEqualTo(D2ErrorCode.DIFFERENT_AUTHENTICATED_USER_OFFLINE);
+        }
+    }
+
     private void verifySuccess() {
+        AuthenticatedUserModel authenticatedUserModel =
+                AuthenticatedUserModel.builder()
+                .user(UID)
+                .credentials(base64(USERNAME, PASSWORD))
+                .hash(md5(USERNAME, PASSWORD))
+                .build();
         verifyTransactionComplete();
-        verify(authenticatedUserStore).insert(UID, base64(USERNAME, PASSWORD));
-        verify(userHandler).handle(eq(user), any(UserModelBuilder.class));
+        verify(authenticatedUserStore).updateOrInsertWhere(authenticatedUserModel);
+        verify(userHandler).handle(eq(user));
+    }
+
+    private void verifySuccessOffline() {
+        AuthenticatedUserModel authenticatedUserModel =
+                AuthenticatedUserModel.builder()
+                        .user(UID)
+                        .credentials(base64(USERNAME, PASSWORD))
+                        .hash(md5(USERNAME, PASSWORD))
+                        .build();
+        verifyTransactionComplete();
+        verify(authenticatedUserStore).updateOrInsertWhere(authenticatedUserModel);
     }
 }

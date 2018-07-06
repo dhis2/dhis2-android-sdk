@@ -26,27 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.api;
+package org.hisp.dhis.android.core.utils;
 
-import android.support.annotation.NonNull;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import java.io.UnsupportedEncodingException;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import okio.ByteString;
+@RunWith(JUnit4.class)
+public class UserUtilsShould {
 
-public final class ApiUtils {
-    private ApiUtils() {
-        // no instances
+    @Test
+    public void md5_evaluate_same_string() {
+        String md5s1 = UserUtils.md5("user1","password1");
+        String md5s2 = UserUtils.md5("user1","password1");
+
+        assertThat(md5s1.length()).isEqualTo(32);
+        assertThat(md5s2.length()).isEqualTo(32);
+
+        assertThat(md5s1.equals(md5s2)).isTrue();
     }
 
-    @NonNull
-    public static String base64(@NonNull String username, @NonNull String password) {
-        try {
-            String usernameAndPassword = username + ":" + password;
-            byte[] bytes = usernameAndPassword.getBytes("ISO-8859-1");
-            return ByteString.of(bytes).base64();
-        } catch (UnsupportedEncodingException unsupportedEncodingException) {
-            throw new AssertionError(unsupportedEncodingException);
-        }
+    @Test
+    public void md5_evaluate_different_string() {
+        String md5s1 = UserUtils.md5("user2", "password2");
+        String md5s2 = UserUtils.md5("user3", "password3");
+
+        assertThat(md5s1.length()).isEqualTo(32);
+        assertThat(md5s2.length()).isEqualTo(32);
+
+        assertThat(md5s1.equals(md5s2)).isFalse();
     }
+
 }

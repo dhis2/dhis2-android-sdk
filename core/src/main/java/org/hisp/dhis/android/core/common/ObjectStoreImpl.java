@@ -40,7 +40,7 @@ import java.util.Set;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class ObjectStoreImpl<M extends BaseModel> implements ObjectStore<M> {
+public class ObjectStoreImpl<M extends Model & StatementBinder> implements ObjectStore<M> {
     protected final DatabaseAdapter databaseAdapter;
     protected final SQLiteStatement insertStatement;
     protected final SQLStatementBuilder builder;

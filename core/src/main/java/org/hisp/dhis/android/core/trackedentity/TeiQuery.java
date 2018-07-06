@@ -13,31 +13,27 @@ public class TeiQuery {
     private final int pageSize;
     private final boolean paging;
     private final Set<String> orgUnits;
-    private final int pageLimit;
     private final OuMode ouMode;
 
     @Nullable
     private final Set<String> uIds;
 
-
-    public TeiQuery(boolean paging, int page, int pageSize, Set<String> orgUnits, int pageLimit, OuMode ouMode) {
+    public TeiQuery(boolean paging, int page, int pageSize, Set<String> orgUnits, OuMode ouMode) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
         this.orgUnits = orgUnits;
-        this.pageLimit = pageLimit;
         this.ouMode = ouMode;
         uIds = null;
     }
 
     public TeiQuery(boolean paging, int page, int pageSize,
-                    Set<String> orgUnits, @Nullable Set<String> uIds, int pageLimit, OuMode ouMode) {
+                    Set<String> orgUnits, @Nullable Set<String> uIds, OuMode ouMode) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
         this.orgUnits = orgUnits;
         this.uIds = uIds;
-        this.pageLimit = pageLimit;
         this.ouMode = ouMode;
     }
 
@@ -66,16 +62,11 @@ public class TeiQuery {
         return orgUnits;
     }
 
-    public int getPageLimit() {
-        return pageLimit;
-    }
-
     public static class Builder {
         private int page = 1;
         private int pageSize = 50;
         private boolean paging;
         private Set<String> orgUnits;
-        int pageLimit = 50;
         OuMode ouMode = OuMode.SELECTED;
 
         private Set<String> uIds = new HashSet<>();
@@ -112,23 +103,13 @@ public class TeiQuery {
             return this;
         }
 
-        public TeiQuery.Builder withPageLimit(int pageLimit) {
-            this.pageLimit = pageLimit;
-            return this;
-        }
-
         public TeiQuery.Builder withOuMode(OuMode ouMode) {
             this.ouMode = ouMode;
             return this;
         }
 
         public TeiQuery build() {
-            if (pageLimit > pageSize) {
-                throw new IllegalArgumentException(
-                        "pageLimit can not be more greater than pageSize");
-            }
-
-            return new TeiQuery(paging, page, pageSize, orgUnits, uIds, pageLimit, ouMode);
+            return new TeiQuery(paging, page, pageSize, orgUnits, uIds, ouMode);
         }
     }
 }

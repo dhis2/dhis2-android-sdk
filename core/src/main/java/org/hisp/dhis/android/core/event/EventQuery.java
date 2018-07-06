@@ -18,7 +18,6 @@ public class EventQuery {
     private final String orgUnit;
     private final String program;
     private final String trackedEntityInstance;
-    private final int pageLimit;
     private final OuMode ouMode;
 
     @Nullable
@@ -28,8 +27,7 @@ public class EventQuery {
     private final CategoryCombo categoryCombo;
 
     public EventQuery(boolean paging, int page, int pageSize,
-            String orgUnit, String program, String trackedEntityInstance, Set<String> uIds,
-            int pageLimit, OuMode ouMode) {
+            String orgUnit, String program, String trackedEntityInstance, Set<String> uIds, OuMode ouMode) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
@@ -37,15 +35,13 @@ public class EventQuery {
         this.program = program;
         this.trackedEntityInstance = trackedEntityInstance;
         this.uIds = uIds;
-        this.pageLimit = pageLimit;
         this.ouMode = ouMode;
         this.categoryCombo = null;
         this.categoryOption = null;
     }
 
     public EventQuery(boolean paging, int page, int pageSize,
-            String orgUnit, String program, String trackedEntityInstance, Set<String> uIds,
-            int pageLimit, OuMode ouMode,
+            String orgUnit, String program, String trackedEntityInstance, Set<String> uIds, OuMode ouMode,
             @Nullable CategoryCombo categoryCombo,
             @Nullable CategoryOption categoryOption) {
         this.paging = paging;
@@ -55,7 +51,6 @@ public class EventQuery {
         this.program = program;
         this.trackedEntityInstance = trackedEntityInstance;
         this.uIds = uIds;
-        this.pageLimit = pageLimit;
         this.ouMode = ouMode;
         this.categoryCombo = categoryCombo;
         this.categoryOption = categoryOption;
@@ -93,10 +88,6 @@ public class EventQuery {
         return trackedEntityInstance;
     }
 
-    public int getPageLimit() {
-        return pageLimit;
-    }
-
     @Nullable
     public CategoryOption getCategoryOption() {
         return categoryOption;
@@ -114,7 +105,6 @@ public class EventQuery {
         private String orgUnit;
         private String program;
         private String trackedEntityInstance;
-        int pageLimit = 50;
         OuMode ouMode = OuMode.SELECTED;
 
         private Set<String> uIds = new HashSet<>();
@@ -172,11 +162,6 @@ public class EventQuery {
             return this;
         }
 
-        public Builder withPageLimit(int pageLimit) {
-            this.pageLimit = pageLimit;
-            return this;
-        }
-
         public Builder withCategoryComboAndCategoryOption(@NonNull CategoryCombo categoryCombo,
                 CategoryOption categoryOption) {
             this.categoryOption = categoryOption;
@@ -185,13 +170,8 @@ public class EventQuery {
         }
 
         public EventQuery build() {
-            if (pageLimit > pageSize) {
-                throw new IllegalArgumentException(
-                        "pageLimit can not be more greater than pageSize");
-            }
-
             return new EventQuery(paging, page, pageSize,
-                    orgUnit, program, trackedEntityInstance, uIds, pageLimit, ouMode,
+                    orgUnit, program, trackedEntityInstance, uIds, ouMode,
                     categoryCombo, categoryOption);
         }
     }

@@ -41,12 +41,12 @@ public class ApiPagingEngine {
             ", CurrentPageSize: " + currentPageSize + ".");
         }
 
+        int numberOfCalls = (int) Math.ceil((double) itemsCount / currentPageSize);
         List<Paging> pagingList = new ArrayList<>();
 
-        int numberOfCalls = (int) Math.ceil((double) itemsCount / currentPageSize);
-
         for (int call = 1; call < numberOfCalls; call++) {
-            pagingList.add(Paging.create(call, currentPageSize, 0, 0));
+            pagingList.add(Paging.create(
+                    call, currentPageSize, 0, 0, false));
         }
 
         pagingList.add(calculateLastPagination(currentPageSize, itemsCount, numberOfCalls));
@@ -68,7 +68,8 @@ public class ApiPagingEngine {
                 int posteriorItemsToSkipCount = pageSize * page - itemsCount;
 
                 if (previousItemsToSkipCount >= 0 && posteriorItemsToSkipCount >= 0) {
-                    return Paging.create(page, pageSize, previousItemsToSkipCount, posteriorItemsToSkipCount);
+                    return Paging.create(
+                            page, pageSize, previousItemsToSkipCount, posteriorItemsToSkipCount, true);
                 }
             }
         }

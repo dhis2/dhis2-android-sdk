@@ -123,7 +123,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
             displayDescription, displayInListNoProgram, displayOnVisitSchedule, expression, generated, inherit,
             orgUnitScope, programScope, pattern, sortOrderInListNoProgram, unique, valueType, searchScope,
             optionSet.with(OptionSet.uid, OptionSet.version), style.with(ObjectStyle.allFields),
-            renderType.with(ValueTypeRendering.allFields), access.with(Access.read)).build();
+            access.with(Access.read), renderType).build();
 
     @Nullable
     @JsonProperty(PATTERN)

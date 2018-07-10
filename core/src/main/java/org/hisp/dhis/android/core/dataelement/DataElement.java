@@ -99,7 +99,7 @@ public abstract class DataElement extends BaseNameableObject {
             valueType, zeroIsSignificant, aggregationType, formName, numberType, domainType, dimension, displayFormName,
             optionSet.with(OptionSet.uid, OptionSet.version), access.with(Access.read),
             categoryCombo.with(ObjectWithUid.uid), style.with(ObjectStyle.allFields),
-            renderType.with(ValueTypeRendering.allFields)).build();
+            renderType).build();
 
     @Nullable
     @JsonProperty(VALUE_TYPE)

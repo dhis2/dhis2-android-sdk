@@ -77,6 +77,7 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Simen Skogly Russnes on 23.02.15.
@@ -683,6 +684,62 @@ public final class TrackerController extends ResourceController {
     }
 
 
+
+    /**
+     * Returns a list with the failed unique values
+     * @return
+     */
+    public static List<String> getNotValidatedUniqueValues(
+            Map<String, TrackedEntityAttributeValue> trackedEntityAttributeValueMap, String organisationUnitUId) {
+        List<String> listOFUniqueFields = new ArrayList<>();
+        for (String key : trackedEntityAttributeValueMap.keySet()) {
+            TrackedEntityAttributeValue value = trackedEntityAttributeValueMap.get(key);
+            TrackedEntityAttribute trackedEntityAttribute =
+                    MetaDataController.getTrackedEntityAttribute(
+                            value.getTrackedEntityAttributeId());
+            if (trackedEntityAttribute.isUnique()) {
+                if(value.getValue()==null || value.getValue().isEmpty()){
+                    continue;
+                }
+                if(trackedEntityAttribute.isOrgunitScope()){
+                    if(TrackerController.countTrackedEntityAttributeValueInActiveOu(value, organisationUnitUId) != 0) {
+                        listOFUniqueFields.add(trackedEntityAttribute.getDisplayName());
+                    }
+                }else if(TrackerController.countTrackedEntityAttributeValue(value) !=0) {
+                    listOFUniqueFields.add(trackedEntityAttribute.getDisplayName());
+                }
+            }
+        }
+        return listOFUniqueFields;
+    }
+
+    /**
+     * Returns false if find a unique value not valid
+     *
+     * @return
+     */
+    public static boolean validateUniqueValues(
+            Map<String, TrackedEntityAttributeValue> trackedEntityAttributeValueMap, String organisationUnitUId) {
+        for (String key : trackedEntityAttributeValueMap.keySet()) {
+            TrackedEntityAttributeValue value = trackedEntityAttributeValueMap.get(key);
+            TrackedEntityAttribute trackedEntityAttribute =
+                    MetaDataController.getTrackedEntityAttribute(
+                            value.getTrackedEntityAttributeId());
+            if (trackedEntityAttribute.isUnique()) {
+                if(value.getValue()==null || value.getValue().isEmpty()){
+                    continue;
+                }
+                if(trackedEntityAttribute.isOrgunitScope()){
+                    if(TrackerController.countTrackedEntityAttributeValueInActiveOu(value, organisationUnitUId) != 0) {
+                        return false;
+                    }
+                }else if(TrackerController.countTrackedEntityAttributeValue(value) !=0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
     /**
      * Returns the number of the given value by given trackedentityattribute
      *
@@ -698,4 +755,25 @@ public final class TrackerController extends ResourceController {
                 .and(Condition.column(TrackedEntityAttributeValue$Table.
                         LOCALTRACKEDENTITYINSTANCEID).isNot(value.getLocalTrackedEntityInstanceId())).count();
     }
+
+    /**
+     * Returns the number of the given value by given trackedentityattribute and organisation unit
+     *
+     * @param value
+     * @return
+     */
+    private static int countTrackedEntityAttributeValueInActiveOu(TrackedEntityAttributeValue value, String organisationUnitUId) {
+        return (int) new Select().count().from(TrackedEntityAttributeValue.class)
+                .join(TrackedEntityInstance.class, Join.JoinType.LEFT)
+                .on(Condition.column(TrackedEntityInstance$Table.TRACKEDENTITYINSTANCE).eq(TrackedEntityAttributeValue$Table.TRACKEDENTITYINSTANCEID))
+                .where(Condition.column
+                        (TrackedEntityInstance$Table.ORGUNIT).is(organisationUnitUId))
+                .and(Condition.column(TrackedEntityAttributeValue$Table.
+                        VALUE).eq(value.getValue()))
+                .and(Condition.column(TrackedEntityAttributeValue$Table.
+                        TRACKEDENTITYATTRIBUTEID).eq(value.getTrackedEntityAttributeId()))
+                .and(Condition.column(TrackedEntityAttributeValue$Table.
+                        LOCALTRACKEDENTITYINSTANCEID).isNot(value.getLocalTrackedEntityInstanceId())).count();
+    }
+
 }

@@ -29,21 +29,19 @@
 
 package org.hisp.dhis.android.sdk.utils;
 
+import org.apache.commons.beanutils.ConversionException;
+
 import java.io.IOException;
-import java.lang.reflect.Type;
+import java.io.InputStream;
 
 import okio.ByteString;
-import retrofit.converter.ConversionException;
-import retrofit.converter.Converter;
-import retrofit.mime.TypedInput;
-import retrofit.mime.TypedOutput;
-import retrofit.mime.TypedString;
+import retrofit2.Converter;
 
 /**
  * @author Simen Skogly Russnes on 20.08.15.
  */
 public class StringConverter implements Converter {
-    @Override public String fromBody(TypedInput body, Type type) throws ConversionException {
+    /*@Override public String fromBody(TypedInput body, Type type) throws ConversionException {
         try {
             return ByteString.read(body.in(), (int) body.length()).utf8();
         } catch (IOException e) {
@@ -55,5 +53,16 @@ public class StringConverter implements Converter {
 
     @Override public TypedOutput toBody(Object object) {
         return new TypedString((String) object);
+    }
+*/
+    @Override
+    public Object convert(Object value) throws IOException {
+        try {
+            return ByteString.read((InputStream)value, value.toString().length()).utf8();
+        } catch (IOException e) {
+            throw new ConversionException("Problem when convert string", e);
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 }

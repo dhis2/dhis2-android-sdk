@@ -37,12 +37,11 @@ import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
+import org.apache.commons.beanutils.ConversionException;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
@@ -68,9 +67,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.client.Header;
-import retrofit.client.Response;
-import retrofit.converter.ConversionException;
+import retrofit2.Response;
 
 /**
  * @author Simen Skogly Russnes on 24.08.15.
@@ -149,7 +146,12 @@ final class TrackerDataSender {
 
             // check if all items were synced successfully
             if (importSummaries != null) {
-                SystemInfo systemInfo = dhisApi.getSystemInfo();
+                SystemInfo systemInfo = null;
+                try {
+                    systemInfo = dhisApi.getSystemInfo().execute().body();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 DateTime eventUploadTime = systemInfo.getServerDate();
                 for (ImportSummary importSummary : importSummaries) {
                     Event event = eventMap.get(importSummary.getReference());
@@ -229,14 +231,14 @@ final class TrackerDataSender {
     private static void postEvent(Event event, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.postEvent(event);
-            if (response.getStatus() == 200) {
+            if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.EVENT, event.getLocalId());
                 if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.OK.equals(importSummary.getStatus())) {
                     // also, we will need to find UUID of newly created event,
                     // which is contained inside of HTTP Location header
-                    Header header = NetworkUtils.findLocationHeader(response.getHeaders());
+                    //Header header = NetworkUtils.findLocationHeader(response.headers());
                     // change state and save event
                     event.setFromServer(true);
                     event.save();
@@ -252,7 +254,7 @@ final class TrackerDataSender {
     private static void putEvent(Event event, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.putEvent(event.getEvent(), event);
-            if (response.getStatus() == 200) {
+            if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.EVENT, event.getLocalId());
                 if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
@@ -346,7 +348,7 @@ final class TrackerDataSender {
     private static boolean postEnrollment(Enrollment enrollment, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.postEnrollment(enrollment);
-            if (response.getStatus() == 200) {
+            if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.ENROLLMENT, enrollment.getLocalId());
 
@@ -371,7 +373,7 @@ final class TrackerDataSender {
     private static boolean putEnrollment(Enrollment enrollment, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.putEnrollment(enrollment.getEnrollment(), enrollment);
-            if (response.getStatus() == 200) {
+            if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.ENROLLMENT, enrollment.getLocalId());
 
@@ -464,7 +466,12 @@ final class TrackerDataSender {
         }
         Map<String, TrackedEntityInstance> relatedTeis = new HashMap<String,
                 TrackedEntityInstance>();
-        SystemInfo systemInfo = DhisController.getInstance().getDhisApi().getSystemInfo();
+        SystemInfo systemInfo = null;
+        try {
+            systemInfo = DhisController.getInstance().getDhisApi().getSystemInfo().execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         DateTime serverDate = systemInfo.getServerDate();
         relatedTeis = getRecursiveRelationatedTeis(trackedEntityInstance, relatedTeis);
         if(relatedTeis.size()>1) {
@@ -572,7 +579,12 @@ final class TrackerDataSender {
 
             // check if all items were synced successfully
             if (importSummaries != null) {
-                SystemInfo systemInfo = dhisApi.getSystemInfo();
+                SystemInfo systemInfo = null;
+                try {
+                    systemInfo = dhisApi.getSystemInfo().execute().body();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 DateTime eventUploadTime = systemInfo.getServerDate();
                 for (ImportSummary importSummary : importSummaries) {
                     TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary.getReference());
@@ -598,7 +610,7 @@ final class TrackerDataSender {
     private static boolean postTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.postTrackedEntityInstance(trackedEntityInstance);
-            if (response.getStatus() == 200) {
+            if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.TRACKEDENTITYINSTANCE, trackedEntityInstance.getLocalId());
                 if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
@@ -624,7 +636,7 @@ final class TrackerDataSender {
     private static boolean putTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.putTrackedEntityInstance(trackedEntityInstance.getTrackedEntityInstance(), trackedEntityInstance);
-            if (response.getStatus() == 200) {
+            if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.TRACKEDENTITYINSTANCE, trackedEntityInstance.getLocalId());
                 if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
@@ -742,12 +754,12 @@ final class TrackerDataSender {
         try {
             JsonNode node = DhisController.getInstance().getObjectMapper()
                     .readTree(new StringConverter()
-                            .fromBody(response.getBody(), String.class));
+                            .convert(response.body()).toString());
             if (node == null) {
                 return null;
             }
             ApiResponse apiResponse = null;
-            String body = new StringConverter().fromBody(response.getBody(), String.class);
+            String body = new StringConverter().convert(response.body()).toString();
             Log.d(CLASS_TAG, body);
             apiResponse = DhisController.getInstance().getObjectMapper().
                     readValue(body, ApiResponse.class);
@@ -769,7 +781,7 @@ final class TrackerDataSender {
         //method checks which one it is that is being returned, and parses accordingly.
         try {
             JsonNode node = DhisController.getInstance().getObjectMapper().
-                    readTree(new StringConverter().fromBody(response.getBody(), String.class));
+                    readTree(new StringConverter().convert(response.body()).toString());
             if (node == null) {
                 return null;
             }
@@ -789,7 +801,7 @@ final class TrackerDataSender {
     private static ImportSummary getPostImportSummary(Response response) {
         ImportSummary importSummary = null;
         try {
-            String body = new StringConverter().fromBody(response.getBody(), String.class);
+            String body = new StringConverter().convert(response.body()).toString();
             Log.d(CLASS_TAG, body);
             importSummary = DhisController.getInstance().getObjectMapper().
                     readValue(body, ImportSummary.class);
@@ -804,7 +816,7 @@ final class TrackerDataSender {
     private static ImportSummary getPutImportSummary(Response response) {
         ApiResponse apiResponse = null;
         try {
-            String body = new StringConverter().fromBody(response.getBody(), String.class);
+            String body = new StringConverter().convert(response.body()).toString();
             Log.d(CLASS_TAG, body);
             apiResponse = DhisController.getInstance().getObjectMapper().
                     readValue(body, ApiResponse.class);
@@ -834,7 +846,7 @@ final class TrackerDataSender {
         }
         try {
             Response response = dhisApi.deleteEvent(event.getUid());
-            if (response.getStatus() == 200) {
+            if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.EVENT, event.getLocalId());
                 if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||

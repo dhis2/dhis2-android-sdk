@@ -30,7 +30,6 @@
 package org.hisp.dhis.android.sdk.controllers;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.squareup.okhttp.HttpUrl;
 
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.network.SessionManager;
@@ -43,6 +42,8 @@ import org.hisp.dhis.android.sdk.persistence.preferences.LastUpdatedManager;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.HttpUrl;
 
 /**
  * @author Araz Abishov <araz.abishov.gsoc@gmail.com>.

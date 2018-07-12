@@ -30,6 +30,7 @@
 package org.hisp.dhis.android.sdk.persistence.models;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -81,7 +82,7 @@ public class SystemInfo extends BaseModel {
     public String getVersion() {
         return version;
     }
-
+    @JsonIgnore
     public float getVersionNumber() {
         return removeNonNumericCharacters(version);
     }

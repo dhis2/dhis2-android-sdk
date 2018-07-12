@@ -14,16 +14,12 @@ import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.synchronization.domain.common.Synchronizer;
 import org.hisp.dhis.android.sdk.synchronization.domain.faileditem.IFailedItemRepository;
-import org.hisp.dhis.android.sdk.utils.StringConverter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.client.Response;
-import retrofit.converter.ConversionException;
 
 public class EventSynchronizer extends Synchronizer {
     IEventRepository mEventRepository;

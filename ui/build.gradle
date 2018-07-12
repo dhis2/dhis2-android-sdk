@@ -33,7 +33,6 @@ def libs = rootProject.ext.libraries
 
 android {
     compileSdkVersion cfg.compileSdkVersion
-    buildToolsVersion cfg.buildToolsVersion
 
     defaultConfig {
         // applicationId cfg.package
@@ -53,6 +52,7 @@ android {
     lintOptions {
         abortOnError false
     }
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {

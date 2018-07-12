@@ -29,8 +29,8 @@
 
 package org.hisp.dhis.android.sdk.network;
 
-import org.hisp.dhis.android.sdk.network.APIException;
-import retrofit.client.Response;
+
+import retrofit2.Response;
 
 public class ResponseHolder<T> {
     private T item;

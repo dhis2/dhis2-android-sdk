@@ -129,7 +129,6 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
 
         switch (programRuleAction.getProgramRuleActionType()) {
             case HIDEFIELD: {
-                Log.i("Apply programrule:", "HIDEFIELD");
                 programRuleFragmentHelper.applyHideFieldRuleAction(programRuleAction, affectedFieldsWithValue);
                 break;
             }

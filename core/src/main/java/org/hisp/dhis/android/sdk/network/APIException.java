@@ -31,12 +31,11 @@ package org.hisp.dhis.android.sdk.network;
 
 
 import java.io.IOException;
-
-import retrofit.RetrofitError;
+import retrofit2.Response;
 
 public class APIException extends RuntimeException {
 
-    public static APIException fromRetrofitError(RetrofitError error) {
+    /*public static APIException fromRetrofitError(RetrofitError error) {
         switch (error.getKind()) {
             case NETWORK:
                 return networkError(error.getUrl(), (IOException) error.getCause());
@@ -47,9 +46,9 @@ public class APIException extends RuntimeException {
             default:
                 return unexpectedError(error.getUrl(), error.getCause());
         }
-    }
+    }*/
 
-    public static APIException networkError(String url, IOException exception) {
+   /* public static APIException networkError(String url, IOException exception) {
         return new APIException(exception.getMessage(), url,
                 null, Kind.NETWORK, exception);
     }
@@ -63,7 +62,7 @@ public class APIException extends RuntimeException {
     public static APIException httpError(String url, retrofit.client.Response response) {
         String message = response.getStatus() + " " + response.getReason();
         return new APIException(message, url, response, Kind.HTTP, null);
-    }
+    }*/
 
     public static APIException unexpectedError(String url, Throwable exception) {
         return new APIException(exception.getMessage(), url, null, Kind.UNEXPECTED,
@@ -94,10 +93,10 @@ public class APIException extends RuntimeException {
     }
 
     private final String url;
-    private final retrofit.client.Response response;
+    private final Response response;
     private final Kind kind;
 
-    APIException(String message, String url, retrofit.client.Response response,
+    APIException(String message, String url, Response response,
                  Kind kind, Throwable exception) {
         super(message, exception);
         this.url = url;
@@ -115,7 +114,7 @@ public class APIException extends RuntimeException {
     /**
      * Response object containing status code, headers, body, etc.
      */
-    public retrofit.client.Response getResponse() {
+    public Response getResponse() {
         return response;
     }
 

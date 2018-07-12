@@ -45,7 +45,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.squareup.okhttp.HttpUrl;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
@@ -61,6 +60,8 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.preferences.AppPreferences;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
+
+import okhttp3.HttpUrl;
 
 /**
  *
@@ -278,7 +279,7 @@ public class LoginActivity extends Activity implements OnClickListener {
             showLoginFailedDialog(type + ": "
                     + e.getMessage());
         } else {
-            if (e.getResponse().getStatus() == 401) {
+            if (e.getResponse().code() == 401) {
                 showLoginFailedDialog(getString(R.string.invalid_username_or_password));
             } else {
                 showLoginFailedDialog(getString(R.string.unable_to_login) + " " + e.getMessage());

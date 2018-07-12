@@ -49,7 +49,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.okhttp.HttpUrl;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
@@ -66,6 +65,8 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.preferences.AppPreferences;
 import org.hisp.dhis.android.sdk.ui.activities.LoginActivity;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
+
+import okhttp3.HttpUrl;
 
 /**
  * Basic settings Fragment giving users options to change update frequency to the server,

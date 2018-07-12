@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.client.Response;
+import retrofit2.Response;
 
 public class EventRemoteDataSource extends ARemoteDataSource {
 

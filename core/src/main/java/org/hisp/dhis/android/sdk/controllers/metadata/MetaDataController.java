@@ -124,6 +124,7 @@ import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 import org.hisp.dhis.client.sdk.ui.AppPreferencesImpl;
 import org.joda.time.DateTime;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -665,7 +666,12 @@ public final class MetaDataController extends ResourceController {
             }
 
         }
-        SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
+        SystemInfo serverSystemInfo = null;
+        try {
+            serverSystemInfo = dhisApi.getSystemInfo().execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         serverSystemInfo.save();
         AppPreferencesImpl appPreferences = new AppPreferencesImpl(context);
         appPreferences.setApiVersion(serverSystemInfo.getVersion());

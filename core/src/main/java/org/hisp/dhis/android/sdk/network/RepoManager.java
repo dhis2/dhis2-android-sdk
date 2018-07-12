@@ -31,30 +31,29 @@ package org.hisp.dhis.android.sdk.network;
 
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
-import com.facebook.stetho.okhttp.StethoInterceptor;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.hisp.dhis.android.sdk.controllers.DhisController;
-import org.hisp.dhis.android.sdk.utils.StringConverter;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.concurrent.TimeUnit;
 
-import retrofit.ErrorHandler;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.OkClient;
-import retrofit.converter.ConversionException;
-import retrofit.converter.Converter;
-import retrofit.converter.JacksonConverter;
+import javax.annotation.Nullable;
 
-import static com.squareup.okhttp.Credentials.basic;
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import static okhttp3.Credentials.basic;
 
 
 public final class RepoManager {
@@ -67,37 +66,50 @@ public final class RepoManager {
     }
 
     public static DhisApi createService(HttpUrl serverUrl, Credentials credentials) {
-        RestAdapter restAdapter = new RestAdapter.Builder()
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(provideServerUrl(serverUrl))
+                .addConverterFactory(JacksonConverterFactory.create())
+                .client(provideOkClient(credentials))
+                .build();
+
+       /* RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint(provideServerUrl(serverUrl))
                 .setConverter(provideJacksonConverter())
                 .setClient(provideOkClient(credentials))
                 .setErrorHandler(new RetrofitErrorHandler())
                 .setLogLevel(RestAdapter.LogLevel.FULL)
-                .build();
-        return restAdapter.create(DhisApi.class);
+                .build();*/
+        return retrofit.create(DhisApi.class);
     }
 
     private static String provideServerUrl(HttpUrl httpUrl) {
-        return httpUrl.newBuilder()
+        return httpUrl.toString()+"/api/";
+        /*return httpUrl.newBuilder()
                 .addPathSegment("api")
-                .build().toString();
+                .build().toString();*/
     }
 
-    private static Converter provideJacksonConverter() {
-        return new JacksonConverter(DhisController.getInstance().getObjectMapper());
+    private static JacksonConverterFactory provideJacksonConverter() {
+        return JacksonConverterFactory.create(DhisController.getInstance().getObjectMapper());
     }
 
-    private static OkClient provideOkClient(Credentials credentials) {
-        return new OkClient(provideOkHttpClient(credentials));
+
+    private static okhttp3.OkHttpClient provideOkClient(Credentials credentials) {
+        return provideOkHttpClient(credentials);
     }
 
-    public static OkHttpClient provideOkHttpClient(Credentials credentials) {
-        OkHttpClient client = new OkHttpClient();
-        client.networkInterceptors().add(new StethoInterceptor());
-        client.interceptors().add(provideInterceptor(credentials));
-        client.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        client.setReadTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        client.setWriteTimeout(DEFAULT_WRITE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+    public static okhttp3.OkHttpClient provideOkHttpClient(Credentials credentials) {
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(provideInterceptor(credentials))
+                .readTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+                .connectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+                .writeTimeout(DEFAULT_WRITE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+                .addNetworkInterceptor(new StethoInterceptor())
+                .build();
+
         return client;
     }
 
@@ -129,9 +141,10 @@ public final class RepoManager {
             }
             return response;
         }
+
     }
 
-    private static class RetrofitErrorHandler implements ErrorHandler {
+   /* private static class RetrofitErrorHandler implements ErrorHandler {
 
         @Override
         public Throwable handleError(RetrofitError cause) {
@@ -172,5 +185,5 @@ public final class RepoManager {
         if (cause.getResponse() != null && cause.getResponse().getBody() != null) {
             Crashlytics.log(cause.getResponse().getBody().toString());
         }
-    }
+    }*/
 }

@@ -69,6 +69,7 @@ import org.hisp.dhis.android.sdk.utils.Utils;
 import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 import org.joda.time.DateTime;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -95,7 +96,12 @@ final class TrackerDataLoader extends ResourceController {
         if (dhisApi == null) {
             return;
         }
-        SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
+        SystemInfo serverSystemInfo = null;
+        try {
+            serverSystemInfo = dhisApi.getSystemInfo().execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         DateTime serverDateTime = serverSystemInfo.getServerDate();
         List<OrganisationUnit> assignedOrganisationUnits =
                 MetaDataController.getAssignedOrganisationUnits();
@@ -686,10 +692,12 @@ final class TrackerDataLoader extends ResourceController {
         if (dhisApi == null) {
             return null;
         }
-
-        DateTime serverDateTime = dhisApi.getSystemInfo()
-                .getServerDate();
-
+        DateTime serverDateTime = null;
+        try {
+            serverDateTime = dhisApi.getSystemInfo().execute().body().getServerDate();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         List<TrackedEntityInstance> trackedEntityInstancesToReturn = new ArrayList<>();
         for (int teiIndex = 0; teiIndex < trackedEntityInstances.size(); teiIndex++) {
 
@@ -804,7 +812,11 @@ final class TrackerDataLoader extends ResourceController {
                 .getLastUpdated(ResourceType.ENROLLMENTS,
                         trackedEntityInstance.getTrackedEntityInstance());
         if (serverDateTime == null) {
-            serverDateTime = dhisApi.getSystemInfo().getServerDate();
+            try {
+                serverDateTime = dhisApi.getSystemInfo().execute().body().getServerDate();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         List<Enrollment> enrollments = unwrapResponse(dhisApi
@@ -844,7 +856,11 @@ final class TrackerDataLoader extends ResourceController {
 //                .getServerDate();
 
         if (serverDateTime == null) {
-            serverDateTime = dhisApi.getSystemInfo().getServerDate();
+            try {
+                serverDateTime = dhisApi.getSystemInfo().execute().body().getServerDate();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         Enrollment enrollment = updateEnrollment(dhisApi, uid, lastUpdated);
@@ -909,8 +925,12 @@ final class TrackerDataLoader extends ResourceController {
     static void getEventDataFromServer(DhisApi dhisApi, String uid) throws APIException {
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.EVENTS, uid);
-        DateTime serverDateTime = dhisApi.getSystemInfo()
-                .getServerDate();
+        DateTime serverDateTime = null;
+        try {
+            serverDateTime = dhisApi.getSystemInfo().execute().body().getServerDate();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Event event = updateEvent(dhisApi, uid, lastUpdated);
 
@@ -967,8 +987,12 @@ final class TrackerDataLoader extends ResourceController {
                     remoteTrackedEntityInstance = queryTrackedEntityInstanceDataFromServer(dhisApi,
                             notSavedTrackedEntityInstanceUid);
                     if (remoteTrackedEntityInstance != null) {
-                        DateTime serverDateTime = dhisApi.getSystemInfo()
-                                .getServerDate();
+                        DateTime serverDateTime = null;
+                        try {
+                            serverDateTime = dhisApi.getSystemInfo().execute().body().getServerDate();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         TrackerDataLoader.getTrackedEntityInstanceDataFromServer(
                                 dhisApi, remoteTrackedEntityInstance.getUid(), true, false,
                                 serverDateTime);

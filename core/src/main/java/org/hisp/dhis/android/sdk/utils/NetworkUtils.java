@@ -33,6 +33,7 @@ import android.util.Log;
 
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.network.APIException;
@@ -42,15 +43,15 @@ import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
-import org.hisp.dhis.android.sdk.utils.StringConverter;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.client.Header;
-import retrofit.converter.ConversionException;
+import retrofit2.http.Header;
+
 
 /**
  * Created by araz on 06.06.2015.
@@ -72,7 +73,7 @@ public class NetworkUtils {
         final String LOCATION = "location";
         if (headers != null && !headers.isEmpty()) {
             for (Header header : headers) {
-                if (header.getName().equalsIgnoreCase(LOCATION)) {
+                if (header.value().equalsIgnoreCase(LOCATION)) {
                     return header;
                 }
             }
@@ -105,7 +106,7 @@ public class NetworkUtils {
     public static void handleApiException(APIException apiException, BaseModel model) throws APIException {
         switch (apiException.getKind()) {
             case HTTP: {
-                switch (apiException.getResponse().getStatus()) {
+                switch (apiException.getResponse().code()) {
                     case HttpURLConnection.HTTP_BAD_REQUEST: {
                         // TODO Implement mechanism for handling HTTP errors (allow user to resolve it).
                         break;
@@ -199,16 +200,18 @@ public class NetworkUtils {
                 }
 
                 if (apiException.getResponse() != null) {
-                    failedItem.setHttpStatusCode(apiException.getResponse().getStatus());
+                    failedItem.setHttpStatusCode(apiException.getResponse().raw().code());
                     try {
-                        failedItem.setErrorMessage(new StringConverter().fromBody(apiException.getResponse().getBody(), String.class));
+                        failedItem.setErrorMessage((new StringConverter().convert(apiException.getResponse().body()).toString()));
                     } catch (ConversionException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
                 failedItem.setItemId(id);
                 failedItem.setItemType(type);
-                failedItem.setHttpStatusCode(apiException.getResponse().getStatus());
+                failedItem.setHttpStatusCode(apiException.getResponse().raw().code());
                 failedItem.setFailCount(failedItem.getFailCount() + 1);
                 failedItem.save();
             }

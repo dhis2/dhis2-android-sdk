@@ -53,21 +53,22 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGenera
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGroup;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
+import org.joda.convert.TypedStringConverter;
 
 import java.util.List;
 import java.util.Map;
 
-import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.DELETE;
-import retrofit.http.GET;
-import retrofit.http.Headers;
-import retrofit.http.POST;
-import retrofit.http.PUT;
-import retrofit.http.Path;
-import retrofit.http.Query;
-import retrofit.http.QueryMap;
-import retrofit.mime.TypedString;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.http.Body;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 
 public interface DhisApi {
@@ -76,8 +77,8 @@ public interface DhisApi {
     // Methods for getting user information
     /////////////////////////////////////////////////////////////////////////
 
-    @GET("/system/info/")
-    SystemInfo getSystemInfo();
+    @GET("/api/system/info/")
+    Call<SystemInfo> getSystemInfo();
 
     @GET("/23/me/")
     UserAccount getDeprecatedCurrentUserAccount(@QueryMap Map<String, String> queryParams);
@@ -172,22 +173,22 @@ public interface DhisApi {
     @Headers("Content-Type: text/plain")
     @POST("/interpretations/chart/{uid}")
     Response postChartInterpretation(@Path("uid") String elementUid,
-                                     @Body TypedString interpretationText);
+                                     @Body TypedStringConverter interpretationText);
 
     @Headers("Content-Type: text/plain")
     @POST("/interpretations/map/{uid}")
     Response postMapInterpretation(@Path("uid") String elementUid,
-                                   @Body TypedString interpretationText);
+                                   @Body TypedStringConverter interpretationText);
 
     @Headers("Content-Type: text/plain")
     @POST("/interpretations/reportTable/{uid}")
     Response postReportTableInterpretation(@Path("uid") String elementUid,
-                                           @Body TypedString interpretationText);
+                                           @Body TypedStringConverter interpretationText);
 
     @Headers("Content-Type: text/plain")
     @PUT("/interpretations/{uid}")
     Response putInterpretationText(@Path("uid") String interpretationUid,
-                                   @Body TypedString interpretationText);
+                                   @Body TypedStringConverter interpretationText);
 
     @DELETE("/interpretations/{uid}")
     Response deleteInterpretation(@Path("uid") String interpretationUid);
@@ -195,13 +196,13 @@ public interface DhisApi {
     @Headers("Content-Type: text/plain")
     @POST("/interpretations/{interpretationUid}/comments")
     Response postInterpretationComment(@Path("interpretationUid") String interpretationUid,
-                                       @Body TypedString commentText);
+                                       @Body TypedStringConverter commentText);
 
     @Headers("Content-Type: text/plain")
     @PUT("/interpretations/{interpretationUid}/comments/{commentUid}")
     Response putInterpretationComment(@Path("interpretationUid") String interpretationUid,
                                       @Path("commentUid") String commentUid,
-                                      @Body TypedString commentText);
+                                      @Body TypedStringConverter commentText);
 
     @DELETE("/interpretations/{interpretationUid}/comments/{commentUid}")
     Response deleteInterpretationComment(@Path("interpretationUid") String interpretationUid,
@@ -218,7 +219,7 @@ public interface DhisApi {
     UserAccount getUserAccount();
 
     @GET("/" + ApiEndpointContainer.ORGANISATIONUNITS + "?paging=false")
-    Map<String,List<OrganisationUnit>> getOrganisationUnits(@QueryMap(encodeValues = false) Map<String,String> queryMap);
+    Map<String,List<OrganisationUnit>> getOrganisationUnits(@QueryMap(encoded = false) Map<String,String> queryMap);
 
     @GET("/" + ApiEndpointContainer.PROGRAMS + "/{programUid}")
     Program getProgram(@Path("programUid") String programUid, @QueryMap Map<String, String> queryMap);
@@ -315,10 +316,10 @@ public interface DhisApi {
 
 
     @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"?skipPaging=true")
-    Map<String, List<TrackedEntityInstance>> getTrackedEntityInstances(@Query("ou") String organisationUnitUid, @QueryMap(encodeValues = false) Map<String, String> queryMap);
+    Map<String, List<TrackedEntityInstance>> getTrackedEntityInstances(@Query("ou") String organisationUnitUid, @QueryMap(encoded = false) Map<String, String> queryMap);
 
     @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"?skipPaging=true&ouMode=ACCESSIBLE")
-    Map<String, List<TrackedEntityInstance>> getTrackedEntityInstancesFromAllAccessibleOrgUnits(@Query("ou") String organisationUnitUid, @QueryMap(encodeValues = false) Map<String, String> queryMap);
+    Map<String, List<TrackedEntityInstance>> getTrackedEntityInstancesFromAllAccessibleOrgUnits(@Query("ou") String organisationUnitUid, @QueryMap(encoded = false) Map<String, String> queryMap);
 
     @POST("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/")
     Response postTrackedEntityInstance(@Body TrackedEntityInstance trackedEntityInstance);

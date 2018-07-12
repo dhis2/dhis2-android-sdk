@@ -30,10 +30,10 @@
 package org.hisp.dhis.android.sdk.controllers;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.squareup.okhttp.HttpUrl;
 
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
@@ -67,6 +67,13 @@ import org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance
 import org.hisp.dhis.android.sdk.utils.SyncDateWrapper;
 import org.hisp.dhis.client.sdk.ui.AppPreferencesImpl;
 
+import java.io.IOException;
+
+import okhttp3.HttpUrl;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public final class DhisController {
     private static final String CLASS_TAG = "Dhis2";
 
@@ -90,6 +97,7 @@ public final class DhisController {
      * Is set to false when DataValueSender.onFinishSending(true)
      */
     public static boolean hasUnSynchronizedDatavalues;
+    private static SystemInfo systemInfo;
 
     private ObjectMapper objectMapper;
     private DhisApi dhisApi;
@@ -103,7 +111,6 @@ public final class DhisController {
     public static DhisController getInstance() {
         return Dhis2Application.dhisController;
     }
-
     public DhisController(Context context) {
         objectMapper = getObjectMapper();
         LastUpdatedManager.init(context);
@@ -177,10 +184,54 @@ public final class DhisController {
     }
 
     static UserAccount signInUser(HttpUrl serverUrl, Credentials credentials) throws APIException {
-        DhisApi dhisApi = RepoManager
+        final DhisApi dhisApi = RepoManager
                 .createService(serverUrl, credentials);
-        SystemInfo systemInfo = dhisApi.getSystemInfo();
-        systemInfo.save();
+        Call<SystemInfo> call = dhisApi.getSystemInfo();
+
+        /*try {
+            systemInfo = dhisApi.getSystemInfo().execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+        Thread workerThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    systemInfo = dhisApi.getSystemInfo().execute().body();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        workerThread.start();
+        try {
+            workerThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+       /* call.enqueue(new Callback<SystemInfo>() {
+            @Override
+            public void onResponse(Call<SystemInfo> call, Response<SystemInfo> response) {
+                switch (response.code()) {
+                    case 200:
+                        SystemInfo data = response.body();
+                        data.save();
+                        break;
+                    case 401:
+
+                        break;
+                    default:
+
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SystemInfo> call, Throwable t) {
+                Log.e("error", t.toString());
+            }
+        });*/
+
         UserAccount user = (new UserController(dhisApi)
                 .logInUser(serverUrl, credentials));
 

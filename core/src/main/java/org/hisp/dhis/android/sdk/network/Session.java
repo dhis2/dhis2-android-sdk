@@ -29,7 +29,8 @@
 
 package org.hisp.dhis.android.sdk.network;
 
-import com.squareup.okhttp.HttpUrl;
+
+import okhttp3.HttpUrl;
 
 public final class Session {
     private final HttpUrl serverUrl;

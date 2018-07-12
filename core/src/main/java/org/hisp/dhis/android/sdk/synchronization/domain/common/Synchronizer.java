@@ -2,6 +2,7 @@ package org.hisp.dhis.android.sdk.synchronization.domain.common;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
@@ -16,8 +17,7 @@ import org.hisp.dhis.android.sdk.utils.StringConverter;
 import java.io.IOException;
 import java.util.List;
 
-import retrofit.client.Response;
-import retrofit.converter.ConversionException;
+import retrofit2.Response;
 
 public class Synchronizer {
     IFailedItemRepository mFailedItemRepository;
@@ -78,18 +78,19 @@ public class Synchronizer {
                 }
 
                 if (apiException.getResponse() != null) {
-                    failedItem.setHttpStatusCode(apiException.getResponse().getStatus());
+                    failedItem.setHttpStatusCode(apiException.getResponse().code());
                     try {
                         failedItem.setErrorMessage(
-                                new StringConverter().fromBody(apiException.getResponse().getBody(),
-                                        String.class));
+                                new StringConverter().convert(apiException.getResponse().body()).toString());
                     } catch (ConversionException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
                 failedItem.setItemId(id);
                 failedItem.setItemType(type);
-                failedItem.setHttpStatusCode(apiException.getResponse().getStatus());
+                failedItem.setHttpStatusCode(apiException.getResponse().code());
                 failedItem.setFailCount(failedItem.getFailCount() + 1);
                 mFailedItemRepository.save(failedItem);
             }
@@ -101,10 +102,10 @@ public class Synchronizer {
     public List<ImportSummary> getImportSummary(Response response) {
         //because the web api almost randomly gives the responses in different forms, this
         //method checks which one it is that is being returned, and parses accordingly.
-        if (response.getStatus() == 409){
+        if (response.code() == 409){
             try {
                 JsonNode node = DhisController.getInstance().getObjectMapper().
-                        readTree(new StringConverter().fromBody(response.getBody(), String.class));
+                        readTree(new StringConverter().convert(response.body()).toString());
                 if (node == null) {
                     return null;
                 }
@@ -123,7 +124,7 @@ public class Synchronizer {
     private List<ImportSummary> getFailedBatchImportSummary(Response response) {
         ApiResponse apiResponse = null;
         try {
-            String body = new StringConverter().fromBody(response.getBody(), String.class);
+            String body = new StringConverter().convert(response.body()).toString();
             //Log.d(CLASS_TAG, body);
             apiResponse = DhisController.getInstance().getObjectMapper().
                     readValue(body, ApiResponse.class);

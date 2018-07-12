@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import org.apache.commons.beanutils.ConversionException;
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
@@ -49,8 +50,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import retrofit.client.Response;
-import retrofit.converter.ConversionException;
+import retrofit2.Response;
+
 
 /**
  * @author Simen Skogly Russnes on 20.08.15.
@@ -79,7 +80,7 @@ public class AssignedProgramsWrapper extends JsonDeserializer<List<OrganisationU
 
     public List<OrganisationUnit> deserialize(Response response) throws ConversionException, IOException {
         List<OrganisationUnit> organisationUnits = new ArrayList<>();
-        String responseBodyString = new StringConverter().fromBody(response.getBody(), String.class);
+        String responseBodyString = new StringConverter().convert(response.body()).toString();
         JsonNode node = DhisController.getInstance().getObjectMapper().
                     readTree(responseBodyString);
         JsonNode organisationUnitsNode = node.get(ApiEndpointContainer.ORGANISATIONUNITS);

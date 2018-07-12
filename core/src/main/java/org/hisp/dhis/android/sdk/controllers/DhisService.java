@@ -35,7 +35,6 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
-import com.squareup.okhttp.HttpUrl;
 
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.job.Job;
@@ -46,6 +45,8 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.network.Credentials;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
+
+import okhttp3.HttpUrl;
 
 /**
  * @author Araz Abishov <araz.abishov.gsoc@gmail.com>.

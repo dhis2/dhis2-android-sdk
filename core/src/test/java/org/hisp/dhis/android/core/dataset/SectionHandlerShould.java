@@ -27,16 +27,9 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkModel;
-import org.hisp.dhis.android.core.program.ProgramSectionHandler;
-import org.hisp.dhis.android.core.program.ProgramSectionModel;
-import org.hisp.dhis.android.core.program.ProgramSectionModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +41,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.same;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -59,7 +54,7 @@ public class SectionHandlerShould {
     private IdentifiableObjectStore<SectionModel> sectionStore;
 
     @Mock
-    private ObjectWithoutUidStore<SectionDataElementLinkModel> sectionDataElementLinkStore;
+    private LinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler;
 
     @Mock
     private Section section;
@@ -67,26 +62,40 @@ public class SectionHandlerShould {
     // object to test
     private SectionHandler sectionHandler;
 
+    List<ObjectWithUid> dataElements;
+
     @Before
     public void setUp() throws Exception {
+        
         MockitoAnnotations.initMocks(this);
 
-        sectionHandler = new SectionHandler(sectionStore, sectionDataElementLinkStore);
+        sectionHandler = new SectionHandler(sectionStore, sectionDataElementLinkHandler);
 
-        List<ObjectWithUid> dataElements = new ArrayList<>();
+        when(section.uid()).thenReturn("section_uid");
+
+        dataElements = new ArrayList<>();
         dataElements.add(ObjectWithUid.create("dataElement_uid"));
         when(section.dataElements()).thenReturn(dataElements);
     }
 
     @Test
-    public void save_section_data_element_links() throws Exception {
-        sectionHandler.handle(section, new SectionModelBuilder());
-        verify(sectionDataElementLinkStore).updateOrInsertWhere(any(SectionDataElementLinkModel.class));
+    public void passingNullArguments_shouldNotPerformAnyAction() {
+
+       sectionHandler.handle(null, null);
+
+        verify(sectionStore, never()).delete(anyString());
+
+        verify(sectionStore, never()).update(any(SectionModel.class));
+
+        verify(sectionStore, never()).insert(any(SectionModel.class));
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<Section, SectionModel> genericHandler = new SectionHandler(
-                null,null);
+    public void handlingSection_shouldHandleLinkedDataElements() {
+
+        sectionHandler.handle(section, new SectionModelBuilder());
+        verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements), any(SectionDataElementLinkModelBuilder.class));
     }
+
+
 }

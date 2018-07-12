@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -36,8 +36,10 @@ public final class SectionDataElementLinkStore {
 
     private SectionDataElementLinkStore() {}
 
-    public static ObjectWithoutUidStore<SectionDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, SectionDataElementLinkModel.TABLE,
-                new SectionDataElementLinkModel.Columns());
+    public static LinkModelStore<SectionDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter,
+                SectionDataElementLinkModel.TABLE,
+                new SectionDataElementLinkModel.Columns(),
+                SectionDataElementLinkModel.Columns.SECTION);
     }
 }

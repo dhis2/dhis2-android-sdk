@@ -603,6 +603,7 @@ public class VariableService {
                         if (value == null) {
                             value = dataValue.getValue();
                         }
+                        value = getDataElementValue(programRuleVariable, value);
                         allValues.add(dataValue.getValue());
                     }
                 }
@@ -623,11 +624,13 @@ public class VariableService {
                                 if (value == null) {
                                     value = dataValue.getValue();
                                 }
+                                value = getDataElementValue(programRuleVariable, value);
                                 allValues.add(dataValue.getValue());
                             }
                         }
                         if (dataValue != null) {
                             value = dataValue.getValue();
+                            value = getDataElementValue(programRuleVariable, value);
                         } else {
                             DataElement dataElement = getInstance().getDataElementMap().get(programRuleVariable.getDataElement());
                             defaultValue = getDefaultValue(dataElement.getValueType());
@@ -658,6 +661,7 @@ public class VariableService {
                                 if (value == null) {
                                     value = dataValue.getValue();
                                 }
+                                value = getDataElementValue(programRuleVariable, value);
                                 allValues.add(dataValue.getValue());
                             }
                         }
@@ -679,7 +683,7 @@ public class VariableService {
                     }
                     TrackedEntityAttributeValue trackedEntityAttributeValue = getInstance().getTrackedEntityAttributeValueMap().get(programRuleVariable.getTrackedEntityAttribute());
                     if (trackedEntityAttributeValue != null) {
-                        value = trackedEntityAttributeValue.getValue();
+                        value = getTrackedEntityAttributeValue(trackedEntityAttributeValue.getTrackedEntityAttributeId(), trackedEntityAttributeValue.getValue());
                         allValues.add(value);
                     }
                 }
@@ -691,6 +695,7 @@ public class VariableService {
                     DataValue dataValue = getInstance().getEventDataValueMaps().get(getInstance().getCurrentEvent()).get(programRuleVariable.getDataElement());
                     if (dataValue != null) {
                         value = dataValue.getValue();
+                        value = getDataElementValue(programRuleVariable, value);
                         allValues.add(value);
                     }
                 }
@@ -714,6 +719,44 @@ public class VariableService {
         programRuleVariable.setAllValues(allValues);
     }
 
+
+    /**
+     * Returns the option code of a data element if exists, either returns the given value.
+     *
+     * @return
+     */
+    private static String getDataElementValue(ProgramRuleVariable programRuleVariable, String value) {
+        DataElement dataElement = MetaDataController.getDataElement(programRuleVariable.getDataElement());
+        if(dataElement!=null) {
+            String optionSet = dataElement.getOptionSet();
+            List<Option> options = MetaDataController.getOptions(optionSet);
+            for (Option option : options) {
+                if(option.getName().equals(value)) {
+                    value = option.getCode();
+                }
+            }
+        }
+        return value;
+    }
+
+    /**
+     * Returns the option code of a tracked entity attribute if exists, either returns the given value.
+     *
+     * @return
+     */
+    private static String getTrackedEntityAttributeValue(String trackedEntityAttributeUId, String value) {
+        TrackedEntityAttribute trackedEntityAttribute = MetaDataController.getTrackedEntityAttribute(trackedEntityAttributeUId);
+        if(trackedEntityAttribute!=null) {
+            String optionSet = trackedEntityAttribute.getOptionSet();
+            List<Option> options = MetaDataController.getOptions(optionSet);
+            for (Option option : options) {
+                if(option.getName().equals(value)) {
+                    value = option.getCode();
+                }
+            }
+        }
+        return value;
+    }
     /**
      * Returns a list of populated {@link ProgramRuleVariable}s based on all {@link Constant}
      * currently stored in the database.

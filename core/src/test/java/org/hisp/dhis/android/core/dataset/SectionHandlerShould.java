@@ -92,7 +92,7 @@ public class SectionHandlerShould {
 
     @Test
     public void handlingSection_shouldHandleLinkedDataElements() {
-
+      
         sectionHandler.handle(section, new SectionModelBuilder());
         verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements), any(SectionDataElementLinkModelBuilder.class));
     }

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.NameableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,6 +99,7 @@ public class DataSetModelBuilderShould extends NameableModelBuilderAbstractShoul
                 new ArrayList<DataElementUids>(),
                 new ArrayList<ObjectWithUid>(),
                 new ArrayList<Section>(),
+                new ArrayList<DataElementOperand>(),
                 Access.create(true, true, false, true,
                         true, true, DataAccess.create(true, false)),
                 ObjectStyle.create(COLOR, ICON),

@@ -110,6 +110,41 @@
       ]
     }
   ],
+  "compulsoryDataElementOperands": [
+    {
+      "lastUpdated": "2018-07-22T17:50:08.593",
+      "id": "NJnhOzjaLYk.rCMUTmcreqP",
+      "created": "2018-07-22T17:50:08.593",
+      "name": "ART clients with new adverse clinical event Female, >49y",
+      "shortName": "ART.CnewAdv.Clin.Ev. Female, >49y",
+      "displayName": "ART clients with new adverse clinical event Female, >49y",
+      "displayShortName": "ART.CnewAdv.Clin.Ev. Female, >49y",
+      "externalAccess": false,
+      "dimensionItem": "NJnhOzjaLYk.rCMUTmcreqP",
+      "favorite": false,
+      "dimensionItemType": "DATA_ELEMENT_OPERAND",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true
+      },
+      "categoryOptionCombo": {
+        "id": "rCMUTmcreqP"
+      },
+      "dataElement": {
+        "id": "NJnhOzjaLYk"
+      },
+      "favorites": [],
+      "translations": [],
+      "userGroupAccesses": [],
+      "attributeValues": [],
+      "userAccesses": [],
+      "legendSets": []
+    }
+  ],
   "access": {
     "read": true,
     "update": true,

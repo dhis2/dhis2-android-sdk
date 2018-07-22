@@ -63,8 +63,8 @@ public class SectionShould extends BaseObjectShould implements ObjectShould {
         assertThat(section.sortOrder()).isEqualTo(2);
         assertThat(section.showRowTotals()).isFalse();
         assertThat(section.showColumnTotals()).isFalse();
-        assertThat(section.dataElements().get(0).uid()).isEqualTo("s46m5MS0hxu");
         assertThat(section.dataElements().size()).isEqualTo(15);
+        assertThat(section.dataElements().get(0).uid()).isEqualTo("s46m5MS0hxu");
         assertThat(section.greyedFields().size()).isEqualTo(1);
         assertThat(section.greyedFields().get(0).uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s");
     }

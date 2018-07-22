@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
 
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+
     private final GenericHandler<Section, SectionModel> sectionHandler;
     private final OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
 

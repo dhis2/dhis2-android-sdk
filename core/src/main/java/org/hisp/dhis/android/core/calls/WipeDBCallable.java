@@ -16,6 +16,7 @@ import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingStore;
 import org.hisp.dhis.android.core.common.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
@@ -155,7 +156,8 @@ public final class WipeDBCallable implements Callable<Unit> {
                 TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
                 SectionStore.create(databaseAdapter),
                 SectionDataElementLinkStore.create(databaseAdapter),
-                SectionGreyedFieldsLinkStore.create(databaseAdapter)
+                SectionGreyedFieldsLinkStore.create(databaseAdapter),
+                DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter)
         );
 
         return new WipeDBCallable(deletableStores, internalModules.systemInfo);

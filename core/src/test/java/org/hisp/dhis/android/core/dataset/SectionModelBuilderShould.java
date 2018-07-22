@@ -30,11 +30,8 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramSectionModel;
-import org.hisp.dhis.android.core.program.ProgramSectionModelBuilder;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,12 +42,10 @@ import java.util.ArrayList;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.COLOR;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DESCRIPTION;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.ICON;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
@@ -80,6 +75,7 @@ public class SectionModelBuilderShould extends
                 false,
                 false,
                 new ArrayList<ObjectWithUid>(),
+                new ArrayList<DataElementOperand>(),
                 DELETED);
     }
 

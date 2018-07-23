@@ -32,11 +32,15 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandModel;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,6 +76,13 @@ public class DataSetHandlerShould {
     private OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
 
     @Mock
+    private GenericHandler<DataElementOperand, DataElementOperandModel> compulsoryDataElementOperandHandler;
+
+    @Mock
+    private LinkModelHandler<DataElementOperand,
+            DataSetCompulsoryDataElementOperandLinkModel> dataSetCompulsoryDataElementOperandLinkHandler;
+
+    @Mock
     private DataSet dataSet;
 
     @Mock
@@ -83,10 +94,17 @@ public class DataSetHandlerShould {
     @Mock
     private DataAccess dataAccess;
 
-    @Mock Section section;
+    @Mock
+    private Section section;
 
     @Mock
     private List<Section> sections;
+
+    @Mock
+    private DataElementOperand compulsoryDataElementOperand;
+
+    @Mock
+    private List<DataElementOperand> compulsoryDataElementOperands;
 
     // object to test
     private DataSetHandler dataSetHandler;
@@ -95,7 +113,13 @@ public class DataSetHandlerShould {
     public void setUp() throws Exception {
 
         MockitoAnnotations.initMocks(this);
-        dataSetHandler = new DataSetHandler(dataSetStore, styleHandler, sectionHandler, sectionOrphanCleaner);
+
+        dataSetHandler = new DataSetHandler(dataSetStore,
+                styleHandler,
+                sectionHandler,
+                sectionOrphanCleaner,
+                compulsoryDataElementOperandHandler,
+                dataSetCompulsoryDataElementOperandLinkHandler);
 
         when(dataSet.access()).thenReturn(access);
         when(access.data()).thenReturn(dataAccess);
@@ -107,6 +131,10 @@ public class DataSetHandlerShould {
         sections = new ArrayList<>();
         sections.add(section);
         when(dataSet.sections()).thenReturn(sections);
+
+        compulsoryDataElementOperands = new ArrayList<>();
+        compulsoryDataElementOperands.add(compulsoryDataElementOperand);
+        when(dataSet.compulsoryDataElementOperands()).thenReturn(compulsoryDataElementOperands);
     }
 
     @Test
@@ -115,19 +143,21 @@ public class DataSetHandlerShould {
         dataSetHandler.handle(null, null);
 
         verify(dataSetStore, never()).delete(anyString());
-
         verify(dataSetStore, never()).update(any(DataSetModel.class));
-
         verify(dataSetStore, never()).insert(any(DataSetModel.class));
 
         verify(sectionHandler, never()).handleMany(anyListOf(Section.class),
                 Matchers.<ModelBuilder<Section, SectionModel>>any());
+
+        verify(compulsoryDataElementOperandHandler, never()).handleMany(anyListOf(DataElementOperand.class),
+                Matchers.<ModelBuilder<DataElementOperand, DataElementOperandModel>>any());
     }
 
     @Test
     public void handlingDataSet_shouldHandleNestedSections() {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
         verify(sectionHandler).handleMany(anyListOf(Section.class),
                 any(SectionModelBuilder.class));
     }
@@ -137,21 +167,42 @@ public class DataSetHandlerShould {
 
         when(dataSetStore.updateOrInsert(any(DataSetModel.class))).thenReturn(HandleAction.Update);
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
         verify(sectionOrphanCleaner).deleteOrphan(dataSet, dataSet.sections());
     }
 
     @Test
-    public void insertion_shouldNotDeleteOrphanSections() {
+    public void inserting_shouldNotDeleteOrphanSections() {
 
         when(dataSetStore.updateOrInsert(any(DataSetModel.class))).thenReturn(HandleAction.Insert);
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
         verify(sectionOrphanCleaner, never()).deleteOrphan(dataSet, dataSet.sections());
+    }
+
+    @Test
+    public void handlingDataSet_shouldHandleNestedCompulsoryDataElementOperands() {
+
+        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
+        verify(compulsoryDataElementOperandHandler).handleMany(anyListOf(DataElementOperand.class),
+                any(DataElementOperandModelBuilder.class));
+    }
+
+    @Test
+    public void handlingDataSet_shouldHandleDataSetCompulsoryDataElementOprandLink() {
+
+        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
+        verify(dataSetCompulsoryDataElementOperandLinkHandler).handleMany(eq(dataSet.uid()), eq(compulsoryDataElementOperands),
+                any(DataSetCompulsoryDataElementOperandLinkModelBuilder.class));
     }
 
     @Test
     public void handlingDataSet_shouldHandleStyle() {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
         verify(styleHandler).handle(eq(dataSet.style()), any(ObjectStyleModelBuilder.class));
     }
 }

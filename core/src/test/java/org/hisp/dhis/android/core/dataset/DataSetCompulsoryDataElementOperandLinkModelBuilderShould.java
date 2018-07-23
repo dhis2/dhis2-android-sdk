@@ -26,49 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.dataset;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
-    public static final int VERSION = 10;
+@RunWith(JUnit4.class)
+public class DataSetCompulsoryDataElementOperandLinkModelBuilderShould {
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
+    @Mock
+    private DataSet dataSet;
+
+    @Mock
+    private DataElementOperand compulsoryDataElementOperand;
+
+    private DataSetCompulsoryDataElementOperandLinkModel model;
+
+    @Before
+    @SuppressWarnings("unchecked")
+    public void setUp() throws IOException {
+        MockitoAnnotations.initMocks(this);
+
+        when(dataSet.uid()).thenReturn("dataSet_uid");
+        when(compulsoryDataElementOperand.uid()).thenReturn("dataElementOperand_uid");
+
+        model = buildModel();
     }
 
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    private DataSetCompulsoryDataElementOperandLinkModel buildModel() {
+        return new DataSetCompulsoryDataElementOperandLinkModelBuilder(dataSet)
+                .buildModel(compulsoryDataElementOperand);
     }
 
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        // enable foreign key support in database
-        db.execSQL("PRAGMA foreign_keys = ON;");
-        db.enableWriteAheadLogging();
-    }
-
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
-        }
-        return versionMigrations;
+    @Test
+    public void copy_link_properties() {
+        assertThat(model.dataSet()).isEqualTo(dataSet.uid());
+        assertThat(model.dataElementOperand()).isEqualTo(compulsoryDataElementOperand.uid());
     }
 }

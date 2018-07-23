@@ -31,6 +31,8 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
@@ -38,6 +40,10 @@ import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandHandler;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandModel;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandModelBuilder;
 
 public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
 
@@ -46,15 +52,26 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
     private final GenericHandler<Section, SectionModel> sectionHandler;
     private final OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
 
+    private final GenericHandler<DataElementOperand, DataElementOperandModel> compulsoryDataElementOperandHandler;
+    private final LinkModelHandler<DataElementOperand,
+            DataSetCompulsoryDataElementOperandLinkModel> dataSetCompulsoryDataElementOperandLinkHandler;
+
     DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
                    GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                    GenericHandler<Section, SectionModel> sectionHandler,
-                   OrphanCleaner<DataSet, Section> sectionOrphanCleaner) {
+                   OrphanCleaner<DataSet, Section> sectionOrphanCleaner,
+                   GenericHandler<DataElementOperand, DataElementOperandModel>
+                           compulsoryDataElementOperandHandler,
+                   LinkModelHandler<DataElementOperand,
+                           DataSetCompulsoryDataElementOperandLinkModel>
+                           dataSetCompulsoryDataElementOperandLinkHandler) {
 
         super(dataSetStore);
         this.styleHandler = styleHandler;
         this.sectionHandler = sectionHandler;
         this.sectionOrphanCleaner = sectionOrphanCleaner;
+        this.compulsoryDataElementOperandHandler = compulsoryDataElementOperandHandler;
+        this.dataSetCompulsoryDataElementOperandLinkHandler = dataSetCompulsoryDataElementOperandLinkHandler;
     }
 
     public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
@@ -64,7 +81,11 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
                 ObjectStyleHandler.create(databaseAdapter), SectionHandler.create(databaseAdapter),
                 new OrphanCleanerImpl<DataSet, Section>(SectionModel.TABLE,
                         SectionModel.Columns.DATA_SET,
-                        databaseAdapter));
+                        databaseAdapter),
+                DataElementOperandHandler.create(databaseAdapter),
+                new LinkModelHandlerImpl<DataElementOperand,
+                        DataSetCompulsoryDataElementOperandLinkModel>(
+                                DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter)));
     }
 
     @Override
@@ -74,6 +95,13 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
                 new ObjectStyleModelBuilder(dataSet.uid(), DataSetModel.TABLE));
 
         sectionHandler.handleMany(dataSet.sections(), new SectionModelBuilder());
+
+        compulsoryDataElementOperandHandler.handleMany(dataSet.compulsoryDataElementOperands(),
+                new DataElementOperandModelBuilder());
+
+        dataSetCompulsoryDataElementOperandLinkHandler.handleMany(dataSet.uid(),
+                dataSet.compulsoryDataElementOperands(),
+                new DataSetCompulsoryDataElementOperandLinkModelBuilder(dataSet));
 
         if (action == HandleAction.Update) {
             sectionOrphanCleaner.deleteOrphan(dataSet, dataSet.sections());

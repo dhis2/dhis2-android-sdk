@@ -50,6 +50,7 @@ import java.util.List;
 
 @AutoValue
 public abstract class DataSet extends BaseNameableObject {
+
     private final static String PERIOD_TYPE = "periodType";
     private final static String CATEGORY_COMBO = "categoryCombo";
     private final static String MOBILE = "mobile";
@@ -104,6 +105,7 @@ public abstract class DataSet extends BaseNameableObject {
     private static final NestedField<DataSet, Access> access = NestedField.create(ACCESS);
     private static final NestedField<DataSet, ObjectStyle> style = NestedField.create(STYLE);
 
+
     static final Fields<DataSet> allFields = Fields.<DataSet>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, deleted,
@@ -116,6 +118,7 @@ public abstract class DataSet extends BaseNameableObject {
             sections.with(Section.allFields),
             access.with(Access.data.with(DataAccess.write)),
             style.with(ObjectStyle.allFields)).build();
+
 
     @Nullable
     @JsonProperty(PERIOD_TYPE)

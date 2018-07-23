@@ -69,13 +69,13 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void download_number_of_events_according_to_page_limit() throws Exception {
+    public void download_number_of_events_according_to_page_size() throws Exception {
         givenAMetadataInDatabase();
 
-        int pageLimit = 3;
+        int pageSize = 3;
 
         EventEndpointCall eventEndpointCall = EventCallFactory.create(
-                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", pageLimit);
+                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", pageSize);
 
         dhis2MockServer.enqueueMockResponse("events_2.json");
 
@@ -87,7 +87,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         List<Event> downloadedEvents = eventStore.queryAll();
 
-        assertThat(downloadedEvents.size(), is(pageLimit));
+        assertThat(downloadedEvents.size(), is(pageSize));
     }
 
     //@Test

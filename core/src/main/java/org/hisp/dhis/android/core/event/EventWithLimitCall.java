@@ -13,6 +13,8 @@ import org.hisp.dhis.android.core.program.ProgramStoreInterface;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
+import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
+import org.hisp.dhis.android.core.utils.services.Paging;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -91,36 +93,31 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
 
         for (String programUid : programUids) {
             eventQueryBuilder.withProgram(programUid);
+            int eventLimitForProgram = limitByOrgUnit ? eventLimit -events.size() :
+                    eventLimit - globalEventsSize - events.size();
+            List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, eventLimitForProgram);
 
-            int eventLimitForProgram = limitByOrgUnit ? eventLimit : eventLimit - globalEventsSize;
-
-            int numPages = (int) Math.ceil((double) (eventLimitForProgram - events.size()) / pageSize);
-            eventQueryBuilder.withPageLimit(50);
-
-            for (int page = 1; page <= numPages; page++) {
-                if (page == numPages) {
-                    int pageLimit = Math.min(
-                            eventLimitForProgram - ((page - 1) * pageSize),
-                            eventLimitForProgram - events.size());
-                    eventQueryBuilder.withPageLimit(pageLimit);
-                }
-
-                if (!limitByOrgUnit && eventQueryBuilder.pageLimit + events.size() > eventLimitForProgram) {
-                    eventQueryBuilder.withPageLimit(eventLimitForProgram - events.size());
-                }
-
-                eventQueryBuilder.withPage(page);
+            for (Paging paging : pagingList) {
+                eventQueryBuilder.withPageSize(paging.pageSize());
+                eventQueryBuilder.withPage(paging.page());
 
                 List<Event> pageEvents = executor.executeD2Call(
                         EventEndpointCall.create(retrofit, eventQueryBuilder.build()));
-                events.addAll(pageEvents);
 
-                if (pageEvents.size() < pageSize) {
+                if (paging.isLastPage()) {
+                    int previousItemsToSkip = pageEvents.size() + paging.previousItemsToSkipCount() - paging.pageSize();
+                    int toIndex = previousItemsToSkip < 0 ? pageEvents.size() : pageEvents.size() - previousItemsToSkip;
+                    events.addAll(pageEvents.subList(paging.previousItemsToSkipCount(), toIndex));
+                } else {
+                    events.addAll(pageEvents);
+                }
+
+                if (pageEvents.size() < paging.pageSize()) {
                     break;
                 }
             }
 
-            if (events.size() == eventLimitForProgram) {
+            if (events.size() == eventLimit) {
                 break;
             }
         }

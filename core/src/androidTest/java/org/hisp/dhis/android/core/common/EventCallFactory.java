@@ -12,12 +12,12 @@ import retrofit2.Retrofit;
 
 public class EventCallFactory {
     public static EventEndpointCall create(Retrofit retrofit,
-                                           DatabaseAdapter databaseAdapter, String orgUnit, int pageLimit) {
+                                           DatabaseAdapter databaseAdapter, String orgUnit, int pageSize) {
 
         EventQuery eventQuery = EventQuery.Builder
                 .create()
                 .withOrgUnit(orgUnit)
-                .withPageLimit(pageLimit)
+                .withPageSize(pageSize)
                 .build();
 
         GenericCallData data = GenericCallData.create(databaseAdapter, retrofit, new Date());
@@ -25,7 +25,7 @@ public class EventCallFactory {
     }
 
     public static EventEndpointCall create(Retrofit retrofit,
-                                           DatabaseAdapter databaseAdapter, String orgUnit, int pageLimit, String categoryComboUID,
+                                           DatabaseAdapter databaseAdapter, String orgUnit, int pageSize, String categoryComboUID,
                                            String categoryOptionUID) {
 
         CategoryCombo categoryCombo = CategoryCombo
@@ -41,7 +41,7 @@ public class EventCallFactory {
         EventQuery eventQuery = EventQuery.Builder
                 .create()
                 .withOrgUnit(orgUnit)
-                .withPageLimit(pageLimit)
+                .withPageSize(pageSize)
                 .withCategoryComboAndCategoryOption(categoryCombo, categoryOption)
                 .build();
 

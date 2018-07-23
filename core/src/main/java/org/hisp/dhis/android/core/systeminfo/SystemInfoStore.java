@@ -32,12 +32,11 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class SystemInfoStore {
+final class SystemInfoStore {
 
     private SystemInfoStore() {}
 
-    public static ObjectWithoutUidStore<SystemInfoModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemInfoModel.TABLE,
-                new SystemInfoModel.Columns());
+    public static ObjectWithoutUidStore<SystemInfo> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemInfoTableInfo.TABLE_INFO);
     }
 }

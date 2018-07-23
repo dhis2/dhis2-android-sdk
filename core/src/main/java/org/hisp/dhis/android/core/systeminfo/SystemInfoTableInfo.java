@@ -25,17 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-final class SystemInfoHandler {
+public final class SystemInfoTableInfo {
 
-    private SystemInfoHandler() {}
+    private SystemInfoTableInfo() {
+    }
 
-    public static SyncHandler<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "SystemInfo";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    SystemInfoFields.SERVER_DATE,
+                    SystemInfoFields.DATE_FORMAT,
+                    SystemInfoFields.VERSION,
+                    SystemInfoFields.CONTEXT_PATH);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{SystemInfoFields.CONTEXT_PATH};
+        }
     }
 }

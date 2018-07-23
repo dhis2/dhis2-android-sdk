@@ -25,17 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.data.systeminfo;
 
-final class SystemInfoHandler {
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
-    private SystemInfoHandler() {}
+import java.text.ParseException;
+import java.util.Date;
 
-    public static SyncHandler<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
+public class SystemInfoSamples {
+
+    public static SystemInfo get1() {
+        return SystemInfo.builder()
+                .serverDate(getDate("2017-11-29T11:27:46.935"))
+                .dateFormat("yyyy-mm-dd")
+                .version("2.29")
+                .contextPath("https://play.dhis2.org/android-current")
+                .build();
+    }
+
+    public static SystemInfo get2() {
+        return SystemInfo.builder()
+                .serverDate(getDate("2018-04-29T11:27:46.935"))
+                .dateFormat("yyyy-DD-mm")
+                .version("2.29")
+                .contextPath("https://play.dhis2.org/android-current")
+                .build();
+    }
+
+    private static Date getDate(String dateStr) {
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

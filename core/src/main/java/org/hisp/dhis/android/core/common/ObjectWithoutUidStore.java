@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
-public interface ObjectWithoutUidStore<M extends BaseModel> extends ObjectStore<M> {
+public interface ObjectWithoutUidStore<M> extends ObjectStore<M> {
 
     void updateWhere(@NonNull M m) throws RuntimeException;
 

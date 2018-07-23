@@ -27,34 +27,37 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.factories.BasicCallFactory;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
 import retrofit2.Retrofit;
 
-public class SystemInfoCall extends SyncCall<SystemInfo> {
+class SystemInfoCall extends SyncCall<SystemInfo> {
     private final DatabaseAdapter databaseAdapter;
-    private final GenericHandler<SystemInfo, SystemInfoModel> systemInfoHandler;
+    private final SyncHandler<SystemInfo> systemInfoHandler;
     private final SystemInfoService systemInfoService;
     private final ResourceHandler resourceHandler;
+    private final DHISVersionManager versionManager;
 
     SystemInfoCall(DatabaseAdapter databaseAdapter,
-                   GenericHandler<SystemInfo, SystemInfoModel> systemInfoHandler,
+                   SyncHandler<SystemInfo> systemInfoHandler,
                    SystemInfoService systemInfoService,
-                   ResourceHandler resourceHandler) {
+                   ResourceHandler resourceHandler,
+                   DHISVersionManager versionManager) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoHandler = systemInfoHandler;
         this.systemInfoService = systemInfoService;
         this.resourceHandler = resourceHandler;
+        this.versionManager = versionManager;
     }
 
     @Override
@@ -62,14 +65,17 @@ public class SystemInfoCall extends SyncCall<SystemInfo> {
         setExecuted();
 
         SystemInfo systemInfo = new APICallExecutor().executeObjectCall(
-                systemInfoService.getSystemInfo(SystemInfo.allFields));
+                systemInfoService.getSystemInfo(SystemInfoFields.allFields));
 
-        if (!systemInfo.version().equals("2.29")) {
+        if (DHISVersion.isAllowedVersion(systemInfo.version())) {
+            versionManager.setVersion(systemInfo.version());
+        } else {
             throw D2CallException.builder()
                     .isHttpError(false)
                     .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
                     .errorDescription("Server DHIS version (" + systemInfo.version() + ") not valid. "
-                            + "Please use a server with DHIS 2.29")
+                            + "Allowed versions: "
+                            + Utils.commaAndSpaceSeparatedArrayValues(DHISVersion.allowedVersionsAsStr()))
                     .build();
         }
 
@@ -80,7 +86,7 @@ public class SystemInfoCall extends SyncCall<SystemInfo> {
     private void insertOrUpdateSystemInfo(SystemInfo systemInfo) {
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            systemInfoHandler.handle(systemInfo, new SystemInfoModelBuilder());
+            systemInfoHandler.handle(systemInfo);
             resourceHandler.handleResource(ResourceModel.Type.SYSTEM_INFO, systemInfo.serverDate());
             transaction.setSuccessful();
         } finally {
@@ -88,16 +94,14 @@ public class SystemInfoCall extends SyncCall<SystemInfo> {
         }
     }
 
-    public static final BasicCallFactory<SystemInfo> FACTORY = new BasicCallFactory<SystemInfo>() {
-
-        @Override
-        public Call<SystemInfo> create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-            return new SystemInfoCall(
-                    databaseAdapter,
-                    SystemInfoHandler.create(databaseAdapter),
-                    retrofit.create(SystemInfoService.class),
-                    ResourceHandler.create(databaseAdapter)
-            );
-        }
-    };
+    public static Call<SystemInfo> create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+                                          DHISVersionManager versionManager) {
+        return new SystemInfoCall(
+                databaseAdapter,
+                SystemInfoHandler.create(databaseAdapter),
+                retrofit.create(SystemInfoService.class),
+                ResourceHandler.create(databaseAdapter),
+                versionManager
+        );
+    }
 }

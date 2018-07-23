@@ -27,15 +27,27 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.ReadOnlyObjectRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-final class SystemInfoHandler {
+public final class SystemInfoModule {
 
-    private SystemInfoHandler() {}
+    public final DHISVersionManager versionManager;
+    public final ReadOnlyObjectRepository<SystemInfo> systemInfo;
 
-    public static SyncHandler<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
+    private SystemInfoModule(DHISVersionManager versionManager,
+                             ReadOnlyObjectRepository<SystemInfo> systemInfoRepository) {
+        this.versionManager = versionManager;
+        this.systemInfo = systemInfoRepository;
+    }
+
+    public static SystemInfoModule create(DatabaseAdapter databaseAdapter) {
+        return new SystemInfoModule(
+                DHISVersionManager.create(databaseAdapter),
+                new ReadOnlyObjectRepositoryImpl<>(
+                        SystemInfoStore.create(databaseAdapter),
+                        SystemInfo.factory
+                ));
     }
 }

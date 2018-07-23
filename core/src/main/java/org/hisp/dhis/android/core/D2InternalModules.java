@@ -25,17 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+package org.hisp.dhis.android.core;
+
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
 
-final class SystemInfoHandler {
+import retrofit2.Retrofit;
 
-    private SystemInfoHandler() {}
+public final class D2InternalModules {
+    public final SystemInfoInternalModule systemInfo;
 
-    public static SyncHandler<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
+    public D2InternalModules(SystemInfoInternalModule systemInfo) {
+        this.systemInfo = systemInfo;
+    }
+
+    public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
+        return new D2InternalModules(SystemInfoInternalModule.create(databaseAdapter, retrofit));
     }
 }

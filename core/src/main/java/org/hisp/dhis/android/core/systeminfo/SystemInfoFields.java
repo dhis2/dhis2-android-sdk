@@ -25,17 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-final class SystemInfoHandler {
+final class SystemInfoFields {
 
-    private SystemInfoHandler() {}
+    static String SERVER_DATE = "serverDate";
+    static String DATE_FORMAT = "dateFormat";
+    static String VERSION = "version";
+    static String CONTEXT_PATH = "contextPath";
 
-    public static SyncHandler<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
+    private static FieldsHelper<SystemInfo> fh = new FieldsHelper<>();
+    static final Fields<SystemInfo> allFields = Fields.<SystemInfo>builder().fields(
+            fh.<String>field(SERVER_DATE),
+            fh.<String>field(DATE_FORMAT),
+            fh.<String>field(VERSION),
+            fh.<String>field(CONTEXT_PATH)
+    ).build();
+
+    private SystemInfoFields() {
     }
 }

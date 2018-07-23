@@ -25,17 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+public enum DHISVersion {
+    V2_29,
+    V2_30;
 
-final class SystemInfoHandler {
+    private static final String V2_29_STR = "2.29";
 
-    private SystemInfoHandler() {}
+    // TODO remove snapshot after 2.30 release
+    private static final String V2_30_STR = "2.30-SNAPSHOT";
 
-    public static SyncHandler<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
+    public static DHISVersion getValue(String versionStr) {
+        switch (versionStr) {
+            case V2_29_STR:
+                return V2_29;
+            case V2_30_STR:
+                return V2_30;
+            default:
+                return null;
+        }
+    }
+
+    public static boolean isAllowedVersion(String versionStr) {
+        return getValue(versionStr) != null;
+    }
+
+    public static String[] allowedVersionsAsStr() {
+        return new String[]{V2_29_STR, V2_30_STR};
     }
 }

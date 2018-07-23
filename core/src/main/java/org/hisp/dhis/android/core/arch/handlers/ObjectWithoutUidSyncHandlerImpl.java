@@ -25,17 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.arch.handlers;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-final class SystemInfoHandler {
+public class ObjectWithoutUidSyncHandlerImpl<O extends BaseModel> extends SyncHandlerBaseImpl<O> {
 
-    private SystemInfoHandler() {}
+    private final ObjectWithoutUidStore<O> store;
 
-    public static SyncHandler<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
+    public ObjectWithoutUidSyncHandlerImpl(ObjectWithoutUidStore<O> store) {
+        this.store = store;
+    }
+
+    @Override
+    protected HandleAction deleteOrPersist(O o) {
+        return store.updateOrInsertWhere(o);
     }
 }

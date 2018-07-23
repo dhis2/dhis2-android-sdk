@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 @SuppressWarnings("PMD.UseVarargs")
@@ -56,6 +57,11 @@ public final class StoreFactory {
                 databaseAdapter.compileStatement(statementBuilder.insert()),
                 databaseAdapter.compileStatement(statementBuilder.updateWhere()),
                 statementBuilder);
+    }
+
+    public static <I extends BaseModel> ObjectWithoutUidStore<I> objectWithoutUidStore(
+            DatabaseAdapter databaseAdapter, TableInfo tableInfo) {
+        return objectWithoutUidStore(databaseAdapter, tableInfo.name(), tableInfo.columns());
     }
 
     public static <I extends BaseModel> LinkModelStore<I> linkModelStore(

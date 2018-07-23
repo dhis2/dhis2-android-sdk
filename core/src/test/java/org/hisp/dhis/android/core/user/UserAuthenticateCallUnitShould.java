@@ -29,8 +29,9 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.factories.BasicCallFactory;
+import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
@@ -42,7 +43,6 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -106,10 +106,10 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private User loggedUser;
 
     @Mock
-    private SystemInfo systemInfo;
+    private SystemInfo systemInfoFromAPI;
 
     @Mock
-    private SystemInfoModel systemInfoModel;
+    private SystemInfo systemInfoFromDb;
 
     @Mock
     private AuthenticatedUserModel authenticatedUser;
@@ -118,10 +118,10 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private IdentifiableObjectStore<User> userStore;
 
     @Mock
-    private ObjectWithoutUidStore<SystemInfoModel> systemInfoStore;
+    private ReadOnlyObjectRepository<SystemInfo> systemInfoRepository;
 
     @Mock
-    private BasicCallFactory<SystemInfo> systemInfoCallFactory;
+    private NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
 
     @Mock
     private Call<SystemInfo> systemInfoEndpointCall;
@@ -147,23 +147,23 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(user.uid()).thenReturn(UID);
         when(loggedUser.uid()).thenReturn(UID);
-        when(systemInfo.serverDate()).thenReturn(serverDate);
+        when(systemInfoFromAPI.serverDate()).thenReturn(serverDate);
 
         when(authenticatedUser.user()).thenReturn(UID);
         when(authenticatedUser.credentials()).thenReturn(base64(USERNAME, PASSWORD));
         when(authenticatedUser.hash()).thenReturn(md5(USERNAME, PASSWORD));
 
         baseEndpoint = "https://dhis-instance.org";
-        when(systemInfo.contextPath()).thenReturn(baseEndpoint);
+        when(systemInfoFromAPI.contextPath()).thenReturn(baseEndpoint);
 
         when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(authenticateAPICall);
 
-        when(systemInfoCallFactory.create(databaseAdapter, retrofit)).thenReturn(systemInfoEndpointCall);
-        when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
+        when(systemInfoCallFactory.create()).thenReturn(systemInfoEndpointCall);
+        when(systemInfoEndpointCall.call()).thenReturn(systemInfoFromAPI);
         when(authenticateAPICall.execute()).thenReturn(Response.success(user));
 
         when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(loggedUser);
-        when(systemInfoStore.selectFirst(any(CursorModelFactory.class))).thenReturn(systemInfoModel);
+        when(systemInfoRepository.get()).thenReturn(systemInfoFromDb);
 
         when(databaseAdapter.beginNewTransaction()).then(new Answer<Transaction>() {
             @Override
@@ -177,7 +177,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private UserAuthenticateCall instantiateCall(String username, String password) {
         return new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoStore, userStore, dbWipeCall,
+                systemInfoRepository, userStore, dbWipeCall,
                 username, password, baseEndpoint + "/api/");
     }
 
@@ -265,7 +265,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void wipe_db_when_previously_equal_user_but_different_server() throws Exception {
-        when(systemInfoModel.contextPath()).thenReturn("https://another-instance.org/");
+        when(systemInfoFromDb.contextPath()).thenReturn("https://another-instance.org/");
 
         userAuthenticateCall.call();
 

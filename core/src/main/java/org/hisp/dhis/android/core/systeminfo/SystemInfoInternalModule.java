@@ -27,15 +27,43 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
+import org.hisp.dhis.android.core.common.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-final class SystemInfoHandler {
+import retrofit2.Retrofit;
 
-    private SystemInfoHandler() {}
+public final class SystemInfoInternalModule implements WipeableModule {
 
-    public static SyncHandler<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
+    private final DatabaseAdapter databaseAdapter;
+    private final Retrofit retrofit;
+    public final SystemInfoModule publicModule;
+
+    private SystemInfoInternalModule(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+                                     SystemInfoModule publicModule) {
+        this.databaseAdapter = databaseAdapter;
+        this.retrofit = retrofit;
+        this.publicModule = publicModule;
+    }
+
+    public final NoArgumentsCallFactory<SystemInfo> callFactory = new NoArgumentsCallFactory<SystemInfo>() {
+        @Override
+        public Call<SystemInfo> create() {
+            return SystemInfoCall.create(databaseAdapter, retrofit, publicModule.versionManager);
+        }
+    };
+
+    @Override
+    public void wipeModuleTables() {
+        SystemInfoStore.create(databaseAdapter).delete();
+    }
+
+    public static SystemInfoInternalModule create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
+        return new SystemInfoInternalModule(
+                databaseAdapter,
+                retrofit,
+                SystemInfoModule.create(databaseAdapter)
+        );
     }
 }

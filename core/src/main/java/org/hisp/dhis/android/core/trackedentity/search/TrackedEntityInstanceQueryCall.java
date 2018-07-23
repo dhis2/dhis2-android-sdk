@@ -52,8 +52,7 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
         try {
             searchGrid = new APICallExecutor().executeObjectCall(searchGridCall);
         } catch (D2CallException d2E) {
-            if (d2E.isHttpError() && d2E.httpErrorCode() != null
-                    && d2E.httpErrorCode() == HttpsURLConnection.HTTP_REQ_TOO_LONG) {
+            if (d2E.httpErrorCode() != null && d2E.httpErrorCode() == HttpsURLConnection.HTTP_REQ_TOO_LONG) {
                 throw D2CallException.builder()
                         .errorCode(D2ErrorCode.TOO_MANY_ORG_UNITS)
                         .errorDescription("Too many org units were selected")

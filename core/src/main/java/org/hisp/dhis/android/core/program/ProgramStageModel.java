@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@SuppressWarnings({"PMD.ExcessivePublicCount"})
+@SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.GodClass"})
 @AutoValue
 public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
 

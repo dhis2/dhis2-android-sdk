@@ -56,6 +56,8 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
     private final LinkModelHandler<DataElementOperand,
             DataSetCompulsoryDataElementOperandLinkModel> dataSetCompulsoryDataElementOperandLinkHandler;
 
+    private final LinkModelHandler<DataInputPeriod, DataInputPeriodModel> dataInputPeriodHandler;
+
     DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
                    GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                    GenericHandler<Section, SectionModel> sectionHandler,
@@ -64,7 +66,8 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
                            compulsoryDataElementOperandHandler,
                    LinkModelHandler<DataElementOperand,
                            DataSetCompulsoryDataElementOperandLinkModel>
-                           dataSetCompulsoryDataElementOperandLinkHandler) {
+                           dataSetCompulsoryDataElementOperandLinkHandler,
+                   LinkModelHandler<DataInputPeriod, DataInputPeriodModel> dataInputPeriodHandler) {
 
         super(dataSetStore);
         this.styleHandler = styleHandler;
@@ -72,6 +75,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
         this.sectionOrphanCleaner = sectionOrphanCleaner;
         this.compulsoryDataElementOperandHandler = compulsoryDataElementOperandHandler;
         this.dataSetCompulsoryDataElementOperandLinkHandler = dataSetCompulsoryDataElementOperandLinkHandler;
+        this.dataInputPeriodHandler = dataInputPeriodHandler;
     }
 
     public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
@@ -85,7 +89,9 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
                 DataElementOperandHandler.create(databaseAdapter),
                 new LinkModelHandlerImpl<DataElementOperand,
                         DataSetCompulsoryDataElementOperandLinkModel>(
-                                DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter)));
+                                DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter)),
+                new LinkModelHandlerImpl<DataInputPeriod, DataInputPeriodModel>(
+                        DataInputPeriodStore.create(databaseAdapter)));
     }
 
     @Override
@@ -102,6 +108,9 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
         dataSetCompulsoryDataElementOperandLinkHandler.handleMany(dataSet.uid(),
                 dataSet.compulsoryDataElementOperands(),
                 new DataSetCompulsoryDataElementOperandLinkModelBuilder(dataSet));
+
+        dataInputPeriodHandler.handleMany(dataSet.uid(), dataSet.dataInputPeriods(),
+                new DataInputPeriodModelBuilder(dataSet));
 
         if (action == HandleAction.Update) {
             sectionOrphanCleaner.deleteOrphan(dataSet, dataSet.sections());

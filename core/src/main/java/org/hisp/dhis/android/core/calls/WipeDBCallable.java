@@ -17,6 +17,7 @@ import org.hisp.dhis.android.core.common.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.dataset.DataInputPeriodStore;
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
@@ -161,6 +162,7 @@ public final class WipeDBCallable implements Callable<Unit> {
                 DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter),
                 DataElementOperandStore.create(databaseAdapter),
                 DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter)
+                DataInputPeriodStore.create(databaseAdapter)
         );
 
         return new WipeDBCallable(deletableStores, internalModules.systemInfo);

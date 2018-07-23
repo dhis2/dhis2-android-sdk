@@ -53,6 +53,7 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "ProgramStage";
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String DESCRIPTION = "description";
         public static final String EXECUTION_DATE_LABEL = "executionDateLabel";
         public static final String ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";
         public static final String VALID_COMPLETE_ONLY = "validCompleteOnly";
@@ -77,7 +78,7 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT, VALID_COMPLETE_ONLY,
+                    DESCRIPTION, EXECUTION_DATE_LABEL, ALLOW_GENERATE_NEXT_VISIT, VALID_COMPLETE_ONLY,
                     REPORT_DATE_TO_USE, OPEN_AFTER_ENROLLMENT, REPEATABLE, CAPTURE_COORDINATES,
                     FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX, GENERATED_BY_ENROLMENT_DATE,
                     AUTO_GENERATE_EVENT, SORT_ORDER, HIDE_DUE_DATE, BLOCK_ENTRY_FORM,
@@ -93,6 +94,10 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
     public static Builder builder() {
         return new $$AutoValue_ProgramStageModel.Builder();
     }
+
+    @Nullable
+    @ColumnName(Columns.DESCRIPTION)
+    public abstract String description();
 
     @Nullable
     @ColumnName(Columns.EXECUTION_DATE_LABEL)
@@ -179,30 +184,33 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 7, executionDateLabel());
-        sqLiteBind(sqLiteStatement, 8, allowGenerateNextVisit());
-        sqLiteBind(sqLiteStatement, 9, validCompleteOnly());
-        sqLiteBind(sqLiteStatement, 10, reportDateToUse());
-        sqLiteBind(sqLiteStatement, 11, openAfterEnrollment());
-        sqLiteBind(sqLiteStatement, 12, repeatable());
-        sqLiteBind(sqLiteStatement, 13, captureCoordinates());
-        sqLiteBind(sqLiteStatement, 14, formType().name());
-        sqLiteBind(sqLiteStatement, 15, displayGenerateEventBox());
-        sqLiteBind(sqLiteStatement, 16, generatedByEnrollmentDate());
-        sqLiteBind(sqLiteStatement, 17, autoGenerateEvent());
-        sqLiteBind(sqLiteStatement, 18, sortOrder());
-        sqLiteBind(sqLiteStatement, 19, hideDueDate());
-        sqLiteBind(sqLiteStatement, 20, blockEntryForm());
-        sqLiteBind(sqLiteStatement, 21, minDaysFromStart());
-        sqLiteBind(sqLiteStatement, 22, standardInterval());
-        sqLiteBind(sqLiteStatement, 23, program());
-        sqLiteBind(sqLiteStatement, 24, periodType());
-        sqLiteBind(sqLiteStatement, 25, accessDataWrite());
-        sqLiteBind(sqLiteStatement, 26, remindCompleted());
+        sqLiteBind(sqLiteStatement, 7, description());
+        sqLiteBind(sqLiteStatement, 8, executionDateLabel());
+        sqLiteBind(sqLiteStatement, 9, allowGenerateNextVisit());
+        sqLiteBind(sqLiteStatement, 10, validCompleteOnly());
+        sqLiteBind(sqLiteStatement, 11, reportDateToUse());
+        sqLiteBind(sqLiteStatement, 12, openAfterEnrollment());
+        sqLiteBind(sqLiteStatement, 13, repeatable());
+        sqLiteBind(sqLiteStatement, 14, captureCoordinates());
+        sqLiteBind(sqLiteStatement, 15, formType().name());
+        sqLiteBind(sqLiteStatement, 16, displayGenerateEventBox());
+        sqLiteBind(sqLiteStatement, 17, generatedByEnrollmentDate());
+        sqLiteBind(sqLiteStatement, 18, autoGenerateEvent());
+        sqLiteBind(sqLiteStatement, 19, sortOrder());
+        sqLiteBind(sqLiteStatement, 20, hideDueDate());
+        sqLiteBind(sqLiteStatement, 21, blockEntryForm());
+        sqLiteBind(sqLiteStatement, 22, minDaysFromStart());
+        sqLiteBind(sqLiteStatement, 23, standardInterval());
+        sqLiteBind(sqLiteStatement, 24, program());
+        sqLiteBind(sqLiteStatement, 25, periodType());
+        sqLiteBind(sqLiteStatement, 26, accessDataWrite());
+        sqLiteBind(sqLiteStatement, 27, remindCompleted());
     }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
+
+        public abstract Builder description(@Nullable String description);
 
         public abstract Builder executionDateLabel(@Nullable String executionDateLabel);
 

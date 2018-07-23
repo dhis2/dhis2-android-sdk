@@ -18,6 +18,7 @@ import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.dataset.SectionDataElementLinkStore;
+import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkStore;
 import org.hisp.dhis.android.core.dataset.SectionStore;
 import org.hisp.dhis.android.core.datavalue.DataValueStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -146,7 +147,8 @@ public final class WipeDBCallable implements Callable<Unit> {
                 SystemSettingStore.create(databaseAdapter),
                 TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
                 SectionStore.create(databaseAdapter),
-                SectionDataElementLinkStore.create(databaseAdapter)
+                SectionDataElementLinkStore.create(databaseAdapter),
+                SectionGreyedFieldsLinkStore.create(databaseAdapter)
         );
 
         return new WipeDBCallable(deletableStores);

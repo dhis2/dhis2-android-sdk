@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,9 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
@@ -38,34 +38,26 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class SectionShould extends BaseObjectShould implements ObjectShould {
+public class DataElementOperandShould extends BaseObjectShould implements ObjectShould {
 
-    public SectionShould() {
-        super("dataset/section.json");
+    public DataElementOperandShould() {
+        super("dataelement/data_element_operand.json");
     }
 
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        Section section = objectMapper.readValue(jsonStream, Section.class);
 
-        assertThat(section.uid()).isEqualTo("Y2rk0vzgvAx");
-        assertThat(section.code()).isEqualTo("Code123");
-        assertThat(section.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.parseDate("2016-10-12T13:22:42.731"));
-        assertThat(section.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2012-04-26T19:26:02.933"));
-        assertThat(section.name()).isEqualTo("Immunization");
-        assertThat(section.displayName()).isEqualTo("Immunization");
+        DataElementOperand dataElementOperand = objectMapper.readValue(jsonStream, DataElementOperand.class);
 
-        assertThat(section.description()).isEqualTo("Immunization dose administration");
-        assertThat(section.dataSetUid()).isEqualTo("BfMAe6Itzgt");
-        assertThat(section.sortOrder()).isEqualTo(2);
-        assertThat(section.showRowTotals()).isFalse();
-        assertThat(section.showColumnTotals()).isFalse();
-        assertThat(section.dataElements().size()).isEqualTo(15);
-        assertThat(section.dataElements().get(0).uid()).isEqualTo("s46m5MS0hxu");
-        assertThat(section.greyedFields().size()).isEqualTo(1);
-        assertThat(section.greyedFields().get(0).uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s");
+        assertThat(dataElementOperand.uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s");
+        assertThat(dataElementOperand.name()).isEqualTo("Q_Vitamin A received 4-6 months ago at 12-59 dose Fixed, <1y");
+        assertThat(dataElementOperand.displayName()).isEqualTo("Q_Vitamin A received 4-6 months ago at 12-59 dose Fixed, <1y");
+        assertThat(dataElementOperand.created()).isEqualTo(BaseNameableObject.parseDate("2018-07-21T18:40:18.919"));
+        assertThat(dataElementOperand.lastUpdated()).isEqualTo(BaseNameableObject.parseDate("2018-07-21T18:40:18.919"));
+        assertThat(dataElementOperand.shortName()).isEqualTo("Q_VitA_4-6m_VitA2 Fixed, <1y");
+        assertThat(dataElementOperand.displayShortName()).isEqualTo("Q_VitA_4-6m_VitA2 Fixed, <1y");
+        assertThat(dataElementOperand.dataElement().uid()).isEqualTo("ca8lfO062zg");
+        assertThat(dataElementOperand.categoryOptionCombo().uid()).isEqualTo("Prlt0C1RF0s");
     }
 }

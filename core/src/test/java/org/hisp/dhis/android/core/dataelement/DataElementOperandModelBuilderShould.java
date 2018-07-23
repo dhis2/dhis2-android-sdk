@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,33 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.NameableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DESCRIPTION;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_DESCRIPTION;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_SHORT_NAME;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.SHORT_NAME;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 
 @RunWith(JUnit4.class)
-public class SectionModelBuilderShould extends
-        IdentifiableModelBuilderAbstractShould<Section, SectionModel> {
+public class DataElementOperandModelBuilderShould extends
+        NameableModelBuilderAbstractShould<DataElementOperand, DataElementOperandModel> {
 
     @Override
     @Before
@@ -61,35 +62,51 @@ public class SectionModelBuilderShould extends
     }
 
     @Override
-    protected Section buildPojo() {
-        return Section.create(
+    protected DataElementOperand buildPojo() {
+        return DataElementOperand.create(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
                 CREATED,
                 LAST_UPDATED,
+                SHORT_NAME,
+                DISPLAY_SHORT_NAME,
                 DESCRIPTION,
-                2,
-                ObjectWithUid.create("data_set"),
-                false,
-                false,
-                new ArrayList<ObjectWithUid>(),
-                new ArrayList<DataElementOperand>(),
-                DELETED);
+                DISPLAY_DESCRIPTION,
+                DELETED,
+                ObjectWithUid.create("dataElement_uid"),
+                ObjectWithUid.create("categoryOptionCombo_uid")
+        );
     }
 
     @Override
-    protected ModelBuilder<Section, SectionModel> modelBuilder() {
-        return new SectionModelBuilder();
+    protected ModelBuilder<DataElementOperand, DataElementOperandModel> modelBuilder() {
+        return new DataElementOperandModelBuilder();
+    }
+
+    @Override
+    @Test
+    public void copy_pojo_identifiable_properties() {
+        assertThat(model.uid()).isEqualTo(pojo.uid());
+        assertThat(model.name()).isEqualTo(pojo.name());
+        assertThat(model.displayName()).isEqualTo(pojo.displayName());
+        assertThat(model.created()).isEqualTo(pojo.created());
+        assertThat(model.lastUpdated()).isEqualTo(pojo.lastUpdated());
+    }
+
+    @Override
+    @Test
+    public void copy_pojo_nameable_properties() {
+        assertThat(model.shortName()).isEqualTo(pojo.shortName());
+        assertThat(model.displayShortName()).isEqualTo(pojo.displayShortName());
     }
 
     @Test
-    public void copy_pojo_section_properties() {
-        assertThat(model.description()).isEqualTo(pojo.description());
-        assertThat(model.sortOrder()).isEqualTo(pojo.sortOrder());
-        assertThat(model.dataSet()).isEqualTo(pojo.dataSet().uid());
-        assertThat(model.showRowTotals()).isEqualTo(pojo.showRowTotals());
-        assertThat(model.showColumnTotals()).isEqualTo(pojo.showColumnTotals());
+    public void buildingModelFromPojo_shouldMatchAllFields() {
+
+        assertThat(model.dataElement()).isEqualTo(pojo.dataElementUid());
+        assertThat(model.categoryOptionCombo()).isEqualTo(pojo.categoryOptionComboUid());
     }
+
 }

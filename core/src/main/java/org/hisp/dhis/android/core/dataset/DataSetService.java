@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
 
@@ -40,7 +39,6 @@ import retrofit2.http.Query;
 public interface DataSetService {
     @GET("dataSets")
     Call<Payload<DataSet>> getDataSets(@Query("fields") @Which Fields<DataSet> fields,
-                                       @Query("filter") @Where Filter<DataSet, String> lastUpdated,
                                        @Query("filter") @Where String accessDataReadFilter,
                                        @Query("paging") Boolean paging);
 }

@@ -25,7 +25,6 @@ public class EventWithLimitCallRealIntegrationShould extends AbsStoreTestCase {
 
     //@Test
     public void download_tracked_entity_instances() throws Exception {
-        d2.logout().call();
         d2.logIn(RealServerMother.user, RealServerMother.password).call();
 
         d2.syncMetaData().call();

@@ -357,7 +357,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     }
 
     private void downloadMetadata() throws Exception {
-        d2.logout().call();
         d2.logIn("android", "Android123").call();
 
         d2.syncMetaData().call();

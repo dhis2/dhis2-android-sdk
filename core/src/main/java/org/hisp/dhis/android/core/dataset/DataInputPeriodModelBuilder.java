@@ -42,7 +42,7 @@ public class DataInputPeriodModelBuilder extends ModelBuilder<DataInputPeriod, D
     @Override
     public DataInputPeriodModel buildModel(DataInputPeriod dataInputPeriod) {
 
-        return DataInputPeriodModel.builder()
+        return builder
                 .period(dataInputPeriod.periodUid())
                 .openingDate(dataInputPeriod.openingDate())
                 .closingDate(dataInputPeriod.closingDate())

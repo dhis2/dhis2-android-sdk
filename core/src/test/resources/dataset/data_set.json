@@ -41,6 +41,15 @@
       }
     }
   ],
+  "dataInputPeriods": [
+    {
+      "closingDate": "2018-01-09T23:00:00.000",
+      "openingDate": "2017-12-31T23:00:00.000",
+      "period": {
+        "id": "201801"
+      }
+    }
+  ],
   "indicators": [
     {
       "id": "OEWO2PpiUKx"

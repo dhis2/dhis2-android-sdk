@@ -100,6 +100,7 @@ public class DataSetModelBuilderShould extends NameableModelBuilderAbstractShoul
                 new ArrayList<ObjectWithUid>(),
                 new ArrayList<Section>(),
                 new ArrayList<DataElementOperand>(),
+                new ArrayList<DataInputPeriod>(),
                 Access.create(true, true, false, true,
                         true, true, DataAccess.create(true, false)),
                 ObjectStyle.create(COLOR, ICON),

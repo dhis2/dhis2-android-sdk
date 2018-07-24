@@ -28,18 +28,24 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.support.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.NestedField;
 
 import java.util.Date;
 
 @AutoValue
 public abstract class TrackedEntityType extends BaseNameableObject {
+    private final static String STYLE = "style";
+
     public static final Field<TrackedEntityType, String> uid = Field.create(UID);
     public static final Field<TrackedEntityType, String> code = Field.create(CODE);
     public static final Field<TrackedEntityType, String> name = Field.create(NAME);
@@ -51,10 +57,15 @@ public abstract class TrackedEntityType extends BaseNameableObject {
     public static final Field<TrackedEntityType, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
     public static final Field<TrackedEntityType, String> description = Field.create(DESCRIPTION);
     public static final Field<TrackedEntityType, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
+    private static final NestedField<TrackedEntityType, ObjectStyle> style = NestedField.create(STYLE);
 
     static final Fields<TrackedEntityType> allFields = Fields.<TrackedEntityType>builder().fields(
             uid, code, name, displayName, created, lastUpdated, deleted, shortName, displayShortName, description,
-            displayDescription).build();
+            displayDescription, style).build();
+
+    @Nullable
+    @JsonProperty(STYLE)
+    public abstract ObjectStyle style();
 
     @JsonCreator
     public static TrackedEntityType create(
@@ -68,10 +79,11 @@ public abstract class TrackedEntityType extends BaseNameableObject {
             @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
             @JsonProperty(DESCRIPTION) String description,
             @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
+            @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_TrackedEntityType(
                 uid, code, name, displayName, created, lastUpdated, deleted,
-                shortName, displayShortName, description, displayDescription);
+                shortName, displayShortName, description, displayDescription, style);
     }
 }

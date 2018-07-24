@@ -38,9 +38,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
-import java.io.DataInput;
 import java.util.Date;
 
 @AutoValue

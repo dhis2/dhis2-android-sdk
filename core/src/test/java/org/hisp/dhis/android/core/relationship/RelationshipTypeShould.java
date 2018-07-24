@@ -42,33 +42,11 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class RelationshipTypeShould {
 
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
+    public void map_from_json_string_29() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
 
-        RelationshipType relationshipType = objectMapper.readValue("{\n" +
-                        "\n" +
-                        "    \"created\": \"2013-09-19T15:17:41.000\",\n" +
-                        "    \"lastUpdated\": \"2014-04-14T13:53:20.166\",\n" +
-                        "    \"name\": \"Mother-Child\",\n" +
-                        "    \"id\": \"V2kkHafqs8G\",\n" +
-                        "    \"displayName\": \"Mother-Child\",\n" +
-                        "    \"bIsToA\": \"Child\",\n" +
-                        "    \"externalAccess\": false,\n" +
-                        "    \"aIsToB\": \"Mother\",\n" +
-                        "    \"access\": {\n" +
-                        "        \"read\": true,\n" +
-                        "        \"updateWithSection\": true,\n" +
-                        "        \"externalize\": false,\n" +
-                        "        \"delete\": true,\n" +
-                        "        \"write\": true,\n" +
-                        "        \"manage\": false\n" +
-                        "    },\n" +
-                        "    \"userGroupAccesses\": [ ],\n" +
-                        "    \"attributeValues\": [ ],\n" +
-                        "    \"translations\": [ ]\n" +
-                        "\n" +
-                        "}",
-                RelationshipType.class);
+        RelationshipType relationshipType =
+                objectMapper.readValue("relationship/relationshipType29.json", RelationshipType.class);
 
         assertThat(relationshipType.uid()).isEqualTo("V2kkHafqs8G");
         assertThat(relationshipType.name()).isEqualTo("Mother-Child");

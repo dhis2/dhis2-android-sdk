@@ -75,6 +75,7 @@ public class ProgramStageModelShould {
     private static final Integer ACCESS_DATA_WRITE = 1;
     private static final Integer REMIND_COMPLETED = 1;
     private static final String DESCRIPTION = "description";
+    private static final String DISPLAY_DESCRIPTION = "displayDescription";
 
     private final Date date;
     private final String dateString;
@@ -91,7 +92,7 @@ public class ProgramStageModelShould {
         cursor.addRow(new Object[]{
                 UID, CODE, NAME, DISPLAY_NAME,
                 dateString, dateString,
-                DESCRIPTION,
+                DESCRIPTION, DISPLAY_DESCRIPTION,
                 EXECUTION_DATE_LABEL,
                 ALLOW_GENERATE_NEXT_VISIT,
                 VALID_COMPLETE_ONLY,
@@ -147,6 +148,7 @@ public class ProgramStageModelShould {
         assertThat(model.accessDataWrite()).isTrue();
         assertThat(model.remindCompleted()).isTrue();
         assertThat(model.description()).isEqualTo(DESCRIPTION);
+        assertThat(model.displayDescription()).isEqualTo(DISPLAY_DESCRIPTION);
     }
 
     @Test
@@ -180,6 +182,7 @@ public class ProgramStageModelShould {
                 .accessDataWrite(toBoolean(ACCESS_DATA_WRITE))
                 .remindCompleted(toBoolean(REMIND_COMPLETED))
                 .description(DESCRIPTION)
+                .displayDescription(DISPLAY_DESCRIPTION)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -211,5 +214,6 @@ public class ProgramStageModelShould {
         assertThat(contentValues.getAsBoolean(Columns.ACCESS_DATA_WRITE)).isTrue();
         assertThat(contentValues.getAsBoolean(Columns.REMIND_COMPLETED)).isTrue();
         assertThat(contentValues.getAsString(Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
+        assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
     }
 }

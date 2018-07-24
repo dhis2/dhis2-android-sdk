@@ -53,6 +53,7 @@ import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 @AutoValue
 public abstract class ProgramStage extends BaseIdentifiableObject {
     private final static String DESCRIPTION = "description";
+    private final static String DISPLAY_DESCRIPTION = "displayDescription";
     private static final String EXECUTION_DATE_LABEL = "executionDateLabel";
     private static final String ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";
     private static final String VALID_COMPLETE_ONLY = "validCompleteOnly";
@@ -85,6 +86,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     static final Field<ProgramStage, String> lastUpdated = Field.create(LAST_UPDATED);
     private static final Field<ProgramStage, Integer> sortOrder = Field.create(SORT_ORDER);
     private static final Field<ProgramStage, String> description = Field.create(DESCRIPTION);
+    private static final Field<ProgramStage, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
     private static final Field<ProgramStage, Boolean> deleted = Field.create(DELETED);
     private static final Field<ProgramStage, String> executionDateLabel = Field.create(EXECUTION_DATE_LABEL);
     private static final Field<ProgramStage, Boolean> allowGenerateNextVisit = Field.create(ALLOW_GENERATE_NEXT_VISIT);
@@ -115,9 +117,9 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     private static final NestedField<ProgramStage, Access> access = NestedField.create(ACCESS);
 
     static final Fields<ProgramStage> allFields = Fields.<ProgramStage>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, description, allowGenerateNextVisit, autoGenerateEvent,
-            blockEntryForm, captureCoordinates, deleted, displayGenerateEventBox, executionDateLabel, formType,
-            generatedByEnrollmentDate, hideDueDate, minDaysFromStart, openAfterEnrollment, repeatable,
+            uid, code, name, displayName, created, lastUpdated, description, displayDescription, allowGenerateNextVisit,
+            autoGenerateEvent, blockEntryForm, captureCoordinates, deleted, displayGenerateEventBox, executionDateLabel,
+            formType, generatedByEnrollmentDate, hideDueDate, minDaysFromStart, openAfterEnrollment, repeatable,
             reportDateToUse, sortOrder, standardInterval, validCompleteOnly,
             programStageDataElements.with(ProgramStageDataElement.allFields),
             programStageSections.with(ProgramStageSection.allFields),
@@ -127,6 +129,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     @Nullable
     @JsonProperty(DESCRIPTION)
     public abstract String description();
+
+    @Nullable
+    @JsonProperty(DISPLAY_DESCRIPTION)
+    public abstract String displayDescription();
 
     @Nullable
     @JsonProperty(EXECUTION_DATE_LABEL)
@@ -234,6 +240,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
             @JsonProperty(DESCRIPTION) String description,
+            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
             @JsonProperty(EXECUTION_DATE_LABEL) String executionDateLabel,
             @JsonProperty(ALLOW_GENERATE_NEXT_VISIT) Boolean allowGenerateNextVisit,
             @JsonProperty(VALID_COMPLETE_ONLY) Boolean validCompleteOnly,
@@ -269,6 +276,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
                 lastUpdated,
                 deleted,
                 description,
+                displayDescription,
                 executionDateLabel,
                 allowGenerateNextVisit,
                 validCompleteOnly,

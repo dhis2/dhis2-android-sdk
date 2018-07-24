@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -52,14 +51,7 @@ public final class OptionSetCall {
                 OptionSet.displayName, OptionSet.created,
                 OptionSet.lastUpdated, OptionSet.version,
                 OptionSet.valueType,
-                OptionSet.options.with(Option.uid, Option.code, Option.created,
-                        Option.name, Option.displayName, Option.created,
-                        Option.lastUpdated,
-                        Option.optionSet.with(
-                                OptionSet.uid
-                        ),
-                        Option.style.with(ObjectStyle.allFields)
-                )
+                OptionSet.options.with(Option.allFields)
         ).build();
     }
 

@@ -42,6 +42,7 @@ public class OptionModelBuilder extends ModelBuilder<Option, OptionModel> {
                 .displayName(option.displayName())
                 .created(option.created())
                 .lastUpdated(option.lastUpdated())
+                .sortOrder(option.sortOrder())
                 .optionSet(UidsHelper.getUidOrNull(option.optionSet()))
                 .build();
     }

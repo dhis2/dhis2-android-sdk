@@ -46,11 +46,12 @@ public abstract class OptionModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "Option";
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String SORT_ORDER = "sortOrder";
         public static final String OPTION_SET = "optionSet";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), OPTION_SET);
+            return Utils.appendInNewArray(super.all(), SORT_ORDER, OPTION_SET);
         }
     }
 
@@ -65,8 +66,13 @@ public abstract class OptionModel extends BaseIdentifiableObjectModel {
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 7, optionSet());
+        sqLiteBind(sqLiteStatement, 7, sortOrder());
+        sqLiteBind(sqLiteStatement, 8, optionSet());
     }
+
+    @Nullable
+    @ColumnName(Columns.SORT_ORDER)
+    public abstract Integer sortOrder();
 
     @Nullable
     @ColumnName(Columns.OPTION_SET)
@@ -74,6 +80,8 @@ public abstract class OptionModel extends BaseIdentifiableObjectModel {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
+
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
         public abstract Builder optionSet(@Nullable String optionSet);
 

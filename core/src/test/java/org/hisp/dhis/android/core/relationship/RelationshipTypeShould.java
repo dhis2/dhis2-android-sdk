@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,14 +40,18 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class RelationshipTypeShould {
+public class RelationshipTypeShould extends BaseObjectShould {
+
+    public RelationshipTypeShould() {
+        super("relationship/relationshipType29.json");
+    }
 
     @Test
     public void map_from_json_string_29() throws IOException, ParseException {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         RelationshipType relationshipType =
-                objectMapper.readValue("relationship/relationshipType29.json", RelationshipType.class);
+                objectMapper.readValue(jsonStream, RelationshipType.class);
 
         assertThat(relationshipType.uid()).isEqualTo("V2kkHafqs8G");
         assertThat(relationshipType.name()).isEqualTo("Mother-Child");

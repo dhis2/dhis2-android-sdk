@@ -43,6 +43,7 @@ public class ProgramStageModelBuilder extends ModelBuilder<ProgramStage, Program
                 .lastUpdated(programStage.lastUpdated())
                 
                 .description(programStage.description())
+                .displayDescription(programStage.displayDescription())
                 .executionDateLabel(programStage.executionDateLabel())
                 .allowGenerateNextVisit(programStage.allowGenerateNextVisit())
                 .validCompleteOnly(programStage.validCompleteOnly())

@@ -46,6 +46,7 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISP
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.SHORT_NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.STYLE;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 
 @RunWith(JUnit4.class)
@@ -71,6 +72,7 @@ public class TrackedEntityTypeModelBuilderShould extends
                 DISPLAY_SHORT_NAME,
                 DESCRIPTION,
                 DISPLAY_DESCRIPTION,
+                STYLE,
                 DELETED
         );
     }

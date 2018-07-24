@@ -60,6 +60,7 @@ public class ProgramStageShould  extends BaseObjectShould implements ObjectShoul
         assertThat(programStage.name()).isEqualTo("ANC 1st visit");
         assertThat(programStage.displayName()).isEqualTo("ANC 1st visit");
         assertThat(programStage.description()).isEqualTo("ANC 1st visit");
+        assertThat(programStage.displayDescription()).isEqualTo("ANC 1st visit");
         assertThat(programStage.sortOrder()).isEqualTo(1);
         assertThat(programStage.allowGenerateNextVisit()).isFalse();
         assertThat(programStage.autoGenerateEvent()).isTrue();

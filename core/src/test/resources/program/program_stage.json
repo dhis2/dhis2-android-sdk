@@ -9,6 +9,7 @@
   "displayName": "ANC 1st visit",
   "reportDateToUse": "false",
   "description": "ANC 1st visit",
+  "displayDescription": "ANC 1st visit",
   "externalAccess": false,
   "openAfterEnrollment": false,
   "repeatable": false,
@@ -34,7 +35,6 @@
       "write": true
     }
   },
-  "remindCompleted": false,
   "program": {
     "id": "uy2gU8kT1jF"
   },

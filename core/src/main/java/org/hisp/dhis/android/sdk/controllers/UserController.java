@@ -40,6 +40,7 @@ import org.hisp.dhis.android.sdk.network.Session;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.LastUpdatedManager;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,12 +62,20 @@ final class UserController {
                 "firstName,surname,gender,birthday,introduction," +
                 "education,employer,interests,jobTitle,languages,email,phoneNumber," +
                 "teiSearchOrganisationUnits[id],organisationUnits[id],programs");
-        UserAccount userAccount;
+        UserAccount userAccount = null;
         if(DhisController.getInstance().isLoggedInServerWithLatestApiVersion()){
-            userAccount = dhisApi.getCurrentUserAccount(QUERY_PARAMS);
+            try {
+                userAccount = dhisApi.getCurrentUserAccount(QUERY_PARAMS).execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }else{
-            userAccount= dhisApi
-                    .getDeprecatedCurrentUserAccount(QUERY_PARAMS);
+            try {
+                userAccount= dhisApi
+                        .getDeprecatedCurrentUserAccount(QUERY_PARAMS).execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         // if we got here, it means http

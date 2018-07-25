@@ -259,7 +259,7 @@ public class LoginActivity extends Activity implements OnClickListener {
         progressText.setVisibility(View.VISIBLE);
     }
 
-    private void showLoginFailedDialog(String error) {
+    public void showLoginFailedDialog(String error) {
         Dialog.OnClickListener listener = new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

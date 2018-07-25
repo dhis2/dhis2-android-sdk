@@ -39,6 +39,7 @@ import org.hisp.dhis.android.sdk.persistence.models.DashboardItem;
 import org.hisp.dhis.android.sdk.persistence.models.DashboardItemContent;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.EventsPager;
 import org.hisp.dhis.android.sdk.persistence.models.Interpretation;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
@@ -58,6 +59,8 @@ import org.joda.convert.TypedStringConverter;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Request;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -77,14 +80,14 @@ public interface DhisApi {
     // Methods for getting user information
     /////////////////////////////////////////////////////////////////////////
 
-    @GET("/api/system/info/")
+    @GET("system/info/")
     Call<SystemInfo> getSystemInfo();
 
-    @GET("/23/me/")
-    UserAccount getDeprecatedCurrentUserAccount(@QueryMap Map<String, String> queryParams);
+    @GET("23/me/")
+    Call<UserAccount> getDeprecatedCurrentUserAccount(@QueryMap Map<String, String> queryParams);
 
-    @GET("/29/me/")
-    UserAccount getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
+    @GET("29/me/")
+    Call<UserAccount> getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
 
     /////////////////////////////////////////////////////////////////////////
     // Methods for getting Dashboard and DashboardItems
@@ -212,126 +215,126 @@ public interface DhisApi {
     // Methods for working with Meta data
     /////////////////////////////////////////////////////////////////////////
 
-    @GET("/me?fields=organisationUnits[id,displayName,code,programs[id]],userCredentials[userRoles[programs[id]]],teiSearchOrganisationUnits")
-    UserAccount getDeprecatedUserAccount();
+    @GET("me?fields=organisationUnits[id,displayName,code,programs[id]],userCredentials[userRoles[programs[id]]],teiSearchOrganisationUnits")
+    Call<UserAccount> getDeprecatedUserAccount();
 
-    @GET("/29/me?fields=organisationUnits[id,displayName,code,programs[id]],userCredentials[userRoles[programs[id]]],teiSearchOrganisationUnits,programs")
-    UserAccount getUserAccount();
+    @GET("29/me?fields=organisationUnits[id,displayName,code,programs[id]],userCredentials[userRoles[programs[id]]],teiSearchOrganisationUnits,programs")
+    Call<UserAccount> getUserAccount();
 
-    @GET("/" + ApiEndpointContainer.ORGANISATIONUNITS + "?paging=false")
-    Map<String,List<OrganisationUnit>> getOrganisationUnits(@QueryMap(encoded = false) Map<String,String> queryMap);
+    @GET(ApiEndpointContainer.ORGANISATIONUNITS + "?paging=false")
+    Call<Map<String,List<OrganisationUnit>>> getOrganisationUnits(@QueryMap(encoded = false) Map<String,String> queryMap);
 
-    @GET("/" + ApiEndpointContainer.PROGRAMS + "/{programUid}")
-    Program getProgram(@Path("programUid") String programUid, @QueryMap Map<String, String> queryMap);
+    @GET(ApiEndpointContainer.PROGRAMS + "/{programUid}")
+    Call<Program> getProgram(@Path("programUid") String programUid, @QueryMap Map<String, String> queryMap);
 
-    @GET("/" + ApiEndpointContainer.OPTION_SETS + "?paging=false")
-    Map<String, List<OptionSet>> getOptionSets(@QueryMap Map<String, String> queryParams);
+    @GET(ApiEndpointContainer.OPTION_SETS + "?paging=false")
+    Call<Map<String, List<OptionSet>>> getOptionSets(@QueryMap Map<String, String> queryParams);
 
-    @GET("/" + ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTE_GROUPS + "?paging=false")
-    Map<String, List<TrackedEntityAttributeGroup>> getTrackedEntityAttributeGroups(@QueryMap Map<String, String> queryParams);
+    @GET(ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTE_GROUPS + "?paging=false")
+    Call<Map<String, List<TrackedEntityAttributeGroup>>> getTrackedEntityAttributeGroups(@QueryMap Map<String, String> queryParams);
 
-    @GET("/" + ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES + "?paging=false")
-    Map<String, List<TrackedEntityAttribute>> getTrackedEntityAttributes(@QueryMap Map<String, String> queryParams);
+    @GET(ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES + "?paging=false")
+    Call<Map<String, List<TrackedEntityAttribute>>> getTrackedEntityAttributes(@QueryMap Map<String, String> queryParams);
 
-    @GET("/" + ApiEndpointContainer.CONSTANTS + "?paging=false")
-    Map<String, List<Constant>> getConstants(@QueryMap Map<String, String> queryParams);
+    @GET(ApiEndpointContainer.CONSTANTS + "?paging=false")
+    Call<Map<String, List<Constant>>> getConstants(@QueryMap Map<String, String> queryParams);
 
-    @GET("/" + ApiEndpointContainer.PROGRAMRULES + "?paging=false")
-    Map<String, List<ProgramRule>> getProgramRules(@QueryMap Map<String, String> queryParams);
+    @GET(ApiEndpointContainer.PROGRAMRULES + "?paging=false")
+    Call<Map<String, List<ProgramRule>>> getProgramRules(@QueryMap Map<String, String> queryParams);
 
 
-    @GET("/" + ApiEndpointContainer.PROGRAMRULEVARIABLES + "?paging=false")
-    Map<String, List<ProgramRuleVariable>> getProgramRuleVariables(@QueryMap Map<String, String> queryParams);
+    @GET(ApiEndpointContainer.PROGRAMRULEVARIABLES + "?paging=false")
+    Call<Map<String, List<ProgramRuleVariable>>> getProgramRuleVariables(@QueryMap Map<String, String> queryParams);
 
-    @GET("/" + ApiEndpointContainer.PROGRAMRULEACTIONS + "?paging=false")
-    Map<String, List<ProgramRuleAction>> getProgramRuleActions(@QueryMap Map<String, String> queryParams);
+    @GET(ApiEndpointContainer.PROGRAMRULEACTIONS + "?paging=false")
+    Call<Map<String, List<ProgramRuleAction>>> getProgramRuleActions(@QueryMap Map<String, String> queryParams);
 
-    @GET("/" + ApiEndpointContainer.RELATIONSHIPTYPES + "?paging=false")
-    Map<String, List<RelationshipType>> getRelationshipTypes(@QueryMap Map<String, String> queryParams);
+    @GET(ApiEndpointContainer.RELATIONSHIPTYPES + "?paging=false")
+    Call<Map<String, List<RelationshipType>>> getRelationshipTypes(@QueryMap Map<String, String> queryParams);
 
-    @GET("/" + ApiEndpointContainer.EVENTS)
-    JsonNode getEventUids(@Query("program") String programUid, @Query("orgUnit") String organisationUnitUid,
+    @GET(ApiEndpointContainer.EVENTS)
+    Call<JsonNode> getEventUids(@Query("program") String programUid, @Query("orgUnit") String organisationUnitUid,
             @QueryMap Map<String, String> queryParams);
 
     /////////////////////////////////////////////////////////////////////////
     // Methods for working with Tracker Data Values
     /////////////////////////////////////////////////////////////////////////
-    @GET("/" + ApiEndpointContainer.EVENTS + "?page=0")
-    List<Event> getEvents(@Query("program") String programUid,
+    @GET(ApiEndpointContainer.EVENTS + "?page=0")
+    Call<EventsPager> getEvents(@Query("program") String programUid,
+                                      @Query("orgUnit") String organisationUnitUid,
+                                      @Query("pageSize") int eventLimit,
+                                      @QueryMap Map<String, String> queryParams);
+
+    @GET(ApiEndpointContainer.EVENTS + "?skipPaging=true")
+    Call<List<Event>> getEvents(@Query("program") String programUid,
             @Query("orgUnit") String organisationUnitUid,
-            @Query("pageSize") int eventLimit,
             @QueryMap Map<String, String> queryParams);
 
-    @GET("/" + ApiEndpointContainer.EVENTS + "?skipPaging=true")
-    List<Event> getEvents(@Query("program") String programUid,
-            @Query("orgUnit") String organisationUnitUid,
-            @QueryMap Map<String, String> queryParams);
-
-    @GET("/" + ApiEndpointContainer.EVENTS + "?skipPaging=true&ouMode=ACCESSIBLE&")
-    List<Event> getEventsForTrackedEntityInstance(@Query("program") String programUid,
+    @GET(ApiEndpointContainer.EVENTS + "?skipPaging=true&ouMode=ACCESSIBLE&")
+    Call<List<Event>> getEventsForTrackedEntityInstance(@Query("program") String programUid,
                                                               @QueryMap Map<String, String> queryParams);
 
-    @GET("/" + ApiEndpointContainer.EVENTS + "?skipPaging=true&ouMode=ACCESSIBLE")
-    JsonNode getEventsForEnrollment(@Query("program") String programUid,
+    @GET(ApiEndpointContainer.EVENTS + "?skipPaging=true&ouMode=ACCESSIBLE")
+    Call<JsonNode> getEventsForEnrollment(@Query("program") String programUid,
                                                     @Query("programStatus") String programStatus,
                                                     @Query("trackedEntityInstance") String
                                                             trackedEntityInstanceUid,
                                                     @QueryMap Map<String, String> queryParams);
 
-    @GET("/"+ApiEndpointContainer.EVENTS+"/{eventUid}")
-    Event getEvent(@Path("eventUid") String eventUid, @QueryMap Map<String, String> queryMap);
+    @GET(ApiEndpointContainer.EVENTS+"/{eventUid}")
+    Call<Event> getEvent(@Path("eventUid") String eventUid, @QueryMap Map<String, String> queryMap);
 
-    @POST("/"+ApiEndpointContainer.EVENTS+"/")
-    Response postEvent(@Body Event event);
+    @POST(ApiEndpointContainer.EVENTS+"/")
+    Call<ResponseBody> postEvent(@Body Event event);
 
-    @POST("/"+ApiEndpointContainer.EVENTS+"/")
-    ApiResponse postEvents(@Body Map<String, List<Event>> events);
+    @POST(ApiEndpointContainer.EVENTS+"/")
+    Call<ResponseBody> postEvents(@Body Map<String, List<Event>> events);
 
-    @POST("/"+ApiEndpointContainer.EVENTS+"/"+"?strategy=DELETE")
-    ApiResponse postDeletedEvents(@Body Map<String, List<Event>> events);
+    @POST(ApiEndpointContainer.EVENTS+"/"+"?strategy=DELETE")
+    Call<ApiResponse> postDeletedEvents(@Body Map<String, List<Event>> events);
 
-    @PUT("/"+ApiEndpointContainer.EVENTS+"/{eventUid}")
-    Response putEvent(@Path("eventUid") String eventUid, @Body Event event);
+    @PUT(ApiEndpointContainer.EVENTS+"/{eventUid}")
+    Call<ResponseBody> putEvent(@Path("eventUid") String eventUid, @Body Event event);
 
-    @DELETE("/" + ApiEndpointContainer.EVENTS + "/{eventUid}")
-    Response deleteEvent(@Path("eventUid") String eventUid);
+    @DELETE(ApiEndpointContainer.EVENTS + "/{eventUid}")
+    Call<ResponseBody> deleteEvent(@Path("eventUid") String eventUid);
 
-    @GET("/"+ApiEndpointContainer.ENROLLMENTS+"/{enrollmentUid}")
-    Enrollment getEnrollment(@Path("enrollmentUid") String enrollmentUid, @QueryMap Map<String, String> queryMap);
+    @GET(ApiEndpointContainer.ENROLLMENTS+"/{enrollmentUid}")
+    Call<Enrollment> getEnrollment(@Path("enrollmentUid") String enrollmentUid, @QueryMap Map<String, String> queryMap);
 
-    @GET("/"+ApiEndpointContainer.ENROLLMENTS+"?skipPaging=true&ouMode=ACCESSIBLE")
-    Map<String, List<Enrollment>> getEnrollments(@Query("trackedEntityInstance") String trackedEntityInstanceUid, @QueryMap Map<String, String> queryMap);
+    @GET(ApiEndpointContainer.ENROLLMENTS+"?skipPaging=true&ouMode=ACCESSIBLE")
+    Call<Map<String, List<Enrollment>>> getEnrollments(@Query("trackedEntityInstance") String trackedEntityInstanceUid, @QueryMap Map<String, String> queryMap);
 
-    @GET("/"+ApiEndpointContainer.ENROLLMENTS+"?skipPaging=true&ouMode=ACCESSIBLE")
-    Map<String, List<Enrollment>> getEnrollmentsByOrgUnit(@Query("orgUnit") String organisationUnitUid, @QueryMap Map<String, String> queryMap);
+    @GET(ApiEndpointContainer.ENROLLMENTS+"?skipPaging=true&ouMode=ACCESSIBLE")
+    Call<Map<String, List<Enrollment>>> getEnrollmentsByOrgUnit(@Query("orgUnit") String organisationUnitUid, @QueryMap Map<String, String> queryMap);
 
-    @POST("/"+ApiEndpointContainer.ENROLLMENTS+"/")
-    Response postEnrollment(@Body Enrollment enrollment);
+    @POST(ApiEndpointContainer.ENROLLMENTS+"/")
+    Call<ResponseBody> postEnrollment(@Body Enrollment enrollment);
 
-    @PUT("/"+ApiEndpointContainer.ENROLLMENTS+"/{enrollmentUid}")
-    Response putEnrollment(@Path("enrollmentUid") String enrollmentUid, @Body Enrollment enrollment);
+    @PUT(ApiEndpointContainer.ENROLLMENTS+"/{enrollmentUid}")
+    Call<ResponseBody> putEnrollment(@Path("enrollmentUid") String enrollmentUid, @Body Enrollment enrollment);
 
-    @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/{trackedEntityInstanceUid}")
-    TrackedEntityInstance getTrackedEntityInstance(@Path("trackedEntityInstanceUid") String trackedEntityInstanceUid, @QueryMap Map<String, String> queryMap);
+    @GET(ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/{trackedEntityInstanceUid}")
+    Call<TrackedEntityInstance> getTrackedEntityInstance(@Path("trackedEntityInstanceUid") String trackedEntityInstanceUid, @QueryMap Map<String, String> queryMap);
 
 
-    @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"?skipPaging=true")
-    Map<String, List<TrackedEntityInstance>> getTrackedEntityInstances(@Query("ou") String organisationUnitUid, @QueryMap(encoded = false) Map<String, String> queryMap);
+    @GET(ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"?skipPaging=true")
+    Call<Map<String, List<TrackedEntityInstance>>> getTrackedEntityInstances(@Query("ou") String organisationUnitUid, @QueryMap(encoded = false) Map<String, String> queryMap);
 
-    @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"?skipPaging=true&ouMode=ACCESSIBLE")
-    Map<String, List<TrackedEntityInstance>> getTrackedEntityInstancesFromAllAccessibleOrgUnits(@Query("ou") String organisationUnitUid, @QueryMap(encoded = false) Map<String, String> queryMap);
+    @GET(ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"?skipPaging=true&ouMode=ACCESSIBLE")
+    Call<Map<String, List<TrackedEntityInstance>>> getTrackedEntityInstancesFromAllAccessibleOrgUnits(@Query("ou") String organisationUnitUid, @QueryMap(encoded = false) Map<String, String> queryMap);
 
-    @POST("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/")
-    Response postTrackedEntityInstance(@Body TrackedEntityInstance trackedEntityInstance);
+    @POST(ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/")
+    Call<ResponseBody> postTrackedEntityInstance(@Body TrackedEntityInstance trackedEntityInstance);
 
-    @PUT("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/{trackedEntityInstanceUid}")
-    Response putTrackedEntityInstance(@Path("trackedEntityInstanceUid") String trackedEntityInstanceUid, @Body TrackedEntityInstance trackedEntityInstance);
+    @PUT(ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/{trackedEntityInstanceUid}")
+    Call<ResponseBody> putTrackedEntityInstance(@Path("trackedEntityInstanceUid") String trackedEntityInstanceUid, @Body TrackedEntityInstance trackedEntityInstance);
 
-    @POST("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/" + "?strategy=CREATE_AND_UPDATE")
-    ApiResponse postTrackedEntityInstances(@Body Map<String, List<TrackedEntityInstance>> trackedEntityInstances);
+    @POST(ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/" + "?strategy=CREATE_AND_UPDATE")
+    Call<ResponseBody> postTrackedEntityInstances(@Body Map<String, List<TrackedEntityInstance>> trackedEntityInstances);
 
 //    @GET("/" + ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES + "/{trackedEntityAttribute}" + "/generate")
-    @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES+"/{trackedEntityAttribute}/generateAndReserve")
-    List<TrackedEntityAttributeGeneratedValue> getTrackedEntityAttributeGeneratedValues(@Path("trackedEntityAttribute") String trackedEntityAttribute, @Query("numberToReserve") long numberOfIdsToGenerate);
+    @GET(ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES+"/{trackedEntityAttribute}/generateAndReserve")
+    Call<List<TrackedEntityAttributeGeneratedValue>> getTrackedEntityAttributeGeneratedValues(@Path("trackedEntityAttribute") String trackedEntityAttribute, @Query("numberToReserve") long numberOfIdsToGenerate);
 
 }

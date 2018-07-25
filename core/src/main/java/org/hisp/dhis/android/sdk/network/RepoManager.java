@@ -29,14 +29,21 @@
 
 package org.hisp.dhis.android.sdk.network;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
+import org.hisp.dhis.android.sdk.utils.UiUtils;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -70,25 +77,15 @@ public final class RepoManager {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(provideServerUrl(serverUrl))
-                .addConverterFactory(JacksonConverterFactory.create())
+                .addConverterFactory(provideJacksonConverter())
                 .client(provideOkClient(credentials))
                 .build();
 
-       /* RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(provideServerUrl(serverUrl))
-                .setConverter(provideJacksonConverter())
-                .setClient(provideOkClient(credentials))
-                .setErrorHandler(new RetrofitErrorHandler())
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .build();*/
         return retrofit.create(DhisApi.class);
     }
 
     private static String provideServerUrl(HttpUrl httpUrl) {
         return httpUrl.toString()+"/api/";
-        /*return httpUrl.newBuilder()
-                .addPathSegment("api")
-                .build().toString();*/
     }
 
     private static JacksonConverterFactory provideJacksonConverter() {
@@ -143,6 +140,8 @@ public final class RepoManager {
         }
 
     }
+
+
 
    /* private static class RetrofitErrorHandler implements ErrorHandler {
 

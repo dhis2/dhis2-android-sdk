@@ -14,6 +14,7 @@ import org.joda.time.DateTime;
 
 import java.io.IOException;
 
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 
@@ -37,15 +38,16 @@ public abstract class ARemoteDataSource {
         //method checks which one it is that is being returned, and parses accordingly.
         if (response.code() == 200) {
             try {
+                String body = ((ResponseBody)response.body()).string();
                 JsonNode node = DhisController.getInstance().getObjectMapper().
-                        readTree(new StringConverter().convert(response.body()).toString());
+                        readTree(body);
                 if (node == null) {
                     return null;
                 }
                 if (node.has("response")) {
-                    return getPutImportSummary(response);
+                    return getPutImportSummary(body);
                 } else {
-                    return getPostImportSummary(response);
+                    return getPostImportSummary(body);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -56,10 +58,10 @@ public abstract class ARemoteDataSource {
         return null;
     }
 
-    private ImportSummary getPostImportSummary(Response response) {
+    private ImportSummary getPostImportSummary(String body) {
         ImportSummary importSummary = null;
         try {
-            String body = new StringConverter().convert(response.body()).toString();
+            //String body = new StringConverter().convert(response.body()).toString();
             //Log.d(CLASS_TAG, body);
             importSummary = DhisController.getInstance().getObjectMapper().
                     readValue(body, ImportSummary.class);
@@ -71,10 +73,10 @@ public abstract class ARemoteDataSource {
         return importSummary;
     }
 
-    private ImportSummary getPutImportSummary(Response response) {
+    private ImportSummary getPutImportSummary(String body) {
         ApiResponse apiResponse = null;
         try {
-            String body = new StringConverter().convert(response.body()).toString();
+            //String body = new StringConverter().convert(((ResponseBody)response.body()).byteStream()).toString();
             //Log.d(CLASS_TAG, body);
             apiResponse = DhisController.getInstance().getObjectMapper().
                     readValue(body, ApiResponse.class);

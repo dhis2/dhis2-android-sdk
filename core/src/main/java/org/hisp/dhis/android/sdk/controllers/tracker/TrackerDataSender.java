@@ -67,6 +67,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 /**
@@ -132,13 +133,13 @@ final class TrackerDataSender {
         Map<String, Event> eventMap = new HashMap<>();
         List<ImportSummary> importSummaries = null;
 
-        ApiResponse apiResponse = null;
+        Response apiResponse = null;
         try {
             Map<String, List<Event>> map = new HashMap<>();
             map.put("events", events);
-            apiResponse = dhisApi.postEvents(map);
+            apiResponse = dhisApi.postEvents(map).execute();
 
-            importSummaries = apiResponse.getImportSummaries();
+            importSummaries = null;//apiResponse.getImportSummaries();
 
             for (Event event : events) {
                 eventMap.put(event.getUid(), event);
@@ -174,6 +175,8 @@ final class TrackerDataSender {
             //batch sending failed. Trying to re-send one by one
             sendEventChanges(dhisApi, events);
 
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -230,7 +233,7 @@ final class TrackerDataSender {
 
     private static void postEvent(Event event, DhisApi dhisApi) throws APIException {
         try {
-            Response response = dhisApi.postEvent(event);
+            Response response = dhisApi.postEvent(event).execute();
             if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.EVENT, event.getLocalId());
@@ -248,12 +251,19 @@ final class TrackerDataSender {
             }
         } catch (APIException apiException) {
             NetworkUtils.handleEventSendException(apiException, event);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     private static void putEvent(Event event, DhisApi dhisApi) throws APIException {
         try {
-            Response response = dhisApi.putEvent(event.getEvent(), event);
+            Response response = null;
+            try {
+                response = dhisApi.putEvent(event.getEvent(), event).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.EVENT, event.getLocalId());
@@ -275,8 +285,13 @@ final class TrackerDataSender {
         try {
             final Map<String, String> QUERY_PARAMS = new HashMap<>();
             QUERY_PARAMS.put("fields", "created,lastUpdated");
-            Event updatedEvent = dhisApi
-                    .getEvent(event.getEvent(), QUERY_PARAMS);
+            Event updatedEvent = null;
+            try {
+                updatedEvent = dhisApi
+                        .getEvent(event.getEvent(), QUERY_PARAMS).execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             // merging updated timestamp to local event model
             event.setCreated(updatedEvent.getCreated());
@@ -347,7 +362,7 @@ final class TrackerDataSender {
 
     private static boolean postEnrollment(Enrollment enrollment, DhisApi dhisApi) throws APIException {
         try {
-            Response response = dhisApi.postEnrollment(enrollment);
+            Response response = dhisApi.postEnrollment(enrollment).execute();
             if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.ENROLLMENT, enrollment.getLocalId());
@@ -366,13 +381,15 @@ final class TrackerDataSender {
         } catch (APIException apiException) {
             NetworkUtils.handleEnrollmentSendException(apiException, enrollment);
             return false;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return true;
     }
 
     private static boolean putEnrollment(Enrollment enrollment, DhisApi dhisApi) throws APIException {
         try {
-            Response response = dhisApi.putEnrollment(enrollment.getEnrollment(), enrollment);
+            Response response = dhisApi.putEnrollment(enrollment.getEnrollment(), enrollment).execute();
             if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.ENROLLMENT, enrollment.getLocalId());
@@ -390,6 +407,8 @@ final class TrackerDataSender {
         } catch (APIException apiException) {
             NetworkUtils.handleEnrollmentSendException(apiException, enrollment);
             return false;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return true;
     }
@@ -416,7 +435,7 @@ final class TrackerDataSender {
             final Map<String, String> QUERY_PARAMS = new HashMap<>();
             QUERY_PARAMS.put("fields", "created,lastUpdated");
             Enrollment updatedEnrollment = dhisApi
-                    .getEnrollment(enrollment.getEnrollment(), QUERY_PARAMS);
+                    .getEnrollment(enrollment.getEnrollment(), QUERY_PARAMS).execute().body();
 
             // merging updated timestamp to local enrollment model
             enrollment.setCreated(updatedEnrollment.getCreated());
@@ -424,6 +443,8 @@ final class TrackerDataSender {
             enrollment.save();
         } catch (APIException apiException) {
             NetworkUtils.handleApiException(apiException);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -566,11 +587,14 @@ final class TrackerDataSender {
         List<ImportSummary> importSummaries = null;
 
         ApiResponse apiResponse = null;
+        Response response = null;
         try {
             Map<String, List<TrackedEntityInstance>> map = new HashMap<>();
             map.put("trackedEntityInstances", trackedEntityInstances);
-            apiResponse = dhisApi.postTrackedEntityInstances(map);
 
+            response = dhisApi.postTrackedEntityInstances(map).execute();
+            apiResponse = DhisController.getInstance().getObjectMapper().
+                    readValue(((ResponseBody)response.body()).string(), ApiResponse.class);
             importSummaries = apiResponse.getImportSummaries();
 
             for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
@@ -604,12 +628,14 @@ final class TrackerDataSender {
             //batch sending failed. Trying to re-send one by one
             sendTrackedEntityInstanceChanges(dhisApi, trackedEntityInstances, false);
 
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     private static boolean postTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
         try {
-            Response response = dhisApi.postTrackedEntityInstance(trackedEntityInstance);
+            Response response = dhisApi.postTrackedEntityInstance(trackedEntityInstance).execute();
             if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.TRACKEDENTITYINSTANCE, trackedEntityInstance.getLocalId());
@@ -629,13 +655,19 @@ final class TrackerDataSender {
         } catch (APIException apiException) {
             NetworkUtils.handleTrackedEntityInstanceSendException(apiException, trackedEntityInstance);
             return false;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return true;
     }
 
     private static boolean putTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
         try {
-            Response response = dhisApi.putTrackedEntityInstance(trackedEntityInstance.getTrackedEntityInstance(), trackedEntityInstance);
+            Response response = null;
+            if(!dhisApi.putTrackedEntityInstance(trackedEntityInstance.getTrackedEntityInstance(), trackedEntityInstance).isExecuted()){
+                response = dhisApi.putTrackedEntityInstance(trackedEntityInstance.getTrackedEntityInstance(), trackedEntityInstance).execute();
+            }
+
             if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.TRACKEDENTITYINSTANCE, trackedEntityInstance.getLocalId());
@@ -651,6 +683,8 @@ final class TrackerDataSender {
         } catch (APIException apiException) {
             NetworkUtils.handleTrackedEntityInstanceSendException(apiException, trackedEntityInstance);
             return false;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return true;
     }
@@ -717,8 +751,11 @@ final class TrackerDataSender {
         try {
             final Map<String, String> QUERY_PARAMS = new HashMap<>();
             QUERY_PARAMS.put("fields", "created,lastUpdated");
-            TrackedEntityInstance updatedTrackedEntityInstance = dhisApi
-                    .getTrackedEntityInstance(trackedEntityInstance.getTrackedEntityInstance(), QUERY_PARAMS);
+            TrackedEntityInstance updatedTrackedEntityInstance = null;
+            if(!dhisApi.getTrackedEntityInstance(trackedEntityInstance.getTrackedEntityInstance(), QUERY_PARAMS).isExecuted()){
+                updatedTrackedEntityInstance = dhisApi
+                        .getTrackedEntityInstance(trackedEntityInstance.getTrackedEntityInstance(), QUERY_PARAMS).execute().body();
+            }
 
             // merging updated timestamp to local trackedentityinstance model
             trackedEntityInstance.setCreated(updatedTrackedEntityInstance.getCreated());
@@ -726,6 +763,8 @@ final class TrackerDataSender {
             trackedEntityInstance.save();
         } catch (APIException apiException) {
             NetworkUtils.handleApiException(apiException);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -780,15 +819,16 @@ final class TrackerDataSender {
         //because the web api almost randomly gives the responses in different forms, this
         //method checks which one it is that is being returned, and parses accordingly.
         try {
+            String body = ((ResponseBody)response.body()).string();
             JsonNode node = DhisController.getInstance().getObjectMapper().
-                    readTree(new StringConverter().convert(response.body()).toString());
+                    readTree(body);
             if (node == null) {
                 return null;
             }
             if (node.has("response")) {
-                return getPutImportSummary(response);
+                return getPutImportSummary(body);
             } else {
-                return getPostImportSummary(response);
+                return getPostImportSummary(body);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -798,10 +838,9 @@ final class TrackerDataSender {
         return null;
     }
 
-    private static ImportSummary getPostImportSummary(Response response) {
+    private static ImportSummary getPostImportSummary(String body) {
         ImportSummary importSummary = null;
         try {
-            String body = new StringConverter().convert(response.body()).toString();
             Log.d(CLASS_TAG, body);
             importSummary = DhisController.getInstance().getObjectMapper().
                     readValue(body, ImportSummary.class);
@@ -813,10 +852,9 @@ final class TrackerDataSender {
         return importSummary;
     }
 
-    private static ImportSummary getPutImportSummary(Response response) {
+    private static ImportSummary getPutImportSummary(String body) {
         ApiResponse apiResponse = null;
         try {
-            String body = new StringConverter().convert(response.body()).toString();
             Log.d(CLASS_TAG, body);
             apiResponse = DhisController.getInstance().getObjectMapper().
                     readValue(body, ApiResponse.class);
@@ -845,7 +883,7 @@ final class TrackerDataSender {
             return;
         }
         try {
-            Response response = dhisApi.deleteEvent(event.getUid());
+            Response response = dhisApi.deleteEvent(event.getUid()).execute();
             if (response.code() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.EVENT, event.getLocalId());
@@ -858,6 +896,8 @@ final class TrackerDataSender {
             }
         } catch (APIException apiException) {
             NetworkUtils.handleEventSendException(apiException, event);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

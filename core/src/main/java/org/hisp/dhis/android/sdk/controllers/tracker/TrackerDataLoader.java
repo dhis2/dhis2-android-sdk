@@ -53,6 +53,7 @@ import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.EventsPager;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
@@ -196,15 +197,22 @@ final class TrackerDataLoader extends ResourceController {
                 QUERY_MAP_FULL.put(trackedEntityInstanceQueryParams, sb.toString());
                 try {
                     List<Event> eventsForTrackedEntityInstance =
-                            dhisApi.getEventsForTrackedEntityInstance(programUid, QUERY_MAP_FULL);
+                            null;
+                    try {
+                        eventsForTrackedEntityInstance = dhisApi.getEventsForTrackedEntityInstance(programUid, QUERY_MAP_FULL).execute().body();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     if (eventsForTrackedEntityInstance != null) {
                         eventsFromServer.addAll(
                                 dhisApi.getEventsForTrackedEntityInstance(programUid,
-                                        QUERY_MAP_FULL));
+                                        QUERY_MAP_FULL).execute().body());
                     }
                 } catch (APIException apiException) {
                     apiException.printStackTrace();
                     failed = true;
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -396,8 +404,13 @@ final class TrackerDataLoader extends ResourceController {
         }
 
         List<Enrollment> remoteEnrollments = new ArrayList<>();
-        Map<String, List<Enrollment>> enrollmentList = dhisApi.getEnrollmentsByOrgUnit(organisationUnitUid,
-                map);
+        Map<String, List<Enrollment>> enrollmentList = null;
+        try {
+            enrollmentList = dhisApi.getEnrollmentsByOrgUnit(organisationUnitUid,
+                    map).execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for (String enrollmentKey : enrollmentList.keySet()) {
             remoteEnrollments.addAll(
                     enrollmentList.get(enrollmentKey));
@@ -433,8 +446,17 @@ final class TrackerDataLoader extends ResourceController {
 
         List<TrackedEntityInstance> remoteTrackedEntityInstances = new ArrayList<>();
         Map<String, List<TrackedEntityInstance>> trackedEntityInstancesList =
-                dhisApi.getTrackedEntityInstances(organisationUnitUid,
-                        map);
+                null;
+        try {
+            if(!dhisApi.getTrackedEntityInstances(organisationUnitUid,
+                    map).isExecuted()){
+                trackedEntityInstancesList = dhisApi.getTrackedEntityInstances(organisationUnitUid,
+                        map).execute().body();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for (String trackedEntityInstanceKey : trackedEntityInstancesList.keySet()) {
             remoteTrackedEntityInstances.addAll(
                     trackedEntityInstancesList.get(trackedEntityInstanceKey));
@@ -472,8 +494,13 @@ final class TrackerDataLoader extends ResourceController {
             return;
         }
 
-        JsonNode response = dhisApi.getEventUids(programUid, organisationUnitUid,
-                map);
+        JsonNode response = null;
+        try {
+            response = dhisApi.getEventUids(programUid, organisationUnitUid,
+                    map).execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         List<Event> remoteEvents = EventsWrapper.getEvents(response);
         List<Event> eventsToBeRemoved = new ArrayList<>();
@@ -551,10 +578,18 @@ final class TrackerDataLoader extends ResourceController {
         if (lastUpdated != null) {
             map.put("lastUpdated", lastUpdated.toString());
         }
-        List<Event> events = dhisApi.getEvents(programUid, organisationUnitUid, 50,
-                map);
+        EventsPager events = null;
+        try {
+            if(!dhisApi.getEvents(programUid, organisationUnitUid, 50, map).isExecuted()){
+                events = dhisApi.getEvents(programUid, organisationUnitUid, 50,
+                        map).execute().body();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         saveResourceDataFromServer(ResourceType.EVENTS, organisationUnitUid + programUid, dhisApi,
-                events, null, serverDateTime);
+                events.getEvents(), null, serverDateTime);
     }
 
     static TrackedEntityInstance queryTrackedEntityInstanceDataFromServer(DhisApi dhisApi,
@@ -563,8 +598,16 @@ final class TrackerDataLoader extends ResourceController {
         if (dhisApi == null) {
             return null;
         }
-        TrackedEntityInstance trackedEntityInstance = dhisApi
-                .getTrackedEntityInstance(trackedEntityInstanceUid, map);
+        TrackedEntityInstance trackedEntityInstance = null;
+        try {
+            if(!dhisApi.getTrackedEntityInstance(trackedEntityInstanceUid, map).isExecuted()){
+                trackedEntityInstance = dhisApi
+                        .getTrackedEntityInstance(trackedEntityInstanceUid, map).execute().body();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return trackedEntityInstance;
     }
 
@@ -610,9 +653,14 @@ final class TrackerDataLoader extends ResourceController {
             QUERY_MAP_FULL.put("query", "LIKE:"
                     + queryString);//todo: make a map where we can use more than one of each key
         }
-        List<TrackedEntityInstance> trackedEntityInstances = unwrapResponse(dhisApi
-                .getTrackedEntityInstances(organisationUnitUid,
-                        QUERY_MAP_FULL), ApiEndpointContainer.TRACKED_ENTITY_INSTANCES);
+        List<TrackedEntityInstance> trackedEntityInstances = null;
+        try {
+            trackedEntityInstances = unwrapResponse(dhisApi
+                    .getTrackedEntityInstances(organisationUnitUid,
+                            QUERY_MAP_FULL).execute().body(), ApiEndpointContainer.TRACKED_ENTITY_INSTANCES);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return trackedEntityInstances;
     }
 
@@ -676,10 +724,15 @@ final class TrackerDataLoader extends ResourceController {
             QUERY_MAP_FULL.put("query", "LIKE:"
                     + queryString);//todo: make a map where we can use more than one of each key
         }
-        List<TrackedEntityInstance> trackedEntityInstances = unwrapResponse(dhisApi
-                        .getTrackedEntityInstancesFromAllAccessibleOrgUnits(organisationUnitUid,
-                                QUERY_MAP_FULL),
-                ApiEndpointContainer.TRACKED_ENTITY_INSTANCES);
+        List<TrackedEntityInstance> trackedEntityInstances = null;
+        try {
+            trackedEntityInstances = unwrapResponse(dhisApi
+                            .getTrackedEntityInstancesFromAllAccessibleOrgUnits(organisationUnitUid,
+                                    QUERY_MAP_FULL).execute().body(),
+                    ApiEndpointContainer.TRACKED_ENTITY_INSTANCES);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return trackedEntityInstances;
     }
 
@@ -794,8 +847,15 @@ final class TrackerDataLoader extends ResourceController {
     private static TrackedEntityInstance updateTrackedEntityInstance(DhisApi dhisApi, String uid,
             DateTime lastUpdated) throws APIException {
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
-        TrackedEntityInstance updatedTrackedEntityInstance = dhisApi.getTrackedEntityInstance(uid,
-                QUERY_MAP_FULL);
+        TrackedEntityInstance updatedTrackedEntityInstance = null;
+        try {
+            if(! dhisApi.getTrackedEntityInstance(uid, QUERY_MAP_FULL).isExecuted()) {
+                updatedTrackedEntityInstance = dhisApi.getTrackedEntityInstance(uid,
+                        QUERY_MAP_FULL).execute().body();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return updatedTrackedEntityInstance;
     }
 
@@ -819,9 +879,14 @@ final class TrackerDataLoader extends ResourceController {
             }
         }
 
-        List<Enrollment> enrollments = unwrapResponse(dhisApi
-                .getEnrollments(trackedEntityInstance.getTrackedEntityInstance(),
-                        getBasicQueryMap(lastUpdated)), ApiEndpointContainer.ENROLLMENTS);
+        List<Enrollment> enrollments = null;
+        try {
+            enrollments = unwrapResponse(dhisApi
+                    .getEnrollments(trackedEntityInstance.getTrackedEntityInstance(),
+                            getBasicQueryMap(lastUpdated)).execute().body(), ApiEndpointContainer.ENROLLMENTS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for (Enrollment enrollment : enrollments) {
             enrollment.setLocalTrackedEntityInstanceId(trackedEntityInstance.getLocalId());
         }
@@ -880,7 +945,12 @@ final class TrackerDataLoader extends ResourceController {
             return null;
         }
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
-        Enrollment updatedEnrollment = dhisApi.getEnrollment(uid, QUERY_MAP_FULL);
+        Enrollment updatedEnrollment = null;
+        try {
+            updatedEnrollment = dhisApi.getEnrollment(uid, QUERY_MAP_FULL).execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return updatedEnrollment;
     }
 
@@ -904,10 +974,15 @@ final class TrackerDataLoader extends ResourceController {
                     .getLastUpdated(ResourceType.EVENTS, enrollment.getEnrollment());
         }
 
-        JsonNode response = dhisApi
-                .getEventsForEnrollment(enrollment.getProgram().getUid(), enrollment.getStatus(),
-                        enrollment.getTrackedEntityInstance(),
-                        getBasicQueryMap(lastUpdated));
+        JsonNode response = null;
+        try {
+            response = dhisApi
+                    .getEventsForEnrollment(enrollment.getProgram().getUid(), enrollment.getStatus(),
+                            enrollment.getTrackedEntityInstance(),
+                            getBasicQueryMap(lastUpdated)).execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         List<Event> events = EventsWrapper.getEvents(response);
         List<Event> invalidEvents = new ArrayList<>();
         for (Event event : events) {
@@ -946,7 +1021,12 @@ final class TrackerDataLoader extends ResourceController {
         }
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
 
-        Event updatedEvent = dhisApi.getEvent(uid, QUERY_MAP_FULL);
+        Event updatedEvent = null;
+        try {
+            updatedEvent = dhisApi.getEvent(uid, QUERY_MAP_FULL).execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return updatedEvent;
     }
 
@@ -962,12 +1042,12 @@ final class TrackerDataLoader extends ResourceController {
             List<Relationship> localRelationships = TrackerController.getRelationships(
                     trackedEntityInstanceUid);
 
-            TrackedEntityInstance remoteTrackedEntityInstance;
-
-            remoteTrackedEntityInstance =
-                    dhisApi.getTrackedEntityInstance(trackedEntityInstanceUid,
-                            map);
-
+            TrackedEntityInstance remoteTrackedEntityInstance = null;
+            if(!dhisApi.getTrackedEntityInstance(trackedEntityInstanceUid, map).isExecuted()){
+                remoteTrackedEntityInstance =
+                        dhisApi.getTrackedEntityInstance(trackedEntityInstanceUid,
+                                map).execute().body();
+            }
 
             List<Relationship> remoteRelationships = remoteTrackedEntityInstance.getRelationships();
 

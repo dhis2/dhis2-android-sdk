@@ -83,11 +83,12 @@ dependencies {
     compile 'com.raizlabs.android:DBFlow:2.2.1'
 
     // Fasterxml libraries.
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.5'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.8.5'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.5'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.4'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.8.5'
-
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.8.5'
+    compile 'com.fasterxml.jackson.module:jackson-module-parameter-names:2.8.5'
     // Joda libraries.
     compile 'joda-time:joda-time:2.9.2'
     compile 'org.joda:joda-convert:1.8.1'

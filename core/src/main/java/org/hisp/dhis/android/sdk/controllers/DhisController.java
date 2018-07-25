@@ -32,8 +32,12 @@ package org.hisp.dhis.android.sdk.controllers;
 import android.content.Context;
 import android.util.Log;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
@@ -64,6 +68,7 @@ import org.hisp.dhis.android.sdk.synchronization.domain.app.SyncAppUseCase;
 import org.hisp.dhis.android.sdk.synchronization.domain.enrollment.IEnrollmentRepository;
 import org.hisp.dhis.android.sdk.synchronization.domain.trackedentityinstance
         .ITrackedEntityInstanceRepository;
+import org.hisp.dhis.android.sdk.utils.NetworkUtils;
 import org.hisp.dhis.android.sdk.utils.SyncDateWrapper;
 import org.hisp.dhis.client.sdk.ui.AppPreferencesImpl;
 
@@ -97,7 +102,6 @@ public final class DhisController {
      * Is set to false when DataValueSender.onFinishSending(true)
      */
     public static boolean hasUnSynchronizedDatavalues;
-    private static SystemInfo systemInfo;
 
     private ObjectMapper objectMapper;
     private DhisApi dhisApi;
@@ -186,51 +190,18 @@ public final class DhisController {
     static UserAccount signInUser(HttpUrl serverUrl, Credentials credentials) throws APIException {
         final DhisApi dhisApi = RepoManager
                 .createService(serverUrl, credentials);
-        Call<SystemInfo> call = dhisApi.getSystemInfo();
-
-        /*try {
-            systemInfo = dhisApi.getSystemInfo().execute().body();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-        Thread workerThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    systemInfo = dhisApi.getSystemInfo().execute().body();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        workerThread.start();
         try {
-            workerThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Response<SystemInfo> response = dhisApi.getSystemInfo().execute();
+            if(response.code() == 200){
+                SystemInfo systemInfo = dhisApi.getSystemInfo().execute().body();
+                systemInfo.save();
+            }else{
+                throw APIException.fromRetrofitError(response.code(), response, null);
+            }
+
+        } catch (IOException e) {
+            throw APIException.fromRetrofitError(9999,null, e);
         }
-       /* call.enqueue(new Callback<SystemInfo>() {
-            @Override
-            public void onResponse(Call<SystemInfo> call, Response<SystemInfo> response) {
-                switch (response.code()) {
-                    case 200:
-                        SystemInfo data = response.body();
-                        data.save();
-                        break;
-                    case 401:
-
-                        break;
-                    default:
-
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<SystemInfo> call, Throwable t) {
-                Log.e("error", t.toString());
-            }
-        });*/
 
         UserAccount user = (new UserController(dhisApi)
                 .logInUser(serverUrl, credentials));
@@ -284,6 +255,7 @@ public final class DhisController {
         if (objectMapper == null) {
             objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JodaModule());
+
         }
         return objectMapper;
     }

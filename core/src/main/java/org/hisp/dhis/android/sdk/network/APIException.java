@@ -33,20 +33,20 @@ package org.hisp.dhis.android.sdk.network;
 import java.io.IOException;
 import retrofit2.Response;
 
+import static org.hisp.dhis.android.sdk.network.APIException.Kind.NETWORK;
+
 public class APIException extends RuntimeException {
 
-    /*public static APIException fromRetrofitError(RetrofitError error) {
-        switch (error.getKind()) {
-            case NETWORK:
-                return networkError(error.getUrl(), (IOException) error.getCause());
-            case CONVERSION:
-                return conversionError(error.getUrl(), error.getResponse(), error.getCause());
-            case HTTP:
-                return httpError(error.getUrl(), error.getResponse());
+    public static APIException fromRetrofitError(int code, Response response, IOException e) {
+        switch (code) {
+            case 401:
+                return httpError(response.raw().request().url().toString(), response);
+            case 404:
+                return httpError(response.raw().request().url().toString(), response);
             default:
-                return unexpectedError(error.getUrl(), error.getCause());
+                return unexpectedError(null, e);
         }
-    }*/
+    }
 
    /* public static APIException networkError(String url, IOException exception) {
         return new APIException(exception.getMessage(), url,
@@ -57,12 +57,12 @@ public class APIException extends RuntimeException {
                                                Throwable exception) {
         return new APIException(exception.getMessage(), url,
                 response, Kind.CONVERSION, exception);
-    }
-
-    public static APIException httpError(String url, retrofit.client.Response response) {
-        String message = response.getStatus() + " " + response.getReason();
-        return new APIException(message, url, response, Kind.HTTP, null);
     }*/
+
+    public static APIException httpError(String url, Response response) {
+        String message = response.code() + " " + response.errorBody();
+        return new APIException(message, url, response, Kind.HTTP, null);
+    }
 
     public static APIException unexpectedError(String url, Throwable exception) {
         return new APIException(exception.getMessage(), url, null, Kind.UNEXPECTED,

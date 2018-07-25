@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.sdk.synchronization.data.event;
 
+import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
@@ -7,10 +8,12 @@ import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.synchronization.data.common.ARemoteDataSource;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 public class EventRemoteDataSource extends ARemoteDataSource {
@@ -22,8 +25,13 @@ public class EventRemoteDataSource extends ARemoteDataSource {
     public Event getEvent(String event) {
         final Map<String, String> QUERY_PARAMS = new HashMap<>();
         QUERY_PARAMS.put("fields", "created,lastUpdated");
-        Event updatedEvent = dhisApi
-                .getEvent(event, QUERY_PARAMS);
+        Event updatedEvent = null;
+        try {
+            updatedEvent = dhisApi
+                    .getEvent(event, QUERY_PARAMS).execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return updatedEvent;
     }
@@ -53,7 +61,17 @@ public class EventRemoteDataSource extends ARemoteDataSource {
     }
 
     private List<ImportSummary> batchEvents(Map<String, List<Event>> events, DhisApi dhisApi) throws APIException {
-        ApiResponse apiResponse = dhisApi.postEvents(events);
+        Response response = null;
+        ApiResponse apiResponse =null;
+        try {
+            response = dhisApi.postEvents(events).execute();
+            apiResponse = DhisController.getInstance().getObjectMapper().
+                    readValue(((ResponseBody)response.body()).string(), ApiResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         return apiResponse.getImportSummaries();
     }
 
@@ -61,7 +79,12 @@ public class EventRemoteDataSource extends ARemoteDataSource {
         for(Event event:events.get("events")){
             event.setStatus(null);
         }
-        ApiResponse apiResponse = dhisApi.postDeletedEvents(events);
+        ApiResponse apiResponse = null;
+        try {
+            apiResponse = dhisApi.postDeletedEvents(events).execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for(Event event:events.get("events")){
             event.setStatus(Event.STATUS_DELETED);
         }
@@ -69,7 +92,12 @@ public class EventRemoteDataSource extends ARemoteDataSource {
     }
 
     private ImportSummary delete(Event event, DhisApi dhisApi) throws  APIException {
-        Response response = dhisApi.deleteEvent(event.getUid());
+        Response response = null;
+        try {
+            response = dhisApi.deleteEvent(event.getUid()).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return getImportSummary(response);
     }
@@ -81,13 +109,23 @@ public class EventRemoteDataSource extends ARemoteDataSource {
     }
 
     private ImportSummary postEvent(Event event, DhisApi dhisApi) throws APIException {
-        Response response = dhisApi.postEvent(event);
+        Response response = null;
+        try {
+            response = dhisApi.postEvent(event).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return getImportSummary(response);
     }
 
     private ImportSummary putEvent(Event event, DhisApi dhisApi) throws APIException {
-        Response response = dhisApi.putEvent(event.getEvent(), event);
+        Response response = null;
+        try {
+            response = dhisApi.putEvent(event.getEvent(), event).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return getImportSummary(response);
     }

@@ -7,6 +7,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.synchronization.data.common.ARemoteDataSource;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,8 +23,13 @@ public class EnrollmentRemoteDataSource extends ARemoteDataSource {
     public Enrollment getEnrollment(String enrollment) {
         final Map<String, String> QUERY_PARAMS = new HashMap<>();
         QUERY_PARAMS.put("fields", "created,lastUpdated");
-        Enrollment updatedEnrollment = dhisApi
-                .getEnrollment(enrollment, QUERY_PARAMS);
+        Enrollment updatedEnrollment = null;
+        try {
+            updatedEnrollment = dhisApi
+                    .getEnrollment(enrollment, QUERY_PARAMS).execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return updatedEnrollment;
     }
@@ -37,12 +43,22 @@ public class EnrollmentRemoteDataSource extends ARemoteDataSource {
     }
 
     private ImportSummary postEnrollment(Enrollment enrollment, DhisApi dhisApi) throws APIException{
-        Response response = dhisApi.postEnrollment(enrollment);
+        Response response = null;
+        try {
+            response = dhisApi.postEnrollment(enrollment).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return getImportSummary(response);
     }
 
     private ImportSummary putEnrollment(Enrollment enrollment, DhisApi dhisApi) throws APIException{
-        Response response = dhisApi.putEnrollment(enrollment.getEnrollment(), enrollment);
+        Response response = null;
+        try {
+            response = dhisApi.putEnrollment(enrollment.getEnrollment(), enrollment).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return getImportSummary(response);
     }
 

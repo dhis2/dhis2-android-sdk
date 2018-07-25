@@ -741,11 +741,19 @@ public final class MetaDataController extends ResourceController {
 
     private static void getAssignedProgramsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "getAssignedProgramsDataFromServer");
-        UserAccount userAccount;
+        UserAccount userAccount = null;
         if(DhisController.getInstance().isLoggedInServerWithLatestApiVersion()){
-            userAccount = dhisApi.getUserAccount();
+            try {
+                userAccount = dhisApi.getUserAccount().execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }else{
-            userAccount = dhisApi.getDeprecatedUserAccount();
+            try {
+                userAccount = dhisApi.getDeprecatedUserAccount().execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         Map<String, Program> programMap = new HashMap<>();
         List<Program> assignedProgramUids = userAccount.getUserPrograms();
@@ -786,7 +794,11 @@ public final class MetaDataController extends ResourceController {
             }
             String currentFilter = queryMap.get("filter");
             queryMap.put("filter", currentFilter + "]");
-            teiSearchOrganisationUnitMap = dhisApi.getOrganisationUnits(queryMap);
+            try {
+                teiSearchOrganisationUnitMap = dhisApi.getOrganisationUnits(queryMap).execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             teiSearchOrganisationUnits = teiSearchOrganisationUnitMap.get("organisationUnits");
         }
         if (teiSearchOrganisationUnits != null) {
@@ -853,7 +865,12 @@ public final class MetaDataController extends ResourceController {
         }
 
         // program with content.
-        Program updatedProgram = dhisApi.getProgram(uid, QUERY_MAP_FULL);
+        Program updatedProgram = null;
+        try {
+            updatedProgram = dhisApi.getProgram(uid, QUERY_MAP_FULL).execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         List<DbOperation> operations = ProgramWrapper.setReferences(updatedProgram);
         DbUtils.applyBatch(operations);
         operations.clear();
@@ -877,8 +894,13 @@ public final class MetaDataController extends ResourceController {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 
-        List<OptionSet> optionSets = unwrapResponse(dhisApi
-                .getOptionSets(QUERY_MAP_FULL), ApiEndpointContainer.OPTION_SETS);
+        List<OptionSet> optionSets = null;
+        try {
+            optionSets = unwrapResponse(dhisApi
+                    .getOptionSets(QUERY_MAP_FULL).execute().body(), ApiEndpointContainer.OPTION_SETS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         List<DbOperation> operations = OptionSetWrapper.getOperations(optionSets);
         DbUtils.applyBatch(operations);
         DateTimeManager.getInstance()
@@ -889,8 +911,13 @@ public final class MetaDataController extends ResourceController {
         Log.d(CLASS_TAG, "getTrackedEntityAttributeDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTEGROUPS);
-        List<TrackedEntityAttributeGroup> trackedEntityAttributeGroups = unwrapResponse(dhisApi
-                .getTrackedEntityAttributeGroups(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTE_GROUPS);
+        List<TrackedEntityAttributeGroup> trackedEntityAttributeGroups = null;
+        try {
+            trackedEntityAttributeGroups = unwrapResponse(dhisApi
+                    .getTrackedEntityAttributeGroups(getBasicQueryMap(lastUpdated)).execute().body(), ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTE_GROUPS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         saveResourceDataFromServer(ResourceType.TRACKEDENTITYATTRIBUTEGROUPS, dhisApi, trackedEntityAttributeGroups, getTrackedEntityAttributeGroups(), serverDateTime);
     }
@@ -899,8 +926,13 @@ public final class MetaDataController extends ResourceController {
         Log.d(CLASS_TAG, "getTrackedEntityAttributeDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTES);
-        List<TrackedEntityAttribute> trackedEntityAttributes = unwrapResponse(dhisApi
-                .getTrackedEntityAttributes(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES);
+        List<TrackedEntityAttribute> trackedEntityAttributes = null;
+        try {
+            trackedEntityAttributes = unwrapResponse(dhisApi
+                    .getTrackedEntityAttributes(getBasicQueryMap(lastUpdated)).execute().body(), ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         saveResourceDataFromServer(ResourceType.TRACKEDENTITYATTRIBUTES, dhisApi, trackedEntityAttributes, getTrackedEntityAttributes(), serverDateTime);
@@ -925,7 +957,7 @@ public final class MetaDataController extends ResourceController {
                                 trackedEntityAttributeGeneratedValues =
                                 dhisApi.getTrackedEntityAttributeGeneratedValues(
                                         trackedEntityAttribute.getUid(),
-                                        numberOfGeneratedTrackedEntityAttributesToFetch); // Downloading x generated IDs per trackedEntityAttribute
+                                        numberOfGeneratedTrackedEntityAttributesToFetch).execute().body(); // Downloading x generated IDs per trackedEntityAttribute
 
                         saveBaseValueDataFromServer(
                                 ResourceType.TRACKEDENTITYATTRIBUTEGENERATEDVALUES, "",
@@ -978,8 +1010,13 @@ public final class MetaDataController extends ResourceController {
         Log.d(CLASS_TAG, "getConstantsDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.CONSTANTS);
-        List<Constant> constants = unwrapResponse(dhisApi
-                .getConstants(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.CONSTANTS);
+        List<Constant> constants = null;
+        try {
+            constants = unwrapResponse(dhisApi
+                    .getConstants(getBasicQueryMap(lastUpdated)).execute().body(), ApiEndpointContainer.CONSTANTS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         saveResourceDataFromServer(ResourceType.CONSTANTS, dhisApi, constants, getConstants(), serverDateTime);
     }
 
@@ -987,8 +1024,13 @@ public final class MetaDataController extends ResourceController {
         Log.d(CLASS_TAG, "getProgramRulesDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.PROGRAMRULES);
-        List<ProgramRule> programRules = unwrapResponse(dhisApi
-                .getProgramRules(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.PROGRAMRULES);
+        List<ProgramRule> programRules = null;
+        try {
+            programRules = unwrapResponse(dhisApi
+                    .getProgramRules(getBasicQueryMap(lastUpdated)).execute().body(), ApiEndpointContainer.PROGRAMRULES);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         List<ProgramRule> validProgramRules = new ArrayList<>();
         for(ProgramRule programRule : programRules){
             if(programRule.getCondition()!=null && !programRule.getCondition().isEmpty()) {
@@ -1002,8 +1044,13 @@ public final class MetaDataController extends ResourceController {
         Log.d(CLASS_TAG, "getProgramRuleVariablesDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.PROGRAMRULEVARIABLES);
-        List<ProgramRuleVariable> programRuleVariables = unwrapResponse(dhisApi
-                .getProgramRuleVariables(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.PROGRAMRULEVARIABLES);
+        List<ProgramRuleVariable> programRuleVariables = null;
+        try {
+            programRuleVariables = unwrapResponse(dhisApi
+                    .getProgramRuleVariables(getBasicQueryMap(lastUpdated)).execute().body(), ApiEndpointContainer.PROGRAMRULEVARIABLES);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         saveResourceDataFromServer(ResourceType.PROGRAMRULEVARIABLES, dhisApi, programRuleVariables, getProgramRuleVariables(), serverDateTime);
     }
 
@@ -1011,8 +1058,13 @@ public final class MetaDataController extends ResourceController {
         Log.d(CLASS_TAG, "getProgramRuleActionsDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.PROGRAMRULEACTIONS);
-        List<ProgramRuleAction> programRuleActions = unwrapResponse(dhisApi
-                .getProgramRuleActions(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.PROGRAMRULEACTIONS);
+        List<ProgramRuleAction> programRuleActions = null;
+        try {
+            programRuleActions = unwrapResponse(dhisApi
+                    .getProgramRuleActions(getBasicQueryMap(lastUpdated)).execute().body(), ApiEndpointContainer.PROGRAMRULEACTIONS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         saveResourceDataFromServer(ResourceType.PROGRAMRULEACTIONS, dhisApi, programRuleActions, getProgramRuleActions(), serverDateTime);
     }
 
@@ -1021,8 +1073,13 @@ public final class MetaDataController extends ResourceController {
         ResourceType resource = ResourceType.RELATIONSHIPTYPES;
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(resource);
-        List<RelationshipType> relationshipTypes = unwrapResponse(dhisApi
-                .getRelationshipTypes(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.RELATIONSHIPTYPES);
+        List<RelationshipType> relationshipTypes = null;
+        try {
+            relationshipTypes = unwrapResponse(dhisApi
+                    .getRelationshipTypes(getBasicQueryMap(lastUpdated)).execute().body(), ApiEndpointContainer.RELATIONSHIPTYPES);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         saveResourceDataFromServer(resource, dhisApi, relationshipTypes, getRelationshipTypes(), serverDateTime);
     }
 

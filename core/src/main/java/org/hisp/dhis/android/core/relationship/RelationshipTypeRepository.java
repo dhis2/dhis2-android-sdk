@@ -64,7 +64,7 @@ public final class RelationshipTypeRepository {
         return relationshipTypeList;
     }
 
-    public RelationshipTypeRepository create(DatabaseAdapter databaseAdapter) {
+    public static RelationshipTypeRepository create(DatabaseAdapter databaseAdapter) {
         return new RelationshipTypeRepository(
                 RelationshipConstraintStore.create(databaseAdapter),
                 RelationshipTypeStore.create(databaseAdapter)

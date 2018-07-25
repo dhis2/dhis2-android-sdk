@@ -52,6 +52,7 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -188,6 +189,10 @@ public final class D2 {
 
     public SystemInfoModule systemInfoModule() {
         return this.internalModules.systemInfo.publicModule;
+    }
+
+    public RelationshipModule relationshipModule() {
+        return this.internalModules.relationshipModule.publicModule;
     }
 
     public static class Builder {

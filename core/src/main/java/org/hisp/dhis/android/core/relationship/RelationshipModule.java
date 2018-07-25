@@ -25,28 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
 
-import retrofit2.Retrofit;
+public final class RelationshipModule {
 
-public final class D2InternalModules {
-    public final SystemInfoInternalModule systemInfo;
-    public final RelationshipInternalModule relationshipModule;
+    public final RelationshipTypeRepository relationshipTypeRepository;
 
-    public D2InternalModules(SystemInfoInternalModule systemInfo,
-                             RelationshipInternalModule relationshipModule) {
-        this.systemInfo = systemInfo;
-        this.relationshipModule = relationshipModule;
+    private RelationshipModule(RelationshipTypeRepository relationshipTypeRepository) {
+        this.relationshipTypeRepository = relationshipTypeRepository;
     }
 
-    public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        return new D2InternalModules(
-                SystemInfoInternalModule.create(databaseAdapter, retrofit),
-                RelationshipInternalModule.create(databaseAdapter, retrofit));
+    public static RelationshipModule create(DatabaseAdapter databaseAdapter) {
+        return new RelationshipModule(RelationshipTypeRepository.create(databaseAdapter));
     }
+
 }

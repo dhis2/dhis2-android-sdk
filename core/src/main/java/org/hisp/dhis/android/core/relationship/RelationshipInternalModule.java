@@ -25,28 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship;
 
-package org.hisp.dhis.android.core;
-
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
+import org.hisp.dhis.android.core.common.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import retrofit2.Retrofit;
 
-public final class D2InternalModules {
-    public final SystemInfoInternalModule systemInfo;
-    public final RelationshipInternalModule relationshipModule;
+public final class RelationshipInternalModule implements WipeableModule {
 
-    public D2InternalModules(SystemInfoInternalModule systemInfo,
-                             RelationshipInternalModule relationshipModule) {
-        this.systemInfo = systemInfo;
-        this.relationshipModule = relationshipModule;
+    private final DatabaseAdapter databaseAdapter;
+    private final Retrofit retrofit;
+    public final RelationshipModule publicModule;
+
+    private RelationshipInternalModule(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+                                       RelationshipModule publicModule) {
+        this.databaseAdapter = databaseAdapter;
+        this.retrofit = retrofit;
+        this.publicModule = publicModule;
     }
 
-    public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        return new D2InternalModules(
-                SystemInfoInternalModule.create(databaseAdapter, retrofit),
-                RelationshipInternalModule.create(databaseAdapter, retrofit));
+    @Override
+    public void wipeModuleTables() {
+        RelationshipStore.create(databaseAdapter).delete();
+        RelationshipTypeStore.create(databaseAdapter).delete();
+        RelationshipConstraintStore.create(databaseAdapter).delete();
+    }
+
+    public static RelationshipInternalModule create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
+        return new RelationshipInternalModule(
+                databaseAdapter,
+                retrofit,
+                RelationshipModule.create(databaseAdapter)
+        );
     }
 }

@@ -28,28 +28,28 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import android.support.annotation.NonNull;
 
-import java.io.IOException;
-import java.text.ParseException;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import org.hisp.dhis.android.core.data.api.Field;
 
-public class RelationshipShould extends BaseObjectShould implements ObjectShould {
+@AutoValue
+public abstract class RelationshipItemEvent {
 
-    public RelationshipShould() {
-        super("relationship/relationship.json");
-    }
+    private static final String EVENT = "event";
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Relationship relationship = objectMapper.readValue(jsonStream, Relationship.class);
+    public static final Field<RelationshipItemEvent, String> event = Field.create(EVENT);
 
-        assertThat(relationship.trackedEntityInstanceA()).isEqualTo("Ea0rRdBPAIp");
-        assertThat(relationship.trackedEntityInstanceB()).isEqualTo("G1afLIEKt8A");
-        assertThat(relationship.relationship()).isEqualTo("V2kkHafqs8G");
+    @NonNull
+    @JsonProperty(EVENT)
+    public abstract String event();
+
+    @JsonCreator
+    public static RelationshipItemEvent create(
+            @JsonProperty(EVENT) String event) {
+        return new AutoValue_RelationshipItemEvent(event);
     }
 }

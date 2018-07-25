@@ -28,22 +28,35 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.PojoBuilder;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-public class RelationshipBuilder extends PojoBuilder<Relationship, RelationshipModel> {
+import java.io.IOException;
+import java.text.ParseException;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
+public class Relationship30Should extends BaseObjectShould implements ObjectShould {
+
+    public Relationship30Should() {
+        super("relationship/relationship30.json");
+    }
 
     @Override
-    public Relationship buildPojo(RelationshipModel model) {
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Relationship relationship = objectMapper.readValue(jsonStream, Relationship.class);
 
-        return Relationship.create(
-                model.trackedEntityInstanceA(),
-                model.trackedEntityInstanceB(),
-                model.relationshipType(),
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+        assertThat(relationship.relationship()).isEqualTo("nEenWmSyUEp");
+        assertThat(relationship.relationshipType()).isEqualTo("V2kkHafqs8G");
+
+        assertThat(relationship.from()).isNotNull();
+        assertThat(relationship.from().trackedEntityInstance()).isNotNull();
+        assertThat(relationship.from().trackedEntityInstance().trackedEntityInstance()).isEqualTo("o51cUNONthg");
+
+        assertThat(relationship.to()).isNotNull();
+        assertThat(relationship.to().enrollment()).isNotNull();
+        assertThat(relationship.to().enrollment().enrollment()).isEqualTo("lxAQ7Zs9VYR");
     }
 }

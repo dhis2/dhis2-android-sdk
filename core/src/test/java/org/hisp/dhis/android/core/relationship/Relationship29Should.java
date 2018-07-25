@@ -28,22 +28,28 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.PojoBuilder;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-public class RelationshipBuilder extends PojoBuilder<Relationship, RelationshipModel> {
+import java.io.IOException;
+import java.text.ParseException;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
+public class Relationship29Should extends BaseObjectShould implements ObjectShould {
+
+    public Relationship29Should() {
+        super("relationship/relationship29.json");
+    }
 
     @Override
-    public Relationship buildPojo(RelationshipModel model) {
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Relationship relationship = objectMapper.readValue(jsonStream, Relationship.class);
 
-        return Relationship.create(
-                model.trackedEntityInstanceA(),
-                model.trackedEntityInstanceB(),
-                model.relationshipType(),
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+        assertThat(relationship.trackedEntityInstanceA()).isEqualTo("Ea0rRdBPAIp");
+        assertThat(relationship.trackedEntityInstanceB()).isEqualTo("G1afLIEKt8A");
+        assertThat(relationship.relationship()).isEqualTo("V2kkHafqs8G");
     }
 }

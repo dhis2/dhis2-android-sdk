@@ -26,6 +26,9 @@ public class RelationshipModelBuilderShould {
                 "tracked-entity-instance-a",
                 "tracked-entity-instance-b",
                 "relationship",
+                "relationship-type",
+                null,
+                null,
                 null,
                 null
         );

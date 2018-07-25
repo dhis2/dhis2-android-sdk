@@ -28,22 +28,28 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.PojoBuilder;
+import android.support.annotation.NonNull;
 
-public class RelationshipBuilder extends PojoBuilder<Relationship, RelationshipModel> {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-    @Override
-    public Relationship buildPojo(RelationshipModel model) {
+import org.hisp.dhis.android.core.data.api.Field;
 
-        return Relationship.create(
-                model.trackedEntityInstanceA(),
-                model.trackedEntityInstanceB(),
-                model.relationshipType(),
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+@AutoValue
+public abstract class RelationshipItemEnrollment {
+
+    private static final String ENROLLMENT = "enrollment";
+
+    public static final Field<RelationshipItemEnrollment, String> enrollment = Field.create(ENROLLMENT);
+
+    @NonNull
+    @JsonProperty(ENROLLMENT)
+    public abstract String enrollment();
+
+    @JsonCreator
+    public static RelationshipItemEnrollment create(
+            @JsonProperty(ENROLLMENT) String enrollment) {
+        return new AutoValue_RelationshipItemEnrollment(enrollment);
     }
 }

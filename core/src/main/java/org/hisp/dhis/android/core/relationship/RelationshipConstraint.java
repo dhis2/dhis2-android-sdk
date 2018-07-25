@@ -47,7 +47,8 @@ public abstract class RelationshipConstraint {
 
     private static final Field<RelationshipConstraint, RelationshipEntityType> relationshipEntity =
             Field.create(RELATIONSHIP_ENTITY);
-    private static final Field<RelationshipConstraint, ObjectWithUid> trackedEntityType = Field.create(TRACKED_ENTITY_TYPE);
+    private static final Field<RelationshipConstraint, ObjectWithUid> trackedEntityType =
+            Field.create(TRACKED_ENTITY_TYPE);
     private static final Field<RelationshipConstraint, ObjectWithUid> program = Field.create(PROGRAM);
     private static final Field<RelationshipConstraint, ObjectWithUid> programStage = Field.create(PROGRAM_STAGE);
 

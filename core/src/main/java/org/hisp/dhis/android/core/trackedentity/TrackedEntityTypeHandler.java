@@ -28,14 +28,33 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.common.ObjectStyleModel;
+import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class TrackedEntityTypeHandler {
+public final class TrackedEntityTypeHandler extends IdentifiableHandlerImpl<TrackedEntityType, TrackedEntityTypeModel> {
+    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
-    private TrackedEntityTypeHandler() {}
+    private TrackedEntityTypeHandler(IdentifiableObjectStore<TrackedEntityTypeModel> trackedEntityTypeStore,
+                                     GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
+        super(trackedEntityTypeStore);
+        this.styleHandler = styleHandler;
+    }
+
+    @Override
+    protected void afterObjectHandled(TrackedEntityType trackedEntityType, HandleAction action) {
+        styleHandler.handle(trackedEntityType.style(), new ObjectStyleModelBuilder(trackedEntityType.uid(),
+                TrackedEntityTypeModel.TABLE));
+    }
 
     public static GenericHandler<TrackedEntityType, TrackedEntityTypeModel> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableHandlerImpl<>(TrackedEntityTypeStore.create(databaseAdapter));
+        return new TrackedEntityTypeHandler(
+                TrackedEntityTypeStore.create(databaseAdapter),
+                ObjectStyleHandler.create(databaseAdapter));
     }
 }

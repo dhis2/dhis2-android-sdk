@@ -161,7 +161,7 @@ public final class WipeDBCallable implements Callable<Unit> {
                 SectionGreyedFieldsLinkStore.create(databaseAdapter),
                 DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter),
                 DataElementOperandStore.create(databaseAdapter),
-                DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter)
+                DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter),
                 DataInputPeriodStore.create(databaseAdapter)
         );
 

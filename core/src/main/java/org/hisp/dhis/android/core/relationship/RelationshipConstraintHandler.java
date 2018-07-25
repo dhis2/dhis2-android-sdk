@@ -28,34 +28,13 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class RelationshipTypeHandler extends IdentifiableHandlerImpl<RelationshipType, RelationshipTypeModel> {
+public final class RelationshipConstraintHandler {
+    private RelationshipConstraintHandler() {}
 
-    private final GenericHandler<RelationshipConstraint, RelationshipConstraintModel> relationshipConstraintHandler;
-
-    private RelationshipTypeHandler(
-            IdentifiableObjectStore<RelationshipTypeModel> relationshipTypeStore,
-            GenericHandler<RelationshipConstraint, RelationshipConstraintModel> relationshipConstraintHandler) {
-        super(relationshipTypeStore);
-        this.relationshipConstraintHandler = relationshipConstraintHandler;
-    }
-
-    @Override
-    protected void afterObjectHandled(RelationshipType relationshipType, HandleAction handleAction) {
-        this.relationshipConstraintHandler.handle(relationshipType.fromConstraint(),
-                new RelationshipConstraintModelBuilder(relationshipType, RelationshipConstraintType.FROM));
-
-        this.relationshipConstraintHandler.handle(relationshipType.toConstraint(),
-                new RelationshipConstraintModelBuilder(relationshipType, RelationshipConstraintType.TO));
-    }
-
-    public static GenericHandler<RelationshipType, RelationshipTypeModel> create(DatabaseAdapter databaseAdapter) {
-        return new RelationshipTypeHandler(
-                RelationshipTypeStore.create(databaseAdapter),
-                RelationshipConstraintHandler.create(databaseAdapter));
+    public static GenericHandler<RelationshipConstraint, RelationshipConstraintModel> create(DatabaseAdapter db) {
+        return new ObjectWithoutUidHandlerImpl<>(RelationshipConstraintStore.create(db));
     }
 }

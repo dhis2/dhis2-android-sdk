@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -71,10 +72,12 @@ public abstract class DataInputPeriodModel extends BaseModel {
     @ColumnName(Columns.PERIOD)
     public abstract String period();
 
+    @Nullable
     @ColumnName(Columns.OPENING_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date openingDate();
 
+    @Nullable
     @ColumnName(Columns.CLOSING_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date closingDate();

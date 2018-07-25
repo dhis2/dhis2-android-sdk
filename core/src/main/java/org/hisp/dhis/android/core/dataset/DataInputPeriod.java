@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.support.annotation.Nullable;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -66,10 +68,12 @@ public abstract class DataInputPeriod {
         return period == null ? null : period.uid();
     }
 
+    @Nullable
     @JsonProperty(OPENING_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date openingDate();
 
+    @Nullable
     @JsonProperty(CLOSING_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date closingDate();

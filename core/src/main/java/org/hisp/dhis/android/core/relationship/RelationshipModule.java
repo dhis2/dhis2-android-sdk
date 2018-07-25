@@ -31,10 +31,10 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class RelationshipModule {
 
-    public final RelationshipTypeRepository relationshipTypeRepository;
+    public final RelationshipTypeRepository relationshipType;
 
     private RelationshipModule(RelationshipTypeRepository relationshipTypeRepository) {
-        this.relationshipTypeRepository = relationshipTypeRepository;
+        this.relationshipType = relationshipTypeRepository;
     }
 
     public static RelationshipModule create(DatabaseAdapter databaseAdapter) {

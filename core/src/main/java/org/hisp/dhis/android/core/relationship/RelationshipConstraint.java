@@ -45,7 +45,8 @@ public abstract class RelationshipConstraint {
     private static final String PROGRAM = "program";
     private static final String PROGRAM_STAGE = "programStage";
 
-    private static final Field<RelationshipConstraint, String> relationshipEntity = Field.create(RELATIONSHIP_ENTITY);
+    private static final Field<RelationshipConstraint, RelationshipEntityType> relationshipEntity =
+            Field.create(RELATIONSHIP_ENTITY);
     private static final Field<RelationshipConstraint, ObjectWithUid> trackedEntityType = Field.create(TRACKED_ENTITY_TYPE);
     private static final Field<RelationshipConstraint, ObjectWithUid> program = Field.create(PROGRAM);
     private static final Field<RelationshipConstraint, ObjectWithUid> programStage = Field.create(PROGRAM_STAGE);
@@ -55,7 +56,7 @@ public abstract class RelationshipConstraint {
 
     @Nullable
     @JsonProperty(RELATIONSHIP_ENTITY)
-    public abstract String relationshipEntity();
+    public abstract RelationshipEntityType relationshipEntity();
 
     @Nullable
     @JsonProperty(TRACKED_ENTITY_TYPE)
@@ -71,7 +72,7 @@ public abstract class RelationshipConstraint {
 
     @JsonCreator
     public static RelationshipConstraint create(
-            @JsonProperty(RELATIONSHIP_ENTITY) String relationshipEntity,
+            @JsonProperty(RELATIONSHIP_ENTITY) RelationshipEntityType relationshipEntity,
             @JsonProperty(TRACKED_ENTITY_TYPE) ObjectWithUid trackedEntityType,
             @JsonProperty(PROGRAM) ObjectWithUid program,
             @JsonProperty(PROGRAM_STAGE) ObjectWithUid programStage) {

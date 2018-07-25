@@ -38,6 +38,7 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.data.database.DbRelationshipConstraintTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbRelationshipEntityTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -77,11 +78,19 @@ public abstract class RelationshipConstraintModel extends BaseModel {
         return new $$AutoValue_RelationshipConstraintModel.Builder();
     }
 
-    @Nullable
+    public static final CursorModelFactory<RelationshipConstraintModel> factory
+            = new CursorModelFactory<RelationshipConstraintModel>() {
+        @Override
+        public RelationshipConstraintModel fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
+
+    @NonNull
     @ColumnName(Columns.RELATIONSHIP_TYPE)
     public abstract String relationshipType();
 
-    @Nullable
+    @NonNull
     @ColumnName(Columns.CONSTRAINT_TYPE)
     @ColumnAdapter(DbRelationshipConstraintTypeColumnAdapter.class)
     public abstract RelationshipConstraintType constraintType();

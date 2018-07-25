@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.NestedField;
 
 import java.util.Date;
 
@@ -56,13 +57,16 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
     private static final Field<RelationshipType, Boolean> deleted = Field.create(DELETED);
     private static final Field<RelationshipType, String> bIsToA = Field.create(B_TO_A);
     private static final Field<RelationshipType, String> aIsToB = Field.create(A_TO_B);
-    private static final Field<RelationshipType, RelationshipConstraint> fromConstraint = Field.create(FROM_CONSTRAINT);
-    private static final Field<RelationshipType, RelationshipConstraint> toConstraint = Field.create(TO_CONSTRAINT);
+    private static final NestedField<RelationshipType, RelationshipConstraint> fromConstraint =
+            NestedField.create(FROM_CONSTRAINT);
+    private static final NestedField<RelationshipType, RelationshipConstraint> toConstraint =
+            NestedField.create(TO_CONSTRAINT);
 
 
     static final Fields<RelationshipType> allFields = Fields.<RelationshipType>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, deleted,
-            aIsToB, bIsToA, fromConstraint, toConstraint).build();
+            uid, code, name, displayName, created, lastUpdated, deleted, aIsToB, bIsToA,
+            fromConstraint.with(RelationshipConstraint.allFields), toConstraint.with(RelationshipConstraint.allFields))
+            .build();
 
     @Nullable
     @JsonProperty(B_TO_A)

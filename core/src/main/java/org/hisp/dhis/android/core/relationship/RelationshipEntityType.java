@@ -29,5 +29,5 @@
 package org.hisp.dhis.android.core.relationship;
 
 public enum RelationshipEntityType {
-    TRACKED_ENTITY_INSTANCE
+    PROGRAM_INSTANCE, PROGRAM_STAGE_INSTANCE, TRACKED_ENTITY_INSTANCE
 }

@@ -1,9 +1,8 @@
 {
-  "code": "1150431_B_(Person-Person)",
   "created": "2013-09-19T15:17:41.000",
   "lastUpdated": "2014-04-14T13:53:20.166",
   "name": "Mother-Child_b-to-a_(Person-Person)",
-  "id": "EWRijsdC49U",
+  "id": "V2kkHafqs8G",
   "displayName": "Mother-Child_b-to-a_(Person-Person)",
   "fromConstraint": {
     "relationshipEntity": "TRACKED_ENTITY_INSTANCE",
@@ -12,9 +11,9 @@
     }
   },
   "toConstraint": {
-    "relationshipEntity": "TRACKED_ENTITY_INSTANCE",
-    "trackedEntityType": {
-      "id": "nEenWmSyUEp"
+    "relationshipEntity": "PROGRAM_INSTANCE",
+    "program": {
+      "id": "WSGAb5XwJ3Y"
     }
   }
 }

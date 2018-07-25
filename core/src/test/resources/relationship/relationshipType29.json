@@ -2,7 +2,6 @@
   "created": "2013-09-19T15:17:41.000",
   "lastUpdated": "2014-04-14T13:53:20.166",
   "name": "Mother-Child",
-  "href": "https://play.dhis2.org/2.29/api/relationshipTypes/V2kkHafqs8G",
   "id": "V2kkHafqs8G",
   "displayName": "Mother-Child",
   "bIsToA": "Child",

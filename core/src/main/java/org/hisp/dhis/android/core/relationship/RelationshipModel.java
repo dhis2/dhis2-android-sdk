@@ -77,6 +77,7 @@ public abstract class RelationshipModel extends BaseIdentifiableObjectModel {
 
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
         sqLiteBind(sqLiteStatement, 7, relationshipType());
     }
 

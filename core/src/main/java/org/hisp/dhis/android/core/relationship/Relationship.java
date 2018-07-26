@@ -63,8 +63,8 @@ public abstract class Relationship {
     public static final NestedField<Relationship, RelationshipItem> to = NestedField.create(TO);
 
     public static final Fields<Relationship> allFields = Fields.<Relationship>builder().fields(
-            trackedEntityInstanceA, trackedEntityInstanceB, relationship, relationshipType,
-            displayName, relative, from, to).build();
+            trackedEntityInstanceA, trackedEntityInstanceB, relationship, relationshipType, displayName,
+            from.with(RelationshipItem.allFields), to.with(RelationshipItem.allFields), relative).build();
 
     @Nullable
     @JsonProperty(TRACKED_ENTITY_INSTANCE_A)

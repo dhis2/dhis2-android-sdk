@@ -120,17 +120,17 @@ public final class RelationshipRepository {
 
                 RelationshipConstraintType itemType = relationshipItemModel.relationshipItemType();
 
-                RelationshipItemModel relatedTEI = findRelatedTEI(relationshipItemModels,
-                        relationshipItemModel.trackedEntityInstance(), itemType == FROM ? TO : FROM);
+                RelationshipItemModel relatedItemModel = findRelatedTEI(relationshipItemModels,
+                        relationshipItemModel.relationship(), itemType == FROM ? TO : FROM);
 
-                if (relatedTEI == null) continue;
+                if (relatedItemModel == null) continue;
 
                 RelationshipItemModel fromModel, toModel;
                 if (itemType == FROM) {
                     fromModel = relationshipItemModel;
-                    toModel = relatedTEI;
+                    toModel = relatedItemModel;
                 } else {
-                    fromModel = relatedTEI;
+                    fromModel = relatedItemModel;
                     toModel = relationshipItemModel;
                 }
 
@@ -166,10 +166,10 @@ public final class RelationshipRepository {
         return null;
     }
 
-    private RelationshipItemModel findRelatedTEI(Set<RelationshipItemModel> items, String teiUid,
+    private RelationshipItemModel findRelatedTEI(Set<RelationshipItemModel> items, String relationshipUid,
                                                  RelationshipConstraintType type) {
         for (RelationshipItemModel item : items) {
-            if (teiUid.equals(item.trackedEntityInstance()) && item.relationshipItemType() == type) {
+            if (relationshipUid.equals(item.relationship()) && item.relationshipItemType() == type) {
                 return item;
             }
         }

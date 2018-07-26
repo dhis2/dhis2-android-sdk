@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import retrofit2.Response;
 
@@ -54,7 +55,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     private EventStore eventStore;
     private TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
-    private ObjectWithoutUidStore<RelationshipModel> relationShipStore;
+    private IdentifiableObjectStore<RelationshipModel> relationShipStore;
     private IdentifiableObjectStore<RelationshipTypeModel> relationshipTypeStore;
     private String orgUnitUid;
     private String programUid;
@@ -166,9 +167,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         downloadMetadata();
 
 
-        Call<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                TrackedEntityInstanceListDownloadAndPersistCall.create(
-                        d2.databaseAdapter(), d2.retrofit(), Lists.newArrayList(trackedEntityInstanceUid));
+        Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
+                d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(trackedEntityInstanceUid));
 
         trackedEntityInstanceByUidEndPointCall.call();
 
@@ -245,12 +245,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         trackedEntityInstanceStore.setState(teiA.uid(), State.TO_POST);
 
+        // TODO Fix test
         RelationshipModel relationshipModel = RelationshipModel.builder()
                 .relationshipType(relationshipTypeUid)
-                .trackedEntityInstanceA(teiA.uid())
-                .trackedEntityInstanceB(teiBUid)
                 .build();
-        relationShipStore.updateOrInsertWhere(relationshipModel);
+        relationShipStore.updateOrInsert(relationshipModel);
 
         d2.syncTrackedEntityInstances().call();
 

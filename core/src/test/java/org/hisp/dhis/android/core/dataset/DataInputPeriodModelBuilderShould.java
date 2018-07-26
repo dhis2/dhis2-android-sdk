@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,7 +28,13 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.ModelBuilderAbstractShould;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.SafeDateFormat;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandModel;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,40 +43,62 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.Date;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class DataSetCompulsoryDataElementOperandLinkModelBuilderShould {
+public class DataInputPeriodModelBuilderShould extends
+        ModelBuilderAbstractShould<DataInputPeriod, DataInputPeriodModel> {
+
+    public static final SafeDateFormat dateFormat = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
     @Mock
-    private DataSet dataSet;
+    DataSet dataSet;
 
-    @Mock
-    private DataElementOperand compulsoryDataElementOperand;
-
-    private DataSetCompulsoryDataElementOperandLinkModel model;
-
+    @Override
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
         when(dataSet.uid()).thenReturn("dataSet_uid");
-        when(compulsoryDataElementOperand.uid()).thenReturn("dataElementOperand_uid");
 
-        model = buildModel();
+        this.pojo = buildPojo();
+        this.model = modelBuilder().buildModel(pojo);
     }
 
-    private DataSetCompulsoryDataElementOperandLinkModel buildModel() {
-        return new DataSetCompulsoryDataElementOperandLinkModelBuilder(dataSet)
-                .buildModel(compulsoryDataElementOperand);
+    @Override
+    protected DataInputPeriod buildPojo() {
+        return DataInputPeriod.create(
+                ObjectWithUid.create("dataSet_uid"),
+                parseDate("2017-12-20T15:08:27.882"),
+                parseDate("2017-12-20T15:08:27.882")
+        );
     }
+
+    private Date parseDate(String date) {
+        try {
+            return dateFormat.parse(date);
+        } catch (ParseException parseException) {
+            return new Date();
+        }
+    }
+
+    @Override
+    protected ModelBuilder<DataInputPeriod, DataInputPeriodModel> modelBuilder() {
+        return new DataInputPeriodModelBuilder(dataSet);
+    }
+
 
     @Test
-    public void copy_link_properties() {
+    public void buildingModelFromPojo_shouldMatchAllFields() {
+
         assertThat(model.dataSet()).isEqualTo(dataSet.uid());
-        assertThat(model.dataElementOperand()).isEqualTo(compulsoryDataElementOperand.uid());
+        assertThat(model.period()).isEqualTo(pojo.periodUid());
+        assertThat(model.openingDate()).isEqualTo(pojo.openingDate());
+        assertThat(model.closingDate()).isEqualTo(pojo.closingDate());
     }
+
 }

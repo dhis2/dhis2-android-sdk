@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,49 +28,24 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-import java.io.IOException;
+public class DataInputPeriodModelBuilder extends ModelBuilder<DataInputPeriod, DataInputPeriodModel> {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.when;
+    private final DataInputPeriodModel.Builder builder;
 
-@RunWith(JUnit4.class)
-public class DataSetCompulsoryDataElementOperandLinkModelBuilderShould {
-
-    @Mock
-    private DataSet dataSet;
-
-    @Mock
-    private DataElementOperand compulsoryDataElementOperand;
-
-    private DataSetCompulsoryDataElementOperandLinkModel model;
-
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-
-        when(dataSet.uid()).thenReturn("dataSet_uid");
-        when(compulsoryDataElementOperand.uid()).thenReturn("dataElementOperand_uid");
-
-        model = buildModel();
+    public DataInputPeriodModelBuilder(DataSet dataSet) {
+        this.builder = DataInputPeriodModel.builder()
+                .dataSet(dataSet.uid());
     }
 
-    private DataSetCompulsoryDataElementOperandLinkModel buildModel() {
-        return new DataSetCompulsoryDataElementOperandLinkModelBuilder(dataSet)
-                .buildModel(compulsoryDataElementOperand);
-    }
+    @Override
+    public DataInputPeriodModel buildModel(DataInputPeriod dataInputPeriod) {
 
-    @Test
-    public void copy_link_properties() {
-        assertThat(model.dataSet()).isEqualTo(dataSet.uid());
-        assertThat(model.dataElementOperand()).isEqualTo(compulsoryDataElementOperand.uid());
+        return builder
+                .period(dataInputPeriod.periodUid())
+                .openingDate(dataInputPeriod.openingDate())
+                .closingDate(dataInputPeriod.closingDate())
+                .build();
     }
 }

@@ -83,6 +83,9 @@ public class DataSetHandlerShould {
             DataSetCompulsoryDataElementOperandLinkModel> dataSetCompulsoryDataElementOperandLinkHandler;
 
     @Mock
+    private LinkModelHandler<DataInputPeriod, DataInputPeriodModel> dataInputPeriodHandler;
+
+    @Mock
     private DataSet dataSet;
 
     @Mock
@@ -106,6 +109,12 @@ public class DataSetHandlerShould {
     @Mock
     private List<DataElementOperand> compulsoryDataElementOperands;
 
+    @Mock
+    private DataInputPeriod dataInputPeriod;
+
+    @Mock
+    List<DataInputPeriod> dataInputPeriods;
+
     // object to test
     private DataSetHandler dataSetHandler;
 
@@ -119,7 +128,8 @@ public class DataSetHandlerShould {
                 sectionHandler,
                 sectionOrphanCleaner,
                 compulsoryDataElementOperandHandler,
-                dataSetCompulsoryDataElementOperandLinkHandler);
+                dataSetCompulsoryDataElementOperandLinkHandler,
+                dataInputPeriodHandler);
 
         when(dataSet.access()).thenReturn(access);
         when(access.data()).thenReturn(dataAccess);
@@ -135,6 +145,10 @@ public class DataSetHandlerShould {
         compulsoryDataElementOperands = new ArrayList<>();
         compulsoryDataElementOperands.add(compulsoryDataElementOperand);
         when(dataSet.compulsoryDataElementOperands()).thenReturn(compulsoryDataElementOperands);
+
+        dataInputPeriods = new ArrayList<>();
+        dataInputPeriods.add(dataInputPeriod);
+        when(dataSet.dataInputPeriods()).thenReturn(dataInputPeriods);
     }
 
     @Test
@@ -151,6 +165,9 @@ public class DataSetHandlerShould {
 
         verify(compulsoryDataElementOperandHandler, never()).handleMany(anyListOf(DataElementOperand.class),
                 Matchers.<ModelBuilder<DataElementOperand, DataElementOperandModel>>any());
+
+        verify(dataInputPeriodHandler, never()).handleMany(anyString(), anyListOf(DataInputPeriod.class),
+                Matchers.<ModelBuilder<DataInputPeriod, DataInputPeriodModel>>any());
     }
 
     @Test
@@ -196,6 +213,15 @@ public class DataSetHandlerShould {
 
         verify(dataSetCompulsoryDataElementOperandLinkHandler).handleMany(eq(dataSet.uid()), eq(compulsoryDataElementOperands),
                 any(DataSetCompulsoryDataElementOperandLinkModelBuilder.class));
+    }
+
+    @Test
+    public void handlingDataSet_shouldHandleNestedDataInputPeriods() {
+
+        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
+        verify(dataInputPeriodHandler).handleMany(anyString(), anyListOf(DataInputPeriod.class),
+                any(DataInputPeriodModelBuilder.class));
     }
 
     @Test

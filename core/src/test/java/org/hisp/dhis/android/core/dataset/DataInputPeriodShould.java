@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,49 +28,32 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.junit.Before;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.common.SafeDateFormat;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
-@RunWith(JUnit4.class)
-public class DataSetCompulsoryDataElementOperandLinkModelBuilderShould {
+public class DataInputPeriodShould extends BaseObjectShould implements ObjectShould {
 
-    @Mock
-    private DataSet dataSet;
+    public static final SafeDateFormat dateFormat = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
-    @Mock
-    private DataElementOperand compulsoryDataElementOperand;
-
-    private DataSetCompulsoryDataElementOperandLinkModel model;
-
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-
-        when(dataSet.uid()).thenReturn("dataSet_uid");
-        when(compulsoryDataElementOperand.uid()).thenReturn("dataElementOperand_uid");
-
-        model = buildModel();
+    public DataInputPeriodShould() {
+        super("dataset/data_input_period.json");
     }
 
-    private DataSetCompulsoryDataElementOperandLinkModel buildModel() {
-        return new DataSetCompulsoryDataElementOperandLinkModelBuilder(dataSet)
-                .buildModel(compulsoryDataElementOperand);
-    }
-
+    @Override
     @Test
-    public void copy_link_properties() {
-        assertThat(model.dataSet()).isEqualTo(dataSet.uid());
-        assertThat(model.dataElementOperand()).isEqualTo(compulsoryDataElementOperand.uid());
+    public void map_from_json_string() throws IOException, ParseException {
+
+        DataInputPeriod dataInputPeriod = objectMapper.readValue(jsonStream, DataInputPeriod.class);
+
+        assertThat(dataInputPeriod.periodUid()).isEqualTo("201801");
+        assertThat(dataInputPeriod.openingDate()).isEqualTo(dateFormat.parse("2017-12-31T23:00:00.000"));
+        assertThat(dataInputPeriod.closingDate()).isEqualTo(dateFormat.parse("2018-01-09T23:00:00.000"));
     }
 }

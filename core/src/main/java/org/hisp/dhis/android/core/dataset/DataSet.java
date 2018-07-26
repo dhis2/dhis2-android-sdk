@@ -71,6 +71,7 @@ public abstract class DataSet extends BaseNameableObject {
     private final static String INDICATORS = "indicators";
     private final static String SECTIONS = "sections";
     private final static String COMPULSORY_DATA_ELEMENT_OPERANDS = "compulsoryDataElementOperands";
+    private final static String DATA_INPUT_PERIODS = "dataInputPeriods";
     private final static String ACCESS = "access";
     private final static String STYLE = "style";
 
@@ -106,6 +107,8 @@ public abstract class DataSet extends BaseNameableObject {
     private static final NestedField<DataSet, Section> sections = NestedField.create(SECTIONS);
     private static final NestedField<DataSet, DataElementOperand> compulsoryDataElementOperands
             = NestedField.create(COMPULSORY_DATA_ELEMENT_OPERANDS);
+    private static final NestedField<DataSet, DataInputPeriod> dataInputPeriods
+            = NestedField.create(DATA_INPUT_PERIODS);
     private static final NestedField<DataSet, Access> access = NestedField.create(ACCESS);
     private static final NestedField<DataSet, ObjectStyle> style = NestedField.create(STYLE);
 
@@ -121,6 +124,7 @@ public abstract class DataSet extends BaseNameableObject {
             indicators.with(ObjectWithUid.uid),
             sections.with(Section.allFields),
             compulsoryDataElementOperands.with(DataElementOperand.allFields),
+            dataInputPeriods.with(DataInputPeriod.allFields),
             access.with(Access.data.with(DataAccess.write)),
             style.with(ObjectStyle.allFields)).build();
 
@@ -207,6 +211,10 @@ public abstract class DataSet extends BaseNameableObject {
     public abstract List<DataElementOperand> compulsoryDataElementOperands();
 
     @Nullable
+    @JsonProperty(DATA_INPUT_PERIODS)
+    public abstract List<DataInputPeriod> dataInputPeriods();
+
+    @Nullable
     @JsonProperty(ACCESS)
     public abstract Access access();
 
@@ -245,6 +253,7 @@ public abstract class DataSet extends BaseNameableObject {
             @JsonProperty(INDICATORS) List<ObjectWithUid> indicators,
             @JsonProperty(SECTIONS) List<Section> sections,
             @JsonProperty(COMPULSORY_DATA_ELEMENT_OPERANDS) List<DataElementOperand> compulsoryDataElementOperands,
+            @JsonProperty(DATA_INPUT_PERIODS) List<DataInputPeriod> dataInputPeriods,
             @JsonProperty(ACCESS) Access access,
             @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(DELETED) Boolean deleted) {
@@ -256,6 +265,6 @@ public abstract class DataSet extends BaseNameableObject {
                 notifyCompletingUser, openFuturePeriods, fieldCombinationRequired,
                 validCompleteOnly, noValueRequiresComment, skipOffline,
                 dataElementDecoration, renderAsTabs, renderHorizontally, dataSetElements,
-                indicators, sections, compulsoryDataElementOperands, access, style);
+                indicators, sections, compulsoryDataElementOperands, dataInputPeriods, access, style);
     }
 }

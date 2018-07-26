@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,49 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.dataset;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.common.SafeDateFormat;
+import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    public static final int VERSION = 13;
+public class DataInputPeriodShould extends BaseObjectShould implements ObjectShould {
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
-    }
+    public static final SafeDateFormat dateFormat = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    public DataInputPeriodShould() {
+        super("dataset/data_input_period.json");
     }
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
 
-        // enable foreign key support in database
-        db.execSQL("PRAGMA foreign_keys = ON;");
-        db.enableWriteAheadLogging();
-    }
+        DataInputPeriod dataInputPeriod = objectMapper.readValue(jsonStream, DataInputPeriod.class);
 
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
-        }
-        return versionMigrations;
+        assertThat(dataInputPeriod.periodUid()).isEqualTo("201801");
+        assertThat(dataInputPeriod.openingDate()).isEqualTo(dateFormat.parse("2017-12-31T23:00:00.000"));
+        assertThat(dataInputPeriod.closingDate()).isEqualTo(dateFormat.parse("2018-01-09T23:00:00.000"));
     }
 }

@@ -26,32 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.common;
 
-public enum DHISVersion {
-    V2_29,
-    V2_30;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-    private static final String V2_29_STR = "2.29";
+import java.util.Collection;
 
-    private static final String V2_30_STR = "2.30";
+public class DataOrphanCleanerImpl<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface>
+        implements OrphanCleaner<P, C> {
 
-    public static DHISVersion getValue(String versionStr) {
-        switch (versionStr) {
-            case V2_29_STR:
-                return V2_29;
-            case V2_30_STR:
-                return V2_30;
-            default:
-                return null;
+    private final String tableName;
+    private final String parentColumn;
+    private final String stateColumn;
+    private final DatabaseAdapter databaseAdapter;
+
+    public DataOrphanCleanerImpl(String tableName, String parentColumn, String stateColumn,
+                                 DatabaseAdapter databaseAdapter) {
+        this.tableName = tableName;
+        this.parentColumn = parentColumn;
+        this.stateColumn = stateColumn;
+        this.databaseAdapter = databaseAdapter;
+    }
+
+    public boolean deleteOrphan(P parent, Collection<C> children) {
+        if (parent == null || children == null) {
+            return false;
         }
-    }
 
-    public static boolean isAllowedVersion(String versionStr) {
-        return getValue(versionStr) != null;
-    }
-
-    public static String[] allowedVersionsAsStr() {
-        return new String[]{V2_29_STR, V2_30_STR};
+        String childrenUids = UidsHelper.commaSeparatedUidsWithSingleQuotationMarks(children);
+        String clause =
+                parentColumn + "='" + parent.uid() + "'"
+                        + " AND "
+                        + stateColumn + "!='" + State.TO_POST + "'"
+                        + " AND "
+                        + BaseIdentifiableObjectModel.Columns.UID + " NOT IN (" + childrenUids + ");";
+        return databaseAdapter.database().delete(tableName, clause, null) > 0;
     }
 }

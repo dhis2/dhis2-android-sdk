@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.enrollment;
 
+import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.Event;
@@ -40,6 +41,9 @@ public class EnrollmentHandlerShould {
     @Mock
     private DatabaseAdapter databaseAdapter;
 
+    @Mock
+    private OrphanCleaner<Enrollment, Event> eventCleaner;
+
     // object to test
     private EnrollmentHandler enrollmentHandler;
 
@@ -49,7 +53,7 @@ public class EnrollmentHandlerShould {
         when(enrollment.uid()).thenReturn("test_enrollment_uid");
         when(enrollment.events()).thenReturn(Collections.singletonList(event));
 
-        enrollmentHandler = new EnrollmentHandler(databaseAdapter, enrollmentStore, eventHandler);
+        enrollmentHandler = new EnrollmentHandler(databaseAdapter, enrollmentStore, eventHandler, eventCleaner);
     }
 
     @Test
@@ -72,6 +76,7 @@ public class EnrollmentHandlerShould {
         );
 
         verify(eventHandler, never()).handle(any(Event.class));
+        verify(eventCleaner, never()).deleteOrphan(any(Enrollment.class), any(ArrayList.class));
     }
 
     @Test
@@ -99,6 +104,7 @@ public class EnrollmentHandlerShould {
 
         // event handler should not be invoked
         verify(eventHandler, never()).handle(any(Event.class));
+        verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), any(ArrayList.class));
     }
 
     @Test
@@ -130,6 +136,8 @@ public class EnrollmentHandlerShould {
 
         // event handler should be invoked once
         verify(eventHandler, times(1)).handleMany(any(ArrayList.class));
+
+        verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), any(ArrayList.class));
     }
 
     @Test
@@ -164,5 +172,7 @@ public class EnrollmentHandlerShould {
 
         // event handler should be invoked once
         verify(eventHandler, times(1)).handleMany(any(ArrayList.class));
+
+        verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), any(ArrayList.class));
     }
 }

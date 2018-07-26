@@ -34,19 +34,17 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 public class RelationshipConstraintModelBuilder
         extends ModelBuilder<RelationshipConstraint, RelationshipConstraintModel> {
 
-    private RelationshipType relationshipType;
-    private RelationshipConstraintType constraintType;
+    private final RelationshipConstraintModel.Builder builder;
 
     RelationshipConstraintModelBuilder(RelationshipType relationshipType, RelationshipConstraintType type) {
-        this.relationshipType = relationshipType;
-        this.constraintType = type;
+        this.builder = RelationshipConstraintModel.builder()
+                .relationshipType(relationshipType.uid())
+                .constraintType(type);
     }
 
     @Override
     public RelationshipConstraintModel buildModel(RelationshipConstraint relationshipConstraint) {
-        return RelationshipConstraintModel.builder()
-                .relationshipType(this.relationshipType.uid())
-                .constraintType(this.constraintType)
+        return this.builder
                 .relationshipEntity(relationshipConstraint.relationshipEntity())
                 .trackedEntityType(getUidOrNull(relationshipConstraint.trackedEntityType()))
                 .program(getUidOrNull(relationshipConstraint.program()))

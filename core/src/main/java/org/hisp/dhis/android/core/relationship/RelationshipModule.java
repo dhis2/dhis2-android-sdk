@@ -33,12 +33,18 @@ public final class RelationshipModule {
 
     public final RelationshipTypeRepository relationshipType;
 
-    private RelationshipModule(RelationshipTypeRepository relationshipTypeRepository) {
+    public final RelationshipRepository relationship;
+
+    private RelationshipModule(RelationshipTypeRepository relationshipTypeRepository,
+                               RelationshipRepository relationshipRepository) {
         this.relationshipType = relationshipTypeRepository;
+        this.relationship = relationshipRepository;
     }
 
     public static RelationshipModule create(DatabaseAdapter databaseAdapter) {
-        return new RelationshipModule(RelationshipTypeRepository.create(databaseAdapter));
+        return new RelationshipModule(
+                RelationshipTypeRepository.create(databaseAdapter),
+                RelationshipRepository.create(databaseAdapter));
     }
 
 }

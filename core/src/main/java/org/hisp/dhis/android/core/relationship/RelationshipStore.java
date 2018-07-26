@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -36,9 +36,9 @@ public final class RelationshipStore {
 
     private RelationshipStore() {}
 
-    public static ObjectWithoutUidStore<RelationshipModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, RelationshipModel.TABLE,
-                new RelationshipModel.Columns());
+    public static IdentifiableObjectStore<RelationshipModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.identifiableStore(databaseAdapter, RelationshipModel.TABLE,
+                new RelationshipModel.Columns().all());
     }
 
 }

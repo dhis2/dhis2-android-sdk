@@ -3,16 +3,12 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
-import org.hisp.dhis.android.core.relationship.RelationshipModel;
-import org.hisp.dhis.android.core.relationship.RelationshipModelBuilder;
-import org.hisp.dhis.android.core.relationship.RelationshipStore;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,7 +63,6 @@ public class TrackedEntityInstanceHandler {
 
             enrollmentHandler.handle(enrollments);
 
-            RelationshipModelBuilder relationshipModelBuilder = new RelationshipModelBuilder();
             for (Relationship relationship : trackedEntityInstance.relationships()) {
 
                 String relationshipType;

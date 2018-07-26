@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.relationship;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
+import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,17 +45,60 @@ import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 public final class RelationshipRepository {
 
     private final IdentifiableObjectStore<RelationshipModel> relationshipStore;
-    private final ObjectWithoutUidStore<RelationshipItemModel> relationshipItemStore;
+    private final RelationshipItemStoreInterface relationshipItemStore;
+    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     RelationshipRepository(IdentifiableObjectStore<RelationshipModel> relationshipStore,
-                           ObjectWithoutUidStore<RelationshipItemModel> relationshipItemStore) {
+                           RelationshipItemStoreInterface relationshipItemStore,
+                           TrackedEntityInstanceStore trackedEntityInstanceStore) {
         this.relationshipStore = relationshipStore;
         this.relationshipItemStore = relationshipItemStore;
+        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
     }
 
     public void createTEIRelationship(String relationshipType, String fromUid, String toUid) {
+        if (!this.trackedEntityInstanceStore.exists(fromUid) || !this.trackedEntityInstanceStore.exists(toUid)) {
+            return;
+        }
 
+        List<String> existingRelationshipsForPair =
+                this.relationshipItemStore.getRelationshipsFromAndToTEI(fromUid, toUid);
 
+        String relationshipUid = null;
+        for (String relationship : existingRelationshipsForPair) {
+            RelationshipModel relationshipModel =
+                    this.relationshipStore.selectByUid(relationship, RelationshipModel.factory);
+
+            if (relationshipModel != null && relationshipType.equals(relationshipModel.relationshipType())) {
+                relationshipUid = relationshipModel.uid();
+            }
+        }
+
+        if (relationshipUid == null) {
+            relationshipUid = new CodeGeneratorImpl().generate();
+        }
+
+        RelationshipModel newRelationship = RelationshipModel.builder()
+                .uid(relationshipUid)
+                .relationshipType(relationshipType)
+                .build();
+
+        this.relationshipStore.updateOrInsert(newRelationship);
+
+        RelationshipItemModel fromItemModel = RelationshipItemModel.builder()
+                .relationship(relationshipUid)
+                .relationshipItemType(RelationshipConstraintType.FROM)
+                .trackedEntityInstance(fromUid)
+                .build();
+
+        RelationshipItemModel toItemModel = RelationshipItemModel.builder()
+                .relationship(relationshipUid)
+                .relationshipItemType(RelationshipConstraintType.TO)
+                .trackedEntityInstance(toUid)
+                .build();
+
+        this.relationshipItemStore.updateOrInsertWhere(fromItemModel);
+        this.relationshipItemStore.updateOrInsertWhere(toItemModel);
     }
 
     public List<Relationship> getRelationshipsByTEI(@NonNull String trackedEntityInstanceUid) {
@@ -134,7 +179,8 @@ public final class RelationshipRepository {
     public static RelationshipRepository create(DatabaseAdapter databaseAdapter) {
         return new RelationshipRepository(
                 RelationshipStore.create(databaseAdapter),
-                RelationshipItemStore.create(databaseAdapter)
+                RelationshipItemStore.create(databaseAdapter),
+                new TrackedEntityInstanceStoreImpl(databaseAdapter)
         );
     }
 }

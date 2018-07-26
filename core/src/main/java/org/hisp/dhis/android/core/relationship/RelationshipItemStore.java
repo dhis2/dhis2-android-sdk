@@ -28,16 +28,73 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class RelationshipItemStore {
+import java.util.ArrayList;
+import java.util.List;
 
-    private RelationshipItemStore() {}
+final class RelationshipItemStore extends ObjectWithoutUidStoreImpl<RelationshipItemModel>
+        implements RelationshipItemStoreInterface {
 
-    public static ObjectWithoutUidStore<RelationshipItemModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, RelationshipItemModel.TABLE,
-                new RelationshipItemModel.Columns());
+    private RelationshipItemStore(DatabaseAdapter databaseAdapter,
+                                  SQLiteStatement insertStatement,
+                                  SQLiteStatement updateWhereStatement,
+                                  SQLStatementBuilder builder) {
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder);
+    }
+
+    @Override
+    public List<String> getRelationshipsFromAndToTEI(@NonNull String fromTEI, @NonNull String toTEI) {
+        String query = "SELECT " + RelationshipItemModel.Columns.RELATIONSHIP + ", " +
+                        "MAX(CASE WHEN " + RelationshipItemModel.Columns.RELATIONSHIP_ITEM_TYPE + " = 'FROM' " +
+                            "THEN " + RelationshipItemModel.Columns.TRACKED_ENTITY_INSTANCE + " END) AS fromTEI, " +
+                        "MAX(CASE WHEN " + RelationshipItemModel.Columns.RELATIONSHIP_ITEM_TYPE + " = 'TO' " +
+                            "THEN " + RelationshipItemModel.Columns.TRACKED_ENTITY_INSTANCE + " END) AS toTEI " +
+                        "FROM " + RelationshipItemModel.TABLE +
+                        " GROUP BY " + RelationshipItemModel.Columns.RELATIONSHIP;
+
+        Cursor cursor = this.databaseAdapter.query(query);
+
+        List<String> relationships = new ArrayList<>();
+        try {
+            if(cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    String _relationship = cursor.getString(0);
+                    String _fromTEI = cursor.getString(1);
+                    String _toTEI = cursor.getString(2);
+
+                    if (fromTEI.equals(_fromTEI) && toTEI.equals(_toTEI)) {
+                        relationships.add(_relationship);
+                    }
+                }
+                while(cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return relationships;
+    }
+
+    public static RelationshipItemStoreInterface create(DatabaseAdapter databaseAdapter) {
+        BaseModel.Columns columns = new RelationshipItemModel.Columns();
+
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+                RelationshipItemModel.TABLE, columns);
+
+        return new RelationshipItemStore(
+                databaseAdapter,
+                databaseAdapter.compileStatement(statementBuilder.insert()),
+                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
+                statementBuilder
+        );
     }
 }

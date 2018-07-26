@@ -26,43 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import java.util.Date;
-import java.util.Map;
+import java.util.List;
 
-public interface TrackedEntityInstanceStore extends DeletableStore {
+interface RelationshipItemStoreInterface extends ObjectWithoutUidStore<RelationshipItemModel> {
 
-    long insert(
-            @NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated, @Nullable String createdAtClient,
-            @Nullable String lastUpdatedAtClient, @NonNull String organisationUnit, @NonNull String trackedEntityType,
-            @Nullable String coordinates, @Nullable FeatureType featureType, @Nullable State state);
+    List<String> getRelationshipsFromAndToTEI(@NonNull String fromTEI, @NonNull String toTEI);
 
-    int delete();
-
-    int update(@NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated, @Nullable String createdAtClient,
-               @Nullable String lastUpdatedAtClient, @NonNull String organisationUnit,
-               @NonNull String trackedEntityType, @Nullable String coordinates, @Nullable FeatureType featureType,
-               @Nullable State state, @NonNull String whereTrackedEntityInstanceUid);
-
-    int delete(@NonNull String uid);
-
-    int setState(@NonNull String uid, @NonNull State state);
-
-    State getState(@NonNull String uid);
-
-    Boolean exists(@NonNull String uid);
-
-    Map<String, TrackedEntityInstance> queryToPost();
-
-    Map<String, TrackedEntityInstance> querySynced();
-
-    Map<String, TrackedEntityInstance> queryAll();
 }

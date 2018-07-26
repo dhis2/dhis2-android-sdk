@@ -52,8 +52,6 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.relationship.RelationshipStore;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.hisp.dhis.android.core.settings.SystemSettingStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueStore;
@@ -137,7 +135,6 @@ public final class WipeDBCallable extends SyncCall<Unit> {
 
                 new ProgramStageSectionStoreImpl(databaseAdapter),
                 ProgramStageStore.create(databaseAdapter),
-                RelationshipStore.create(databaseAdapter),
                 TrackedEntityTypeStore.create(databaseAdapter),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
@@ -163,7 +160,6 @@ public final class WipeDBCallable extends SyncCall<Unit> {
                 PeriodStore.create(databaseAdapter),
                 ObjectStyleStore.create(databaseAdapter),
                 ValueTypeDeviceRenderingStore.create(databaseAdapter),
-                RelationshipTypeStore.create(databaseAdapter),
                 NoteStore.create(databaseAdapter),
                 LegendStore.create(databaseAdapter),
                 LegendSetStore.create(databaseAdapter),

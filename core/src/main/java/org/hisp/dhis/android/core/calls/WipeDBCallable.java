@@ -9,8 +9,10 @@ import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryStoreImpl;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.ObjectStyleStore;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingStore;
 import org.hisp.dhis.android.core.common.WipeableModule;
@@ -71,29 +73,42 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 @SuppressWarnings("PMD.ExcessiveImports")
-public final class WipeDBCallable implements Callable<Unit> {
+public final class WipeDBCallable extends SyncCall<Unit> {
+    private final DatabaseAdapter databaseAdapter;
 
     @NonNull
     private final List<DeletableStore> deletableStores;
     private final WipeableModule[] wipeableModules;
 
-    WipeDBCallable(@NonNull List<DeletableStore> deletableStores, WipeableModule... wipeableModules) {
+    WipeDBCallable(@NonNull DatabaseAdapter databaseAdapter,
+                   @NonNull List<DeletableStore> deletableStores, WipeableModule... wipeableModules) {
+        this.databaseAdapter = databaseAdapter;
         this.deletableStores = deletableStores;
         this.wipeableModules = wipeableModules;
     }
 
     @Override
-    public Unit call() {
-        // clear out all tables
-        for (DeletableStore deletableStore : deletableStores) {
-            deletableStore.delete();
-        }
+    public Unit call() throws Exception {
+        setExecuted();
 
-        for (WipeableModule wipeableModule : wipeableModules) {
-            wipeableModule.wipeModuleTables();
-        }
+        final D2CallExecutor executor = new D2CallExecutor();
 
-        return new Unit();
+        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
+            @Override
+            public Unit call() {
+
+                // clear out all tables
+                for (DeletableStore deletableStore : deletableStores) {
+                    deletableStore.delete();
+                }
+
+                for (WipeableModule wipeableModule : wipeableModules) {
+                    wipeableModule.wipeModuleTables();
+                }
+
+                return new Unit();
+            }
+        });
     }
 
     public static WipeDBCallable create(DatabaseAdapter databaseAdapter, D2InternalModules internalModules) {
@@ -165,6 +180,6 @@ public final class WipeDBCallable implements Callable<Unit> {
                 DataInputPeriodStore.create(databaseAdapter)
         );
 
-        return new WipeDBCallable(deletableStores, internalModules.systemInfo);
+        return new WipeDBCallable(databaseAdapter, deletableStores, internalModules.systemInfo);
     }
 }

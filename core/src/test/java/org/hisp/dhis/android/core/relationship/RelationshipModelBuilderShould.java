@@ -40,8 +40,6 @@ public class RelationshipModelBuilderShould {
 
     @Test
     public void copy_pojo_relationship_properties() {
-        assertThat(model.trackedEntityInstanceA()).isEqualTo(pojo.trackedEntityInstanceA());
-        assertThat(model.trackedEntityInstanceB()).isEqualTo(pojo.trackedEntityInstanceB());
         assertThat(model.relationshipType()).isEqualTo(pojo.relationship());
     }
 }

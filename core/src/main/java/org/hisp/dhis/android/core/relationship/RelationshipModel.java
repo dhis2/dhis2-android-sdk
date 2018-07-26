@@ -36,30 +36,22 @@ import android.support.annotation.Nullable;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class RelationshipModel extends BaseModel {
+public abstract class RelationshipModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "Relationship";
 
-    public static class Columns extends BaseModel.Columns {
-        public static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
-        public static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
         public static final String RELATIONSHIP_TYPE = "relationshipType";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    TRACKED_ENTITY_INSTANCE_A, TRACKED_ENTITY_INSTANCE_B, RELATIONSHIP_TYPE);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{TRACKED_ENTITY_INSTANCE_A, TRACKED_ENTITY_INSTANCE_B, RELATIONSHIP_TYPE};
+            return Utils.appendInNewArray(super.all(), RELATIONSHIP_TYPE);
         }
     }
 
@@ -80,36 +72,16 @@ public abstract class RelationshipModel extends BaseModel {
     };
 
     @Nullable
-    @ColumnName(Columns.TRACKED_ENTITY_INSTANCE_A)
-    public abstract String trackedEntityInstanceA();
-
-    @Nullable
-    @ColumnName(Columns.TRACKED_ENTITY_INSTANCE_B)
-    public abstract String trackedEntityInstanceB();
-
-    @Nullable
     @ColumnName(Columns.RELATIONSHIP_TYPE)
     public abstract String relationshipType();
 
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, trackedEntityInstanceA());
-        sqLiteBind(sqLiteStatement, 2, trackedEntityInstanceB());
-        sqLiteBind(sqLiteStatement, 3, relationshipType());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 4, trackedEntityInstanceA());
-        sqLiteBind(sqLiteStatement, 5, trackedEntityInstanceB());
-        sqLiteBind(sqLiteStatement, 6, relationshipType());
+        sqLiteBind(sqLiteStatement, 7, relationshipType());
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
-        public abstract Builder trackedEntityInstanceA(@Nullable String trackedEntityInstanceA);
-
-        public abstract Builder trackedEntityInstanceB(@Nullable String trackedEntityInstanceB);
+    public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
 
         public abstract Builder relationshipType(@Nullable String relationshipType);
 

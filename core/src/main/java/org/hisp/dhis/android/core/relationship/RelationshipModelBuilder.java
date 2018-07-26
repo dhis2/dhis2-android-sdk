@@ -35,8 +35,6 @@ public class RelationshipModelBuilder extends ModelBuilder<Relationship, Relatio
     @Override
     public RelationshipModel buildModel(Relationship relationship) {
         return RelationshipModel.builder()
-                .trackedEntityInstanceA(relationship.trackedEntityInstanceA())
-                .trackedEntityInstanceB(relationship.trackedEntityInstanceB())
                 .relationshipType(relationship.relationship())
                 .build();
     }

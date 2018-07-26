@@ -46,22 +46,16 @@ public class RelationshipModelShould {
     //from BaseDataModel:
     private static final State STATE = State.SYNCED;
     // RelationshipModel attributes:
-    private static final String TRACKED_ENTITY_INSTANCE_A = "Tei A uid";
-    private static final String TRACKED_ENTITY_INSTANCE_B = "Tei B uid";
     private static final String RELATIONSHIP_TYPE = "RelationshipType uid";
 
     @Test
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
-                Columns.TRACKED_ENTITY_INSTANCE_A,
-                Columns.TRACKED_ENTITY_INSTANCE_B,
                 Columns.RELATIONSHIP_TYPE
         });
         cursor.addRow(new Object[]{
                 ID,
-                TRACKED_ENTITY_INSTANCE_A,
-                TRACKED_ENTITY_INSTANCE_B,
                 RELATIONSHIP_TYPE
         });
         cursor.moveToFirst();
@@ -70,8 +64,6 @@ public class RelationshipModelShould {
         cursor.close();
 
         assertThat(model.id()).isEqualTo(ID);
-        assertThat(model.trackedEntityInstanceA()).isEqualTo(TRACKED_ENTITY_INSTANCE_A);
-        assertThat(model.trackedEntityInstanceB()).isEqualTo(TRACKED_ENTITY_INSTANCE_B);
         assertThat(model.relationshipType()).isEqualTo(RELATIONSHIP_TYPE);
     }
 
@@ -79,15 +71,11 @@ public class RelationshipModelShould {
     public void create_content_values_when_created_from_builder() {
         RelationshipModel model = RelationshipModel.builder()
                 .id(ID)
-                .trackedEntityInstanceA(TRACKED_ENTITY_INSTANCE_A)
-                .trackedEntityInstanceB(TRACKED_ENTITY_INSTANCE_B)
                 .relationshipType(RELATIONSHIP_TYPE)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_INSTANCE_A)).isEqualTo(TRACKED_ENTITY_INSTANCE_A);
-        assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_INSTANCE_B)).isEqualTo(TRACKED_ENTITY_INSTANCE_B);
         assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);
     }
 }

@@ -165,6 +165,6 @@ public final class WipeDBCallable implements Callable<Unit> {
                 DataInputPeriodStore.create(databaseAdapter)
         );
 
-        return new WipeDBCallable(deletableStores, internalModules.systemInfo);
+        return new WipeDBCallable(deletableStores, internalModules.systemInfo, internalModules.relationshipModule);
     }
 }

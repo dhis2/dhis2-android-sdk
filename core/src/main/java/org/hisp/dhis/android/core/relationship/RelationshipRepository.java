@@ -51,6 +51,11 @@ public final class RelationshipRepository {
         this.relationshipItemStore = relationshipItemStore;
     }
 
+    public void createTEIRelationship(String relationshipType, String fromUid, String toUid) {
+
+
+    }
+
     public List<Relationship> getRelationshipsByTEI(@NonNull String trackedEntityInstanceUid) {
 
         // TODO Create query to avoid retrieving the whole table

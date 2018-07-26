@@ -138,17 +138,18 @@ public final class D2 {
 
     @NonNull
     public Callable<List<TrackedEntityInstance>> syncTrackerData() {
-        return TrackerDataCall.create(databaseAdapter, retrofit);
+        return TrackerDataCall.create(databaseAdapter, retrofit, internalModules);
     }
 
     @NonNull
     public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
-        return TrackedEntityInstanceListDownloadAndPersistCall.create(databaseAdapter, retrofit, uids);
+        return TrackedEntityInstanceListDownloadAndPersistCall.create(databaseAdapter, retrofit, internalModules, uids);
     }
 
     @NonNull
     public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
-        return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, teiLimit, limitByOrgUnit);
+        return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, internalModules, teiLimit,
+                limitByOrgUnit);
     }
 
     @NonNull

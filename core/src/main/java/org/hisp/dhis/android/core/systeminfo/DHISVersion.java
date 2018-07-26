@@ -34,8 +34,7 @@ public enum DHISVersion {
 
     private static final String V2_29_STR = "2.29";
 
-    // TODO remove snapshot after 2.30 release
-    private static final String V2_30_STR = "2.30-SNAPSHOT";
+    private static final String V2_30_STR = "2.30";
 
     public static DHISVersion getValue(String versionStr) {
         switch (versionStr) {

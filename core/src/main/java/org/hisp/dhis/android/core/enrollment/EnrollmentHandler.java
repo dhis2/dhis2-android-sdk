@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.note.Note;
@@ -98,7 +97,7 @@ public class EnrollmentHandler {
                 new EnrollmentStoreImpl(databaseAdapter),
                 EventHandler.create(databaseAdapter),
                 new DataOrphanCleanerImpl<Enrollment, Event>(EventModel.TABLE, EventModel.Columns.ENROLLMENT,
-                        EventModel.Columns.STATE ,databaseAdapter)
+                        EventModel.Columns.STATE, databaseAdapter)
         );
     }
 }

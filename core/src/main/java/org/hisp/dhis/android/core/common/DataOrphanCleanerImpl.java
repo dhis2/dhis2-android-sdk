@@ -57,7 +57,7 @@ public class DataOrphanCleanerImpl<P extends ObjectWithUidInterface, C extends O
         String clause =
                 parentColumn + "='" + parent.uid() + "'"
                         + " AND "
-                        + stateColumn + "='" + State.TO_POST + "'"
+                        + stateColumn + "!='" + State.TO_POST + "'"
                         + " AND "
                         + BaseIdentifiableObjectModel.Columns.UID + " NOT IN (" + childrenUids + ");";
         return databaseAdapter.database().delete(tableName, clause, null) > 0;

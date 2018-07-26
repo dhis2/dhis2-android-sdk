@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
@@ -48,7 +49,7 @@ import java.util.List;
 import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
-public abstract class Enrollment implements ObjectWithDeleteInterface {
+public abstract class Enrollment implements ObjectWithDeleteInterface, ObjectWithUidInterface {
     private static final String UID = "enrollment";
     private static final String CREATED = "created";
     private static final String LAST_UPDATED = "lastUpdated";

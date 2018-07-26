@@ -33,6 +33,8 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
@@ -50,9 +52,16 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class WipeDBCallableShould {
+
+    @Mock
+    private Transaction transaction;
+
+    @Mock
+    private DatabaseAdapter databaseAdapter;
 
     @Mock
     private IdentifiableObjectStore<UserModel> userStore;
@@ -75,13 +84,14 @@ public class WipeDBCallableShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
+        when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
         List<DeletableStore> deletableStoreList = new ArrayList<>();
         deletableStoreList.add(userStore);
         deletableStoreList.add(userCredentialsStore);
         deletableStoreList.add(userOrganisationUnitLinkStore);
         deletableStoreList.add(authenticatedUserStore);
         deletableStoreList.add(organisationUnitStore);
-        WipeDBCallable = new WipeDBCallable(deletableStoreList);
+        WipeDBCallable = new WipeDBCallable(databaseAdapter, deletableStoreList);
     }
 
     @Test

@@ -33,11 +33,13 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.data.database.DbRelationshipConstraintTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -85,7 +87,8 @@ public abstract class RelationshipItemModel extends BaseModel {
     public abstract String relationship();
 
     @ColumnName(Columns.RELATIONSHIP_ITEM_TYPE)
-    public abstract String relationshipItemType();
+    @ColumnAdapter(DbRelationshipConstraintTypeColumnAdapter.class)
+    public abstract RelationshipConstraintType relationshipItemType();
 
     @Nullable
     @ColumnName(Columns.TRACKED_ENTITY_INSTANCE)
@@ -116,9 +119,9 @@ public abstract class RelationshipItemModel extends BaseModel {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
-        public abstract Builder relationship(@Nullable String relationship);
+        public abstract Builder relationship(String relationship);
 
-        public abstract Builder relationshipItemType(@Nullable String relationshipItemType);
+        public abstract Builder relationshipItemType(RelationshipConstraintType relationshipItemType);
 
         public abstract Builder trackedEntityInstance(@Nullable String trackedEntityInstance);
 

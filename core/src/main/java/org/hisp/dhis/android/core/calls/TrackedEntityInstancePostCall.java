@@ -159,7 +159,19 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                     internalModules.relationshipModule.publicModule.relationship.getRelationshipsByTEI
                             (trackedEntityInstance.uid());
 
-            //TODO Change payload depending on version
+            if (this.internalModules.systemInfo.publicModule.versionManager.is2_29()) {
+                List<Relationship> relationships29 = new ArrayList<>();
+                for (Relationship relationship : relationshipRecreated) {
+                    relationships29.add(
+                            Relationship.create(
+                                    relationship.from().trackedEntityInstance().trackedEntityInstance(),
+                                    relationship.to().trackedEntityInstance().trackedEntityInstance(),
+                                    relationship.relationshipType(),
+                                    null,null,null,null,null)
+                    );
+                }
+                relationshipRecreated = relationships29;
+            }
 
             trackedEntityInstancesRecreated.add(TrackedEntityInstance.create(trackedEntityInstance.uid(),
                     trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),

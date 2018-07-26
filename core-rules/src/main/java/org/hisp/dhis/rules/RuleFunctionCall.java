@@ -51,7 +51,9 @@ abstract class RuleFunctionCall {
         List<String> params = new ArrayList<>();
         while (splitParametersMatcher.find()) {
             String param = splitParametersMatcher.group().trim();
-            if (!param.equals("")) params.add(param);
+            if (!"".equals(param)) {
+                params.add(param);
+            }
         }
 
         return new AutoValue_RuleFunctionCall(functionCall, String.format(Locale.US,

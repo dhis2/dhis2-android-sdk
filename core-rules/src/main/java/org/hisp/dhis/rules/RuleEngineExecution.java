@@ -124,11 +124,12 @@ class RuleEngineExecution implements Callable<List<RuleEffect>> {
 
         // substitute variable values
         for (String variable : ruleExpression.variables()) {
-            RuleVariableValue variableValue = valueMap.get(
-                    RuleExpression.unwrapVariableName(variable));
+            RuleVariableValue variableValue = valueMap.get(RuleExpression.unwrapVariableName(variable));
 
-            ruleExpressionBinder.bindVariable(variable, variableValue.value() == null ?
-                    variableValue.type().defaultValue() : variableValue.value());
+            if (variableValue != null) {
+                ruleExpressionBinder.bindVariable(variable, variableValue.value() == null ?
+                        variableValue.type().defaultValue() : variableValue.value());
+            }
         }
 
         return ruleExpressionBinder.build();

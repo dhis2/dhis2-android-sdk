@@ -187,6 +187,8 @@ public class TrackedEntityInstanceHandlerShould {
 
         when(relationship.relationship()).thenReturn(RELATIONSHIP_TYPE);
         when(relationship.relative()).thenReturn(relative);
+        when(relationship.trackedEntityInstanceA()).thenReturn(TEI_UID);
+        when(relationship.trackedEntityInstanceB()).thenReturn(RELATIVE_UID);
         when(relative.uid()).thenReturn(RELATIVE_UID);
 
         trackedEntityInstanceHandler.handle(trackedEntityInstance, false);

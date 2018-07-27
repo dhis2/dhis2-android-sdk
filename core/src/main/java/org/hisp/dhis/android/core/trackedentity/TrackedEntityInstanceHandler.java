@@ -77,17 +77,21 @@ public class TrackedEntityInstanceHandler {
             for (Relationship relationship : trackedEntityInstance.relationships()) {
 
                 String relationshipType;
+                String fromTEIUid;
+                String toTEIUid;
                 String teiUid = trackedEntityInstance.uid();
                 TrackedEntityInstance relatedTEI;
 
                 if (versionManager.is2_29()) {
                     relationshipType = relationship.relationship();
+                    fromTEIUid = relationship.trackedEntityInstanceA();
+                    toTEIUid = relationship.trackedEntityInstanceB();
                     relatedTEI = relationship.relative();
                 } else {
                     relationshipType = relationship.relationshipType();
 
-                    String fromTEIUid = getTEIUidFromRelationshipItem(relationship.from());
-                    String toTEIUid = getTEIUidFromRelationshipItem(relationship.to());
+                    fromTEIUid = getTEIUidFromRelationshipItem(relationship.from());
+                    toTEIUid = getTEIUidFromRelationshipItem(relationship.to());
 
                     if (fromTEIUid == null || toTEIUid == null) {
                         continue;
@@ -100,9 +104,9 @@ public class TrackedEntityInstanceHandler {
                             null, false, null, Collections.<Relationship>emptyList(), null);
                 }
 
-                if (relatedTEI != null) {
+                if (relatedTEI != null && fromTEIUid != null && toTEIUid != null) {
                     this.handle(relatedTEI, true);
-                    relationshipRepository.createTEIRelationship(relationshipType, teiUid, relatedTEI.uid());
+                    relationshipRepository.createTEIRelationship(relationshipType, fromTEIUid, toTEIUid);
                 }
             }
         }

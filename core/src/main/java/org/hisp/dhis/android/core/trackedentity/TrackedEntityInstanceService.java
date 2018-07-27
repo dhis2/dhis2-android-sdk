@@ -29,10 +29,12 @@ public interface TrackedEntityInstanceService {
     String PROGRAM = "program";
     String INCLUDE_DELETED = "includeDeleted";
     String FILTER = "filter";
+    String STRATEGY = "importStrategy";
 
     @POST(TRACKED_ENTITY_INSTANCES)
     Call<WebResponse> postTrackedEntityInstances(
-            @Body TrackedEntityInstancePayload trackedEntityInstances);
+            @Body TrackedEntityInstancePayload trackedEntityInstances,
+            @Query(STRATEGY) String strategy);
 
     @GET(TRACKED_ENTITY_INSTANCES + "/{" + TRACKED_ENTITY_INSTANCE_UID + "}")
     Call<TrackedEntityInstance> getTrackedEntityInstance(

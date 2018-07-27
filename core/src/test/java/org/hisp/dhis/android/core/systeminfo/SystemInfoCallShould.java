@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -57,9 +57,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -74,7 +72,7 @@ public class SystemInfoCallShould {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private GenericHandler<SystemInfo, SystemInfoModel> systemInfoHandler;
+    private SyncHandler<SystemInfo> systemInfoHandler;
 
     @Mock
     private ResourceHandler resourceHandler;
@@ -92,6 +90,9 @@ public class SystemInfoCallShould {
     private SystemInfo systemInfo;
 
     @Mock
+    private DHISVersionManager versionManager;
+
+    @Mock
     private Date serverDate;
 
     private Call<SystemInfo> systemInfoSyncCall;
@@ -102,7 +103,7 @@ public class SystemInfoCallShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         systemInfoSyncCall = new SystemInfoCall(
-                databaseAdapter, systemInfoHandler, systemInfoService, resourceHandler
+                databaseAdapter, systemInfoHandler, systemInfoService, resourceHandler, versionManager
         );
 
         when(systemInfo.version()).thenReturn("2.29");
@@ -121,12 +122,7 @@ public class SystemInfoCallShould {
 
         systemInfoSyncCall.call();
 
-        assertThat(filterCaptor.getValue().fields()).contains(
-                SystemInfo.serverDateTime,
-                SystemInfo.dateFormat,
-                SystemInfo.version,
-                SystemInfo.contextPath
-        );
+        assertThat(filterCaptor.getValue()).isEqualTo(SystemInfoFields.allFields);
 
     }
 
@@ -219,10 +215,8 @@ public class SystemInfoCallShould {
 
         systemInfoSyncCall.call();
 
-        verify(systemInfoHandler, times(1)).handle(same(systemInfo),
-                any(SystemInfoModelBuilder.class));
-        verify(resourceHandler, times(1)).handleResource(
-                eq(ResourceModel.Type.SYSTEM_INFO), any(Date.class));
+        verify(systemInfoHandler).handle(systemInfo);
+        verify(resourceHandler).handleResource(eq(ResourceModel.Type.SYSTEM_INFO), any(Date.class));
 
     }
 
@@ -233,10 +227,7 @@ public class SystemInfoCallShould {
 
         systemInfoSyncCall.call();
 
-        verify(systemInfoHandler, times(1)).handle(same(systemInfo),
-                any(SystemInfoModelBuilder.class));
-        verify(resourceHandler, times(1)).handleResource(
-                eq(ResourceModel.Type.SYSTEM_INFO), any(Date.class));
-
+        verify(systemInfoHandler).handle(systemInfo);
+        verify(resourceHandler).handleResource(eq(ResourceModel.Type.SYSTEM_INFO), any(Date.class));
     }
 }

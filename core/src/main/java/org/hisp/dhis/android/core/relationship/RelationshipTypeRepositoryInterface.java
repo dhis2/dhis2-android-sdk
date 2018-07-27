@@ -25,20 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship;
 
-package org.hisp.dhis.android.core.systeminfo;
+import java.util.List;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+public interface RelationshipTypeRepositoryInterface {
 
-public class SystemInfoModelBuilder extends ModelBuilder<SystemInfo, SystemInfoModel> {
+    List<RelationshipType> getAll();
 
-    @Override
-    public SystemInfoModel buildModel(SystemInfo systemInfo) {
-        return SystemInfoModel.builder()
-                .serverDate(systemInfo.serverDate())
-                .dateFormat(systemInfo.dateFormat())
-                .version(systemInfo.version())
-                .contextPath(systemInfo.contextPath())
-                .build();
-    }
 }

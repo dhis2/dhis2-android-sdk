@@ -317,13 +317,15 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
                 FEATURE_TYPE, STATE);
     }
 
-    @Test(expected = SQLiteConstraintException.class)
+    //Removed NOT NULL constraint in 2.30 to allow TEI with just a UID
+    //@Test(expected = SQLiteConstraintException.class)
     public void throw_sqlite_constraint_exception_when_insert_null_organisation_unit() {
         trackedEntityInstanceStore.insert(UID, date, date, dateString, dateString, null, TRACKED_ENTITY,
                 COORDINATES, FEATURE_TYPE,  STATE);
     }
 
-    @Test(expected = SQLiteConstraintException.class)
+    //Removed NOT NULL constraint in 2.30 to allow TEI with just a UID
+    //@Test(expected = SQLiteConstraintException.class)
     public void throw_sqlite_constraint_exception_when_insert_null_tracked_entity() {
         trackedEntityInstanceStore.insert(UID, date, date, dateString, dateString, ORGANISATION_UNIT, null,
                 COORDINATES, FEATURE_TYPE, STATE);

@@ -41,19 +41,17 @@ final class OptionHandler extends IdentifiableHandlerImpl<Option, OptionModel> {
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     private OptionHandler(IdentifiableObjectStore<OptionModel> optionStore,
-                  GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
+                          GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
         super(optionStore);
         this.styleHandler = styleHandler;
     }
 
     @Override
     protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(),
-                new ObjectStyleModelBuilder(option.uid(), OptionModel.TABLE));
+        styleHandler.handle(option.style(), new ObjectStyleModelBuilder(option.uid(), OptionModel.TABLE));
     }
 
     static GenericHandler<Option, OptionModel> create(DatabaseAdapter databaseAdapter) {
-        return new OptionHandler(OptionStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter));
+        return new OptionHandler(OptionStore.create(databaseAdapter), ObjectStyleHandler.create(databaseAdapter));
     }
 }

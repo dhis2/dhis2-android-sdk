@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
@@ -50,6 +51,7 @@ import java.util.List;
 
 @AutoValue
 public abstract class DataSet extends BaseNameableObject {
+
     private final static String PERIOD_TYPE = "periodType";
     private final static String CATEGORY_COMBO = "categoryCombo";
     private final static String MOBILE = "mobile";
@@ -68,6 +70,8 @@ public abstract class DataSet extends BaseNameableObject {
     private final static String DATA_SET_ELEMENTS = "dataSetElements";
     private final static String INDICATORS = "indicators";
     private final static String SECTIONS = "sections";
+    private final static String COMPULSORY_DATA_ELEMENT_OPERANDS = "compulsoryDataElementOperands";
+    private final static String DATA_INPUT_PERIODS = "dataInputPeriods";
     private final static String ACCESS = "access";
     private final static String STYLE = "style";
 
@@ -101,8 +105,13 @@ public abstract class DataSet extends BaseNameableObject {
     private static final NestedField<DataSet, DataElementUids> dataSetElements = NestedField.create(DATA_SET_ELEMENTS);
     private static final NestedField<DataSet, ObjectWithUid> indicators = NestedField.create(INDICATORS);
     private static final NestedField<DataSet, Section> sections = NestedField.create(SECTIONS);
+    private static final NestedField<DataSet, DataElementOperand> compulsoryDataElementOperands
+            = NestedField.create(COMPULSORY_DATA_ELEMENT_OPERANDS);
+    private static final NestedField<DataSet, DataInputPeriod> dataInputPeriods
+            = NestedField.create(DATA_INPUT_PERIODS);
     private static final NestedField<DataSet, Access> access = NestedField.create(ACCESS);
     private static final NestedField<DataSet, ObjectStyle> style = NestedField.create(STYLE);
+
 
     static final Fields<DataSet> allFields = Fields.<DataSet>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
@@ -114,8 +123,11 @@ public abstract class DataSet extends BaseNameableObject {
             dataSetElements.with(DataElementUids.allFields),
             indicators.with(ObjectWithUid.uid),
             sections.with(Section.allFields),
+            compulsoryDataElementOperands.with(DataElementOperand.allFields),
+            dataInputPeriods.with(DataInputPeriod.allFields),
             access.with(Access.data.with(DataAccess.write)),
             style.with(ObjectStyle.allFields)).build();
+
 
     @Nullable
     @JsonProperty(PERIOD_TYPE)
@@ -195,6 +207,14 @@ public abstract class DataSet extends BaseNameableObject {
     public abstract List<Section> sections();
 
     @Nullable
+    @JsonProperty(COMPULSORY_DATA_ELEMENT_OPERANDS)
+    public abstract List<DataElementOperand> compulsoryDataElementOperands();
+
+    @Nullable
+    @JsonProperty(DATA_INPUT_PERIODS)
+    public abstract List<DataInputPeriod> dataInputPeriods();
+
+    @Nullable
     @JsonProperty(ACCESS)
     public abstract Access access();
 
@@ -232,6 +252,8 @@ public abstract class DataSet extends BaseNameableObject {
             @JsonProperty(DATA_SET_ELEMENTS) List<DataElementUids> dataSetElements,
             @JsonProperty(INDICATORS) List<ObjectWithUid> indicators,
             @JsonProperty(SECTIONS) List<Section> sections,
+            @JsonProperty(COMPULSORY_DATA_ELEMENT_OPERANDS) List<DataElementOperand> compulsoryDataElementOperands,
+            @JsonProperty(DATA_INPUT_PERIODS) List<DataInputPeriod> dataInputPeriods,
             @JsonProperty(ACCESS) Access access,
             @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(DELETED) Boolean deleted) {
@@ -243,6 +265,6 @@ public abstract class DataSet extends BaseNameableObject {
                 notifyCompletingUser, openFuturePeriods, fieldCombinationRequired,
                 validCompleteOnly, noValueRequiresComment, skipOffline,
                 dataElementDecoration, renderAsTabs, renderHorizontally, dataSetElements,
-                indicators, sections, access, style);
+                indicators, sections, compulsoryDataElementOperands, dataInputPeriods, access, style);
     }
 }

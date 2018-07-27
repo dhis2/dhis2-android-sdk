@@ -15,6 +15,7 @@
           "created": "2014-08-18T12:39:16.000",
           "name": "0-14 years",
           "id": "Y1ILwhy5VDY",
+          "sortOrder": 1,
           "displayName": "0-14 years",
           "optionSet": {
             "id": "VQ2lai3OfVG"
@@ -26,6 +27,7 @@
           "created": "2014-08-18T12:39:16.000",
           "name": "15-19 years",
           "id": "egT1YqFWsVk",
+          "sortOrder": 1,
           "displayName": "15-19 years",
           "optionSet": {
             "id": "VQ2lai3OfVG"
@@ -37,6 +39,7 @@
           "created": "2014-08-18T12:39:16.000",
           "name": "20-24 years",
           "id": "WckXGsyYola",
+          "sortOrder": 2,
           "displayName": "20-24 years",
           "optionSet": {
             "id": "VQ2lai3OfVG"
@@ -48,6 +51,7 @@
           "created": "2014-08-18T12:39:16.000",
           "name": "25 years and above",
           "id": "EmQGvSlg0GD",
+          "sortOrder": 3,
           "displayName": "25 years and above",
           "optionSet": {
             "id": "VQ2lai3OfVG"
@@ -70,6 +74,7 @@
           "created": "2015-02-25T10:48:01.780",
           "name": "No ARV medication plan",
           "id": "ENETOHGjmqb",
+          "sortOrder": 1,
           "displayName": "No ARV medication plan",
           "optionSet": {
             "id": "R3mpvjqJ81H"
@@ -81,6 +86,7 @@
           "created": "2015-02-25T10:48:58.693",
           "name": "Ongoing ARV treatment",
           "id": "dNgtjuMPdfI",
+          "sortOrder": 2,
           "displayName": "Ongoing ARV treatment",
           "optionSet": {
             "id": "R3mpvjqJ81H"
@@ -92,6 +98,7 @@
           "created": "2015-02-25T10:49:22.792",
           "name": "ARV medication initiated",
           "id": "izO4RwIbL0r",
+          "sortOrder": 1,
           "displayName": "ARV medication initiated",
           "optionSet": {
             "id": "R3mpvjqJ81H"
@@ -114,6 +121,7 @@
           "created": "2014-08-20T12:46:14.000",
           "name": "Single or widow",
           "id": "wfkKVdPBzho",
+          "sortOrder": 1,
           "displayName": "Single or widow",
           "optionSet": {
             "id": "xjA5E9MimMU"
@@ -125,6 +133,7 @@
           "created": "2014-08-20T12:46:14.000",
           "name": "Married (conjugal cohabitation)",
           "id": "Yjte6foKMny",
+          "sortOrder": 2,
           "displayName": "Married (conjugal cohabitation)",
           "optionSet": {
             "id": "xjA5E9MimMU"

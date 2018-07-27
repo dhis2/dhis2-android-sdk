@@ -26,74 +26,70 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.relationship;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoModel.Columns;
+import org.hisp.dhis.android.core.relationship.RelationshipItemModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class SystemInfoModelShould {
-    private static final long ID = 1L;
-    private static final String DATE_FORMAT = "testDateFormat";
-    private static final String VERSION = "test.version-SNAPSHOT";
-    private static final String CONTEXT_PATH = "https://test.context.com/path";
-
-    private final Date date;
-    private final String dateString;
-
-    public SystemInfoModelShould() {
-        this.date = new Date();
-        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
-    }
+public class RelationshipItemModelShould {
+    private static final long ID = 11L;
+    private static final String RELATIONSHIP = "relationship";
+    private static final String RELATIONSHIP_ITEM_TYPE = "FROM";
+    private static final String TRACKED_ENTITY_INSTANCE = "tei_uid";
+    private static final String ENROLLMENT = "enrollment_uid";
+    private static final String EVENT = "event_uid";
 
     @Test
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
-                Columns.SERVER_DATE,
-                Columns.DATE_FORMAT,
-                Columns.VERSION,
-                Columns.CONTEXT_PATH
+                Columns.RELATIONSHIP,
+                Columns.RELATIONSHIP_ITEM_TYPE,
+                Columns.TRACKED_ENTITY_INSTANCE,
+                Columns.ENROLLMENT,
+                Columns.EVENT
         });
-        cursor.addRow(new Object[]{ID, dateString, DATE_FORMAT, VERSION, CONTEXT_PATH});
-        cursor.moveToFirst();
+        cursor.addRow(new Object[]{ID, RELATIONSHIP, RELATIONSHIP_ITEM_TYPE, TRACKED_ENTITY_INSTANCE, ENROLLMENT,
+                EVENT});
 
-        SystemInfoModel systemInfoModel = SystemInfoModel.create(cursor);
+        cursor.moveToFirst();
+        RelationshipItemModel model = RelationshipItemModel.create(cursor);
         cursor.close();
 
-        assertThat(systemInfoModel.id()).isEqualTo(ID);
-        assertThat(systemInfoModel.serverDate()).isEqualTo(date);
-        assertThat(systemInfoModel.dateFormat()).isEqualTo(DATE_FORMAT);
-        assertThat(systemInfoModel.version()).isEqualTo(VERSION);
-        assertThat(systemInfoModel.contextPath()).isEqualTo(CONTEXT_PATH);
+        assertThat(model.id()).isEqualTo(ID);
+        assertThat(model.relationship()).isEqualTo(RELATIONSHIP);
+        assertThat(model.relationshipItemType()).isEqualTo(RelationshipConstraintType.FROM);
+        assertThat(model.trackedEntityInstance()).isEqualTo(TRACKED_ENTITY_INSTANCE);
+        assertThat(model.enrollment()).isEqualTo(ENROLLMENT);
+        assertThat(model.event()).isEqualTo(EVENT);
     }
 
     @Test
     public void create_content_values_when_created_from_builder() {
-        SystemInfoModel model = SystemInfoModel.builder()
+        RelationshipItemModel model = RelationshipItemModel.builder()
                 .id(ID)
-                .serverDate(date)
-                .dateFormat(DATE_FORMAT)
-                .version(VERSION)
-                .contextPath(CONTEXT_PATH)
+                .relationship(RELATIONSHIP)
+                .relationshipItemType(RelationshipConstraintType.FROM)
+                .trackedEntityInstance(TRACKED_ENTITY_INSTANCE)
+                .enrollment(ENROLLMENT)
+                .event(EVENT)
                 .build();
-
         ContentValues contentValues = model.toContentValues();
+
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.SERVER_DATE)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.DATE_FORMAT)).isEqualTo(DATE_FORMAT);
-        assertThat(contentValues.getAsString(Columns.CONTEXT_PATH)).isEqualTo(CONTEXT_PATH);
-        assertThat(contentValues.getAsString(Columns.VERSION)).isEqualTo(VERSION);
+        assertThat(contentValues.getAsString(Columns.RELATIONSHIP)).isEqualTo(RELATIONSHIP);
+        assertThat(contentValues.getAsString(Columns.RELATIONSHIP_ITEM_TYPE)).isEqualTo(RELATIONSHIP_ITEM_TYPE);
+        assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_INSTANCE)).isEqualTo(TRACKED_ENTITY_INSTANCE);
+        assertThat(contentValues.getAsString(Columns.ENROLLMENT)).isEqualTo(ENROLLMENT);
+        assertThat(contentValues.getAsString(Columns.EVENT)).isEqualTo(EVENT);
     }
 }
+

@@ -30,20 +30,33 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandModel;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,7 +73,23 @@ public class DataSetHandlerShould {
     private GenericHandler<Section, SectionModel> sectionHandler;
 
     @Mock
+    private OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
+
+    @Mock
+    private GenericHandler<DataElementOperand, DataElementOperandModel> compulsoryDataElementOperandHandler;
+
+    @Mock
+    private LinkModelHandler<DataElementOperand,
+            DataSetCompulsoryDataElementOperandLinkModel> dataSetCompulsoryDataElementOperandLinkHandler;
+
+    @Mock
+    private LinkModelHandler<DataInputPeriod, DataInputPeriodModel> dataInputPeriodHandler;
+
+    @Mock
     private DataSet dataSet;
+
+    @Mock
+    private List<DataSet> dataSets;
 
     @Mock
     private Access access;
@@ -68,26 +97,138 @@ public class DataSetHandlerShould {
     @Mock
     private DataAccess dataAccess;
 
+    @Mock
+    private Section section;
+
+    @Mock
+    private List<Section> sections;
+
+    @Mock
+    private DataElementOperand compulsoryDataElementOperand;
+
+    @Mock
+    private List<DataElementOperand> compulsoryDataElementOperands;
+
+    @Mock
+    private DataInputPeriod dataInputPeriod;
+
+    @Mock
+    List<DataInputPeriod> dataInputPeriods;
+
     // object to test
     private DataSetHandler dataSetHandler;
 
     @Before
     public void setUp() throws Exception {
+
         MockitoAnnotations.initMocks(this);
-        dataSetHandler = new DataSetHandler(dataSetStore, styleHandler, sectionHandler);
+
+        dataSetHandler = new DataSetHandler(dataSetStore,
+                styleHandler,
+                sectionHandler,
+                sectionOrphanCleaner,
+                compulsoryDataElementOperandHandler,
+                dataSetCompulsoryDataElementOperandLinkHandler,
+                dataInputPeriodHandler);
+
         when(dataSet.access()).thenReturn(access);
         when(access.data()).thenReturn(dataAccess);
         when(dataAccess.write()).thenReturn(true);
+
+        dataSets = new ArrayList<>();
+        dataSets.add(dataSet);
+
+        sections = new ArrayList<>();
+        sections.add(section);
+        when(dataSet.sections()).thenReturn(sections);
+
+        compulsoryDataElementOperands = new ArrayList<>();
+        compulsoryDataElementOperands.add(compulsoryDataElementOperand);
+        when(dataSet.compulsoryDataElementOperands()).thenReturn(compulsoryDataElementOperands);
+
+        dataInputPeriods = new ArrayList<>();
+        dataInputPeriods.add(dataInputPeriod);
+        when(dataSet.dataInputPeriods()).thenReturn(dataInputPeriods);
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<DataSet, DataSetModel> genericHandler = new DataSetHandler(null, null, null);
+    public void passingNullArguments_shouldNotPerformAnyAction() {
+
+        dataSetHandler.handle(null, null);
+
+        verify(dataSetStore, never()).delete(anyString());
+        verify(dataSetStore, never()).update(any(DataSetModel.class));
+        verify(dataSetStore, never()).insert(any(DataSetModel.class));
+
+        verify(sectionHandler, never()).handleMany(anyListOf(Section.class),
+                Matchers.<ModelBuilder<Section, SectionModel>>any());
+
+        verify(compulsoryDataElementOperandHandler, never()).handleMany(anyListOf(DataElementOperand.class),
+                Matchers.<ModelBuilder<DataElementOperand, DataElementOperandModel>>any());
+
+        verify(dataInputPeriodHandler, never()).handleMany(anyString(), anyListOf(DataInputPeriod.class),
+                Matchers.<ModelBuilder<DataInputPeriod, DataInputPeriodModel>>any());
     }
 
     @Test
-    public void call_style_handler() throws Exception {
+    public void handlingDataSet_shouldHandleNestedSections() {
+
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
+        verify(sectionHandler).handleMany(anyListOf(Section.class),
+                any(SectionModelBuilder.class));
+    }
+
+    @Test
+    public void updating_shouldDeleteOrhpanSections() {
+
+        when(dataSetStore.updateOrInsert(any(DataSetModel.class))).thenReturn(HandleAction.Update);
+        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
+        verify(sectionOrphanCleaner).deleteOrphan(dataSet, dataSet.sections());
+    }
+
+    @Test
+    public void inserting_shouldNotDeleteOrphanSections() {
+
+        when(dataSetStore.updateOrInsert(any(DataSetModel.class))).thenReturn(HandleAction.Insert);
+        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
+        verify(sectionOrphanCleaner, never()).deleteOrphan(dataSet, dataSet.sections());
+    }
+
+    @Test
+    public void handlingDataSet_shouldHandleNestedCompulsoryDataElementOperands() {
+
+        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
+        verify(compulsoryDataElementOperandHandler).handleMany(anyListOf(DataElementOperand.class),
+                any(DataElementOperandModelBuilder.class));
+    }
+
+    @Test
+    public void handlingDataSet_shouldHandleDataSetCompulsoryDataElementOprandLink() {
+
+        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
+        verify(dataSetCompulsoryDataElementOperandLinkHandler).handleMany(eq(dataSet.uid()), eq(compulsoryDataElementOperands),
+                any(DataSetCompulsoryDataElementOperandLinkModelBuilder.class));
+    }
+
+    @Test
+    public void handlingDataSet_shouldHandleNestedDataInputPeriods() {
+
+        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
+        verify(dataInputPeriodHandler).handleMany(anyString(), anyListOf(DataInputPeriod.class),
+                any(DataInputPeriodModelBuilder.class));
+    }
+
+    @Test
+    public void handlingDataSet_shouldHandleStyle() {
+
+        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
         verify(styleHandler).handle(eq(dataSet.style()), any(ObjectStyleModelBuilder.class));
     }
 }

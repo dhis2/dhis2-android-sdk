@@ -55,7 +55,8 @@ public interface ProgramStageDataElementStore extends DeletableStore {
 
     int delete(@NonNull String uid);
 
-    int updateWithProgramStageSectionLink(@NonNull String programStageSectionUid,
+    int updateWithProgramStageSectionLink(@NonNull String programStageUid,
+                                          @NonNull String programStageSectionUid,
                                           @NonNull String dataElementUid
     );
 }

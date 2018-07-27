@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
 import java.util.Date;
 import java.util.List;
@@ -52,6 +53,7 @@ public abstract class Section extends BaseIdentifiableObject {
     private static final String SHOW_ROW_TOTALS = "showRowTotals";
     private static final String SHOW_COLUMN_TOTALS = "showColumnTotals";
     private final static String DATA_ELEMENTS = "dataElements";
+    private final static String GREYED_FIELDS = "greyedFields";
 
 
     private static final Field<Section, String> uid = Field.create(UID);
@@ -68,12 +70,16 @@ public abstract class Section extends BaseIdentifiableObject {
     private static final Field<Section, Boolean> showRowTotals = Field.create(SHOW_ROW_TOTALS);
     private static final Field<Section, Boolean> showColumnTotals = Field.create(SHOW_COLUMN_TOTALS);
     private static final NestedField<Section, ObjectWithUid> dataElements = NestedField.create(DATA_ELEMENTS);
+    private static final NestedField<Section, DataElementOperand> greyedFields = NestedField.create(GREYED_FIELDS);
+
 
     static final Fields<Section> allFields = Fields.<Section>builder().fields(
             uid, code, name, displayName, created, lastUpdated, deleted,
             description, sortOrder, dataSet.with(ObjectWithUid.uid),
             showRowTotals, showColumnTotals,
-            dataElements.with(ObjectWithUid.uid)).build();
+            dataElements.with(ObjectWithUid.uid),
+            greyedFields.with(DataElementOperand.allFields)
+            ).build();
 
     @Nullable
     @JsonProperty(DESCRIPTION)
@@ -104,6 +110,10 @@ public abstract class Section extends BaseIdentifiableObject {
     @JsonProperty(DATA_ELEMENTS)
     public abstract List<ObjectWithUid> dataElements();
 
+    @Nullable
+    @JsonProperty(GREYED_FIELDS)
+    public abstract List<DataElementOperand> greyedFields();
+
 
     @JsonCreator
     public static Section create(
@@ -120,11 +130,12 @@ public abstract class Section extends BaseIdentifiableObject {
             @JsonProperty(SHOW_ROW_TOTALS) Boolean showRowTotals,
             @JsonProperty(SHOW_COLUMN_TOTALS) Boolean showColumnTotals,
             @JsonProperty(DATA_ELEMENTS) List<ObjectWithUid> dataElements,
+            @JsonProperty(GREYED_FIELDS) List<DataElementOperand> greyedFields,
             @JsonProperty(DELETED) Boolean deleted) {
 
         return new AutoValue_Section(
                 uid, code, name, displayName, created, lastUpdated, deleted, description, sortOrder,
-                dataSet, showRowTotals, showColumnTotals, dataElements
+                dataSet, showRowTotals, showColumnTotals, dataElements, greyedFields
         );
     }
 }

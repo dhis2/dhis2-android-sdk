@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.NestedField;
 
 import java.util.Date;
 
@@ -44,6 +45,8 @@ import java.util.Date;
 public abstract class RelationshipType extends BaseIdentifiableObject {
     private static final String B_TO_A = "bIsToA";
     private static final String A_TO_B = "aIsToB";
+    private static final String FROM_CONSTRAINT = "fromConstraint";
+    private static final String TO_CONSTRAINT = "toConstraint";
 
     static final Field<RelationshipType, String> uid = Field.create(UID);
     private static final Field<RelationshipType, String> code = Field.create(CODE);
@@ -54,9 +57,16 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
     private static final Field<RelationshipType, Boolean> deleted = Field.create(DELETED);
     private static final Field<RelationshipType, String> bIsToA = Field.create(B_TO_A);
     private static final Field<RelationshipType, String> aIsToB = Field.create(A_TO_B);
+    private static final NestedField<RelationshipType, RelationshipConstraint> fromConstraint =
+            NestedField.create(FROM_CONSTRAINT);
+    private static final NestedField<RelationshipType, RelationshipConstraint> toConstraint =
+            NestedField.create(TO_CONSTRAINT);
+
 
     static final Fields<RelationshipType> allFields = Fields.<RelationshipType>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, aIsToB, bIsToA, deleted).build();
+            uid, code, name, displayName, created, lastUpdated, deleted, aIsToB, bIsToA,
+            fromConstraint.with(RelationshipConstraint.allFields), toConstraint.with(RelationshipConstraint.allFields))
+            .build();
 
     @Nullable
     @JsonProperty(B_TO_A)
@@ -66,6 +76,14 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
     @JsonProperty(A_TO_B)
     public abstract String aIsToB();
 
+    @Nullable
+    @JsonProperty(FROM_CONSTRAINT)
+    public abstract RelationshipConstraint fromConstraint();
+
+    @Nullable
+    @JsonProperty(TO_CONSTRAINT)
+    public abstract RelationshipConstraint toConstraint();
+
     @JsonCreator
     public static RelationshipType create(
             @JsonProperty(UID) String uid,
@@ -74,9 +92,11 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
             @JsonProperty(DISPLAY_NAME) String displayName,
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(B_TO_A) String bIsToA,
             @JsonProperty(A_TO_B) String aIsToB,
-            @JsonProperty(DELETED) Boolean deleted) {
+            @JsonProperty(FROM_CONSTRAINT) RelationshipConstraint fromConstraint,
+            @JsonProperty(TO_CONSTRAINT) RelationshipConstraint toConstraint) {
 
         return new AutoValue_RelationshipType(
                 uid,
@@ -87,6 +107,8 @@ public abstract class RelationshipType extends BaseIdentifiableObject {
                 lastUpdated,
                 deleted,
                 bIsToA,
-                aIsToB);
+                aIsToB,
+                fromConstraint,
+                toConstraint);
     }
 }

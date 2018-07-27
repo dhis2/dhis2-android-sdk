@@ -43,6 +43,17 @@ public class RuleFunctionCallShould {
     }
 
     @Test
+    public void return_function_call_with_blank_space_before_comma() {
+        RuleFunctionCall ruleFunctionCall = RuleFunctionCall.from("d2:some('one' , 'two')");
+
+        assertThat(ruleFunctionCall.functionCall()).isEqualTo("d2:some('one' , 'two')");
+        assertThat(ruleFunctionCall.functionName()).isEqualTo("d2:some");
+        assertThat(ruleFunctionCall.arguments().size()).isEqualTo(2);
+        assertThat(ruleFunctionCall.arguments().get(0)).isEqualTo("'one'");
+        assertThat(ruleFunctionCall.arguments().get(1)).isEqualTo("'two'");
+    }
+
+    @Test
     public void throw_null_pointer_exception_when_null_arguments() {
         try {
             RuleFunctionCall.from(null);

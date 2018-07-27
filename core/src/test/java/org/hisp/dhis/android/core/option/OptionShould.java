@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.option;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -42,54 +42,34 @@ import nl.jqno.equalsverifier.Warning;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class OptionShould {
+public class OptionShould extends BaseObjectShould implements ObjectShould {
+
+    public OptionShould() {
+        super("option/option.json");
+    }
+
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Option option = objectMapper.readValue(jsonStream, Option.class);
+
+        assertThat(option.uid()).isEqualTo("Y1ILwhy5VDY");
+        assertThat(option.code()).isEqualTo("0-14 years");
+        assertThat(option.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"));
+        assertThat(option.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"));
+        assertThat(option.name()).isEqualTo("0-14 years");
+        assertThat(option.displayName()).isEqualTo("0-14 years");
+        assertThat(option.sortOrder()).isEqualTo(1);
+        assertThat(option.optionSet().uid()).isEqualTo("VQ2lai3OfVG");
+        assertThat(option.style()).isEqualTo(ObjectStyle.create("#000", "my-icon-name"));
+    }
 
     @Test
     public void have_the_equals_method_conform_to_contract() {
         EqualsVerifier.forClass(OptionModel.builder().build().getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();
-    }
-
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        Option option = objectMapper.readValue("{\n" +
-                        "\n" +
-                        "    \"code\": \"15-19 years\",\n" +
-                        "    \"created\": \"2014-08-18T12:39:16.000\",\n" +
-                        "    \"lastUpdated\": \"2014-08-18T12:39:16.000\",\n" +
-                        "    \"name\": \"15-19 years\",\n" +
-                        "    \"href\": \"https://play.dhis2.org/demo/api/options/egT1YqFWsVk\",\n" +
-                        "    \"id\": \"egT1YqFWsVk\",\n" +
-                        "    \"displayName\": \"15-19 years\",\n" +
-                        "    \"externalAccess\": false,\n" +
-                        "    \"access\": {\n" +
-                        "        \"read\": true,\n" +
-                        "        \"updateWithSection\": true,\n" +
-                        "        \"externalize\": false,\n" +
-                        "        \"delete\": true,\n" +
-                        "        \"write\": true,\n" +
-                        "        \"manage\": false\n" +
-                        "    },\n" +
-                        "    \"optionSet\": {\n" +
-                        "        \"id\": \"VQ2lai3OfVG\"\n" +
-                        "    },\n" +
-                        "    \"userGroupAccesses\": [ ],\n" +
-                        "    \"attributeValues\": [ ],\n" +
-                        "    \"translations\": [ ]\n" +
-                        "\n" +
-                        "}",
-                Option.class);
-
-        assertThat(option.uid()).isEqualTo("egT1YqFWsVk");
-        assertThat(option.code()).isEqualTo("15-19 years");
-        assertThat(option.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"));
-        assertThat(option.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"));
-        assertThat(option.name()).isEqualTo("15-19 years");
-        assertThat(option.displayName()).isEqualTo("15-19 years");
     }
 }

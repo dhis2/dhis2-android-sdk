@@ -37,12 +37,14 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
 import java.util.Date;
 
 @AutoValue
 public abstract class Option extends BaseIdentifiableObject {
+    private final static String SORT_ORDER = "sortOrder";
     private static final String OPTION_SET = "optionSet";
     private final static String STYLE = "style";
 
@@ -53,8 +55,17 @@ public abstract class Option extends BaseIdentifiableObject {
     public static final Field<Option, String> created = Field.create(CREATED);
     public static final Field<Option, String> lastUpdated = Field.create(LAST_UPDATED);
     public static final Field<Option, Boolean> deleted = Field.create(DELETED);
+    public static final Field<Option, Integer> sortOrder = Field.create(SORT_ORDER);
     public static final NestedField<Option, OptionSet> optionSet = NestedField.create(OPTION_SET);
     public static final NestedField<Option, ObjectStyle> style = NestedField.create(STYLE);
+
+    static final Fields<Option> allFields = Fields.<Option>builder().fields(
+            uid, code, name, displayName, created, lastUpdated, deleted, sortOrder, optionSet.with(OptionSet.uid),
+            style.with(ObjectStyle.allFields)).build();
+
+    @Nullable
+    @JsonProperty(SORT_ORDER)
+    public abstract Integer sortOrder();
 
     @Nullable
     @JsonProperty(OPTION_SET)
@@ -72,10 +83,12 @@ public abstract class Option extends BaseIdentifiableObject {
             @JsonProperty(DISPLAY_NAME) String displayName,
             @JsonProperty(CREATED) Date created,
             @JsonProperty(LAST_UPDATED) Date lastUpdated,
+            @JsonProperty(SORT_ORDER) Integer sortOrder,
             @JsonProperty(OPTION_SET) OptionSet optionSet,
             @JsonProperty(STYLE) ObjectStyle style,
             @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_Option(uid, code, name, displayName, created, lastUpdated, deleted, optionSet, style);
+        return new AutoValue_Option(uid, code, name, displayName, created, lastUpdated, deleted, sortOrder, optionSet,
+                style);
     }
 
 }

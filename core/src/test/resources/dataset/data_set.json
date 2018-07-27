@@ -41,9 +41,117 @@
       }
     }
   ],
+  "dataInputPeriods": [
+    {
+      "closingDate": "2018-01-09T23:00:00.000",
+      "openingDate": "2017-12-31T23:00:00.000",
+      "period": {
+        "id": "201801"
+      }
+    }
+  ],
   "indicators": [
     {
       "id": "OEWO2PpiUKx"
+    }
+  ],
+  "sections": [
+    {
+      "lastUpdated": "2016-10-12T13:22:42.731",
+      "id": "Y2rk0vzgvAx",
+      "code": "Code123",
+      "created": "2012-04-26T19:26:02.933",
+      "name": "Immunization",
+      "displayName": "Immunization",
+      "description": "Immunization dose administration",
+      "showColumnTotals": false,
+      "sortOrder": 2,
+      "showRowTotals": false,
+      "dataSet": {
+        "id": "BfMAe6Itzgt"
+      },
+      "dataElements": [
+        {
+          "id": "s46m5MS0hxu"
+        },
+        {
+          "id": "UOlfIjgN8X6"
+        },
+        {
+          "id": "z7duEFcpApd"
+        },
+        {
+          "id": "x3Do5e7g4Qo"
+        },
+        {
+          "id": "pikOziyCXbM"
+        },
+        {
+          "id": "O05mAByOgAv"
+        },
+        {
+          "id": "vI2csg55S9C"
+        },
+        {
+          "id": "xc8gmAKfO95"
+        },
+        {
+          "id": "mGN1az8Xub6"
+        },
+        {
+          "id": "L2kxa2IA2cs"
+        },
+        {
+          "id": "fClA2Erf6IO"
+        },
+        {
+          "id": "I78gJm4KBo7"
+        },
+        {
+          "id": "n6aMJNLdvep"
+        },
+        {
+          "id": "l6byfWFUGaP"
+        },
+        {
+          "id": "YtbsuPPo010"
+        }
+      ]
+    }
+  ],
+  "compulsoryDataElementOperands": [
+    {
+      "lastUpdated": "2018-07-22T17:50:08.593",
+      "id": "NJnhOzjaLYk.rCMUTmcreqP",
+      "created": "2018-07-22T17:50:08.593",
+      "name": "ART clients with new adverse clinical event Female, >49y",
+      "shortName": "ART.CnewAdv.Clin.Ev. Female, >49y",
+      "displayName": "ART clients with new adverse clinical event Female, >49y",
+      "displayShortName": "ART.CnewAdv.Clin.Ev. Female, >49y",
+      "externalAccess": false,
+      "dimensionItem": "NJnhOzjaLYk.rCMUTmcreqP",
+      "favorite": false,
+      "dimensionItemType": "DATA_ELEMENT_OPERAND",
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true
+      },
+      "categoryOptionCombo": {
+        "id": "rCMUTmcreqP"
+      },
+      "dataElement": {
+        "id": "NJnhOzjaLYk"
+      },
+      "favorites": [],
+      "translations": [],
+      "userGroupAccesses": [],
+      "attributeValues": [],
+      "userAccesses": [],
+      "legendSets": []
     }
   ],
   "access": {

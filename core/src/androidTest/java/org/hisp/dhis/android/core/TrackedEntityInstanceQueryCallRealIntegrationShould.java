@@ -470,7 +470,6 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
     }
 
     private void login() throws Exception {
-        d2.logout().call();
         d2.logIn("android", "Android123").call();
     }
 }

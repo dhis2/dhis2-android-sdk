@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -28,16 +29,19 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
     private final int teiLimit;
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
+    private final D2InternalModules internalModules;
     private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
 
     private TrackedEntityInstanceWithLimitCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
+            @NonNull D2InternalModules internalModules,
             @NonNull UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
             int teiLimit,
             boolean limitByOrgUnit) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
+        this.internalModules = internalModules;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.teiLimit = teiLimit;
         this.limitByOrgUnit = limitByOrgUnit;
@@ -94,9 +98,12 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
                     TrackedEntityInstancesEndpointCall.create(retrofit, teiQueryBuilder.build()));
 
             if (paging.isLastPage()) {
-                trackedEntityInstances.addAll(pageTrackedEntityInstances.subList(
-                        paging.previousItemsToSkipCount(),
-                        pageTrackedEntityInstances.size() - paging.posteriorItemsToSkipCount()));
+                int previousItemsToSkip = pageTrackedEntityInstances.size()
+                        + paging.previousItemsToSkipCount() - paging.pageSize();
+                int toIndex = previousItemsToSkip < 0 ? pageTrackedEntityInstances.size() :
+                        pageTrackedEntityInstances.size() - previousItemsToSkip;
+                trackedEntityInstances.addAll(
+                        pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex));
             } else {
                 trackedEntityInstances.addAll(pageTrackedEntityInstances);
             }
@@ -107,7 +114,8 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
         }
 
         executor.executeD2Call(
-                TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, trackedEntityInstances));
+                TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, internalModules,
+                        trackedEntityInstances));
 
         return trackedEntityInstances;
     }
@@ -129,10 +137,12 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
     }
 
     public static TrackedEntityInstanceWithLimitCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+                                                            D2InternalModules internalModules,
                                                             int teiLimit, boolean limitByOrgUnit) {
         return new TrackedEntityInstanceWithLimitCall(
                 databaseAdapter,
                 retrofit,
+                internalModules,
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
                 teiLimit,
                 limitByOrgUnit

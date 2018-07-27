@@ -29,9 +29,6 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkModel;
-import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

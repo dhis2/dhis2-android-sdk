@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
@@ -39,92 +39,96 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbRelationshipConstraintTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import java.util.Date;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class SystemInfoModel extends BaseModel {
-
-    public static final String TABLE = "SystemInfo";
+public abstract class RelationshipItemModel extends BaseModel {
+    public static final String TABLE = "RelationshipItem";
 
     public static class Columns extends BaseModel.Columns {
-        public static final String SERVER_DATE = "serverDate";
-        public static final String DATE_FORMAT = "dateFormat";
-        public static final String VERSION = "version";
-        public static final String CONTEXT_PATH = "contextPath";
+        public static final String RELATIONSHIP = "relationship";
+        public static final String RELATIONSHIP_ITEM_TYPE = "relationshipItemType";
+        public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+        public static final String ENROLLMENT = "enrollment";
+        public static final String EVENT = "event";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), SERVER_DATE, DATE_FORMAT, VERSION, CONTEXT_PATH);
+            return Utils.appendInNewArray(super.all(),
+                    RELATIONSHIP, RELATIONSHIP_ITEM_TYPE, TRACKED_ENTITY_INSTANCE, ENROLLMENT, EVENT);
         }
 
         @Override
         public String[] whereUpdate() {
-            return new String[]{CONTEXT_PATH};
+            return new String[]{RELATIONSHIP, RELATIONSHIP_ITEM_TYPE};
         }
     }
 
-    public static SystemInfoModel create(Cursor cursor) {
-        return AutoValue_SystemInfoModel.createFromCursor(cursor);
+    public static RelationshipItemModel create(Cursor cursor) {
+        return AutoValue_RelationshipItemModel.createFromCursor(cursor);
     }
 
     public static Builder builder() {
-        return new $$AutoValue_SystemInfoModel.Builder();
+        return new $$AutoValue_RelationshipItemModel.Builder();
     }
 
-    @Nullable
-    @ColumnName(Columns.SERVER_DATE)
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date serverDate();
-
-    @Nullable
-    @ColumnName(Columns.DATE_FORMAT)
-    public abstract String dateFormat();
-
-    @Nullable
-    @ColumnName(Columns.VERSION)
-    public abstract String version();
-
-    @Nullable
-    @ColumnName(Columns.CONTEXT_PATH)
-    public abstract String contextPath();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, serverDate());
-        sqLiteBind(sqLiteStatement, 2, dateFormat());
-        sqLiteBind(sqLiteStatement, 3, version());
-        sqLiteBind(sqLiteStatement, 4, contextPath());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 5, contextPath());
-    }
-
-    public static final CursorModelFactory<SystemInfoModel> factory
-            = new CursorModelFactory<SystemInfoModel>() {
+    public static final CursorModelFactory<RelationshipItemModel> factory
+            = new CursorModelFactory<RelationshipItemModel>() {
         @Override
-        public SystemInfoModel fromCursor(Cursor cursor) {
+        public RelationshipItemModel fromCursor(Cursor cursor) {
             return create(cursor);
         }
     };
 
+    @ColumnName(Columns.RELATIONSHIP)
+    public abstract String relationship();
+
+    @ColumnName(Columns.RELATIONSHIP_ITEM_TYPE)
+    @ColumnAdapter(DbRelationshipConstraintTypeColumnAdapter.class)
+    public abstract RelationshipConstraintType relationshipItemType();
+
+    @Nullable
+    @ColumnName(Columns.TRACKED_ENTITY_INSTANCE)
+    public abstract String trackedEntityInstance();
+
+    @Nullable
+    @ColumnName(Columns.ENROLLMENT)
+    public abstract String enrollment();
+
+    @Nullable
+    @ColumnName(Columns.EVENT)
+    public abstract String event();
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, relationship());
+        sqLiteBind(sqLiteStatement, 2, relationshipItemType());
+        sqLiteBind(sqLiteStatement, 3, trackedEntityInstance());
+        sqLiteBind(sqLiteStatement, 4, enrollment());
+        sqLiteBind(sqLiteStatement, 5, event());
+    }
+
+    @Override
+    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 6, relationship());
+        sqLiteBind(sqLiteStatement, 7, relationshipItemType());
+    }
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder relationship(String relationship);
 
-        public abstract Builder serverDate(@Nullable Date serverDate);
+        public abstract Builder relationshipItemType(RelationshipConstraintType relationshipItemType);
 
-        public abstract Builder dateFormat(@Nullable String dateFormat);
+        public abstract Builder trackedEntityInstance(@Nullable String trackedEntityInstance);
 
-        public abstract Builder version(@Nullable String version);
+        public abstract Builder enrollment(@Nullable String enrollment);
 
-        public abstract Builder contextPath(@Nullable String contextPath);
+        public abstract Builder event(@Nullable String event);
 
-        public abstract SystemInfoModel build();
+        public abstract RelationshipItemModel build();
     }
 }

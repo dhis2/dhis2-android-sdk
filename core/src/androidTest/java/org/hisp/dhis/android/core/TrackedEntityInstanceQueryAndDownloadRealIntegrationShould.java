@@ -57,7 +57,6 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
     }
 
     private void login() throws Exception {
-        d2.logout().call();
         d2.logIn("android", "Android123").call();
     }
 }

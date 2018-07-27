@@ -30,9 +30,11 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.calls.WipeDBCallable;
+import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.BasicCallFactory;
+import org.hisp.dhis.android.core.arch.repositories.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.calls.WipeDBCallable;
+import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
@@ -47,9 +49,6 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoCall;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoModel;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoStore;
 
 import java.util.concurrent.Callable;
 
@@ -65,7 +64,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
-    private final BasicCallFactory<SystemInfo> systemInfoCallFactory;
+    private final NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
 
     // retrofit service
     private final UserService userService;
@@ -73,7 +72,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     private final SyncHandler<User> userHandler;
     private final ResourceHandler resourceHandler;
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
-    private final ObjectWithoutUidStore<SystemInfoModel> systemInfoStore;
+    private final ReadOnlyObjectRepository<SystemInfo> systemInfoRepository;
     private final IdentifiableObjectStore<User> userStore;
     private final Callable<Unit> dbWipe;
 
@@ -85,12 +84,12 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     UserAuthenticateCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
-            @NonNull BasicCallFactory<SystemInfo> systemInfoCallFactory,
+            @NonNull NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
             @NonNull UserService userService,
             @NonNull SyncHandler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
-            @NonNull ObjectWithoutUidStore<SystemInfoModel> systemInfoStore,
+            @NonNull ReadOnlyObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull Callable<Unit> dbWipe,
             @NonNull String username,
@@ -105,7 +104,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         this.userHandler = userHandler;
         this.resourceHandler = resourceHandler;
         this.authenticatedUserStore = authenticatedUserStore;
-        this.systemInfoStore = systemInfoStore;
+        this.systemInfoRepository = systemInfoRepository;
         this.userStore = userStore;
         this.dbWipe = dbWipe;
 
@@ -147,8 +146,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         try {
             AuthenticatedUserModel authenticatedUserModel = buildAuthenticatedUserModel(authenticatedUser.uid());
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserModel);
-            SystemInfo systemInfo = new D2CallExecutor().executeD2Call(systemInfoCallFactory
-                    .create(databaseAdapter, retrofit));
+            SystemInfo systemInfo = new D2CallExecutor().executeD2Call(systemInfoCallFactory.create());
             handleUser(authenticatedUser, GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate()));
             transaction.setSuccessful();
             return authenticatedUser;
@@ -233,7 +231,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     }
 
     private boolean wasLoggedAndServerIsNew() {
-        SystemInfoModel lastSystemInfo = systemInfoStore.selectFirst(SystemInfoModel.factory);
+        SystemInfo lastSystemInfo = systemInfoRepository.get();
         return lastSystemInfo != null && !(lastSystemInfo.contextPath() + "/api/").equals(apiURL);
     }
 
@@ -255,19 +253,20 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     public static UserAuthenticateCall create(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
+            @NonNull D2InternalModules internalModules,
             @NonNull String username,
             @NonNull String password) {
         return new UserAuthenticateCall(
                 databaseAdapter,
                 retrofit,
-                SystemInfoCall.FACTORY,
+                internalModules.systemInfo.callFactory,
                 retrofit.create(UserService.class),
                 UserHandler.create(databaseAdapter),
                 ResourceHandler.create(databaseAdapter),
                 AuthenticatedUserStore.create(databaseAdapter),
-                SystemInfoStore.create(databaseAdapter),
+                internalModules.systemInfo.publicModule.systemInfo,
                 UserStore.create(databaseAdapter),
-                WipeDBCallable.create(databaseAdapter),
+                WipeDBCallable.create(databaseAdapter, internalModules),
                 username,
                 password,
                 retrofit.baseUrl().toString()

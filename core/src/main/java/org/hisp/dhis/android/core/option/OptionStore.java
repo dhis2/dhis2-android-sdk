@@ -37,7 +37,6 @@ public final class OptionStore {
     private OptionStore() {}
 
     public static IdentifiableObjectStore<OptionModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter,
-                OptionModel.TABLE, new OptionModel.Columns().all());
+        return StoreFactory.identifiableStore(databaseAdapter, OptionModel.TABLE, new OptionModel.Columns().all());
     }
 }

@@ -42,6 +42,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class SectionDataElementLinkModel extends BaseModel {
+
     public static final String TABLE = "SectionDataElementLink";
 
     public static class Columns extends BaseModel.Columns {
@@ -91,7 +92,7 @@ public abstract class SectionDataElementLinkModel extends BaseModel {
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder section(String section);
-
+        
         public abstract Builder dataElement(String dataElement);
 
         public abstract SectionDataElementLinkModel build();

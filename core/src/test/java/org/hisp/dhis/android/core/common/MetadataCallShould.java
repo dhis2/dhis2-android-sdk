@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.common;
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.calls.factories.BasicCallFactory;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
+import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
@@ -120,7 +120,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<List<OrganisationUnit>> organisationUnitEndpointCall;
 
     @Mock
-    private BasicCallFactory<SystemInfo> systemInfoCallFactory;
+    private NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
 
     @Mock
     private GenericCallFactory<SystemSetting> systemSettingCallFactory;
@@ -163,7 +163,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
 
         // Call factories
-        when(systemInfoCallFactory.create(databaseAdapter, retrofit)).thenReturn(systemInfoEndpointCall);
+        when(systemInfoCallFactory.create()).thenReturn(systemInfoEndpointCall);
         when(systemSettingCallFactory.create(any(GenericCallData.class))).thenReturn(systemSettingEndpointCall);
         when(userCallFactory.create(any(GenericCallData.class))).thenReturn(userCall);
         when(programParentCallFactory.create(any(GenericCallData.class))).thenReturn(programParentCall);

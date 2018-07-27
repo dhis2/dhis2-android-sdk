@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,18 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
-public class RelationshipModelBuilder extends ModelBuilder<Relationship, RelationshipModel> {
+public class SectionGreyedFieldsLinkModelBuilder
+        extends ModelBuilder<DataElementOperand, SectionGreyedFieldsLinkModel> {
+
+    private final SectionGreyedFieldsLinkModel.Builder builder;
+
+    SectionGreyedFieldsLinkModelBuilder(Section section) {
+        this.builder = SectionGreyedFieldsLinkModel.builder()
+                .section(section.uid());
+    }
 
     @Override
-    public RelationshipModel buildModel(Relationship relationship) {
-        return RelationshipModel.builder()
-                .trackedEntityInstanceA(relationship.trackedEntityInstanceA())
-                .trackedEntityInstanceB(relationship.trackedEntityInstanceB())
-                .relationshipType(relationship.relationship())
+    public SectionGreyedFieldsLinkModel buildModel(DataElementOperand dataElementOperand) {
+        return builder
+                .dataElementOperand(dataElementOperand.uid())
                 .build();
     }
+
 }

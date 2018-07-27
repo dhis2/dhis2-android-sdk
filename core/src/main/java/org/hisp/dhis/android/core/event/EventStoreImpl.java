@@ -138,7 +138,7 @@ public class EventStoreImpl implements EventStore {
             "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
             "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
             "      OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' OR Event.state = 'TO_POST' " +
-            "OR Event.state = 'TO_UPDATE';";
+            "OR Event.state = 'TO_UPDATE' OR Event.state = 'TO_DELETE';";
 
     private static final String QUERY_SINGLE_EVENTS = "SELECT " +
             FIELDS +
@@ -401,7 +401,7 @@ public class EventStoreImpl implements EventStore {
         Date eventDate = cursor.getString(12) == null ? null : parse(cursor.getString(12));
         Date completedDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
         Date dueDate = cursor.getString(14) == null ? null : parse(cursor.getString(14));
-        // "state" field is ignored
+        String stateStr = cursor.getString(15) == null ? null : cursor.getString(15);
         String categoryCombo = cursor.getString(16) == null ? null : cursor.getString(16);
         String optionCombo = cursor.getString(17) == null ? null : cursor.getString(17);
         String trackedEntityInstance = cursor.getString(18) == null ? null : cursor.getString(18);
@@ -412,11 +412,13 @@ public class EventStoreImpl implements EventStore {
             coordinates = Coordinates.create(latitude, longitude);
         }
 
+        Boolean deleted = stateStr != null && stateStr.equals(State.TO_DELETE.toString());
+
         event = Event.create(
                 uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 program, programStage, organisationUnit, eventDate, eventStatus,
                 coordinates, completedDate,
-                dueDate, false, null, categoryCombo, optionCombo, trackedEntityInstance);
+                dueDate, deleted, null, categoryCombo, optionCombo, trackedEntityInstance);
 
         return event;
     }

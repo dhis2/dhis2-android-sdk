@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class SystemInfoHandler {
+final class SystemInfoHandler {
 
     private SystemInfoHandler() {}
 
-    public static GenericHandler<SystemInfo, SystemInfoModel> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
+    public static SyncHandler<SystemInfo> create(DatabaseAdapter databaseAdapter) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
     }
 }

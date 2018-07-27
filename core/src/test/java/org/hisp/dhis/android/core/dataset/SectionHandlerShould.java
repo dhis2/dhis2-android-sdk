@@ -27,16 +27,12 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkModel;
-import org.hisp.dhis.android.core.program.ProgramSectionHandler;
-import org.hisp.dhis.android.core.program.ProgramSectionModel;
-import org.hisp.dhis.android.core.program.ProgramSectionModelBuilder;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +44,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.same;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -59,7 +57,13 @@ public class SectionHandlerShould {
     private IdentifiableObjectStore<SectionModel> sectionStore;
 
     @Mock
-    private ObjectWithoutUidStore<SectionDataElementLinkModel> sectionDataElementLinkStore;
+    private LinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler;
+
+    @Mock
+    private GenericHandler<DataElementOperand, DataElementOperandModel> greyedFieldsHandler;
+
+    @Mock
+    private LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler;
 
     @Mock
     private Section section;
@@ -67,26 +71,47 @@ public class SectionHandlerShould {
     // object to test
     private SectionHandler sectionHandler;
 
+    List<ObjectWithUid> dataElements;
+
+    List<DataElementOperand> greyedFields;
+
     @Before
     public void setUp() throws Exception {
+        
         MockitoAnnotations.initMocks(this);
 
-        sectionHandler = new SectionHandler(sectionStore, sectionDataElementLinkStore);
+        sectionHandler = new SectionHandler(sectionStore, sectionDataElementLinkHandler,
+                greyedFieldsHandler, sectionGreyedFieldsLinkHandler);
 
-        List<ObjectWithUid> dataElements = new ArrayList<>();
+        when(section.uid()).thenReturn("section_uid");
+
+        dataElements = new ArrayList<>();
         dataElements.add(ObjectWithUid.create("dataElement_uid"));
         when(section.dataElements()).thenReturn(dataElements);
+
+        greyedFields = new ArrayList<>();
+        when(section.greyedFields()).thenReturn(greyedFields);
     }
 
     @Test
-    public void save_section_data_element_links() throws Exception {
+    public void passingNullArguments_shouldNotPerformAnyAction() {
+
+       sectionHandler.handle(null, null);
+
+        verify(sectionStore, never()).delete(anyString());
+
+        verify(sectionStore, never()).update(any(SectionModel.class));
+
+        verify(sectionStore, never()).insert(any(SectionModel.class));
+    }
+
+    @Test
+    public void handlingSection_shouldHandleLinkedDataElements() {
+      
         sectionHandler.handle(section, new SectionModelBuilder());
-        verify(sectionDataElementLinkStore).updateOrInsertWhere(any(SectionDataElementLinkModel.class));
+        verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements), any(SectionDataElementLinkModelBuilder.class));
+        verify(sectionGreyedFieldsLinkHandler).handleMany(eq(section.uid()), eq(greyedFields), any(SectionGreyedFieldsLinkModelBuilder.class));
     }
 
-    @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<Section, SectionModel> genericHandler = new SectionHandler(
-                null,null);
-    }
+
 }

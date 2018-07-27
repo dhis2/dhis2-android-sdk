@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,30 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-import java.io.IOException;
-import java.text.ParseException;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
-public class RelationshipShould extends BaseObjectShould implements ObjectShould {
-
-    public RelationshipShould() {
-        super("relationship/relationship.json");
-    }
+public class DataElementOperandModelBuilder extends ModelBuilder<DataElementOperand, DataElementOperandModel> {
 
     @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Relationship relationship = objectMapper.readValue(jsonStream, Relationship.class);
+    public DataElementOperandModel buildModel(DataElementOperand dataElementOperand) {
 
-        assertThat(relationship.trackedEntityInstanceA()).isEqualTo("Ea0rRdBPAIp");
-        assertThat(relationship.trackedEntityInstanceB()).isEqualTo("G1afLIEKt8A");
-        assertThat(relationship.relationship()).isEqualTo("V2kkHafqs8G");
+        return DataElementOperandModel.builder()
+                .uid(dataElementOperand.uid())
+                .name(dataElementOperand.name())
+                .displayName(dataElementOperand.displayName())
+                .created(dataElementOperand.created())
+                .lastUpdated(dataElementOperand.lastUpdated())
+                .shortName(dataElementOperand.shortName())
+                .displayShortName(dataElementOperand.displayShortName())
+                .dataElement(dataElementOperand.dataElementUid())
+                .categoryOptionCombo(dataElementOperand.categoryOptionComboUid())
+                .build();
     }
 }

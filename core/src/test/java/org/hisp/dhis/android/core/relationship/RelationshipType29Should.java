@@ -28,35 +28,26 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.junit.Before;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class RelationshipTypeShould {
+public class RelationshipType29Should extends BaseObjectShould implements ObjectShould {
 
-    private ObjectMapper objectMapper;
-
-    @Before
-    public void setUp() {
-        objectMapper = Inject.objectMapper();
+    public RelationshipType29Should() {
+        super("relationship/relationshipType29.json");
     }
 
+    @Override
     @Test
-    public void map_from_json_string_29() throws IOException, ParseException {
-        InputStream jsonStream =
-                this.getClass().getClassLoader().getResourceAsStream("relationship/relationshipType29.json");
-
-        RelationshipType relationshipType =
-                objectMapper.readValue(jsonStream, RelationshipType.class);
+    public void map_from_json_string() throws IOException, ParseException {
+        RelationshipType relationshipType = objectMapper.readValue(jsonStream, RelationshipType.class);
 
         assertThat(relationshipType.uid()).isEqualTo("V2kkHafqs8G");
         assertThat(relationshipType.name()).isEqualTo("Mother-Child");
@@ -67,30 +58,5 @@ public class RelationshipTypeShould {
                 BaseIdentifiableObject.DATE_FORMAT.parse("2014-04-14T13:53:20.166"));
         assertThat(relationshipType.aIsToB()).isEqualTo("Mother");
         assertThat(relationshipType.bIsToA()).isEqualTo("Child");
-    }
-
-    @Test
-    public void map_from_json_string_30() throws IOException, ParseException {
-        InputStream jsonStream =
-                this.getClass().getClassLoader().getResourceAsStream("relationship/relationshipType30.json");
-
-        RelationshipType relationshipType =
-                objectMapper.readValue(jsonStream, RelationshipType.class);
-
-        assertThat(relationshipType.uid()).isEqualTo("V2kkHafqs8G");
-        assertThat(relationshipType.name()).isEqualTo("Mother-Child_b-to-a_(Person-Person)");
-        assertThat(relationshipType.displayName()).isEqualTo("Mother-Child_b-to-a_(Person-Person)");
-        assertThat(relationshipType.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2013-09-19T15:17:41.000"));
-        assertThat(relationshipType.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-04-14T13:53:20.166"));
-        assertThat(relationshipType.aIsToB()).isNull();
-        assertThat(relationshipType.bIsToA()).isNull();
-        assertThat(relationshipType.fromConstraint()).isNotNull();
-        assertThat(relationshipType.fromConstraint().relationshipEntity()).isEqualTo("TRACKED_ENTITY_INSTANCE");
-        assertThat(relationshipType.fromConstraint().trackedEntityType().uid()).isEqualTo("nEenWmSyUEp");
-        assertThat(relationshipType.toConstraint()).isNotNull();
-        assertThat(relationshipType.toConstraint().relationshipEntity()).isEqualTo("PROGRAM_INSTANCE");
-        assertThat(relationshipType.toConstraint().program().uid()).isEqualTo("WSGAb5XwJ3Y");
     }
 }

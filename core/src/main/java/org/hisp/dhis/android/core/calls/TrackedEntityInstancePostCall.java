@@ -170,8 +170,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                             Relationship.create(
                                     relationship.from().trackedEntityInstance().trackedEntityInstance(),
                                     relationship.to().trackedEntityInstance().trackedEntityInstance(),
-                                    relationship.relationshipType(),
-                                    null,null,null,null,null)
+                                    relationship.relationshipType(), null, null, null, null, null)
                     );
                 }
                 relationshipRecreated = relationships29;

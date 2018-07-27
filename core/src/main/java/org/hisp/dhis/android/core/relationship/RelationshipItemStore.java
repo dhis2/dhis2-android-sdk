@@ -67,12 +67,12 @@ final class RelationshipItemStore extends ObjectWithoutUidStoreImpl<Relationship
             if(cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
-                    String _relationship = cursor.getString(0);
-                    String _fromTEI = cursor.getString(1);
-                    String _toTEI = cursor.getString(2);
+                    String relationshipInDB = cursor.getString(0);
+                    String fromTEIInDb = cursor.getString(1);
+                    String toTEIInDB = cursor.getString(2);
 
-                    if (fromTEI.equals(_fromTEI) && toTEI.equals(_toTEI)) {
-                        relationships.add(_relationship);
+                    if (fromTEI.equals(fromTEIInDb) && toTEI.equals(toTEIInDB)) {
+                        relationships.add(relationshipInDB);
                     }
                 }
                 while(cursor.moveToNext());

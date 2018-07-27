@@ -29,6 +29,9 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 public final class RelationshipModule {
 
     public final RelationshipTypeRepositoryInterface relationshipType;

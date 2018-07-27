@@ -53,6 +53,6 @@ public class RelationshipConstraintModelBuilder
     }
 
     private String getUidOrNull(ObjectWithUid object) {
-        return object != null ? object.uid() : null;
+        return object == null ? null : object.uid();
     }
 }

@@ -42,10 +42,10 @@ public class RelationshipItemModelBuilder extends ModelBuilder<RelationshipItem,
 
     @Override
     public RelationshipItemModel buildModel(RelationshipItem relationshipItem) {
-        String trackedEntityInstance = relationshipItem.trackedEntityInstance() != null ?
-                relationshipItem.trackedEntityInstance().trackedEntityInstance() : null;
-        String enrollment = relationshipItem.enrollment() != null ? relationshipItem.enrollment().enrollment() : null;
-        String event = relationshipItem.event() != null ? relationshipItem.event().event() : null;
+        String trackedEntityInstance = relationshipItem.trackedEntityInstance() == null ? null :
+                relationshipItem.trackedEntityInstance().trackedEntityInstance();
+        String enrollment = relationshipItem.enrollment() == null ? null : relationshipItem.enrollment().enrollment();
+        String event = relationshipItem.event() == null ? null : relationshipItem.event().event();
 
         return this.builder
                 .trackedEntityInstance(trackedEntityInstance)

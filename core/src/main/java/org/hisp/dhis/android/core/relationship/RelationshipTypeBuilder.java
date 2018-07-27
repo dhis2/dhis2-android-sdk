@@ -34,7 +34,7 @@ import java.util.Set;
 
 public class RelationshipTypeBuilder extends PojoBuilder<RelationshipType, RelationshipTypeModel> {
 
-    private Set<RelationshipConstraintModel> constraints;
+    private final Set<RelationshipConstraintModel> constraints;
 
     RelationshipTypeBuilder(Set<RelationshipConstraintModel> constraints) {
         this.constraints = constraints;

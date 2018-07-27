@@ -88,13 +88,13 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
 
         RelationshipItemModel fromItemModel = RelationshipItemModel.builder()
                 .relationship(relationshipUid)
-                .relationshipItemType(RelationshipConstraintType.FROM)
+                .relationshipItemType(FROM)
                 .trackedEntityInstance(fromUid)
                 .build();
 
         RelationshipItemModel toItemModel = RelationshipItemModel.builder()
                 .relationship(relationshipUid)
-                .relationshipItemType(RelationshipConstraintType.TO)
+                .relationshipItemType(TO)
                 .trackedEntityInstance(toUid)
                 .build();
 
@@ -118,14 +118,18 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
                 RelationshipModel relationshipModel =
                         findRelationshipByUid(relationshipModels, relationshipItemModel.relationship());
 
-                if (relationshipModel == null) continue;
+                if (relationshipModel == null) {
+                    continue;
+                }
 
                 RelationshipConstraintType itemType = relationshipItemModel.relationshipItemType();
 
                 RelationshipItemModel relatedItemModel = findRelatedTEI(relationshipItemModels,
                         relationshipItemModel.relationship(), itemType == FROM ? TO : FROM);
 
-                if (relatedItemModel == null) continue;
+                if (relatedItemModel == null) {
+                    continue;
+                }
 
                 RelationshipItemModel fromModel, toModel;
                 if (itemType == FROM) {

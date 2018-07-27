@@ -44,6 +44,6 @@ public class RelationshipConstraintBuilder extends PojoBuilder<RelationshipConst
     }
 
     private ObjectWithUid createObjectWithUid(String uid) {
-        return uid != null ? ObjectWithUid.create(uid) : null;
+        return uid == null ? null : ObjectWithUid.create(uid);
     }
 }

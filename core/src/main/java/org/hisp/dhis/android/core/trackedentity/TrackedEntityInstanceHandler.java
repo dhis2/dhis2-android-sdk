@@ -12,12 +12,18 @@ import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipRepositoryInterface;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
+@SuppressWarnings({
+        "PMD.CyclomaticComplexity",
+        "PMD.StdCyclomaticComplexity",
+        "PMD.ModifiedCyclomaticComplexity",
+        "PMD.NPathComplexity"
+})
 public class TrackedEntityInstanceHandler {
     private final DHISVersionManager versionManager;
     private final RelationshipRepositoryInterface relationshipRepository;
@@ -90,8 +96,8 @@ public class TrackedEntityInstanceHandler {
                     String relatedTEIUid = teiUid.equals(fromTEIUid) ? toTEIUid : fromTEIUid;
 
                     relatedTEI = TrackedEntityInstance.create(relatedTEIUid, null, null,
-                            null, null, null,null, null,
-                            null, false,null, new ArrayList<Relationship>(),null);
+                            null, null, null, null, null,
+                            null, false, null, Collections.<Relationship>emptyList(), null);
                 }
 
                 if (relatedTEI != null) {

@@ -117,7 +117,7 @@ public class ProgramStageSectionHandlerShould {
 
         // verify that handlers is called once
         verify(programStageDataElementHandler, times(1)).updateProgramStageDataElementWithProgramStageSectionLink(
-                anyString(), anyString()
+                anyString(), anyString(), anyString()
         );
 
         verify(programIndicatorHandler, times(1)).handleMany(
@@ -154,7 +154,7 @@ public class ProgramStageSectionHandlerShould {
 
 
         verify(programStageDataElementHandler, times(1)).updateProgramStageDataElementWithProgramStageSectionLink(
-                anyString(), anyString()
+                anyString(), anyString(), anyString()
         );
 
         verify(programIndicatorHandler, times(1)).handleMany(
@@ -191,7 +191,7 @@ public class ProgramStageSectionHandlerShould {
 
         // verify that handlers is called once
         verify(programStageDataElementHandler, times(1)).updateProgramStageDataElementWithProgramStageSectionLink(
-                anyString(), anyString()
+               anyString(), anyString(), anyString()
         );
 
         verify(programIndicatorHandler, times(1)).handleMany(
@@ -216,7 +216,7 @@ public class ProgramStageSectionHandlerShould {
         verify(programStageSectionStore, never()).delete(anyString());
 
         verify(programStageDataElementHandler, never()).updateProgramStageDataElementWithProgramStageSectionLink(
-                anyString(), anyString()
+                anyString(), anyString(), anyString()
         );
 
         verify(programIndicatorHandler, never()).handleMany(
@@ -241,7 +241,7 @@ public class ProgramStageSectionHandlerShould {
 
 
         verify(programStageDataElementHandler, never()).updateProgramStageDataElementWithProgramStageSectionLink(
-                anyString(), anyString()
+                anyString(), anyString(), anyString()
         );
 
         verify(programIndicatorHandler, never()).handleMany(
@@ -265,7 +265,7 @@ public class ProgramStageSectionHandlerShould {
         verify(programStageSectionStore, never()).delete(anyString());
 
         verify(programStageDataElementHandler, never()).updateProgramStageDataElementWithProgramStageSectionLink(
-                anyString(), anyString()
+                anyString(), anyString(), anyString()
         );
 
         verify(programIndicatorHandler, never()).handleMany(

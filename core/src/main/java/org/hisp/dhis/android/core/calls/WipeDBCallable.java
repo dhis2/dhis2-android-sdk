@@ -176,6 +176,7 @@ public final class WipeDBCallable extends SyncCall<Unit> {
                 DataInputPeriodStore.create(databaseAdapter)
         );
 
-        return new WipeDBCallable(deletableStores, internalModules.systemInfo, internalModules.relationshipModule);
+        return new WipeDBCallable(databaseAdapter, deletableStores,
+                internalModules.systemInfo, internalModules.relationshipModule);
     }
 }

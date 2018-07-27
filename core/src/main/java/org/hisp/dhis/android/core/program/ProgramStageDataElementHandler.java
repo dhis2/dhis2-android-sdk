@@ -111,9 +111,13 @@ public class ProgramStageDataElementHandler {
         }
     }
 
-    void updateProgramStageDataElementWithProgramStageSectionLink(@NonNull String programStageSectionUid,
+    void updateProgramStageDataElementWithProgramStageSectionLink(@NonNull String programStageUid,
+                                                                  @NonNull String programStageSectionUid,
                                                                   @NonNull String dataElementUid) {
-        programStageDataElementStore.updateWithProgramStageSectionLink(programStageSectionUid, dataElementUid);
+        programStageDataElementStore.updateWithProgramStageSectionLink(programStageUid,
+                programStageSectionUid,
+                dataElementUid
+                );
     }
 
     public static ProgramStageDataElementHandler create(DatabaseAdapter databaseAdapter) {

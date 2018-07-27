@@ -30,20 +30,18 @@ package org.hisp.dhis.android.core.relationship;
 import org.hisp.dhis.android.core.common.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import retrofit2.Retrofit;
-
 public final class RelationshipInternalModule implements WipeableModule {
 
     private final DatabaseAdapter databaseAdapter;
-    private final Retrofit retrofit;
     public final RelationshipModule publicModule;
 
-    private RelationshipInternalModule(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+    private RelationshipInternalModule(DatabaseAdapter databaseAdapter,
                                        RelationshipModule publicModule) {
         this.databaseAdapter = databaseAdapter;
-        this.retrofit = retrofit;
         this.publicModule = publicModule;
     }
+
+    // TODO Include call RelationshipTypeEndpointCall
 
     @Override
     public void wipeModuleTables() {
@@ -53,10 +51,9 @@ public final class RelationshipInternalModule implements WipeableModule {
         RelationshipConstraintStore.create(databaseAdapter).delete();
     }
 
-    public static RelationshipInternalModule create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
+    public static RelationshipInternalModule create(DatabaseAdapter databaseAdapter) {
         return new RelationshipInternalModule(
                 databaseAdapter,
-                retrofit,
                 RelationshipModule.create(databaseAdapter)
         );
     }

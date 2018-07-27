@@ -47,6 +47,6 @@ public final class D2InternalModules {
     public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
         return new D2InternalModules(
                 SystemInfoInternalModule.create(databaseAdapter, retrofit),
-                RelationshipInternalModule.create(databaseAdapter, retrofit));
+                RelationshipInternalModule.create(databaseAdapter));
     }
 }

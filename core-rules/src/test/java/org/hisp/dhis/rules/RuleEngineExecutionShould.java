@@ -11,14 +11,10 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -33,9 +29,6 @@ public class RuleEngineExecutionShould {
 
     @Mock
     private List<RuleAction> actions;
-
-    @Mock
-    private RuleActionAssign ruleActionAssign;
 
     @Mock
     private HashMap<String, RuleVariableValue> variableMap;

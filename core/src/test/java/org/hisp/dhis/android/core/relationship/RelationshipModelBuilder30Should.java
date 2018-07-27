@@ -4,10 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
 import java.io.IOException;
 
-public class RelationshipModelBuilderShould {
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
+public class RelationshipModelBuilder30Should {
     private Relationship pojo;
 
     private RelationshipModel model;
@@ -23,14 +24,14 @@ public class RelationshipModelBuilderShould {
 
     protected Relationship buildPojo() {
         return Relationship.create(
-                "tracked-entity-instance-a",
-                "tracked-entity-instance-b",
+                null,
+                null,
                 "relationship",
                 "relationship-type",
                 null,
                 null,
-                null,
-                null
+                RelationshipItem.create(RelationshipItemTrackedEntityInstance.create("tei_uid"), null, null),
+                RelationshipItem.create(null, RelationshipItemEnrollment.create("enrollment"), null)
         );
     }
 
@@ -40,6 +41,7 @@ public class RelationshipModelBuilderShould {
 
     @Test
     public void copy_pojo_relationship_properties() {
-        assertThat(model.relationshipType()).isEqualTo(pojo.relationship());
+        assertThat(model.uid()).isEqualTo(pojo.relationship());
+        assertThat(model.relationshipType()).isEqualTo(pojo.relationshipType());
     }
 }

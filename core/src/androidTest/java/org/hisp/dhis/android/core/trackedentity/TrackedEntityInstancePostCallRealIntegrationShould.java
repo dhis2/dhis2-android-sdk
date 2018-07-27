@@ -5,12 +5,10 @@ import android.support.test.runner.AndroidJUnit4;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
@@ -20,9 +18,10 @@ import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.period.FeatureType;
-import org.hisp.dhis.android.core.relationship.RelationshipModel;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipStore;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
@@ -34,7 +33,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import retrofit2.Response;
@@ -55,8 +53,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     private EventStore eventStore;
     private TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
-    private IdentifiableObjectStore<RelationshipModel> relationShipStore;
-    private IdentifiableObjectStore<RelationshipTypeModel> relationshipTypeStore;
     private String orgUnitUid;
     private String programUid;
     private String programStageUid;
@@ -82,15 +78,13 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     public void setUp() throws IOException {
         super.setUp();
 
-        d2= D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
+        d2= D2Factory.create(RealServerMother.url, databaseAdapter());
 
         trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
         enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
         eventStore = new EventStoreImpl(databaseAdapter());
         trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
         trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter());
-        relationShipStore = RelationshipStore.create(databaseAdapter());
-        relationshipTypeStore = RelationshipTypeStore.create(databaseAdapter());
 
         codeGenerator = new CodeGeneratorImpl();
         orgUnitUid = "DiszpKrYNg8";
@@ -236,8 +230,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.downloadTrackedEntityInstances(5, true).call();
 
         TrackedEntityInstance teiA = trackedEntityInstanceStore.queryAll().values().iterator().next();
-        String relationshipTypeUid = relationshipTypeStore.selectAll(RelationshipTypeModel.factory)
-                .iterator().next().uid();
+        RelationshipType relationshipType = d2.relationshipModule().relationshipType.getAll().iterator().next();
 
         // Create a TEI by copying an existing one
         String teiBUid = codeGenerator.generate();
@@ -245,11 +238,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         trackedEntityInstanceStore.setState(teiA.uid(), State.TO_POST);
 
-        // TODO Fix test
-        RelationshipModel relationshipModel = RelationshipModel.builder()
-                .relationshipType(relationshipTypeUid)
-                .build();
-        relationShipStore.updateOrInsert(relationshipModel);
+        d2.relationshipModule().relationship.createTEIRelationship(relationshipType.uid(), teiA.uid(), teiBUid);
 
         d2.syncTrackedEntityInstances().call();
 
@@ -262,8 +251,22 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         List<TrackedEntityInstance> responseTeiB =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiBUid)).call();
         assertThat(responseTeiB.size() == 1).isTrue();
 
-        Set<RelationshipModel> relationships = relationShipStore.selectAll(RelationshipModel.factory);
-        assertThat(relationships).contains(relationshipModel);
+        List<Relationship> relationships = d2.relationshipModule().relationship.getRelationshipsByTEI(teiA.uid());
+        assertThat(relationships.size() > 0).isTrue();
+
+        Boolean relationshipFound = false;
+        for (Relationship relationship : relationships) {
+            if (!relationshipType.uid().equals(relationship.relationshipType())) {
+                break;
+            }
+            String fromUid = getTEIUidFromRelationshipItem(relationship.from());
+            String toUid = getTEIUidFromRelationshipItem(relationship.to());
+
+            if (teiA.uid().equals(fromUid) && teiBUid.equals(toUid)) {
+                relationshipFound = true;
+            }
+        }
+        assertThat(relationshipFound).isTrue();
     }
 
     private void insertATei(String uid, TrackedEntityInstance tei, FeatureType featureType) {
@@ -371,5 +374,12 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     private Date getCurrentDateMinusTenMinutes() {
         Long newTime = (new Date()).getTime() - (10 * 60 * 1000);
         return new Date(newTime);
+    }
+
+    private String getTEIUidFromRelationshipItem(RelationshipItem item) {
+        if (item != null && item.trackedEntityInstance() != null) {
+            return item.trackedEntityInstance().trackedEntityInstance();
+        }
+        return null;
     }
 }

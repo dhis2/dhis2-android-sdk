@@ -33,10 +33,10 @@ public final class RelationshipModule {
 
     public final RelationshipTypeRepository relationshipType;
 
-    public final RelationshipRepository relationship;
+    public final RelationshipRepositoryInterface relationship;
 
     private RelationshipModule(RelationshipTypeRepository relationshipTypeRepository,
-                               RelationshipRepository relationshipRepository) {
+                               RelationshipRepositoryInterface relationshipRepository) {
         this.relationshipType = relationshipTypeRepository;
         this.relationship = relationshipRepository;
     }

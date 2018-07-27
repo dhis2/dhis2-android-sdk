@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public final class RelationshipTypeRepository {
+public final class RelationshipTypeRepository implements RelationshipTypeRepositoryInterface {
 
     private final ObjectWithoutUidStore<RelationshipConstraintModel> relationshipConstraintStore;
     private final IdentifiableObjectStore<RelationshipTypeModel> relationshipTypeStore;
@@ -64,7 +64,7 @@ public final class RelationshipTypeRepository {
         return relationshipTypeList;
     }
 
-    public static RelationshipTypeRepository create(DatabaseAdapter databaseAdapter) {
+    static RelationshipTypeRepository create(DatabaseAdapter databaseAdapter) {
         return new RelationshipTypeRepository(
                 RelationshipConstraintStore.create(databaseAdapter),
                 RelationshipTypeStore.create(databaseAdapter)

@@ -27,24 +27,10 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import java.util.List;
 
-public final class RelationshipModule {
+public interface RelationshipTypeRepositoryInterface {
 
-    public final RelationshipTypeRepositoryInterface relationshipType;
-
-    public final RelationshipRepositoryInterface relationship;
-
-    private RelationshipModule(RelationshipTypeRepositoryInterface relationshipTypeRepository,
-                               RelationshipRepositoryInterface relationshipRepository) {
-        this.relationshipType = relationshipTypeRepository;
-        this.relationship = relationshipRepository;
-    }
-
-    public static RelationshipModule create(DatabaseAdapter databaseAdapter) {
-        return new RelationshipModule(
-                RelationshipTypeRepository.create(databaseAdapter),
-                RelationshipRepository.create(databaseAdapter));
-    }
+    List<RelationshipType> getAll();
 
 }

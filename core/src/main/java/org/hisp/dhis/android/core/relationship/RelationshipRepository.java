@@ -178,7 +178,7 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
         return null;
     }
 
-    public static RelationshipRepository create(DatabaseAdapter databaseAdapter) {
+    static RelationshipRepository create(DatabaseAdapter databaseAdapter) {
         return new RelationshipRepository(
                 RelationshipStore.create(databaseAdapter),
                 RelationshipItemStore.create(databaseAdapter),

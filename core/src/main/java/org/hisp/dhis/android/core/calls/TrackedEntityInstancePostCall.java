@@ -18,6 +18,8 @@ import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.imports.WebResponseHandler;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipRepositoryInterface;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
@@ -40,7 +42,8 @@ import retrofit2.Retrofit;
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
 public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     // internal modules
-    private final D2InternalModules internalModules;
+    private final DHISVersionManager versionManager;
+    private final RelationshipRepositoryInterface relationshipRepository;
 
     // service
     private final TrackedEntityInstanceService trackedEntityInstanceService;
@@ -52,14 +55,16 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
-    private TrackedEntityInstancePostCall(@NonNull D2InternalModules internalModules,
+    private TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
+                                          @NonNull RelationshipRepositoryInterface relationshipRepository,
                                           @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
                                           @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                                           @NonNull EnrollmentStore enrollmentStore,
                                           @NonNull EventStore eventStore,
                                           @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                                           @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
-        this.internalModules = internalModules;
+        this.versionManager = versionManager;
+        this.relationshipRepository = relationshipRepository;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.enrollmentStore = enrollmentStore;
@@ -156,10 +161,9 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
 
             // Building relationships for TEI
             List<Relationship> relationshipRecreated =
-                    internalModules.relationshipModule.publicModule.relationship.getRelationshipsByTEI
-                            (trackedEntityInstance.uid());
+                    relationshipRepository.getRelationshipsByTEI(trackedEntityInstance.uid());
 
-            if (this.internalModules.systemInfo.publicModule.versionManager.is2_29()) {
+            if (versionManager.is2_29()) {
                 List<Relationship> relationships29 = new ArrayList<>();
                 for (Relationship relationship : relationshipRecreated) {
                     relationships29.add(
@@ -207,7 +211,8 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     public static TrackedEntityInstancePostCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
                                                        D2InternalModules internalModules) {
         return new TrackedEntityInstancePostCall(
-                internalModules,
+                internalModules.systemInfo.publicModule.versionManager,
+                internalModules.relationshipModule.publicModule.relationship,
                 retrofit.create(TrackedEntityInstanceService.class),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),

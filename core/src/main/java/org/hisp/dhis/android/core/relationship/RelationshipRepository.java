@@ -42,7 +42,7 @@ import java.util.Set;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
 
-public final class RelationshipRepository {
+final class RelationshipRepository implements RelationshipRepositoryInterface {
 
     private final IdentifiableObjectStore<RelationshipModel> relationshipStore;
     private final RelationshipItemStoreInterface relationshipItemStore;
@@ -56,6 +56,7 @@ public final class RelationshipRepository {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
     }
 
+    @Override
     public void createTEIRelationship(String relationshipType, String fromUid, String toUid) {
         if (!this.trackedEntityInstanceStore.exists(fromUid) || !this.trackedEntityInstanceStore.exists(toUid)) {
             return;
@@ -101,6 +102,7 @@ public final class RelationshipRepository {
         this.relationshipItemStore.updateOrInsertWhere(toItemModel);
     }
 
+    @Override
     public List<Relationship> getRelationshipsByTEI(@NonNull String trackedEntityInstanceUid) {
 
         // TODO Create query to avoid retrieving the whole table

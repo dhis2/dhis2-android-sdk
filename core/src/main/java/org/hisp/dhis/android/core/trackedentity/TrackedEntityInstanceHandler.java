@@ -9,6 +9,8 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.relationship.RelationshipRepositoryInterface;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,17 +19,20 @@ import java.util.List;
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class TrackedEntityInstanceHandler {
-    private final D2InternalModules internalModules;
+    private final DHISVersionManager versionManager;
+    private final RelationshipRepositoryInterface relationshipRepository;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
     private final EnrollmentHandler enrollmentHandler;
 
     public TrackedEntityInstanceHandler(
-            @NonNull D2InternalModules internalModules,
+            @NonNull DHISVersionManager versionManager,
+            @NonNull RelationshipRepositoryInterface relationshipRepository,
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler,
             @NonNull EnrollmentHandler enrollmentHandler) {
-        this.internalModules = internalModules;
+        this.versionManager = versionManager;
+        this.relationshipRepository = relationshipRepository;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.trackedEntityAttributeValueHandler = trackedEntityAttributeValueHandler;
         this.enrollmentHandler = enrollmentHandler;
@@ -69,7 +74,7 @@ public class TrackedEntityInstanceHandler {
                 String teiUid = trackedEntityInstance.uid();
                 TrackedEntityInstance relatedTEI;
 
-                if (internalModules.systemInfo.publicModule.versionManager.is2_29()) {
+                if (versionManager.is2_29()) {
                     relationshipType = relationship.relationship();
                     relatedTEI = relationship.relative();
                 } else {
@@ -91,8 +96,7 @@ public class TrackedEntityInstanceHandler {
 
                 if (relatedTEI != null) {
                     this.handle(relatedTEI, true);
-                    this.internalModules.relationshipModule.publicModule.relationship
-                            .createTEIRelationship(relationshipType, teiUid, relatedTEI.uid());
+                    relationshipRepository.createTEIRelationship(relationshipType, teiUid, relatedTEI.uid());
                 }
             }
         }
@@ -135,7 +139,8 @@ public class TrackedEntityInstanceHandler {
     public static TrackedEntityInstanceHandler create(DatabaseAdapter databaseAdapter,
                                                       D2InternalModules internalModules) {
         return new TrackedEntityInstanceHandler(
-                internalModules,
+                internalModules.systemInfo.publicModule.versionManager,
+                internalModules.relationshipModule.publicModule.relationship,
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 TrackedEntityAttributeValueHandler.create(databaseAdapter),
                 EnrollmentHandler.create(databaseAdapter)

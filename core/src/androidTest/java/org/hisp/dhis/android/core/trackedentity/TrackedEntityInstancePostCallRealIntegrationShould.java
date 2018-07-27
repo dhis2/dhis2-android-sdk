@@ -269,6 +269,38 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         assertThat(relationshipFound).isTrue();
     }
 
+    //@Test
+    public void post_a_tei_and_delete_one_event() throws Exception {
+        downloadMetadata();
+        d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).call();
+
+        TrackedEntityInstance tei = trackedEntityInstanceStore.queryAll().values().iterator().next();
+
+        Enrollment enrollment = enrollmentStore.queryAll().values().iterator().next().get(0);
+
+        Event event = eventStore.queryAll().get(0);
+        String eventUid = event.uid();
+
+        trackedEntityInstanceStore.setState(tei.uid(), State.TO_UPDATE);
+        enrollmentStore.setState(enrollment.uid(), State.TO_UPDATE);
+        eventStore.setState(eventUid, State.TO_DELETE);
+
+        d2.syncTrackedEntityInstances().call();
+
+        d2.wipeDB().call();
+        downloadMetadata();
+        d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).call();
+
+        Boolean deleted = true;
+        for (Event eventToCheck : eventStore.queryAll()) {
+            if (eventToCheck.uid().equals(eventUid)) {
+                deleted = false;
+            }
+        }
+
+        assertThat(deleted).isEqualTo(true);
+    }
+
     private void insertATei(String uid, TrackedEntityInstance tei, FeatureType featureType) {
         trackedEntityInstanceStore.insert(uid, tei.created(), tei.lastUpdated(), tei.createdAtClient(),
                 tei.lastUpdatedAtClient(), tei.organisationUnit(), tei.trackedEntityType(), tei.coordinates(),

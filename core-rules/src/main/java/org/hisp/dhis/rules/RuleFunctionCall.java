@@ -50,7 +50,10 @@ abstract class RuleFunctionCall {
         // aggregate matched parameters into list
         List<String> params = new ArrayList<>();
         while (splitParametersMatcher.find()) {
-            params.add(splitParametersMatcher.group().trim());
+            String param = splitParametersMatcher.group().trim();
+            if (!"".equals(param)) {
+                params.add(param);
+            }
         }
 
         return new AutoValue_RuleFunctionCall(functionCall, String.format(Locale.US,

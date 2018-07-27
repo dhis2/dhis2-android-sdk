@@ -87,7 +87,8 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
             ProgramStageDataElementModel.TABLE + " SET " +
             ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + " =? " +
             " WHERE " +
-            ProgramStageDataElementModel.Columns.DATA_ELEMENT + " =?;";
+            ProgramStageDataElementModel.Columns.DATA_ELEMENT + " =?" +
+            "AND " + ProgramStageDataElementModel.Columns.PROGRAM_STAGE + "=?;";
 
 
     private final SQLiteStatement insertStatement;
@@ -172,10 +173,13 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
     }
 
     @Override
-    public int updateWithProgramStageSectionLink(@NonNull String programStageSectionUid,
-                                                 @NonNull String dataElementUid) {
+    public int updateWithProgramStageSectionLink(@NonNull String programStageUid,
+                                                 @NonNull String programStageSectionUid,
+                                                 @NonNull String dataElementUid
+                                                 ) {
         sqLiteBind(updateWithProgramStageSectionLinkStatement, 1, programStageSectionUid);
         sqLiteBind(updateWithProgramStageSectionLinkStatement, 2, dataElementUid);
+        sqLiteBind(updateWithProgramStageSectionLinkStatement, 3, programStageUid);
 
         int update = databaseAdapter.executeUpdateDelete(
                 ProgramStageDataElementModel.TABLE, updateWithProgramStageSectionLinkStatement

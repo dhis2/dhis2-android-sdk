@@ -105,17 +105,18 @@ public class ProgramStageSectionHandler {
                 }
             }
 
-            afterObjectPersisted(programStageSection, programIndicatorModelBuilder);
+            afterObjectPersisted(programStageUid, programStageSection, programIndicatorModelBuilder);
         }
     }
 
-    private void afterObjectPersisted(ProgramStageSection programStageSection,
+    private void afterObjectPersisted(String programStageUid,
+                                      ProgramStageSection programStageSection,
                                       ProgramIndicatorModelBuilder programIndicatorModelBuilder) {
         List<DataElement> dataElements = programStageSection.dataElements();
         if (dataElements != null) {
             for (DataElement dataElement : dataElements) {
                 programStageDataElementHandler.updateProgramStageDataElementWithProgramStageSectionLink(
-                        programStageSection.uid(), dataElement.uid());
+                        programStageUid, programStageSection.uid(), dataElement.uid());
             }
         }
 

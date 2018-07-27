@@ -1,0 +1,10 @@
+{
+  "created": "2013-09-19T15:17:41.000",
+  "lastUpdated": "2014-04-14T13:53:20.166",
+  "name": "Mother-Child",
+  "id": "V2kkHafqs8G",
+  "displayName": "Mother-Child",
+  "bIsToA": "Child",
+  "externalAccess": false,
+  "aIsToB": "Mother"
+}

@@ -26,49 +26,56 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.relationship;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    public static final int VERSION = 14;
+public class RelationshipItemModelBuilderShould {
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
+    private RelationshipItem pojo;
+
+    private RelationshipItemModel model;
+
+    private String TEI_UID = "tei_uid";
+
+    private RelationshipConstraintType CONSTRAINT_TYPE = RelationshipConstraintType.FROM;
+
+    private Relationship relationship = Relationship.create(null, null, "relationship_uid", "type", null, null,
+            null, null);
+
+    @Before
+    @SuppressWarnings("unchecked")
+    public void setUp() throws IOException {
+        MockitoAnnotations.initMocks(this);
+
+        pojo = buildPojo();
+        model = buildModel();
     }
 
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    private RelationshipItem buildPojo() {
+        return RelationshipItem.create(
+                RelationshipItemTrackedEntityInstance.create(TEI_UID),
+                null,
+                null
+        );
     }
 
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        // enable foreign key support in database
-        db.execSQL("PRAGMA foreign_keys = ON;");
-        db.enableWriteAheadLogging();
+    private RelationshipItemModel buildModel() {
+        return new RelationshipItemModelBuilder(relationship, CONSTRAINT_TYPE).buildModel(pojo);
     }
 
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
-        }
-        return versionMigrations;
+    @Test
+    public void copy_pojo_relationship_properties() {
+        assertThat(model.relationship()).isEqualTo(relationship.relationship());
+        assertThat(model.relationshipItemType()).isEqualTo(CONSTRAINT_TYPE);
+        assertThat(model.trackedEntityInstance()).isEqualTo(TEI_UID);
+        assertThat(model.enrollment()).isNull();
+        assertThat(model.event()).isNull();
     }
 }

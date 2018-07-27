@@ -111,6 +111,9 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
     private static final String SELECT_STATE = "SELECT state FROM TrackedEntityInstance WHERE " +
             Columns.UID + " =?;";
 
+    private static final String QUERY_EXISTS = "SELECT 1 FROM TrackedEntityInstance WHERE " +
+            Columns.UID + " =?;";
+
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
     private final SQLiteStatement setStateStatement;
@@ -214,6 +217,12 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
                     State.valueOf(State.class, cursor.getString(0));
         }
         return state;
+    }
+
+    @Override
+    public Boolean exists(@NonNull String uid) {
+        Cursor cursor = databaseAdapter.query(QUERY_EXISTS, uid);
+        return cursor.getCount() > 0;
     }
 
     @Override

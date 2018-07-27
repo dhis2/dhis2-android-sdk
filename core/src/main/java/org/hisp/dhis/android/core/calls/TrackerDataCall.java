@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -20,13 +21,16 @@ public final class TrackerDataCall extends SyncCall<List<TrackedEntityInstance>>
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
+    private final D2InternalModules internalModules;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     private TrackerDataCall(@NonNull DatabaseAdapter databaseAdapter,
                             @NonNull Retrofit retrofit,
+                            @NonNull D2InternalModules internalModules,
                             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
+        this.internalModules = internalModules;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
     }
 
@@ -35,14 +39,16 @@ public final class TrackerDataCall extends SyncCall<List<TrackedEntityInstance>>
         setExecuted();
         Map<String, TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.querySynced();
         Call<List<TrackedEntityInstance>> call = TrackedEntityInstanceListDownloadAndPersistCall
-                .create(databaseAdapter, retrofit, trackedEntityInstances.keySet());
+                .create(databaseAdapter, retrofit, internalModules, trackedEntityInstances.keySet());
         return new D2CallExecutor().executeD2Call(call);
     }
 
-    public static TrackerDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
+    public static TrackerDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+                                         D2InternalModules internalModules) {
         return new TrackerDataCall(
                 databaseAdapter,
                 retrofit,
+                internalModules,
                 new TrackedEntityInstanceStoreImpl(databaseAdapter)
         );
     }

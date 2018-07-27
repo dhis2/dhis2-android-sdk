@@ -36,9 +36,12 @@ public class RelationshipBuilder extends PojoBuilder<Relationship, RelationshipM
     public Relationship buildPojo(RelationshipModel model) {
 
         return Relationship.create(
-                model.trackedEntityInstanceA(),
-                model.trackedEntityInstanceB(),
+                null,
+                null,
+                model.uid(),
                 model.relationshipType(),
+                null,
+                null,
                 null,
                 null
         );

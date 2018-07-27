@@ -25,50 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship;
 
-package org.hisp.dhis.android.core.data.database;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+public final class RelationshipModule {
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+    public final RelationshipTypeRepositoryInterface relationshipType;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+    public final RelationshipRepositoryInterface relationship;
 
-    public static final int VERSION = 14;
-
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
+    private RelationshipModule(RelationshipTypeRepositoryInterface relationshipTypeRepository,
+                               RelationshipRepositoryInterface relationshipRepository) {
+        this.relationshipType = relationshipTypeRepository;
+        this.relationship = relationshipRepository;
     }
 
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    public static RelationshipModule create(DatabaseAdapter databaseAdapter) {
+        return new RelationshipModule(
+                RelationshipTypeRepository.create(databaseAdapter),
+                RelationshipRepository.create(databaseAdapter));
     }
 
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        // enable foreign key support in database
-        db.execSQL("PRAGMA foreign_keys = ON;");
-        db.enableWriteAheadLogging();
-    }
-
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
-        }
-        return versionMigrations;
-    }
 }

@@ -29,18 +29,24 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
 
 import retrofit2.Retrofit;
 
 public final class D2InternalModules {
     public final SystemInfoInternalModule systemInfo;
+    public final RelationshipInternalModule relationshipModule;
 
-    public D2InternalModules(SystemInfoInternalModule systemInfo) {
+    public D2InternalModules(SystemInfoInternalModule systemInfo,
+                             RelationshipInternalModule relationshipModule) {
         this.systemInfo = systemInfo;
+        this.relationshipModule = relationshipModule;
     }
 
     public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        return new D2InternalModules(SystemInfoInternalModule.create(databaseAdapter, retrofit));
+        return new D2InternalModules(
+                SystemInfoInternalModule.create(databaseAdapter, retrofit),
+                RelationshipInternalModule.create(databaseAdapter));
     }
 }

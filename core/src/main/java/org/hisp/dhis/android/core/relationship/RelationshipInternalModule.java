@@ -25,31 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.common.WipeableModule;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.io.IOException;
-import java.text.ParseException;
+public final class RelationshipInternalModule implements WipeableModule {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+    private final DatabaseAdapter databaseAdapter;
+    public final RelationshipModule publicModule;
 
-public class RelationshipShould extends BaseObjectShould implements ObjectShould {
-
-    public RelationshipShould() {
-        super("relationship/relationship.json");
+    private RelationshipInternalModule(DatabaseAdapter databaseAdapter,
+                                       RelationshipModule publicModule) {
+        this.databaseAdapter = databaseAdapter;
+        this.publicModule = publicModule;
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Relationship relationship = objectMapper.readValue(jsonStream, Relationship.class);
+    // TODO Include call RelationshipTypeEndpointCall
 
-        assertThat(relationship.trackedEntityInstanceA()).isEqualTo("Ea0rRdBPAIp");
-        assertThat(relationship.trackedEntityInstanceB()).isEqualTo("G1afLIEKt8A");
-        assertThat(relationship.relationship()).isEqualTo("V2kkHafqs8G");
+    @Override
+    public void wipeModuleTables() {
+        RelationshipStore.create(databaseAdapter).delete();
+        RelationshipItemStore.create(databaseAdapter).delete();
+        RelationshipTypeStore.create(databaseAdapter).delete();
+        RelationshipConstraintStore.create(databaseAdapter).delete();
+    }
+
+    public static RelationshipInternalModule create(DatabaseAdapter databaseAdapter) {
+        return new RelationshipInternalModule(
+                databaseAdapter,
+                RelationshipModule.create(databaseAdapter)
+        );
     }
 }

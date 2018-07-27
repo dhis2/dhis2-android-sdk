@@ -52,6 +52,7 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -137,17 +138,18 @@ public final class D2 {
 
     @NonNull
     public Callable<List<TrackedEntityInstance>> syncTrackerData() {
-        return TrackerDataCall.create(databaseAdapter, retrofit);
+        return TrackerDataCall.create(databaseAdapter, retrofit, internalModules);
     }
 
     @NonNull
     public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
-        return TrackedEntityInstanceListDownloadAndPersistCall.create(databaseAdapter, retrofit, uids);
+        return TrackedEntityInstanceListDownloadAndPersistCall.create(databaseAdapter, retrofit, internalModules, uids);
     }
 
     @NonNull
     public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
-        return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, teiLimit, limitByOrgUnit);
+        return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, internalModules, teiLimit,
+                limitByOrgUnit);
     }
 
     @NonNull
@@ -169,7 +171,7 @@ public final class D2 {
 
     @NonNull
     public Callable<WebResponse> syncTrackedEntityInstances() {
-        return TrackedEntityInstancePostCall.create(databaseAdapter, retrofit);
+        return TrackedEntityInstancePostCall.create(databaseAdapter, retrofit, internalModules);
     }
 
     @NonNull
@@ -188,6 +190,10 @@ public final class D2 {
 
     public SystemInfoModule systemInfoModule() {
         return this.internalModules.systemInfo.publicModule;
+    }
+
+    public RelationshipModule relationshipModule() {
+        return this.internalModules.relationshipModule.publicModule;
     }
 
     public static class Builder {

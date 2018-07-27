@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,36 +38,16 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class RelationshipTypeShould {
+public class RelationshipType29Should extends BaseObjectShould implements ObjectShould {
 
+    public RelationshipType29Should() {
+        super("relationship/relationshipType29.json");
+    }
+
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        RelationshipType relationshipType = objectMapper.readValue("{\n" +
-                        "\n" +
-                        "    \"created\": \"2013-09-19T15:17:41.000\",\n" +
-                        "    \"lastUpdated\": \"2014-04-14T13:53:20.166\",\n" +
-                        "    \"name\": \"Mother-Child\",\n" +
-                        "    \"id\": \"V2kkHafqs8G\",\n" +
-                        "    \"displayName\": \"Mother-Child\",\n" +
-                        "    \"bIsToA\": \"Child\",\n" +
-                        "    \"externalAccess\": false,\n" +
-                        "    \"aIsToB\": \"Mother\",\n" +
-                        "    \"access\": {\n" +
-                        "        \"read\": true,\n" +
-                        "        \"updateWithSection\": true,\n" +
-                        "        \"externalize\": false,\n" +
-                        "        \"delete\": true,\n" +
-                        "        \"write\": true,\n" +
-                        "        \"manage\": false\n" +
-                        "    },\n" +
-                        "    \"userGroupAccesses\": [ ],\n" +
-                        "    \"attributeValues\": [ ],\n" +
-                        "    \"translations\": [ ]\n" +
-                        "\n" +
-                        "}",
-                RelationshipType.class);
+        RelationshipType relationshipType = objectMapper.readValue(jsonStream, RelationshipType.class);
 
         assertThat(relationshipType.uid()).isEqualTo("V2kkHafqs8G");
         assertThat(relationshipType.name()).isEqualTo("Mother-Child");

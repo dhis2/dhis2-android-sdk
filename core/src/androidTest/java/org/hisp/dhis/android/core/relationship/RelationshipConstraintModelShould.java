@@ -32,92 +32,69 @@ import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.relationship.RelationshipModel.Columns;
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class RelationshipModelShould {
-    //BaseIdentifiableModel attributes:
+public class RelationshipConstraintModelShould {
     private static final long ID = 11L;
-    private static final String UID = "test_uid";
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-    // RelationshipModel attributes:
-    private static final String RELATIONSHIP_TYPE = "RelationshipType uid";
-
-    private final Date date;
-    private final String dateString;
-
-    public RelationshipModelShould() {
-        this.date = new Date();
-        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
-    }
+    private static final String RELATIONSHIP_TYPE = "relationship_type";
+    private static final String CONSTRAINT_TYPE = "FROM";
+    private static final String RELATIONSHIP_ENTITY = "TRACKED_ENTITY_INSTANCE";
+    private static final String TRACKED_ENTITY_TYPE = "tracked_entity_type";
+    private static final String PROGRAM = "program";
+    private static final String PROGRAM_STAGE = "program_stage";
 
     @Test
     public void create_model_when_created_from_database_cursor() {
         MatrixCursor cursor = new MatrixCursor(new String[]{
                 Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.RELATIONSHIP_TYPE
+                Columns.RELATIONSHIP_TYPE,
+                Columns.CONSTRAINT_TYPE,
+                Columns.RELATIONSHIP_ENTITY,
+                Columns.TRACKED_ENTITY_TYPE,
+                Columns.PROGRAM,
+                Columns.PROGRAM_STAGE
         });
-        cursor.addRow(new Object[]{
-                ID,
-                UID,
-                CODE,
-                NAME,
-                DISPLAY_NAME,
-                dateString,
-                dateString,
-                RELATIONSHIP_TYPE
-        });
-        cursor.moveToFirst();
+        cursor.addRow(new Object[]{ID, RELATIONSHIP_TYPE, CONSTRAINT_TYPE, RELATIONSHIP_ENTITY, TRACKED_ENTITY_TYPE,
+                PROGRAM, PROGRAM_STAGE});
 
-        RelationshipModel model = RelationshipModel.create(cursor);
+        cursor.moveToFirst();
+        RelationshipConstraintModel model = RelationshipConstraintModel.create(cursor);
         cursor.close();
 
         assertThat(model.id()).isEqualTo(ID);
-        assertThat(model.uid()).isEqualTo(UID);
-        assertThat(model.code()).isEqualTo(CODE);
-        assertThat(model.name()).isEqualTo(NAME);
-        assertThat(model.displayName()).isEqualTo(DISPLAY_NAME);
-        assertThat(model.created()).isEqualTo(date);
-        assertThat(model.lastUpdated()).isEqualTo(date);
         assertThat(model.relationshipType()).isEqualTo(RELATIONSHIP_TYPE);
+        assertThat(model.constraintType()).isEqualTo(RelationshipConstraintType.FROM);
+        assertThat(model.relationshipEntity()).isEqualTo(RelationshipEntityType.TRACKED_ENTITY_INSTANCE);
+        assertThat(model.trackedEntityType()).isEqualTo(TRACKED_ENTITY_TYPE);
+        assertThat(model.program()).isEqualTo(PROGRAM);
+        assertThat(model.programStage()).isEqualTo(PROGRAM_STAGE);
     }
 
     @Test
     public void create_content_values_when_created_from_builder() {
-        RelationshipModel model = RelationshipModel.builder()
+        RelationshipConstraintModel model = RelationshipConstraintModel.builder()
                 .id(ID)
-                .uid(UID)
-                .code(CODE)
-                .name(NAME)
-                .displayName(DISPLAY_NAME)
-                .created(date)
-                .lastUpdated(date)
                 .relationshipType(RELATIONSHIP_TYPE)
+                .constraintType(RelationshipConstraintType.FROM)
+                .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
+                .trackedEntityType(TRACKED_ENTITY_TYPE)
+                .program(PROGRAM)
+                .programStage(PROGRAM_STAGE)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);
+        assertThat(contentValues.getAsString(Columns.CONSTRAINT_TYPE)).isEqualTo(CONSTRAINT_TYPE);
+        assertThat(contentValues.getAsString(Columns.RELATIONSHIP_ENTITY)).isEqualTo(RELATIONSHIP_ENTITY);
+        assertThat(contentValues.getAsString(Columns.TRACKED_ENTITY_TYPE)).isEqualTo(TRACKED_ENTITY_TYPE);
+        assertThat(contentValues.getAsString(Columns.PROGRAM)).isEqualTo(PROGRAM);
+        assertThat(contentValues.getAsString(Columns.PROGRAM_STAGE)).isEqualTo(PROGRAM_STAGE);
     }
 }
+

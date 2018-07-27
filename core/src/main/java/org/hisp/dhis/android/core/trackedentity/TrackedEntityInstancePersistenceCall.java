@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
@@ -82,12 +83,13 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
 
     public static TrackedEntityInstancePersistenceCall create(DatabaseAdapter databaseAdapter,
                                                               Retrofit retrofit,
+                                                              D2InternalModules internalModules,
                                                               Collection<TrackedEntityInstance>
                                                                       trackedEntityInstances) {
         return new TrackedEntityInstancePersistenceCall(
                 databaseAdapter,
                 retrofit,
-                TrackedEntityInstanceHandler.create(databaseAdapter),
+                TrackedEntityInstanceHandler.create(databaseAdapter, internalModules),
                 TrackedEntityInstanceUidHelperImpl.create(databaseAdapter),
                 AuthenticatedUserStore.create(databaseAdapter),
                 SearchOrganisationUnitCall.FACTORY,

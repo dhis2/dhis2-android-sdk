@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
@@ -18,15 +19,18 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
+    private final D2InternalModules internalModules;
 
     private final Collection<String> trackedEntityInstanceUids;
 
     private TrackedEntityInstanceListDownloadAndPersistCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
+            @NonNull D2InternalModules internalModules,
             @NonNull Collection<String> trackedEntityInstanceUids) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
+        this.internalModules = internalModules;
         this.trackedEntityInstanceUids = trackedEntityInstanceUids;
     }
 
@@ -46,17 +50,20 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
             teis.add(executor.executeD2Call(teiCall));
         }
 
-        executor.executeD2Call(TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, teis));
+        executor.executeD2Call(TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit,
+                internalModules, teis));
 
         return teis;
     }
 
     public static Call<List<TrackedEntityInstance>> create(DatabaseAdapter databaseAdapter,
                                                            Retrofit retrofit,
+                                                           D2InternalModules internalModules,
                                                            Collection<String> trackedEntityInstanceUids) {
         return new TrackedEntityInstanceListDownloadAndPersistCall(
                 databaseAdapter,
                 retrofit,
+                internalModules,
                 trackedEntityInstanceUids
         );
     }

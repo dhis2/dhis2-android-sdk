@@ -1,0 +1,15 @@
+{
+  "relationship": "nEenWmSyUEp",
+  "relationshipType": "V2kkHafqs8G",
+  "displayName": "Mother-Child",
+  "from": {
+    "trackedEntityInstance": {
+      "trackedEntityInstance": "o51cUNONthg"
+    }
+  },
+  "to": {
+    "enrollment": {
+      "enrollment": "lxAQ7Zs9VYR"
+    }
+  }
+}

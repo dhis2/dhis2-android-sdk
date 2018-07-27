@@ -1,12 +1,14 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipModel;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance;
+import org.hisp.dhis.android.core.relationship.RelationshipRepositoryInterface;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,10 +30,13 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class TrackedEntityInstanceHandlerShould {
     @Mock
-    private TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private DHISVersionManager versionManager;
 
     @Mock
-    private ObjectWithoutUidStore<RelationshipModel> relationshipStore;
+    private RelationshipRepositoryInterface relationshipRepository;
+
+    @Mock
+    private TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     @Mock
     private TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
@@ -48,6 +53,20 @@ public class TrackedEntityInstanceHandlerShould {
     @Mock
     private Relationship relationship;
 
+    @Mock
+    private TrackedEntityInstance relative;
+
+    @Mock
+    private RelationshipItem fromRelationshipItem;
+
+    @Mock
+    private RelationshipItem toRelationshipItem;
+
+    // Constants
+    private String TEI_UID = "test_tei_uid";
+    private String RELATIVE_UID = "relative_uid";
+    private String RELATIONSHIP_TYPE = "type_uid";
+
     // object to test
     private TrackedEntityInstanceHandler trackedEntityInstanceHandler;
 
@@ -55,12 +74,13 @@ public class TrackedEntityInstanceHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        when(trackedEntityInstance.uid()).thenReturn("test_tei_uid");
+        when(trackedEntityInstance.uid()).thenReturn(TEI_UID);
         when(trackedEntityInstance.enrollments()).thenReturn(Collections.singletonList(enrollment));
         when(trackedEntityInstance.relationships()).thenReturn(Collections.singletonList(relationship));
 
         trackedEntityInstanceHandler = new TrackedEntityInstanceHandler(
-                trackedEntityInstanceStore, relationshipStore, trackedEntityAttributeValueHandler, enrollmentHandler
+                versionManager, relationshipRepository, trackedEntityInstanceStore,
+                trackedEntityAttributeValueHandler, enrollmentHandler
         );
 
     }
@@ -162,10 +182,38 @@ public class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    public void invoke_relationship_store_insert_when_relationship_exists() throws Exception {
+    public void invoke_relationship_store_insert_when_relationship_exists_2_29() throws Exception {
+        when(versionManager.is2_29()).thenReturn(true);
+
+        when(relationship.relationship()).thenReturn(RELATIONSHIP_TYPE);
+        when(relationship.relative()).thenReturn(relative);
+        when(relationship.trackedEntityInstanceA()).thenReturn(TEI_UID);
+        when(relationship.trackedEntityInstanceB()).thenReturn(RELATIVE_UID);
+        when(relative.uid()).thenReturn(RELATIVE_UID);
+
         trackedEntityInstanceHandler.handle(trackedEntityInstance, false);
 
         // verify relationship store is called once
-        verify(relationshipStore, times(1)).updateOrInsertWhere(any(RelationshipModel.class));
+        verify(relationshipRepository, times(1))
+                .createTEIRelationship(RELATIONSHIP_TYPE, TEI_UID, RELATIVE_UID);
+    }
+
+    @Test
+    public void invoke_relationship_store_insert_when_relationship_exists_greater_than_2_29() throws Exception {
+        when(versionManager.is2_29()).thenReturn(false);
+
+        when(relationship.relationshipType()).thenReturn(RELATIONSHIP_TYPE);
+        when(relationship.from()).thenReturn(fromRelationshipItem);
+        when(relationship.to()).thenReturn(toRelationshipItem);
+        when(fromRelationshipItem.trackedEntityInstance())
+                .thenReturn(RelationshipItemTrackedEntityInstance.create(TEI_UID));
+        when(toRelationshipItem.trackedEntityInstance())
+                .thenReturn(RelationshipItemTrackedEntityInstance.create(RELATIVE_UID));
+
+        trackedEntityInstanceHandler.handle(trackedEntityInstance, false);
+
+        // verify relationship store is called once
+        verify(relationshipRepository, times(1))
+                .createTEIRelationship(RELATIONSHIP_TYPE, TEI_UID, RELATIVE_UID);
     }
 }

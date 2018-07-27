@@ -25,19 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import java.util.List;
 
-public class RelationshipModelBuilder extends ModelBuilder<Relationship, RelationshipModel> {
+public interface RelationshipTypeRepositoryInterface {
 
-    @Override
-    public RelationshipModel buildModel(Relationship relationship) {
-        return RelationshipModel.builder()
-                .trackedEntityInstanceA(relationship.trackedEntityInstanceA())
-                .trackedEntityInstanceB(relationship.trackedEntityInstanceB())
-                .relationshipType(relationship.relationship())
-                .build();
-    }
+    List<RelationshipType> getAll();
+
 }

@@ -412,7 +412,7 @@ public class EventStoreImpl implements EventStore {
             coordinates = Coordinates.create(latitude, longitude);
         }
 
-        Boolean deleted = stateStr.equals(State.TO_DELETE.toString());
+        Boolean deleted = stateStr != null && stateStr.equals(State.TO_DELETE.toString());
 
         event = Event.create(
                 uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,

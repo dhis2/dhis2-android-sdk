@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.relationship;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
@@ -41,6 +43,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 // TODO: Tests when relationship is fixed to be queried.
 @AutoValue
+@JsonInclude(Include.NON_NULL)
 public abstract class Relationship {
     private static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
     private static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";

@@ -138,7 +138,7 @@ public class EventStoreImpl implements EventStore {
             "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
             "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
             "      OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' OR Event.state = 'TO_POST' " +
-            "OR Event.state = 'TO_UPDATE';";
+            "OR Event.state = 'TO_UPDATE' OR Event.state = 'TO_DELETE';";
 
     private static final String QUERY_SINGLE_EVENTS = "SELECT " +
             FIELDS +

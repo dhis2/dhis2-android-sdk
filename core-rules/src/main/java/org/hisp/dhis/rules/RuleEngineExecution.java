@@ -157,7 +157,7 @@ class RuleEngineExecution implements Callable<List<RuleEffect>> {
 
         // In case if there are functions which
         // are not processed completely.
-        if (processedExpression.contains(D2_FUNCTION_PREFIX)) {
+        if (processedExpression.contains(D2_FUNCTION_PREFIX) && !expression.equals(processedExpression)) {
             // Another recursive call to process rest of
             // the d2 function calls.
             processedExpression = bindFunctionValues(processedExpression);

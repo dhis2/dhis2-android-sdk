@@ -36,16 +36,21 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.Date;
+import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)
 public abstract class CategoryOption extends BaseNameableObject {
     private static final String START_DATE = "startDate";
     private static final String END_DATE = "endDate";
+    private static final String ORGANITAZION_UNITS = "organisationUnits";
 
     public static final Field<CategoryOption, String> uid = Field.create(UID);
     private static final Field<CategoryOption, String> code = Field.create(CODE);
@@ -59,11 +64,13 @@ public abstract class CategoryOption extends BaseNameableObject {
     private static final Field<CategoryOption, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
     private static final Field<CategoryOption, String> startDate = Field.create(START_DATE);
     private static final Field<CategoryOption, String> endDate = Field.create(END_DATE);
+    private static final NestedField<CategoryOption, ObjectWithUid> organizationUnits
+            = NestedField.create(ORGANITAZION_UNITS);
     private static final Field<CategoryOption, Boolean> deleted = Field.create(DELETED);
 
     static final Fields<CategoryOption> allFields = Fields.<CategoryOption>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description,
-            displayDescription, startDate, endDate, deleted).build();
+            displayDescription, startDate, endDate, organizationUnits.with(ObjectWithUid.uid), deleted).build();
 
     @Nullable
     @JsonProperty(START_DATE)
@@ -72,6 +79,10 @@ public abstract class CategoryOption extends BaseNameableObject {
     @Nullable
     @JsonProperty(END_DATE)
     public abstract Date endDate();
+
+    @Nullable
+    @JsonProperty(ORGANITAZION_UNITS)
+    public abstract List<ObjectWithUid> organizationUnits();
 
     public static Builder builder() {
         return new AutoValue_CategoryOption.Builder();
@@ -90,12 +101,13 @@ public abstract class CategoryOption extends BaseNameableObject {
             @JsonProperty(DESCRIPTION) String description,
             @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
             @JsonProperty(START_DATE) Date startDate,
-            @JsonProperty(END_DATE) Date endDate) {
+            @JsonProperty(END_DATE) Date endDate,
+            @JsonProperty(ORGANITAZION_UNITS) List<ObjectWithUid> organizationUnits) {
 
         return builder().uid(uid).code(code).name(name).displayName(displayName).created(created)
                 .lastUpdated(lastUpdated).shortName(shortName).displayShortName(displayShortName)
                 .description(description).displayDescription(displayDescription).startDate(startDate)
-                .endDate(endDate).build();
+                .endDate(endDate).organizationUnits(organizationUnits).build();
     }
 
     @AutoValue.Builder
@@ -106,6 +118,10 @@ public abstract class CategoryOption extends BaseNameableObject {
 
         @JsonProperty(END_DATE)
         public abstract Builder endDate(@Nullable Date endDate);
+
+        @JsonProperty(ORGANITAZION_UNITS)
+        public abstract Builder organizationUnits(
+                @Nullable List<ObjectWithUid> organizationUnits);
 
         abstract CategoryOption autoBuild();
 

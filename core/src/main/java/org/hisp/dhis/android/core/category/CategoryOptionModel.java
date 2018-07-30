@@ -51,7 +51,7 @@ public abstract class CategoryOptionModel extends BaseNameableObjectModel {
 
     @NonNull
     public static Builder builder() {
-        return new $AutoValue_CategoryOptionModel.Builder();
+        return new $$AutoValue_CategoryOptionModel.Builder();
     }
 
     @NonNull

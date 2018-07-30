@@ -29,21 +29,21 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
-public class CategoryOptionOrganisationUnitLinkModelBuilder extends ModelBuilder<CategoryOption, CategoryOptionOrganisationUnitLinkModel> {
+public class CategoryOptionOrganisationUnitLinkModelBuilder extends ModelBuilder<ObjectWithUid, CategoryOptionOrganisationUnitLinkModel> {
 
     private final CategoryOptionOrganisationUnitLinkModel.Builder builder;
 
-    CategoryOptionOrganisationUnitLinkModelBuilder(OrganisationUnit organisationUnit) {
+    CategoryOptionOrganisationUnitLinkModelBuilder(CategoryOption categoryOption) {
         this.builder = CategoryOptionOrganisationUnitLinkModel.builder()
-                .organisationUnit(organisationUnit.uid());
+                .categoryOption(categoryOption.uid());
     }
 
     @Override
-    public CategoryOptionOrganisationUnitLinkModel buildModel(CategoryOption categoryOption) {
+    public CategoryOptionOrganisationUnitLinkModel buildModel(ObjectWithUid organisationUnit) {
         return builder
-                .categoryOption(categoryOption.uid())
+                .organisationUnit(organisationUnit.uid())
                 .build();
     }
 

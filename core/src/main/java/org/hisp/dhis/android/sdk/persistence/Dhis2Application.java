@@ -56,6 +56,11 @@ public abstract class Dhis2Application extends Application {
 
     public static Bus bus;
     public static DhisController dhisController;
+    private static Context context;
+
+    public static Context getContext(){
+        return context;
+    }
 
     static {
         bus = new MainThreadBus(ThreadEnforcer.ANY);
@@ -68,6 +73,7 @@ public abstract class Dhis2Application extends Application {
 
         dhisController = new DhisController(this);
         bus.register(dhisController);
+        context = getApplicationContext();
         Stetho.initializeWithDefaults(this);
         Fabric.with(this, new Crashlytics());
 

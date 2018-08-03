@@ -254,6 +254,8 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
             jsonString = gson.toJson(json);
         }catch (JsonSyntaxException e){
             e.printStackTrace();
+        }catch (IllegalStateException e){
+            return jsonString;
         }
         return jsonString;
     }

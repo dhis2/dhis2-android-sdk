@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.apache.commons.beanutils.ConversionException;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
+import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
+import org.hisp.dhis.android.sdk.utils.NetworkUtils;
 import org.hisp.dhis.android.sdk.utils.StringConverter;
 import org.joda.time.DateTime;
 
@@ -54,6 +56,8 @@ public abstract class ARemoteDataSource {
             } catch (ConversionException e) {
                 e.printStackTrace();
             }
+        }else if (response.code() == 409){
+            throw APIException.fromRetrofitError(409, response, null);
         }
         return null;
     }

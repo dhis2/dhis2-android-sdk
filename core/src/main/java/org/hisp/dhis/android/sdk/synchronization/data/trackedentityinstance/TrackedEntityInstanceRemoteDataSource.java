@@ -8,6 +8,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.synchronization.data.common.ARemoteDataSource;
+import org.hisp.dhis.android.sdk.utils.NetworkUtils;
 
 import java.io.IOException;
 import java.util.HashMap;

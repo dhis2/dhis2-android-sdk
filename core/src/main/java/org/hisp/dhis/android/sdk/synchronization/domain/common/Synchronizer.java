@@ -88,6 +88,9 @@ public class Synchronizer {
                         e.printStackTrace();
                     }
                 }
+                if(apiException.getMessage() != null){
+                    failedItem.setErrorMessage(apiException.getMessage());
+                }
                 failedItem.setItemId(id);
                 failedItem.setItemType(type);
                 failedItem.setHttpStatusCode(apiException.getResponse().code());

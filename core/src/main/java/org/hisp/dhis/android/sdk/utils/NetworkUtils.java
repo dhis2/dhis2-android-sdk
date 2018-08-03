@@ -187,7 +187,6 @@ public class NetworkUtils {
                     cause += ExceptionUtils.getStackTrace(apiException.getCause());
                     failedItem.setErrorMessage(cause);
                 }
-                failedItem.setHttpStatusCode(-1);
                 failedItem.setItemId(id);
                 failedItem.setItemType(type);
                 failedItem.setFailCount(failedItem.getFailCount() + 1);

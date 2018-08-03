@@ -30,6 +30,9 @@
 package org.hisp.dhis.android.sdk.network;
 
 
+import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+
 import java.io.IOException;
 import retrofit2.Response;
 
@@ -43,6 +46,8 @@ public class APIException extends RuntimeException {
                 return httpError(response.raw().request().url().toString(), response);
             case 404:
                 return httpError(response.raw().request().url().toString(), response);
+            case 409:
+                return httpConflict(response.raw().request().url().toString(), response);
             default:
                 return unexpectedError(null, e);
         }
@@ -61,6 +66,11 @@ public class APIException extends RuntimeException {
 
     public static APIException httpError(String url, Response response) {
         String message = response.code() + " " + response.errorBody();
+        return new APIException(message, url, response, Kind.HTTP, null);
+    }
+
+    public static APIException httpConflict(String url, Response response) {
+        String message = Dhis2Application.getContext().getString(R.string.conflic_409);
         return new APIException(message, url, response, Kind.HTTP, null);
     }
 

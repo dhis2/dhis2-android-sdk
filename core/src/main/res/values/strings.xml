@@ -289,4 +289,5 @@
     <string name="default_synchronisation_error">"There was an error during Synchronisation with the server. Please contact your server admin"</string>
     <string name="details">"Details"</string>
     <string name="pull">Starting pull…</string>
+    <string name="conflic_409">There was a conflict in the data. Please, check them.</string>
 </resources>

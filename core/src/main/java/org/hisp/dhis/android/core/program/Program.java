@@ -48,6 +48,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Program.Builder.class)
+@SuppressWarnings({"PMD.ExcessivePublicCount"})
 public abstract class Program extends BaseNameableObject {
 
     @Nullable

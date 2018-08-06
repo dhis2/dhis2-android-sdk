@@ -49,6 +49,10 @@ public class FieldsHelper<O> {
         return NestedField.create(fieldName);
     }
 
+    public Field<O, String> uid() {
+        return Field.create(BaseIdentifiableObject.NAME);
+    }
+
     public NestedField<O, ?> nestedFieldWithUid(String fieldName) {
         NestedField<O, ObjectWithUid> nested = this.nestedField(fieldName);
         return nested.with(ObjectWithUid.uid);
@@ -61,7 +65,7 @@ public class FieldsHelper<O> {
     }
 
     private void addIdentifiableFields(List<Property<O, String>> list) {
-        list.add(this.<String>field(BaseIdentifiableObject.UID));
+        list.add(this.uid());
         list.add(this.<String>field(BaseIdentifiableObject.CODE));
         list.add(this.<String>field(BaseIdentifiableObject.NAME));
         list.add(this.<String>field(BaseIdentifiableObject.DISPLAY_NAME));

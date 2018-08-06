@@ -28,25 +28,15 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public final class ProgramRuleStore {
 
-import java.util.Date;
+    private ProgramRuleStore() {}
 
-public interface ProgramRuleStore extends DeletableStore {
-    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-                @Nullable Integer priority, @Nullable String condition, @NonNull String program,
-                @Nullable String programStage);
-
-    int update(
-            @NonNull String uid, @Nullable String code, @NonNull String name,
-            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @Nullable Integer priority, @Nullable String condition, @NonNull String program,
-            @Nullable String programStage, @NonNull String whereProgramRuleUid
-    );
-
-    int delete(String uid);
+    public static IdentifiableObjectStore<ProgramRule> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.identifiableStore(databaseAdapter, ProgramRuleModel.TABLE, new ProgramRuleModel.Columns().all());
+    }
 }

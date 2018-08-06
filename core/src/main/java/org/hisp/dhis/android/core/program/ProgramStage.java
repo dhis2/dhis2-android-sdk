@@ -30,12 +30,13 @@ package org.hisp.dhis.android.core.program;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -45,12 +46,10 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_ProgramStage.Builder.class)
 public abstract class ProgramStage extends BaseIdentifiableObject {
     private final static String DESCRIPTION = "description";
     private final static String DISPLAY_DESCRIPTION = "displayDescription";
@@ -127,95 +126,72 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
             access.with(Access.data.with(DataAccess.write)), remindCompleted).build();
 
     @Nullable
-    @JsonProperty(DESCRIPTION)
     public abstract String description();
 
     @Nullable
-    @JsonProperty(DISPLAY_DESCRIPTION)
     public abstract String displayDescription();
 
     @Nullable
-    @JsonProperty(EXECUTION_DATE_LABEL)
     public abstract String executionDateLabel();
 
     @Nullable
-    @JsonProperty(ALLOW_GENERATE_NEXT_VISIT)
     public abstract Boolean allowGenerateNextVisit();
 
     @Nullable
-    @JsonProperty(VALID_COMPLETE_ONLY)
     public abstract Boolean validCompleteOnly();
 
     @Nullable
-    @JsonProperty(REPORT_DATE_TO_USE)
     public abstract String reportDateToUse();
 
     @Nullable
-    @JsonProperty(OPEN_AFTER_ENROLLMENT)
     public abstract Boolean openAfterEnrollment();
 
     @Nullable
-    @JsonProperty(REPEATABLE)
     public abstract Boolean repeatable();
 
     @Nullable
-    @JsonProperty(CAPTURE_COORDINATES)
     public abstract Boolean captureCoordinates();
 
     @Nullable
-    @JsonProperty(FORM_TYPE)
     public abstract FormType formType();
 
     @Nullable
-    @JsonProperty(DISPLAY_GENERATE_EVENT_BOX)
     public abstract Boolean displayGenerateEventBox();
 
     @Nullable
-    @JsonProperty(GENERATED_BY_ENROLMENT_DATE)
     public abstract Boolean generatedByEnrollmentDate();
 
     @Nullable
-    @JsonProperty(AUTO_GENERATE_EVENT)
     public abstract Boolean autoGenerateEvent();
 
     @Nullable
-    @JsonProperty(SORT_ORDER)
     public abstract Integer sortOrder();
 
     @Nullable
-    @JsonProperty(HIDE_DUE_DATE)
     public abstract Boolean hideDueDate();
 
     @Nullable
-    @JsonProperty(BLOCK_ENTRY_FORM)
     public abstract Boolean blockEntryForm();
 
     @Nullable
-    @JsonProperty(MIN_DAYS_FROM_START)
     public abstract Integer minDaysFromStart();
 
     @Nullable
-    @JsonProperty(STANDARD_INTERVAL)
     public abstract Integer standardInterval();
 
     @Nullable
-    @JsonProperty(PROGRAM_STAGE_SECTIONS)
     public abstract List<ProgramStageSection> programStageSections();
 
     @Nullable
-    @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS)
     public abstract List<ProgramStageDataElement> programStageDataElements();
 
     @Nullable
-    @JsonProperty(STYLE)
     public abstract ObjectStyle style();
 
     @Nullable
-    @JsonProperty(PERIOD_TYPE)
     public abstract PeriodType periodType();
 
     @Nullable
-    @JsonProperty(PROGRAM)
     public abstract ObjectWithUid program();
 
     String programUid() {
@@ -224,82 +200,68 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     }
 
     @Nullable
-    @JsonProperty(ACCESS)
     public abstract Access access();
 
     @Nullable
-    @JsonProperty(REMIND_COMPLETED)
     public abstract Boolean remindCompleted();
 
-    @JsonCreator
-    public static ProgramStage create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(EXECUTION_DATE_LABEL) String executionDateLabel,
-            @JsonProperty(ALLOW_GENERATE_NEXT_VISIT) Boolean allowGenerateNextVisit,
-            @JsonProperty(VALID_COMPLETE_ONLY) Boolean validCompleteOnly,
-            @JsonProperty(REPORT_DATE_TO_USE) String reportDateToUse,
-            @JsonProperty(OPEN_AFTER_ENROLLMENT) Boolean openAfterEnrollment,
-            @JsonProperty(REPEATABLE) Boolean repeatable,
-            @JsonProperty(CAPTURE_COORDINATES) Boolean captureCoordinates,
-            @JsonProperty(FORM_TYPE) FormType formType,
-            @JsonProperty(DISPLAY_GENERATE_EVENT_BOX) Boolean displayGenerateEventBox,
-            @JsonProperty(GENERATED_BY_ENROLMENT_DATE) Boolean generatedByEnrollmentDate,
-            @JsonProperty(AUTO_GENERATE_EVENT) Boolean autoGenerateEvent,
-            @JsonProperty(SORT_ORDER) Integer sortOrder,
-            @JsonProperty(HIDE_DUE_DATE) Boolean hideDueDate,
-            @JsonProperty(BLOCK_ENTRY_FORM) Boolean blockEntryForm,
-            @JsonProperty(MIN_DAYS_FROM_START) Integer minDaysFromStart,
-            @JsonProperty(STANDARD_INTERVAL) Integer standardInterval,
-            @JsonProperty(PROGRAM_STAGE_SECTIONS) List<ProgramStageSection> programStageSections,
-            @JsonProperty(PROGRAM_STAGE_DATA_ELEMENTS) List<ProgramStageDataElement> programStageDataElements,
-            @JsonProperty(STYLE) ObjectStyle style,
-            @JsonProperty(PERIOD_TYPE) PeriodType periodType,
-            @JsonProperty(PROGRAM) ObjectWithUid program,
-            @JsonProperty(ACCESS) Access access,
-            @JsonProperty(REMIND_COMPLETED) Boolean remindCompleted,
-            @JsonProperty(DELETED) Boolean deleted
-    ) {
+    public static Builder builder() {
+        return new AutoValue_ProgramStage.Builder();
+    }
 
-        return new AutoValue_ProgramStage(
-                uid,
-                code,
-                name,
-                displayName,
-                created,
-                lastUpdated,
-                deleted,
-                description,
-                displayDescription,
-                executionDateLabel,
-                allowGenerateNextVisit,
-                validCompleteOnly,
-                reportDateToUse,
-                openAfterEnrollment,
-                repeatable,
-                captureCoordinates,
-                formType,
-                displayGenerateEventBox,
-                generatedByEnrollmentDate,
-                autoGenerateEvent,
-                sortOrder,
-                hideDueDate,
-                blockEntryForm,
-                minDaysFromStart,
-                standardInterval,
-                safeUnmodifiableList(programStageSections),
-                safeUnmodifiableList(programStageDataElements),
-                style,
-                periodType,
-                program,
-                access,
-                remindCompleted
-        );
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder description(String description);
+
+        public abstract Builder displayDescription(String displayDescription);
+
+        public abstract Builder executionDateLabel(String executionDateLabel);
+
+        public abstract Builder allowGenerateNextVisit(Boolean allowGenerateNextVisit);
+
+        public abstract Builder validCompleteOnly(Boolean validCompleteOnly);
+
+        public abstract Builder reportDateToUse(String reportDateToUse);
+
+        public abstract Builder openAfterEnrollment(Boolean openAfterEnrollment);
+
+        public abstract Builder repeatable(Boolean repeatable);
+
+        public abstract Builder captureCoordinates(Boolean captureCoordinates);
+
+        public abstract Builder formType(FormType formType);
+
+        public abstract Builder displayGenerateEventBox(Boolean displayGenerateEventBox);
+
+        public abstract Builder generatedByEnrollmentDate(Boolean generatedByEnrollmentDate);
+
+        public abstract Builder autoGenerateEvent(Boolean autoGenerateEvent);
+
+        public abstract Builder sortOrder(Integer sortOrder);
+
+        public abstract Builder hideDueDate(Boolean hideDueDate);
+
+        public abstract Builder blockEntryForm(Boolean blockEntryForm);
+
+        public abstract Builder minDaysFromStart(Integer minDaysFromStart);
+
+        public abstract Builder standardInterval(Integer standardInterval);
+
+        public abstract Builder programStageSections(List<ProgramStageSection> programStageSections);
+
+        public abstract Builder programStageDataElements(List<ProgramStageDataElement> programStageDataElements);
+
+        public abstract Builder style(ObjectStyle style);
+
+        public abstract Builder periodType(PeriodType periodType);
+
+        public abstract Builder program(ObjectWithUid program);
+
+        public abstract Builder access(Access access);
+
+        public abstract Builder remindCompleted(Boolean remindCompleted);
+
+        public abstract ProgramStage build();
     }
 }

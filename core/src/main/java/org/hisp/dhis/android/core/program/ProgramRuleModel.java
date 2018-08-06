@@ -35,6 +35,7 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
 @AutoValue
 public abstract class ProgramRuleModel extends BaseIdentifiableObjectModel {
@@ -42,10 +43,15 @@ public abstract class ProgramRuleModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "ProgramRule";
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
-        public static final String PROGRAM_STAGE = "programStage";
-        public static final String PROGRAM = "program";
         public static final String PRIORITY = "priority";
         public static final String CONDITION = "condition";
+        public static final String PROGRAM = "program";
+        public static final String PROGRAM_STAGE = "programStage";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), PRIORITY, CONDITION, PROGRAM, PROGRAM_STAGE);
+        }
     }
 
     public static ProgramRuleModel create(Cursor cursor) {

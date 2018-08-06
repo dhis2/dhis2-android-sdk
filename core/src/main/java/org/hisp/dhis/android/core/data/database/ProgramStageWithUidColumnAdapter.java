@@ -38,11 +38,6 @@ public class ProgramStageWithUidColumnAdapter extends IdentifiableObjectColumnAd
     public ProgramStage fromCursor(Cursor cursor, String columnName) {
         int columnIndex = cursor.getColumnIndex(columnName);
         String uid = cursor.getString(columnIndex);
-        return ProgramStage.create(uid, null, null, null, null, null,
-                null, null, null, null, null, null,
-                null, null, null, null, null, null,
-                null, null, null, null, null, null,
-                null, null, null, null, null, null,
-                null, null);
+        return ProgramStage.builder().uid(uid).build();
     }
 }

@@ -9,11 +9,13 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramRuleActionType;
 import org.hisp.dhis.android.core.program.ProgramRuleModel;
-import org.hisp.dhis.android.core.program.ProgramRuleStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.junit.After;
@@ -100,12 +102,12 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
         final Integer programRuleCount = getProgramRuleCursor().getCount();
         final Integer programRuleActionCount = getProgramRuleActionCursor().getCount();
+        final Program program = Program.builder().uid("nonexisent-program").build();
 
         executor.executeD2CallTransactionally(d2.databaseAdapter(), new Callable<Void>() {
             @Override
             public Void call() throws D2CallException {
-                new ProgramRuleStoreImpl(d2.databaseAdapter()).insert(PROGRAM_RULE_UID, null, "name","", new
-                        Date(), new Date(), null, null, "non_existing_program", null);
+                ProgramRuleStore.create(d2.databaseAdapter()).insert(ProgramRule.builder().uid(PROGRAM_RULE_UID).name("Rule").program(program).build());
 
                 new ProgramRuleActionStoreImpl(d2.databaseAdapter()).insert("action_uid", null, "name", null, new
                         Date(), new Date(), null, null, null, null, null, null, ProgramRuleActionType.ASSIGN,

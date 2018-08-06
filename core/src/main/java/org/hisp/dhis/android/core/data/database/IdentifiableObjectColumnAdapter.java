@@ -26,59 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.api;
+package org.hisp.dhis.android.core.data.database;
 
-import android.support.annotation.NonNull;
+import android.content.ContentValues;
 
-import com.google.auto.value.AutoValue;
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-import org.hisp.dhis.android.core.common.Property;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+public abstract class IdentifiableObjectColumnAdapter<O extends BaseIdentifiableObject> implements ColumnTypeAdapter<O> {
 
-@AutoValue
-public abstract class Fields<T> {
-
-    @NonNull
-    public abstract List<Property<T, ?>> fields();
-
-    @NonNull
-    public static <K> Fields.Builder<K> builder() {
-        return new Builder<>();
-    }
-
-    public static class Builder<T> {
-        private final List<Property<T, ?>> fields;
-
-        Builder() {
-            this.fields = new ArrayList<>();
-        }
-
-        @SafeVarargs
-        public final Builder<T> fields(@NonNull Property<T, ?>... properties) {
-            if (properties == null || properties.length == 0) {
-                throw new IllegalArgumentException("properties == null or properties.length == 0");
-            }
-
-            fields.addAll(Arrays.asList(properties));
-            return this;
-        }
-
-        public final <Q> Builder<T> fields(@NonNull Collection<Property<T, Q>> properties) {
-            if (properties == null || properties.size() == 0) {
-                throw new IllegalArgumentException("properties == null or properties.length == 0");
-            }
-
-            fields.addAll(properties);
-            return this;
-        }
-
-        public final Fields<T> build() {
-            return new AutoValue_Fields<>(Collections.unmodifiableList(fields));
-        }
+    @Override
+    public final void toContentValues(ContentValues values, String columnName, O value) {
+        values.put(columnName, value.uid());
     }
 }

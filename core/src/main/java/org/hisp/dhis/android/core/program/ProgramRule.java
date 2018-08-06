@@ -28,85 +28,87 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.data.database.IgnoreProgramRuleActionListAdapter;
+import org.hisp.dhis.android.core.data.database.ProgramStageWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ProgramWithUidColumnAdapter;
 
-import java.util.Date;
 import java.util.List;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
 @AutoValue
-public abstract class ProgramRule extends BaseIdentifiableObject {
-    private static final String PROGRAM_STAGE = "programStage";
-    private static final String PROGRAM = "program";
-    private static final String PRIORITY = "priority";
-    private static final String CONDITION = "condition";
-    private static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
+@JsonDeserialize(builder = AutoValue_ProgramRule.Builder.class)
+public abstract class ProgramRule extends BaseIdentifiableObject implements Model {
 
-    private static final Field<ProgramRule, String> uid = Field.create(UID);
-    private static final Field<ProgramRule, String> code = Field.create(CODE);
-    private static final Field<ProgramRule, String> name = Field.create(NAME);
-    private static final Field<ProgramRule, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<ProgramRule, String> created = Field.create(CREATED);
-    private static final Field<ProgramRule, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<ProgramRule, Integer> priority = Field.create(PRIORITY);
-    private static final Field<ProgramRule, String> condition = Field.create(CONDITION);
-
-    private static final NestedField<ProgramRule, ObjectWithUid> program = NestedField.create(PROGRAM);
-    private static final NestedField<ProgramRule, ObjectWithUid> programStage = NestedField.create(PROGRAM_STAGE);
-    private static final NestedField<ProgramRule, ProgramRuleAction> programRuleActions
-            = NestedField.create(PROGRAM_RULE_ACTIONS);
-    private static final Field<ProgramRule, Boolean> deleted = Field.create(DELETED);
-
-    static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, deleted, priority, condition,
-            program.with(ObjectWithUid.uid), programStage.with(ObjectWithUid.uid),
-            programRuleActions.with(ProgramRuleAction.allFields)).build();
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
     @Nullable
-    @JsonProperty(PRIORITY)
     public abstract Integer priority();
 
     @Nullable
-    @JsonProperty(CONDITION)
     public abstract String condition();
 
     @Nullable
-    @JsonProperty(PROGRAM)
+    @ColumnAdapter(ProgramWithUidColumnAdapter.class)
     public abstract Program program();
 
     @Nullable
-    @JsonProperty(PROGRAM_STAGE)
+    @ColumnAdapter(ProgramStageWithUidColumnAdapter.class)
     public abstract ProgramStage programStage();
 
     @Nullable
-    @JsonProperty(PROGRAM_RULE_ACTIONS)
+    @ColumnAdapter(IgnoreProgramRuleActionListAdapter.class)
     public abstract List<ProgramRuleAction> programRuleActions();
 
-    @JsonCreator
-    public static ProgramRule create(@JsonProperty(UID) String uid,
-                                     @JsonProperty(CODE) String code,
-                                     @JsonProperty(NAME) String name,
-                                     @JsonProperty(DISPLAY_NAME) String displayName,
-                                     @JsonProperty(CREATED) Date created,
-                                     @JsonProperty(LAST_UPDATED) Date lastUpdated,
-                                     @JsonProperty(PRIORITY) Integer priority,
-                                     @JsonProperty(CONDITION) String condition,
-                                     @JsonProperty(PROGRAM) Program program,
-                                     @JsonProperty(PROGRAM_STAGE) ProgramStage programStage,
-                                     @JsonProperty(PROGRAM_RULE_ACTIONS) List<ProgramRuleAction> programRuleActions,
-                                     @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_ProgramRule(
-                uid, code, name, displayName,
-                created, lastUpdated, deleted, priority, condition,
-                program, programStage, programRuleActions);
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 7, priority());
+        sqLiteBind(sqLiteStatement, 8, condition());
+        sqLiteBind(sqLiteStatement, 9, UidsHelper.getUidOrNull(program()));
+        sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(programStage()));
+    }
+
+    public static Builder builder() {
+        return new AutoValue_ProgramRule.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<ProgramRule.Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder priority(Integer priority);
+
+        public abstract Builder condition(String condition);
+
+        public abstract Builder program(Program program);
+
+        public abstract Builder programStage(ProgramStage programStage);
+
+        public abstract Builder programRuleActions(List<ProgramRuleAction> programRuleActions);
+
+        public abstract ProgramRule build();
     }
 }

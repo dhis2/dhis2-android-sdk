@@ -26,59 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.api;
+package org.hisp.dhis.android.core.program;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import com.google.auto.value.AutoValue;
+final class ProgramRuleFields {
 
-import org.hisp.dhis.android.core.common.Property;
+    static final String PRIORITY = "priority";
+    static final String CONDITION = "condition";
+    static final String PROGRAM = "program";
+    static final String PROGRAM_STAGE = "programStage";
+    static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+    private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
+    static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<Integer>field(PRIORITY),
+                    fh.<String>field(CONDITION),
+                    fh.nestedFieldWithUid(PROGRAM),
+                    fh.nestedFieldWithUid(PROGRAM_STAGE),
+                    fh.<ProgramRuleAction>nestedField(PROGRAM_RULE_ACTIONS).with(ProgramRuleAction.allFields)
+            ).build();
 
-@AutoValue
-public abstract class Fields<T> {
-
-    @NonNull
-    public abstract List<Property<T, ?>> fields();
-
-    @NonNull
-    public static <K> Fields.Builder<K> builder() {
-        return new Builder<>();
-    }
-
-    public static class Builder<T> {
-        private final List<Property<T, ?>> fields;
-
-        Builder() {
-            this.fields = new ArrayList<>();
-        }
-
-        @SafeVarargs
-        public final Builder<T> fields(@NonNull Property<T, ?>... properties) {
-            if (properties == null || properties.length == 0) {
-                throw new IllegalArgumentException("properties == null or properties.length == 0");
-            }
-
-            fields.addAll(Arrays.asList(properties));
-            return this;
-        }
-
-        public final <Q> Builder<T> fields(@NonNull Collection<Property<T, Q>> properties) {
-            if (properties == null || properties.size() == 0) {
-                throw new IllegalArgumentException("properties == null or properties.length == 0");
-            }
-
-            fields.addAll(properties);
-            return this;
-        }
-
-        public final Fields<T> build() {
-            return new AutoValue_Fields<>(Collections.unmodifiableList(fields));
-        }
+    private ProgramRuleFields() {
     }
 }

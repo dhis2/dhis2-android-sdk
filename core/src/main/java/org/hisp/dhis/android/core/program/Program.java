@@ -157,7 +157,7 @@ public abstract class Program extends BaseNameableObject {
             selectIncidentDatesInFuture, useFirstStageDuringRegistration, expiryDays, completeEventsExpiryDays,
             expiryPeriodType, minAttributesRequiredToSearch, maxTeiCountToReturn,
             relatedProgram.with(Program.uid), programStages.with(ObjectWithUid.uid),
-            programRules.with(ProgramRule.allFields), programRuleVariables.with(ProgramRuleVariable.allFields),
+            programRules.with(ProgramRuleFields.allFields), programRuleVariables.with(ProgramRuleVariable.allFields),
             programIndicators.with(ProgramIndicator.allFields),
             programTrackedEntityAttributes.with(ProgramTrackedEntityAttribute.allFields),
             trackedEntityType.with(ObjectWithUid.uid), categoryCombo.with(ObjectWithUid.uid),

@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.calls.processors;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;

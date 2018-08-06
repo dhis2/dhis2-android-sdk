@@ -50,7 +50,7 @@ public class FieldsHelper<O> {
     }
 
     public Field<O, String> uid() {
-        return Field.create(BaseIdentifiableObject.NAME);
+        return Field.create(BaseIdentifiableObject.UID);
     }
 
     public NestedField<O, ?> nestedFieldWithUid(String fieldName) {

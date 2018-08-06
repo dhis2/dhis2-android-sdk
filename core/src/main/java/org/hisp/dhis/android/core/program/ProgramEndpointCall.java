@@ -53,7 +53,7 @@ final class ProgramEndpointCall {
                     @Override
                     protected retrofit2.Call<Payload<Program>> getCall() {
                         String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
-                        return programService.getPrograms(Program.allFields, accessDataReadFilter, Boolean.FALSE);
+                        return programService.getPrograms(ProgramFields.allFields, accessDataReadFilter, Boolean.FALSE);
                     }
                 };
             }

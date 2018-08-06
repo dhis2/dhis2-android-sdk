@@ -69,8 +69,8 @@ public abstract class Fields<T> {
         }
 
         public final <Q> Builder<T> fields(@NonNull Collection<Property<T, Q>> properties) {
-            if (properties == null || properties.size() == 0) {
-                throw new IllegalArgumentException("properties == null or properties.length == 0");
+            if (properties == null || properties.isEmpty()) {
+                throw new IllegalArgumentException("properties null or empty collection");
             }
 
             fields.addAll(properties);

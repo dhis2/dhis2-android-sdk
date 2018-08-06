@@ -37,10 +37,10 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
-    protected static final String SHORT_NAME = "shortName";
-    protected static final String DISPLAY_SHORT_NAME = "displayShortName";
-    protected static final String DESCRIPTION = "description";
-    protected static final String DISPLAY_DESCRIPTION = "displayDescription";
+    public static final String SHORT_NAME = "shortName";
+    public static final String DISPLAY_SHORT_NAME = "displayShortName";
+    public static final String DESCRIPTION = "description";
+    public static final String DISPLAY_DESCRIPTION = "displayDescription";
 
     @Nullable
     @Override

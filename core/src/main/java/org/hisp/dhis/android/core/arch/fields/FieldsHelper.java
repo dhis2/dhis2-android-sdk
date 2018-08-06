@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.fields;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Property;
 import org.hisp.dhis.android.core.data.api.Field;
@@ -36,12 +38,6 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.CODE;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.CREATED;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.DISPLAY_NAME;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.NAME;
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 
 public class FieldsHelper<O> {
 
@@ -59,13 +55,28 @@ public class FieldsHelper<O> {
     }
 
     public List<Property<O, String>> getIdentifiableFields() {
-        List<Property<O, String>> list = new ArrayList<>(6);
-        list.add(this.<String>field(UID));
-        list.add(this.<String>field(CODE));
-        list.add(this.<String>field(NAME));
-        list.add(this.<String>field(DISPLAY_NAME));
-        list.add(this.<String>field(CREATED));
-        list.add(this.<String>field(LAST_UPDATED));
+        List<Property<O, String>> list = new ArrayList<>(7);
+        addIdentifiableFields(list);
+        return list;
+    }
+
+    private void addIdentifiableFields(List<Property<O, String>> list) {
+        list.add(this.<String>field(BaseIdentifiableObject.UID));
+        list.add(this.<String>field(BaseIdentifiableObject.CODE));
+        list.add(this.<String>field(BaseIdentifiableObject.NAME));
+        list.add(this.<String>field(BaseIdentifiableObject.DISPLAY_NAME));
+        list.add(this.<String>field(BaseIdentifiableObject.CREATED));
+        list.add(this.<String>field(BaseIdentifiableObject.LAST_UPDATED));
+        list.add(this.<String>field(BaseIdentifiableObject.DELETED));
+    }
+
+    public List<Property<O, String>> getNameableFields() {
+        List<Property<O, String>> list = new ArrayList<>(11);
+        addIdentifiableFields(list);
+        list.add(this.<String>field(BaseNameableObject.SHORT_NAME));
+        list.add(this.<String>field(BaseNameableObject.DISPLAY_SHORT_NAME));
+        list.add(this.<String>field(BaseNameableObject.DESCRIPTION));
+        list.add(this.<String>field(BaseNameableObject.DISPLAY_DESCRIPTION));
         return list;
     }
 }

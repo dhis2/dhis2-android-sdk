@@ -37,6 +37,7 @@ public final class ProgramRuleStore {
     private ProgramRuleStore() {}
 
     public static IdentifiableObjectStore<ProgramRule> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, ProgramRuleModel.TABLE, new ProgramRuleModel.Columns().all());
+        return StoreFactory.identifiableStore(databaseAdapter, ProgramRuleModel.TABLE,
+                new ProgramRuleModel.Columns().all());
     }
 }

@@ -322,7 +322,8 @@ public abstract class Program extends BaseNameableObject {
 
         public abstract Builder relationshipText(String relationshipText);
 
-        public abstract Builder programTrackedEntityAttributes(List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes);
+        public abstract Builder programTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
+                                                                       programTrackedEntityAttributes);
 
         public abstract Builder relatedProgram(Program relatedProgram);
 

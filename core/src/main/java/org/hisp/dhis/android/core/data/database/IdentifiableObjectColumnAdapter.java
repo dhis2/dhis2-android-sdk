@@ -34,7 +34,8 @@ import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
-public abstract class IdentifiableObjectColumnAdapter<O extends BaseIdentifiableObject> implements ColumnTypeAdapter<O> {
+public abstract class IdentifiableObjectColumnAdapter<O extends BaseIdentifiableObject>
+        implements ColumnTypeAdapter<O> {
 
     @Override
     public final void toContentValues(ContentValues values, String columnName, O value) {

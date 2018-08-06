@@ -78,6 +78,9 @@ public class ProgramParentCallShould extends BaseCallShould {
     private Call<List<ProgramStage>> programStageEndpointCall;
 
     @Mock
+    private Call<List<ProgramRule>> programRuleEndpointCall;
+
+    @Mock
     private Call<List<TrackedEntityType>> trackedEntityTypeCall;
 
     @Mock
@@ -91,6 +94,9 @@ public class ProgramParentCallShould extends BaseCallShould {
 
     @Mock
     private UidsCallFactory<ProgramStage> programStageCallFactory;
+
+    @Mock
+    private UidsCallFactory<ProgramRule> programRuleCallFactory;
 
     @Mock
     private UidsCallFactory<TrackedEntityType> trackedEntityCallFactory;
@@ -124,6 +130,8 @@ public class ProgramParentCallShould extends BaseCallShould {
                 .thenReturn(programEndpointCall);
         when(programStageCallFactory.create(same(genericCallData), any(Set.class)))
                 .thenReturn(programStageEndpointCall);
+        when(programRuleCallFactory.create(same(genericCallData), any(Set.class)))
+                .thenReturn(programRuleEndpointCall);
         when(trackedEntityCallFactory.create(same(genericCallData), any(Set.class)))
                 .thenReturn(trackedEntityTypeCall);
         when(relationshipTypeCallFactory.create(same(genericCallData)))
@@ -137,12 +145,14 @@ public class ProgramParentCallShould extends BaseCallShould {
         when(relationshipTypeCall.call()).thenReturn(Collections.<RelationshipType>emptyList());
         when(optionSetCall.call()).thenReturn(Collections.<OptionSet>emptyList());
         when(programStageEndpointCall.call()).thenReturn(Collections.<ProgramStage>emptyList());
+        when(programRuleEndpointCall.call()).thenReturn(Collections.<ProgramRule>emptyList());
 
         // Metadata call
         programParentCall = new ProgramParentCall(
                 genericCallData,
                 programCallFactory,
                 programStageCallFactory,
+                programRuleCallFactory,
                 trackedEntityCallFactory,
                 relationshipTypeCallFactory,
                 optionSetCallFactory);
@@ -174,6 +184,12 @@ public class ProgramParentCallShould extends BaseCallShould {
     @Test(expected = D2CallException.class)
     public void fail_when_program_stage_call_fail() throws Exception {
         whenEndpointCallFails(programStageEndpointCall);
+        programParentCall.call();
+    }
+
+    @Test(expected = D2CallException.class)
+    public void fail_when_program_rule_call_fail() throws Exception {
+        whenEndpointCallFails(programRuleEndpointCall);
         programParentCall.call();
     }
 

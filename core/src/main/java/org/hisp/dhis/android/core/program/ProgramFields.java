@@ -60,7 +60,6 @@ final class ProgramFields {
     private static final String CATEGORY_COMBO = "categoryCombo";
     private static final String PROGRAM_INDICATORS = "programIndicators";
     private static final String PROGRAM_STAGES = "programStages";
-    private static final String PROGRAM_RULES = "programRules";
     private static final String PROGRAM_RULE_VARIABLES = "programRuleVariables";
     private final static String ACCESS = "access";
     private final static String STYLE = "style";
@@ -101,7 +100,6 @@ final class ProgramFields {
                     fh.<Access>nestedField(ACCESS).with(Access.data.with(DataAccess.write)),
                     fh.<ProgramIndicator>nestedField(PROGRAM_INDICATORS).with(ProgramIndicator.allFields),
                     fh.nestedFieldWithUid(PROGRAM_STAGES),
-                    fh.<ProgramRule>nestedField(PROGRAM_RULES).with(ProgramRuleFields.allFields),
                     fh.<ProgramRuleVariable>nestedField(PROGRAM_RULE_VARIABLES).with(ProgramRuleVariable.allFields),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyle.allFields),
                     fh.<Integer>field(EXPIRY_DAYS),

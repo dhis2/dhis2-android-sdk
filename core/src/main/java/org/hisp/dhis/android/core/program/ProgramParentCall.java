@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCall;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
@@ -51,6 +52,7 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
     private final GenericCallData genericCallData;
     private final ListCallFactory<Program> programCallFactory;
     private final UidsCallFactory<ProgramStage> programStageCallFactory;
+    private final UidsCallFactory<ProgramRule> programRuleCallFactory;
     private final UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory;
     private final ListCallFactory<RelationshipType> relationshipTypeCallFactory;
     private final UidsCallFactory<OptionSet> optionSetCallFactory;
@@ -58,12 +60,14 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
     ProgramParentCall(GenericCallData genericCallData,
                       ListCallFactory<Program> programCallFactory,
                       UidsCallFactory<ProgramStage> programStageCallFactory,
+                      UidsCallFactory<ProgramRule> programRuleCallFactory,
                       UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
                       ListCallFactory<RelationshipType> relationshipTypeCallFactory,
                       UidsCallFactory<OptionSet> optionSetCallFactory) {
         this.genericCallData = genericCallData;
         this.programCallFactory = programCallFactory;
         this.programStageCallFactory = programStageCallFactory;
+        this.programRuleCallFactory = programRuleCallFactory;
         this.trackedEntityTypeCallFactory = trackedEntityTypeCallFactory;
         this.relationshipTypeCallFactory = relationshipTypeCallFactory;
         this.optionSetCallFactory = optionSetCallFactory;
@@ -83,6 +87,8 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
                 Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);
                 List<ProgramStage> programStages = executor.executeD2Call(
                         programStageCallFactory.create(genericCallData, assignedProgramStageUids));
+
+                executor.executeD2Call(programRuleCallFactory.create(genericCallData, UidsHelper.getUids(programs)));
 
                 Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
 
@@ -104,6 +110,7 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
                     genericCallData,
                     ProgramEndpointCall.factory(genericCallData.retrofit().create(ProgramService.class)),
                     ProgramStageEndpointCall.FACTORY,
+                    ProgramRuleEndpointCall.FACTORY,
                     TrackedEntityTypeCall.FACTORY,
                     RelationshipTypeEndpointCall.FACTORY,
                     OptionSetCall.FACTORY);

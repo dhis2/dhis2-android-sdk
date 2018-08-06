@@ -25,31 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Where;
+import org.hisp.dhis.android.core.data.api.Which;
 
-final class ProgramRuleFields {
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-    private static final String PRIORITY = "priority";
-    private static final String CONDITION = "condition";
-    private static final String PROGRAM = "program";
-    private static final String PROGRAM_STAGE = "programStage";
-    private static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
-
-    private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
-    static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Integer>field(PRIORITY),
-                    fh.<String>field(CONDITION),
-                    fh.nestedFieldWithUid(PROGRAM),
-                    fh.nestedFieldWithUid(PROGRAM_STAGE),
-                    fh.<ProgramRuleAction>nestedField(PROGRAM_RULE_ACTIONS).with(ProgramRuleAction.allFields)
-            ).build();
-
-    private ProgramRuleFields() {
-    }
+public interface ProgramRuleService {
+    @GET("programRules")
+    Call<Payload<ProgramRule>> getProgramRules(@Query("fields") @Which Fields<ProgramRule> fields,
+                                                 @Query("filter") @Where String programUidsFilterString,
+                                                 @Query("paging") Boolean paging);
 }

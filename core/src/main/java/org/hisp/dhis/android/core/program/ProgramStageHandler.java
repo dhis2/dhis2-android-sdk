@@ -79,7 +79,11 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
             programStage = programStage.captureCoordinates() ? builder.featureType(FeatureType.POINT).build() :
                     builder.featureType(FeatureType.NONE).build();
         } else {
-            programStage = builder.captureCoordinates(programStage.featureType() != FeatureType.NONE).build();
+            if (programStage.featureType() == null) {
+                programStage = builder.captureCoordinates(false).featureType(FeatureType.NONE).build();
+            } else {
+                programStage = builder.captureCoordinates(programStage.featureType() != FeatureType.NONE).build();
+            }
         }
         return programStage;
     }

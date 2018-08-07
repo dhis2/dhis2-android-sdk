@@ -39,23 +39,23 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
 @AutoValue
-public abstract class DataElementUids {
+public abstract class DataSetElements {
     private final static String DATA_ELEMENT = "dataElement";
 
-    public static final NestedField<DataElementUids, ObjectWithUid> dataElement =
+    public static final NestedField<DataSetElements, ObjectWithUid> dataElement =
             NestedField.create(DATA_ELEMENT);
 
-    public static final Fields<DataElementUids> allFields =
-            Fields.<DataElementUids>builder().fields(dataElement.with(ObjectWithUid.uid)).build();
+    public static final Fields<DataSetElements> allFields =
+            Fields.<DataSetElements>builder().fields(dataElement.with(ObjectWithUid.uid)).build();
 
     @NonNull
     @JsonProperty(DATA_ELEMENT)
     public abstract ObjectWithUid dataElement();
 
     @JsonCreator
-    public static DataElementUids create(
+    public static DataSetElements create(
             @JsonProperty(DATA_ELEMENT) ObjectWithUid dataElement) {
 
-        return new AutoValue_DataElementUids(dataElement);
+        return new AutoValue_DataSetElements(dataElement);
     }
 }

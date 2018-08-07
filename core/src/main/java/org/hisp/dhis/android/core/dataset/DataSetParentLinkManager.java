@@ -67,10 +67,10 @@ class DataSetParentLinkManager {
     }
 
     private void saveDataSetDataElementLink(DataSet dataSet) {
-        List<DataElementUids> dataSetElements = dataSet.dataSetElements();
+        List<DataSetElements> dataSetElements = dataSet.dataSetElements();
         if (dataSetElements != null) {
             DataSetDataElementLinkModelBuilder builder = new DataSetDataElementLinkModelBuilder(dataSet);
-            for (DataElementUids dataSetDataElement : dataSetElements) {
+            for (DataSetElements dataSetDataElement : dataSetElements) {
                 dataSetDataElementStore.updateOrInsertWhere(builder.buildModel(dataSetDataElement));
             }
         }

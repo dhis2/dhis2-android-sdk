@@ -96,7 +96,7 @@ public class DataSetModelBuilderShould extends NameableModelBuilderAbstractShoul
                 false,
                 true,
                 false,
-                new ArrayList<DataElementUids>(),
+                new ArrayList<DataSetElements>(),
                 new ArrayList<ObjectWithUid>(),
                 new ArrayList<Section>(),
                 new ArrayList<DataElementOperand>(),

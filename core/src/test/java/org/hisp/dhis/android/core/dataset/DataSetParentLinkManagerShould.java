@@ -70,9 +70,9 @@ public class DataSetParentLinkManagerShould {
     private final String DATA_SET_2_UID = "test_data_set_uid2";
     private final String DATA_SET_3_UID = "test_data_set_uid3";
 
-    private DataElementUids decc1 = DataElementUids.create(ObjectWithUid.create("de1"));
-    private DataElementUids decc2 = DataElementUids.create(ObjectWithUid.create("de2"));
-    private DataElementUids decc3 = DataElementUids.create(ObjectWithUid.create("de3"));
+    private DataSetElements decc1 = DataSetElements.create(ObjectWithUid.create("de1"));
+    private DataSetElements decc2 = DataSetElements.create(ObjectWithUid.create("de2"));
+    private DataSetElements decc3 = DataSetElements.create(ObjectWithUid.create("de3"));
 
     private ObjectWithUid i1 = ObjectWithUid.create("i1");
     private ObjectWithUid i2 = ObjectWithUid.create("i2");
@@ -131,7 +131,7 @@ public class DataSetParentLinkManagerShould {
         verifyNoMoreInteractions(dataSetOrganisationUnitStore);
     }
 
-    private DataSetDataElementLinkModel dataElementExpectedLink(DataElementUids decc, DataSet dataSet) {
+    private DataSetDataElementLinkModel dataElementExpectedLink(DataSetElements decc, DataSet dataSet) {
         return new DataSetDataElementLinkModelBuilder(dataSet).buildModel(decc);
     }
 

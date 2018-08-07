@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
-public class DataSetDataElementLinkModelBuilder extends ModelBuilder<DataElementUids, DataSetDataElementLinkModel> {
+public class DataSetDataElementLinkModelBuilder extends ModelBuilder<DataSetElements, DataSetDataElementLinkModel> {
 
     private final DataSetDataElementLinkModel.Builder builder;
 
@@ -40,7 +40,7 @@ public class DataSetDataElementLinkModelBuilder extends ModelBuilder<DataElement
     }
 
     @Override
-    public DataSetDataElementLinkModel buildModel(DataElementUids pojo) {
+    public DataSetDataElementLinkModel buildModel(DataSetElements pojo) {
         return builder
                 .dataElement(pojo.dataElement().uid())
                 .build();

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -41,21 +42,31 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 @AutoValue
 public abstract class DataSetElements {
     private final static String DATA_ELEMENT = "dataElement";
+    private final static String CATEGORY_COMBO = "categoryCombo";
 
     public static final NestedField<DataSetElements, ObjectWithUid> dataElement =
             NestedField.create(DATA_ELEMENT);
 
+    public static final NestedField<DataSetElements, ObjectWithUid> categoryCombo =
+            NestedField.create(CATEGORY_COMBO);
+
     public static final Fields<DataSetElements> allFields =
-            Fields.<DataSetElements>builder().fields(dataElement.with(ObjectWithUid.uid)).build();
+            Fields.<DataSetElements>builder().fields(dataElement.with(ObjectWithUid.uid),
+                    categoryCombo.with(ObjectWithUid.uid)).build();
 
     @NonNull
     @JsonProperty(DATA_ELEMENT)
     public abstract ObjectWithUid dataElement();
 
+    @Nullable
+    @JsonProperty(CATEGORY_COMBO)
+    public abstract ObjectWithUid categoryCombo();
+
     @JsonCreator
     public static DataSetElements create(
-            @JsonProperty(DATA_ELEMENT) ObjectWithUid dataElement) {
+            @JsonProperty(DATA_ELEMENT) ObjectWithUid dataElement,
+            @JsonProperty(CATEGORY_COMBO) ObjectWithUid categoryCombo) {
 
-        return new AutoValue_DataSetElements(dataElement);
+        return new AutoValue_DataSetElements(dataElement, categoryCombo);
     }
 }

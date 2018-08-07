@@ -50,6 +50,10 @@ final class ProgramStageFields {
     private static final String OPEN_AFTER_ENROLLMENT = "openAfterEnrollment";
     private static final String PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
     private static final String REPEATABLE = "repeatable";
+    /**
+     * @deprecated since 2.29, replaced by {@link #FEATURE_TYPE}
+     */
+    @Deprecated
     private static final String CAPTURE_COORDINATES = "captureCoordinates";
     private static final String FEATURE_TYPE = "featureType";
     private static final String FORM_TYPE = "formType";

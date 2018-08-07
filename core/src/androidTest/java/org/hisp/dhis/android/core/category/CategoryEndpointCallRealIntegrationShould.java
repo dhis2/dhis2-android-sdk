@@ -4,13 +4,11 @@ package org.hisp.dhis.android.core.category;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import static junit.framework.Assert.assertFalse;

@@ -26,30 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.calls.processors;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-final class ProgramRuleFields {
+import java.util.List;
+import java.util.concurrent.Callable;
 
-    private static final String PRIORITY = "priority";
-    private static final String CONDITION = "condition";
-    private static final String PROGRAM = "program";
-    private static final String PROGRAM_STAGE = "programStage";
-    private static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
+public class TransactionalNoResourceSyncCallProcessor<O> implements CallProcessor<O> {
+    private final DatabaseAdapter databaseAdapter;
+    private final SyncHandler<O> handler;
 
-    private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
-    static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Integer>field(PRIORITY),
-                    fh.<String>field(CONDITION),
-                    fh.nestedFieldWithUid(PROGRAM),
-                    fh.nestedFieldWithUid(PROGRAM_STAGE),
-                    fh.<ProgramRuleAction>nestedField(PROGRAM_RULE_ACTIONS).with(ProgramRuleAction.allFields)
-            ).build();
+    public TransactionalNoResourceSyncCallProcessor(DatabaseAdapter databaseAdapter,
+                                                    SyncHandler<O> handler) {
+        this.databaseAdapter = databaseAdapter;
+        this.handler = handler;
+    }
 
-    private ProgramRuleFields() {
+    @Override
+    public final void process(final List<O> objectList) throws D2CallException {
+        if (objectList != null && !objectList.isEmpty()) {
+            new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
+
+                @Override
+                public Void call() {
+                    handler.handleMany(objectList);
+                    return null;
+                }
+            });
+        }
     }
 }

@@ -34,27 +34,21 @@ import android.support.test.runner.AndroidJUnit4;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
+import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -83,25 +77,16 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
             UserModel.Columns.NATIONALITY
     };
 
-    private MockWebServer mockWebServer;
+    private Dhis2MockServer dhis2MockServer;
     private Call<User> userCall;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        mockWebServer = new MockWebServer();
-        mockWebServer.start();
+        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        MockResponse mockResponse = new MockResponse();
-        mockResponse.setHeader(HeaderUtils.DATE, Calendar.getInstance().getTime());
-
-        // JSON payload is returned from this api query:
-        // https://play.dhis2.org/dev/api/me.json?fields=id,code,name,displayName,created,lastUpdated,birthday,
-        // education,gender,jobTitle,surname,firstName,introduction,employer,interests,languages,email,
-        // phoneNumber,nationality,teiSearchOrganisationUnits[id],organisationUnits[id,programs],
-        // userCredentials[id,code,name,displayName,created,lastUpdated,username,userRoles[id,programs[id]]]
-        mockResponse.setBody("{\n" +
+        String response = "{\n" +
                 "\n" +
                 "    \"created\": \"2015-03-31T13:31:09.324\",\n" +
                 "    \"lastUpdated\": \"2017-02-01T14:32:33.771\",\n" +
@@ -195,22 +180,17 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
                 "        }\n" +
                 "    ]\n" +
                 "\n" +
-                "}");
+                "}";
 
-        mockWebServer.enqueue(mockResponse);
+        dhis2MockServer.enqueueMockResponse(200, response);
+        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         // ToDo: consider moving this out
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(mockWebServer.url("/"))
-                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                .addConverterFactory(FieldsConverterFactory.create())
-                .build();
-
-        userCall = UserCall.FACTORY.create(GenericCallData.create(databaseAdapter(), retrofit, new Date()));
+        userCall = UserCall.FACTORY.create(getGenericCallData(d2));
 
         ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
         ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);
@@ -223,8 +203,6 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         database().insert(ProgramModel.TABLE, null, program3);
         database().insert(ProgramModel.TABLE, null, program4);
         database().insert(ProgramModel.TABLE, null, program5);
-
-
     }
 
     @Test
@@ -292,6 +270,6 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     @Override
     public void tearDown() throws IOException {
         super.tearDown();
-        mockWebServer.shutdown();
+        dhis2MockServer.shutdown();
     }
 }

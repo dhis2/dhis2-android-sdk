@@ -43,6 +43,11 @@ public final class StoreFactory {
         return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder);
     }
 
+    public static <I extends Model & IdentifiableObject & StatementBinder> IdentifiableObjectStore<I>
+    identifiableStore(DatabaseAdapter databaseAdapter, TableInfo tableInfo) {
+        return identifiableStore(databaseAdapter, tableInfo.name(), tableInfo.columns().all());
+    }
+
     static <I extends BaseModel> ObjectStore<I>
     objectStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});

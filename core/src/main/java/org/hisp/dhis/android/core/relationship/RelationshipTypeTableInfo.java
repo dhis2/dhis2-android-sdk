@@ -28,15 +28,41 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public final class RelationshipTypeStore {
+public final class RelationshipTypeTableInfo {
 
-    private RelationshipTypeStore() {}
+    private RelationshipTypeTableInfo() {
+    }
 
-    public static IdentifiableObjectStore<RelationshipType> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, RelationshipTypeTableInfo.TABLE_INFO);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "RelationshipType";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        /* Field name doesn't correspond with column name (typo: upper case A) We can keep the inconsistency
+        as it will be removed when 2.29 is no longer supported */
+        static final String A_IS_TO_B_WITH_UPPER_CASE_A = "AIsToB";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    RelationshipTypeFields.B_IS_TO_A,
+                    A_IS_TO_B_WITH_UPPER_CASE_A
+            );
+        }
     }
 }

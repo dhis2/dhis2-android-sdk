@@ -28,15 +28,32 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class RelationshipTypeStore {
+final class RelationshipConstraintFields {
 
-    private RelationshipTypeStore() {}
+    static final String RELATIONSHIP_TYPE = "relationshipType";
+    static final String CONSTRAINT_TYPE = "constraintType";
+    static final String RELATIONSHIP_ENTITY = "relationshipEntity";
+    static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
+    static final String PROGRAM = "program";
+    static final String PROGRAM_STAGE = "programStage";
 
-    public static IdentifiableObjectStore<RelationshipType> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, RelationshipTypeTableInfo.TABLE_INFO);
+    private static final FieldsHelper<RelationshipConstraint> fh = new FieldsHelper<>();
+
+    static final Field<RelationshipConstraint, String> lastUpdated = fh.lastUpdated();
+
+    static final Fields<RelationshipConstraint> allFields = Fields.<RelationshipConstraint>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<RelationshipEntityType>field(RELATIONSHIP_ENTITY),
+                    fh.nestedFieldWithUid(TRACKED_ENTITY_TYPE),
+                    fh.nestedFieldWithUid(PROGRAM),
+                    fh.nestedFieldWithUid(PROGRAM_STAGE)
+            ).build();
+
+    private RelationshipConstraintFields() {
     }
 }

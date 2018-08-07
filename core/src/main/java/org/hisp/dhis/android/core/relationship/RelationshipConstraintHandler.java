@@ -27,14 +27,14 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class RelationshipConstraintHandler {
     private RelationshipConstraintHandler() {}
 
-    public static GenericHandler<RelationshipConstraint, RelationshipConstraintModel> create(DatabaseAdapter db) {
-        return new ObjectWithoutUidHandlerImpl<>(RelationshipConstraintStore.create(db));
+    public static SyncHandler<RelationshipConstraint> create(DatabaseAdapter db) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(RelationshipConstraintStore.create(db));
     }
 }

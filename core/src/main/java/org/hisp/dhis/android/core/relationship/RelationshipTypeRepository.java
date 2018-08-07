@@ -27,47 +27,48 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.repositories.ReadOnlyListRepository;
+import org.hisp.dhis.android.core.arch.repositories.ReadOnlyListRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
-public final class RelationshipTypeRepository implements RelationshipTypeRepositoryInterface {
+public final class RelationshipTypeRepository implements ReadOnlyListRepository<RelationshipType> {
 
-    private final ObjectWithoutUidStore<RelationshipConstraintModel> relationshipConstraintStore;
-    private final IdentifiableObjectStore<RelationshipTypeModel> relationshipTypeStore;
+    private final ReadOnlyListRepository<RelationshipConstraint> constraintRepository;
+    private final ReadOnlyListRepository<RelationshipType> rawTypeRepository;
 
-    RelationshipTypeRepository(ObjectWithoutUidStore<RelationshipConstraintModel> relationshipConstraintStore,
-                                      IdentifiableObjectStore<RelationshipTypeModel> relationshipTypeStore) {
-        this.relationshipConstraintStore = relationshipConstraintStore;
-        this.relationshipTypeStore = relationshipTypeStore;
+    private RelationshipTypeRepository(ReadOnlyListRepository<RelationshipConstraint> constraintRepository,
+                               ReadOnlyListRepository<RelationshipType> rawTypeRepository) {
+        this.constraintRepository = constraintRepository;
+        this.rawTypeRepository = rawTypeRepository;
     }
 
-    public List<RelationshipType> getAll() {
-        Set<RelationshipConstraintModel> relationshipConstraintModelSet =
-                this.relationshipConstraintStore.selectAll(RelationshipConstraintModel.factory);
+    public Set<RelationshipType> getAll() {
+        Set<RelationshipConstraint> constraintsSet = constraintRepository.getAll();
+        Set<RelationshipType> rawTypesSet = this.rawTypeRepository.getAll();
 
-        Set<RelationshipTypeModel> relationshipTypeModelSet =
-                this.relationshipTypeStore.selectAll(RelationshipTypeModel.factory);
+        RelationshipTypeBuilder typeBuilder = new RelationshipTypeBuilder(constraintsSet);
+        Set<RelationshipType> typesWithConstraintsSet = new HashSet<>(rawTypesSet.size());
 
-        RelationshipTypeBuilder relationshipTypeBuilder = new RelationshipTypeBuilder(relationshipConstraintModelSet);
-        int typesSize = relationshipTypeModelSet.size();
-        List<RelationshipType> relationshipTypeList = new ArrayList<>(typesSize);
-
-        for (RelationshipTypeModel model : relationshipTypeModelSet) {
-            relationshipTypeList.add(relationshipTypeBuilder.buildPojo(model));
+        for (RelationshipType rawType : rawTypesSet) {
+            typesWithConstraintsSet.add(typeBuilder.typeWithConstraints(rawType));
         }
 
-        return relationshipTypeList;
+        return typesWithConstraintsSet;
     }
 
     static RelationshipTypeRepository create(DatabaseAdapter databaseAdapter) {
         return new RelationshipTypeRepository(
-                RelationshipConstraintStore.create(databaseAdapter),
-                RelationshipTypeStore.create(databaseAdapter)
+                new ReadOnlyListRepositoryImpl<>(
+                        RelationshipConstraintStore.create(databaseAdapter),
+                        RelationshipConstraint.factory
+                ),
+                new ReadOnlyListRepositoryImpl<>(
+                        RelationshipTypeStore.create(databaseAdapter),
+                        RelationshipType.factory
+                )
         );
     }
 }

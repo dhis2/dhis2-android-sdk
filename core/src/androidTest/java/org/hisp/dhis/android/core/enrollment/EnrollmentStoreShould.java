@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityInstanceUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
@@ -122,7 +122,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
-        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null, relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
         ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(

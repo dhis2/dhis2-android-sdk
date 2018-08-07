@@ -26,17 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
 
-public final class RelationshipTypeStore {
-
-    private RelationshipTypeStore() {}
-
-    public static IdentifiableObjectStore<RelationshipType> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, RelationshipTypeTableInfo.TABLE_INFO);
-    }
+public final class IgnoreRelationshipConstraintAdapter extends IgnoreColumnAdapter<RelationshipConstraint> {
 }

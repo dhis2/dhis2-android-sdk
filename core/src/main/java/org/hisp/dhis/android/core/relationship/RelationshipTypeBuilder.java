@@ -28,46 +28,30 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.PojoBuilder;
-
 import java.util.Set;
 
-public class RelationshipTypeBuilder extends PojoBuilder<RelationshipType, RelationshipTypeModel> {
+public class RelationshipTypeBuilder {
 
-    private final Set<RelationshipConstraintModel> constraints;
+    private final Set<RelationshipConstraint> constraints;
 
-    RelationshipTypeBuilder(Set<RelationshipConstraintModel> constraints) {
+    RelationshipTypeBuilder(Set<RelationshipConstraint> constraints) {
         this.constraints = constraints;
     }
 
-    @Override
-    public RelationshipType buildPojo(RelationshipTypeModel model) {
+    public RelationshipType typeWithConstraints(RelationshipType type) {
 
-        RelationshipConstraintBuilder relationshipConstraintBuilder = new RelationshipConstraintBuilder();
-        RelationshipConstraint fromConstraint = null, toConstraint = null;
+        RelationshipType.Builder typeBuilder = type.toBuilder();
 
-        for (RelationshipConstraintModel constraint : this.constraints) {
-            if (constraint.relationshipType().equals(model.uid())) {
+        for (RelationshipConstraint constraint : this.constraints) {
+            if (constraint.relationshipType().equals(type.uid())) {
                 if (constraint.constraintType().equals(RelationshipConstraintType.FROM)) {
-                    fromConstraint = relationshipConstraintBuilder.buildPojo(constraint);
+                    typeBuilder.fromConstraint(constraint);
                 } else if (constraint.constraintType().equals(RelationshipConstraintType.TO)) {
-                    toConstraint = relationshipConstraintBuilder.buildPojo(constraint);
+                    typeBuilder.toConstraint(constraint);
                 }
             }
         }
 
-        return RelationshipType.create(
-                model.uid(),
-                model.code(),
-                model.name(),
-                model.displayName(),
-                model.created(),
-                model.lastUpdated(),
-                false,
-                model.bIsToA(),
-                model.aIsToB(),
-                fromConstraint,
-                toConstraint
-        );
+        return typeBuilder.build();
     }
 }

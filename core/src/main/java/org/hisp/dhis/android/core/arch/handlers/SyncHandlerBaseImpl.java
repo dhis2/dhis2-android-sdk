@@ -38,6 +38,7 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandler<O> {
         if (o == null) {
             return;
         }
+        o = beforeObjectHandled(o);
         HandleAction action = deleteOrPersist(o);
         afterObjectHandled(o, action);
     }
@@ -53,6 +54,10 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandler<O> {
     }
 
     protected abstract HandleAction deleteOrPersist(O o);
+
+    protected O beforeObjectHandled(O o) {
+        return o;
+    }
 
     @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
     protected void afterObjectHandled(O o, HandleAction action) {

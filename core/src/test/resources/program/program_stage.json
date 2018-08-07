@@ -13,6 +13,7 @@
   "externalAccess": false,
   "openAfterEnrollment": false,
   "repeatable": false,
+  "featureType": "POINT",
   "captureCoordinates": false,
   "formType": "DEFAULT",
   "remindCompleted": false,

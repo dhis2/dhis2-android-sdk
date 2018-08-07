@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
 
@@ -79,6 +80,7 @@ public class ProgramStageShould  extends BaseObjectShould implements ObjectShoul
         assertThat(programStage.programStageSections()).isEmpty();
         assertThat(programStage.periodType()).isEqualTo(PeriodType.Monthly);
         assertThat(programStage.remindCompleted()).isEqualTo(false);
+        assertThat(programStage.featureType()).isEqualTo(FeatureType.POINT);
 
         assertThat(programStage.programStageDataElements().get(0).uid()).isEqualTo("EQCf1l2Mdr8");
         assertThat(programStage.programStageDataElements().get(1).uid()).isEqualTo("muxw4SGzUwJ");

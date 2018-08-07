@@ -32,6 +32,7 @@ import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.ModelAbstractShould;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
 import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
@@ -58,9 +59,10 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel> {
     private static final String STORED_BY = "storedBy";
     private static final String COMMENT = "comment";
     private static final boolean FOLLOW_UP = false;
+    private static final State STATE = State.SYNCED;
 
     public DataValueModelShould() {
-        super(new DataValueModel.Columns().all(), 11);
+        super(new DataValueModel.Columns().all(), 12);
     }
 
     @Override
@@ -82,7 +84,8 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel> {
                 .created(CREATED)
                 .lastUpdated(LAST_UPDATED)
                 .comment(COMMENT)
-                .followUp(FOLLOW_UP);
+                .followUp(FOLLOW_UP)
+                .state(STATE);
         return dataValueModelBuilder.build();
     }
 
@@ -99,7 +102,8 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel> {
                 CREATED_STR,
                 LAST_UPDATED_STR,
                 model.comment(),
-                toInteger(model.followUp()));
+                toInteger(model.followUp()),
+                model.state());
     }
 
     @Test
@@ -117,5 +121,8 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel> {
         assertThat(columnsList.contains(DataValueModel.Columns.LAST_UPDATED)).isEqualTo(true);
         assertThat(columnsList.contains(DataValueModel.Columns.COMMENT)).isEqualTo(true);
         assertThat(columnsList.contains(DataValueModel.Columns.FOLLOW_UP)).isEqualTo(true);
+        assertThat(columnsList.contains(DataValueModel.Columns.STATE)).isEqualTo(true);
+
+
     }
 }

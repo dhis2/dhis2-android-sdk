@@ -70,9 +70,12 @@ public class DataSetParentLinkManagerShould {
     private final String DATA_SET_2_UID = "test_data_set_uid2";
     private final String DATA_SET_3_UID = "test_data_set_uid3";
 
-    private DataSetElements decc1 = DataSetElements.create(ObjectWithUid.create("de1"));
-    private DataSetElements decc2 = DataSetElements.create(ObjectWithUid.create("de2"));
-    private DataSetElements decc3 = DataSetElements.create(ObjectWithUid.create("de3"));
+    private DataSetElements decc1 = DataSetElements.create(ObjectWithUid.create("de1"),
+            ObjectWithUid.create("categoryCombo1"));
+    private DataSetElements decc2 = DataSetElements.create(ObjectWithUid.create("de2"),
+            ObjectWithUid.create("categoryCombo2"));
+    private DataSetElements decc3 = DataSetElements.create(ObjectWithUid.create("de3"),
+            ObjectWithUid.create("categoryCombo3"));
 
     private ObjectWithUid i1 = ObjectWithUid.create("i1");
     private ObjectWithUid i2 = ObjectWithUid.create("i2");

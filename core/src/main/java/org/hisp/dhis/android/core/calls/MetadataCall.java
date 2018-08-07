@@ -31,7 +31,6 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
-import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
@@ -65,7 +64,7 @@ public class MetadataCall extends SyncCall<Unit> {
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
-    private final NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
+    private final D2InternalModules internalModules;
     private final GenericCallFactory<SystemSetting> systemSettingCallFactory;
     private final GenericCallFactory<User> userCallFactory;
     private final GenericCallFactory<List<Category>> categoryCallFactory;
@@ -77,7 +76,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
                         @NonNull Retrofit retrofit,
-                        @NonNull NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
+                        @NonNull D2InternalModules internalModules,
                         @NonNull GenericCallFactory<SystemSetting> systemSettingCallFactory,
                         @NonNull GenericCallFactory<User> userCallFactory,
                         @NonNull GenericCallFactory<List<Category>> categoryCallFactory,
@@ -89,7 +88,7 @@ public class MetadataCall extends SyncCall<Unit> {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
 
-        this.systemInfoCallFactory = systemInfoCallFactory;
+        this.internalModules = internalModules;
         this.systemSettingCallFactory = systemSettingCallFactory;
         this.userCallFactory = userCallFactory;
         this.categoryCallFactory = categoryCallFactory;
@@ -109,10 +108,10 @@ public class MetadataCall extends SyncCall<Unit> {
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
             @Override
             public Unit call() throws D2CallException {
-                SystemInfo systemInfo = executor.executeD2Call(systemInfoCallFactory.create());
+                SystemInfo systemInfo = executor.executeD2Call(internalModules.systemInfo.callFactory.create());
 
                 GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
-                        systemInfo.serverDate());
+                        systemInfo.serverDate(), internalModules.systemInfo.publicModule.versionManager);
 
                 executor.executeD2Call(systemSettingCallFactory.create(genericCallData));
                 User user = executor.executeD2Call(userCallFactory.create(genericCallData));
@@ -140,7 +139,7 @@ public class MetadataCall extends SyncCall<Unit> {
         return new MetadataCall(
                 databaseAdapter,
                 retrofit,
-                internalModules.systemInfo.callFactory,
+                internalModules,
                 SystemSettingCall.FACTORY,
                 UserCall.FACTORY,
                 CategoryEndpointCall.FACTORY,

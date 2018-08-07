@@ -74,7 +74,7 @@ public abstract class DataValueModel extends BaseDataModel {
         @Override
         public String[] whereUpdate() {
             return new String[]{DATA_ELEMENT, PERIOD, ORGANISATION_UNIT, CATEGORY_OPTION_COMBO,
-            ATTRIBUTE_OPTION_COMBO, STATE};
+            ATTRIBUTE_OPTION_COMBO};
         }
     }
 

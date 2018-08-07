@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.settings.SystemSetting;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
@@ -97,6 +98,9 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private Call<SystemInfo> systemInfoEndpointCall;
+
+    @Mock
+    private DHISVersionManager versionManager;
 
     @Mock
     private Call<SystemSetting> systemSettingEndpointCall;
@@ -189,6 +193,7 @@ public class MetadataCallShould extends BaseCallShould {
                 databaseAdapter,
                 retrofit,
                 systemInfoCallFactory,
+                versionManager,
                 systemSettingCallFactory,
                 userCallFactory,
                 categoryCallFactory,

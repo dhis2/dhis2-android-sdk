@@ -68,7 +68,7 @@ public abstract class DataValueModel extends BaseDataModel {
             return Utils.appendInNewArray(super.all(),
                     DATA_ELEMENT, PERIOD, ORGANISATION_UNIT, CATEGORY_OPTION_COMBO,
                     ATTRIBUTE_OPTION_COMBO, VALUE, STORED_BY, CREATED, LAST_UPDATED,
-                    COMMENT, FOLLOW_UP);
+                    COMMENT, FOLLOW_UP, STATE);
         }
 
         @Override
@@ -145,6 +145,7 @@ public abstract class DataValueModel extends BaseDataModel {
         sqLiteBind(sqLiteStatement, 9, lastUpdated());
         sqLiteBind(sqLiteStatement, 10, comment());
         sqLiteBind(sqLiteStatement, 11, followUp());
+        sqLiteBind(sqLiteStatement, 12, state());
     }
 
     @Override

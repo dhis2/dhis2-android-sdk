@@ -10,10 +10,10 @@ import java.util.List;
 
 public class DataValueImportHandler {
 
-    DataValueSetStore dataValueSetStore;
+    DataValueStore dataValueStore;
 
-    public DataValueImportHandler(DataValueSetStore dataValueSetStore) {
-        this.dataValueSetStore = dataValueSetStore;
+    public DataValueImportHandler(DataValueStore dataValueStore) {
+        this.dataValueStore = dataValueStore;
     }
 
     public void handleImportSummary(@NonNull DataValueSet dataValueSet,
@@ -26,11 +26,11 @@ public class DataValueImportHandler {
         for (DataValue dataValue : dataValueSet.dataValues) {
 
             if (isConflictive(dataValue, importSummary)) {
-                dataValueSetStore.setState(dataValue.dataElement(), State.ERROR);
+                dataValueStore.setState(dataValue.dataElement(), State.ERROR);
                 continue;
             }
 
-            dataValueSetStore.setState(dataValue.dataElement(), State.SYNCED);
+            dataValueStore.setState(dataValue.dataElement(), State.SYNCED);
 
         }
     }

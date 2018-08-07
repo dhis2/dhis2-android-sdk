@@ -16,7 +16,7 @@ import retrofit2.Retrofit;
 public final class DataValuePostCall extends SyncCall<ImportSummary> {
 
     private final DataValueService dataValueService;
-    private final DataValueSetStore dataValueSetStore;
+    private final DataValueStore dataValueStore;
 
     @Override
     public ImportSummary call() throws Exception {
@@ -43,32 +43,32 @@ public final class DataValuePostCall extends SyncCall<ImportSummary> {
     }
 
     private void appendPostableDataValues(Collection<DataValue> dataValues) {
-        dataValues.addAll(dataValueSetStore.getDataValuesWithState(State.TO_POST));
+        dataValues.addAll(dataValueStore.getDataValuesWithState(State.TO_POST));
     }
 
     private void appendUpdatableDataValues(Collection<DataValue> dataValues) {
-        dataValues.addAll(dataValueSetStore.getDataValuesWithState(State.TO_UPDATE));
+        dataValues.addAll(dataValueStore.getDataValuesWithState(State.TO_UPDATE));
     }
 
     private void handleImportSummary(DataValueSet dataValueSet, ImportSummary importSummary) {
 
         DataValueImportHandler dataValueImportHandler =
-                new DataValueImportHandler(dataValueSetStore);
+                new DataValueImportHandler(dataValueStore);
 
         dataValueImportHandler.handleImportSummary(dataValueSet, importSummary);
     }
 
     private DataValuePostCall(@NonNull DataValueService dataValueService,
-                              @NonNull DataValueSetStore dataValueSetStore) {
+                              @NonNull DataValueStore dataValueSetStore) {
 
         this.dataValueService = dataValueService;
-        this.dataValueSetStore = dataValueSetStore;
+        this.dataValueStore = dataValueSetStore;
     }
 
     public static DataValuePostCall create(@NonNull DatabaseAdapter databaseAdapter,
                                      @NonNull Retrofit retrofit) {
 
         return new DataValuePostCall(retrofit.create(DataValueService.class),
-                                     new DataValueSetStore(databaseAdapter));
+                                     DataValueStore.create(databaseAdapter));
     }
 }

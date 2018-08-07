@@ -28,20 +28,68 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class DataValueStore {
+public final class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueModel> {
 
-    private DataValueStore() {}
+    private static final String QUERY_WITH_STATE = "SELECT " +
+            DataValueModel.Columns.DATA_ELEMENT + "," +
+            DataValueModel.Columns.PERIOD + "," +
+            DataValueModel.Columns.ORGANISATION_UNIT + "," +
+            DataValueModel.Columns.VALUE +
+            " FROM " +
+            DataValueModel.TABLE +
+            " WHERE " +
+            DataValueModel.Columns.STATE +
+            " = ':state'";
+
+    private static final String UPDATE_STATE = "UPDATE "
+            + DataValueModel.TABLE +
+            " SET " +
+            DataValueModel.Columns.STATE + " = ? " +
+            " WHERE " +
+            DataValueModel.Columns.DATA_ELEMENT + " = ?;";
+
+    private final SQLiteStatement updateStateStatement;
+
+
+
+    private DataValueStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
+                           SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
+
+        super(databaseAdapter, insertStatement, updateWhereStatement,
+                builder, BINDER, WHERE_UPDATE_BINDER);
+
+        this.updateStateStatement = databaseAdapter.compileStatement(UPDATE_STATE);
+    }
+
+    public static DataValueStore create(DatabaseAdapter databaseAdapter) {
+
+        BaseModel.Columns columns = new DataValueModel.Columns();
+
+        SQLStatementBuilder sqlStatementBuilder =
+                new SQLStatementBuilder(DataValueModel.TABLE, columns);
+
+        return new DataValueStore(databaseAdapter, databaseAdapter.compileStatement(
+                sqlStatementBuilder.insert()),
+                databaseAdapter.compileStatement(sqlStatementBuilder.updateWhere()),
+                sqlStatementBuilder);
+    }
 
     private static final StatementBinder<DataValueModel> BINDER = new StatementBinder<DataValueModel>() {
         @Override
@@ -72,8 +120,68 @@ public final class DataValueStore {
         }
     };
 
-    public static ObjectWithoutUidStore<DataValueModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, DataValueModel.TABLE,
-                new DataValueModel.Columns(), BINDER, WHERE_UPDATE_BINDER);
+    public Collection<DataValue> getDataValuesWithState(State state) {
+        return queryDataValuesWithState(state);
     }
+
+    private Collection<DataValue> queryDataValuesWithState(State state) {
+
+        String query = QUERY_WITH_STATE.replace(":state", state.name());
+
+        Cursor cursor = databaseAdapter.query(query);
+
+        return map(cursor);
+    }
+
+    private Collection<DataValue> map(Cursor cursor) {
+
+        Collection<DataValue> dataValues = new ArrayList<>();
+
+        cursor.moveToFirst();
+
+        if (cursor.getCount() > 0) {
+
+            do {
+
+                DataValue dataValue = DataValue.create(
+                        cursor.getString(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        null,
+                        null,
+                        cursor.getString(3),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+
+                dataValues.add(dataValue);
+
+            } while(cursor.moveToNext());
+        }
+
+        return dataValues;
+    }
+
+    /**
+     * @param dataElementUid UID from the DataElement related to the DataValue you want to set
+     * @param newState The new state to be set for the DataValue
+     *
+     * @return True if any DataValue has been updated
+     */
+    @SuppressWarnings("PMD.UselessParentheses")
+    public boolean setState(String dataElementUid, State newState) {
+
+        sqLiteBind(updateStateStatement, 1, newState.name());
+        sqLiteBind(updateStateStatement, 2, dataElementUid);
+
+        int updatedRows = databaseAdapter.executeUpdateDelete(DataValueModel.TABLE, updateStateStatement);
+        updateStateStatement.clearBindings();
+
+        return (updatedRows > 0);
+    }
+
 }

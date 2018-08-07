@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
@@ -72,8 +73,15 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     @Nullable
     public abstract Boolean repeatable();
 
+    /**
+     * @deprecated since 2.29, replaced by {@link #featureType()}
+     */
+    @Deprecated
     @Nullable
     public abstract Boolean captureCoordinates();
+
+    @Nullable
+    public abstract FeatureType featureType();
 
     @Nullable
     public abstract FormType formType();
@@ -132,6 +140,8 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
         return new AutoValue_ProgramStage.Builder();
     }
 
+    public abstract Builder toBuilder();
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
@@ -152,6 +162,8 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
         public abstract Builder repeatable(Boolean repeatable);
 
         public abstract Builder captureCoordinates(Boolean captureCoordinates);
+
+        public abstract Builder featureType(FeatureType featureType);
 
         public abstract Builder formType(FormType formType);
 

@@ -34,10 +34,13 @@ import android.support.test.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
 
+import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.junit.After;
 import org.junit.Before;
 
 import java.io.IOException;
+import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -67,6 +70,11 @@ public abstract class AbsStoreTestCase {
 
     protected DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
+    }
+
+    protected GenericCallData getGenericCallData(D2 d2) {
+        return GenericCallData.create(
+                databaseAdapter(), d2.retrofit(), new Date(), d2.systemInfoModule().versionManager);
     }
 
     protected Cursor getCursor(String table, String[] columns) {

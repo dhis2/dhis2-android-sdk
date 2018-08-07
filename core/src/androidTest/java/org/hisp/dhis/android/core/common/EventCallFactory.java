@@ -2,17 +2,13 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryOption;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.EventEndpointCall;
 import org.hisp.dhis.android.core.event.EventQuery;
-
-import java.util.Date;
 
 import retrofit2.Retrofit;
 
 public class EventCallFactory {
-    public static EventEndpointCall create(Retrofit retrofit,
-                                           DatabaseAdapter databaseAdapter, String orgUnit, int pageSize) {
+    public static EventEndpointCall create(Retrofit retrofit, String orgUnit, int pageSize) {
 
         EventQuery eventQuery = EventQuery.Builder
                 .create()
@@ -20,12 +16,10 @@ public class EventCallFactory {
                 .withPageSize(pageSize)
                 .build();
 
-        GenericCallData data = GenericCallData.create(databaseAdapter, retrofit, new Date());
-        return EventEndpointCall.create(data.retrofit(), eventQuery);
+        return EventEndpointCall.create(retrofit, eventQuery);
     }
 
-    public static EventEndpointCall create(Retrofit retrofit,
-                                           DatabaseAdapter databaseAdapter, String orgUnit, int pageSize, String categoryComboUID,
+    public static EventEndpointCall create(Retrofit retrofit, String orgUnit, int pageSize, String categoryComboUID,
                                            String categoryOptionUID) {
 
         CategoryCombo categoryCombo = CategoryCombo
@@ -45,7 +39,6 @@ public class EventCallFactory {
                 .withCategoryComboAndCategoryOption(categoryCombo, categoryOption)
                 .build();
 
-        GenericCallData data = GenericCallData.create(databaseAdapter, retrofit, new Date());
-        return EventEndpointCall.create(data.retrofit(), eventQuery);
+        return EventEndpointCall.create(retrofit, eventQuery);
     }
 }

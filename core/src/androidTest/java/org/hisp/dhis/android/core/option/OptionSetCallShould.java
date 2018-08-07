@@ -34,28 +34,24 @@ import android.support.test.runner.AndroidJUnit4;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -85,7 +81,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
             OptionModel.Columns.OPTION_SET
     };
 
-    private MockWebServer mockWebServer;
+    private Dhis2MockServer dhis2MockServer;
     private Call<List<OptionSet>> optionSetCall;
     private D2CallExecutor d2CallExecutor;
 
@@ -93,12 +89,9 @@ public class OptionSetCallShould extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
+        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        mockWebServer = new MockWebServer();
-        mockWebServer.start();
-
-        MockResponse mockResponse = new MockResponse();
-        mockResponse.setBody("{\n" +
+        String response = "{\n" +
                 "\n" +
                 "    \"pager\": {\n" +
                 "        \"page\": 1,\n" +
@@ -188,27 +181,19 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                 "        }\n" +
                 "    ]\n" +
                 "\n" +
-                "}");
+                "}";
 
-        mockWebServer.enqueue(mockResponse);
+        dhis2MockServer.enqueueMockResponse(200, response);
 
         // ToDo: consider moving this out
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(mockWebServer.url("/"))
-                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                .addConverterFactory(FieldsConverterFactory.create())
-                .build();
-
         Set<String> uids = new HashSet<>();
         uids.add("POc7DkGU3QU");
 
-        GenericCallData data = GenericCallData.create(databaseAdapter(), retrofit, new Date());
-
-        optionSetCall = OptionSetCall.FACTORY.create(data, uids);
+        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+        optionSetCall = OptionSetCall.FACTORY.create(getGenericCallData(d2), uids);
 
         d2CallExecutor = new D2CallExecutor();
 
@@ -316,7 +301,6 @@ public class OptionSetCallShould extends AbsStoreTestCase {
     @Override
     public void tearDown() throws IOException {
         super.tearDown();
-
-        mockWebServer.shutdown();
+        dhis2MockServer.shutdown();
     }
 }

@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -54,7 +53,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -124,7 +122,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
         programEndpointCall = ProgramEndpointCall.factory(d2.retrofit().create(ProgramService.class)).create(
-                GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date()));
+                getGenericCallData(d2));
     }
 
     @Test

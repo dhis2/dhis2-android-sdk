@@ -48,9 +48,11 @@ import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.datavalue.DataValuePostCall;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
+import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
@@ -129,6 +131,11 @@ public final class D2 {
     @NonNull
     public Callable<Void> syncAggregatedData() {
         return AggregatedDataCall.create(databaseAdapter, retrofit, internalModules);
+    }
+
+    @NonNull
+    public Callable<ImportSummary> syncDataValues() {
+        return DataValuePostCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull

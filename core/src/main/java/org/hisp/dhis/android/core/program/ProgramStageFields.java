@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 final class ProgramStageFields {
@@ -50,6 +51,7 @@ final class ProgramStageFields {
     private static final String PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
     private static final String REPEATABLE = "repeatable";
     private static final String CAPTURE_COORDINATES = "captureCoordinates";
+    private static final String FEATURE_TYPE = "featureType";
     private static final String FORM_TYPE = "formType";
     private static final String DISPLAY_GENERATE_EVENT_BOX = "displayGenerateEventBox";
     private static final String GENERATED_BY_ENROLMENT_DATE = "generatedByEnrollmentDate";
@@ -82,6 +84,7 @@ final class ProgramStageFields {
                     fh.<Boolean>field(OPEN_AFTER_ENROLLMENT),
                     fh.<Boolean>field(REPEATABLE),
                     fh.<Boolean>field(CAPTURE_COORDINATES),
+                    fh.<FeatureType>field(FEATURE_TYPE),
                     fh.<FormType>field(FORM_TYPE),
                     fh.<Boolean>field(DISPLAY_GENERATE_EVENT_BOX),
                     fh.<Boolean>field(GENERATED_BY_ENROLMENT_DATE),

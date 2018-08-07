@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationPostCall;
+import org.hisp.dhis.android.core.datavalue.DataValuePostCall;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
@@ -143,6 +144,11 @@ public final class D2 {
     @NonNull
     public Callable<ImportSummary> syncDataSetCompleteRegistrations() {
         return DataSetCompleteRegistrationPostCall.create(databaseAdapter, retrofit);
+    }
+
+    @NonNull
+    public Callable<ImportSummary> syncDataValues() {
+        return DataValuePostCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull

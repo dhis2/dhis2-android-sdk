@@ -43,7 +43,7 @@ public class RelationshipTypeBuilder {
         RelationshipType.Builder typeBuilder = type.toBuilder();
 
         for (RelationshipConstraint constraint : this.constraints) {
-            if (constraint.relationshipType().equals(type.uid())) {
+            if (constraint.relationshipType().uid().equals(type.uid())) {
                 if (constraint.constraintType().equals(RelationshipConstraintType.FROM)) {
                     typeBuilder.fromConstraint(constraint);
                 } else if (constraint.constraintType().equals(RelationshipConstraintType.TO)) {

@@ -40,9 +40,10 @@ public class DataSetDataElementLinkModelBuilder extends ModelBuilder<DataSetElem
     }
 
     @Override
-    public DataSetDataElementLinkModel buildModel(DataSetElements pojo) {
+    public DataSetDataElementLinkModel buildModel(DataSetElements dataSetElements) {
         return builder
-                .dataElement(pojo.dataElement().uid())
+                .dataElement(dataSetElements.dataElement().uid())
+                .categoryCombo(dataSetElements.categoryComboUid())
                 .build();
     }
 }

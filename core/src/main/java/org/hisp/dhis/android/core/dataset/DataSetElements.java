@@ -62,6 +62,11 @@ public abstract class DataSetElements {
     @JsonProperty(CATEGORY_COMBO)
     public abstract ObjectWithUid categoryCombo();
 
+    String categoryComboUid() {
+        ObjectWithUid categoryCombo = categoryCombo();
+        return categoryCombo == null ? null : categoryCombo.uid();
+    }
+
     @JsonCreator
     public static DataSetElements create(
             @JsonProperty(DATA_ELEMENT) ObjectWithUid dataElement,

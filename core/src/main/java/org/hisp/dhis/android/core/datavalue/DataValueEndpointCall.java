@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalResourceCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
@@ -73,7 +74,7 @@ public final class DataValueEndpointCall {
                     data,
                     DataValueHandler.create(data.databaseAdapter()),
                     resourceType,
-                    new DataValueModelBuilder()
+                    new DataValueModelBuilder(State.SYNCED)
             );
         }
     };

@@ -29,12 +29,19 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.State;
 
 public class DataValueModelBuilder extends ModelBuilder<DataValue, DataValueModel> {
 
+    private final DataValueModel.Builder builder;
+
+    public DataValueModelBuilder(State state) {
+        builder = DataValueModel.builder().state(state);
+    }
+
     @Override
     public DataValueModel buildModel(DataValue dataValue) {
-        return DataValueModel.builder()
+        return builder
                 .dataElement(dataValue.dataElement())
                 .period(dataValue.period())
                 .organisationUnit(dataValue.organisationUnit())

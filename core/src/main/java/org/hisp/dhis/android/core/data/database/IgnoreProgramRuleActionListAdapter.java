@@ -26,18 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.program.ProgramRuleAction;
 
-public final class ProgramRuleStore {
+import java.util.List;
 
-    private ProgramRuleStore() {}
-
-    public static IdentifiableObjectStore<ProgramRule> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, ProgramRuleModel.TABLE,
-                new ProgramRuleModel.Columns().all());
-    }
+public final class IgnoreProgramRuleActionListAdapter extends IgnoreColumnAdapter<List<ProgramRuleAction>> {
 }

@@ -27,6 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,23 +38,16 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class ProgramRuleHandlerShould {
     @Mock
-    private ProgramRuleStore programRuleStore;
+    private IdentifiableObjectStore<ProgramRule> programRuleStore;
 
     @Mock
     private ProgramRuleActionHandler programRuleActionHandler;
@@ -60,22 +56,13 @@ public class ProgramRuleHandlerShould {
     private ProgramRule programRule;
 
     @Mock
-    private Program program;
-
-    @Mock
-    private ProgramStage programStage;
-
-    @Mock
     private OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
 
     @Mock
     private List<ProgramRuleAction> programRuleActions;
 
     // object to test
-    private ProgramRuleHandler programRuleHandler;
-
-    // list of program rules
-    private List<ProgramRule> programRules;
+    private IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -84,103 +71,31 @@ public class ProgramRuleHandlerShould {
                 programRuleActionCleaner);
 
         when(programRule.uid()).thenReturn("test_program_rule_uid");
-        when(programRule.program()).thenReturn(program);
-        when(programRule.programStage()).thenReturn(programStage);
         when(programRule.programRuleActions()).thenReturn(programRuleActions);
-
-        programRules = new ArrayList<>();
-        programRules.add(programRule);
     }
 
     @Test
-    public void do_nothing_when_passing_null_argument() throws Exception {
-        programRuleHandler.handleProgramRules(null);
-
-        // verify that store is never called
-        verify(programRuleStore, never()).delete(anyString());
-
-        verify(programRuleStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyInt(), anyString(), anyString(), anyString(),
-                anyString());
-
-        verify(programRuleStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyInt(), anyString(), anyString(), anyString());
-
-        // verify that program rule action handler is never called
-        verify(programRuleActionHandler, never()).handleProgramRuleActions(anyListOf(ProgramRuleAction.class));
-
+    public void extend_identifiable_sync_handler_impl() {
+        IdentifiableSyncHandlerImpl<ProgramRule> genericHandler = new ProgramRuleHandler(null, null, null);
     }
 
     @Test
-    public void invoke_delete_when_handle_program_rule_set_as_deleted() throws Exception {
-        when(programRule.deleted()).thenReturn(Boolean.TRUE);
-
-        programRuleHandler.handleProgramRules(programRules);
-
-        // verify that delete is called once
-        verify(programRuleStore, times(1)).delete(anyString());
-
-        // verify that update and insert is never called
-        verify(programRuleStore, never()).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyInt(), anyString(), anyString(), anyString(),
-                anyString());
-
-        verify(programRuleStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyInt(), anyString(), anyString(), anyString());
-
-        // verify that program rule action handler is called
-        verify(programRuleActionHandler, times(1)).handleProgramRuleActions(anyListOf(ProgramRuleAction.class));
-
-        verify(programRuleActionCleaner, never()).deleteOrphan(programRule, programRuleActions);
+    public void call_user_credentials_handler() {
+        programRuleHandler.handle(programRule);
+        verify(programRuleActionHandler).handleProgramRuleActions(programRuleActions);
     }
 
     @Test
-    public void invoke_only_update_when_handle_program_rule_inserted() throws Exception {
-        when(programRuleStore.update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyInt(), anyString(), anyString(), anyString(),
-                anyString())).thenReturn(1);
-
-        programRuleHandler.handleProgramRules(programRules);
-
-        // verify that update is called once
-        verify(programRuleStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyInt(), anyString(), anyString(), anyString(),
-                anyString());
-
-        // verify that insert and delete is never called
-        verify(programRuleStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyInt(), anyString(), anyString(), anyString());
-
-        verify(programRuleStore, never()).delete(anyString());
-
-        // verify that program rule action handler is called
-        verify(programRuleActionHandler, times(1)).handleProgramRuleActions(anyListOf(ProgramRuleAction.class));
-
+    public void call_program_rule_action_orphan_cleaner_on_update() {
+        when(programRuleStore.updateOrInsert(programRule)).thenReturn(HandleAction.Update);
+        programRuleHandler.handle(programRule);
         verify(programRuleActionCleaner).deleteOrphan(programRule, programRuleActions);
     }
 
     @Test
-    public void invoke_update_and_insert_when_handle_program_rule_not_inserted() throws Exception {
-        when(programRuleStore.update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyInt(), anyString(), anyString(), anyString(),
-                anyString())).thenReturn(0);
-
-        programRuleHandler.handleProgramRules(programRules);
-
-        // verify that insert is called once
-        verify(programRuleStore, times(1)).insert(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyInt(), anyString(), anyString(), anyString());
-
-        // verify that update is called once since we try to update before we insert
-        verify(programRuleStore, times(1)).update(anyString(), anyString(), anyString(), anyString(),
-                any(Date.class), any(Date.class), anyInt(), anyString(), anyString(), anyString(), anyString());
-
-        // verify that delete is never called
-        verify(programRuleStore, never()).delete(anyString());
-
-        // verify that program rule action handler is called
-        verify(programRuleActionHandler, times(1)).handleProgramRuleActions(anyListOf(ProgramRuleAction.class));
-
+    public void not_call_program_rule_action_orphan_cleaner_on_insert() {
+        when(programRuleStore.updateOrInsert(programRule)).thenReturn(HandleAction.Insert);
+        programRuleHandler.handle(programRule);
         verify(programRuleActionCleaner, never()).deleteOrphan(programRule, programRuleActions);
     }
 }

@@ -28,16 +28,28 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class ProgramRuleStore {
+final class ProgramRuleFields {
 
-    private ProgramRuleStore() {}
+    static final String PRIORITY = "priority";
+    static final String CONDITION = "condition";
+    static final String PROGRAM = "program";
+    static final String PROGRAM_STAGE = "programStage";
+    static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
 
-    public static IdentifiableObjectStore<ProgramRule> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, ProgramRuleModel.TABLE,
-                new ProgramRuleModel.Columns().all());
+    private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
+    static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<Integer>field(PRIORITY),
+                    fh.<String>field(CONDITION),
+                    fh.nestedFieldWithUid(PROGRAM),
+                    fh.nestedFieldWithUid(PROGRAM_STAGE),
+                    fh.<ProgramRuleAction>nestedField(PROGRAM_RULE_ACTIONS).with(ProgramRuleAction.allFields)
+            ).build();
+
+    private ProgramRuleFields() {
     }
 }

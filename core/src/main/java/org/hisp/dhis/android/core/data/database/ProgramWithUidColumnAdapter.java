@@ -26,18 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.database.Cursor;
 
-public final class ProgramRuleStore {
+import org.hisp.dhis.android.core.program.Program;
 
-    private ProgramRuleStore() {}
+public class ProgramWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<Program> {
 
-    public static IdentifiableObjectStore<ProgramRule> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, ProgramRuleModel.TABLE,
-                new ProgramRuleModel.Columns().all());
+    @Override
+    public Program fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String uid = cursor.getString(columnIndex);
+        return Program.builder().uid(uid).build();
     }
 }

@@ -4,7 +4,6 @@ package org.hisp.dhis.android.core.category;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -12,7 +11,6 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -41,8 +39,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertTrue(getCategoryCategoryComboLinkModels().isEmpty());
 
         Call<List<CategoryCombo>> categoryComboEndpointCall =
-                CategoryComboEndpointCall.FACTORY.create(
-                GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date()));
+                CategoryComboEndpointCall.FACTORY.create(getGenericCallData(d2));
         List<CategoryCombo> categoryCombos = categoryComboEndpointCall.call();
 
         assertFalse(categoryCombos.isEmpty());
@@ -58,8 +55,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void downloadCategories() throws Exception {
-        CategoryEndpointCall.FACTORY.create(
-                        GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date())).call();
+        CategoryEndpointCall.FACTORY.create(getGenericCallData(d2)).call();
     }
 
     private void assertNotCombosInDB() {

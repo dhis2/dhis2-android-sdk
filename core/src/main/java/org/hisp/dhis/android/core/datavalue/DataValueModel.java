@@ -37,7 +37,7 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -46,11 +46,11 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class DataValueModel extends BaseModel {
+public abstract class DataValueModel extends BaseDataModel {
 
     public static final String TABLE = "DataValue";
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseDataModel.Columns {
         public static final String DATA_ELEMENT = "dataElement";
         public static final String PERIOD = "period";
         public static final String ORGANISATION_UNIT = "organisationUnit";
@@ -67,13 +67,14 @@ public abstract class DataValueModel extends BaseModel {
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
                     DATA_ELEMENT, PERIOD, ORGANISATION_UNIT, CATEGORY_OPTION_COMBO,
-                    ATTRIBUTE_OPTION_COMBO, VALUE, STORED_BY, CREATED, LAST_UPDATED, COMMENT, FOLLOW_UP);
+                    ATTRIBUTE_OPTION_COMBO, VALUE, STORED_BY, CREATED, LAST_UPDATED,
+                    COMMENT, FOLLOW_UP);
         }
 
         @Override
         public String[] whereUpdate() {
             return new String[]{DATA_ELEMENT, PERIOD, ORGANISATION_UNIT, CATEGORY_OPTION_COMBO,
-            ATTRIBUTE_OPTION_COMBO};
+            ATTRIBUTE_OPTION_COMBO, STATE};
         }
     }
 
@@ -82,7 +83,7 @@ public abstract class DataValueModel extends BaseModel {
     }
 
     public static Builder builder() {
-        return new $AutoValue_DataValueModel.Builder();
+        return new $$AutoValue_DataValueModel.Builder();
     }
 
     @Nullable
@@ -156,7 +157,7 @@ public abstract class DataValueModel extends BaseModel {
     }
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
         public abstract Builder dataElement(String dataElement);
 
         public abstract Builder period(String period);

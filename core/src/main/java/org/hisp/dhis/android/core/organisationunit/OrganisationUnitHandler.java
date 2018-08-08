@@ -33,6 +33,8 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.program.Program;
@@ -41,12 +43,13 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModelBuilder;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class OrganisationUnitHandler extends IdentifiableHandlerImpl<OrganisationUnit, OrganisationUnitModel> {
     private final ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
-    private final ObjectWithoutUidStore<OrganisationUnitProgramLinkModel> organisationUnitProgramLinkStore;
+    private final LinkModelHandler<Program, OrganisationUnitProgramLinkModel> organisationUnitProgramLinkHandler;
     private final Set<String> programUids;
     private final OrganisationUnitModel.Scope scope;
     private final User user;
@@ -54,14 +57,14 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
     public OrganisationUnitHandler(@NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
                                    @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel>
                                            userOrganisationUnitLinkStore,
-                                   @NonNull ObjectWithoutUidStore<OrganisationUnitProgramLinkModel>
-                                           organisationUnitProgramLinkStore,
+                                   @NonNull LinkModelHandler<Program, OrganisationUnitProgramLinkModel>
+                                           organisationUnitProgramLinkHandler,
                                    @Nullable Set<String> programUids,
                                    @Nullable OrganisationUnitModel.Scope scope,
                                    @Nullable User user) {
         super(organisationUnitStore);
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
+        this.organisationUnitProgramLinkHandler = organisationUnitProgramLinkHandler;
         this.programUids = programUids;
         this.scope = scope;
         this.user = user;
@@ -78,13 +81,16 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
     private void addOrganisationUnitProgramLink(@NonNull OrganisationUnit organisationUnit) {
         List<Program> orgUnitPrograms = organisationUnit.programs();
         if (orgUnitPrograms != null && programUids != null) {
-            OrganisationUnitProgramLinkModelBuilder modelBuilder
-                    = new OrganisationUnitProgramLinkModelBuilder(organisationUnit);
+            List<Program> programsToAdd = new ArrayList<>();
             for (Program program : orgUnitPrograms) {
                 if (programUids.contains(program.uid())) {
-                    organisationUnitProgramLinkStore.updateOrInsertWhere(modelBuilder.buildModel(program));
+                    programsToAdd.add(program);
                 }
             }
+
+            OrganisationUnitProgramLinkModelBuilder modelBuilder
+                    = new OrganisationUnitProgramLinkModelBuilder(organisationUnit);
+            organisationUnitProgramLinkHandler.handleMany(organisationUnit.uid(), programsToAdd, modelBuilder);
         }
     }
 
@@ -95,7 +101,8 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
         return new OrganisationUnitHandler(
                 OrganisationUnitStore.create(databaseAdapter),
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
-                OrganisationUnitProgramLinkStore.create(databaseAdapter),
+                new LinkModelHandlerImpl<Program, OrganisationUnitProgramLinkModel>(
+                        OrganisationUnitProgramLinkStore.create(databaseAdapter)),
                 programUids, scope, user);
     }
 }

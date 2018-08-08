@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
@@ -47,6 +48,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -61,6 +65,9 @@ public class OrganisationUnitHandlerShould {
 
     @Mock
     private ObjectWithoutUidStore<OrganisationUnitProgramLinkModel> organisationUnitProgramLinkStore;
+
+    @Mock
+    private LinkModelHandler<Program, OrganisationUnitProgramLinkModel> organisationUnitProgramLinkHandler;
 
     @Mock
     private OrganisationUnit organisationUnit;
@@ -86,7 +93,7 @@ public class OrganisationUnitHandlerShould {
 
         organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore, programUids, scope, user);
+                organisationUnitProgramLinkHandler, programUids, scope, user);
 
         when(organisationUnit.uid()).thenReturn("test_organisation_unit_uid");
         when(user.uid()).thenReturn(PROGRAM_UID);
@@ -108,17 +115,16 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void persist_program_organisation_unit_link_when_programs_uids() throws Exception {
-        OrganisationUnitProgramLinkModel programLinkModel =
-                new OrganisationUnitProgramLinkModelBuilder(organisationUnit).buildModel(program);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
-        verify(organisationUnitProgramLinkStore).updateOrInsertWhere(programLinkModel);
+        verify(organisationUnitProgramLinkHandler).handleMany(anyString(), anyListOf(Program.class),
+                any(OrganisationUnitProgramLinkModelBuilder.class));
     }
 
     @Test
     public void persist_program_organisation_unit_link_when_no_programs_uids() throws Exception {
         organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkStore, null,
+                organisationUnitProgramLinkHandler, null,
                 scope, user);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
         verifyNoMoreInteractions(organisationUnitProgramLinkStore);

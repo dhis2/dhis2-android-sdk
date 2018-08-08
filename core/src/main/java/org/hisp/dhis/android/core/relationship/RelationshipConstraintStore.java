@@ -28,15 +28,46 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class RelationshipConstraintStore {
 
     private RelationshipConstraintStore() {}
 
+    private static final StatementBinder<RelationshipConstraint> BINDER = new StatementBinder<RelationshipConstraint>() {
+        @Override
+        public void bindToStatement(@NonNull RelationshipConstraint o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.relationshipType()));
+            sqLiteBind(sqLiteStatement, 2, o.constraintType());
+            sqLiteBind(sqLiteStatement, 3, o.relationshipEntity());
+            sqLiteBind(sqLiteStatement, 4, UidsHelper.getUidOrNull(o.trackedEntityType()));
+            sqLiteBind(sqLiteStatement, 5, UidsHelper.getUidOrNull(o.program()));
+            sqLiteBind(sqLiteStatement, 6, UidsHelper.getUidOrNull(o.programStage()));
+        }
+    };
+
+    private static final WhereStatementBinder<RelationshipConstraint> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<RelationshipConstraint>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull RelationshipConstraint o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 7, UidsHelper.getUidOrNull(o.relationshipType()));
+            sqLiteBind(sqLiteStatement, 8, o.constraintType());
+        }
+    };
+
+
     public static ObjectWithoutUidStore<RelationshipConstraint> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, RelationshipConstraintTableInfo.TABLE_INFO);
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, RelationshipConstraintTableInfo.TABLE_INFO,
+                BINDER, WHERE_UPDATE_BINDER);
     }
 }

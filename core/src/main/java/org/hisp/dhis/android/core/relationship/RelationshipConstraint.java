@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -42,12 +40,9 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DbRelationshipConstraintTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbRelationshipEntityTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RelationshipConstraint.Builder.class)
@@ -78,22 +73,6 @@ public abstract class RelationshipConstraint extends BaseModel {
     @Nullable
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(relationshipType()));
-        sqLiteBind(sqLiteStatement, 2, constraintType());
-        sqLiteBind(sqLiteStatement, 3, relationshipEntity());
-        sqLiteBind(sqLiteStatement, 4, UidsHelper.getUidOrNull(trackedEntityType()));
-        sqLiteBind(sqLiteStatement, 5, UidsHelper.getUidOrNull(program()));
-        sqLiteBind(sqLiteStatement, 6, UidsHelper.getUidOrNull(programStage()));
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 7, UidsHelper.getUidOrNull(relationshipType()));
-        sqLiteBind(sqLiteStatement, 8, constraintType());
-    }
 
     static RelationshipConstraint create(Cursor cursor) {
         return AutoValue_RelationshipConstraint.createFromCursor(cursor);

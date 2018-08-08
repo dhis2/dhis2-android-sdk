@@ -28,16 +28,42 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class DataElementStore {
 
     private DataElementStore() {}
 
+    private static StatementBinder<DataElementModel> BINDER = new NameableStatementBinder<DataElementModel>() {
+        @Override
+        public void bindToStatement(@NonNull DataElementModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 11, o.valueType());
+            sqLiteBind(sqLiteStatement, 12, o.zeroIsSignificant());
+            sqLiteBind(sqLiteStatement, 13, o.aggregationType());
+            sqLiteBind(sqLiteStatement, 14, o.formName());
+            sqLiteBind(sqLiteStatement, 15, o.numberType());
+            sqLiteBind(sqLiteStatement, 16, o.domainType());
+            sqLiteBind(sqLiteStatement, 17, o.dimension());
+            sqLiteBind(sqLiteStatement, 18, o.displayFormName());
+            sqLiteBind(sqLiteStatement, 19, o.optionSet());
+            sqLiteBind(sqLiteStatement, 20, o.categoryCombo());
+        }
+    };
+
     public static IdentifiableObjectStore<DataElementModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter,
-                DataElementModel.TABLE, new DataElementModel.Columns().all());
+                DataElementModel.TABLE, new DataElementModel.Columns().all(), BINDER);
     }
 }

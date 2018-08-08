@@ -2,7 +2,6 @@ package org.hisp.dhis.android.core.category;
 
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -15,8 +14,6 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class CategoryOptionModel extends BaseNameableObjectModel {
@@ -41,13 +38,6 @@ public abstract class CategoryOptionModel extends BaseNameableObjectModel {
     @ColumnName(Columns.END_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date endDate();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 11, startDate());
-        sqLiteBind(sqLiteStatement, 12, endDate());
-    }
 
     @NonNull
     public static Builder builder() {

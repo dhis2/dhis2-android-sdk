@@ -28,16 +28,35 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class SectionStore {
 
     private SectionStore() {}
 
+    private static StatementBinder<SectionModel> BINDER = new IdentifiableStatementBinder<SectionModel>() {
+        @Override
+        public void bindToStatement(@NonNull SectionModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.description());
+            sqLiteBind(sqLiteStatement, 8, o.sortOrder());
+            sqLiteBind(sqLiteStatement, 9, o.dataSet());
+            sqLiteBind(sqLiteStatement, 10, o.showRowTotals());
+            sqLiteBind(sqLiteStatement, 11, o.showColumnTotals());
+        }
+    };
+
     public static IdentifiableObjectStore<SectionModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, SectionModel.TABLE,
-                new SectionModel.Columns().all());
+                new SectionModel.Columns().all(), BINDER);
     }
 }

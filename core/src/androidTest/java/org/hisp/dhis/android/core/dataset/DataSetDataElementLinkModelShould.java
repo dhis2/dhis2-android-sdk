@@ -47,7 +47,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class DataSetDataElementLinkModelShould extends LinkModelAbstractShould<DataSetDataElementLinkModel> {
 
     public DataSetDataElementLinkModelShould() {
-        super(new DataSetDataElementLinkModel.Columns().all(), 2);
+        super(new DataSetDataElementLinkModel.Columns().all(), 3);
     }
 
     @Override
@@ -55,6 +55,7 @@ public class DataSetDataElementLinkModelShould extends LinkModelAbstractShould<D
         return DataSetDataElementLinkModel.builder()
                 .dataSet("data_set_uid")
                 .dataElement("data_element_uid")
+                .categoryCombo("category_combo_uid")
                 .build();
     }
 
@@ -66,14 +67,15 @@ public class DataSetDataElementLinkModelShould extends LinkModelAbstractShould<D
     @Override
     protected Object[] getModelAsObjectArray() {
         return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
-                model.dataSet(), model.dataElement());
+                model.dataSet(), model.dataElement(), model.categoryCombo());
     }
 
     @Test
     public void have_data_set_data_element_model_columns() {
         List<String> columnsList = Arrays.asList(new Columns().all());
 
-        assertThat(columnsList.contains(Columns.DATA_SET)).isEqualTo(true);
-        assertThat(columnsList.contains(Columns.DATA_ELEMENT)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.DATA_SET)).isTrue();
+        assertThat(columnsList.contains(Columns.DATA_ELEMENT)).isTrue();
+        assertThat(columnsList.contains(Columns.CATEGORY_COMBO)).isTrue();
     }
 }

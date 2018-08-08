@@ -102,7 +102,7 @@ public abstract class DataSet extends BaseNameableObject {
     private static final Field<DataSet, Boolean> dataElementDecoration = Field.create(DATA_ELEMENT_DECORATION);
     private static final Field<DataSet, Boolean> renderAsTabs = Field.create(RENDER_AS_TABS);
     private static final Field<DataSet, Boolean> renderHorizontally = Field.create(RENDER_HORIZONTALLY);
-    private static final NestedField<DataSet, DataElementUids> dataSetElements = NestedField.create(DATA_SET_ELEMENTS);
+    private static final NestedField<DataSet, DataSetElement> dataSetElements = NestedField.create(DATA_SET_ELEMENTS);
     private static final NestedField<DataSet, ObjectWithUid> indicators = NestedField.create(INDICATORS);
     private static final NestedField<DataSet, Section> sections = NestedField.create(SECTIONS);
     private static final NestedField<DataSet, DataElementOperand> compulsoryDataElementOperands
@@ -120,7 +120,7 @@ public abstract class DataSet extends BaseNameableObject {
             expiryDays, timelyDays, notifyCompletingUser,
             openFuturePeriods, fieldCombinationRequired, validCompleteOnly, noValueRequiresComment,
             skipOffline, dataElementDecoration, renderAsTabs, renderHorizontally,
-            dataSetElements.with(DataElementUids.allFields),
+            dataSetElements.with(DataSetElement.allFields),
             indicators.with(ObjectWithUid.uid),
             sections.with(Section.allFields),
             compulsoryDataElementOperands.with(DataElementOperand.allFields),
@@ -196,7 +196,7 @@ public abstract class DataSet extends BaseNameableObject {
 
     @Nullable
     @JsonProperty(DATA_SET_ELEMENTS)
-    public abstract List<DataElementUids> dataSetElements();
+    public abstract List<DataSetElement> dataSetElements();
     
     @Nullable
     @JsonProperty(INDICATORS)
@@ -249,7 +249,7 @@ public abstract class DataSet extends BaseNameableObject {
             @JsonProperty(DATA_ELEMENT_DECORATION) Boolean dataElementDecoration,
             @JsonProperty(RENDER_AS_TABS) Boolean renderAsTabs,
             @JsonProperty(RENDER_HORIZONTALLY) Boolean renderHorizontally,
-            @JsonProperty(DATA_SET_ELEMENTS) List<DataElementUids> dataSetElements,
+            @JsonProperty(DATA_SET_ELEMENTS) List<DataSetElement> dataSetElements,
             @JsonProperty(INDICATORS) List<ObjectWithUid> indicators,
             @JsonProperty(SECTIONS) List<Section> sections,
             @JsonProperty(COMPULSORY_DATA_ELEMENT_OPERANDS) List<DataElementOperand> compulsoryDataElementOperands,

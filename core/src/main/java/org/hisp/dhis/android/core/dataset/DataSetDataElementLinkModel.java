@@ -47,11 +47,12 @@ public abstract class DataSetDataElementLinkModel extends BaseModel {
     public static class Columns extends BaseModel.Columns {
         public static final String DATA_SET = "dataSet";
         public static final String DATA_ELEMENT = "dataElement";
+        public static final String CATEGORY_COMBO = "categoryCombo";
 
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    DATA_SET, DATA_ELEMENT);
+                    DATA_SET, DATA_ELEMENT, CATEGORY_COMBO);
         }
 
         @Override
@@ -76,16 +77,21 @@ public abstract class DataSetDataElementLinkModel extends BaseModel {
     @ColumnName(Columns.DATA_ELEMENT)
     public abstract String dataElement();
 
+    @Nullable
+    @ColumnName(Columns.CATEGORY_COMBO)
+    public abstract String categoryCombo();
+
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         sqLiteBind(sqLiteStatement, 1, dataSet());
         sqLiteBind(sqLiteStatement, 2, dataElement());
+        sqLiteBind(sqLiteStatement, 3, categoryCombo());
     }
 
     @Override
     public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 3, dataSet());
-        sqLiteBind(sqLiteStatement, 4, dataElement());
+        sqLiteBind(sqLiteStatement, 4, dataSet());
+        sqLiteBind(sqLiteStatement, 5, dataElement());
     }
 
     @AutoValue.Builder
@@ -93,6 +99,8 @@ public abstract class DataSetDataElementLinkModel extends BaseModel {
         public abstract Builder dataSet(String dataSet);
 
         public abstract Builder dataElement(String dataElement);
+
+        public abstract Builder categoryCombo(String categoryCombo);
 
         public abstract DataSetDataElementLinkModel build();
     }

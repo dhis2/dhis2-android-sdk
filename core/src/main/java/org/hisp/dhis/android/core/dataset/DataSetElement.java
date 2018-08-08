@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -39,23 +40,38 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
 @AutoValue
-public abstract class DataElementUids {
+public abstract class DataSetElement {
     private final static String DATA_ELEMENT = "dataElement";
+    private final static String CATEGORY_COMBO = "categoryCombo";
 
-    public static final NestedField<DataElementUids, ObjectWithUid> dataElement =
+    public static final NestedField<DataSetElement, ObjectWithUid> dataElement =
             NestedField.create(DATA_ELEMENT);
 
-    public static final Fields<DataElementUids> allFields =
-            Fields.<DataElementUids>builder().fields(dataElement.with(ObjectWithUid.uid)).build();
+    public static final NestedField<DataSetElement, ObjectWithUid> categoryCombo =
+            NestedField.create(CATEGORY_COMBO);
+
+    public static final Fields<DataSetElement> allFields =
+            Fields.<DataSetElement>builder().fields(dataElement.with(ObjectWithUid.uid),
+                    categoryCombo.with(ObjectWithUid.uid)).build();
 
     @NonNull
     @JsonProperty(DATA_ELEMENT)
     public abstract ObjectWithUid dataElement();
 
-    @JsonCreator
-    public static DataElementUids create(
-            @JsonProperty(DATA_ELEMENT) ObjectWithUid dataElement) {
+    @Nullable
+    @JsonProperty(CATEGORY_COMBO)
+    public abstract ObjectWithUid categoryCombo();
 
-        return new AutoValue_DataElementUids(dataElement);
+    String categoryComboUid() {
+        ObjectWithUid categoryCombo = categoryCombo();
+        return categoryCombo == null ? null : categoryCombo.uid();
+    }
+
+    @JsonCreator
+    public static DataSetElement create(
+            @JsonProperty(DATA_ELEMENT) ObjectWithUid dataElement,
+            @JsonProperty(CATEGORY_COMBO) ObjectWithUid categoryCombo) {
+
+        return new AutoValue_DataSetElement(dataElement, categoryCombo);
     }
 }

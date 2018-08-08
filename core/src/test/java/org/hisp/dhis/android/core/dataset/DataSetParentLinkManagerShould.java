@@ -70,68 +70,72 @@ public class DataSetParentLinkManagerShould {
     private final String DATA_SET_2_UID = "test_data_set_uid2";
     private final String DATA_SET_3_UID = "test_data_set_uid3";
 
-    private DataElementUids decc1 = DataElementUids.create(ObjectWithUid.create("de1"));
-    private DataElementUids decc2 = DataElementUids.create(ObjectWithUid.create("de2"));
-    private DataElementUids decc3 = DataElementUids.create(ObjectWithUid.create("de3"));
+    private DataSetElement dataSetElement1 = DataSetElement.create(ObjectWithUid.create("dataSetElement1"),
+            ObjectWithUid.create("categoryCombo1"));
+    private DataSetElement dataSetElement2 = DataSetElement.create(ObjectWithUid.create("dataSetElement2"),
+            ObjectWithUid.create("categoryCombo2"));
+    private DataSetElement dataSetElement3 = DataSetElement.create(ObjectWithUid.create("dataSetElement3"),
+            ObjectWithUid.create("categoryCombo3"));
 
-    private ObjectWithUid i1 = ObjectWithUid.create("i1");
-    private ObjectWithUid i2 = ObjectWithUid.create("i2");
-    private ObjectWithUid i3 = ObjectWithUid.create("i3");
+    private ObjectWithUid indicator1 = ObjectWithUid.create("indicator1");
+    private ObjectWithUid indicator2 = ObjectWithUid.create("indicator2");
+    private ObjectWithUid indicator3 = ObjectWithUid.create("indicator3");
 
     @Mock
-    private OrganisationUnit ou1;
+    private OrganisationUnit organisationUnit1;
 
     @Mock
-    private OrganisationUnit ou2;
+    private OrganisationUnit organisationUnit2;
 
-    private DataSetParentLinkManager linkManager;
+    private DataSetParentLinkManager dataSetParentLinkManager;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        linkManager = new DataSetParentLinkManager(dataSetDataElementStore,
+        dataSetParentLinkManager = new DataSetParentLinkManager(dataSetDataElementStore,
                 dataSetOrganisationUnitStore, dataSetIndicatorStore);
 
         when(dataSet1.uid()).thenReturn(DATA_SET_1_UID);
         when(dataSet2.uid()).thenReturn(DATA_SET_2_UID);
         when(dataSet3.uid()).thenReturn(DATA_SET_3_UID);
-        when(dataSet1.dataSetElements()).thenReturn(Lists.newArrayList(decc1, decc2));
-        when(dataSet2.dataSetElements()).thenReturn(Lists.newArrayList(decc2, decc3));
+        when(dataSet1.dataSetElements()).thenReturn(Lists.newArrayList(dataSetElement1, dataSetElement2));
+        when(dataSet2.dataSetElements()).thenReturn(Lists.newArrayList(dataSetElement2, dataSetElement3));
 
-        when(dataSet1.indicators()).thenReturn(Lists.newArrayList(i1, i2));
-        when(dataSet2.indicators()).thenReturn(Lists.newArrayList(i2, i3));
+        when(dataSet1.indicators()).thenReturn(Lists.newArrayList(indicator1, indicator2));
+        when(dataSet2.indicators()).thenReturn(Lists.newArrayList(indicator2, indicator3));
 
-        when(ou1.uid()).thenReturn("test_ou_uid_uid1");
-        when(ou1.dataSets()).thenReturn(Lists.newArrayList(dataSet1, dataSet2));
-        when(ou2.uid()).thenReturn("test_ou_uid_uid2");
-        when(ou2.dataSets()).thenReturn(Lists.newArrayList(dataSet2, dataSet3));
+        when(organisationUnit1.uid()).thenReturn("test_ou_uid_uid1");
+        when(organisationUnit1.dataSets()).thenReturn(Lists.newArrayList(dataSet1, dataSet2));
+        when(organisationUnit2.uid()).thenReturn("test_ou_uid_uid2");
+        when(organisationUnit2.dataSets()).thenReturn(Lists.newArrayList(dataSet2, dataSet3));
     }
 
     @Test
     public void store_data_set_data_element_links() throws Exception {
-        linkManager.saveDataSetDataElementAndIndicatorLinks(Lists.newArrayList(dataSet1, dataSet2));
-        linkManager.saveDataSetOrganisationUnitLinks(Lists.newArrayList(ou1, ou2), Sets.newHashSet(
-                Lists.newArrayList(DATA_SET_1_UID, DATA_SET_2_UID, DATA_SET_3_UID)));
+        dataSetParentLinkManager.saveDataSetDataElementAndIndicatorLinks(Lists.newArrayList(dataSet1, dataSet2));
+        dataSetParentLinkManager.saveDataSetOrganisationUnitLinks(
+                Lists.newArrayList(organisationUnit1, organisationUnit2), Sets.newHashSet(
+                        Lists.newArrayList(DATA_SET_1_UID, DATA_SET_2_UID, DATA_SET_3_UID)));
 
-        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(decc1, dataSet1));
-        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(decc2, dataSet1));
-        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(decc2, dataSet2));
-        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(decc3, dataSet2));
+        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElement1, dataSet1));
+        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElement2, dataSet1));
+        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElement2, dataSet2));
+        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElement3, dataSet2));
 
-        verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(i1, dataSet1));
-        verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(i2, dataSet1));
-        verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(i2, dataSet2));
-        verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(i3, dataSet2));
+        verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(indicator1, dataSet1));
+        verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(indicator2, dataSet1));
+        verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(indicator2, dataSet2));
+        verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(indicator3, dataSet2));
 
-        verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(ou1, dataSet1));
-        verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(ou1, dataSet2));
-        verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(ou2, dataSet2));
-        verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(ou2, dataSet3));
+        verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(organisationUnit1, dataSet1));
+        verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(organisationUnit1, dataSet2));
+        verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(organisationUnit2, dataSet2));
+        verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(organisationUnit2, dataSet3));
 
         verifyNoMoreInteractions(dataSetOrganisationUnitStore);
     }
 
-    private DataSetDataElementLinkModel dataElementExpectedLink(DataElementUids decc, DataSet dataSet) {
+    private DataSetDataElementLinkModel dataElementExpectedLink(DataSetElement decc, DataSet dataSet) {
         return new DataSetDataElementLinkModelBuilder(dataSet).buildModel(decc);
     }
 

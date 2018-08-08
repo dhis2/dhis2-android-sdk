@@ -5,14 +5,12 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSetUids;
@@ -37,8 +35,7 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
     }
 
     private Call<List<DataValue>> createCall() {
-        GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
-        return DataValueEndpointCall.FACTORY.create(data,
+        return DataValueEndpointCall.FACTORY.create(getGenericCallData(d2),
                 DataValueQuery.create(getDataSetUids(), getPeriodIds(), getOrgUnitUids()));
     }
 

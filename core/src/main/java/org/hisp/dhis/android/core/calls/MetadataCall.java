@@ -51,6 +51,7 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramParentCall;
 import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.settings.SystemSettingCall;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
@@ -60,12 +61,14 @@ import java.util.concurrent.Callable;
 
 import retrofit2.Retrofit;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 public class MetadataCall extends SyncCall<Unit> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
     private final NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
+    private final DHISVersionManager versionManager;
     private final GenericCallFactory<SystemSetting> systemSettingCallFactory;
     private final GenericCallFactory<User> userCallFactory;
     private final GenericCallFactory<List<Category>> categoryCallFactory;
@@ -78,6 +81,7 @@ public class MetadataCall extends SyncCall<Unit> {
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
                         @NonNull Retrofit retrofit,
                         @NonNull NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
+                        @NonNull DHISVersionManager versionManager,
                         @NonNull GenericCallFactory<SystemSetting> systemSettingCallFactory,
                         @NonNull GenericCallFactory<User> userCallFactory,
                         @NonNull GenericCallFactory<List<Category>> categoryCallFactory,
@@ -90,6 +94,7 @@ public class MetadataCall extends SyncCall<Unit> {
         this.retrofit = retrofit;
 
         this.systemInfoCallFactory = systemInfoCallFactory;
+        this.versionManager = versionManager;
         this.systemSettingCallFactory = systemSettingCallFactory;
         this.userCallFactory = userCallFactory;
         this.categoryCallFactory = categoryCallFactory;
@@ -112,7 +117,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 SystemInfo systemInfo = executor.executeD2Call(systemInfoCallFactory.create());
 
                 GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
-                        systemInfo.serverDate());
+                        systemInfo.serverDate(), versionManager);
 
                 executor.executeD2Call(systemSettingCallFactory.create(genericCallData));
                 User user = executor.executeD2Call(userCallFactory.create(genericCallData));
@@ -141,6 +146,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 databaseAdapter,
                 retrofit,
                 internalModules.systemInfo.callFactory,
+                internalModules.systemInfo.publicModule.versionManager,
                 SystemSettingCall.FACTORY,
                 UserCall.FACTORY,
                 CategoryEndpointCall.FACTORY,

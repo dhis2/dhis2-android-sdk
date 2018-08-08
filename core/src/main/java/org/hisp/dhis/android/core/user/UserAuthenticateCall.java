@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import java.util.concurrent.Callable;
@@ -65,6 +66,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     private final Retrofit retrofit;
 
     private final NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
+    private final DHISVersionManager versionManager;
 
     // retrofit service
     private final UserService userService;
@@ -85,6 +87,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
             @NonNull NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
+            @NonNull DHISVersionManager versionManager,
             @NonNull UserService userService,
             @NonNull SyncHandler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
@@ -99,6 +102,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         this.retrofit = retrofit;
 
         this.systemInfoCallFactory = systemInfoCallFactory;
+        this.versionManager = versionManager;
         this.userService = userService;
 
         this.userHandler = userHandler;
@@ -147,7 +151,8 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             AuthenticatedUserModel authenticatedUserModel = buildAuthenticatedUserModel(authenticatedUser.uid());
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserModel);
             SystemInfo systemInfo = new D2CallExecutor().executeD2Call(systemInfoCallFactory.create());
-            handleUser(authenticatedUser, GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate()));
+            handleUser(authenticatedUser, GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate(),
+                    versionManager));
             transaction.setSuccessful();
             return authenticatedUser;
         } finally {
@@ -260,6 +265,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                 databaseAdapter,
                 retrofit,
                 internalModules.systemInfo.callFactory,
+                internalModules.systemInfo.publicModule.versionManager,
                 retrofit.create(UserService.class),
                 UserHandler.create(databaseAdapter),
                 ResourceHandler.create(databaseAdapter),

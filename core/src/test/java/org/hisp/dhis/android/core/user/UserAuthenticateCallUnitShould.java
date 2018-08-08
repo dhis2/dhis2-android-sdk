@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.junit.Before;
 import org.junit.Test;
@@ -112,6 +113,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private SystemInfo systemInfoFromDb;
 
     @Mock
+    private DHISVersionManager versionManager;
+
+    @Mock
     private AuthenticatedUserModel authenticatedUser;
 
     @Mock
@@ -175,7 +179,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     private UserAuthenticateCall instantiateCall(String username, String password) {
-        return new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory,
+        return new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory, versionManager,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
                 systemInfoRepository, userStore, dbWipeCall,
                 username, password, baseEndpoint + "/api/");

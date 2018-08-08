@@ -55,7 +55,6 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -150,7 +149,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 OrganisationUnitHandler.create(databaseAdapter(), programUids,
                         OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
 
-        genericCallData = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
+        genericCallData = getGenericCallData(d2);
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
                 genericCallData, organisationUnitHandler);
     }

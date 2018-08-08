@@ -29,40 +29,46 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import java.util.Date;
 
-final class SystemInfoStore {
+import static org.mockito.Mockito.verify;
 
-    private SystemInfoStore() {
+@RunWith(AndroidJUnit4.class)
+public class SystemInfoStatementBindingShould {
+
+    @Mock
+    private SQLiteStatement sqLiteStatement;
+
+    private Date date = new Date();
+
+    private SystemInfo info = SystemInfo.builder().serverDate(new Date()).dateFormat("format")
+            .contextPath("path").version("2.30").build();
+
+
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
     }
 
-    static final StatementBinder<SystemInfo> BINDER = new StatementBinder<SystemInfo>() {
-        @Override
-        public void bindToStatement(@NonNull SystemInfo o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.serverDate());
-            sqLiteBind(sqLiteStatement, 2, o.dateFormat());
-            sqLiteBind(sqLiteStatement, 3, o.version());
-            sqLiteBind(sqLiteStatement, 4, o.contextPath());
-        }
-    };
+    @Test
+    public void map_arguments_statement_binder() {
+        SystemInfoStore.BINDER.bindToStatement(info, sqLiteStatement);
+        verify(sqLiteStatement).bindString(1, BaseIdentifiableObject.DATE_FORMAT.format(date));
+        verify(sqLiteStatement).bindString(2, info.dateFormat());
+        verify(sqLiteStatement).bindString(3, info.contextPath());
+        verify(sqLiteStatement).bindString(4, info.version());
+    }
 
-    static final WhereStatementBinder<SystemInfo> WHERE_UPDATE_BINDER = new WhereStatementBinder<SystemInfo>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull SystemInfo o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 5, o.contextPath());
-        }
-    };
-
-    public static ObjectWithoutUidStore<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemInfoTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER);
+    @Test
+    public void map_context_path_in_where_to_statement_binder() {
+        SystemInfoStore.WHERE_UPDATE_BINDER.bindToUpdateWhereStatement(info, sqLiteStatement);
+        verify(sqLiteStatement).bindString(5, info.version());
     }
 }

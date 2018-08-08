@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -42,8 +40,6 @@ import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.GodClass"})
 @AutoValue
@@ -204,37 +200,6 @@ public abstract class ProgramModel extends BaseNameableObjectModel {
     @Nullable
     @ColumnName(Columns.MAX_TEI_COUNT_TO_RETURN)
     public abstract Integer maxTeiCountToReturn();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 11, version());
-        sqLiteBind(sqLiteStatement, 12, onlyEnrollOnce());
-        sqLiteBind(sqLiteStatement, 13, enrollmentDateLabel());
-        sqLiteBind(sqLiteStatement, 14, displayIncidentDate());
-        sqLiteBind(sqLiteStatement, 15, incidentDateLabel());
-        sqLiteBind(sqLiteStatement, 16, registration());
-        sqLiteBind(sqLiteStatement, 17, selectEnrollmentDatesInFuture());
-        sqLiteBind(sqLiteStatement, 18, dataEntryMethod());
-        sqLiteBind(sqLiteStatement, 19, ignoreOverdueEvents());
-        sqLiteBind(sqLiteStatement, 20, relationshipFromA());
-        sqLiteBind(sqLiteStatement, 21, selectIncidentDatesInFuture());
-        sqLiteBind(sqLiteStatement, 22, captureCoordinates());
-        sqLiteBind(sqLiteStatement, 23, useFirstStageDuringRegistration());
-        sqLiteBind(sqLiteStatement, 24, displayFrontPageList());
-        sqLiteBind(sqLiteStatement, 25, programType());
-        sqLiteBind(sqLiteStatement, 26, relationshipType());
-        sqLiteBind(sqLiteStatement, 27, relationshipText());
-        sqLiteBind(sqLiteStatement, 28, relatedProgram());
-        sqLiteBind(sqLiteStatement, 29, trackedEntityType());
-        sqLiteBind(sqLiteStatement, 30, categoryCombo());
-        sqLiteBind(sqLiteStatement, 31, accessDataWrite());
-        sqLiteBind(sqLiteStatement, 32, expiryDays());
-        sqLiteBind(sqLiteStatement, 33, completeEventsExpiryDays());
-        sqLiteBind(sqLiteStatement, 34, expiryPeriodType());
-        sqLiteBind(sqLiteStatement, 35, minAttributesRequiredToSearch());
-        sqLiteBind(sqLiteStatement, 36, maxTeiCountToReturn());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.common;
 
 import android.content.ContentValues;
-import android.database.sqlite.SQLiteStatement;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -62,16 +61,5 @@ public abstract class BaseModel implements Model {
 
     public static abstract class Builder<T extends Builder> {
         public abstract T id(Long id);
-    }
-
-    // TODO Delete method when all our old models adopt Generic architecture
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        // Intentional empty method.
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        // Intentional empty method.
     }
 }

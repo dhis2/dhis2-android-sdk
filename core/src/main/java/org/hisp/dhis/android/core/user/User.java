@@ -153,8 +153,6 @@ public abstract class User extends BaseIdentifiableObject implements Model {
         }
     };
 
-
-    // TODO toContentValues is not yet supported, as the
     @NonNull
     public abstract ContentValues toContentValues();
 

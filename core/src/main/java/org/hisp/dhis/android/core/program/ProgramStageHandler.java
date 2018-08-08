@@ -40,6 +40,8 @@ import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Collection;
 
@@ -50,6 +52,7 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
     private final OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
     private final OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
     private final CollectionCleaner<ProgramStage> collectionCleaner;
+    private final DHISVersionManager versionManager;
 
     ProgramStageHandler(IdentifiableObjectStore<ProgramStageModel> programStageStore,
                         ProgramStageSectionHandler programStageSectionHandler,
@@ -57,7 +60,8 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
                         GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                         OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner,
                         OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner,
-                        CollectionCleaner<ProgramStage> collectionCleaner) {
+                        CollectionCleaner<ProgramStage> collectionCleaner,
+                        DHISVersionManager versionManager) {
         super(programStageStore);
         this.programStageSectionHandler = programStageSectionHandler;
         this.programStageDataElementHandler = programStageDataElementHandler;
@@ -65,6 +69,25 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
         this.programStageDataElementCleaner = programStageDataElementCleaner;
         this.programStageSectionCleaner = programStageSectionCleaner;
         this.collectionCleaner = collectionCleaner;
+        this.versionManager = versionManager;
+    }
+
+    @Override
+    protected ProgramStage beforeObjectHandled(ProgramStage programStage) {
+        ProgramStage adaptedProgramStage;
+        ProgramStage.Builder builder = programStage.toBuilder();
+        if (versionManager.is2_29()) {
+            adaptedProgramStage = programStage.captureCoordinates() ? builder.featureType(FeatureType.POINT).build() :
+                    builder.featureType(FeatureType.NONE).build();
+        } else {
+            if (programStage.featureType() == null) {
+                adaptedProgramStage = builder.captureCoordinates(false).featureType(FeatureType.NONE).build();
+            } else {
+                adaptedProgramStage = builder.captureCoordinates(
+                        programStage.featureType() != FeatureType.NONE).build();
+            }
+        }
+        return adaptedProgramStage;
     }
 
     @Override
@@ -86,7 +109,7 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
         collectionCleaner.deleteNotPresent(programStages);
     }
 
-    public static ProgramStageHandler create(DatabaseAdapter databaseAdapter) {
+    public static ProgramStageHandler create(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
         return new ProgramStageHandler(
                 ProgramStageStore.create(databaseAdapter),
                 ProgramStageSectionHandler.create(databaseAdapter),
@@ -96,6 +119,7 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
                         ProgramStageDataElementModel.Columns.PROGRAM_STAGE, databaseAdapter),
                 new OrphanCleanerImpl<ProgramStage, ProgramStageSection>(ProgramStageSectionModel.TABLE,
                         ProgramStageSectionModel.Columns.PROGRAM_STAGE, databaseAdapter),
-                new CollectionCleanerImpl<ProgramStage>(ProgramStageModel.TABLE, databaseAdapter));
+                new CollectionCleanerImpl<ProgramStage>(ProgramStageModel.TABLE, databaseAdapter),
+                versionManager);
     }
 }

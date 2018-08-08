@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
@@ -69,7 +70,7 @@ public class ProgramHandlerShould {
     private GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler;
 
     @Mock
-    private ProgramRuleHandler programRuleHandler;
+    private IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler;
 
     @Mock
     private GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
@@ -110,6 +111,9 @@ public class ProgramHandlerShould {
 
     @Mock
     private List<ProgramIndicator> programIndicators;
+
+    @Mock
+    private ProgramRule programRule;
 
     @Mock
     private List<ProgramRule> programRules;
@@ -161,6 +165,8 @@ public class ProgramHandlerShould {
         when(program.relatedProgram()).thenReturn(relatedProgram);
         when(program.trackedEntityType()).thenReturn(trackedEntityType);
 
+        programRules = Collections.singletonList(programRule);
+
         when(program.programStages()).thenReturn(programStages);
         when(program.programTrackedEntityAttributes()).thenReturn(programTrackedEntityAttributes);
         when(program.programIndicators()).thenReturn(programIndicators);
@@ -174,39 +180,39 @@ public class ProgramHandlerShould {
     }
 
     @Test
-    public void call_program_tracked_entity_attributes_handler() throws Exception {
+    public void call_program_tracked_entity_attributes_handler() {
         programHandler.handle(program, new ProgramModelBuilder());
         verify(programTrackedEntityAttributeHandler).handleMany(anyListOf(ProgramTrackedEntityAttribute.class),
                 any(ProgramTrackedEntityAttributeModelBuilder.class));
     }
 
     @Test
-    public void call_program_indicator_handler() throws Exception {
+    public void call_program_indicator_handler() {
         programHandler.handle(program, new ProgramModelBuilder());
         verify(programIndicatorHandler).handleMany(anyListOf(ProgramIndicator.class),
                 any(ProgramIndicatorModelBuilder.class));
     }
 
     @Test
-    public void call_program_rule_handler() throws Exception {
+    public void call_program_rule_handler() {
         programHandler.handle(program, new ProgramModelBuilder());
-        verify(programRuleHandler).handleProgramRules(programRules);
+        verify(programRuleHandler).handleMany(programRules);
     }
 
     @Test
-    public void call_program_rule_variable_handler() throws Exception {
+    public void call_program_rule_variable_handler() {
         programHandler.handle(program, new ProgramModelBuilder());
         verify(programRuleVariableHandler).handleProgramRuleVariables(programRuleVariables);
     }
 
     @Test
-    public void call_style_handler() throws Exception {
+    public void call_style_handler() {
         programHandler.handle(program, new ProgramModelBuilder());
         verify(styleHandler).handle(same(program.style()), any(ObjectStyleModelBuilder.class));
     }
 
     @Test
-    public void call_program_section_handler() throws Exception {
+    public void call_program_section_handler() {
         programHandler.handle(program, new ProgramModelBuilder());
         verify(programSectionHandler).handleMany(anyListOf(ProgramSection.class),
                 any(ProgramSectionModelBuilder.class));

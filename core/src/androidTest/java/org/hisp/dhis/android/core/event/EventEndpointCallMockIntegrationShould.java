@@ -1,8 +1,5 @@
 package org.hisp.dhis.android.core.event;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-
 import android.support.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -27,6 +24,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
 public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
@@ -56,8 +56,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void download_events_according_to_default_query() throws Exception {
         givenAMetadataInDatabase();
 
-        EventEndpointCall eventEndpointCall = EventCallFactory.create(
-                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("events_1.json");
 
@@ -74,8 +73,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         int pageSize = 3;
 
-        EventEndpointCall eventEndpointCall = EventCallFactory.create(
-                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", pageSize);
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", pageSize);
 
         dhis2MockServer.enqueueMockResponse("events_2.json");
 
@@ -96,8 +94,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
             throws Exception {
         givenAMetadataInDatabase();
 
-        EventEndpointCall eventEndpointCall = EventCallFactory.create(
-                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse(
                 "two_events_first_good_second_wrong_foreign_key.json");

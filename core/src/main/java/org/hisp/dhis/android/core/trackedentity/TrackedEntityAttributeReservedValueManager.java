@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import java.util.Date;
@@ -59,17 +60,20 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
     private final NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
+    private final DHISVersionManager versionManager;
 
     private TrackedEntityAttributeReservedValueManager(
             DatabaseAdapter databaseAdapter,
             Retrofit retrofit,
             NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
+            DHISVersionManager versionManager,
             TrackedEntityAttributeReservedValueStoreInterface store,
             IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
             TrackedEntityAttributeStore trackedEntityAttributeStore) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.systemInfoCallFactory = systemInfoCallFactory;
+        this.versionManager = versionManager;
         this.store = store;
         this.organisationUnitStore = organisationUnitStore;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
@@ -118,7 +122,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         SystemInfo systemInfo = executor.executeD2Call(systemInfoCallFactory.create());
 
         GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
-                systemInfo.serverDate());
+                systemInfo.serverDate(), versionManager);
 
         Integer numberToReserve = FILL_UP_TO - remainingValues;
         OrganisationUnitModel organisationUnitModel =
@@ -180,6 +184,7 @@ public final class TrackedEntityAttributeReservedValueManager {
                 databaseAdapter,
                 retrofit,
                 internalModules.systemInfo.callFactory,
+                internalModules.systemInfo.publicModule.versionManager,
                 TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
         new TrackedEntityAttributeStoreImpl(databaseAdapter));

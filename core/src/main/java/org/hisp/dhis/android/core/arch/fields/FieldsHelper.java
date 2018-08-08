@@ -28,11 +28,59 @@
 
 package org.hisp.dhis.android.core.arch.fields;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.Property;
 import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.NestedField;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class FieldsHelper<O> {
 
-    public <T> Field<O, T> field(String fieldName) {
+    public <T> Property<O, T> field(String fieldName) {
         return Field.create(fieldName);
+    }
+
+    public <T> NestedField<O, T> nestedField(String fieldName) {
+        return NestedField.create(fieldName);
+    }
+
+    public Field<O, String> uid() {
+        return Field.create(BaseIdentifiableObject.UID);
+    }
+
+    public NestedField<O, ?> nestedFieldWithUid(String fieldName) {
+        NestedField<O, ObjectWithUid> nested = this.nestedField(fieldName);
+        return nested.with(ObjectWithUid.uid);
+    }
+
+    public List<Property<O, String>> getIdentifiableFields() {
+        List<Property<O, String>> list = new ArrayList<>(7);
+        addIdentifiableFields(list);
+        return list;
+    }
+
+    private void addIdentifiableFields(List<Property<O, String>> list) {
+        list.add(this.uid());
+        list.add(this.<String>field(BaseIdentifiableObject.CODE));
+        list.add(this.<String>field(BaseIdentifiableObject.NAME));
+        list.add(this.<String>field(BaseIdentifiableObject.DISPLAY_NAME));
+        list.add(this.<String>field(BaseIdentifiableObject.CREATED));
+        list.add(this.<String>field(BaseIdentifiableObject.LAST_UPDATED));
+        list.add(this.<String>field(BaseIdentifiableObject.DELETED));
+    }
+
+    public List<Property<O, String>> getNameableFields() {
+        List<Property<O, String>> list = new ArrayList<>(11);
+        addIdentifiableFields(list);
+        list.add(this.<String>field(BaseNameableObject.SHORT_NAME));
+        list.add(this.<String>field(BaseNameableObject.DISPLAY_SHORT_NAME));
+        list.add(this.<String>field(BaseNameableObject.DESCRIPTION));
+        list.add(this.<String>field(BaseNameableObject.DISPLAY_DESCRIPTION));
+        return list;
     }
 }

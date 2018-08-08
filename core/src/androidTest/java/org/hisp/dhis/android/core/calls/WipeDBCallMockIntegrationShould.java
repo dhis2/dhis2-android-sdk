@@ -82,8 +82,7 @@ public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenAEventInDatabase() throws Exception {
-        EventEndpointCall eventCall = EventCallFactory.create(
-                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+        EventEndpointCall eventCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("events.json");
 

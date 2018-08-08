@@ -39,8 +39,10 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbFormTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -61,6 +63,11 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
         public static final String REPORT_DATE_TO_USE = "reportDateToUse";
         public static final String OPEN_AFTER_ENROLLMENT = "openAfterEnrollment";
         public static final String REPEATABLE = "repeatable";
+
+        /**
+         * @deprecated since 2.29, replaced by {@link #FEATURE_TYPE}
+         */
+        @Deprecated
         public static final String CAPTURE_COORDINATES = "captureCoordinates";
         public static final String FORM_TYPE = "formType";
         public static final String DISPLAY_GENERATE_EVENT_BOX = "displayGenerateEventBox";
@@ -75,6 +82,7 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
         public static final String PERIOD_TYPE = "periodType";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
         public static final String REMIND_COMPLETED = "remindCompleted";
+        public static final String FEATURE_TYPE = "featureType";
 
         @Override
         public String[] all() {
@@ -84,7 +92,7 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
                     FORM_TYPE, DISPLAY_GENERATE_EVENT_BOX, GENERATED_BY_ENROLMENT_DATE,
                     AUTO_GENERATE_EVENT, SORT_ORDER, HIDE_DUE_DATE, BLOCK_ENTRY_FORM,
                     MIN_DAYS_FROM_START, STANDARD_INTERVAL, PROGRAM, PERIOD_TYPE, ACCESS_DATA_WRITE,
-                    REMIND_COMPLETED);
+                    REMIND_COMPLETED, FEATURE_TYPE);
         }
     }
 
@@ -128,6 +136,10 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
     @ColumnName(Columns.REPEATABLE)
     public abstract Boolean repeatable();
 
+    /**
+     * @deprecated since 2.29, replaced by {@link #featureType()}
+     */
+    @Deprecated
     @Nullable
     @ColumnName(Columns.CAPTURE_COORDINATES)
     public abstract Boolean captureCoordinates();
@@ -186,6 +198,12 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
     @ColumnName(Columns.REMIND_COMPLETED)
     public abstract Boolean remindCompleted();
 
+    @Nullable
+    @ColumnName(Columns.FEATURE_TYPE)
+    @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
+    public abstract FeatureType featureType();
+
+
     @Override
     public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
         super.bindToStatement(sqLiteStatement);
@@ -211,6 +229,7 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
         sqLiteBind(sqLiteStatement, 26, periodType());
         sqLiteBind(sqLiteStatement, 27, accessDataWrite());
         sqLiteBind(sqLiteStatement, 28, remindCompleted());
+        sqLiteBind(sqLiteStatement, 29, featureType());
     }
 
     @AutoValue.Builder
@@ -259,6 +278,8 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
         public abstract Builder accessDataWrite(@Nullable Boolean accessDataWrite);
 
         public abstract Builder remindCompleted(@Nullable Boolean remindCompleted);
+
+        public abstract Builder featureType(@Nullable FeatureType featureType);
 
         public abstract ProgramStageModel build();
 

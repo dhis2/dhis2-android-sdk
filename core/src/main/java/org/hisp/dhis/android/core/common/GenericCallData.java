@@ -33,6 +33,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Date;
 
@@ -44,11 +45,12 @@ public abstract class GenericCallData {
     public abstract ResourceHandler resourceHandler();
     public abstract Retrofit retrofit();
     public abstract Date serverDate();
+    public abstract DHISVersionManager versionManager();
 
     public static GenericCallData create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                         Date serverDate) {
+                                         Date serverDate, DHISVersionManager versionManager) {
         return new AutoValue_GenericCallData(databaseAdapter,
-                ResourceHandler.create(databaseAdapter), retrofit, serverDate);
+                ResourceHandler.create(databaseAdapter), retrofit, serverDate, versionManager);
     }
 
     public void handleResource(ResourceModel.Type type) {

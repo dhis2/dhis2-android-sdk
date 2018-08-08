@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.common.Property;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,6 +65,15 @@ public abstract class Fields<T> {
             }
 
             fields.addAll(Arrays.asList(properties));
+            return this;
+        }
+
+        public final <Q> Builder<T> fields(@NonNull Collection<Property<T, Q>> properties) {
+            if (properties == null || properties.isEmpty()) {
+                throw new IllegalArgumentException("properties null or empty collection");
+            }
+
+            fields.addAll(properties);
             return this;
         }
 

@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.period.PeriodStore;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStoreImpl;
-import org.hisp.dhis.android.core.program.ProgramRuleStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
@@ -127,7 +127,7 @@ public final class WipeDBCallable extends SyncCall<Unit> {
                 ProgramIndicatorStore.create(databaseAdapter),
                 ProgramStageSectionProgramIndicatorLinkStore.create(databaseAdapter),
                 new ProgramRuleActionStoreImpl(databaseAdapter),
-                new ProgramRuleStoreImpl(databaseAdapter),
+                ProgramRuleStore.create(databaseAdapter),
                 OptionStore.create(databaseAdapter),
                 OptionSetStore.create(databaseAdapter),
                 DataElementStore.create(databaseAdapter),

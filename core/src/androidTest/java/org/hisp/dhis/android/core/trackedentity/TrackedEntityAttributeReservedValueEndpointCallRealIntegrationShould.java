@@ -5,7 +5,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
@@ -14,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -39,12 +37,10 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     }
 
     private Call<List<TrackedEntityAttributeReservedValue>> createCall() {
-        GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
-
         OrganisationUnitModel organisationUnit =  OrganisationUnitModel.builder()
                 .uid("orgUnitUid").code("ORG_UNIT").build();
 
-        return TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(data,
+        return TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(getGenericCallData(d2),
                 TrackedEntityAttributeReservedValueQuery.create("xs8A6tQJY0s",
                 numberToReserve, organisationUnit, "pattern"));
     }

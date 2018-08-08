@@ -33,13 +33,13 @@ import android.support.test.runner.AndroidJUnit4;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
-import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
+import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.utils.HeaderUtils;
+import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,14 +47,8 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -72,12 +66,8 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
             TrackedEntityTypeModel.Columns.DESCRIPTION,
             TrackedEntityTypeModel.Columns.DISPLAY_DESCRIPTION,
     };
-/*    private static String[] RESOURCE_PROJECTION = {
-            ResourceModel.Columns.RESOURCE_TYPE,
-            ResourceModel.Columns.LAST_SYNCED
-    };*/
 
-    private MockWebServer server;
+    private Dhis2MockServer dhis2MockServer;
 
     private Call<List<TrackedEntityType>> trackedEntityCall;
 
@@ -85,13 +75,9 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        server = new MockWebServer();
-        server.start();
+        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
-        MockResponse response = new MockResponse();
-        response.setHeader(HeaderUtils.DATE, "Tue, 21 Feb 2017 15:44:46 GMT");
-        response.setResponseCode(200);
-        response.setBody("{\n" +
+        String response ="{\n" +
                 "  \"getTrackedEntityTypes\": [\n" +
                 "  {\n" +
                 "    \"lastUpdated\": \"2014-04-14T13:54:54.497\",\n" +
@@ -112,25 +98,18 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
                 "    \"description\": \"Person\"\n" +
                 "  }\n" +
                 " ]\n" +
-                "}");
-        server.enqueue(response);
+                "}";
+
+        dhis2MockServer.enqueueMockResponse(200, response);
+        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(server.url("/")) // ??
-                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                .addConverterFactory(FieldsConverterFactory.create())
-                .addConverterFactory(FilterConverterFactory.create())
-                .build();
-
         HashSet<String> uids = new HashSet<>(Arrays.asList("kIeke8tAQnd", "nEenWmSyUEp"));
 
-        GenericCallData data = GenericCallData.create(databaseAdapter(), retrofit, new Date());
-
-        trackedEntityCall = TrackedEntityTypeCall.FACTORY.create(data, uids);
+        trackedEntityCall = TrackedEntityTypeCall.FACTORY.create(getGenericCallData(d2), uids);
     }
 
     @Test
@@ -155,6 +134,6 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
     @Override
     public void tearDown() throws IOException {
         super.tearDown();
-        server.shutdown();
+        dhis2MockServer.shutdown();
     }
 }

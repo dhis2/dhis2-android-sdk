@@ -60,8 +60,8 @@ public final class ProgramStageEndpointCall {
                 protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query) {
                     String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
                     return service.getProgramStages(
-                            ProgramStage.allFields,
-                            ProgramStage.uid.in(query.uids()),
+                            ProgramStageFields.allFields,
+                            ProgramStageFields.uid.in(query.uids()),
                             accessDataReadFilter,
                             Boolean.FALSE);
                 }
@@ -72,7 +72,7 @@ public final class ProgramStageEndpointCall {
         protected CallProcessor<ProgramStage> processor(GenericCallData data) {
             return new TransactionalNoResourceCallProcessor<>(
                     data.databaseAdapter(),
-                    ProgramStageHandler.create(data.databaseAdapter()),
+                    ProgramStageHandler.create(data.databaseAdapter(), data.versionManager()),
                     new ProgramStageModelBuilder()
             );
         }

@@ -34,6 +34,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FormType;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramStageModel.Columns;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -76,6 +77,7 @@ public class ProgramStageModelShould {
     private static final Integer REMIND_COMPLETED = 1;
     private static final String DESCRIPTION = "description";
     private static final String DISPLAY_DESCRIPTION = "displayDescription";
+    private static final FeatureType FEATURE_TYPE = FeatureType.POINT;
 
     private final Date date;
     private final String dateString;
@@ -113,6 +115,7 @@ public class ProgramStageModelShould {
                 PERIOD_TYPE,
                 ACCESS_DATA_WRITE,
                 REMIND_COMPLETED,
+                FEATURE_TYPE,
                 ID
         });
         cursor.moveToFirst();
@@ -149,6 +152,7 @@ public class ProgramStageModelShould {
         assertThat(model.remindCompleted()).isTrue();
         assertThat(model.description()).isEqualTo(DESCRIPTION);
         assertThat(model.displayDescription()).isEqualTo(DISPLAY_DESCRIPTION);
+        assertThat(model.featureType()).isEqualTo(FEATURE_TYPE);
     }
 
     @Test
@@ -183,6 +187,7 @@ public class ProgramStageModelShould {
                 .remindCompleted(toBoolean(REMIND_COMPLETED))
                 .description(DESCRIPTION)
                 .displayDescription(DISPLAY_DESCRIPTION)
+                .featureType(FEATURE_TYPE)
                 .build();
         ContentValues contentValues = model.toContentValues();
 
@@ -215,5 +220,6 @@ public class ProgramStageModelShould {
         assertThat(contentValues.getAsBoolean(Columns.REMIND_COMPLETED)).isTrue();
         assertThat(contentValues.getAsString(Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
         assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
+        assertThat(contentValues.getAsString(Columns.FEATURE_TYPE)).isEqualTo(FEATURE_TYPE.name());
     }
 }

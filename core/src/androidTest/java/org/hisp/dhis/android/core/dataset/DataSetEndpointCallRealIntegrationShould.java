@@ -5,14 +5,12 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
@@ -33,8 +31,7 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private Call<List<DataSet>> createCall() {
-        GenericCallData data = GenericCallData.create(databaseAdapter(), d2.retrofit(), new Date());
-        return DataSetEndpointCall.FACTORY.create(data);
+        return DataSetEndpointCall.FACTORY.create(getGenericCallData(d2));
     }
 
     // @Test

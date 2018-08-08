@@ -104,7 +104,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
 
         endpointCall.call();
 
-        assertThat(fieldsCaptor.getValue()).isEqualTo(Program.allFields);
+        assertThat(fieldsCaptor.getValue()).isEqualTo(ProgramFields.allFields);
         assertThat(accessDataReadFilter.getValue()).isEqualTo("access.data.read:eq:true");
     }
 

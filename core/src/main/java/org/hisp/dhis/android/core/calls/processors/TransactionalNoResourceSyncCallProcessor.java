@@ -26,49 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.calls.processors;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.Callable;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+public class TransactionalNoResourceSyncCallProcessor<O> implements CallProcessor<O> {
+    private final DatabaseAdapter databaseAdapter;
+    private final SyncHandler<O> handler;
 
-    public static final int VERSION = 15;
-
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
-    }
-
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    public TransactionalNoResourceSyncCallProcessor(DatabaseAdapter databaseAdapter,
+                                                    SyncHandler<O> handler) {
+        this.databaseAdapter = databaseAdapter;
+        this.handler = handler;
     }
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
+    public final void process(final List<O> objectList) throws D2CallException {
+        if (objectList != null && !objectList.isEmpty()) {
+            new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
 
-        // enable foreign key support in database
-        db.execSQL("PRAGMA foreign_keys = ON;");
-        db.enableWriteAheadLogging();
-    }
-
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
+                @Override
+                public Void call() {
+                    handler.handleMany(objectList);
+                    return null;
+                }
+            });
         }
-        return versionMigrations;
     }
 }

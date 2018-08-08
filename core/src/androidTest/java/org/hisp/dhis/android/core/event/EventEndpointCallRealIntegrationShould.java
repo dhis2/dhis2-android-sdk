@@ -38,8 +38,7 @@ public class EventEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.syncMetaData().call();
 
-        EventEndpointCall eventEndpointCall = EventCallFactory.create(
-                d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", 0);
 
         List<Event> events = eventEndpointCall.call();
         Truth.assertThat(events.isEmpty()).isFalse();
@@ -56,8 +55,7 @@ public class EventEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.syncMetaData().call();
 
-        EventEndpointCall eventEndpointCall = EventCallFactory.create(
-                d2.retrofit(), databaseAdapter(), "DiszpKrYNg8", 0);
+        EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", 0);
 
         eventEndpointCall.call();
 

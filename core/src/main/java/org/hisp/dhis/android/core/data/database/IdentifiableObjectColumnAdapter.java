@@ -28,47 +28,17 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.content.ContentValues;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
-
-    public static final int VERSION = 15;
-
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
-    }
-
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
-    }
+public abstract class IdentifiableObjectColumnAdapter<O extends BaseIdentifiableObject>
+        implements ColumnTypeAdapter<O> {
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        // enable foreign key support in database
-        db.execSQL("PRAGMA foreign_keys = ON;");
-        db.enableWriteAheadLogging();
-    }
-
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
-        }
-        return versionMigrations;
+    public final void toContentValues(ContentValues values, String columnName, O value) {
+        values.put(columnName, value.uid());
     }
 }

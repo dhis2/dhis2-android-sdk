@@ -28,16 +28,12 @@
 package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class ObjectStyleModel extends BaseModel {
@@ -83,19 +79,6 @@ public abstract class ObjectStyleModel extends BaseModel {
     @Nullable
     @ColumnName(Columns.ICON)
     public abstract String icon();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, uid());
-        sqLiteBind(sqLiteStatement, 2, objectTable());
-        sqLiteBind(sqLiteStatement, 3, color());
-        sqLiteBind(sqLiteStatement, 4, icon());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 5, uid());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {

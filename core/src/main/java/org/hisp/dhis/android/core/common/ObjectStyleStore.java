@@ -28,14 +28,39 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ObjectStyleStore {
 
     private ObjectStyleStore() {}
 
+    private static final StatementBinder<ObjectStyleModel> BINDER = new StatementBinder<ObjectStyleModel>() {
+        @Override
+        public void bindToStatement(@NonNull ObjectStyleModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.uid());
+            sqLiteBind(sqLiteStatement, 2, o.objectTable());
+            sqLiteBind(sqLiteStatement, 3, o.color());
+            sqLiteBind(sqLiteStatement, 4, o.icon());
+        }
+    };
+
+    private static final WhereStatementBinder<ObjectStyleModel> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<ObjectStyleModel>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull ObjectStyleModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 5, o.uid());
+        }
+    };
+
     public static ObjectWithoutUidStore<ObjectStyleModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, ObjectStyleModel.TABLE,
-                new ObjectStyleModel.Columns());
+                new ObjectStyleModel.Columns(), BINDER, WHERE_UPDATE_BINDER);
     }
 }

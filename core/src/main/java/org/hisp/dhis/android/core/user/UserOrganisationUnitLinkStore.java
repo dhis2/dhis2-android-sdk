@@ -56,7 +56,8 @@ public final class UserOrganisationUnitLinkStore extends ObjectWithoutUidStoreIm
     private static final StatementBinder<UserOrganisationUnitLinkModel> BINDER
             = new StatementBinder<UserOrganisationUnitLinkModel>() {
         @Override
-        public void bindToStatement(@NonNull UserOrganisationUnitLinkModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull UserOrganisationUnitLinkModel o,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, o.user());
             sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
             sqLiteBind(sqLiteStatement, 3, o.organisationUnitScope());

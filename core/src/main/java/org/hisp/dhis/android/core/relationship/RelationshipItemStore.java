@@ -105,7 +105,8 @@ final class RelationshipItemStore extends ObjectWithoutUidStoreImpl<Relationship
     private static final WhereStatementBinder<RelationshipItemModel> WHERE_UPDATE_BINDER
             = new WhereStatementBinder<RelationshipItemModel>() {
         @Override
-        public void bindToUpdateWhereStatement(@NonNull RelationshipItemModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToUpdateWhereStatement(@NonNull RelationshipItemModel o,
+                                               @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 6, o.relationship());
             sqLiteBind(sqLiteStatement, 7, o.relationshipItemType());
         }

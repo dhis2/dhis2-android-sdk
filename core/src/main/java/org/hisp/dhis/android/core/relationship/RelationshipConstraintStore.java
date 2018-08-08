@@ -44,7 +44,8 @@ public final class RelationshipConstraintStore {
 
     private RelationshipConstraintStore() {}
 
-    private static final StatementBinder<RelationshipConstraint> BINDER = new StatementBinder<RelationshipConstraint>() {
+    private static final StatementBinder<RelationshipConstraint> BINDER
+            = new StatementBinder<RelationshipConstraint>() {
         @Override
         public void bindToStatement(@NonNull RelationshipConstraint o, @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.relationshipType()));
@@ -59,7 +60,8 @@ public final class RelationshipConstraintStore {
     private static final WhereStatementBinder<RelationshipConstraint> WHERE_UPDATE_BINDER
             = new WhereStatementBinder<RelationshipConstraint>() {
         @Override
-        public void bindToUpdateWhereStatement(@NonNull RelationshipConstraint o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToUpdateWhereStatement(@NonNull RelationshipConstraint o,
+                                               @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 7, UidsHelper.getUidOrNull(o.relationshipType()));
             sqLiteBind(sqLiteStatement, 8, o.constraintType());
         }

@@ -15,9 +15,11 @@ public final class CategoryCategoryOptionLinkStore {
 
     private CategoryCategoryOptionLinkStore() {}
 
-    private static final StatementBinder<CategoryCategoryOptionLinkModel> BINDER = new StatementBinder<CategoryCategoryOptionLinkModel>() {
+    private static final StatementBinder<CategoryCategoryOptionLinkModel> BINDER
+            = new StatementBinder<CategoryCategoryOptionLinkModel>() {
         @Override
-        public void bindToStatement(@NonNull CategoryCategoryOptionLinkModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull CategoryCategoryOptionLinkModel o,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, o.category());
             sqLiteBind(sqLiteStatement, 2, o.option());
         }

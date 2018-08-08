@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -42,8 +40,6 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class DataValueModel extends BaseModel {
@@ -130,30 +126,6 @@ public abstract class DataValueModel extends BaseModel {
     @Nullable
     @ColumnName(Columns.FOLLOW_UP)
     public abstract Boolean followUp();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, dataElement());
-        sqLiteBind(sqLiteStatement, 2, period());
-        sqLiteBind(sqLiteStatement, 3, organisationUnit());
-        sqLiteBind(sqLiteStatement, 4, categoryOptionCombo());
-        sqLiteBind(sqLiteStatement, 5, attributeOptionCombo());
-        sqLiteBind(sqLiteStatement, 6, value());
-        sqLiteBind(sqLiteStatement, 7, storedBy());
-        sqLiteBind(sqLiteStatement, 8, created());
-        sqLiteBind(sqLiteStatement, 9, lastUpdated());
-        sqLiteBind(sqLiteStatement, 10, comment());
-        sqLiteBind(sqLiteStatement, 11, followUp());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 12, dataElement());
-        sqLiteBind(sqLiteStatement, 13, period());
-        sqLiteBind(sqLiteStatement, 14, organisationUnit());
-        sqLiteBind(sqLiteStatement, 15, categoryOptionCombo());
-        sqLiteBind(sqLiteStatement, 16, attributeOptionCombo());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {

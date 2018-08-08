@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.APICallExecutor;
@@ -37,7 +36,6 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
 
@@ -79,13 +77,9 @@ public class OrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
             public List<OrganisationUnit> call() throws Exception {
                 OrganisationUnitModelBuilder modelBuilder = new OrganisationUnitModelBuilder();
                 Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
-                Filter<OrganisationUnit, String> lastUpdatedFilter = OrganisationUnit.lastUpdated.gt(
-                        data.resourceHandler().getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)
-                );
-
                 for (String uid : rootOrgUnitUids) {
                     List<OrganisationUnit> orgUnitWithDescendants = apiExecutor.executePayloadCall(
-                            getOrganisationUnitAndDescendants(uid, lastUpdatedFilter));
+                            getOrganisationUnitAndDescendants(uid));
                     organisationUnits.addAll(orgUnitWithDescendants);
                     organisationUnitHandler.handleMany(orgUnitWithDescendants, modelBuilder);
                 }
@@ -98,12 +92,9 @@ public class OrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
         });
     }
 
-    private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(
-            @NonNull String uid,
-            @Nullable Filter<OrganisationUnit, String> lastUpdatedFilter) {
-
-        return organisationUnitService.getOrganisationUnitWithDescendants(uid, OrganisationUnit.allFields,
-                lastUpdatedFilter, true, false);
+    private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(@NonNull String uid) {
+        return organisationUnitService.getOrganisationUnitWithDescendants(
+                uid, OrganisationUnit.allFields, true, false);
     }
 
     public interface Factory {

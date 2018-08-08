@@ -53,7 +53,7 @@ public final class LegendStore {
             sqLiteBind(sqLiteStatement, 10, o.legendSet());
         }
     };
-    
+
     public static IdentifiableObjectStore<LegendModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, LegendModel.TABLE,
                 new LegendModel.Columns().all(), BINDER);

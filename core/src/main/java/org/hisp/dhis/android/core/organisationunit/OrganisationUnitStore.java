@@ -28,16 +28,38 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class OrganisationUnitStore {
 
     private OrganisationUnitStore() {}
 
+    private static StatementBinder<OrganisationUnitModel> BINDER =
+            new NameableStatementBinder<OrganisationUnitModel>() {
+
+        @Override
+        public void bindToStatement(@NonNull OrganisationUnitModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 11, o.path());
+            sqLiteBind(sqLiteStatement, 12, o.openingDate());
+            sqLiteBind(sqLiteStatement, 13, o.closedDate());
+            sqLiteBind(sqLiteStatement, 14, o.level());
+            sqLiteBind(sqLiteStatement, 15, o.parent());
+            sqLiteBind(sqLiteStatement, 16, o.displayNamePath());
+        }
+    };
+
     public static IdentifiableObjectStore<OrganisationUnitModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, OrganisationUnitModel.TABLE,
-                new OrganisationUnitModel.Columns().all());
+                new OrganisationUnitModel.Columns().all(), BINDER);
     }
 }

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -42,14 +40,11 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramRuleActionListAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramStageWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramWithUidColumnAdapter;
 
 import java.util.List;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramRule.Builder.class)
@@ -79,15 +74,6 @@ public abstract class ProgramRule extends BaseIdentifiableObject implements Mode
     @Nullable
     @ColumnAdapter(IgnoreProgramRuleActionListAdapter.class)
     public abstract List<ProgramRuleAction> programRuleActions();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 7, priority());
-        sqLiteBind(sqLiteStatement, 8, condition());
-        sqLiteBind(sqLiteStatement, 9, UidsHelper.getUidOrNull(program()));
-        sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(programStage()));
-    }
 
     public static Builder builder() {
         return new AutoValue_ProgramRule.Builder();

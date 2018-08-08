@@ -32,6 +32,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -49,8 +50,7 @@ public class SystemInfoStatementBindingShould {
 
     private Date date = new Date();
 
-    private SystemInfo info = SystemInfo.builder().serverDate(new Date()).dateFormat("format")
-            .contextPath("path").version("2.30").build();
+    private SystemInfo info = SystemInfoSamples.get1();
 
 
     public void setUp() {

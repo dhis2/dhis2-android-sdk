@@ -28,48 +28,35 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import android.database.sqlite.SQLiteStatement;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import java.util.Date;
+import java.io.IOException;
 
-import static org.mockito.Mockito.verify;
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class SystemInfoStatementBindingShould {
+public class SystemInfoStoreIntegrationShould extends AbsStoreTestCase {
 
-    @Mock
-    private SQLiteStatement sqLiteStatement;
-
-    private Date date = new Date();
-
-    private SystemInfo info = SystemInfoSamples.get1();
+    private final SystemInfo systemInfo = SystemInfoSamples.get1();
 
     @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
+    @Override
+    public void setUp() throws IOException {
+        super.setUp();
     }
 
     @Test
-    public void map_arguments_statement_binder() {
-        SystemInfoStore.BINDER.bindToStatement(info, sqLiteStatement);
-        verify(sqLiteStatement).bindString(1, BaseIdentifiableObject.DATE_FORMAT.format(date));
-        verify(sqLiteStatement).bindString(2, info.dateFormat());
-        verify(sqLiteStatement).bindString(3, info.contextPath());
-        verify(sqLiteStatement).bindString(4, info.version());
-    }
-
-    @Test
-    public void map_context_path_in_where_to_statement_binder() {
-        SystemInfoStore.WHERE_UPDATE_BINDER.bindToUpdateWhereStatement(info, sqLiteStatement);
-        verify(sqLiteStatement).bindString(5, info.version());
+    public void get_inserted_object() {
+        ObjectWithoutUidStore<SystemInfo> store = SystemInfoStore.create(databaseAdapter());
+        store.insert(systemInfo);
+        SystemInfo systemInfoFromDb = store.selectFirst(SystemInfo.factory);
+        assertThat(systemInfoFromDb).isEqualTo(systemInfo);
     }
 }

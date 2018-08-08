@@ -17,17 +17,17 @@ import java.util.Map;
 
 import retrofit2.Retrofit;
 
-public final class TrackerDataCall extends SyncCall<List<TrackedEntityInstance>> {
+public final class TrackedEntityInstanceSyncDownCall extends SyncCall<List<TrackedEntityInstance>> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
     private final D2InternalModules internalModules;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
 
-    private TrackerDataCall(@NonNull DatabaseAdapter databaseAdapter,
-                            @NonNull Retrofit retrofit,
-                            @NonNull D2InternalModules internalModules,
-                            @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore) {
+    private TrackedEntityInstanceSyncDownCall(@NonNull DatabaseAdapter databaseAdapter,
+                                              @NonNull Retrofit retrofit,
+                                              @NonNull D2InternalModules internalModules,
+                                              @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.internalModules = internalModules;
@@ -43,9 +43,9 @@ public final class TrackerDataCall extends SyncCall<List<TrackedEntityInstance>>
         return new D2CallExecutor().executeD2Call(call);
     }
 
-    public static TrackerDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                         D2InternalModules internalModules) {
-        return new TrackerDataCall(
+    public static TrackedEntityInstanceSyncDownCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+                                                           D2InternalModules internalModules) {
+        return new TrackedEntityInstanceSyncDownCall(
                 databaseAdapter,
                 retrofit,
                 internalModules,

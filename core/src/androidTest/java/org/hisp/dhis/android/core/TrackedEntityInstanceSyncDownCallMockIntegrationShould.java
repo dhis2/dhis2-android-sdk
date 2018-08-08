@@ -32,7 +32,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 
-public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
+public class TrackedEntityInstanceSyncDownCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
@@ -68,7 +68,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
         givenAMetadataInDatabase();
 
-        d2.syncTrackerData().call();
+        d2.syncDownSyncedTrackedEntityInstances().call();
 
         verifyHaveNotSynchronized(Collections.EMPTY_LIST);
     }
@@ -82,7 +82,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
         TrackedEntityInstance toPostTrackedEntityInstance =
                 givenAToPostTrackedEntityInstanceInDatabase();
 
-        d2.syncTrackerData().call();
+        d2.syncDownSyncedTrackedEntityInstances().call();
 
         verifyHaveNotSynchronized(Arrays.asList(toPostTrackedEntityInstance));
     }
@@ -100,7 +100,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
 
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
 
-        d2.syncTrackerData().call();
+        d2.syncDownSyncedTrackedEntityInstances().call();
 
         verifyHaveSynchronized(Arrays.asList(syncedTrackedEntityInstance),
                 Arrays.asList(toPostTrackedEntityInstance));
@@ -116,7 +116,7 @@ public class TrackerDataCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
         dhis2MockServer.enqueueMockResponse("tracked_entity_instance_2.json");
 
-        d2.syncTrackerData().call();
+        d2.syncDownSyncedTrackedEntityInstances().call();
 
         verifyHaveSynchronized(trackedEntityInstances, Collections.EMPTY_LIST);
     }

@@ -51,6 +51,7 @@ public class ProgramStageModelBuilder extends ModelBuilder<ProgramStage, Program
                 .openAfterEnrollment(programStage.openAfterEnrollment())
                 .repeatable(programStage.repeatable())
                 .captureCoordinates(programStage.captureCoordinates())
+                .featureType(programStage.featureType())
                 .formType(programStage.formType())
                 .displayGenerateEventBox(programStage.displayGenerateEventBox())
                 .generatedByEnrollmentDate(programStage.generatedByEnrollmentDate())

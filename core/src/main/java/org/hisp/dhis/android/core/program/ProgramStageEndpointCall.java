@@ -72,7 +72,7 @@ public final class ProgramStageEndpointCall {
         protected CallProcessor<ProgramStage> processor(GenericCallData data) {
             return new TransactionalNoResourceCallProcessor<>(
                     data.databaseAdapter(),
-                    ProgramStageHandler.create(data.databaseAdapter()),
+                    ProgramStageHandler.create(data.databaseAdapter(), data.versionManager()),
                     new ProgramStageModelBuilder()
             );
         }

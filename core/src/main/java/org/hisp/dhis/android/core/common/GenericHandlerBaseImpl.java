@@ -36,8 +36,9 @@ public abstract class GenericHandlerBaseImpl<P, M extends BaseModel> implements 
         if (p == null) {
             return;
         }
-        HandleAction action = deleteOrPersist(p, modelBuilder);
-        afterObjectHandled(p, action);
+        P pojo = beforeObjectHandled(p);
+        HandleAction action = deleteOrPersist(pojo, modelBuilder);
+        afterObjectHandled(pojo, action);
     }
 
     @Override
@@ -51,6 +52,10 @@ public abstract class GenericHandlerBaseImpl<P, M extends BaseModel> implements 
     }
 
     protected abstract HandleAction deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder);
+
+    protected P beforeObjectHandled(P p) {
+        return p;
+    }
 
     @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
     protected void afterObjectHandled(P p, HandleAction action) {

@@ -38,9 +38,9 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandler<O> {
         if (o == null) {
             return;
         }
-        o = beforeObjectHandled(o);
-        HandleAction action = deleteOrPersist(o);
-        afterObjectHandled(o, action);
+        O object = beforeObjectHandled(o);
+        HandleAction action = deleteOrPersist(object);
+        afterObjectHandled(object, action);
     }
 
     @Override

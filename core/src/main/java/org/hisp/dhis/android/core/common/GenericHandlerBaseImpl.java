@@ -36,9 +36,9 @@ public abstract class GenericHandlerBaseImpl<P, M extends BaseModel> implements 
         if (p == null) {
             return;
         }
-        p = beforeObjectHandled(p);
-        HandleAction action = deleteOrPersist(p, modelBuilder);
-        afterObjectHandled(p, action);
+        P pojo = beforeObjectHandled(p);
+        HandleAction action = deleteOrPersist(pojo, modelBuilder);
+        afterObjectHandled(pojo, action);
     }
 
     @Override

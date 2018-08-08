@@ -74,18 +74,20 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
 
     @Override
     protected ProgramStage beforeObjectHandled(ProgramStage programStage) {
+        ProgramStage adaptedProgramStage;
         ProgramStage.Builder builder = programStage.toBuilder();
         if (versionManager.is2_29()) {
-            programStage = programStage.captureCoordinates() ? builder.featureType(FeatureType.POINT).build() :
+            adaptedProgramStage = programStage.captureCoordinates() ? builder.featureType(FeatureType.POINT).build() :
                     builder.featureType(FeatureType.NONE).build();
         } else {
             if (programStage.featureType() == null) {
-                programStage = builder.captureCoordinates(false).featureType(FeatureType.NONE).build();
+                adaptedProgramStage = builder.captureCoordinates(false).featureType(FeatureType.NONE).build();
             } else {
-                programStage = builder.captureCoordinates(programStage.featureType() != FeatureType.NONE).build();
+                adaptedProgramStage = builder.captureCoordinates(
+                        programStage.featureType() != FeatureType.NONE).build();
             }
         }
-        return programStage;
+        return adaptedProgramStage;
     }
 
     @Override

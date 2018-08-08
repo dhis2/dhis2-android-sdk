@@ -36,8 +36,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class TrackedEntityTypeStore{
 
-    private TrackedEntityTypeStore() {}
-
     // Only nameable columns
     private static StatementBinder<TrackedEntityTypeModel> BINDER
             = new NameableStatementBinder<TrackedEntityTypeModel>() {};
@@ -46,4 +44,6 @@ public final class TrackedEntityTypeStore{
         return StoreFactory.identifiableStore(databaseAdapter, TrackedEntityTypeModel.TABLE,
                 new TrackedEntityTypeModel.Columns().all(), BINDER);
     }
+
+    private TrackedEntityTypeStore() {}
 }

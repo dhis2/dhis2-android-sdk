@@ -44,7 +44,6 @@ public interface OrganisationUnitService {
     Call<Payload<OrganisationUnit>> getOrganisationUnitWithDescendants(
             @Path("uid") String organisationUnitUid,
             @Query("fields") @Which Fields<OrganisationUnit> fields,
-            @Query("filter") @Where Filter<OrganisationUnit, String> lastUpdated,
             @Query("includeDescendants") Boolean descendants,
             @Query("paging") Boolean paging
     );

@@ -53,11 +53,6 @@ public abstract class CategoryCategoryComboLinkModel extends BaseModel {
             return Utils.appendInNewArray(super.all(),
                     CATEGORY, CATEGORY_COMBO);
         }
-
-        @Override
-        public String[] whereUpdate() {
-            return all();
-        }
     }
 
     @Nullable

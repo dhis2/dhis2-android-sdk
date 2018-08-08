@@ -52,11 +52,6 @@ public abstract class CategoryOptionComboCategoryOptionLinkModel extends BaseMod
             return Utils.appendInNewArray(super.all(),
                     CATEGORY_OPTION_COMBO, CATEGORY_OPTION);
         }
-
-        @Override
-        public String[] whereUpdate() {
-            return all();
-        }
     }
 
     @NonNull

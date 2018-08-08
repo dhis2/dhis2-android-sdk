@@ -52,11 +52,6 @@ public abstract class DataSetCompulsoryDataElementOperandLinkModel extends BaseM
             return Utils.appendInNewArray(super.all(),
                     DATA_SET, DATA_ELEMENT_OPERAND);
         }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[] {DATA_SET, DATA_ELEMENT_OPERAND};
-        }
     }
 
     @Nullable

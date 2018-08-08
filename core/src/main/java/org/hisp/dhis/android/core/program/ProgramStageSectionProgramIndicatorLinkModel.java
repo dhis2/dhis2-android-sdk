@@ -49,11 +49,6 @@ public abstract class ProgramStageSectionProgramIndicatorLinkModel extends BaseM
         public String[] all() {
             return Utils.appendInNewArray(super.all(), PROGRAM_STAGE_SECTION, PROGRAM_INDICATOR);
         }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{PROGRAM_STAGE_SECTION, PROGRAM_INDICATOR};
-        }
     }
 
     @Nullable

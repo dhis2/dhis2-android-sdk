@@ -52,11 +52,6 @@ public abstract class CategoryCategoryOptionLinkModel extends BaseModel {
             return Utils.appendInNewArray(super.all(),
                     CATEGORY, CATEGORY_OPTION);
         }
-
-        @Override
-        public String[] whereUpdate() {
-            return all();
-        }
     }
 
     @Nullable

@@ -50,11 +50,6 @@ public abstract class SectionDataElementLinkModel extends BaseModel {
             return Utils.appendInNewArray(super.all(),
                     SECTION, DATA_ELEMENT);
         }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{SECTION, DATA_ELEMENT};
-        }
     }
 
     public static SectionDataElementLinkModel create(Cursor cursor) {

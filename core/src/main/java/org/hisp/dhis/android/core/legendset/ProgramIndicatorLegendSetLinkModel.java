@@ -49,11 +49,6 @@ public abstract class ProgramIndicatorLegendSetLinkModel extends BaseModel {
             return Utils.appendInNewArray(super.all(),
                     PROGRAM_INDICATOR, LEGEND_SET);
         }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{PROGRAM_INDICATOR, LEGEND_SET};
-        }
     }
 
     public static ProgramIndicatorLegendSetLinkModel create(Cursor cursor) {

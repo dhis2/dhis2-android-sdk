@@ -52,11 +52,6 @@ public abstract class SectionGreyedFieldsLinkModel extends BaseModel {
             return Utils.appendInNewArray(super.all(),
                     SECTION, DATA_ELEMENT_OPERAND);
         }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[] {SECTION, DATA_ELEMENT_OPERAND};
-        }
     }
 
     @Nullable

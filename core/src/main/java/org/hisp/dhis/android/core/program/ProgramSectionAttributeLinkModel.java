@@ -48,11 +48,6 @@ public abstract class ProgramSectionAttributeLinkModel extends BaseModel {
         public String[] all() {
             return Utils.appendInNewArray(super.all(), PROGRAM_SECTION, ATTRIBUTE);
         }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{PROGRAM_SECTION, ATTRIBUTE};
-        }
     }
 
     public static ProgramSectionAttributeLinkModel create(Cursor cursor) {

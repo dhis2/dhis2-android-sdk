@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.repositories;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-public interface ReadOnlyObjectRepository<M extends BaseModel> {
+public interface ReadOnlyObjectRepository<M extends Model> {
     M get();
 }

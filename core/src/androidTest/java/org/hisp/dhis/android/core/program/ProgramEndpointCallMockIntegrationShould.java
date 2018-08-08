@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
@@ -448,18 +448,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void not_persist_relationship_type_when_call() throws Exception {
         programEndpointCall.call();
 
-        String[] projection = {
-                RelationshipTypeModel.Columns.UID,
-                RelationshipTypeModel.Columns.CODE,
-                RelationshipTypeModel.Columns.NAME,
-                RelationshipTypeModel.Columns.DISPLAY_NAME,
-                RelationshipTypeModel.Columns.CREATED,
-                RelationshipTypeModel.Columns.LAST_UPDATED,
-                RelationshipTypeModel.Columns.A_IS_TO_B,
-                RelationshipTypeModel.Columns.B_IS_TO_A
-        };
-
-        Cursor relationshipTypeCursor = database().query(RelationshipTypeModel.TABLE, projection,
+        Cursor relationshipTypeCursor = database().query(RelationshipTypeTableInfo.TABLE_INFO.name(), RelationshipTypeTableInfo.TABLE_INFO.columns().all(),
                 null, null, null, null, null);
 
         assertThatCursor(relationshipTypeCursor).isExhausted();

@@ -36,8 +36,7 @@ public final class RelationshipConstraintStore {
 
     private RelationshipConstraintStore() {}
 
-    public static ObjectWithoutUidStore<RelationshipConstraintModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, RelationshipConstraintModel.TABLE,
-                new RelationshipConstraintModel.Columns());
+    public static ObjectWithoutUidStore<RelationshipConstraint> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, RelationshipConstraintTableInfo.TABLE_INFO);
     }
 }

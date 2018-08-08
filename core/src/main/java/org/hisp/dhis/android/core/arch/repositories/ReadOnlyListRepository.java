@@ -25,34 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories;
 
-package org.hisp.dhis.android.core.relationship;
+import org.hisp.dhis.android.core.common.Model;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import java.util.Set;
 
-public class RelationshipConstraintModelBuilder
-        extends ModelBuilder<RelationshipConstraint, RelationshipConstraintModel> {
-
-    private final RelationshipConstraintModel.Builder builder;
-
-    RelationshipConstraintModelBuilder(RelationshipType relationshipType, RelationshipConstraintType type) {
-        this.builder = RelationshipConstraintModel.builder()
-                .relationshipType(relationshipType.uid())
-                .constraintType(type);
-    }
-
-    @Override
-    public RelationshipConstraintModel buildModel(RelationshipConstraint relationshipConstraint) {
-        return this.builder
-                .relationshipEntity(relationshipConstraint.relationshipEntity())
-                .trackedEntityType(getUidOrNull(relationshipConstraint.trackedEntityType()))
-                .program(getUidOrNull(relationshipConstraint.program()))
-                .programStage(getUidOrNull(relationshipConstraint.programStage()))
-                .build();
-    }
-
-    private String getUidOrNull(ObjectWithUid object) {
-        return object == null ? null : object.uid();
-    }
+public interface ReadOnlyListRepository<M extends Model> {
+    Set<M> getAll();
 }

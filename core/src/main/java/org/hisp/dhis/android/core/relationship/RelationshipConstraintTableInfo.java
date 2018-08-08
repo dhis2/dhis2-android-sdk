@@ -28,15 +28,47 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public final class RelationshipTypeStore {
+public final class RelationshipConstraintTableInfo {
 
-    private RelationshipTypeStore() {}
+    private RelationshipConstraintTableInfo() {
+    }
 
-    public static IdentifiableObjectStore<RelationshipType> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, RelationshipTypeTableInfo.TABLE_INFO);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "RelationshipConstraint";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
+                    RelationshipConstraintFields.CONSTRAINT_TYPE,
+                    RelationshipConstraintFields.RELATIONSHIP_ENTITY,
+                    RelationshipConstraintFields.TRACKED_ENTITY_TYPE,
+                    RelationshipConstraintFields.PROGRAM,
+                    RelationshipConstraintFields.PROGRAM_STAGE
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{
+                    RelationshipConstraintFields.RELATIONSHIP_TYPE,
+                    RelationshipConstraintFields.CONSTRAINT_TYPE
+            };
+        }
     }
 }

@@ -26,17 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.calls.processors;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
-public final class RelationshipTypeStore {
+import java.util.List;
+import java.util.concurrent.Callable;
 
-    private RelationshipTypeStore() {}
+public class TransactionalResourceSyncCallProcessor<O> implements CallProcessor<O> {
+    private final GenericCallData data;
+    private final SyncHandler<O> handler;
+    private final ResourceModel.Type resourceType;
 
-    public static IdentifiableObjectStore<RelationshipType> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, RelationshipTypeTableInfo.TABLE_INFO);
+    public TransactionalResourceSyncCallProcessor(GenericCallData data,
+                                                  SyncHandler<O> handler,
+                                                  ResourceModel.Type resourceType) {
+        this.data = data;
+        this.handler = handler;
+        this.resourceType = resourceType;
+    }
+
+    @Override
+    public final void process(final List<O> objectList) throws D2CallException {
+        if (objectList != null && !objectList.isEmpty()) {
+            new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(), new Callable<Void>() {
+
+                @Override
+                public Void call() {
+                    handler.handleMany(objectList);
+                    data.handleResource(resourceType);
+                    return null;
+                }
+            });
+        }
     }
 }

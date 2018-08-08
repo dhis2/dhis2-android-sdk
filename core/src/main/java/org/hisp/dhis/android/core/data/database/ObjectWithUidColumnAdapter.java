@@ -26,24 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.data.database;
+
+import android.database.Cursor;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.PojoBuilder;
 
-public class RelationshipConstraintBuilder extends PojoBuilder<RelationshipConstraint, RelationshipConstraintModel> {
+public class ObjectWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<ObjectWithUid> {
 
     @Override
-    public RelationshipConstraint buildPojo(RelationshipConstraintModel model) {
-        return RelationshipConstraint.create(
-                model.relationshipEntity(),
-                createObjectWithUid(model.trackedEntityType()),
-                createObjectWithUid(model.program()),
-                createObjectWithUid(model.programStage())
-        );
-    }
-
-    private ObjectWithUid createObjectWithUid(String uid) {
-        return uid == null ? null : ObjectWithUid.create(uid);
+    public ObjectWithUid fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String uid = cursor.getString(columnIndex);
+        if (uid == null) {
+            return null;
+        } else {
+            return ObjectWithUid.create(uid);
+        }
     }
 }

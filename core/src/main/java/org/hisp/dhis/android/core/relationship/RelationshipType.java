@@ -28,87 +28,95 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.IgnoreRelationshipConstraintAdapter;
 
-import java.util.Date;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
-public abstract class RelationshipType extends BaseIdentifiableObject {
-    private static final String B_TO_A = "bIsToA";
-    private static final String A_TO_B = "aIsToB";
-    private static final String FROM_CONSTRAINT = "fromConstraint";
-    private static final String TO_CONSTRAINT = "toConstraint";
+@JsonDeserialize(builder = AutoValue_RelationshipType.Builder.class)
+public abstract class RelationshipType extends BaseIdentifiableObject implements Model {
 
-    static final Field<RelationshipType, String> uid = Field.create(UID);
-    private static final Field<RelationshipType, String> code = Field.create(CODE);
-    private static final Field<RelationshipType, String> name = Field.create(NAME);
-    private static final Field<RelationshipType, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<RelationshipType, String> created = Field.create(CREATED);
-    static final Field<RelationshipType, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<RelationshipType, Boolean> deleted = Field.create(DELETED);
-    private static final Field<RelationshipType, String> bIsToA = Field.create(B_TO_A);
-    private static final Field<RelationshipType, String> aIsToB = Field.create(A_TO_B);
-    private static final NestedField<RelationshipType, RelationshipConstraint> fromConstraint =
-            NestedField.create(FROM_CONSTRAINT);
-    private static final NestedField<RelationshipType, RelationshipConstraint> toConstraint =
-            NestedField.create(TO_CONSTRAINT);
-
-
-    static final Fields<RelationshipType> allFields = Fields.<RelationshipType>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, deleted, aIsToB, bIsToA,
-            fromConstraint.with(RelationshipConstraint.allFields), toConstraint.with(RelationshipConstraint.allFields))
-            .build();
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
     @Nullable
-    @JsonProperty(B_TO_A)
     public abstract String bIsToA();
 
+    /* Field name doesn't correspond with column name (typo: upper case A) We can keep the inconsistency
+        as it will be removed when 2.29 is no longer supported */
     @Nullable
-    @JsonProperty(A_TO_B)
+    @ColumnName(RelationshipTypeTableInfo.Columns.A_IS_TO_B_WITH_UPPER_CASE_A)
     public abstract String aIsToB();
 
     @Nullable
-    @JsonProperty(FROM_CONSTRAINT)
+    @ColumnAdapter(IgnoreRelationshipConstraintAdapter.class)
     public abstract RelationshipConstraint fromConstraint();
 
     @Nullable
-    @JsonProperty(TO_CONSTRAINT)
+    @ColumnAdapter(IgnoreRelationshipConstraintAdapter.class)
     public abstract RelationshipConstraint toConstraint();
 
-    @JsonCreator
-    public static RelationshipType create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(B_TO_A) String bIsToA,
-            @JsonProperty(A_TO_B) String aIsToB,
-            @JsonProperty(FROM_CONSTRAINT) RelationshipConstraint fromConstraint,
-            @JsonProperty(TO_CONSTRAINT) RelationshipConstraint toConstraint) {
+    public static Builder builder() {
+        return new AutoValue_RelationshipType.Builder();
+    }
 
-        return new AutoValue_RelationshipType(
-                uid,
-                code,
-                name,
-                displayName,
-                created,
-                lastUpdated,
-                deleted,
-                bIsToA,
-                aIsToB,
-                fromConstraint,
-                toConstraint);
+    static RelationshipType create(Cursor cursor) {
+        return AutoValue_RelationshipType.createFromCursor(cursor);
+    }
+
+    public static final CursorModelFactory<RelationshipType> factory = new CursorModelFactory<RelationshipType>() {
+        @Override
+        public RelationshipType fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
+
+    @NonNull
+    public abstract ContentValues toContentValues();
+
+    @Override
+    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 7, bIsToA());
+        sqLiteBind(sqLiteStatement, 8, aIsToB());
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder bIsToA(String bIsToA);
+
+        public abstract Builder aIsToB(String aIsToB);
+
+        public abstract Builder fromConstraint(RelationshipConstraint fromConstraint);
+
+        public abstract Builder toConstraint(RelationshipConstraint toConstraint);
+
+        public abstract RelationshipType build();
     }
 }

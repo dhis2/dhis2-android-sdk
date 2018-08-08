@@ -28,15 +28,32 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class RelationshipTypeStore {
+final class RelationshipTypeFields {
 
-    private RelationshipTypeStore() {}
+    static final String B_IS_TO_A = "bIsToA";
+    static final String A_IS_TO_B = "aIsToB";
+    static final String FROM_CONSTRAINT = "fromConstraint";
+    static final String TO_CONSTRAINT = "toConstraint";
 
-    public static IdentifiableObjectStore<RelationshipType> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, RelationshipTypeTableInfo.TABLE_INFO);
+    private static final FieldsHelper<RelationshipType> fh = new FieldsHelper<>();
+
+    static final Field<RelationshipType, String> lastUpdated = fh.lastUpdated();
+
+    static final Fields<RelationshipType> allFields = Fields.<RelationshipType>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<String>field(B_IS_TO_A),
+                    fh.<String>field(A_IS_TO_B),
+                    fh.<RelationshipConstraint>nestedField(FROM_CONSTRAINT)
+                            .with(RelationshipConstraintFields.allFields),
+                    fh.<RelationshipConstraint>nestedField(TO_CONSTRAINT)
+                            .with(RelationshipConstraintFields.allFields)
+            ).build();
+
+    private RelationshipTypeFields() {
     }
 }

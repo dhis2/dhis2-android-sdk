@@ -51,4 +51,8 @@ public abstract class ObjectWithUid implements ObjectWithUidInterface {
     public static ObjectWithUid create(@JsonProperty(UID) String uid) {
         return new AutoValue_ObjectWithUid(uid);
     }
+
+    public static ObjectWithUid fromIdentifiable(IdentifiableObject identifiableObject) {
+        return create(identifiableObject.uid());
+    }
 }

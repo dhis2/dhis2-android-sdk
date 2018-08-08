@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableModel.Columns;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
@@ -109,7 +109,7 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
                 RELATIONSHIP_TYPE_UID);
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
-        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null, relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
         //Create & insert the other foreign keys (progStage, dataElement and trackedEntityAttribute)
         ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);

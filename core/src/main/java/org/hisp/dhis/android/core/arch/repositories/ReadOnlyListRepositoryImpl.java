@@ -25,24 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories;
 
-package org.hisp.dhis.android.core.relationship;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import java.util.Set;
 
-public class RelationshipTypeModelBuilder extends ModelBuilder<RelationshipType, RelationshipTypeModel> {
+public final class ReadOnlyListRepositoryImpl<M extends Model> implements ReadOnlyListRepository<M> {
+
+    private final ObjectStore<M> store;
+    private final CursorModelFactory<M> modelFactory;
+
+    public ReadOnlyListRepositoryImpl(ObjectStore<M> store, CursorModelFactory<M> modelFactory) {
+        this.store = store;
+        this.modelFactory = modelFactory;
+    }
 
     @Override
-    public RelationshipTypeModel buildModel(RelationshipType relationshipType) {
-        return RelationshipTypeModel.builder()
-                .uid(relationshipType.uid())
-                .code(relationshipType.code())
-                .name(relationshipType.name())
-                .displayName(relationshipType.displayName())
-                .created(relationshipType.created())
-                .lastUpdated(relationshipType.lastUpdated())
-                .bIsToA(relationshipType.bIsToA())
-                .aIsToB(relationshipType.aIsToB())
-                .build();
+    public Set<M> getAll() {
+        return this.store.selectAll(this.modelFactory);
     }
 }

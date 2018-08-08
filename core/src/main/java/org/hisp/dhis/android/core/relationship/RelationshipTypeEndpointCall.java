@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -55,19 +55,18 @@ public final class RelationshipTypeEndpointCall {
             return new PayloadResourceCallFetcher<RelationshipType>(data.resourceHandler(), resourceType) {
                 @Override
                 protected retrofit2.Call<Payload<RelationshipType>> getCall(String lastUpdated) {
-                    return service.getRelationshipTypes(RelationshipType.allFields,
-                            RelationshipType.lastUpdated.gt(lastUpdated), Boolean.FALSE);
+                    return service.getRelationshipTypes(RelationshipTypeFields.allFields,
+                            RelationshipTypeFields.lastUpdated.gt(lastUpdated), Boolean.FALSE);
                 }
             };
         }
 
         @Override
         protected CallProcessor<RelationshipType> processor(GenericCallData data) {
-            return new TransactionalResourceCallProcessor<>(
+            return new TransactionalResourceSyncCallProcessor<>(
                     data,
                     RelationshipTypeHandler.create(data.databaseAdapter()),
-                    resourceType,
-                    new RelationshipTypeModelBuilder()
+                    resourceType
             );
         }
     };

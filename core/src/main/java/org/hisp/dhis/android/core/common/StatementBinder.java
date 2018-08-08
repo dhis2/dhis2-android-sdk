@@ -31,6 +31,6 @@ package org.hisp.dhis.android.core.common;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-public interface StatementBinder {
-    void bindToStatement(@NonNull SQLiteStatement sqLiteStatement);
+public interface StatementBinder<O> {
+    void bindToStatement(@NonNull O object, @NonNull SQLiteStatement sqLiteStatement);
 }

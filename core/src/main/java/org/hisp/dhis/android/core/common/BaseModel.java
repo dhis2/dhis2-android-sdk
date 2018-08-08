@@ -37,7 +37,7 @@ import android.support.annotation.Nullable;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
 @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-public abstract class BaseModel implements Model, WhereStatementBinder {
+public abstract class BaseModel implements Model {
 
     @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
     public abstract static class Columns {

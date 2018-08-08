@@ -31,6 +31,6 @@ package org.hisp.dhis.android.core.common;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-public interface WhereStatementBinder extends StatementBinder {
-    void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement);
+public interface WhereStatementBinder<M> {
+    void bindToUpdateWhereStatement(@NonNull M m, @NonNull SQLiteStatement sqLiteStatement);
 }

@@ -39,11 +39,13 @@ public final class LinkModelStoreImpl<M extends BaseModel>
     private final String masterColumn;
 
     LinkModelStoreImpl(DatabaseAdapter databaseAdapter,
-                              SQLiteStatement insertStatement,
-                              SQLiteStatement updateWhereStatement,
-                              SQLStatementBuilder builder,
-                              String masterColumn) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder);
+                       SQLiteStatement insertStatement,
+                       SQLiteStatement updateWhereStatement,
+                       SQLStatementBuilder builder,
+                       String masterColumn,
+                       StatementBinder<M> binder,
+                       WhereStatementBinder<M> whereBinder) {
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder);
         this.masterColumn = masterColumn;
     }
 

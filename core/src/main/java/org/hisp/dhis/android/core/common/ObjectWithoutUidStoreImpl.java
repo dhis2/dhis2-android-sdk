@@ -38,20 +38,24 @@ import static org.hisp.dhis.android.core.utils.Utils.isNull;
 public class ObjectWithoutUidStoreImpl<M extends BaseModel>
         extends ObjectStoreImpl<M> implements ObjectWithoutUidStore<M> {
     private final SQLiteStatement updateWhereStatement;
+    private final WhereStatementBinder<M> whereBinder;
 
     public ObjectWithoutUidStoreImpl(DatabaseAdapter databaseAdapter,
                                      SQLiteStatement insertStatement,
                                      SQLiteStatement updateWhereStatement,
-                                     SQLStatementBuilder builder) {
-        super(databaseAdapter, insertStatement, builder);
+                                     SQLStatementBuilder builder,
+                                     StatementBinder<M> binder,
+                                     WhereStatementBinder<M> whereBinder) {
+        super(databaseAdapter, insertStatement, builder, binder);
         this.updateWhereStatement = updateWhereStatement;
+        this.whereBinder = whereBinder;
     }
 
     @Override
     public void updateWhere(@NonNull M m) throws RuntimeException {
         isNull(m);
-        m.bindToStatement(updateWhereStatement);
-        m.bindToUpdateWhereStatement(updateWhereStatement);
+        binder.bindToStatement(m, updateWhereStatement);
+        whereBinder.bindToUpdateWhereStatement(m, updateWhereStatement);
         executeUpdateDelete(updateWhereStatement);
     }
 

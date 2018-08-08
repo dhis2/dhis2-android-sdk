@@ -38,14 +38,14 @@ import java.util.Set;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class IdentifiableObjectStoreImpl<M extends Model & IdentifiableObject & StatementBinder>
+public class IdentifiableObjectStoreImpl<M extends Model & IdentifiableObject>
         extends ObjectStoreImpl<M> implements IdentifiableObjectStore<M> {
 
     private final SQLStatementWrapper statements;
 
     public IdentifiableObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLStatementWrapper statements,
-                                   SQLStatementBuilder builder) {
-        super(databaseAdapter, statements.insert, builder);
+                                   SQLStatementBuilder builder, StatementBinder<M> binder) {
+        super(databaseAdapter, statements.insert, builder, binder);
         this.statements = statements;
     }
 
@@ -77,7 +77,7 @@ public class IdentifiableObjectStoreImpl<M extends Model & IdentifiableObject & 
     @Override
     public final void update(@NonNull M m) throws RuntimeException {
         isNull(m);
-        m.bindToStatement(statements.update);
+        binder.bindToStatement(m, statements.update);
         sqLiteBind(statements.update, builder.columns.length + 1, m.uid());
         executeUpdateDelete(statements.update);
     }

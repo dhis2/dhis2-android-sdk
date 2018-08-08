@@ -28,15 +28,38 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StatementBinder;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.WhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class SystemInfoStore {
 
-    private SystemInfoStore() {}
+    private SystemInfoStore() {
+    }
 
     public static ObjectWithoutUidStore<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemInfoTableInfo.TABLE_INFO);
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemInfoTableInfo.TABLE_INFO,
+
+                new StatementBinder<SystemInfo>() {
+                    @Override
+                    public void bindToStatement(@NonNull SystemInfo o, @NonNull SQLiteStatement sqLiteStatement) {
+                        sqLiteBind(sqLiteStatement, 1, o.serverDate());
+                        sqLiteBind(sqLiteStatement, 2, o.dateFormat());
+                        sqLiteBind(sqLiteStatement, 3, o.version());
+                        sqLiteBind(sqLiteStatement, 4, o.contextPath());
+                    }
+                }, new WhereStatementBinder<SystemInfo>() {
+                    @Override
+                    public void bindToUpdateWhereStatement(@NonNull SystemInfo o, @NonNull SQLiteStatement sqLiteStatement) {
+                        sqLiteBind(sqLiteStatement, 5, o.contextPath());
+                    }
+                });
     }
 }

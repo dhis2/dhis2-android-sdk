@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
@@ -38,8 +36,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 
 import javax.annotation.Nullable;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class DataElementOperandModel extends BaseNameableObjectModel {
@@ -90,20 +86,4 @@ public abstract class DataElementOperandModel extends BaseNameableObjectModel {
     public static DataElementOperandModel create(Cursor cursor) {
         return AutoValue_DataElementOperandModel.createFromCursor(cursor);
     }
-
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-
-        sqLiteBind(sqLiteStatement, 1, uid());
-        sqLiteBind(sqLiteStatement, 2, name());
-        sqLiteBind(sqLiteStatement, 3, displayName());
-        sqLiteBind(sqLiteStatement, 4, created());
-        sqLiteBind(sqLiteStatement, 5, lastUpdated());
-        sqLiteBind(sqLiteStatement, 6, shortName());
-        sqLiteBind(sqLiteStatement, 7, displayShortName());
-        sqLiteBind(sqLiteStatement, 8, dataElement());
-        sqLiteBind(sqLiteStatement, 9, categoryOptionCombo());
-    }
-
 }

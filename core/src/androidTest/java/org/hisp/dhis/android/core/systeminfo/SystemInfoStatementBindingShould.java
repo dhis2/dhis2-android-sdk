@@ -33,6 +33,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -52,7 +53,7 @@ public class SystemInfoStatementBindingShould {
 
     private SystemInfo info = SystemInfoSamples.get1();
 
-
+    @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }

@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -43,8 +41,6 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel {
@@ -125,25 +121,6 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
     @ColumnName(Columns.TEMPORAL_VALIDITY_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date temporalValidityDate();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, ownerObject());
-        sqLiteBind(sqLiteStatement, 2, ownerUid());
-        sqLiteBind(sqLiteStatement, 3, key());
-        sqLiteBind(sqLiteStatement, 4, value());
-        sqLiteBind(sqLiteStatement, 5, created());
-        sqLiteBind(sqLiteStatement, 6, expiryDate());
-        sqLiteBind(sqLiteStatement, 7, organisationUnit());
-        sqLiteBind(sqLiteStatement, 8, temporalValidityDate());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 9, ownerUid());
-        sqLiteBind(sqLiteStatement, 10, value());
-        sqLiteBind(sqLiteStatement, 11, organisationUnit());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {

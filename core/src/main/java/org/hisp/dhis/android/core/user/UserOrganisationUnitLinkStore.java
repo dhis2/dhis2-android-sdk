@@ -29,12 +29,17 @@
 package org.hisp.dhis.android.core.user;
 
 import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Set;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class UserOrganisationUnitLinkStore extends ObjectWithoutUidStoreImpl<UserOrganisationUnitLinkModel>
         implements UserOrganisationUnitLinkStoreInterface{
@@ -42,9 +47,35 @@ public final class UserOrganisationUnitLinkStore extends ObjectWithoutUidStoreIm
     private UserOrganisationUnitLinkStore(DatabaseAdapter databaseAdapter,
                                           SQLiteStatement insertStatement,
                                           SQLiteStatement updateWhereStatement,
-                                          SQLStatementBuilder builder) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder);
+                                          SQLStatementBuilder builder,
+                                          StatementBinder<UserOrganisationUnitLinkModel> binder,
+                                          WhereStatementBinder<UserOrganisationUnitLinkModel> whereBinder) {
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder);
     }
+
+    private static final StatementBinder<UserOrganisationUnitLinkModel> BINDER
+            = new StatementBinder<UserOrganisationUnitLinkModel>() {
+        @Override
+        public void bindToStatement(@NonNull UserOrganisationUnitLinkModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.user());
+            sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
+            sqLiteBind(sqLiteStatement, 3, o.organisationUnitScope());
+            sqLiteBind(sqLiteStatement, 4, o.root());
+        }
+    };
+
+    private static final WhereStatementBinder<UserOrganisationUnitLinkModel> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<UserOrganisationUnitLinkModel>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull UserOrganisationUnitLinkModel o,
+                                               @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 5, o.user());
+            sqLiteBind(sqLiteStatement, 6, o.organisationUnit());
+            sqLiteBind(sqLiteStatement, 7, o.organisationUnitScope());
+            sqLiteBind(sqLiteStatement, 8, o.root());
+        }
+    };
+
 
     public static UserOrganisationUnitLinkStoreInterface create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
@@ -54,7 +85,9 @@ public final class UserOrganisationUnitLinkStore extends ObjectWithoutUidStoreIm
                 databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
                 databaseAdapter.compileStatement(statementBuilder.updateWhere()),
-                statementBuilder);
+                statementBuilder,
+                BINDER,
+                WHERE_UPDATE_BINDER);
     }
 
     @Override

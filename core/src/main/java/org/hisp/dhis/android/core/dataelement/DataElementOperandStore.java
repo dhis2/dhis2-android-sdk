@@ -28,16 +28,38 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class DataElementOperandStore {
 
     private DataElementOperandStore() {}
 
+    private static final StatementBinder<DataElementOperandModel> BINDER
+            = new StatementBinder<DataElementOperandModel>() {
+        @Override
+        public void bindToStatement(@NonNull DataElementOperandModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.uid());
+            sqLiteBind(sqLiteStatement, 2, o.name());
+            sqLiteBind(sqLiteStatement, 3, o.displayName());
+            sqLiteBind(sqLiteStatement, 4, o.created());
+            sqLiteBind(sqLiteStatement, 5, o.lastUpdated());
+            sqLiteBind(sqLiteStatement, 6, o.shortName());
+            sqLiteBind(sqLiteStatement, 7, o.displayShortName());
+            sqLiteBind(sqLiteStatement, 8, o.dataElement());
+            sqLiteBind(sqLiteStatement, 9, o.categoryOptionCombo());
+        }
+    };
+
     public static IdentifiableObjectStore<DataElementOperandModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, DataElementOperandModel.TABLE,
-                new DataElementOperandModel.Columns().all());
+                new DataElementOperandModel.Columns().all(), BINDER);
     }
 }

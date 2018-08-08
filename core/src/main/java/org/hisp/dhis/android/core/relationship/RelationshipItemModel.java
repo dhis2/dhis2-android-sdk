@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -41,8 +39,6 @@ import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.data.database.DbRelationshipConstraintTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class RelationshipItemModel extends BaseModel {
@@ -101,21 +97,6 @@ public abstract class RelationshipItemModel extends BaseModel {
     @Nullable
     @ColumnName(Columns.EVENT)
     public abstract String event();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, relationship());
-        sqLiteBind(sqLiteStatement, 2, relationshipItemType());
-        sqLiteBind(sqLiteStatement, 3, trackedEntityInstance());
-        sqLiteBind(sqLiteStatement, 4, enrollment());
-        sqLiteBind(sqLiteStatement, 5, event());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 6, relationship());
-        sqLiteBind(sqLiteStatement, 7, relationshipItemType());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {

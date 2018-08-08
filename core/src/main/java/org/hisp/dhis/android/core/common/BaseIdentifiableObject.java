@@ -28,24 +28,18 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.text.ParseException;
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
-public abstract class BaseIdentifiableObject implements IdentifiableObject,
-        ObjectWithDeleteInterface, StatementBinder {
+public abstract class BaseIdentifiableObject implements IdentifiableObject, ObjectWithDeleteInterface {
     /* date format which should be used for all Date instances
     within models which extend BaseIdentifiableObject */
     public static final SafeDateFormat DATE_FORMAT = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
@@ -99,16 +93,6 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject,
 
     public static String dateToSpaceDateStr(Date date) throws ParseException {
         return BaseIdentifiableObject.SPACE_DATE_FORMAT.format(date);
-    }
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, uid());
-        sqLiteBind(sqLiteStatement, 2, code());
-        sqLiteBind(sqLiteStatement, 3, name());
-        sqLiteBind(sqLiteStatement, 4, displayName());
-        sqLiteBind(sqLiteStatement, 5, created());
-        sqLiteBind(sqLiteStatement, 6, lastUpdated());
     }
 
     @JsonPOJOBuilder(withPrefix = "")

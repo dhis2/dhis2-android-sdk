@@ -34,6 +34,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.option.OptionSetModel;
+import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,8 +58,7 @@ public class IdentifiableObjectStoreIntegrationShould extends AbsStoreTestCase {
         super.setUp();
         this.model = StoreMocks.generateOptionSetModel();
         this.updatedModel = StoreMocks.generateUpdatedOptionSetModel();
-        this.store = StoreFactory.identifiableStore(databaseAdapter(),
-                OptionSetModel.TABLE, new OptionSetModel.Columns().all());
+        this.store = OptionSetStore.create(databaseAdapter());
     }
 
     private Cursor getCursor() {

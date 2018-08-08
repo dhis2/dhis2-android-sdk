@@ -32,6 +32,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
@@ -40,14 +42,18 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
 final class RelationshipItemStore extends ObjectWithoutUidStoreImpl<RelationshipItemModel>
         implements RelationshipItemStoreInterface {
 
     private RelationshipItemStore(DatabaseAdapter databaseAdapter,
                                   SQLiteStatement insertStatement,
                                   SQLiteStatement updateWhereStatement,
-                                  SQLStatementBuilder builder) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder);
+                                  SQLStatementBuilder builder,
+                                  StatementBinder<RelationshipItemModel> binder,
+                                  WhereStatementBinder<RelationshipItemModel> whereBinder) {
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder);
     }
 
     @Override
@@ -84,6 +90,27 @@ final class RelationshipItemStore extends ObjectWithoutUidStoreImpl<Relationship
         return relationships;
     }
 
+    private static final StatementBinder<RelationshipItemModel> BINDER = new StatementBinder<RelationshipItemModel>() {
+        @Override
+        public void bindToStatement(@NonNull RelationshipItemModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.relationship());
+            sqLiteBind(sqLiteStatement, 2, o.relationshipItemType());
+            sqLiteBind(sqLiteStatement, 3, o.trackedEntityInstance());
+            sqLiteBind(sqLiteStatement, 4, o.enrollment());
+            sqLiteBind(sqLiteStatement, 5, o.event());
+        }
+    };
+
+
+    private static final WhereStatementBinder<RelationshipItemModel> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<RelationshipItemModel>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull RelationshipItemModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 6, o.relationship());
+            sqLiteBind(sqLiteStatement, 7, o.relationshipItemType());
+        }
+    };
+
     public static RelationshipItemStoreInterface create(DatabaseAdapter databaseAdapter) {
         BaseModel.Columns columns = new RelationshipItemModel.Columns();
 
@@ -94,7 +121,9 @@ final class RelationshipItemStore extends ObjectWithoutUidStoreImpl<Relationship
                 databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
                 databaseAdapter.compileStatement(statementBuilder.updateWhere()),
-                statementBuilder
+                statementBuilder,
+                BINDER,
+                WHERE_UPDATE_BINDER
         );
     }
 }

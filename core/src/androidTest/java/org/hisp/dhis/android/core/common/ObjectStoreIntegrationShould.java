@@ -32,9 +32,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.option.OptionSetModel;
+import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,10 +55,7 @@ public class ObjectStoreIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
         this.model = StoreMocks.generateOptionSetModel();
-        IdentifiableStatementBinder<OptionSetModel> binder = new IdentifiableStatementBinder<OptionSetModel>() {
-        };
-        this.store = StoreFactory.objectStore(databaseAdapter(),
-                OptionSetModel.TABLE, new OptionSetModel.Columns().all(), binder);
+        this.store = OptionSetStore.create(databaseAdapter());
     }
 
     @Test

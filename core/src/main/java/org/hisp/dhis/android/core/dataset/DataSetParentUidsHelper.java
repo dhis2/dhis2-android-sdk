@@ -42,9 +42,9 @@ final class DataSetParentUidsHelper {
     static Set<String> getDataElementUids(List<DataSet> dataSets) {
         Set<String> uids = new HashSet<>();
         for (DataSet dataSet : dataSets) {
-            List<DataSetElements> dataSetElements = dataSet.dataSetElements();
+            List<DataSetElement> dataSetElements = dataSet.dataSetElements();
             assert dataSetElements != null;
-            for (DataSetElements dataSetElement : dataSetElements) {
+            for (DataSetElement dataSetElement : dataSetElements) {
                 uids.add(dataSetElement.dataElement().uid());
             }
         }

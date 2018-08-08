@@ -40,18 +40,18 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
 @AutoValue
-public abstract class DataSetElements {
+public abstract class DataSetElement {
     private final static String DATA_ELEMENT = "dataElement";
     private final static String CATEGORY_COMBO = "categoryCombo";
 
-    public static final NestedField<DataSetElements, ObjectWithUid> dataElement =
+    public static final NestedField<DataSetElement, ObjectWithUid> dataElement =
             NestedField.create(DATA_ELEMENT);
 
-    public static final NestedField<DataSetElements, ObjectWithUid> categoryCombo =
+    public static final NestedField<DataSetElement, ObjectWithUid> categoryCombo =
             NestedField.create(CATEGORY_COMBO);
 
-    public static final Fields<DataSetElements> allFields =
-            Fields.<DataSetElements>builder().fields(dataElement.with(ObjectWithUid.uid),
+    public static final Fields<DataSetElement> allFields =
+            Fields.<DataSetElement>builder().fields(dataElement.with(ObjectWithUid.uid),
                     categoryCombo.with(ObjectWithUid.uid)).build();
 
     @NonNull
@@ -68,10 +68,10 @@ public abstract class DataSetElements {
     }
 
     @JsonCreator
-    public static DataSetElements create(
+    public static DataSetElement create(
             @JsonProperty(DATA_ELEMENT) ObjectWithUid dataElement,
             @JsonProperty(CATEGORY_COMBO) ObjectWithUid categoryCombo) {
 
-        return new AutoValue_DataSetElements(dataElement, categoryCombo);
+        return new AutoValue_DataSetElement(dataElement, categoryCombo);
     }
 }

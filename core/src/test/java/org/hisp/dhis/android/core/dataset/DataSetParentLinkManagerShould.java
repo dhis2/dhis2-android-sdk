@@ -70,11 +70,11 @@ public class DataSetParentLinkManagerShould {
     private final String DATA_SET_2_UID = "test_data_set_uid2";
     private final String DATA_SET_3_UID = "test_data_set_uid3";
 
-    private DataSetElements dataSetElements1 = DataSetElements.create(ObjectWithUid.create("dataSetElements1"),
+    private DataSetElement dataSetElement1 = DataSetElement.create(ObjectWithUid.create("dataSetElement1"),
             ObjectWithUid.create("categoryCombo1"));
-    private DataSetElements dataSetElements2 = DataSetElements.create(ObjectWithUid.create("dataSetElements2"),
+    private DataSetElement dataSetElement2 = DataSetElement.create(ObjectWithUid.create("dataSetElement2"),
             ObjectWithUid.create("categoryCombo2"));
-    private DataSetElements dataSetElements3 = DataSetElements.create(ObjectWithUid.create("dataSetElements3"),
+    private DataSetElement dataSetElement3 = DataSetElement.create(ObjectWithUid.create("dataSetElement3"),
             ObjectWithUid.create("categoryCombo3"));
 
     private ObjectWithUid indicator1 = ObjectWithUid.create("indicator1");
@@ -98,8 +98,8 @@ public class DataSetParentLinkManagerShould {
         when(dataSet1.uid()).thenReturn(DATA_SET_1_UID);
         when(dataSet2.uid()).thenReturn(DATA_SET_2_UID);
         when(dataSet3.uid()).thenReturn(DATA_SET_3_UID);
-        when(dataSet1.dataSetElements()).thenReturn(Lists.newArrayList(dataSetElements1, dataSetElements2));
-        when(dataSet2.dataSetElements()).thenReturn(Lists.newArrayList(dataSetElements2, dataSetElements3));
+        when(dataSet1.dataSetElements()).thenReturn(Lists.newArrayList(dataSetElement1, dataSetElement2));
+        when(dataSet2.dataSetElements()).thenReturn(Lists.newArrayList(dataSetElement2, dataSetElement3));
 
         when(dataSet1.indicators()).thenReturn(Lists.newArrayList(indicator1, indicator2));
         when(dataSet2.indicators()).thenReturn(Lists.newArrayList(indicator2, indicator3));
@@ -117,10 +117,10 @@ public class DataSetParentLinkManagerShould {
                 Lists.newArrayList(organisationUnit1, organisationUnit2), Sets.newHashSet(
                         Lists.newArrayList(DATA_SET_1_UID, DATA_SET_2_UID, DATA_SET_3_UID)));
 
-        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElements1, dataSet1));
-        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElements2, dataSet1));
-        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElements2, dataSet2));
-        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElements3, dataSet2));
+        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElement1, dataSet1));
+        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElement2, dataSet1));
+        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElement2, dataSet2));
+        verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElement3, dataSet2));
 
         verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(indicator1, dataSet1));
         verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(indicator2, dataSet1));
@@ -135,7 +135,7 @@ public class DataSetParentLinkManagerShould {
         verifyNoMoreInteractions(dataSetOrganisationUnitStore);
     }
 
-    private DataSetDataElementLinkModel dataElementExpectedLink(DataSetElements decc, DataSet dataSet) {
+    private DataSetDataElementLinkModel dataElementExpectedLink(DataSetElement decc, DataSet dataSet) {
         return new DataSetDataElementLinkModelBuilder(dataSet).buildModel(decc);
     }
 

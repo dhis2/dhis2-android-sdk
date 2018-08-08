@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
-public class DataSetDataElementLinkModelBuilder extends ModelBuilder<DataSetElements, DataSetDataElementLinkModel> {
+public class DataSetDataElementLinkModelBuilder extends ModelBuilder<DataSetElement, DataSetDataElementLinkModel> {
 
     private final DataSetDataElementLinkModel.Builder builder;
 
@@ -40,10 +40,10 @@ public class DataSetDataElementLinkModelBuilder extends ModelBuilder<DataSetElem
     }
 
     @Override
-    public DataSetDataElementLinkModel buildModel(DataSetElements dataSetElements) {
+    public DataSetDataElementLinkModel buildModel(DataSetElement dataSetElement) {
         return builder
-                .dataElement(dataSetElements.dataElement().uid())
-                .categoryCombo(dataSetElements.categoryComboUid())
+                .dataElement(dataSetElement.dataElement().uid())
+                .categoryCombo(dataSetElement.categoryComboUid())
                 .build();
     }
 }

@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -96,9 +95,6 @@ public class OrganisationUnitCallUnitShould {
 
     @Captor
     private ArgumentCaptor<Fields<OrganisationUnit>> fieldsCaptor;
-
-    @Captor
-    private ArgumentCaptor<Filter<OrganisationUnit, String>> filterCaptor;
 
     @Captor
     private ArgumentCaptor<Boolean> descendantsCaptor;
@@ -191,8 +187,7 @@ public class OrganisationUnitCallUnitShould {
         when(user.organisationUnits()).thenReturn(organisationUnits);
 
         when(organisationUnitService.getOrganisationUnitWithDescendants(
-                uidCaptor.capture(), fieldsCaptor.capture(), filterCaptor.capture(), descendantsCaptor.capture(),
-                pagingCaptor.capture()
+                uidCaptor.capture(), fieldsCaptor.capture(), descendantsCaptor.capture(), pagingCaptor.capture()
         )).thenReturn(retrofitCall);
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
 
@@ -223,11 +218,6 @@ public class OrganisationUnitCallUnitShould {
                 OrganisationUnit.parent.with(OrganisationUnit.uid),
                 OrganisationUnit.programs.with(ObjectWithUid.uid)
         );
-        Filter<OrganisationUnit, String> filter = filterCaptor.getValue();
-        assertThat(filter.operator()).isEqualTo("gt");
-        assertThat(filter.field().name()).isEqualTo(OrganisationUnit.lastUpdated.name());
-        assertThat(filter.values().size()).isEqualTo(1);
-        assertThat(filter.values()).contains(date);
         assertThat(descendantsCaptor.getValue()).isTrue();
         assertThat(pagingCaptor.getValue()).isFalse();
     }

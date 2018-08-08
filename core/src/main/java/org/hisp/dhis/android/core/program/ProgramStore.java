@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.program;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
@@ -50,7 +50,7 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<ProgramModel
         super(databaseAdapter, statementWrapper, statementBuilder, BINDER);
     }
     
-    private static StatementBinder<ProgramModel> BINDER = new IdentifiableStatementBinder<ProgramModel>() {
+    private static StatementBinder<ProgramModel> BINDER = new NameableStatementBinder<ProgramModel>() {
         
         @Override
         public void bindToStatement(@NonNull ProgramModel o, @NonNull SQLiteStatement sqLiteStatement) {

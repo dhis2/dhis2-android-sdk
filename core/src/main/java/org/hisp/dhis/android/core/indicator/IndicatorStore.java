@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.indicator;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
@@ -43,7 +43,7 @@ public final class IndicatorStore {
 
     private IndicatorStore() {}
 
-    private static StatementBinder<IndicatorModel> BINDER = new IdentifiableStatementBinder<IndicatorModel>() {
+    private static StatementBinder<IndicatorModel> BINDER = new NameableStatementBinder<IndicatorModel>() {
         @Override
         public void bindToStatement(@NonNull IndicatorModel o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);

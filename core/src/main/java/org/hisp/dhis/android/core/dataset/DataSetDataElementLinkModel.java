@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -37,8 +35,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class DataSetDataElementLinkModel extends BaseModel {
@@ -80,19 +76,6 @@ public abstract class DataSetDataElementLinkModel extends BaseModel {
     @Nullable
     @ColumnName(Columns.CATEGORY_COMBO)
     public abstract String categoryCombo();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, dataSet());
-        sqLiteBind(sqLiteStatement, 2, dataElement());
-        sqLiteBind(sqLiteStatement, 3, categoryCombo());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 4, dataSet());
-        sqLiteBind(sqLiteStatement, 5, dataElement());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {

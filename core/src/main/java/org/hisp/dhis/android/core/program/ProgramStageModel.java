@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -45,8 +43,6 @@ import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.GodClass"})
 @AutoValue
@@ -202,35 +198,6 @@ public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
     @ColumnName(Columns.FEATURE_TYPE)
     @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
-
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 7, description());
-        sqLiteBind(sqLiteStatement, 8, displayDescription());
-        sqLiteBind(sqLiteStatement, 9, executionDateLabel());
-        sqLiteBind(sqLiteStatement, 10, allowGenerateNextVisit());
-        sqLiteBind(sqLiteStatement, 11, validCompleteOnly());
-        sqLiteBind(sqLiteStatement, 12, reportDateToUse());
-        sqLiteBind(sqLiteStatement, 13, openAfterEnrollment());
-        sqLiteBind(sqLiteStatement, 14, repeatable());
-        sqLiteBind(sqLiteStatement, 15, captureCoordinates());
-        sqLiteBind(sqLiteStatement, 16, formType().name());
-        sqLiteBind(sqLiteStatement, 17, displayGenerateEventBox());
-        sqLiteBind(sqLiteStatement, 18, generatedByEnrollmentDate());
-        sqLiteBind(sqLiteStatement, 19, autoGenerateEvent());
-        sqLiteBind(sqLiteStatement, 20, sortOrder());
-        sqLiteBind(sqLiteStatement, 21, hideDueDate());
-        sqLiteBind(sqLiteStatement, 22, blockEntryForm());
-        sqLiteBind(sqLiteStatement, 23, minDaysFromStart());
-        sqLiteBind(sqLiteStatement, 24, standardInterval());
-        sqLiteBind(sqLiteStatement, 25, program());
-        sqLiteBind(sqLiteStatement, 26, periodType());
-        sqLiteBind(sqLiteStatement, 27, accessDataWrite());
-        sqLiteBind(sqLiteStatement, 28, remindCompleted());
-        sqLiteBind(sqLiteStatement, 29, featureType());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {

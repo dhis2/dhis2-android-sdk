@@ -28,16 +28,40 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramTrackedEntityAttributeStore {
 
     private ProgramTrackedEntityAttributeStore() {}
 
+    private static StatementBinder<ProgramTrackedEntityAttributeModel> BINDER
+            = new IdentifiableStatementBinder<ProgramTrackedEntityAttributeModel>() {
+
+        @Override
+        public void bindToStatement(@NonNull ProgramTrackedEntityAttributeModel o,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 11, o.mandatory());
+            sqLiteBind(sqLiteStatement, 12, o.trackedEntityAttribute());
+            sqLiteBind(sqLiteStatement, 13, o.allowFutureDate());
+            sqLiteBind(sqLiteStatement, 14, o.displayInList());
+            sqLiteBind(sqLiteStatement, 15, o.program());
+            sqLiteBind(sqLiteStatement, 16, o.sortOrder());
+            sqLiteBind(sqLiteStatement, 17, o.searchable());
+        }
+    };
+
     public static IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, ProgramTrackedEntityAttributeModel.TABLE,
-                new ProgramTrackedEntityAttributeModel.Columns().all());
+                new ProgramTrackedEntityAttributeModel.Columns().all(), BINDER);
     }
 }

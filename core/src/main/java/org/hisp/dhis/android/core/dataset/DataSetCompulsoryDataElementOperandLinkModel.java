@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -38,8 +36,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class DataSetCompulsoryDataElementOperandLinkModel extends BaseModel {
@@ -87,11 +83,4 @@ public abstract class DataSetCompulsoryDataElementOperandLinkModel extends BaseM
     public static DataSetCompulsoryDataElementOperandLinkModel create(Cursor cursor) {
         return AutoValue_DataSetCompulsoryDataElementOperandLinkModel.createFromCursor(cursor);
     }
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, dataSet());
-        sqLiteBind(sqLiteStatement, 2, dataElementOperand());
-    }
-
 }

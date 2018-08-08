@@ -76,11 +76,10 @@ public final class StoreFactory {
 
     public static <I extends BaseModel> LinkModelStore<I> linkModelStore(
             DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns,
-            String masterColumn, StatementBinder<I> binder, WhereStatementBinder<I> whereBinder) {
+            String masterColumn, StatementBinder<I> binder) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns.all(), columns.whereUpdate());
         return new LinkModelStoreImpl<>(databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
-                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
-                statementBuilder, masterColumn, binder, whereBinder);
+                statementBuilder, masterColumn, binder);
     }
 }

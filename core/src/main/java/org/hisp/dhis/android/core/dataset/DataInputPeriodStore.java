@@ -28,19 +28,35 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class DataInputPeriodStore {
 
     private DataInputPeriodStore() {}
 
+    private static final StatementBinder<DataInputPeriodModel> BINDER = new StatementBinder<DataInputPeriodModel>() {
+        @Override
+        public void bindToStatement(@NonNull DataInputPeriodModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.dataSet());
+            sqLiteBind(sqLiteStatement, 2, o.period());
+            sqLiteBind(sqLiteStatement, 3, o.openingDate());
+            sqLiteBind(sqLiteStatement, 4, o.closingDate());
+        }
+    };
+
     public static LinkModelStore<DataInputPeriodModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter,
                 DataInputPeriodModel.TABLE,
                 new DataInputPeriodModel.Columns(),
-                DataInputPeriodModel.Columns.DATA_SET);
+                DataInputPeriodModel.Columns.DATA_SET,
+                BINDER);
     }
-
 }

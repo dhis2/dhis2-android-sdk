@@ -28,16 +28,43 @@
 
 package org.hisp.dhis.android.core.user;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
 public final class UserStore {
     private UserStore() {}
 
+    private static StatementBinder<User> BINDER = new IdentifiableStatementBinder<User>() {
+
+        @Override
+        public void bindToStatement(@NonNull User o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.birthday());
+            sqLiteBind(sqLiteStatement, 8, o.education());
+            sqLiteBind(sqLiteStatement, 9, o.gender());
+            sqLiteBind(sqLiteStatement, 10, o.jobTitle());
+            sqLiteBind(sqLiteStatement, 11, o.surname());
+            sqLiteBind(sqLiteStatement, 12, o.firstName());
+            sqLiteBind(sqLiteStatement, 13, o.introduction());
+            sqLiteBind(sqLiteStatement, 14, o.employer());
+            sqLiteBind(sqLiteStatement, 15, o.interests());
+            sqLiteBind(sqLiteStatement, 16, o.languages());
+            sqLiteBind(sqLiteStatement, 17, o.email());
+            sqLiteBind(sqLiteStatement, 18, o.phoneNumber());
+            sqLiteBind(sqLiteStatement, 19, o.nationality());
+        }
+    };
+
     public static IdentifiableObjectStore<User> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, UserModel.TABLE,
-                new UserModel.Columns().all());
+                new UserModel.Columns().all(), BINDER);
     }
-
 }

@@ -28,17 +28,32 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class RelationshipStore {
 
     private RelationshipStore() {}
 
+    private static StatementBinder<RelationshipModel> BINDER = new IdentifiableStatementBinder<RelationshipModel>() {
+
+        @Override
+        public void bindToStatement(@NonNull RelationshipModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.relationshipType());
+        }
+    };
+
     public static IdentifiableObjectStore<RelationshipModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, RelationshipModel.TABLE,
-                new RelationshipModel.Columns().all());
+                new RelationshipModel.Columns().all(), BINDER);
     }
-
 }

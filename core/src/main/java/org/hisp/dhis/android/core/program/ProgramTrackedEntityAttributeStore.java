@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.program;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
@@ -44,7 +44,7 @@ public final class ProgramTrackedEntityAttributeStore {
     private ProgramTrackedEntityAttributeStore() {}
 
     private static StatementBinder<ProgramTrackedEntityAttributeModel> BINDER
-            = new IdentifiableStatementBinder<ProgramTrackedEntityAttributeModel>() {
+            = new NameableStatementBinder<ProgramTrackedEntityAttributeModel>() {
 
         @Override
         public void bindToStatement(@NonNull ProgramTrackedEntityAttributeModel o,

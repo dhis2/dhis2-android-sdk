@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -50,8 +49,6 @@ import org.hisp.dhis.android.core.data.database.IgnoreUserCredentialsAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.List;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_User.Builder.class)
@@ -121,24 +118,6 @@ public abstract class User extends BaseIdentifiableObject implements Model {
 
     public static User.Builder builder() {
         return new AutoValue_User.Builder();
-    }
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 7, birthday());
-        sqLiteBind(sqLiteStatement, 8, education());
-        sqLiteBind(sqLiteStatement, 9, gender());
-        sqLiteBind(sqLiteStatement, 10, jobTitle());
-        sqLiteBind(sqLiteStatement, 11, surname());
-        sqLiteBind(sqLiteStatement, 12, firstName());
-        sqLiteBind(sqLiteStatement, 13, introduction());
-        sqLiteBind(sqLiteStatement, 14, employer());
-        sqLiteBind(sqLiteStatement, 15, interests());
-        sqLiteBind(sqLiteStatement, 16, languages());
-        sqLiteBind(sqLiteStatement, 17, email());
-        sqLiteBind(sqLiteStatement, 18, phoneNumber());
-        sqLiteBind(sqLiteStatement, 19, nationality());
     }
 
     @NonNull

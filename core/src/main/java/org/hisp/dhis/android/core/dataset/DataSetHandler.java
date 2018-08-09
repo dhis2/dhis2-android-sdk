@@ -61,6 +61,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
             DataSetCompulsoryDataElementOperandLinkModel> dataSetCompulsoryDataElementOperandLinkHandler;
 
     private final LinkModelHandler<DataInputPeriod, DataInputPeriodModel> dataInputPeriodHandler;
+    private final LinkModelHandler<DataSetElement, DataSetDataElementLinkModel> dataSetDataElementLinkHandler;
     private final CollectionCleaner<DataSet> collectionCleaner;
 
     DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
@@ -73,6 +74,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
                            DataSetCompulsoryDataElementOperandLinkModel>
                            dataSetCompulsoryDataElementOperandLinkHandler,
                    LinkModelHandler<DataInputPeriod, DataInputPeriodModel> dataInputPeriodHandler,
+                   LinkModelHandler<DataSetElement, DataSetDataElementLinkModel> dataSetDataElementLinkHandler,
                    CollectionCleaner<DataSet> collectionCleaner) {
 
         super(dataSetStore);
@@ -82,25 +84,8 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
         this.compulsoryDataElementOperandHandler = compulsoryDataElementOperandHandler;
         this.dataSetCompulsoryDataElementOperandLinkHandler = dataSetCompulsoryDataElementOperandLinkHandler;
         this.dataInputPeriodHandler = dataInputPeriodHandler;
+        this.dataSetDataElementLinkHandler = dataSetDataElementLinkHandler;
         this.collectionCleaner = collectionCleaner;
-    }
-
-    public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
-
-        return new DataSetHandler(
-                DataSetStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter), SectionHandler.create(databaseAdapter),
-                new OrphanCleanerImpl<DataSet, Section>(SectionModel.TABLE,
-                        SectionModel.Columns.DATA_SET,
-                        databaseAdapter),
-                DataElementOperandHandler.create(databaseAdapter),
-                new LinkModelHandlerImpl<DataElementOperand,
-                        DataSetCompulsoryDataElementOperandLinkModel>(
-                                DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter)),
-                new LinkModelHandlerImpl<DataInputPeriod, DataInputPeriodModel>(
-                        DataInputPeriodStore.create(databaseAdapter)),
-                new CollectionCleanerImpl<DataSet>(DataSetModel.TABLE, databaseAdapter)
-        );
     }
 
     @Override
@@ -121,6 +106,9 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
         dataInputPeriodHandler.handleMany(dataSet.uid(), dataSet.dataInputPeriods(),
                 new DataInputPeriodModelBuilder(dataSet));
 
+        dataSetDataElementLinkHandler.handleMany(dataSet.uid(), dataSet.dataSetElements(),
+                new DataSetDataElementLinkModelBuilder(dataSet));
+
         if (action == HandleAction.Update) {
             sectionOrphanCleaner.deleteOrphan(dataSet, dataSet.sections());
         }
@@ -129,5 +117,25 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
     @Override
     protected void afterCollectionHandled(Collection<DataSet> dataSets) {
         collectionCleaner.deleteNotPresent(dataSets);
+    }
+
+    public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
+
+        return new DataSetHandler(
+                DataSetStore.create(databaseAdapter),
+                ObjectStyleHandler.create(databaseAdapter), SectionHandler.create(databaseAdapter),
+                new OrphanCleanerImpl<DataSet, Section>(SectionModel.TABLE,
+                        SectionModel.Columns.DATA_SET,
+                        databaseAdapter),
+                DataElementOperandHandler.create(databaseAdapter),
+                new LinkModelHandlerImpl<DataElementOperand,
+                        DataSetCompulsoryDataElementOperandLinkModel>(
+                        DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter)),
+                new LinkModelHandlerImpl<DataInputPeriod, DataInputPeriodModel>(
+                        DataInputPeriodStore.create(databaseAdapter)),
+                new LinkModelHandlerImpl<DataSetElement, DataSetDataElementLinkModel>(
+                        DataSetDataElementLinkStore.create(databaseAdapter)),
+                new CollectionCleanerImpl<DataSet>(DataSetModel.TABLE, databaseAdapter)
+        );
     }
 }

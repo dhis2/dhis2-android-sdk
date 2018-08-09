@@ -46,8 +46,9 @@ public class RelationshipItemModelBuilderShould {
 
     private RelationshipConstraintType CONSTRAINT_TYPE = RelationshipConstraintType.FROM;
 
-    private Relationship relationship = Relationship.create(null, null, "relationship_uid", "type", null, null,
-            null, null);
+    private Relationship relationship = Relationship.builder()
+            .relationship("relationship_uid")
+            .relationshipType("type").build();
 
     @Before
     @SuppressWarnings("unchecked")

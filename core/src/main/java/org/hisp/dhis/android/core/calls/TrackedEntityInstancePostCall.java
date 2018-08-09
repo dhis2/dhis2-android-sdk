@@ -19,7 +19,7 @@ import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.imports.WebResponseHandler;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipRepositoryInterface;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.relationship.RelationshipVersionTransformer;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
@@ -42,7 +42,6 @@ import retrofit2.Retrofit;
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
 public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     // internal modules
-    private final DHISVersionManager versionManager;
     private final RelationshipRepositoryInterface relationshipRepository;
 
     // service
@@ -54,16 +53,16 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+    private final RelationshipVersionTransformer relationshipVersionTransformer;
 
-    private TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
-                                          @NonNull RelationshipRepositoryInterface relationshipRepository,
+    private TrackedEntityInstancePostCall(@NonNull RelationshipRepositoryInterface relationshipRepository,
                                           @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
                                           @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                                           @NonNull EnrollmentStore enrollmentStore,
                                           @NonNull EventStore eventStore,
                                           @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
-                                          @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
-        this.versionManager = versionManager;
+                                          @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
+                                          @NonNull RelationshipVersionTransformer relationshipVersionTransformer) {
         this.relationshipRepository = relationshipRepository;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
@@ -71,6 +70,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
+        this.relationshipVersionTransformer = relationshipVersionTransformer;
     }
 
     @Override
@@ -167,21 +167,9 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
             TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(teiUid.getKey());
 
             // Building relationships for TEI
-            List<Relationship> relationshipRecreated =
+            List<Relationship> dbRelationships =
                     relationshipRepository.getRelationshipsByTEI(trackedEntityInstance.uid());
-
-            if (versionManager.is2_29()) {
-                List<Relationship> relationships29 = new ArrayList<>();
-                for (Relationship relationship : relationshipRecreated) {
-                    relationships29.add(
-                            Relationship.create(
-                                    relationship.from().trackedEntityInstance().trackedEntityInstance(),
-                                    relationship.to().trackedEntityInstance().trackedEntityInstance(),
-                                    relationship.relationshipType(), null, null, null, null, null)
-                    );
-                }
-                relationshipRecreated = relationships29;
-            }
+            List<Relationship> versionAwareRelationships = relationshipVersionTransformer.toServer(dbRelationships);
 
             trackedEntityInstancesRecreated.add(TrackedEntityInstance.create(trackedEntityInstance.uid(),
                     trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),
@@ -189,7 +177,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                     trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntityType(),
                     trackedEntityInstance.coordinates(), trackedEntityInstance.featureType(),
                     trackedEntityInstance.deleted(), attributeValues,
-                    relationshipRecreated, enrollmentsRecreated));
+                    versionAwareRelationships, enrollmentsRecreated));
 
         }
 
@@ -217,14 +205,14 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     public static TrackedEntityInstancePostCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
                                                        D2InternalModules internalModules) {
         return new TrackedEntityInstancePostCall(
-                internalModules.systemInfo.publicModule.versionManager,
                 internalModules.relationshipModule.publicModule.relationship,
                 retrofit.create(TrackedEntityInstanceService.class),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
                 new EventStoreImpl(databaseAdapter),
                 new TrackedEntityDataValueStoreImpl(databaseAdapter),
-                new TrackedEntityAttributeValueStoreImpl(databaseAdapter)
+                new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
+                new RelationshipVersionTransformer(internalModules.systemInfo.publicModule.versionManager)
         );
     }
 }

@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipFields;
 
 import java.util.Date;
 import java.util.List;
@@ -81,7 +82,7 @@ public abstract class TrackedEntityInstance implements ObjectWithDeleteInterface
 
     public static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder().fields(
             uid, created, lastUpdated, organisationUnit, trackedEntityType, deleted,
-            relationships.with(Relationship.allFields),
+            relationships.with(RelationshipFields.allFields),
             trackedEntityAttributeValues.with(TrackedEntityAttributeValue.allFields),
             enrollment.with(Enrollment.allFields), coordinates, featureType
     ).build();

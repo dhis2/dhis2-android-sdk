@@ -28,22 +28,36 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.PojoBuilder;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-public class RelationshipBuilder extends PojoBuilder<Relationship, RelationshipModel> {
+import java.util.ArrayList;
+import java.util.List;
 
-    @Override
-    public Relationship buildPojo(RelationshipModel model) {
+public class RelationshipVersionTransformer {
 
-        return Relationship.create(
-                null,
-                null,
-                model.uid(),
-                model.relationshipType(),
-                null,
-                null,
-                null,
-                null
-        );
+    private final DHISVersionManager versionManager;
+
+    public RelationshipVersionTransformer(DHISVersionManager versionManager) {
+        this.versionManager = versionManager;
+    }
+
+    public List<Relationship> toServer(List<Relationship> storedRelationships) {
+        if (versionManager.is2_29()) {
+            List<Relationship> relationships29 = new ArrayList<>();
+            for (Relationship relationship : storedRelationships) {
+                RelationshipItemTrackedEntityInstance fromInstance = relationship.from().trackedEntityInstance();
+                RelationshipItemTrackedEntityInstance toInstance = relationship.to().trackedEntityInstance();
+                relationships29.add(
+                        Relationship.builder()
+                                .trackedEntityInstanceA(fromInstance.trackedEntityInstance())
+                                .trackedEntityInstanceB(toInstance.trackedEntityInstance())
+                                .relationship(relationship.relationshipType())
+                                .build()
+                );
+            }
+            return relationships29;
+        } else {
+            return storedRelationships;
+        }
     }
 }

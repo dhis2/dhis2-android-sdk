@@ -111,11 +111,11 @@ public class Dhis2MockServer {
         enqueueMockResponse("tracked_entity_types.json");
         enqueueMockResponse("relationship_types.json");
         enqueueMockResponse("option_sets.json");
-        enqueueMockResponse(orgUnitPath);
         enqueueMockResponse("data_sets.json");
         enqueueMockResponse("data_elements.json");
         enqueueMockResponse("indicators.json");
         enqueueMockResponse("indicator_types.json");
+        enqueueMockResponse(orgUnitPath);
     }
 
     @NonNull

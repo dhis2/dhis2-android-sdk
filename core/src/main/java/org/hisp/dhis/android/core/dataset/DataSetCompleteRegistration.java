@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -39,7 +38,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.utils.StoreUtils;
 
 import java.util.Date;
 
@@ -56,25 +54,6 @@ public abstract class DataSetCompleteRegistration extends BaseModel {
 
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date date();
-
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        StoreUtils.sqLiteBind(sqLiteStatement, 1, period());
-        StoreUtils.sqLiteBind(sqLiteStatement, 2, dataSet());
-        StoreUtils.sqLiteBind(sqLiteStatement, 3, organisationUnit());
-        StoreUtils.sqLiteBind(sqLiteStatement, 4, attributeOptionCombo());
-        StoreUtils.sqLiteBind(sqLiteStatement, 5, date());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        StoreUtils.sqLiteBind(sqLiteStatement, 6, period());
-        StoreUtils.sqLiteBind(sqLiteStatement, 7, dataSet());
-        StoreUtils.sqLiteBind(sqLiteStatement, 8, organisationUnit());
-        StoreUtils.sqLiteBind(sqLiteStatement, 9, attributeOptionCombo());
-        StoreUtils.sqLiteBind(sqLiteStatement, 10, date());
-    }
 
     @NonNull
     public static DataSetCompleteRegistration create(Cursor cursor) {

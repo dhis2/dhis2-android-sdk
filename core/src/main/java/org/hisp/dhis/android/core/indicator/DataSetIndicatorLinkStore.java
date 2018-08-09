@@ -32,8 +32,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -52,18 +51,11 @@ public final class DataSetIndicatorLinkStore {
         }
     };
 
-    private static final WhereStatementBinder<DataSetIndicatorLinkModel> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<DataSetIndicatorLinkModel>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull DataSetIndicatorLinkModel o,
-                                               @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 3, o.dataSet());
-            sqLiteBind(sqLiteStatement, 4, o.indicator());
-        }
-    };
-
-    public static ObjectWithoutUidStore<DataSetIndicatorLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, DataSetIndicatorLinkModel.TABLE,
-                new DataSetIndicatorLinkModel.Columns(), BINDER, WHERE_UPDATE_BINDER);
+    public static LinkModelStore<DataSetIndicatorLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter,
+                DataSetIndicatorLinkModel.TABLE,
+                new DataSetIndicatorLinkModel.Columns(),
+                DataSetIndicatorLinkModel.Columns.DATA_SET,
+                BINDER);
     }
 }

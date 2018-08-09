@@ -31,8 +31,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -52,18 +51,11 @@ public final class OrganisationUnitProgramLinkStore {
         }
     };
 
-    private static final WhereStatementBinder<OrganisationUnitProgramLinkModel> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<OrganisationUnitProgramLinkModel>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull OrganisationUnitProgramLinkModel o,
-                                               @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 3, o.program());
-            sqLiteBind(sqLiteStatement, 4, o.organisationUnit());
-        }
-    };
-
-    public static ObjectWithoutUidStore<OrganisationUnitProgramLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, OrganisationUnitProgramLinkModel.TABLE,
-                new OrganisationUnitProgramLinkModel.Columns(), BINDER, WHERE_UPDATE_BINDER);
+    public static LinkModelStore<OrganisationUnitProgramLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter,
+                OrganisationUnitProgramLinkModel.TABLE,
+                new OrganisationUnitProgramLinkModel.Columns(),
+                OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT,
+                BINDER);
     }
 }

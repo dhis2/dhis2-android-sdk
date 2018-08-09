@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
@@ -113,6 +114,9 @@ public class DataSetHandlerShould {
     private DataInputPeriod dataInputPeriod;
 
     @Mock
+    private CollectionCleaner<DataSet> collectionCleaner;
+
+    @Mock
     List<DataInputPeriod> dataInputPeriods;
 
     // object to test
@@ -129,7 +133,8 @@ public class DataSetHandlerShould {
                 sectionOrphanCleaner,
                 compulsoryDataElementOperandHandler,
                 dataSetCompulsoryDataElementOperandLinkHandler,
-                dataInputPeriodHandler);
+                dataInputPeriodHandler,
+                collectionCleaner);
 
         when(dataSet.access()).thenReturn(access);
         when(access.data()).thenReturn(dataAccess);

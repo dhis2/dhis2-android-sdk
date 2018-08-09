@@ -35,7 +35,7 @@ public class DataSetOrganisationUnitLinkModelBuilder extends ModelBuilder<DataSe
 
     private final DataSetOrganisationUnitLinkModel.Builder builder;
 
-    DataSetOrganisationUnitLinkModelBuilder(OrganisationUnit organisationUnit) {
+    public DataSetOrganisationUnitLinkModelBuilder(OrganisationUnit organisationUnit) {
         this.builder = DataSetOrganisationUnitLinkModel.builder()
                 .organisationUnit(organisationUnit.uid());
     }

@@ -55,6 +55,8 @@ public abstract class DataSetCompleteRegistration extends BaseModel {
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date date();
 
+    public abstract String storedBy();
+
     @NonNull
     public static DataSetCompleteRegistration create(Cursor cursor) {
         return AutoValue_DataSetCompleteRegistration.createFromCursor(cursor);
@@ -84,6 +86,8 @@ public abstract class DataSetCompleteRegistration extends BaseModel {
         public abstract Builder attributeOptionCombo(String attributeOptionCombo);
 
         public abstract Builder date(Date date);
+
+        public abstract Builder storedBy(String storedBy);
 
         public abstract DataSetCompleteRegistration build();
     }

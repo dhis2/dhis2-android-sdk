@@ -29,7 +29,8 @@ public final class DataSetCompleteRegistrationTableInfo {
                     DataSetCompleteRegistrationFields.DATA_SET,
                     DataSetCompleteRegistrationFields.ORGANISATION_UNIT,
                     DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO,
-                    DataSetCompleteRegistrationFields.DATE);
+                    DataSetCompleteRegistrationFields.DATE,
+                    DataSetCompleteRegistrationFields.STORED_BY);
         }
 
         @Override

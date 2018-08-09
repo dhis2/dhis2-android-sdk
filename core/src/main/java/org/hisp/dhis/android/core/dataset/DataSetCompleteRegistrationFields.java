@@ -40,6 +40,7 @@ public final class DataSetCompleteRegistrationFields {
     static String ORGANISATION_UNIT = "organisationUnit";
     static String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
     static String DATE = "date";
+    static String STORED_BY = "storedBy";
 
     private static FieldsHelper<DataSetCompleteRegistration> fieldsHelper = new FieldsHelper<>();
     static final Fields<DataSetCompleteRegistration> allFields = Fields.<DataSetCompleteRegistration>builder().fields(
@@ -47,7 +48,8 @@ public final class DataSetCompleteRegistrationFields {
             fieldsHelper.<String>field(DATA_SET),
             fieldsHelper.<String>field(ORGANISATION_UNIT),
             fieldsHelper.<String>field(ATTRIBUTE_OPTION_COMBO),
-            fieldsHelper.<String>field(DATE)
+            fieldsHelper.<String>field(DATE),
+            fieldsHelper.<String>field(STORED_BY)
     ).build();
 
 }

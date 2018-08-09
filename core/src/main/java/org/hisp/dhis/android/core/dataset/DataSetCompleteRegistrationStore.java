@@ -53,6 +53,7 @@ public class DataSetCompleteRegistrationStore {
             sqLiteBind(sqLiteStatement, 3, dataSetCompleteRegistration.organisationUnit());
             sqLiteBind(sqLiteStatement, 4, dataSetCompleteRegistration.attributeOptionCombo());
             sqLiteBind(sqLiteStatement, 5, dataSetCompleteRegistration.date());
+            sqLiteBind(sqLiteStatement, 6, dataSetCompleteRegistration.storedBy());
         }
     };
 
@@ -61,10 +62,10 @@ public class DataSetCompleteRegistrationStore {
         @Override
         public void bindToUpdateWhereStatement(@NonNull DataSetCompleteRegistration dataSetCompleteRegistration,
                                                @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 6, dataSetCompleteRegistration.period());
-            sqLiteBind(sqLiteStatement, 7, dataSetCompleteRegistration.dataSet());
-            sqLiteBind(sqLiteStatement, 8, dataSetCompleteRegistration.organisationUnit());
-            sqLiteBind(sqLiteStatement, 9, dataSetCompleteRegistration.attributeOptionCombo());
+            sqLiteBind(sqLiteStatement, 7, dataSetCompleteRegistration.period());
+            sqLiteBind(sqLiteStatement, 8, dataSetCompleteRegistration.dataSet());
+            sqLiteBind(sqLiteStatement, 9, dataSetCompleteRegistration.organisationUnit());
+            sqLiteBind(sqLiteStatement, 10, dataSetCompleteRegistration.attributeOptionCombo());
         }
     };
 

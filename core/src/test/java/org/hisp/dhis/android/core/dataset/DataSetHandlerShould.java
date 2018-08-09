@@ -38,10 +38,13 @@ import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandModel;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandModelBuilder;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -114,10 +117,16 @@ public class DataSetHandlerShould {
     private DataInputPeriod dataInputPeriod;
 
     @Mock
+    private LinkModelHandler<DataSetElement, DataSetDataElementLinkModel> dataSetDataElementLinkHandler;
+
+    @Mock
+    private LinkModelHandler<ObjectWithUid, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
+
+    @Mock
     private CollectionCleaner<DataSet> collectionCleaner;
 
     @Mock
-    List<DataInputPeriod> dataInputPeriods;
+    private List<DataInputPeriod> dataInputPeriods;
 
     // object to test
     private DataSetHandler dataSetHandler;
@@ -134,6 +143,8 @@ public class DataSetHandlerShould {
                 compulsoryDataElementOperandHandler,
                 dataSetCompulsoryDataElementOperandLinkHandler,
                 dataInputPeriodHandler,
+                dataSetDataElementLinkHandler,
+                dataSetIndicatorLinkHandler,
                 collectionCleaner);
 
         when(dataSet.access()).thenReturn(access);
@@ -157,7 +168,7 @@ public class DataSetHandlerShould {
     }
 
     @Test
-    public void passingNullArguments_shouldNotPerformAnyAction() {
+    public void not_perform_any_action_passing_null_arguments() {
 
         dataSetHandler.handle(null, null);
 
@@ -176,7 +187,7 @@ public class DataSetHandlerShould {
     }
 
     @Test
-    public void handlingDataSet_shouldHandleNestedSections() {
+    public void handle_nested_sections() {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
 
@@ -185,7 +196,7 @@ public class DataSetHandlerShould {
     }
 
     @Test
-    public void updating_shouldDeleteOrhpanSections() {
+    public void delete_orphan_sections() {
 
         when(dataSetStore.updateOrInsert(any(DataSetModel.class))).thenReturn(HandleAction.Update);
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
@@ -194,7 +205,7 @@ public class DataSetHandlerShould {
     }
 
     @Test
-    public void inserting_shouldNotDeleteOrphanSections() {
+    public void not_delete_orphan_sections_inserting() {
 
         when(dataSetStore.updateOrInsert(any(DataSetModel.class))).thenReturn(HandleAction.Insert);
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
@@ -203,7 +214,7 @@ public class DataSetHandlerShould {
     }
 
     @Test
-    public void handlingDataSet_shouldHandleNestedCompulsoryDataElementOperands() {
+    public void handle_nested_compulsory_data_elements_operands() {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
 
@@ -212,7 +223,7 @@ public class DataSetHandlerShould {
     }
 
     @Test
-    public void handlingDataSet_shouldHandleDataSetCompulsoryDataElementOprandLink() {
+    public void handle_data_set_compulsory_data_element_operand_link() {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
 
@@ -221,7 +232,7 @@ public class DataSetHandlerShould {
     }
 
     @Test
-    public void handlingDataSet_shouldHandleNestedDataInputPeriods() {
+    public void handle_nested_data_input_periods() {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
 
@@ -230,10 +241,28 @@ public class DataSetHandlerShould {
     }
 
     @Test
-    public void handlingDataSet_shouldHandleStyle() {
+    public void handle_style() {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
 
         verify(styleHandler).handle(eq(dataSet.style()), any(ObjectStyleModelBuilder.class));
+    }
+
+    @Test
+    public void handle_data_element_links() {
+
+        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
+        verify(dataSetDataElementLinkHandler).handleMany(anyString(), anyListOf(DataSetElement.class),
+                any(DataSetDataElementLinkModelBuilder.class));
+    }
+
+    @Test
+    public void handle_indicator_links() {
+
+        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+
+        verify(dataSetIndicatorLinkHandler).handleMany(anyString(), anyListOf(ObjectWithUid.class),
+                any(DataSetIndicatorLinkModelBuilder.class));
     }
 }

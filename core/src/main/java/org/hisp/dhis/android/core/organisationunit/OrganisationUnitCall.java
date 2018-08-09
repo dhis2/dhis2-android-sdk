@@ -99,20 +99,21 @@ public class OrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
 
     public interface Factory {
         Call<List<OrganisationUnit>> create(GenericCallData data,
-                                                         User user,
-                                                         Set<String> programUids);
+                                            User user,
+                                            Set<String> programUids,
+                                            Set<String> dataSetUids);
     }
 
     public static final OrganisationUnitCall.Factory FACTORY = new OrganisationUnitCall.Factory() {
         @Override
         public Call<List<OrganisationUnit>> create(GenericCallData data,
                                                                 User user,
-                                                                Set<String> programUids) {
+                                                                Set<String> programUids,
+                                                                Set<String> dataSetUids) {
             GenericHandler<OrganisationUnit, OrganisationUnitModel> handler =
-                    OrganisationUnitHandler.create(data.databaseAdapter(), programUids,
+                    OrganisationUnitHandler.create(data.databaseAdapter(), programUids, dataSetUids,
                             OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
-            return new OrganisationUnitCall(user, data.retrofit().create(OrganisationUnitService.class),
-                    data, handler);
+            return new OrganisationUnitCall(user, data.retrofit().create(OrganisationUnitService.class), data, handler);
         }
     };
 }

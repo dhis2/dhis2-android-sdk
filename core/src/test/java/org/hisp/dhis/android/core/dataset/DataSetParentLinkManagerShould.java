@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.assertj.core.util.Lists;
-import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
@@ -42,7 +41,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -50,9 +48,6 @@ public class DataSetParentLinkManagerShould {
 
     @Mock
     private ObjectWithoutUidStore<DataSetDataElementLinkModel> dataSetDataElementStore;
-
-    @Mock
-    private ObjectWithoutUidStore<DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitStore;
 
     @Mock
     private ObjectWithoutUidStore<DataSetIndicatorLinkModel> dataSetIndicatorStore;
@@ -65,10 +60,6 @@ public class DataSetParentLinkManagerShould {
 
     @Mock
     private DataSet dataSet3;
-
-    private final String DATA_SET_1_UID = "test_data_set_uid1";
-    private final String DATA_SET_2_UID = "test_data_set_uid2";
-    private final String DATA_SET_3_UID = "test_data_set_uid3";
 
     private DataSetElement dataSetElement1 = DataSetElement.create(ObjectWithUid.create("dataSetElement1"),
             ObjectWithUid.create("categoryCombo1"));
@@ -92,12 +83,11 @@ public class DataSetParentLinkManagerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        dataSetParentLinkManager = new DataSetParentLinkManager(dataSetDataElementStore,
-                dataSetOrganisationUnitStore, dataSetIndicatorStore);
+        dataSetParentLinkManager = new DataSetParentLinkManager(dataSetDataElementStore, dataSetIndicatorStore);
 
-        when(dataSet1.uid()).thenReturn(DATA_SET_1_UID);
-        when(dataSet2.uid()).thenReturn(DATA_SET_2_UID);
-        when(dataSet3.uid()).thenReturn(DATA_SET_3_UID);
+        when(dataSet1.uid()).thenReturn("test_data_set_uid1");
+        when(dataSet2.uid()).thenReturn("test_data_set_uid2");
+        when(dataSet3.uid()).thenReturn("test_data_set_uid3");
         when(dataSet1.dataSetElements()).thenReturn(Lists.newArrayList(dataSetElement1, dataSetElement2));
         when(dataSet2.dataSetElements()).thenReturn(Lists.newArrayList(dataSetElement2, dataSetElement3));
 
@@ -113,9 +103,6 @@ public class DataSetParentLinkManagerShould {
     @Test
     public void store_data_set_data_element_links() throws Exception {
         dataSetParentLinkManager.saveDataSetDataElementAndIndicatorLinks(Lists.newArrayList(dataSet1, dataSet2));
-        dataSetParentLinkManager.saveDataSetOrganisationUnitLinks(
-                Lists.newArrayList(organisationUnit1, organisationUnit2), Sets.newHashSet(
-                        Lists.newArrayList(DATA_SET_1_UID, DATA_SET_2_UID, DATA_SET_3_UID)));
 
         verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElement1, dataSet1));
         verify(dataSetDataElementStore).updateOrInsertWhere(dataElementExpectedLink(dataSetElement2, dataSet1));
@@ -126,13 +113,6 @@ public class DataSetParentLinkManagerShould {
         verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(indicator2, dataSet1));
         verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(indicator2, dataSet2));
         verify(dataSetIndicatorStore).updateOrInsertWhere(indicatorExpectedLink(indicator3, dataSet2));
-
-        verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(organisationUnit1, dataSet1));
-        verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(organisationUnit1, dataSet2));
-        verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(organisationUnit2, dataSet2));
-        verify(dataSetOrganisationUnitStore).updateOrInsertWhere(orgUnitExpectedLink(organisationUnit2, dataSet3));
-
-        verifyNoMoreInteractions(dataSetOrganisationUnitStore);
     }
 
     private DataSetDataElementLinkModel dataElementExpectedLink(DataSetElement decc, DataSet dataSet) {
@@ -141,9 +121,5 @@ public class DataSetParentLinkManagerShould {
 
     private DataSetIndicatorLinkModel indicatorExpectedLink(ObjectWithUid i1, DataSet dataSet) {
         return new DataSetIndicatorLinkModelBuilder(dataSet).buildModel(i1);
-    }
-
-    private DataSetOrganisationUnitLinkModel orgUnitExpectedLink(OrganisationUnit ou, DataSet dataSet) {
-        return new DataSetOrganisationUnitLinkModelBuilder(ou).buildModel(dataSet);
     }
 }

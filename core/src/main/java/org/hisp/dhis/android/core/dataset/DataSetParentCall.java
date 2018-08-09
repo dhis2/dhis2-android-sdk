@@ -28,103 +28,88 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementEndpointCall;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorEndpointCall;
 import org.hisp.dhis.android.core.indicator.IndicatorType;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeEndpointCall;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.period.PeriodHandler;
-import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
-public class DataSetParentCall extends SyncCall<Void> {
+public final class DataSetParentCall extends SyncCall<List<DataSet>> {
     private final DataSetParentLinkManager linkManager;
-    private final GenericCallData data;
+    private final GenericCallData genericCallData;
     private final ListCallFactory<DataSet> dataSetCallFactory;
     private final UidsCallFactory<DataElement> dataElementCallFactory;
     private final UidsCallFactory<Indicator> indicatorCallFactory;
     private final UidsCallFactory<IndicatorType> indicatorTypeCallFactory;
-    private final List<OrganisationUnit> organisationUnits;
     private final PeriodHandler periodHandler;
 
-    private DataSetParentCall(GenericCallData data,
+    private DataSetParentCall(GenericCallData genericCallData,
                               DataSetParentLinkManager linkManager,
                               ListCallFactory<DataSet> dataSetCallFactory,
                               UidsCallFactory<DataElement> dataElementCallFactory,
                               UidsCallFactory<Indicator> indicatorCallFactory,
                               UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
-                              List<OrganisationUnit> organisationUnits,
                               PeriodHandler periodHandler) {
-        this.data = data;
+        this.genericCallData = genericCallData;
         this.linkManager = linkManager;
         this.dataSetCallFactory = dataSetCallFactory;
         this.dataElementCallFactory = dataElementCallFactory;
         this.indicatorCallFactory = indicatorCallFactory;
         this.indicatorTypeCallFactory = indicatorTypeCallFactory;
-        this.organisationUnits = organisationUnits;
         this.periodHandler = periodHandler;
     }
 
     @Override
-    public Void call() throws D2CallException {
+    public List<DataSet> call() throws D2CallException {
         setExecuted();
 
         final D2CallExecutor executor = new D2CallExecutor();
 
-        return executor.executeD2CallTransactionally(data.databaseAdapter(), new Callable<Void>() {
+        return executor.executeD2CallTransactionally(genericCallData.databaseAdapter(), new Callable<List<DataSet>>() {
             @Override
-            public Void call() throws D2CallException {
-                List<DataSet> dataSets = executor.executeD2Call(dataSetCallFactory.create(data));
-                Set<String> dataSetUids = UidsHelper.getUids(dataSets);
+            public List<DataSet> call() throws D2CallException {
+                List<DataSet> dataSets = executor.executeD2Call(dataSetCallFactory.create(genericCallData));
 
-                executor.executeD2Call(dataElementCallFactory.create(data,
+                executor.executeD2Call(dataElementCallFactory.create(genericCallData,
                         DataSetParentUidsHelper.getDataElementUids(dataSets)));
 
-                List<Indicator> indicators = executor.executeD2Call(indicatorCallFactory.create(data,
+                List<Indicator> indicators = executor.executeD2Call(indicatorCallFactory.create(genericCallData,
                         DataSetParentUidsHelper.getIndicatorUids(dataSets)));
 
-                executor.executeD2Call(indicatorTypeCallFactory.create(data,
+                executor.executeD2Call(indicatorTypeCallFactory.create(genericCallData,
                         DataSetParentUidsHelper.getIndicatorTypeUids(indicators)));
 
                 periodHandler.generateAndPersist();
 
                 linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);
-                linkManager.saveDataSetOrganisationUnitLinks(organisationUnits, dataSetUids);
 
-                return null;
+                return dataSets;
             }
         });
-
-
     }
 
-    public interface Factory {
-        Call<Void> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits);
-    }
-
-    public static final Factory FACTORY = new Factory() {
+    public static final GenericCallFactory<List<DataSet>> FACTORY = new GenericCallFactory<List<DataSet>>() {
         @Override
-        public Call<Void> create(User user, GenericCallData data, List<OrganisationUnit> organisationUnits) {
-            return new DataSetParentCall(data,
-                    DataSetParentLinkManager.create(data.databaseAdapter()),
+        public Call<List<DataSet>> create(GenericCallData genericCallData) {
+            return new DataSetParentCall(genericCallData,
+                    DataSetParentLinkManager.create(genericCallData.databaseAdapter()),
                     DataSetEndpointCall.FACTORY,
                     DataElementEndpointCall.FACTORY,
                     IndicatorEndpointCall.FACTORY,
                     IndicatorTypeEndpointCall.FACTORY,
-                    organisationUnits,
-                    PeriodHandler.create(data.databaseAdapter()));
+                    PeriodHandler.create(genericCallData.databaseAdapter()));
         }
     };
 }

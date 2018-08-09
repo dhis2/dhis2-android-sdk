@@ -44,8 +44,8 @@ import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramParentCall;
@@ -75,7 +75,7 @@ public class MetadataCall extends SyncCall<Unit> {
     private final GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory;
     private final GenericCallFactory<List<Program>> programParentCallFactory;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
-    private final DataSetParentCall.Factory dataSetParentCallFactory;
+    private final GenericCallFactory<List<DataSet>> dataSetParentCallFactory;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
@@ -88,7 +88,7 @@ public class MetadataCall extends SyncCall<Unit> {
                         @NonNull GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory,
                         @NonNull GenericCallFactory<List<Program>> programParentCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
-                        @NonNull DataSetParentCall.Factory dataSetParentCallFactory,
+                        @NonNull GenericCallFactory<List<DataSet>> dataSetParentCallFactory,
                         @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
@@ -127,11 +127,11 @@ public class MetadataCall extends SyncCall<Unit> {
                 List<Program> programs = executor.executeD2Call(
                         programParentCallFactory.create(genericCallData));
 
-                List<OrganisationUnit> organisationUnits =
-                        executor.executeD2Call(organisationUnitCallFactory.create(genericCallData, user,
-                                UidsHelper.getUids(programs)));
+                List<DataSet> dataSets = executor.executeD2Call(
+                        dataSetParentCallFactory.create(genericCallData));
 
-                executor.executeD2Call(dataSetParentCallFactory.create(user, genericCallData, organisationUnits));
+                executor.executeD2Call(organisationUnitCallFactory.create(
+                        genericCallData, user, UidsHelper.getUids(programs), UidsHelper.getUids(dataSets)));
 
                 foreignKeyCleaner.cleanForeignKeyErrors();
 

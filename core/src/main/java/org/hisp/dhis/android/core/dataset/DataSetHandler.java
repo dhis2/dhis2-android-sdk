@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
@@ -45,6 +47,8 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperandHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandModel;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandModelBuilder;
 
+import java.util.Collection;
+
 public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
 
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
@@ -57,6 +61,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
             DataSetCompulsoryDataElementOperandLinkModel> dataSetCompulsoryDataElementOperandLinkHandler;
 
     private final LinkModelHandler<DataInputPeriod, DataInputPeriodModel> dataInputPeriodHandler;
+    private final CollectionCleaner<DataSet> collectionCleaner;
 
     DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
                    GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
@@ -67,7 +72,8 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
                    LinkModelHandler<DataElementOperand,
                            DataSetCompulsoryDataElementOperandLinkModel>
                            dataSetCompulsoryDataElementOperandLinkHandler,
-                   LinkModelHandler<DataInputPeriod, DataInputPeriodModel> dataInputPeriodHandler) {
+                   LinkModelHandler<DataInputPeriod, DataInputPeriodModel> dataInputPeriodHandler,
+                   CollectionCleaner<DataSet> collectionCleaner) {
 
         super(dataSetStore);
         this.styleHandler = styleHandler;
@@ -76,6 +82,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
         this.compulsoryDataElementOperandHandler = compulsoryDataElementOperandHandler;
         this.dataSetCompulsoryDataElementOperandLinkHandler = dataSetCompulsoryDataElementOperandLinkHandler;
         this.dataInputPeriodHandler = dataInputPeriodHandler;
+        this.collectionCleaner = collectionCleaner;
     }
 
     public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
@@ -91,7 +98,9 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
                         DataSetCompulsoryDataElementOperandLinkModel>(
                                 DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter)),
                 new LinkModelHandlerImpl<DataInputPeriod, DataInputPeriodModel>(
-                        DataInputPeriodStore.create(databaseAdapter)));
+                        DataInputPeriodStore.create(databaseAdapter)),
+                new CollectionCleanerImpl<DataSet>(DataSetModel.TABLE, databaseAdapter)
+        );
     }
 
     @Override
@@ -115,5 +124,10 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
         if (action == HandleAction.Update) {
             sectionOrphanCleaner.deleteOrphan(dataSet, dataSet.sections());
         }
+    }
+
+    @Override
+    protected void afterCollectionHandled(Collection<DataSet> dataSets) {
+        collectionCleaner.deleteNotPresent(dataSets);
     }
 }

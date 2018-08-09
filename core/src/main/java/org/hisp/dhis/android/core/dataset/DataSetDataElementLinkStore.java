@@ -32,8 +32,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -43,7 +42,7 @@ public final class DataSetDataElementLinkStore {
 
     private DataSetDataElementLinkStore() {}
 
-    static final StatementBinder<DataSetDataElementLinkModel> BINDER
+    private static final StatementBinder<DataSetDataElementLinkModel> BINDER
             = new StatementBinder<DataSetDataElementLinkModel>() {
         @Override
         public void bindToStatement(@NonNull DataSetDataElementLinkModel o, @NonNull SQLiteStatement sqLiteStatement) {
@@ -53,18 +52,11 @@ public final class DataSetDataElementLinkStore {
         }
     };
 
-    static final WhereStatementBinder<DataSetDataElementLinkModel> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<DataSetDataElementLinkModel>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull DataSetDataElementLinkModel o,
-                                               @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 4, o.dataSet());
-            sqLiteBind(sqLiteStatement, 5, o.dataElement());
-        }
-    };
-
-    public static ObjectWithoutUidStore<DataSetDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, DataSetDataElementLinkModel.TABLE,
-                new DataSetDataElementLinkModel.Columns(), BINDER, WHERE_UPDATE_BINDER);
+    public static LinkModelStore<DataSetDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter,
+                DataSetDataElementLinkModel.TABLE,
+                new DataSetDataElementLinkModel.Columns(),
+                DataSetDataElementLinkModel.Columns.DATA_SET,
+                BINDER);
     }
 }

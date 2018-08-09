@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 public final class DataSetParentCall extends SyncCall<List<DataSet>> {
-    private final DataSetParentLinkManager linkManager;
     private final GenericCallData genericCallData;
     private final ListCallFactory<DataSet> dataSetCallFactory;
     private final UidsCallFactory<DataElement> dataElementCallFactory;
@@ -56,14 +55,12 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
     private final PeriodHandler periodHandler;
 
     private DataSetParentCall(GenericCallData genericCallData,
-                              DataSetParentLinkManager linkManager,
                               ListCallFactory<DataSet> dataSetCallFactory,
                               UidsCallFactory<DataElement> dataElementCallFactory,
                               UidsCallFactory<Indicator> indicatorCallFactory,
                               UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
                               PeriodHandler periodHandler) {
         this.genericCallData = genericCallData;
-        this.linkManager = linkManager;
         this.dataSetCallFactory = dataSetCallFactory;
         this.dataElementCallFactory = dataElementCallFactory;
         this.indicatorCallFactory = indicatorCallFactory;
@@ -92,9 +89,7 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
                         DataSetParentUidsHelper.getIndicatorTypeUids(indicators)));
 
                 periodHandler.generateAndPersist();
-
-                linkManager.saveDataSetDataElementAndIndicatorLinks(dataSets);
-
+                
                 return dataSets;
             }
         });
@@ -104,7 +99,6 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
         @Override
         public Call<List<DataSet>> create(GenericCallData genericCallData) {
             return new DataSetParentCall(genericCallData,
-                    DataSetParentLinkManager.create(genericCallData.databaseAdapter()),
                     DataSetEndpointCall.FACTORY,
                     DataElementEndpointCall.FACTORY,
                     IndicatorEndpointCall.FACTORY,
